@@ -1,0 +1,469 @@
+ /*
+  * Copyright 2012 Michael Bischoff
+  *
+  * Licensed under the Apache License, Version 2.0 (the "License");
+  * you may not use this file except in compliance with the License.
+  * You may obtain a copy of the License at
+  *
+  *   http://www.apache.org/licenses/LICENSE-2.0
+  *
+  * Unless required by applicable law or agreed to in writing, software
+  * distributed under the License is distributed on an "AS IS" BASIS,
+  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  * See the License for the specific language governing permissions and
+  * limitations under the License.
+  */
+package de.jpaw.bonaparte.core;
+
+import java.nio.charset.Charset;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
+// according to http://stackoverflow.com/questions/469695/decode-base64-data-in-java , xml.bind is included in Java 6 SE
+import javax.xml.bind.DatatypeConverter;
+
+import de.jpaw.util.CharTestsASCII;
+
+/**
+ * The StringBuilderParser class.
+ * 
+ * @author Michael Bischoff
+ * @version $Revision$
+ * 
+ *          Implements the unmarshaller for the bonaparte format using StringBuilder.
+ */
+
+public final class StringBuilderParser extends StringBuilderConstants implements MessageParser {
+	private final StringBuilder work;
+    private int parseIndex;  // for parser
+    private int messageLength;  // for parser
+	private final Charset useCharset;
+    private String currentClass;
+
+
+	public StringBuilderParser(StringBuilder work, int offset, int length, Charset useCharset) {
+		this.work = work;
+	    parseIndex = offset;  // for parser
+		messageLength = length < 0 ? work.length() : length; // -1 means full array size
+		this.useCharset = useCharset == null ? Charset.forName("UTF-8") : useCharset;
+		currentClass = "N/A";
+	}
+	
+	/**************************************************************************************************
+	 * Unmarshalling goes here
+	 **************************************************************************************************/
+	
+	private char needChar() throws MessageParserException {
+        if (parseIndex >= messageLength)
+        	throw new MessageParserException(MessageParserException.PREMATURE_END, null, parseIndex, currentClass);
+        return work.charAt(parseIndex++);
+	}
+	
+	private void needChar(char c) throws MessageParserException {
+        if (parseIndex >= messageLength)
+        	throw new MessageParserException(MessageParserException.PREMATURE_END,
+        			String.format("(expected 0x%02x)", (int)c), parseIndex, currentClass);
+        char d = work.charAt(parseIndex++);
+        if (c != d)
+        	throw new MessageParserException(MessageParserException.UNEXPECTED_CHARACTER,
+        			String.format("(expected 0x%02x, got 0x%02x)", (int)c, (int)d), parseIndex, currentClass);
+	}
+	
+	// check for Null called for field members inside a class
+	private boolean checkForNull(boolean allowNull) throws MessageParserException {
+		char c = needChar();
+		if (c == NULL_FIELD) {
+			if (allowNull)
+				return true;
+			else
+	        	throw new MessageParserException(MessageParserException.ILLEGAL_EXPLICIT_NULL, null, parseIndex, currentClass);
+		}
+		if (c == OBJECT_TERMINATOR || c == PARENT_SEPARATOR) {
+			if (allowNull) {
+				// uneat it
+				--parseIndex;
+				return true;
+			} else
+	        	throw new MessageParserException(MessageParserException.ILLEGAL_IMPLICIT_NULL, null, parseIndex, currentClass);
+		}
+		--parseIndex;
+		return false;
+	}
+	
+	private void skipLeadingSpaces() {
+		while (parseIndex < messageLength) {
+			char c = work.charAt(parseIndex);
+			if (c != ' ' && c != '\t')
+				break;
+			// skip leading blanks
+			++parseIndex;
+		}		
+	}
+    private String nextIndexParseAscii(boolean allowSign, boolean allowDecimalPoint, boolean allowExponent) throws MessageParserException {
+    	final int BUFFER_SIZE = 40;
+    	boolean allowSignNextIteration = false;
+    	boolean gotAnyDigit = false;
+    	StringBuffer tmp = new StringBuffer(BUFFER_SIZE);
+    	// skipBlanks: does not hurt!
+    	skipLeadingSpaces();
+    	if (parseIndex < messageLength && work.charAt(parseIndex) == '+') {
+    		// allow positive sign in any case (but not followed by a minus)
+    		++parseIndex;
+    		allowSign = false;
+    	}
+        while (parseIndex < messageLength) {
+        	char c = work.charAt(parseIndex);
+        	if (c == FIELD_TERMINATOR) {
+        		if (!gotAnyDigit)
+    	        	throw new MessageParserException(MessageParserException.NO_DIGITS_FOUND, null, parseIndex, currentClass);
+        		++parseIndex;  // eat it!
+        		return tmp.toString();
+        	}
+        	
+            if (c == '-') {
+            	if (!allowSign)
+    	        	throw new MessageParserException(MessageParserException.SUPERFLUOUS_SIGN, null, parseIndex, currentClass);
+            } else if (c == '.') {
+        		if (!allowDecimalPoint)
+    	        	throw new MessageParserException(MessageParserException.SUPERFLUOUS_DECIMAL_POINT, null, parseIndex, currentClass);
+        		allowDecimalPoint = false;  // no 2 in a row allowed
+        	} else if (c == 'e' || c == 'E') {
+        		if (!allowExponent)
+    	        	throw new MessageParserException(MessageParserException.SUPERFLUOUS_EXPONENT, null, parseIndex, currentClass);
+        		if (!gotAnyDigit)
+    	        	throw new MessageParserException(MessageParserException.NO_DIGITS_FOUND, null, parseIndex, currentClass);
+        		allowSignNextIteration = true;
+        		allowExponent = false;
+        		allowDecimalPoint = false;
+        	} else if (CharTestsASCII.isAsciiDigit(c)) {
+        		gotAnyDigit = true;
+        	} else {
+               	throw new MessageParserException(MessageParserException.ILLEGAL_CHAR_NOT_NUMERIC, null, parseIndex, currentClass);
+        	}
+            if (tmp.length() >= BUFFER_SIZE)
+            	throw new MessageParserException(MessageParserException.NUMERIC_TOO_LONG, null, parseIndex, currentClass);
+            tmp.append(c);
+            ++parseIndex;
+            allowSign = allowSignNextIteration;
+    		allowSignNextIteration = false;
+        }
+        // end of message without appropriate terminator character
+    	throw new MessageParserException(MessageParserException.MISSING_TERMINATOR, "(numeric field)", parseIndex, currentClass);
+    }
+    
+	@Override
+	public BigDecimal readBigDecimal(boolean allowNull, int length, int decimals, boolean isSigned) throws MessageParserException {
+		if (checkForNull(allowNull))
+        	return null;
+        return new BigDecimal(nextIndexParseAscii(isSigned, true, false));
+	}
+
+	// readString does the job for Unicode as well as ASCII
+	@Override
+	public String readString(boolean allowNull, int length, boolean doTrim, boolean allowCtrls, boolean allowUnicode) throws MessageParserException {
+		if (checkForNull(allowNull))
+        	return null;
+        // OK, read it
+        StringBuffer tmp = new StringBuffer(length == 0 ? 32 : length);
+        int currentLength = 0;
+        char c;
+        if (doTrim) {
+        	// skip leading spaces
+        	skipLeadingSpaces();
+        }
+        while ((c = needChar()) != FIELD_TERMINATOR) {
+        	if (allowUnicode) {
+        		// checks for Unicode characters
+        		if (c < ' ') {
+        			if (allowCtrls && c == '\t') {
+        				; // special case: unescaped TAB character allowed
+        			} else if (allowCtrls && c == ESCAPE_CHAR) {
+        				c = needChar();
+        				if (c < 0x40 || c >= 0x60)
+                        	throw new MessageParserException(MessageParserException.ILLEGAL_ESCAPE_SEQUENCE,
+                        			String.format("(found 0x%02x)", (int)c), parseIndex, currentClass);
+        				c -= 0x40;
+        			} else {
+                    	throw new MessageParserException(MessageParserException.ILLEGAL_CHAR_CTRL, null, parseIndex, currentClass);
+        			}
+        		}
+        	} else {
+        		if (!CharTestsASCII.isAsciiPrintable(c))
+                	throw new MessageParserException(MessageParserException.ILLEGAL_CHAR_ASCII,
+                			String.format("(found 0x%02x)", (int)c), parseIndex, currentClass);
+        	}
+        	if (length > 0) {
+        		// have limits on max size
+        		if (currentLength >= length) {  // this condition maybe removed if "autotrunk" is set
+        			// TODO: truncate or flag errors? skip this if truncating
+                	throw new MessageParserException(MessageParserException.STRING_TOO_LONG,
+                			String.format("(exceeds length %d, got so far %s)", length, tmp.toString()),
+                			parseIndex, currentClass);
+        		}
+        	}
+        	tmp.append(c);
+        	++currentLength;
+        }
+        if (doTrim) {
+        	int l = tmp.length();
+        	// trim trailing blanks
+        	while (l > 0) {
+        		char d = tmp.charAt(l-1);
+        		if (d != ' ' && d != '\t')
+        			break;  // l is correct length
+        	}
+        	if (l < tmp.length())
+        		tmp.setLength(l);
+        }
+		return tmp.toString();
+	}
+
+	@Override
+	public Boolean readBoolean(boolean allowNull) throws MessageParserException {
+        boolean result;
+		if (checkForNull(allowNull))
+        	return null;
+        char c = needChar();
+        if (c == '0')
+        	result = false;
+        else if (c == '1')
+            result = true;
+        else
+        	throw new MessageParserException(MessageParserException.ILLEGAL_BOOLEAN,
+        			String.format("(found 0x%02x)", (int)c), parseIndex, currentClass);
+        needChar(FIELD_TERMINATOR);
+        return result;
+	}
+
+	@Override
+	public byte[] readBytes(boolean allowNull, int length) throws MessageParserException {
+		if (checkForNull(allowNull))
+        	return null;
+		int i = parseIndex;
+		// find next occurence of field terminator
+        while (i < messageLength && work.charAt(i) != FIELD_TERMINATOR)
+        	++i;
+        if (i == messageLength)
+        	throw new MessageParserException(MessageParserException.MISSING_TERMINATOR, "(raw field)", parseIndex, currentClass);
+        String tmp = work.substring(parseIndex, i);
+        parseIndex = i+1;
+        try {
+        	return DatatypeConverter.parseBase64Binary(tmp);
+        } catch (IllegalArgumentException e) {
+        	throw new MessageParserException(MessageParserException.BASE64_PARSING_ERROR, null, parseIndex, currentClass);
+        }
+        // return DatatypeConverter.parseHexBinary(tmp);
+	}
+
+	@Override
+	public GregorianCalendar readGregorianCalendar(boolean allowNull, int fractionalDigits) throws MessageParserException {
+		if (checkForNull(allowNull))
+        	return null;
+		String tmp = nextIndexParseAscii(false, fractionalDigits >= 0, false);  // parse an unsigned numeric string without exponent
+		int date;
+		int fractional = 0;
+		if (fractionalDigits < 0) {
+			// day only and we know there is no decimal point
+			date = Integer.parseInt(tmp);
+			fractional = 0;
+		} else {
+			int dpoint;
+			if ((dpoint = tmp.indexOf('.')) < 0) {
+				// day only despite allowed time
+				date = Integer.parseInt(tmp);
+			} else {
+				// day and time
+				date = Integer.parseInt(tmp.substring(0, dpoint));
+				fractional = Integer.parseInt(tmp.substring(dpoint+1));
+				switch (tmp.length() - dpoint - 1) {  // i.e. number of fractional digits
+				case 6:  fractional *= 1000; break;   // precisely seconds resolution (timestamp(0))
+				case 7:  fractional *= 100; break;
+				case 8:  fractional *= 10; break;
+				case 9:  break;  // maximum resolution (milliseconds)
+				default:  // something weird
+	            	throw new MessageParserException(MessageParserException.BAD_TIMESTAMP_FRACTIONALS,
+	            			String.format("(found %d)", tmp.length() - dpoint - 1), parseIndex, currentClass);
+				}
+			}
+		}
+		// set the date and time
+		int day, month, year, hour, minute, second;
+		year = date / 10000;
+		month = (date %= 10000) / 100;
+		day = date %= 100;
+		hour = fractional / 10000000;
+		minute = (fractional %= 10000000) / 100000;
+		second = (fractional %= 100000) / 1000;
+		fractional %= 1000;
+		// first checks
+		if (year < 1601 || year > 2399 || month == 0 || month > 12 || day == 0
+				|| day > 31)
+			throw new MessageParserException(
+					MessageParserException.ILLEGAL_DAY, String.format(
+							"(found %d)", date), parseIndex, currentClass);
+		if (hour > 23 || minute > 59 || second > 59) // TODO: allow leap seconds? (that would be seconds == 60)
+			throw new MessageParserException(
+					MessageParserException.ILLEGAL_TIME,
+					String.format("(found %d)", hour * 10000 + minute * 100
+							+ second), parseIndex, currentClass);
+		// now set the return value
+		GregorianCalendar result;
+		try {
+			// TODO! default is lenient mode, therefore will not check. Solution
+			// is to read the data again and compare the values of day, month
+			// and year
+			result = new GregorianCalendar(year, month - 1, day, hour, minute,
+					second);
+		} catch (Exception e) {
+			throw new MessageParserException(
+					MessageParserException.ILLEGAL_CALENDAR_VALUE, null,
+					parseIndex, currentClass);
+		}
+		result.set(Calendar.MILLISECOND, fractional);
+		return result;
+	}
+
+	@Override
+	public int parseArrayStart(int max, Class<? extends BonaPortable> type,
+			int sizeOfChild) throws MessageParserException {
+        char c = needChar();
+        if (c == NULL_FIELD)
+        	return -1;
+        if (c != ARRAY_BEGIN)
+        	throw new MessageParserException(MessageParserException.UNEXPECTED_CHARACTER,
+        			String.format("(expected array start, got 0x%02x)", (int)c), parseIndex, currentClass);
+        int n = readInteger(false, false);
+        if (n < 0 || n > 1000000000)
+        	throw new MessageParserException(MessageParserException.ARRAY_SIZE_OUT_OF_BOUNDS,
+        			String.format("(got %d entries (0x%x))", n, n), parseIndex, currentClass);
+        return n;
+	}
+
+	@Override
+	public void parseArrayEnd() throws MessageParserException {
+		needChar(ARRAY_TERMINATOR);
+		
+	}
+
+	@Override
+	public BonaPortable readRecord() throws MessageParserException {
+		BonaPortable result;
+		needChar(RECORD_BEGIN);
+		needChar(NULL_FIELD); // version no
+		result = readObject(BonaPortable.class, false, true);
+		needChar(RECORD_TERMINATOR);
+		return result;
+	}
+	
+	
+	@Override
+	public Long readLong(boolean allowNull, boolean isSigned) throws MessageParserException {
+		if (checkForNull(allowNull))
+        	return null;
+        return Long.valueOf(nextIndexParseAscii(isSigned, false, false));
+	}
+
+	@Override
+	public Integer readInteger(boolean allowNull, boolean isSigned)	throws MessageParserException {
+		if (checkForNull(allowNull))
+        	return null;
+        return Integer.valueOf(nextIndexParseAscii(isSigned, false, false));
+	}
+	
+	@Override
+	public Float readFloat(boolean allowNull) throws MessageParserException {
+		if (checkForNull(allowNull))
+        	return null;
+        return Float.valueOf(nextIndexParseAscii(true, true, true));
+	}
+
+	@Override
+	public Double readDouble(boolean allowNull) throws MessageParserException {
+		if (checkForNull(allowNull))
+        	return null;
+        return Double.valueOf(nextIndexParseAscii(true, true, true));
+	}
+
+	@Override
+	public void eatParentSeparator() throws MessageParserException {
+		needChar(PARENT_SEPARATOR);
+	}
+
+	@Override
+	public Integer readInt(boolean allowNull, int length, boolean isSigned)
+			throws MessageParserException {
+		if (checkForNull(allowNull))
+        	return null;
+		String tmp = nextIndexParseAscii(isSigned, false, false);
+		if (tmp.length() > (length + ((tmp.charAt(0) == '-' || tmp.charAt(0) == '+') ? 1 : 0)))
+        	throw new MessageParserException(MessageParserException.NUMERIC_TOO_LONG,
+        			String.format("(allowed %d, found %d)", length, tmp.length()), parseIndex, currentClass);
+		return Integer.valueOf(tmp);
+	}
+	
+	@Override
+	public BonaPortable readObject(Class<? extends BonaPortable> type, boolean allowNull, boolean allowSubtypes) throws MessageParserException {
+		if (checkForNull(allowNull))
+        	return null;
+        needChar(OBJECT_BEGIN);  // version not yet allowed
+		String previousClass = currentClass;
+/*
+		char c = needChar();
+        if (c == NULL_FIELD) {	// do not use checkForNull because object end / parent end to not apply here
+        	/// XXX they do! because called recursively from within objects as well
+        	if (!allowNull)
+            	throw new Exception("parse object: Null object not allowed here");
+        	return null;
+        if (c != OBJECT_BEGIN)
+        	throw new Exception("expected object start character"); */
+        String classname = readString(false, 0, false, false, false);
+        needChar(NULL_FIELD);  // version not yet allowed
+        BonaPortable newObject = BonaPortableFactory.createObject(classname);
+        //System.out.println("Creating new obj " + classname + " gave me " + newObject);
+        // check if the object is of expected type
+        if (newObject.getClass() != type) {
+        	// check if it is a superclass
+        	if (!allowSubtypes || !type.isAssignableFrom(newObject.getClass()))
+            	throw new MessageParserException(MessageParserException.BAD_CLASS,
+            			String.format("(got %s, expected %s, subclassing = %b)",
+            					newObject.getClass().getSimpleName(), type.getSimpleName(), allowSubtypes),
+            					parseIndex, currentClass);
+        }
+        // all good here. Parse the contents
+       	currentClass = classname;
+        newObject.deserialise(this);
+        needChar(OBJECT_TERMINATOR);
+       	currentClass = previousClass;
+		return newObject;
+	}
+
+	@Override
+	public List<BonaPortable> readTransmission() throws MessageParserException {
+		List<BonaPortable> results = new ArrayList<BonaPortable>();
+		char c = needChar();
+		if (c == TRANSMISSION_BEGIN) {
+			needChar(NULL_FIELD);  // version
+			// TODO: parse extensions here
+			while ((c = needChar()) != TRANSMISSION_TERMINATOR) {
+				// System.out.println("transmission loop: char is " + c);
+				--parseIndex; // push back object def
+				results.add(readRecord());
+			}
+			// when here, last char was transmission terminator
+			// optionally eat the last one as well?
+		} else if (c == RECORD_BEGIN /* || c == EXTENSION_BEGIN */) {
+			// allow single record as a special case
+			// TODO: parse extensions here
+			--parseIndex;
+			results.add(readRecord());
+		} else {
+        	throw new MessageParserException(MessageParserException.BAD_TRANSMISSION_START,
+        			String.format("(got 0x%02x)", (int)c), parseIndex, currentClass);
+		}
+		// expect that the transmission ends here! TODO: exception if not
+		return results;
+	}
+
+}
