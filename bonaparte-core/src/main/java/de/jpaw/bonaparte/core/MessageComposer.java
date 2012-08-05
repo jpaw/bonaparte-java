@@ -16,6 +16,7 @@
 package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
+import java.nio.charset.Charset;
 import java.util.GregorianCalendar;
 
 /**
@@ -24,7 +25,7 @@ import java.util.GregorianCalendar;
  * @author Michael Bischoff
  * @version $Revision$
  * 
- *          Defines the methods required for any composer implementation
+ *          Defines the methods required for any serialization implementation
  */
 
 public interface MessageComposer {
@@ -34,7 +35,7 @@ public interface MessageComposer {
     public byte[] getBuffer();	// get the buffer (byte array of maybe too big size)
     public byte[] getBytes();	// get exact byte array of produced output
     
-    // marshaller methods: structure 
+    // serialization methods: structure 
 	public void writeNull();
     public void startTransmission();
     public void startRecord();
@@ -47,9 +48,12 @@ public interface MessageComposer {
     public void terminateTransmission();
 	public void writeRecord(BonaPortable o);
 
-    // marshaller methods: field type specific
+    // serialization methods: field type specific
     void addEscapedString(String s,  int length);		// length is max length as specified in DSL
     void addField(String s,  int length);				// length is max length as specified in DSL
+    void addField(Character c);
+    void addField(Byte n);
+    void addField(Short n);
     void addField(Double d);
     void addField(Float f);
     void addField(Long n);
@@ -60,4 +64,10 @@ public interface MessageComposer {
     void addField(byte [] b, int length);
     void addField(GregorianCalendar t, int length);
     void addField(BonaPortable obj);
+    
+    // methods from common settings
+    public boolean doWriteCRs();
+	public void setWriteCRs(boolean writeCRs);
+	public Charset getCharset();
+	public void setCharset(Charset charset);
 }

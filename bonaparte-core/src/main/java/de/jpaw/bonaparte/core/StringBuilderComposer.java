@@ -15,17 +15,11 @@
   */
 package de.jpaw.bonaparte.core;
 
-import java.io.OutputStream;
-import java.nio.charset.Charset;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.List;
 // according to http://stackoverflow.com/questions/469695/decode-base64-data-in-java , xml.bind is included in Java 6 SE
 import javax.xml.bind.DatatypeConverter;
-
-import de.jpaw.util.CharTestsASCII;
 
 /**
  * The StringBuilderComposer class.
@@ -33,14 +27,12 @@ import de.jpaw.util.CharTestsASCII;
  * @author Michael Bischoff
  * @version $Revision$
  * 
- *          Implements the marshaller for the bonaparte format using StringBuilder.
+ *          Implements the serialization for the bonaparte format using StringBuilder.
  */
 
 public final class StringBuilderComposer extends StringBuilderConstants implements MessageComposer {
 	// variables set by constructor
 	private StringBuilder work;
-    private final boolean writeCRs;
-	private final Charset useCharset;
 
     // restart the output
 	@Override
@@ -48,10 +40,8 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
         work.setLength(0);
     }
 
-	public StringBuilderComposer(StringBuilder work, boolean writeCRs, Charset useCharset) {
+	public StringBuilderComposer(StringBuilder work) {
 		this.work = work;
-		this.writeCRs = writeCRs;
-		this.useCharset = useCharset == null ? Charset.forName("UTF-8") : useCharset;;
 	}
 	
 	@Override
@@ -65,12 +55,11 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
 
 	@Override
 	public byte[] getBytes() {
-		// TODO Auto-generated method stub
-		return work.toString().getBytes(useCharset);
+		return work.toString().getBytes(getCharset());
 	}
 	
 	/**************************************************************************************************
-	 * Marshalling goes here
+	 * Serialization goes here
 	 **************************************************************************************************/
 
 	// the following two methods are provided as separate methods instead of
@@ -102,7 +91,7 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
 
 	@Override
 	public void terminateRecord() {
-		if (writeCRs)
+		if (doWriteCRs())
 			work.append(RECORD_OPT_TERMINATOR);
 		work.append(RECORD_TERMINATOR);
 	}
@@ -137,18 +126,21 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
 		terminateRecord();
 	}
 	
+	private void addCharSub(char c) {
+		if (c >= 0 && c < ' ' && c != '\t') {
+			work.append(ESCAPE_CHAR);
+			work.append((char)(c + '@'));
+		} else {
+			work.append(c);
+		}		
+	}
+
 	// field type specific output functions
 	@Override
 	public void addEscapedString(String s, int length) {
 		if (s != null) {
 			for (int i = 0; i < s.length(); ++i) {
-				char c = s.charAt(i);
-				if (c >= 0 && c < ' ' && c != '\t') {
-					work.append(ESCAPE_CHAR);
-					work.append(c + '@');
-				} else {
-					work.append(c);
-				}
+				addCharSub(s.charAt(i));
 			}
 			terminateField();
 		} else {
@@ -156,6 +148,16 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
 		}
 	}
 
+	// character
+	@Override
+	public void addField(Character c) {
+		if (c != null) {
+			addCharSub(c.charValue());
+			terminateField();
+		} else {
+			writeNull();
+		}
+	}
 	// ascii and unicode
 	@Override
 	public void addField(String s, int length) {
@@ -174,6 +176,27 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
 		if (n != null) {
 			work.append(n.toPlainString());
 		terminateField();
+		} else {
+			writeNull();
+		}
+	}
+	
+	// byte
+	@Override
+	public void addField(Byte n) {
+		if (n != null) {
+			work.append(n.toString());
+			terminateField();
+		} else {
+			writeNull();
+		}
+	}
+	// short
+	@Override
+	public void addField(Short n) {
+		if (n != null) {
+			work.append(n.toString());
+			terminateField();
 		} else {
 			writeNull();
 		}
@@ -206,16 +229,6 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
 	public void addField(Long n) {
 		if (n != null) {
 			work.append(n.toString());
-			terminateField();
-		} else {
-			writeNull();
-		}
-	}
-
-	// char (unused!)
-	public void addField(Character c) {
-		if (c != null) {
-			work.append(c);
 			terminateField();
 		} else {
 			writeNull();
@@ -313,13 +326,15 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
 
 	@Override
 	public void addField(BonaPortable obj) {
-        // start a new object
-		startObject(obj.getMediumClassName(), obj.getRevision());
-        // do all fields
-        obj.serialiseSub(this);
-        // terminate the object
-        terminateObject();
-		// TODO Auto-generated method stub
-		
+		if (obj == null) {
+			writeNull();
+		} else {
+			// start a new object
+			startObject(obj.get$PQON(), obj.get$Revision());
+			// do all fields
+			obj.serialiseSub(this);
+			// terminate the object
+			terminateObject();
+		}
 	}
 }

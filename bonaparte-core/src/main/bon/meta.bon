@@ -1,0 +1,67 @@
+package meta {
+	default unsigned required trim noControlChars;
+
+    enum Visibility { DEFAULT, PRIVATE, PROTECTED, PUBLIC }
+    
+	abstract class FieldDefinition {
+	    enum Visibility visibility;
+		boolean isRequired;
+		ascii(30) name;
+		boolean isArray;
+		Integer maxCount;
+	}
+	
+	class ObjectReference extends FieldDefinition {
+        boolean allowSubclasses;    
+		ascii(61) objectName;		
+	}
+	
+	// ElementaryDataItem is used for some as well as for types which don't need a parameter
+	// day, char, boolean
+    class ElementaryDataItem extends FieldDefinition {
+        ascii(20) dataType;
+        boolean isPrimitive;
+    }
+
+    // EnumDataItem represents the special enum type
+    class EnumDataItem extends ElementaryDataItem {
+        ascii(61) enumName;  // HQON of enum
+        ascii(39) [] values;
+    }
+
+    // MiscElementaryDataItem represents some miscellaneous types
+    // timestamp, raw
+    class MiscElementaryDataItem extends ElementaryDataItem {
+        boolean isSigned;
+        int totalDigits;
+        int decimalDigits;
+    }
+
+    // NumericElementaryDataItem represents all numeric items (float and double and other primitives only fill the isSigned) 
+    class NumericElementaryDataItem extends ElementaryDataItem {
+        boolean isSigned;
+        int totalDigits;
+        int decimalDigits;
+    }
+
+    // AlphanumericElementaryDataItem represents all text based fields
+    // ascii, unicode, uppercase, lowercase, string 
+    class AlphanumericElementaryDataItem extends ElementaryDataItem {
+        boolean doTrim;
+        boolean allowControlCharacters;
+        int length;
+        ascii(500) ^regexp;
+    }
+	
+	
+	// holds all meta information for a class
+	class ClassDefinition {
+		boolean isAbstract;
+		boolean isFinal;
+		ascii(61) name;
+		Ascii(20) ^revision;
+		Ascii(61) parent;
+		int numberOfFields;
+		optional (FieldDefinition...)[] fields;
+	}
+}

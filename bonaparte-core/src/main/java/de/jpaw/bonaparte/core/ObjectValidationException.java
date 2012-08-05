@@ -40,9 +40,9 @@ public class ObjectValidationException extends ApplicationException {
 	private String fieldName;	// if known, the name of the field where the error occured
 	private String className;	// if known, the name of the class which contained the field
 
-	static public final int MAY_NOT_BE_BLANK      = 1;
-	static public final int NO_PATTERN_MATCH      = 2;
-	static public final int TOO_MANY_ELEMENTS     = 3;
+	static public final int MAY_NOT_BE_BLANK      = OFFSET + 1;
+	static public final int NO_PATTERN_MATCH      = OFFSET + 2;
+	static public final int TOO_MANY_ELEMENTS     = OFFSET + 3;
 	
     // Upload textual descriptions only once they're needed for this type of exception class.
     // The idea is that in working environments, we will never need them ;-).
@@ -72,12 +72,12 @@ public class ObjectValidationException extends ApplicationException {
     }
 
 	public ObjectValidationException(int errorCode, String fieldName, String className) {
-		super(errorCode + OFFSET, null);
+		super(errorCode, null);
 		constructorSubroutine(className, fieldName);
 	}
 	
 	public ObjectValidationException(int errorCode) {
-		super(errorCode + OFFSET, null);
+		super(errorCode, null);
 		constructorSubroutine(null, null);
 	}
 	

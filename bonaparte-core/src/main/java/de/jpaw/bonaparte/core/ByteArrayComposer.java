@@ -16,7 +16,6 @@
 package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
-import java.nio.charset.Charset;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -29,19 +28,16 @@ import de.jpaw.util.ByteBuilder;
  * @author Michael Bischoff
  * @version $Revision$
  * 
- *          Implements the marshaller for the bonaparte format using byte arrays.
+ *          Implements the serialization for the bonaparte format using byte arrays.
  */
 
 public class ByteArrayComposer extends ByteArrayConstants implements MessageComposer {
-	// variables for marshalling
+	// variables for serialization
 	private ByteBuilder work;
-	private final boolean writeCRs;
-		
 
 	// create a processor for writing
-	public ByteArrayComposer(boolean writeCRs, Charset useCharset) {
-		this.work = new ByteBuilder(0, useCharset);
-		this.writeCRs = writeCRs;
+	public ByteArrayComposer() {
+		this.work = new ByteBuilder(0, getCharset());
 	}
 
     // restart the output
@@ -64,7 +60,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements MessageComp
 
     
 	/**************************************************************************************************
-	 * Marshalling goes here
+	 * Serialization goes here
 	 **************************************************************************************************/
 
 	// the following two methods are provided as separate methods instead of
@@ -96,7 +92,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements MessageComp
 
 	@Override
 	public void terminateRecord() {
-		if (writeCRs)
+		if (doWriteCRs())
 			work.append(RECORD_OPT_TERMINATOR);
 		work.append(RECORD_TERMINATOR);
 	}
@@ -131,18 +127,20 @@ public class ByteArrayComposer extends ByteArrayConstants implements MessageComp
 		terminateRecord();
 	}
 	
+	private void addCharSub(char c) {
+		if (c >= 0 && c < ' ' && c != '\t') {
+			work.append(ESCAPE_CHAR);
+			work.append((byte)(c + '@'));
+		} else {
+			work.appendUnicode(c);
+		}		
+	}
 	// field type specific output functions
 	@Override
 	public void addEscapedString(String s, int length) {
 		if (s != null) {
 			for (int i = 0; i < s.length(); ++i) {
-				char c = s.charAt(i);
-				if (c >= 0 && c < ' ' && c != '\t') {
-					work.append(ESCAPE_CHAR);
-					work.append((byte)(c + '@'));
-				} else {
-					work.appendUnicode(c);
-				}
+				addCharSub(s.charAt(i));
 			}
 			terminateField();
 		} else {
@@ -150,6 +148,16 @@ public class ByteArrayComposer extends ByteArrayConstants implements MessageComp
 		}
 	}
 
+	// character
+	@Override
+	public void addField(Character c) {
+		if (c != null) {
+			addCharSub(c.charValue());
+			terminateField();
+		} else {
+			writeNull();
+		}
+	}
 	// ascii and unicode
 	@Override
 	public void addField(String s, int length) {
@@ -172,7 +180,27 @@ public class ByteArrayComposer extends ByteArrayConstants implements MessageComp
 			writeNull();
 		}
 	}
-
+	
+	// byte
+	@Override
+	public void addField(Byte n) {
+		if (n != null) {
+			work.append(n.toString());
+			terminateField();
+		} else {
+			writeNull();
+		}
+	}
+	// short
+	@Override
+	public void addField(Short n) {
+		if (n != null) {
+			work.append(n.toString());
+			terminateField();
+		} else {
+			writeNull();
+		}
+	}
 	// integer
 	@Override
 	public void addField(Integer n) {
@@ -298,14 +326,15 @@ public class ByteArrayComposer extends ByteArrayConstants implements MessageComp
 
 	@Override
 	public void addField(BonaPortable obj) {
-        // start a new object
-		startObject(obj.getMediumClassName(), obj.getRevision());
-        // do all fields
-        obj.serialiseSub(this);
-        // terminate the object
-        terminateObject();
-		// TODO Auto-generated method stub
-		
+		if (obj == null) {
+			writeNull();
+		} else {
+			// start a new object
+			startObject(obj.get$PQON(), obj.get$Revision());
+			// do all fields
+			obj.serialiseSub(this);
+			// terminate the object
+			terminateObject();
+		}
 	}
-
 }

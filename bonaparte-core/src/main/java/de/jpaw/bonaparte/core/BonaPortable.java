@@ -22,10 +22,11 @@ package de.jpaw.bonaparte.core;
  *
  **/
 public interface BonaPortable {
-	public String getMediumClassName();
-	public String getRevision();
+	public String get$PQON();      // partially qualified object name:  embed $ to avoid conflict with other getters
+	public String get$Revision();  // use $ to avoid name clash / conflict with other getters
     public void validate() throws ObjectValidationException; 
     public void serialise(MessageComposer w);	// not really required, only serialiseSub is called by the composers
     public void serialiseSub(MessageComposer w);
     public void deserialise(MessageParser w) throws MessageParserException;
+    public boolean hasSameContentsAs(BonaPortable that);
 }

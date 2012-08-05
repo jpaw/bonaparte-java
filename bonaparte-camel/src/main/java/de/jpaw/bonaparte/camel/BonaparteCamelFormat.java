@@ -53,10 +53,10 @@ public final class BonaparteCamelFormat implements DataFormat {
     private int initialBufferSize = 65500;  // start big to avoid frequent reallocation 
 	
 	
-	private void writeOptions(OutputStream stream) throws IOException {
+	private void writeOptions(OutputStream stream, MessageComposer w) throws IOException {
 		String encoding = "\030E€\031"; 
 		if (writeEncoding)
-			stream.write(encoding.getBytes(useCharset));
+			stream.write(encoding.getBytes(w.getCharset()));
 	}
 
 	public void marshal(Exchange exchange, Object graph, OutputStream stream) throws Exception {
@@ -64,12 +64,12 @@ public final class BonaparteCamelFormat implements DataFormat {
 		
 		work = new StringBuilder(initialBufferSize);
 
-		MessageComposer w = new StringBuilderComposer(work, writeCRs, useCharset);
+		MessageComposer w = new StringBuilderComposer(work);
 		if (java.util.List.class.isInstance(graph)) {
 			//w.startTransmission();
 			stream.write('T'-'@'); // transmission begin
 			stream.write('N'-'@'); // Null version
-			writeOptions(stream);
+			writeOptions(stream, w);
 			// TODO: w.writeOptions
 			for (Object o : (java.util.List)graph) {
 				w.reset();
@@ -81,7 +81,7 @@ public final class BonaparteCamelFormat implements DataFormat {
 			stream.write('Z'-'@'); // transmission end
 		} else {
 			// assume single record
-			writeOptions(stream);
+			writeOptions(stream, w);
 			w.reset();
 			w.writeRecord((BonaPortable) graph);
 			stream.write(work.toString().getBytes(useCharset));
@@ -101,7 +101,7 @@ public final class BonaparteCamelFormat implements DataFormat {
 			isMultiRecord = true;
 		
 		StringBuilder work = new StringBuilder(new String (byteBuffer, useCharset)); 
-		MessageParser w = new StringBuilderParser(work, 0, -1, useCharset);
+		MessageParser w = new StringBuilderParser(work, 0, -1);
 		List<BonaPortable> resultSet = w.readTransmission();
 		if (isMultiRecord)
 			return resultSet;		// which may be empty

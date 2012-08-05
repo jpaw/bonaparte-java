@@ -51,7 +51,7 @@ public final class NewDataFormat implements DataFormat {
     private Charset useCharset = Charset.forName("UTF-8"); // Charset.defaultCharset(); or "windows-1252"
     private int initialBufferSize = 65500;  // start big to avoid frequent reallocation 
 	
-    private MessageComposer w = new ByteArrayComposer(writeCRs, null);
+    private MessageComposer w = new ByteArrayComposer();
 	
 	public void marshal(Exchange exchange, Object graph, OutputStream stream) throws Exception {
 		w.reset();
@@ -71,7 +71,7 @@ public final class NewDataFormat implements DataFormat {
 		if (byteBuffer[0] == '\024')   // multi record (transmission)
 			isMultiRecord = true;
 		
-		MessageParser w = new ByteArrayParser(byteBuffer, 0, numbytes, null);
+		MessageParser w = new ByteArrayParser(byteBuffer, 0, numbytes);
 		List<BonaPortable> resultSet = w.readTransmission();
 		if (isMultiRecord)
 			return resultSet;		// which may be empty

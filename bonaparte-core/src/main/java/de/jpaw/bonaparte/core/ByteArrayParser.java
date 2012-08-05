@@ -16,7 +16,6 @@
 package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -38,21 +37,19 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
     private int parseIndex;
     private int messageLength;
     private byte [] inputdata;
-    private Charset useCharset;
     private String currentClass;
     
     // create a processor for parsing
-	public ByteArrayParser(byte [] buffer, int offset, int length, Charset useCharset) {
+	public ByteArrayParser(byte [] buffer, int offset, int length) {
 		inputdata = buffer;
 		parseIndex = offset;
 		messageLength = length < 0 ? inputdata.length : length; // -1 means full array size
-		this.useCharset = useCharset == null ? Charset.forName("UTF-8") : useCharset;
 		currentClass = "N/A";
 	}
 
     
 	/**************************************************************************************************
-	 * Unmarshalling goes here. Code below does not use the ByteBuilder class,
+	 * Deserialization goes here. Code below does not use the ByteBuilder class,
 	 * but reads from the byte[] directly
 	 **************************************************************************************************/
 
@@ -102,6 +99,17 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
 			++parseIndex;
 		}		
 	}
+	
+	private void skipNulls() {
+		while (parseIndex < messageLength) {
+			byte c = inputdata[parseIndex];
+			if (c != NULL_FIELD)
+				break;
+			// skip trailing NULL objects
+			++parseIndex;
+		}		
+	}
+	
     private String nextIndexParseAscii(boolean allowSign, boolean allowDecimalPoint, boolean allowExponent) throws MessageParserException {
     	final int BUFFER_SIZE = 40;
     	boolean allowSignNextIteration = false;
@@ -162,6 +170,16 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
         return new BigDecimal(nextIndexParseAscii(isSigned, true, false));
 	}
 
+	@Override
+	public Character readCharacter(boolean allowNull) throws MessageParserException {
+		String tmp = readString(allowNull, 1, false, true, true);
+		if (tmp == null)
+			return null;
+		if (tmp.length() == 0)
+	    	throw new MessageParserException(MessageParserException.EMPTY_CHAR, null, parseIndex, currentClass);
+		return tmp.charAt(0);
+	}
+
 	// readString does the job for Unicode as well as ASCII
 	@Override
 	public String readString(boolean allowNull, int length, boolean doTrim, boolean allowCtrls, boolean allowUnicode) throws MessageParserException {
@@ -188,7 +206,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
     				result = new String("");
     			} else if (!escapeUsed) {
         			// simple (& fast?) way to do this
-        			result = new String(inputdata, parseIndex, lastNonBlank-parseIndex+1, useCharset);
+        			result = new String(inputdata, parseIndex, lastNonBlank-parseIndex+1, getCharset());
         		} else if (!allowCtrls || !allowUnicode) { 
         			// check if escapes were allowed in the first place...   NO!     
                 	throw new MessageParserException(MessageParserException.ILLEGAL_CHAR_CTRL, null, parseIndex, currentClass);
@@ -213,7 +231,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
 						}
 						tmp[i++] = b;
 					}
-					result = new String(tmp, 0, i, useCharset);
+					result = new String(tmp, 0, i, getCharset());
         		}
     			parseIndex = currentIndex + 1;
     			// length checks
@@ -260,7 +278,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
 	}
 
 	@Override
-	public byte[] readBytes(boolean allowNull, int length) throws MessageParserException {
+	public byte[] readRaw(boolean allowNull, int length) throws MessageParserException {
 		if (checkForNull(allowNull))
         	return null;
     	skipLeadingSpaces();
@@ -395,6 +413,19 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
 		return result;
 	}
 	
+	@Override
+	public Byte readByte(boolean allowNull, boolean isSigned) throws MessageParserException {
+		if (checkForNull(allowNull))
+        	return null;
+        return Byte.valueOf(nextIndexParseAscii(isSigned, false, false));
+	}
+
+	@Override
+	public Short readShort(boolean allowNull, boolean isSigned) throws MessageParserException {
+		if (checkForNull(allowNull))
+        	return null;
+        return Short.valueOf(nextIndexParseAscii(isSigned, false, false));
+	}
 
 	@Override
 	public Long readLong(boolean allowNull, boolean isSigned) throws MessageParserException {
@@ -411,26 +442,28 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
 	}
 	
 	@Override
-	public Float readFloat(boolean allowNull) throws MessageParserException {
+	public Float readFloat(boolean allowNull, boolean isSigned) throws MessageParserException {
 		if (checkForNull(allowNull))
         	return null;
-        return Float.valueOf(nextIndexParseAscii(true, true, true));
+        return Float.valueOf(nextIndexParseAscii(isSigned, true, true));
 	}
 
 	@Override
-	public Double readDouble(boolean allowNull) throws MessageParserException {
+	public Double readDouble(boolean allowNull, boolean isSigned) throws MessageParserException {
 		if (checkForNull(allowNull))
         	return null;
-        return Double.valueOf(nextIndexParseAscii(true, true, true));
+        return Double.valueOf(nextIndexParseAscii(isSigned, true, true));
 	}
 
 	@Override
 	public void eatParentSeparator() throws MessageParserException {
+        skipNulls();  // upwards compatibility: skip extra fields if they are blank.
+        // TODO: also skip them if not blank, but corresponding flag is set
 		needByte(PARENT_SEPARATOR);
 	}
 
 	@Override
-	public Integer readInt(boolean allowNull, int length, boolean isSigned)
+	public Integer readNumber(boolean allowNull, int length, boolean isSigned)
 			throws MessageParserException {
 		if (checkForNull(allowNull))
         	return null;
@@ -463,6 +496,8 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
         // all good here. Parse the contents
        	currentClass = classname;
         newObject.deserialise(this);
+        skipNulls();  // upwards compatibility: skip extra fields if they are blank.
+        // TODO: also skip them if not blank, but corresponding flag is set
         needByte(OBJECT_TERMINATOR);
        	currentClass = previousClass;
 		return newObject;

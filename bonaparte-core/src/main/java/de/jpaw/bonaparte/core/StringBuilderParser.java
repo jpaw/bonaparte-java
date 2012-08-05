@@ -15,7 +15,6 @@
   */
 package de.jpaw.bonaparte.core;
 
-import java.nio.charset.Charset;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -32,27 +31,25 @@ import de.jpaw.util.CharTestsASCII;
  * @author Michael Bischoff
  * @version $Revision$
  * 
- *          Implements the unmarshaller for the bonaparte format using StringBuilder.
+ *          Implements the deserialization for the bonaparte format using StringBuilder.
  */
 
 public final class StringBuilderParser extends StringBuilderConstants implements MessageParser {
 	private final StringBuilder work;
     private int parseIndex;  // for parser
     private int messageLength;  // for parser
-	private final Charset useCharset;
     private String currentClass;
 
 
-	public StringBuilderParser(StringBuilder work, int offset, int length, Charset useCharset) {
+	public StringBuilderParser(StringBuilder work, int offset, int length) {
 		this.work = work;
 	    parseIndex = offset;  // for parser
 		messageLength = length < 0 ? work.length() : length; // -1 means full array size
-		this.useCharset = useCharset == null ? Charset.forName("UTF-8") : useCharset;
 		currentClass = "N/A";
 	}
 	
 	/**************************************************************************************************
-	 * Unmarshalling goes here
+	 * Deserialization goes here
 	 **************************************************************************************************/
 	
 	private char needChar() throws MessageParserException {
@@ -101,6 +98,17 @@ public final class StringBuilderParser extends StringBuilderConstants implements
 			++parseIndex;
 		}		
 	}
+	
+	private void skipNulls() {
+		while (parseIndex < messageLength) {
+			char c = work.charAt(parseIndex);
+			if (c != NULL_FIELD)
+				break;
+			// skip trailing NULL objects
+			++parseIndex;
+		}		
+	}
+
     private String nextIndexParseAscii(boolean allowSign, boolean allowDecimalPoint, boolean allowExponent) throws MessageParserException {
     	final int BUFFER_SIZE = 40;
     	boolean allowSignNextIteration = false;
@@ -159,7 +167,17 @@ public final class StringBuilderParser extends StringBuilderConstants implements
         	return null;
         return new BigDecimal(nextIndexParseAscii(isSigned, true, false));
 	}
-
+	
+	@Override
+	public Character readCharacter(boolean allowNull) throws MessageParserException {
+		String tmp = readString(allowNull, 1, false, true, true);
+		if (tmp == null)
+			return null;
+		if (tmp.length() == 0)
+	    	throw new MessageParserException(MessageParserException.EMPTY_CHAR, null, parseIndex, currentClass);
+		return tmp.charAt(0);
+	}
+	
 	// readString does the job for Unicode as well as ASCII
 	@Override
 	public String readString(boolean allowNull, int length, boolean doTrim, boolean allowCtrls, boolean allowUnicode) throws MessageParserException {
@@ -238,7 +256,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
 	}
 
 	@Override
-	public byte[] readBytes(boolean allowNull, int length) throws MessageParserException {
+	public byte[] readRaw(boolean allowNull, int length) throws MessageParserException {
 		if (checkForNull(allowNull))
         	return null;
 		int i = parseIndex;
@@ -359,6 +377,20 @@ public final class StringBuilderParser extends StringBuilderConstants implements
 	
 	
 	@Override
+	public Byte readByte(boolean allowNull, boolean isSigned) throws MessageParserException {
+		if (checkForNull(allowNull))
+        	return null;
+        return Byte.valueOf(nextIndexParseAscii(isSigned, false, false));
+	}
+
+	@Override
+	public Short readShort(boolean allowNull, boolean isSigned) throws MessageParserException {
+		if (checkForNull(allowNull))
+        	return null;
+        return Short.valueOf(nextIndexParseAscii(isSigned, false, false));
+	}
+
+	@Override
 	public Long readLong(boolean allowNull, boolean isSigned) throws MessageParserException {
 		if (checkForNull(allowNull))
         	return null;
@@ -373,26 +405,28 @@ public final class StringBuilderParser extends StringBuilderConstants implements
 	}
 	
 	@Override
-	public Float readFloat(boolean allowNull) throws MessageParserException {
+	public Float readFloat(boolean allowNull, boolean isSigned) throws MessageParserException {
 		if (checkForNull(allowNull))
         	return null;
-        return Float.valueOf(nextIndexParseAscii(true, true, true));
+        return Float.valueOf(nextIndexParseAscii(isSigned, true, true));
 	}
 
 	@Override
-	public Double readDouble(boolean allowNull) throws MessageParserException {
+	public Double readDouble(boolean allowNull, boolean isSigned) throws MessageParserException {
 		if (checkForNull(allowNull))
         	return null;
-        return Double.valueOf(nextIndexParseAscii(true, true, true));
+        return Double.valueOf(nextIndexParseAscii(isSigned, true, true));
 	}
 
 	@Override
 	public void eatParentSeparator() throws MessageParserException {
+        skipNulls();  // upwards compatibility: skip extra fields if they are blank.
+        // TODO: also skip them if not blank, but corresponding flag is set
 		needChar(PARENT_SEPARATOR);
 	}
 
 	@Override
-	public Integer readInt(boolean allowNull, int length, boolean isSigned)
+	public Integer readNumber(boolean allowNull, int length, boolean isSigned)
 			throws MessageParserException {
 		if (checkForNull(allowNull))
         	return null;
@@ -434,6 +468,8 @@ public final class StringBuilderParser extends StringBuilderConstants implements
         // all good here. Parse the contents
        	currentClass = classname;
         newObject.deserialise(this);
+        skipNulls();  // upwards compatibility: skip extra fields if they are blank.
+        // TODO: also skip them if not blank, but corresponding flag is set
         needChar(OBJECT_TERMINATOR);
        	currentClass = previousClass;
 		return newObject;

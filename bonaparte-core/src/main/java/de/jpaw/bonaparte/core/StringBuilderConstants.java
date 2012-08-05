@@ -24,7 +24,7 @@ package de.jpaw.bonaparte.core;
  *          Defines some constants which are used by both the StringBuilder parser and composer.
  */
 
-public class StringBuilderConstants {
+public abstract class StringBuilderConstants extends Settings {
 	protected static final char FIELD_TERMINATOR = '\006'; // ctrl-F
 	protected static final char TRANSMISSION_TERMINATOR = '\025'; // ctrl-U
 	protected static final char TRANSMISSION_TERMINATOR2 = '\032'; // ctrl-Z
@@ -39,10 +39,4 @@ public class StringBuilderConstants {
 	protected static final char OBJECT_BEGIN = '\023'; // ctrl-S                NEW
 	protected static final char ESCAPE_CHAR = '\005'; // ctrl-E
 	protected static final char NULL_FIELD = '\016'; // ctrl-N                  NEW
-
-	protected static final String FIELD_TERMINATOR_STR = "\006";
-	// protected static public final String RECORD_TERMINATOR_STR = "\015";
-	//protected static final String MESSAGE_FIELD_NAME_ID = "recordID";
-	//protected static final String MESSAGE_FIELD_NAME_VERSION = "versionNo";
-
 }

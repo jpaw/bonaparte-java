@@ -41,38 +41,39 @@ public class MessageParserException extends ApplicationException {
 	private String fieldName;	// if known, the name of the field where the error occured
 	private String className;	// if known, the name of the class which contained the field
 
-    static public final int MISSING_FIELD_TERMINATOR     = 1;
-    static public final int MISSING_RECORD_TERMINATOR    = 2;
-    static public final int MISSING_TERMINATOR           = 3;
-    static public final int PREMATURE_END                = 4;
-    static public final int FIELD_PARSE                  = 5;
-    static public final int ILLEGAL_CHAR_ASCII           = 6;
-    static public final int ILLEGAL_CHAR_UPPER           = 7;
-    static public final int ILLEGAL_CHAR_LOWER           = 8;
-    static public final int ILLEGAL_CHAR_DIGIT           = 9;
-    static public final int EMPTY_BUT_REQUIRED_FIELD     = 10;
-    static public final int UNEXPECTED_CHARACTER         = 11;
-    static public final int ILLEGAL_EXPLICIT_NULL        = 12;
-    static public final int ILLEGAL_IMPLICIT_NULL        = 13;
-    static public final int NO_DIGITS_FOUND              = 14;
-    static public final int SUPERFLUOUS_DECIMAL_POINT    = 15;
-    static public final int SUPERFLUOUS_EXPONENT         = 16;
-    static public final int SUPERFLUOUS_SIGN             = 17;
-    static public final int ILLEGAL_CHAR_CTRL            = 18;
-    static public final int ILLEGAL_CHAR_NOT_NUMERIC     = 19;
-    static public final int NUMERIC_TOO_LONG             = 20;
-    static public final int STRING_TOO_LONG              = 21;
-    static public final int ILLEGAL_ESCAPE_SEQUENCE      = 22;
-    static public final int ILLEGAL_BOOLEAN              = 23;
-    static public final int BASE64_PARSING_ERROR         = 24;
-    static public final int ILLEGAL_CHAR_BASE64          = 25;
-    static public final int ARRAY_SIZE_OUT_OF_BOUNDS     = 26;
-    static public final int BAD_CLASS                    = 27;
-    static public final int BAD_TRANSMISSION_START       = 28;
-    static public final int BAD_TIMESTAMP_FRACTIONALS    = 29;
-    static public final int ILLEGAL_DAY                  = 30;
-    static public final int ILLEGAL_TIME                 = 31;
-    static public final int ILLEGAL_CALENDAR_VALUE       = 32;
+    static public final int MISSING_FIELD_TERMINATOR     = OFFSET + 1;
+    static public final int MISSING_RECORD_TERMINATOR    = OFFSET + 2;
+    static public final int MISSING_TERMINATOR           = OFFSET + 3;
+    static public final int PREMATURE_END                = OFFSET + 4;
+    static public final int FIELD_PARSE                  = OFFSET + 5;
+    static public final int ILLEGAL_CHAR_ASCII           = OFFSET + 6;
+    static public final int ILLEGAL_CHAR_UPPER           = OFFSET + 7;
+    static public final int ILLEGAL_CHAR_LOWER           = OFFSET + 8;
+    static public final int ILLEGAL_CHAR_DIGIT           = OFFSET + 9;
+    static public final int EMPTY_BUT_REQUIRED_FIELD     = OFFSET + 10;
+    static public final int UNEXPECTED_CHARACTER         = OFFSET + 11;
+    static public final int ILLEGAL_EXPLICIT_NULL        = OFFSET + 12;
+    static public final int ILLEGAL_IMPLICIT_NULL        = OFFSET + 13;
+    static public final int NO_DIGITS_FOUND              = OFFSET + 14;
+    static public final int SUPERFLUOUS_DECIMAL_POINT    = OFFSET + 15;
+    static public final int SUPERFLUOUS_EXPONENT         = OFFSET + 16;
+    static public final int SUPERFLUOUS_SIGN             = OFFSET + 17;
+    static public final int ILLEGAL_CHAR_CTRL            = OFFSET + 18;
+    static public final int ILLEGAL_CHAR_NOT_NUMERIC     = OFFSET + 19;
+    static public final int NUMERIC_TOO_LONG             = OFFSET + 20;
+    static public final int STRING_TOO_LONG              = OFFSET + 21;
+    static public final int ILLEGAL_ESCAPE_SEQUENCE      = OFFSET + 22;
+    static public final int ILLEGAL_BOOLEAN              = OFFSET + 23;
+    static public final int BASE64_PARSING_ERROR         = OFFSET + 24;
+    static public final int ILLEGAL_CHAR_BASE64          = OFFSET + 25;
+    static public final int ARRAY_SIZE_OUT_OF_BOUNDS     = OFFSET + 26;
+    static public final int BAD_CLASS                    = OFFSET + 27;
+    static public final int BAD_TRANSMISSION_START       = OFFSET + 28;
+    static public final int BAD_TIMESTAMP_FRACTIONALS    = OFFSET + 29;
+    static public final int ILLEGAL_DAY                  = OFFSET + 30;
+    static public final int ILLEGAL_TIME                 = OFFSET + 31;
+    static public final int ILLEGAL_CALENDAR_VALUE       = OFFSET + 32;
+    static public final int EMPTY_CHAR                   = OFFSET + 33;
 	
     /**
      * Method lazyInitialization.
@@ -117,6 +118,7 @@ public class MessageParserException extends ApplicationException {
     		codeToDescription.put(ILLEGAL_DAY                  , "Illegal day");
     		codeToDescription.put(ILLEGAL_TIME                 , "Illegal time");
     		codeToDescription.put(ILLEGAL_CALENDAR_VALUE       , "Exception converting the date/time");
+    		codeToDescription.put(EMPTY_CHAR                   , "empty character field");
     	}
     }
 	
@@ -136,12 +138,12 @@ public class MessageParserException extends ApplicationException {
     }
     
 	public MessageParserException(int errorCode, String message, int characterIndex, String className) {
-		super(errorCode + OFFSET, message);
+		super(errorCode, message);
 		constructorSubroutine(characterIndex, className, null);
 	}
 	
 	public MessageParserException(int errorCode) {
-		super(errorCode + OFFSET, null);
+		super(errorCode, null);
 		constructorSubroutine(-1, null, null);
 	}
 	

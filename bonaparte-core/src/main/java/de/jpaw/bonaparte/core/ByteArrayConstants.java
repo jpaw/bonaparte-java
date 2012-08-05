@@ -22,10 +22,10 @@ package de.jpaw.bonaparte.core;
  * @author Michael Bischoff
  * @version $Revision$
  * 
- *          Defines some constants which are used by both the ByteArray parser and composer.
+ *          Defines some constants which are used by Byte(Array) based parsers and composers.
  */
 
-public class ByteArrayConstants {
+public abstract class ByteArrayConstants extends Settings {
     // constants
 	protected static final byte PLUS_SIGN = '+';
 	protected static final byte MINUS_SIGN = '-';
@@ -45,10 +45,4 @@ public class ByteArrayConstants {
 	protected static final byte OBJECT_BEGIN = '\023';              // ctrl-S
 	protected static final byte ESCAPE_CHAR = '\005';               // ctrl-E
 	protected static final byte NULL_FIELD = '\016';                // ctrl-N
-
-	//protected static final String FIELD_TERMINATOR_STR = "\006";
-	// protected static public final String RECORD_TERMINATOR_STR = "\015";
-	//protected static final String MESSAGE_FIELD_NAME_ID = "recordID";
-	//protected static final String MESSAGE_FIELD_NAME_VERSION = "versionNo";
-
 }
