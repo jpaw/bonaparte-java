@@ -43,17 +43,13 @@ import de.jpaw.bonaparte.core.BonaPortable;
 
 public final class NewDataFormat implements DataFormat {
 	private static final Logger logger = LoggerFactory.getLogger(BonaparteCamelFormat.class);
-	// configuration
-	// private boolean multiRecord = false;   // do a full transmission? Expects an array of objects then!  NO, autodetect! 
-	private boolean writeCRs = false;
-	private boolean writeEncoding = false;
-	// the character set used for backend communication: UTF-8 or ISO-8859-something or windows-125x
-    private Charset useCharset = Charset.forName("UTF-8"); // Charset.defaultCharset(); or "windows-1252"
     private int initialBufferSize = 65500;  // start big to avoid frequent reallocation 
 	
-    private MessageComposer w = new ByteArrayComposer();
+    private MessageComposer w = null;
 	
 	public void marshal(Exchange exchange, Object graph, OutputStream stream) throws Exception {
+		if (w == null)
+			w = new ByteArrayComposer();  // create on demand
 		w.reset();
 		w.writeRecord((BonaPortable) graph);
 		stream.write(w.getBytes());
@@ -84,31 +80,6 @@ public final class NewDataFormat implements DataFormat {
 		}
 	}
 
-	
-	
-	public boolean isWriteCRs() {
-		return writeCRs;
-	}
-
-	public void setWriteCRs(boolean writeCRs) {
-		this.writeCRs = writeCRs;
-	}
-
-	public boolean isWriteEncoding() {
-		return writeEncoding;
-	}
-
-	public void setWriteEncoding(boolean writeEncoding) {
-		this.writeEncoding = writeEncoding;
-	}
-
-	public Charset getUseCharset() {
-		return useCharset;
-	}
-
-	public void setUseCharset(Charset useCharset) {
-		this.useCharset = useCharset;
-	}
 
 	public int getInitialBufferSize() {
 		return initialBufferSize;

@@ -18,10 +18,13 @@ package de.jpaw.bonaparte.core;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.UUID;
 
 import de.jpaw.util.Base64;
+import de.jpaw.util.ByteArray;
 import de.jpaw.util.ByteBuilder;
-
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 /**
  * The ByteArrayComposer class.
  * 
@@ -105,7 +108,8 @@ public class ByteArrayComposer extends ByteArrayConstants implements MessageComp
 	@Override
 	public void startObject(String name, String version) {
 		work.append(OBJECT_BEGIN);
-		addField(name, 0);
+		work.appendAscii(name);
+		terminateField();
 		addField(version, 2);
 	}
 
@@ -128,16 +132,19 @@ public class ByteArrayComposer extends ByteArrayConstants implements MessageComp
 	}
 	
 	private void addCharSub(char c) {
-		if (c >= 0 && c < ' ' && c != '\t') {
+		if (c < ' ' && c != '\t') {
 			work.append(ESCAPE_CHAR);
 			work.append((byte)(c + '@'));
+		} else if (c <= 127) {
+			// ASCII character: this is faster
+			work.append((byte)c);
 		} else {
 			work.appendUnicode(c);
 		}		
 	}
 	// field type specific output functions
 	@Override
-	public void addEscapedString(String s, int length) {
+	public void addUnicodeString(String s, int length, boolean allowCtrls) {
 		if (s != null) {
 			for (int i = 0; i < s.length(); ++i) {
 				addCharSub(s.charAt(i));
@@ -158,11 +165,11 @@ public class ByteArrayComposer extends ByteArrayConstants implements MessageComp
 			writeNull();
 		}
 	}
-	// ascii and unicode
+	// ascii only (unicode uses different method)
 	@Override
 	public void addField(String s, int length) {
 		if (s != null) {
-			work.append(s);
+			work.appendAscii(s);
 			terminateField();
 		} else {
 			writeNull();
@@ -174,7 +181,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements MessageComp
 	public void addField(BigDecimal n, int length, int decimals,
 			boolean isSigned) {
 		if (n != null) {
-			work.append(n.toPlainString());
+			work.appendAscii(n.toPlainString());
 		terminateField();
 		} else {
 			writeNull();
@@ -185,7 +192,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements MessageComp
 	@Override
 	public void addField(Byte n) {
 		if (n != null) {
-			work.append(n.toString());
+			work.appendAscii(n.toString());
 			terminateField();
 		} else {
 			writeNull();
@@ -195,7 +202,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements MessageComp
 	@Override
 	public void addField(Short n) {
 		if (n != null) {
-			work.append(n.toString());
+			work.appendAscii(n.toString());
 			terminateField();
 		} else {
 			writeNull();
@@ -205,7 +212,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements MessageComp
 	@Override
 	public void addField(Integer n) {
 		if (n != null) {
-			work.append(n.toString());
+			work.appendAscii(n.toString());
 			terminateField();
 		} else {
 			writeNull();
@@ -216,7 +223,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements MessageComp
 	@Override
 	public void addField(Integer n, int length, boolean isSigned) {
 		if (n != null) {
-			work.append(n.toString());
+			work.appendAscii(n.toString());
 			terminateField();
 		} else {
 			writeNull();
@@ -227,7 +234,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements MessageComp
 	@Override
 	public void addField(Long n) {
 		if (n != null) {
-			work.append(n.toString());
+			work.appendAscii(n.toString());
 			terminateField();
 		} else {
 			writeNull();
@@ -248,11 +255,23 @@ public class ByteArrayComposer extends ByteArrayConstants implements MessageComp
 		}
 	}
 
+
+	// UUID
+	@Override
+	public void addField(UUID n) {
+		if (n != null) {
+			work.appendAscii(n.toString());
+			terminateField();
+		} else {
+			writeNull();
+		}
+	}
+	
 	// float
 	@Override
 	public void addField(Float f) {
 		if (f != null) {
-			work.append(f.toString());
+			work.appendAscii(f.toString());
 			terminateField();
 		} else {
 			writeNull();
@@ -263,7 +282,20 @@ public class ByteArrayComposer extends ByteArrayConstants implements MessageComp
 	@Override
 	public void addField(Double d) {
 		if (d != null) {
-			work.append(d.toString());
+			work.appendAscii(d.toString());
+			terminateField();
+		} else {
+			writeNull();
+		}
+	}
+
+	// ByteArray: initial quick & dirty implementation
+	@Override
+	public void addField(ByteArray b, int length) {
+		if (b != null) {
+			Base64.encodeToByte(work, b.getBytes());
+			//work.append(DatatypeConverter.printBase64Binary(b));
+			//work.append(DatatypeConverter.printHexBinary(b));
 			terminateField();
 		} else {
 			writeNull();
@@ -283,35 +315,85 @@ public class ByteArrayComposer extends ByteArrayConstants implements MessageComp
 		}
 	}
 
-	// Ausgabefunktion für die Datentypen DAY und TIMESTAMP
+	// append a left padded ASCII String
+	private void lpad(String s, int length, byte padCharacter) {
+		int l = s.length();
+		while (l++ < length)
+			work.append(padCharacter);
+		work.appendAscii(s);
+	}
+
+	// converters for DAY und TIMESTAMP
 	@Override
 	public void addField(GregorianCalendar t, int length) {  // TODO: length is not needed for this one
 		if (t != null) {
-			StringBuilder tmpBuffer = new StringBuilder(32);
 			int tmpValue = 10000 * t.get(Calendar.YEAR) + 100
 					* (t.get(Calendar.MONTH) + 1) + t.get(Calendar.DAY_OF_MONTH);
-			tmpBuffer.append(String.format("%d", tmpValue));
+			work.appendAscii(Integer.toString(tmpValue));
 			if (length >= 0) {
 				// not only day, but also time
 				tmpValue = 10000 * t.get(Calendar.HOUR_OF_DAY) + 100
 						* t.get(Calendar.MINUTE) + t.get(Calendar.SECOND);
 				if (tmpValue != 0 || (length > 0 && t.get(Calendar.MILLISECOND) != 0)) {
-					tmpBuffer.append(String.format(".%06d", tmpValue));
+					work.append((byte) '.');
+					lpad(Integer.toString(tmpValue), 6, (byte) '0');
 					if (length > 0) {
 						// add milliseconds
 						tmpValue = t.get(Calendar.MILLISECOND);
 						if (tmpValue != 0)
-							tmpBuffer.append(String.format("%03d", tmpValue));
+							lpad(Integer.toString(tmpValue), 3, (byte) '0');
 					}
 				}
 			}
-			work.appendAscii(tmpBuffer);
 			terminateField();
 		} else {
 			writeNull();
 		}
 	}
 
+	@Override
+	public void addField(LocalDate t) {
+		if (t != null) {
+			int [] values = t.getValues();   // 3 values: year, month, day
+			int tmpValue = 10000 * values[0] + 100 * values[1] + values[2];
+			// int tmpValue = 10000 * t.getYear() + 100 * t.getMonthOfYear() + t.getDayOfMonth();
+			work.appendAscii(Integer.toString(tmpValue));
+			terminateField();
+		} else {
+			writeNull();
+		}		
+	}
+
+	@Override
+	public void addField(LocalDateTime t, int length) {
+		if (t != null) {
+			int [] values = t.getValues(); // 4 values: year, month, day, millis of day
+			int tmpValue = 10000 * values[0] + 100 * values[1] + values[2];
+			//int tmpValue = 10000 * t.getYear() + 100 * t.getMonthOfYear() + t.getDayOfMonth();
+			work.appendAscii(Integer.toString(tmpValue));
+			if (length >= 0) {
+				// not only day, but also time
+				//tmpValue = 10000 * t.getHourOfDay() + 100 * t.getMinuteOfHour() + t.getSecondOfMinute();
+				if (length > 0 ? (values[3] != 0) : (values[3] / 1000 != 0)) {
+					work.append((byte) '.');
+					int milliSeconds = values[3] % 60000; // seconds and millis
+					tmpValue = values[3] / 60000; // minutes and hours
+					tmpValue = 100 * (tmpValue / 60) + (tmpValue % 60);
+					lpad(Integer.toString(tmpValue * 100 + milliSeconds / 1000), 6, (byte) '0');
+					if (length > 0) {
+						// add milliseconds
+						milliSeconds = milliSeconds % 1000;
+						if (milliSeconds != 0)
+							lpad(Integer.toString(milliSeconds), 3, (byte) '0');
+					}
+				}
+			}
+			terminateField();
+		} else {
+			writeNull();
+		}		
+	}
+	
 	@Override
 	public void startArray(int currentMembers, int maxMembers) {
 		work.append(ARRAY_BEGIN);
@@ -337,4 +419,5 @@ public class ByteArrayComposer extends ByteArrayConstants implements MessageComp
 			terminateObject();
 		}
 	}
+
 }

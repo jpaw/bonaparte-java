@@ -25,6 +25,8 @@ package de.jpaw.bonaparte.core;
  */
 
 public abstract class StringBuilderConstants extends Settings {
+	protected static final String EMPTY_STRING = new String("");
+	
 	protected static final char FIELD_TERMINATOR = '\006'; // ctrl-F
 	protected static final char TRANSMISSION_TERMINATOR = '\025'; // ctrl-U
 	protected static final char TRANSMISSION_TERMINATOR2 = '\032'; // ctrl-Z

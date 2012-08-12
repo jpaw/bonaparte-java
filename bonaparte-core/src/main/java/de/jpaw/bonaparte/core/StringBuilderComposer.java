@@ -18,9 +18,14 @@ package de.jpaw.bonaparte.core;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.UUID;
 // according to http://stackoverflow.com/questions/469695/decode-base64-data-in-java , xml.bind is included in Java 6 SE
 import javax.xml.bind.DatatypeConverter;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 
+import de.jpaw.util.Base64;
+import de.jpaw.util.ByteArray;
 /**
  * The StringBuilderComposer class.
  * 
@@ -137,7 +142,7 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
 
 	// field type specific output functions
 	@Override
-	public void addEscapedString(String s, int length) {
+	public void addUnicodeString(String s, int length, boolean allowCtrls) {
 		if (s != null) {
 			for (int i = 0; i < s.length(); ++i) {
 				addCharSub(s.charAt(i));
@@ -158,7 +163,7 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
 			writeNull();
 		}
 	}
-	// ascii and unicode
+	// ascii only (unicode uses different method)
 	@Override
 	public void addField(String s, int length) {
 		if (s != null) {
@@ -271,6 +276,30 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
 		}
 	}
 
+	// UUID
+	@Override
+	public void addField(UUID n) {
+		if (n != null) {
+			work.append(n.toString());
+			terminateField();
+		} else {
+			writeNull();
+		}
+	}
+	
+	// ByteArray: initial quick & dirty implementation
+	@Override
+	public void addField(ByteArray b, int length) {
+		if (b != null) {
+			work.append(DatatypeConverter.printBase64Binary(b.getBytes()));
+			//work.append(DatatypeConverter.printBase64Binary(b));
+			//work.append(DatatypeConverter.printHexBinary(b));
+			terminateField();
+		} else {
+			writeNull();
+		}
+	}
+	
 	// raw
 	@Override
 	public void addField(byte[] b, int length) {
@@ -283,33 +312,82 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
 		}
 	}
 
-	// Ausgabefunktion für die Datentypen DAY und TIMESTAMP
+	// append a left padded String
+	private void lpad(String s, int length, char padCharacter) {
+		int l = s.length();
+		while (l++ < length)
+			work.append(padCharacter);
+		work.append(s);
+	}
+	
+	// converters for DAY und TIMESTAMP
 	@Override
 	public void addField(GregorianCalendar t, int length) {  // TODO: length is not needed for this one
 		if (t != null) {
-			StringBuilder tmpBuffer = new StringBuilder(32);
 			int tmpValue = 10000 * t.get(Calendar.YEAR) + 100
 					* (t.get(Calendar.MONTH) + 1) + t.get(Calendar.DAY_OF_MONTH);
-			tmpBuffer.append(String.format("%d", tmpValue));
+			work.append(Integer.toString(tmpValue));
 			if (length >= 0) {
 				// not only day, but also time
 				tmpValue = 10000 * t.get(Calendar.HOUR_OF_DAY) + 100
 						* t.get(Calendar.MINUTE) + t.get(Calendar.SECOND);
 				if (tmpValue != 0 || (length > 0 && t.get(Calendar.MILLISECOND) != 0)) {
-					tmpBuffer.append(String.format(".%06d", tmpValue));
+					work.append('.');
+					lpad(Integer.toString(tmpValue), 6, '0');
 					if (length > 0) {
 						// add milliseconds
 						tmpValue = t.get(Calendar.MILLISECOND);
 						if (tmpValue != 0)
-							tmpBuffer.append(String.format("%03d", tmpValue));
+							lpad(Integer.toString(tmpValue), 3, '0');
 					}
 				}
 			}
-			work.append(tmpBuffer);
 			terminateField();
 		} else {
 			writeNull();
 		}
+	}
+	@Override
+	public void addField(LocalDate t) {
+		if (t != null) {
+			int [] values = t.getValues();   // 3 values: year, month, day
+			int tmpValue = 10000 * values[0] + 100 * values[1] + values[2];
+			// int tmpValue = 10000 * t.getYear() + 100 * t.getMonthOfYear() + t.getDayOfMonth();
+			work.append(Integer.toString(tmpValue));
+			terminateField();
+		} else {
+			writeNull();
+		}		
+	}
+
+	@Override
+	public void addField(LocalDateTime t, int length) {
+		if (t != null) {
+			int [] values = t.getValues(); // 4 values: year, month, day, millis of day
+			int tmpValue = 10000 * values[0] + 100 * values[1] + values[2];
+			//int tmpValue = 10000 * t.getYear() + 100 * t.getMonthOfYear() + t.getDayOfMonth();
+			work.append(Integer.toString(tmpValue));
+			if (length >= 0) {
+				// not only day, but also time
+				//tmpValue = 10000 * t.getHourOfDay() + 100 * t.getMinuteOfHour() + t.getSecondOfMinute();
+				if (length > 0 ? (values[3] != 0) : (values[3] / 1000 != 0)) {
+					work.append('.');
+					int milliSeconds = values[3] % 60000; // seconds and millis
+					tmpValue = values[3] / 60000; // minutes and hours
+					tmpValue = 100 * (tmpValue / 60) + (tmpValue % 60);
+					lpad(Integer.toString(tmpValue * 100 + milliSeconds / 1000), 6, '0');
+					if (length > 0) {
+						// add milliseconds
+						milliSeconds = milliSeconds % 1000;
+						if (milliSeconds != 0)
+							lpad(Integer.toString(milliSeconds), 3, '0');
+					}
+				}
+			}
+			terminateField();
+		} else {
+			writeNull();
+		}		
 	}
 
 	@Override

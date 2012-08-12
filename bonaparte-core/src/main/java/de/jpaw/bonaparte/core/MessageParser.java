@@ -19,6 +19,10 @@ import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.UUID;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
+import de.jpaw.util.ByteArray;
 
 /**
  * The MessageParser interface.
@@ -33,6 +37,7 @@ public interface MessageParser {
     // unmarshaller methods: field type specific
 	public BigDecimal readBigDecimal(boolean allowNull, int length, int decimals, boolean isSigned)	throws MessageParserException;
 	public Character  readCharacter (boolean allowNull) throws MessageParserException;
+	public UUID    readUUID     (boolean allowNull) throws MessageParserException;
 	public Boolean readBoolean  (boolean allowNull) throws MessageParserException;
 	public Double  readDouble   (boolean allowNull, boolean isSigned) throws MessageParserException;
 	public Float   readFloat    (boolean allowNull, boolean isSigned) throws MessageParserException;
@@ -41,10 +46,13 @@ public interface MessageParser {
 	public Short   readShort    (boolean allowNull, boolean isSigned) throws MessageParserException;
 	public Byte    readByte     (boolean allowNull, boolean isSigned) throws MessageParserException;
 	public Integer readNumber   (boolean allowNull, int length, boolean isSigned)	throws MessageParserException;
-	public String  readString   (boolean allowNull, int length, boolean doTrim, boolean allowCtrls, boolean allowUnicode) throws MessageParserException;
+	public String  readAscii    (boolean allowNull, int length, boolean doTrim, boolean doTruncate) throws MessageParserException;
+	public String  readString   (boolean allowNull, int length, boolean doTrim, boolean doTruncate, boolean allowCtrls, boolean allowUnicode) throws MessageParserException;
+	public ByteArray readByteArray(boolean allowNull, int length) throws MessageParserException;
 	public byte [] readRaw      (boolean allowNull, int length) throws MessageParserException;
 	public GregorianCalendar readGregorianCalendar(boolean allowNull, int fractionalDigits) throws MessageParserException;
-	
+	public LocalDate readDay    (boolean allowNull) throws MessageParserException;
+	public LocalDateTime readDayTime(boolean allowNull, int length) throws MessageParserException;
 	// composite methods
 	public BonaPortable readRecord() throws MessageParserException;
 	public int parseArrayStart(int max, Class<? extends BonaPortable> type, int sizeOfChild) 	throws MessageParserException;

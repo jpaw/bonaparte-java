@@ -22,8 +22,10 @@ package de.jpaw.bonaparte.core;
  *
  **/
 public interface BonaPortable {
-	public String get$PQON();      // partially qualified object name:  embed $ to avoid conflict with other getters
-	public String get$Revision();  // use $ to avoid name clash / conflict with other getters
+	public String get$PQON();      	// partially qualified object name:  embed $ to avoid conflict with other getters
+	public String get$Revision();  	// use $ to avoid name clash / conflict with other getters
+    public String get$Parent();		// get the parent class (also possible via getClass() )
+    public String get$Bundle();		// get the bundle this class / package is supposed to sit in 
     public void validate() throws ObjectValidationException; 
     public void serialise(MessageComposer w);	// not really required, only serialiseSub is called by the composers
     public void serialiseSub(MessageComposer w);

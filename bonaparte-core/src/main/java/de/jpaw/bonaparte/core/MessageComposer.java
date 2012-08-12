@@ -17,7 +17,12 @@ package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
 import java.nio.charset.Charset;
+import java.util.UUID;
 import java.util.GregorianCalendar;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
+
+import de.jpaw.util.ByteArray;
 
 /**
  * The MessageComposer interface.
@@ -49,7 +54,7 @@ public interface MessageComposer {
 	public void writeRecord(BonaPortable o);
 
     // serialization methods: field type specific
-    void addEscapedString(String s,  int length);		// length is max length as specified in DSL
+    void addUnicodeString(String s,  int length, boolean allowCtrls); // length is max length as specified in DSL
     void addField(String s,  int length);				// length is max length as specified in DSL
     void addField(Character c);
     void addField(Byte n);
@@ -61,8 +66,12 @@ public interface MessageComposer {
     void addField(Integer n, int length, boolean isSigned); // length is max length as specified in DSL
     void addField(BigDecimal n, int length, int decimals, boolean isSigned);
     void addField(Boolean b);
+    void addField(UUID n);
+    void addField(ByteArray b, int length);
     void addField(byte [] b, int length);
     void addField(GregorianCalendar t, int length);
+    void addField(LocalDate t);
+    void addField(LocalDateTime t, int length);
     void addField(BonaPortable obj);
     
     // methods from common settings

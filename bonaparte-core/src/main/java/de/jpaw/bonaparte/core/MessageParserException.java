@@ -74,6 +74,8 @@ public class MessageParserException extends ApplicationException {
     static public final int ILLEGAL_TIME                 = OFFSET + 31;
     static public final int ILLEGAL_CALENDAR_VALUE       = OFFSET + 32;
     static public final int EMPTY_CHAR                   = OFFSET + 33;
+    static public final int BAD_OBJECT_NAME              = OFFSET + 34;
+    static public final int BAD_UUID_FORMAT              = OFFSET + 35;
 	
     /**
      * Method lazyInitialization.
@@ -119,6 +121,8 @@ public class MessageParserException extends ApplicationException {
     		codeToDescription.put(ILLEGAL_TIME                 , "Illegal time");
     		codeToDescription.put(ILLEGAL_CALENDAR_VALUE       , "Exception converting the date/time");
     		codeToDescription.put(EMPTY_CHAR                   , "empty character field");
+    		codeToDescription.put(BAD_OBJECT_NAME              , "bad object name (must contain a dot, and not as first or last character)");
+    		codeToDescription.put(BAD_UUID_FORMAT              , "malformed UUID");
     	}
     }
 	

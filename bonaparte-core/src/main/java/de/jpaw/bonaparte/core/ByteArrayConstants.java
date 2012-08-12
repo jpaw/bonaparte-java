@@ -26,6 +26,7 @@ package de.jpaw.bonaparte.core;
  */
 
 public abstract class ByteArrayConstants extends Settings {
+	protected static final String EMPTY_STRING = new String("");
     // constants
 	protected static final byte PLUS_SIGN = '+';
 	protected static final byte MINUS_SIGN = '-';

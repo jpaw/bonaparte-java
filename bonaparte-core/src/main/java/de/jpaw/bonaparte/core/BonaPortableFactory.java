@@ -37,19 +37,26 @@ public class BonaPortableFactory {
 	}
 	
 	// generalized factory: create an instance of the requested type. Caches class types.
-	public static BonaPortable createObject(String name) {
+	// We receive PQCN (partially qualified class name) as parameter.
+	// Anything before the last '.' is the Bonaparte package name (which is null is there is no '.').
+	// The package determines the possible bundle specification, not-null bundles are loaded in their
+	// own classloaders, so they can be unloaded again.
+	// Package to bundle mapping is contained in the static class data, however we cannot known that
+	// before actually loading the class. Therefore, bundle information must be fed in separately
+	// and can only be consistency-checked afterwards.
+	public static BonaPortable createObject(String name) throws MessageParserException {
 		String FQON = null;
 		BonaPortable instance = null;
+		int lastDot = name.lastIndexOf('.');
+		if (lastDot <= 0 || lastDot >= name.length() - 1)
+			throw new MessageParserException(MessageParserException.BAD_OBJECT_NAME,
+					null, -1, name);
+		String myPackage = name.substring(0, lastDot);
 		
 		if (packagePrefixMap != null) {
-			// try a mapper by package first
-			int lastDot = name.lastIndexOf('.');
-			if (lastDot > 0) {
-				String packagePart = name.substring(0, lastDot);
-				String mappedPackagePart = packagePrefixMap.get(packagePart);
-				if (mappedPackagePart != null)
-					FQON = mappedPackagePart + "." + name.substring(lastDot+1);
-			}
+			String mappedPackagePart = packagePrefixMap.get(myPackage);
+			if (mappedPackagePart != null)
+				FQON = mappedPackagePart + "." + name.substring(lastDot+1);
 		}
 		if (FQON == null)
 			// prefix by fixed package

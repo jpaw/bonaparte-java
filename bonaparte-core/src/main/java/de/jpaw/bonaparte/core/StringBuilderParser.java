@@ -20,11 +20,14 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.UUID;
 // according to http://stackoverflow.com/questions/469695/decode-base64-data-in-java , xml.bind is included in Java 6 SE
 import javax.xml.bind.DatatypeConverter;
 
+import de.jpaw.util.ByteArray;
 import de.jpaw.util.CharTestsASCII;
-
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 /**
  * The StringBuilderParser class.
  * 
@@ -170,22 +173,25 @@ public final class StringBuilderParser extends StringBuilderConstants implements
 	
 	@Override
 	public Character readCharacter(boolean allowNull) throws MessageParserException {
-		String tmp = readString(allowNull, 1, false, true, true);
+		String tmp = readString(allowNull, 1, false, false, true, true);
 		if (tmp == null)
 			return null;
 		if (tmp.length() == 0)
 	    	throw new MessageParserException(MessageParserException.EMPTY_CHAR, null, parseIndex, currentClass);
 		return tmp.charAt(0);
 	}
-	
+
+	@Override
+	public String readAscii(boolean allowNull, int length, boolean doTrim, boolean doTruncate) throws MessageParserException {
+		return readString(allowNull, length, doTrim, doTruncate, false, false);
+	}
 	// readString does the job for Unicode as well as ASCII
 	@Override
-	public String readString(boolean allowNull, int length, boolean doTrim, boolean allowCtrls, boolean allowUnicode) throws MessageParserException {
+	public String readString(boolean allowNull, int length, boolean doTrim, boolean doTruncate, boolean allowCtrls, boolean allowUnicode) throws MessageParserException {
 		if (checkForNull(allowNull))
         	return null;
         // OK, read it
         StringBuffer tmp = new StringBuffer(length == 0 ? 32 : length);
-        int currentLength = 0;
         char c;
         if (doTrim) {
         	// skip leading spaces
@@ -212,17 +218,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
                 	throw new MessageParserException(MessageParserException.ILLEGAL_CHAR_ASCII,
                 			String.format("(found 0x%02x)", (int)c), parseIndex, currentClass);
         	}
-        	if (length > 0) {
-        		// have limits on max size
-        		if (currentLength >= length) {  // this condition maybe removed if "autotrunk" is set
-        			// TODO: truncate or flag errors? skip this if truncating
-                	throw new MessageParserException(MessageParserException.STRING_TOO_LONG,
-                			String.format("(exceeds length %d, got so far %s)", length, tmp.toString()),
-                			parseIndex, currentClass);
-        		}
-        	}
         	tmp.append(c);
-        	++currentLength;
         }
         if (doTrim) {
         	int l = tmp.length();
@@ -231,10 +227,22 @@ public final class StringBuilderParser extends StringBuilderConstants implements
         		char d = tmp.charAt(l-1);
         		if (d != ' ' && d != '\t')
         			break;  // l is correct length
+        		--l;
         	}
         	if (l < tmp.length())
         		tmp.setLength(l);
         }
+    	if (length > 0) {
+    		// have limits on max size
+    		if (tmp.length() > length) {
+    			if (doTruncate)
+    				tmp.setLength(length);
+    			else
+    				throw new MessageParserException(MessageParserException.STRING_TOO_LONG,
+            			String.format("(exceeds length %d, got so far %s)", length, tmp.toString()),
+            			parseIndex, currentClass);
+    		}
+    	}
 		return tmp.toString();
 	}
 
@@ -255,6 +263,13 @@ public final class StringBuilderParser extends StringBuilderConstants implements
         return result;
 	}
 
+	public ByteArray readByteArray(boolean allowNull, int length) throws MessageParserException {
+		byte [] tmp = readRaw(allowNull, length);
+		if (tmp == null)
+			return null;
+		return new ByteArray(tmp, true);
+	}
+	
 	@Override
 	public byte[] readRaw(boolean allowNull, int length) throws MessageParserException {
 		if (checkForNull(allowNull))
@@ -340,6 +355,105 @@ public final class StringBuilderParser extends StringBuilderConstants implements
 					parseIndex, currentClass);
 		}
 		result.set(Calendar.MILLISECOND, fractional);
+		return result;
+	}
+	@Override
+	public LocalDateTime readDayTime(boolean allowNull, int fractionalDigits) throws MessageParserException {
+		if (checkForNull(allowNull))
+        	return null;
+		String tmp = nextIndexParseAscii(false, fractionalDigits >= 0, false);  // parse an unsigned numeric string without exponent
+		int date;
+		int fractional = 0;
+		int dpoint;
+		if ((dpoint = tmp.indexOf('.')) < 0) {
+			// day only despite allowed time
+			date = Integer.parseInt(tmp);
+		} else {
+			// day and time
+			date = Integer.parseInt(tmp.substring(0, dpoint));
+			fractional = Integer.parseInt(tmp.substring(dpoint + 1));
+			switch (tmp.length() - dpoint - 1) { // i.e. number of fractional digits
+			case 6:
+				fractional *= 1000;
+				break; // precisely seconds resolution (timestamp(0))
+			case 7:
+				fractional *= 100;
+				break;
+			case 8:
+				fractional *= 10;
+				break;
+			case 9:
+				break; // maximum resolution (milliseconds)
+			default: // something weird
+				throw new MessageParserException(
+						MessageParserException.BAD_TIMESTAMP_FRACTIONALS,
+						String.format("(found %d)", tmp.length() - dpoint - 1),
+						parseIndex, currentClass);
+			}
+		}
+		// set the date and time
+		int day, month, year, hour, minute, second;
+		year = date / 10000;
+		month = (date %= 10000) / 100;
+		day = date %= 100;
+		hour = fractional / 10000000;
+		minute = (fractional %= 10000000) / 100000;
+		second = (fractional %= 100000) / 1000;
+		fractional %= 1000;
+		// first checks
+		if (year < 1601 || year > 2399 || month == 0 || month > 12 || day == 0
+				|| day > 31)
+			throw new MessageParserException(
+					MessageParserException.ILLEGAL_DAY, String.format(
+							"(found %d)", date), parseIndex, currentClass);
+		if (hour > 23 || minute > 59 || second > 59) // TODO: allow leap seconds? (that would be seconds == 60)
+			throw new MessageParserException(
+					MessageParserException.ILLEGAL_TIME,
+					String.format("(found %d)", hour * 10000 + minute * 100
+							+ second), parseIndex, currentClass);
+		// now set the return value
+		LocalDateTime result;
+		try {
+			// TODO! default is lenient mode, therefore will not check. Solution
+			// is to read the data again and compare the values of day, month
+			// and year
+			result = new LocalDateTime(year, month, day, hour, minute, second, fractional);
+		} catch (Exception e) {
+			throw new MessageParserException(
+					MessageParserException.ILLEGAL_CALENDAR_VALUE, null,
+					parseIndex, currentClass);
+		}
+		return result;
+	}
+	@Override
+	public LocalDate readDay(boolean allowNull) throws MessageParserException {
+		if (checkForNull(allowNull))
+        	return null;
+		String tmp = nextIndexParseAscii(false, false, false);  // parse an unsigned numeric string without exponent
+		int date = Integer.parseInt(tmp);
+		// set the date and time
+		int day, month, year;
+		year = date / 10000;
+		month = (date %= 10000) / 100;
+		day = date %= 100;
+		// first checks
+		if (year < 1601 || year > 2399 || month == 0 || month > 12 || day == 0
+				|| day > 31)
+			throw new MessageParserException(
+					MessageParserException.ILLEGAL_DAY, String.format(
+							"(found %d)", date), parseIndex, currentClass);
+		// now set the return value
+		LocalDate result;
+		try {
+			// TODO! default is lenient mode, therefore will not check. Solution
+			// is to read the data again and compare the values of day, month
+			// and year
+			result = new LocalDate(year, month, day);
+		} catch (Exception e) {
+			throw new MessageParserException(
+					MessageParserException.ILLEGAL_CALENDAR_VALUE, null,
+					parseIndex, currentClass);
+		}
 		return result;
 	}
 
@@ -443,16 +557,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
         	return null;
         needChar(OBJECT_BEGIN);  // version not yet allowed
 		String previousClass = currentClass;
-/*
-		char c = needChar();
-        if (c == NULL_FIELD) {	// do not use checkForNull because object end / parent end to not apply here
-        	/// XXX they do! because called recursively from within objects as well
-        	if (!allowNull)
-            	throw new Exception("parse object: Null object not allowed here");
-        	return null;
-        if (c != OBJECT_BEGIN)
-        	throw new Exception("expected object start character"); */
-        String classname = readString(false, 0, false, false, false);
+        String classname = readString(false, 0, false, false, false, false);
         needChar(NULL_FIELD);  // version not yet allowed
         BonaPortable newObject = BonaPortableFactory.createObject(classname);
         //System.out.println("Creating new obj " + classname + " gave me " + newObject);
@@ -500,6 +605,19 @@ public final class StringBuilderParser extends StringBuilderConstants implements
 		}
 		// expect that the transmission ends here! TODO: exception if not
 		return results;
+	}
+
+	@Override
+	public UUID readUUID(boolean allowNull) throws MessageParserException {
+		String tmp = readAscii(allowNull, 36, true, false);
+		if (tmp == null)
+        	return null;
+		try {
+			return UUID.fromString(tmp);
+		} catch (IllegalArgumentException e) {
+        	throw new MessageParserException(MessageParserException.BAD_UUID_FORMAT,
+        			tmp, parseIndex, currentClass);
+		}
 	}
 
 }

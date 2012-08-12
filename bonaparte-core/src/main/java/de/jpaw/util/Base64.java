@@ -101,12 +101,12 @@ public class Base64 {
 		int sLen = sArr.length;
 		if (sLen == 0)
 			return;
-		byte[] dArr = target.getCurrentBuffer();
 		int d = target.length();
 		int eLen = (sLen / 3) * 3;                              // Length of even 24-bits.
 		int cCnt = ((sLen - 1) / 3 + 1) << 2;                   // Returned character count
 		int dLen = d + cCnt; // end position of returned array
 		target.ensureCapacity(dLen);
+		byte[] dArr = target.getCurrentBuffer();
 		
 		// Encode even 24-bits
 		for (int s = 0, cc = 0; s < eLen;) {
@@ -152,8 +152,8 @@ public class Base64 {
 			return null;
 
 		int pad = 0;
-		for (int i = sLen; i > 1 && IA[sArr[--i] & 0xff] <= 0;)
-			if (sArr[i] == '=')
+		for (int i = sLen; i > 1 && IA[sArr[offset + --i] & 0xff] <= 0;)
+			if (sArr[offset + i] == '=')
 				pad++;
 
 		int len = ((sLen) * 6 >> 3) - pad;

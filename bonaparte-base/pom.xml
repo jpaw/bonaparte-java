@@ -15,7 +15,7 @@
 		<!-- <maven.test.skip>true</maven.test.skip> -->
 
 		<!-- define releases we want to use, to ensure consistency -->
-		<bonaparte.version>0.2-SNAPSHOT</bonaparte.version>
+		<bonaparte.version>1.0-SNAPSHOT</bonaparte.version>
 		<slf4j.version>1.6.6</slf4j.version>
 	</properties>
 

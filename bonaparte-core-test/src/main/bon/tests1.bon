@@ -1,0 +1,79 @@
+package tests1 {
+    type countryCode is uppercase(3);
+    enum color { RED, GREEN, BLUE }
+     
+    class Primitives {
+        byte byte1;
+        short short1;
+        int int1;
+        integer int2;
+        long long1;
+        boolean boolean1;
+        float float1;
+        double double1;
+        char char1;
+        character char2;
+    }
+    class BoxedTypes {
+        Byte byte1;
+        Short short1;
+        Int int1;
+        Integer int2;
+        Long long1;
+        Boolean boolean1;
+        Float float1;
+        Double double1;
+        Char char1;
+        Character char2;
+    }
+    class PrimitiveArrays {
+        byte [] byte1;
+        short [] short1;
+        int [] int1;
+        integer [] int2;
+        long [] long1;
+        boolean [] boolean1;
+        float [] float1;
+        double [] double1;
+        char [] char1;
+        character [] char2;
+    }
+    class BoxedTypeArrays {
+        Byte [] byte1;
+        Short [] short1;
+        Int [] int1;
+        Integer [] int2;
+        Long [] long1;
+        Boolean [] boolean1;
+        Float [] float1;
+        Double [] double1;
+        Char [] char1;
+        Character [] char2;
+    }
+    class OtherTypes {
+        raw(1000000) raw1;
+        binary(1000000) binary1;
+        day day1;
+        timestamp(0) timestamp1;
+        timestamp(3) timestamp2;
+        calendar(0) timestamp3;
+        calendar(3) timestamp4;
+        ascii(30) ascii1;
+        unicode(30) unicode1;
+        number(4) number1;
+        decimal(14,2) decimal1;
+        enum color color1;
+        uuid myUuid;
+    }
+    class References {
+        countryCode country;
+        (Primitives) preciseRef;
+        (Primitives...) classOrDerivedObject;
+    }
+    class Parameters {
+        ascii(80) trim     testTrim;
+        ascii(80) notrim   testNoTrim;
+        ascii(20) truncate testTruncate;
+        ascii(20) trim     testNoTruncate;
+    }
+}

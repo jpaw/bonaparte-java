@@ -1,19 +1,23 @@
 package meta {
 	default unsigned required trim noControlChars;
 
-    enum Visibility { DEFAULT, PRIVATE, PROTECTED, PUBLIC }
+    type identifier is Ascii(255);
     
+    enum Visibility { DEFAULT, PRIVATE, PROTECTED, PUBLIC }
+    enum BundleStatus { UNUSED, RESOLVED, INSTALLED, STARTING, SHUTTING_DOWN, MAINTENANCE }  // borrow OSGi statuses
+    
+        
 	abstract class FieldDefinition {
 	    enum Visibility visibility;
 		boolean isRequired;
-		ascii(30) name;
+		required identifier name;
 		boolean isArray;
 		Integer maxCount;
 	}
 	
 	class ObjectReference extends FieldDefinition {
         boolean allowSubclasses;    
-		ascii(61) objectName;		
+		required identifier objectName;		
 	}
 	
 	// ElementaryDataItem is used for some as well as for types which don't need a parameter
@@ -25,7 +29,7 @@ package meta {
 
     // EnumDataItem represents the special enum type
     class EnumDataItem extends ElementaryDataItem {
-        ascii(61) enumName;  // HQON of enum
+        required identifier enumName;  // HQON of enum
         ascii(39) [] values;
     }
 
@@ -53,15 +57,24 @@ package meta {
         ascii(500) ^regexp;
     }
 	
-	
 	// holds all meta information for a class
 	class ClassDefinition {
 		boolean isAbstract;
 		boolean isFinal;
-		ascii(61) name;
+		required identifier name;
 		Ascii(20) ^revision;
-		Ascii(61) parent;
+		identifier parent;
+        identifier ^bundle;  // OSGi bundle / module
 		int numberOfFields;
 		optional (FieldDefinition...)[] fields;
+		optional Timestamp(3) whenLoaded;
+	}
+	
+	class BundleInformation {
+	    required identifier name;
+        required identifier [] packages;
+	    unicode(255) classPath;
+        enum BundleStatus bundleStatus;
+	    optional Timestamp(3) whenStatusChanged; 
 	}
 }
