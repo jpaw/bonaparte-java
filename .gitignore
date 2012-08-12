@@ -24,3 +24,5 @@ target/
 src-gen/
 xtend-gen/
 bin/
+test-output/
+generated/
