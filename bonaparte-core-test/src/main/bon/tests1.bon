@@ -76,4 +76,15 @@ package tests1 {
         ascii(20) truncate testTruncate;
         ascii(20) trim     testNoTruncate;
     }
+    class Lists {
+        ascii(10) List<>   textList;
+        Integer List<>         intList;
+        Ascii(8) List <4>  optionalList;
+        (Primitives) List<> listOfObjects;
+    }
+    
+    class XmlTest XML FIELD {
+        ascii(20)          name;
+        int                age;
+    }
 }
