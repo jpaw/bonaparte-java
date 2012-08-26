@@ -577,7 +577,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
 	}
 
 	@Override
-	public int parseArrayStart(int max, Class<? extends BonaPortable> type,
+	public int parseArrayStart(int max,
 			int sizeOfChild) throws MessageParserException {
         byte c = needByte();
         if (c == NULL_FIELD)

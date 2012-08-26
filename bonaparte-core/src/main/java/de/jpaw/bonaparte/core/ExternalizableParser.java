@@ -387,7 +387,7 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
 	}
 
 	@Override
-	public int parseArrayStart(int max, Class<? extends BonaPortable> type,
+	public int parseArrayStart(int max,
 			int sizeOfChild) throws IOException {
         byte c = nextByte();
         if (c == NULL_FIELD)

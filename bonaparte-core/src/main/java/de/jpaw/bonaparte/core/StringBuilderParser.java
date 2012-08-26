@@ -472,7 +472,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
 	}
 
 	@Override
-	public int parseArrayStart(int max, Class<? extends BonaPortable> type,
+	public int parseArrayStart(int max,
 			int sizeOfChild) throws MessageParserException {
         char c = needChar();
         if (c == NULL_FIELD)
