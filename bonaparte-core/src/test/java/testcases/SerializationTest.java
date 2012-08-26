@@ -23,6 +23,7 @@ import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
 
 public class SerializationTest {
 	static private final Charset defaultCharset = Charset.forName("UTF-8");			 // always use UTF-8 unless explicitly requested differently
+	static private boolean doDump = false;
 	
 	private void dumpToFile(String filename, byte [] data) throws Exception {
 		OutputStream stream = new FileOutputStream(filename);
@@ -56,7 +57,6 @@ public class SerializationTest {
 		
 		System.out.println("Test starting: composer ByteArray");
 		MessageComposer bac = new ByteArrayComposer();
-		bac.reset();
 		bac.writeRecord(obj1);
 		byte [] bacResult = sbc.getBytes();
 		
@@ -64,7 +64,8 @@ public class SerializationTest {
 		assert sbcResult.length == bacResult.length : "produced byte data should have the same length";
 		assert Arrays.equals(sbcResult, bacResult) : "produced byte data should be identical";
 		
-		//dumpToFile("/tmp/Test1-dump.bin", sbcResult);
+		if (doDump)
+			dumpToFile("/tmp/Test1-dump.bin", sbcResult);
 		
 		// deserialize again
 		StringBuilder work = new StringBuilder(new String (bacResult, defaultCharset)); 

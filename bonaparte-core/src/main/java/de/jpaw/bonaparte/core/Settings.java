@@ -26,8 +26,8 @@ import java.nio.charset.Charset;
  *          Defines the parameters for most serializers / marshallers and deserializers / unmarshallers
  */
 public abstract class Settings {
-	static private final boolean defaultCRs = System.lineSeparator().length() == 2;  // on Unix: false, on Windows: true
-	static private final Charset defaultCharset = Charset.forName("UTF-8");			 // always use UTF-8 unless explicitly requested differently
+	static private boolean defaultCRs = System.lineSeparator().length() == 2;  // on Unix: false, on Windows: true
+	static private Charset defaultCharset = Charset.forName("UTF-8");			 // always use UTF-8 unless explicitly requested differently
 	
 	private boolean writeCRs;   // determines the record terminator sequence. Attempts to mimic text file line breaks of the OS
 	private Charset charset; // usually UTF-8, can be explicitly set to some other encoding, if desired (usually some single-byte fixed width character set)
@@ -55,4 +55,20 @@ public abstract class Settings {
     	charset = defaultCharset;
     }
     
+    
+    public static boolean getDefaultWriteCRs() {
+		return defaultCRs;
+	}
+
+	public static void setDefaultWriteCRs(boolean writeCRs) {
+		defaultCRs = writeCRs;
+	}
+
+	public static Charset getDefaultCharset() {
+		return defaultCharset;
+	}
+
+	public static void setDefaultCharset(Charset charset) {
+		defaultCharset = charset;
+	}
 }

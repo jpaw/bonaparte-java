@@ -43,6 +43,8 @@ public class ObjectValidationException extends ApplicationException {
 	static public final int MAY_NOT_BE_BLANK      = OFFSET + 1;
 	static public final int NO_PATTERN_MATCH      = OFFSET + 2;
 	static public final int TOO_MANY_ELEMENTS     = OFFSET + 3;
+	static public final int TOO_LONG              = OFFSET + 4;
+	static public final int TOO_SHORT             = OFFSET + 5;
 	
     // Upload textual descriptions only once they're needed for this type of exception class.
     // The idea is that in working environments, we will never need them ;-).
@@ -54,6 +56,8 @@ public class ObjectValidationException extends ApplicationException {
     		codeToDescription.put(MAY_NOT_BE_BLANK     , "Empty, but required field");
     		codeToDescription.put(NO_PATTERN_MATCH     , "Field contents does not match required pattern");
     		codeToDescription.put(TOO_MANY_ELEMENTS    , "Array contains too many elements");
+    		codeToDescription.put(TOO_LONG             , "String is too long");
+    		codeToDescription.put(TOO_SHORT            , "String is too short");
     	}
     }
 	

@@ -1,4 +1,4 @@
-package testcases;
+package testcases.conversion;
 
 import java.nio.charset.Charset;
 import java.util.Arrays;
@@ -8,7 +8,6 @@ import org.testng.annotations.Test;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.ByteArrayComposer;
 import de.jpaw.bonaparte.core.ByteArrayParser;
-import de.jpaw.bonaparte.core.MessageComposer;
 import de.jpaw.bonaparte.core.MessageParser;
 import de.jpaw.bonaparte.core.MessageParserException;
 import de.jpaw.bonaparte.core.StringBuilderComposer;
@@ -29,7 +28,7 @@ public class TestParameters {
 		sbc.writeRecord(src);
 		byte [] sbcResult = sbc.getBytes();
 		
-		MessageComposer bac = new ByteArrayComposer();
+		ByteArrayComposer bac = new ByteArrayComposer();
 		bac.reset();
 		bac.writeRecord(src);
 		byte [] bacResult = bac.getBytes();
@@ -41,18 +40,19 @@ public class TestParameters {
 		// deserialize again
 		System.out.println("parser StringBuilder");
 		StringBuilder work = new StringBuilder(new String (bacResult, defaultCharset)); 
-		MessageParser w1 = new StringBuilderParser(work, 0, -1);
+		MessageParser<MessageParserException> w1 = new StringBuilderParser(work, 0, -1);
 		BonaPortable dst1 = w1.readRecord();
 		assert dst1.getClass() == src.getClass() : "returned obj is of wrong type (StringBuilderParser)"; // assuming we have one class loader only
 		Parameters dst1p = (Parameters)dst1;
 		
 		// alternate deserializer
 		System.out.println("parser ByteArray");
-		MessageParser w2 = new ByteArrayParser(sbcResult, 0, -1);
+		MessageParser<MessageParserException> w2 = new ByteArrayParser(sbcResult, 0, -1);
 		BonaPortable dst2 = w2.readRecord();
 		assert dst2.getClass() == src.getClass() : "returned obj is of wrong type (ByteArrayParser)"; // assuming we have one class loader only
 		assert dst1.hasSameContentsAs(dst2) : "returned obj is not equal to original one (ByteArrayParser)";
 		Parameters dst2p = (Parameters)dst2;
+		assert dst1.equals(dst2p);
 		
 		// extra tests
 		assert src.getTestNoTrim().equals(dst1p.getTestNoTrim());
@@ -70,7 +70,7 @@ public class TestParameters {
 		sbc.writeRecord(src);
 		byte [] sbcResult = sbc.getBytes();
 		
-		MessageComposer bac = new ByteArrayComposer();
+		ByteArrayComposer bac = new ByteArrayComposer();
 		bac.reset();
 		bac.writeRecord(src);
 		byte [] bacResult = bac.getBytes();
@@ -82,8 +82,9 @@ public class TestParameters {
 		// deserialize again
 		System.out.println("parser StringBuilder");
 		StringBuilder work = new StringBuilder(new String (bacResult, defaultCharset)); 
-		MessageParser w1 = new StringBuilderParser(work, 0, -1);
+		MessageParser<MessageParserException> w1 = new StringBuilderParser(work, 0, -1);
 		try {
+			@SuppressWarnings("unused")
 			BonaPortable dst1 = w1.readRecord();
 			assert false : "Should have thrown exception due to field too long";
 		} catch (MessageParserException e) {
@@ -93,8 +94,9 @@ public class TestParameters {
 		
 		// alternate deserializer
 		System.out.println("parser ByteArray");
-		MessageParser w2 = new ByteArrayParser(sbcResult, 0, -1);
+		MessageParser<MessageParserException> w2 = new ByteArrayParser(sbcResult, 0, -1);
 		try {
+			@SuppressWarnings("unused")
 			BonaPortable dst2 = w2.readRecord();
 			assert false : "Should have thrown exception due to field too long";
 		} catch (MessageParserException e) {

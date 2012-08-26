@@ -15,6 +15,11 @@
   */
 package de.jpaw.util;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 
 /**
  * The ByteArray class.
@@ -29,10 +34,15 @@ package de.jpaw.util;
  */
 
 
-public final class ByteArray {
+public final class ByteArray implements Externalizable, Cloneable {
+	private static final long serialVersionUID = 2782729564297256974L;
+	private static final int MAGIC_LENGTH_INDICATING_32_BIT_SIZE = 247;  // if a single byte length of this value is written in the
+	// serialized form, it indicates a full four byte length must be read instead. Not used 0 or 255 due to their frequent use.
+	
 	private final byte [] buffer;	
 	private final int offset;
 	private final int length;
+	private ByteArray extraFieldJustRequiredForDeserialization = null;  // transient temporary field
 	
 	static private final byte[] ZERO_JAVA_BYTE_ARRAY = new byte [0]; 
 	static public final ByteArray ZERO_BYTE_ARRAY = new ByteArray();
@@ -57,8 +67,8 @@ public final class ByteArray {
 		}
 	}
 
-	// construct a ByteArray from a source byte []
-	public ByteArray(byte [] source, boolean unsafeTrustedReuseOfJavaByteArray) {
+	// construct a ByteArray from a trusted source byte []
+	private ByteArray(byte [] source, boolean unsafeTrustedReuseOfJavaByteArray) {
 		if (source == null || source.length == 0) {
 			buffer = ZERO_JAVA_BYTE_ARRAY;
 			offset = 0;
@@ -81,7 +91,7 @@ public final class ByteArray {
 	}
 
 	// construct a ByteArray from another one
-	// TODO: change it to private? external callers should use plain assignment instead!
+	// TODO: change it to private? external callers should use plain assignment or clone() instead!
 	public ByteArray(ByteArray source) {
 		if (source == null) {
 			buffer = ZERO_JAVA_BYTE_ARRAY;
@@ -202,5 +212,125 @@ public final class ByteArray {
 		if (thatOffset < 0 || thatLength < 0 || thatOffset + thatLength > that.length)
 			throw new IllegalArgumentException();
 		return contentEqualsSub(that, thatOffset, thatLength);
+	}
+	
+	// returns if the two instances share the same backing buffer (for debugging)
+	public boolean shareBuffer(ByteArray that) {
+		return buffer == that.buffer;
+	}
+	
+	@Override
+	public int hashCode() {
+		int hash = 997;
+		for (int i = 0; i < length; ++i)
+			hash = 29 * hash + (int)buffer[offset + i];
+		return hash;
+	}
+	
+	// two ByteArrays are considered equal if they have the same visible contents
+	@Override
+	public boolean equals(Object xthat) {
+        if (xthat == null)
+            return false;
+        if (!(xthat instanceof ByteArray))
+            return false;
+        if (this == xthat)
+            return true;
+        ByteArray that = (ByteArray)xthat;
+        // same as contentEqualsSub(..) now
+        if (this.length != that.length)
+        	return false;
+        for (int i = 0; i < length; ++i)
+        	if (buffer[offset + i] != that.buffer[that.offset + i])
+        		return false;
+        return true;
+	}
+	
+	@Override
+	public void writeExternal(ObjectOutput out) throws IOException {
+		//writeBytes(out, buffer, offset, length);
+		if (length < 256 && length != MAGIC_LENGTH_INDICATING_32_BIT_SIZE) {
+			out.writeByte(length);
+		} else {
+			out.writeByte(MAGIC_LENGTH_INDICATING_32_BIT_SIZE);
+			out.writeInt(length);
+		}
+		out.write(buffer, offset, length);
+	}
+
+	// support function to allow ordinary byte [] to be written in same fashion
+	static public void writeBytes(ObjectOutput out, byte [] buffer, int offset, int length) throws IOException {
+		if (length < 256 && length != MAGIC_LENGTH_INDICATING_32_BIT_SIZE) {
+			out.writeByte(length);
+		} else {
+			out.writeByte(MAGIC_LENGTH_INDICATING_32_BIT_SIZE);
+			out.writeInt(length);
+		}
+		out.write(buffer, offset, length);
+	}
+	
+	static public byte[] readBytes(ObjectInput in) throws IOException {
+		int newlength = in.readByte();
+		if (newlength < 0)
+			newlength += 256;  // want full unsigned range
+		if (newlength == MAGIC_LENGTH_INDICATING_32_BIT_SIZE) // magic to indicate four byte length
+			newlength = in.readInt();
+		
+		// System.out.println("ByteArray.readExternal() with length " + newlength);
+		if (newlength == 0)
+			return ZERO_JAVA_BYTE_ARRAY;
+		byte [] localBuffer = new byte[newlength];
+		int done = 0;
+		while (done < newlength) {
+			int nRead = in.read(localBuffer, done, newlength-done);  // may return less bytes than requested!
+			if (nRead <= 0)
+				throw new IOException("deserialization of ByteArray returned " + nRead + " while expecting " + (newlength-done));
+			done += nRead;
+		}
+		return localBuffer;	
+	}
+	
+	// factory method to read from objectInput via above helper function
+	static public ByteArray read(ObjectInput in) throws IOException {
+		return new ByteArray(readBytes(in), true);
+	}
+		
+	// a direct implementation of this method would conflict with the immutability / "final" attributes of the field
+	// Weird Java language design again. If readExternal() is kind of a constructor, why are assignments to final fields not allowed here?
+	// alternatives around are to add artificial fields and use readResolve / proxies or to discard the "final" attributes, 
+	// or using reflection to set the values (!?). Bleh!
+	// We're using kind of Bloch's "proxy" pattern (Essential Java, #78), namely a single-sided variant with just a single additonal member field,
+	// which lets us preserve the immutability   
+	// see also http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6379948 for discussion around this
+	@Override
+	public void readExternal(ObjectInput in) throws IOException {
+		extraFieldJustRequiredForDeserialization = new ByteArray(readBytes(in), true);
+	}
+	
+	public Object readResolve() {
+		// System.out.println("ByteArray.readResolve()");
+		if (extraFieldJustRequiredForDeserialization == null)
+			throw new RuntimeException("readResolve() called on instance not obtained via readExternal()");
+		return extraFieldJustRequiredForDeserialization;
+	}
+	
+	// factory method to construct a byte array from a prevalidated base64 byte sequence. returns null if length is suspicious
+	static public ByteArray fromBase64(byte [] data, int offset, int length) {
+		if (length == 0)
+			return ZERO_BYTE_ARRAY;
+		byte [] tmp = Base64.decode(data, offset, length);
+		if (tmp == null)
+			return null;
+		return new ByteArray(tmp, true);
+	}
+	
+	public void appendBase64(ByteBuilder b) {
+		Base64.encodeToByte(b, buffer, offset, length);
+	}
+	
+	// returns the String representation of the visible bytes portion
+	@Override
+	public String toString() {
+		return getBytes().toString();
 	}
 }

@@ -14,11 +14,11 @@
   * limitations under the License.
   */
 
-package testcases;
+package testcases.conversion;
 
 import org.testng.annotations.Test;
 
-import de.jpaw.bonaparte.coretests.initializers.FillOtherTypes;
+import de.jpaw.bonaparte.coretests.initializers.FillBoxedTypeArrays;
 import de.jpaw.bonaparte.coretests.util.SimpleTestRunner;
 
 /**
@@ -28,12 +28,13 @@ import de.jpaw.bonaparte.coretests.util.SimpleTestRunner;
  * @version $Revision$
  * 
  *          This is a simple testcase which calls the SimpleTestRunner with a class
- *          consisting of some other special types. Using medium sized arrays.
+ *          consisting of arrays of all supported boxed primitives.
  */
 
-public class TestOtherTypesM {
+public class TestBoxedTypeArrays {
+	
 	@Test
-	public void testOtherTypes() throws Exception {
-		SimpleTestRunner.run(FillOtherTypes.test2(555), false);
+	public void testBoxedTypeArrays() throws Exception {
+		SimpleTestRunner.run(FillBoxedTypeArrays.test1(), false);
 	}	
 }

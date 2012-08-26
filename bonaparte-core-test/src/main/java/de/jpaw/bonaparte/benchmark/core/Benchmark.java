@@ -4,6 +4,7 @@ import java.util.Date;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.coretests.initializers.FillBoxedTypes;
+import de.jpaw.bonaparte.coretests.initializers.FillLists;
 import de.jpaw.bonaparte.coretests.initializers.FillOtherTypes;
 import de.jpaw.bonaparte.coretests.initializers.FillPrimitives;
 
@@ -23,6 +24,9 @@ public class Benchmark {
 			method = Integer.valueOf(args[0]);
 		} else {
 			System.out.println("Usage: Benchmark (method-id) [(threads) [(Mio calls / thread) [(object)]]]");
+			System.out.println("Methods: 0: BonaparteChar, 10: BonaparteByte, 20: Externalizer, 100: gson");
+			System.out.println("         +0: serialize, +1: serialize + retrieve bytes, +2: deserialize from bytes");
+			System.out.println("Objects: 0: primitives, 1: boxed primitives, 2: other types, 3: other types with huge raw data, 4: Arrays, Lists");
 			System.exit(1);
 		}
 		if (args.length > 1) {
@@ -54,6 +58,9 @@ public class Benchmark {
 			break;
 		case 3: 
 			src = FillOtherTypes.test2(1234567);
+			break;
+		case 4: 
+			src = FillLists.test1();
 			break;
 		}
 

@@ -10,7 +10,7 @@
 
 	<groupId>de.jpaw</groupId>
 	<artifactId>bonaparte-core</artifactId>
-	<version>${bonaparte.version}</version>
+	<version>1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>BONAPARTE core libraries</name>
@@ -39,9 +39,10 @@
 	<build>
 		<plugins>
 			<plugin>
-                <!-- must deleted generated source as well as unit test output for the clean target -->
+				<!-- must deleted generated source as well as unit test output for the 
+					clean target -->
 				<artifactId>maven-clean-plugin</artifactId>
-				<version>2.4.1</version>
+				<version>2.5</version>
 				<configuration>
 					<filesets>
 						<fileset>
@@ -60,9 +61,10 @@
 				</configuration>
 			</plugin>
 			<plugin>
-                <!-- must add the generated sources to the java source search path -->
+				<!-- must add the generated sources to the java source search path -->
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>1.7</version>
 				<executions>
 					<execution>
 						<phase>generate-sources</phase>
@@ -76,6 +78,21 @@
 						</configuration>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.fornax.toolsupport</groupId>
+				<artifactId>fornax-oaw-m2-plugin</artifactId>
+				<version>3.4.0</version>
+				<configuration>
+					<checkResources>
+						<checkResource>
+							src/main/bon/meta.bon
+						</checkResource>
+					</checkResources>
+					<properties>
+						<outletSrcDir>src/generated</outletSrcDir>
+					</properties>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

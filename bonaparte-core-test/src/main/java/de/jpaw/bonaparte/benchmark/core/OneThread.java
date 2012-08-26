@@ -1,5 +1,10 @@
 package de.jpaw.bonaparte.benchmark.core;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.nio.charset.Charset;
 import java.util.Date;
 
@@ -24,6 +29,7 @@ public class OneThread implements Runnable {
 	private String methodName = "?";
 	private BonaPortable src;
 	private byte [] srcdata;
+	private byte [] srcExternalized;
 	private String gsondata;
 	private Class<? extends BonaPortable> srcClass;  // this is required by Gson
 	
@@ -34,11 +40,17 @@ public class OneThread implements Runnable {
 		this.initialBufferSize = initialBufferSize;
 	}
 
-	private void createSources() {
+	private void createSources() throws IOException {
 		// create serialized Bonaparte object
-		StringBuilderComposer sbc = new StringBuilderComposer(new StringBuilder());
+		StringBuilderComposer sbc = new StringBuilderComposer(new StringBuilder(initialBufferSize));
 		sbc.writeRecord(src);
 		srcdata = sbc.getBytes();
+		// create serialized object
+		ByteArrayOutputStream fos = new ByteArrayOutputStream(1000);
+		ObjectOutputStream o = new ObjectOutputStream(fos);
+		o.writeObject(src);
+		o.close();
+		srcExternalized = fos.toByteArray();		
 		// create serialized JSON object for Gson
 		Gson gson = new Gson();
 		gsondata = gson.toJson(src);
@@ -48,7 +60,7 @@ public class OneThread implements Runnable {
 	// StringBuffer
 	private void sbc(boolean retrieveBytes) {
 		methodName = "Bonaparte StringBuilder Composer" + (retrieveBytes ? " with byte[] retrieval" : "");
-		StringBuilderComposer sbc = new StringBuilderComposer(new StringBuilder());
+		StringBuilderComposer sbc = new StringBuilderComposer(new StringBuilder(initialBufferSize));
 		for (int i = 0; i < callsPerThread; ++i) {
 			sbc.reset();
 			sbc.writeRecord(src);
@@ -63,7 +75,7 @@ public class OneThread implements Runnable {
 		methodName = "Bonaparte StringBuilder Parser";
 		for (int i = 0; i < callsPerThread; ++i) {
 			StringBuilder work = new StringBuilder(new String(srcdata, useCharset)); 
-			MessageParser w1 = new StringBuilderParser(work, 0, -1);
+			MessageParser<MessageParserException> w1 = new StringBuilderParser(work, 0, -1);
 			@SuppressWarnings("unused")
 			BonaPortable dst1 = w1.readRecord();
 		}
@@ -86,9 +98,34 @@ public class OneThread implements Runnable {
 	private void bap() throws MessageParserException {
 		methodName = "Bonaparte ByteArray Parser";
 		for (int i = 0; i < callsPerThread; ++i) {
-			MessageParser w2 = new ByteArrayParser(srcdata, 0, -1);
+			MessageParser<MessageParserException> w2 = new ByteArrayParser(srcdata, 0, -1);
 			@SuppressWarnings("unused")
 			BonaPortable dst2 = w2.readRecord();
+		}
+	}
+
+	// Externalizer
+	private void extc(boolean retrieveBytes) throws IOException {
+		methodName = "Bonaparte Externalizer Composer" + (retrieveBytes ? " with byte[] retrieval" : "");
+		for (int i = 0; i < callsPerThread; ++i) {
+			ByteArrayOutputStream fos = new ByteArrayOutputStream(1000);
+			ObjectOutputStream o = new ObjectOutputStream(fos);
+			o.writeObject(src);
+			o.close();
+			if (retrieveBytes) {
+				@SuppressWarnings("unused")
+				byte[] extcResult = fos.toByteArray();
+			}
+		}
+	}
+	
+	private void extp() throws MessageParserException, IOException, ClassNotFoundException {
+		methodName = "Bonaparte Externalizer Parser";
+		for (int i = 0; i < callsPerThread; ++i) {
+			ByteArrayInputStream fis = new ByteArrayInputStream(srcExternalized);
+			ObjectInputStream in = new ObjectInputStream(fis);
+			@SuppressWarnings("unused")
+			Object xdst = in.readObject();
 		}
 	}
 
@@ -118,10 +155,10 @@ public class OneThread implements Runnable {
 	
 	@Override
 	public void run() {
-		createSources();
-		start = new Date();
-
 		try {
+			createSources();
+			start = new Date();
+
 			switch (method) {
 			// 0 .. 2 Bonaparte StringBuffer
 			case 0:
@@ -143,6 +180,16 @@ public class OneThread implements Runnable {
 			case 12:
 				bap();
 				break;
+			// 20..22 Bonaparte Externalizer 
+			case 20:
+				extc(false);
+				break;
+			case 21:
+				extc(true);
+				break;
+			case 22:
+				extp();
+				break;
 			// 100 .. 102 Gson (String)
 			case 100:
 				toGson(false);
@@ -155,6 +202,7 @@ public class OneThread implements Runnable {
 				break;
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.out.println("Exception: " + methodName + " did not finish");
 			return;
 		}

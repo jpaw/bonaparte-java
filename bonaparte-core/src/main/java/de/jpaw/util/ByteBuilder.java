@@ -110,15 +110,16 @@ public class ByteBuilder {
 			append(s.getBytes(charset));
 		}
 	}
-	public void appendUnicode(char c) {
+	// append a single double-byte character (BMP 0)
+	public void appendUnicode(int c) {
 		if (c <= 127) {
 			// ASCII character: this is faster
 			append((byte)c);
 		} else {
 			// this is weird! Can't we do it better?
-			StringBuilder s = new StringBuilder(1);
-			s.append(c);
-			append(s.toString().getBytes(charset));
+			int [] tmp = new int [1];
+			tmp[0] = c;
+			append(new String(tmp, 0, 1).getBytes(charset));
 		}
 	}
 	// append the contents of String, assuming all characters are single-byte. No test is done. Argument must not be null.

@@ -34,6 +34,9 @@ import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
  * @version $Revision$
  * 
  *          Implements JVM-wide management of loaded bundles.
+ *          
+ *          This is unfinished WIP, maybe should use full OSGi instead if required.
+ *          
  */
 public class Bundle {
 	private static ConcurrentMap<String,BundleInformation> bundleMap = new ConcurrentHashMap<String,BundleInformation>(20);

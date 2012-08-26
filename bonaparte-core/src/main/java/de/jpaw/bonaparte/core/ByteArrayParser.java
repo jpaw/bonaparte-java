@@ -25,6 +25,8 @@ import java.util.UUID;
 import de.jpaw.util.Base64;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.ByteTestsASCII;
+import de.jpaw.util.EnumException;
+
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 /**
@@ -36,7 +38,7 @@ import org.joda.time.LocalDateTime;
  *          Implementation of the MessageParser, using byte arrays.
  */
 
-public class ByteArrayParser extends ByteArrayConstants implements MessageParser {
+public class ByteArrayParser extends ByteArrayConstants implements MessageParser<MessageParserException> {
     private int parseIndex;
     private int messageLength;
     private byte [] inputdata;
@@ -81,7 +83,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
 			else
 	        	throw new MessageParserException(MessageParserException.ILLEGAL_EXPLICIT_NULL, null, parseIndex, currentClass);
 		}
-		if (c == OBJECT_TERMINATOR || c == PARENT_SEPARATOR) {
+		if (c == PARENT_SEPARATOR || c == ARRAY_TERMINATOR) {
 			if (allowNull) {
 				// uneat it
 				--parseIndex;
@@ -332,10 +334,31 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
 	}
 
 	public ByteArray readByteArray(boolean allowNull, int length) throws MessageParserException {
-		byte [] tmp = readRaw(allowNull, length);
-		if (tmp == null)
-			return null;
-		return new ByteArray(tmp, true);
+		if (checkForNull(allowNull))
+        	return null;
+    	skipLeadingSpaces();
+    	// compute length of data and perform (rough) check for illegal characters
+		int i = parseIndex;
+		// find next occurence of field terminator
+        while (i < messageLength) {
+        	byte b = inputdata[i++];
+        	if (b == FIELD_TERMINATOR) {
+        		ByteArray result = ByteArray.fromBase64(inputdata, parseIndex, i-parseIndex-1);
+       			if (result == null)
+                   	throw new MessageParserException(MessageParserException.BASE64_PARSING_ERROR, null, parseIndex, currentClass);
+        		parseIndex = i;
+        		return result;
+        	}
+        	if (b >= '0' && b <= 'z') {
+        		; // OK
+        	} else if (b == '+' || b == '/' || b == '=') {
+        		; // OK
+        	} else {
+            	throw new MessageParserException(MessageParserException.ILLEGAL_CHAR_BASE64,
+            			String.format("(found 0x%02x)", (int)b), parseIndex, currentClass);
+        	}
+        }
+    	throw new MessageParserException(MessageParserException.MISSING_TERMINATOR, "(raw field)", parseIndex, currentClass);
 	}
 	
 	@Override
@@ -375,7 +398,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
 	}
 
 	@Override
-	public GregorianCalendar readGregorianCalendar(boolean allowNull, int fractionalDigits) throws MessageParserException {
+	public GregorianCalendar readGregorianCalendar(boolean allowNull, boolean hhmmss, int fractionalDigits) throws MessageParserException {
 		if (checkForNull(allowNull))
         	return null;
 		String tmp = nextIndexParseAscii(false, fractionalDigits >= 0, false);  // parse an unsigned numeric string without exponent
@@ -410,9 +433,15 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
 		year = date / 10000;
 		month = (date %= 10000) / 100;
 		day = date %= 100;
-		hour = fractional / 10000000;
-		minute = (fractional %= 10000000) / 100000;
-		second = (fractional %= 100000) / 1000;
+		if (hhmmss) {
+			hour = fractional / 10000000;
+			minute = (fractional %= 10000000) / 100000;
+			second = (fractional %= 100000) / 1000;
+		} else {
+			hour = fractional / 3600000;
+			minute = (fractional %= 3600000) / 60000;
+			second = (fractional %= 60000) / 1000;
+		}
 		fractional %= 1000;
 		// first checks
 		if (year < 1601 || year > 2399 || month == 0 || month > 12 || day == 0
@@ -442,7 +471,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
 		return result;
 	}
 	@Override
-	public LocalDateTime readDayTime(boolean allowNull, int fractionalDigits) throws MessageParserException {
+	public LocalDateTime readDayTime(boolean allowNull, boolean hhmmss, int fractionalDigits) throws MessageParserException {
 		if (checkForNull(allowNull))
         	return null;
 		String tmp = nextIndexParseAscii(false, fractionalDigits >= 0, false);  // parse an unsigned numeric string without exponent
@@ -480,9 +509,15 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
 		year = date / 10000;
 		month = (date %= 10000) / 100;
 		day = date %= 100;
-		hour = fractional / 10000000;
-		minute = (fractional %= 10000000) / 100000;
-		second = (fractional %= 100000) / 1000;
+		if (hhmmss) {
+			hour = fractional / 10000000;
+			minute = (fractional %= 10000000) / 100000;
+			second = (fractional %= 100000) / 1000;
+		} else {
+			hour = fractional / 3600000;
+			minute = (fractional %= 3600000) / 60000;
+			second = (fractional %= 60000) / 1000;
+		}
 		fractional %= 1000;
 		// first checks
 		if (year < 1601 || year > 2399 || month == 0 || month > 12 || day == 0
@@ -641,6 +676,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
 		String previousClass = currentClass;
         needByte(OBJECT_BEGIN);  // version not yet allowed
         String classname = readString(false, 0, false, false, false, false);
+    	// String revision = readAscii(true, 0, false, false);
         needByte(NULL_FIELD);  // version not yet allowed
         BonaPortable newObject = BonaPortableFactory.createObject(classname);
         //System.out.println("Creating new obj " + classname + " gave me " + newObject);
@@ -655,10 +691,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
         }
         // all good here. Parse the contents
        	currentClass = classname;
-        newObject.deserialise(this);
-        skipNulls();  // upwards compatibility: skip extra fields if they are blank.
-        // TODO: also skip them if not blank, but corresponding flag is set
-        needByte(OBJECT_TERMINATOR);
+        newObject.deserialize(this);
        	currentClass = previousClass;
 		return newObject;
 	}
@@ -704,4 +737,15 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
 		}
 	}
 
+
+	@Override
+	public MessageParserException enumExceptionConverter(EnumException e) {
+		return new MessageParserException(MessageParserException.INVALID_ENUM_TOKEN, e.toString(), parseIndex, currentClass);
+	}
+
+
+	@Override
+	public void setClassName(String newClassName) {
+		currentClass = newClassName;
+	}
 }

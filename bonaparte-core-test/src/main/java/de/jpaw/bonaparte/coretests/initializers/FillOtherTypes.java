@@ -9,7 +9,10 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
 import de.jpaw.bonaparte.pojos.tests1.OtherTypes;
-import de.jpaw.bonaparte.pojos.tests1.color;
+import de.jpaw.bonaparte.pojos.tests1.Color;
+import de.jpaw.bonaparte.pojos.tests1.AlphaColor;
+import de.jpaw.bonaparte.pojos.tests1.VariableLength;
+import de.jpaw.bonaparte.pojos.tests1.VariableLengthUnicode;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.DayTime;
 
@@ -19,7 +22,7 @@ public class FillOtherTypes {
 	static public OtherTypes test1() {
 		OtherTypes x = new OtherTypes();
 		x.setAscii1("Hello, world!");
-		x.setColor1(color.GREEN);
+		x.setColor1(Color.GREEN);
 		x.setDay1(new LocalDate(2012, 8, 5));
 		x.setDecimal1(new BigDecimal("-3.14"));
 		x.setNumber1(42);
@@ -30,7 +33,16 @@ public class FillOtherTypes {
 		x.setTimestamp3(new GregorianCalendar(2012, 8, 5, 11, 55, 03));
 		x.setTimestamp4(DayTime.getCurrentTimestamp());
 		x.setUnicode1("Hällo Wörld!\r\n");
+		x.setColor2(AlphaColor.GREEN);
+		x.setVarEnum1(VariableLength.LONG);
+		x.setVarEnum2(VariableLengthUnicode.EURO);
 		x.setMyUuid(UUID.randomUUID());
+		x.setCountryCode("DE");
+		x.setLanguageCode("en_US");
+		x.setTimestamp1a(new LocalDateTime(2012, 8, 5, 11, 55, 03));
+		x.setTimestamp2a(new LocalDateTime());
+		x.setTimestamp3a(new GregorianCalendar(2012, 8, 5, 11, 55, 03));
+		x.setTimestamp4a(DayTime.getCurrentTimestamp());
 		return x;
 	}
 	

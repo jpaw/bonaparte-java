@@ -24,7 +24,6 @@ import javax.xml.bind.DatatypeConverter;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
-import de.jpaw.util.Base64;
 import de.jpaw.util.ByteArray;
 /**
  * The StringBuilderComposer class.
@@ -35,7 +34,7 @@ import de.jpaw.util.ByteArray;
  *          Implements the serialization for the bonaparte format using StringBuilder.
  */
 
-public final class StringBuilderComposer extends StringBuilderConstants implements MessageComposer {
+public final class StringBuilderComposer extends StringBuilderConstants implements BufferedMessageComposer<RuntimeException> {
 	// variables set by constructor
 	private StringBuilder work;
 
@@ -102,18 +101,6 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
 	}
 
 	@Override
-	public void terminateObject() {
-		work.append(OBJECT_TERMINATOR);
-	}
-
-	@Override
-	public void startObject(String name, String version) {
-		work.append(OBJECT_BEGIN);
-		addField(name, 0);
-		addField(version, 2);
-	}
-
-	@Override
 	public void writeSuperclassSeparator() {
 		work.append(PARENT_SEPARATOR);
 	}
@@ -127,7 +114,7 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
 	@Override
 	public void writeRecord(BonaPortable o) {
 		startRecord();
-		o.serialise(this);
+		addField(o);
 		terminateRecord();
 	}
 	
@@ -155,13 +142,9 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
 
 	// character
 	@Override
-	public void addField(Character c) {
-		if (c != null) {
-			addCharSub(c.charValue());
-			terminateField();
-		} else {
-			writeNull();
-		}
+	public void addField(char c) {
+		addCharSub(c);
+		terminateField();
 	}
 	// ascii only (unicode uses different method)
 	@Override
@@ -180,7 +163,7 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
 			boolean isSigned) {
 		if (n != null) {
 			work.append(n.toPlainString());
-		terminateField();
+			terminateField();
 		} else {
 			writeNull();
 		}
@@ -188,34 +171,21 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
 	
 	// byte
 	@Override
-	public void addField(Byte n) {
-		if (n != null) {
-			work.append(n.toString());
-			terminateField();
-		} else {
-			writeNull();
-		}
+	public void addField(byte n) {
+		work.append(Byte.toString(n));
+		terminateField();
 	}
 	// short
 	@Override
-	public void addField(Short n) {
-		if (n != null) {
-			work.append(n.toString());
-			terminateField();
-		} else {
-			writeNull();
-		}
+	public void addField(short n) {
+		work.append(Short.toString(n));
+		terminateField();
 	}
-
 	// integer
 	@Override
-	public void addField(Integer n) {
-		if (n != null) {
-			work.append(n.toString());
-			terminateField();
-		} else {
-			writeNull();
-		}
+	public void addField(int n) {
+		work.append(Integer.toString(n));
+		terminateField();
 	}
 	
 	// int(n)
@@ -231,49 +201,33 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
 
 	// long
 	@Override
-	public void addField(Long n) {
-		if (n != null) {
-			work.append(n.toString());
-			terminateField();
-		} else {
-			writeNull();
-		}
+	public void addField(long n) {
+		work.append(Long.toString(n));
+		terminateField();
 	}
 
 	// boolean
 	@Override
-	public void addField(Boolean b) {
-		if (b != null) {
-			if (b)
-				work.append('1');
-			else
-				work.append('0');
-			terminateField();
-		} else {
-			writeNull();
-		}
+	public void addField(boolean b) {
+		if (b)
+			work.append('1');
+		else
+			work.append('0');
+		terminateField();
 	}
 
 	// float
 	@Override
-	public void addField(Float f) {
-		if (f != null) {
-			work.append(f.toString());
-			terminateField();
-		} else {
-			writeNull();
-		}		
+	public void addField(float f) {
+		work.append(Float.toString(f));
+		terminateField();
 	}
 
 	// double
 	@Override
-	public void addField(Double d) {
-		if (d != null) {
-			work.append(d.toString());
-			terminateField();
-		} else {
-			writeNull();
-		}
+	public void addField(double d) {
+		work.append(Double.toString(d));
+		terminateField();
 	}
 
 	// UUID
@@ -322,15 +276,19 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
 	
 	// converters for DAY und TIMESTAMP
 	@Override
-	public void addField(GregorianCalendar t, int length) {  // TODO: length is not needed for this one
+	public void addField(GregorianCalendar t, boolean hhmmss, int length) {  // TODO: length is not needed for this one
 		if (t != null) {
 			int tmpValue = 10000 * t.get(Calendar.YEAR) + 100
 					* (t.get(Calendar.MONTH) + 1) + t.get(Calendar.DAY_OF_MONTH);
 			work.append(Integer.toString(tmpValue));
 			if (length >= 0) {
 				// not only day, but also time
-				tmpValue = 10000 * t.get(Calendar.HOUR_OF_DAY) + 100
-						* t.get(Calendar.MINUTE) + t.get(Calendar.SECOND);
+				if (hhmmss)
+					tmpValue = 10000 * t.get(Calendar.HOUR_OF_DAY) + 100
+					       * t.get(Calendar.MINUTE) + t.get(Calendar.SECOND);
+				else
+					tmpValue = 3600 * t.get(Calendar.HOUR_OF_DAY) + 60
+				       * t.get(Calendar.MINUTE) + t.get(Calendar.SECOND);
 				if (tmpValue != 0 || (length > 0 && t.get(Calendar.MILLISECOND) != 0)) {
 					work.append('.');
 					lpad(Integer.toString(tmpValue), 6, '0');
@@ -361,24 +319,26 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
 	}
 
 	@Override
-	public void addField(LocalDateTime t, int length) {
+	public void addField(LocalDateTime t, boolean hhmmss, int length) {
 		if (t != null) {
 			int [] values = t.getValues(); // 4 values: year, month, day, millis of day
-			int tmpValue = 10000 * values[0] + 100 * values[1] + values[2];
 			//int tmpValue = 10000 * t.getYear() + 100 * t.getMonthOfYear() + t.getDayOfMonth();
-			work.append(Integer.toString(tmpValue));
+			work.append(Integer.toString(10000 * values[0] + 100 * values[1] + values[2]));
 			if (length >= 0) {
 				// not only day, but also time
 				//tmpValue = 10000 * t.getHourOfDay() + 100 * t.getMinuteOfHour() + t.getSecondOfMinute();
 				if (length > 0 ? (values[3] != 0) : (values[3] / 1000 != 0)) {
 					work.append('.');
-					int milliSeconds = values[3] % 60000; // seconds and millis
-					tmpValue = values[3] / 60000; // minutes and hours
-					tmpValue = 100 * (tmpValue / 60) + (tmpValue % 60);
-					lpad(Integer.toString(tmpValue * 100 + milliSeconds / 1000), 6, '0');
+					if (hhmmss) {
+						int tmpValue = values[3] / 60000; // minutes and hours
+						tmpValue = 100 * (tmpValue / 60) + (tmpValue % 60);
+						lpad(Integer.toString(tmpValue * 100 + (values[3] % 60000) / 1000), 6, '0');
+					} else {
+						lpad(Integer.toString(values[3] / 1000), 6, '0');
+					}
 					if (length > 0) {
 						// add milliseconds
-						milliSeconds = milliSeconds % 1000;
+						int milliSeconds = values[3] % 1000;
 						if (milliSeconds != 0)
 							lpad(Integer.toString(milliSeconds), 3, '0');
 					}
@@ -408,11 +368,13 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
 			writeNull();
 		} else {
 			// start a new object
-			startObject(obj.get$PQON(), obj.get$Revision());
-			// do all fields
-			obj.serialiseSub(this);
-			// terminate the object
-			terminateObject();
+			work.append(OBJECT_BEGIN);
+			work.append(obj.get$PQON());
+			terminateField();
+			addField(obj.get$Revision(), 0);
+			
+			// do all fields (now includes terminator)
+			obj.serializeSub(this);
 		}
 	}
 }

@@ -76,6 +76,7 @@ public class MessageParserException extends ApplicationException {
     static public final int EMPTY_CHAR                   = OFFSET + 33;
     static public final int BAD_OBJECT_NAME              = OFFSET + 34;
     static public final int BAD_UUID_FORMAT              = OFFSET + 35;
+    static public final int INVALID_ENUM_TOKEN           = OFFSET + 36;
 	
     /**
      * Method lazyInitialization.
@@ -123,6 +124,7 @@ public class MessageParserException extends ApplicationException {
     		codeToDescription.put(EMPTY_CHAR                   , "empty character field");
     		codeToDescription.put(BAD_OBJECT_NAME              , "bad object name (must contain a dot, and not as first or last character)");
     		codeToDescription.put(BAD_UUID_FORMAT              , "malformed UUID");
+    		codeToDescription.put(INVALID_ENUM_TOKEN           , "invalid token to instanciate enum");
     	}
     }
 	

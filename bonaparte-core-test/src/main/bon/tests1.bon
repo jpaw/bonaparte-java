@@ -1,6 +1,9 @@
 package tests1 {
     type countryCode is uppercase(3);
-    enum color { RED, GREEN, BLUE }
+    enum Color { RED, GREEN, BLUE }
+    enum AlphaColor { RED="R", GREEN="G", BLUE="B" }
+    enum VariableLength { ONE="1", NULL="", LONG = "This is a long text" }
+    enum VariableLengthUnicode { UMLAUT="Jäh!", EURO="€" }
      
     class Primitives {
         byte byte1;
@@ -14,7 +17,33 @@ package tests1 {
         char char1;
         character char2;
     }
+    // same class, but no explicit externalization code
+    class PrimitivesS noExt {
+        byte byte1;
+        short short1;
+        int int1;
+        integer int2;
+        long long1;
+        boolean boolean1;
+        float float1;
+        double double1;
+        char char1;
+        character char2;
+    }
     class BoxedTypes {
+        Byte byte1;
+        Short short1;
+        Int int1;
+        Integer int2;
+        Long long1;
+        Boolean boolean1;
+        Float float1;
+        Double double1;
+        Char char1;
+        Character char2;
+    }
+    // same class, but no explicit externalization code
+    class BoxedTypesS noExt {
         Byte byte1;
         Short short1;
         Int int1;
@@ -50,7 +79,7 @@ package tests1 {
         Char [] char1;
         Character [] char2;
     }
-    class OtherTypes {
+    class OtherTypes BeanVal {
         raw(1000000) raw1;
         binary(1000000) binary1;
         day day1;
@@ -62,8 +91,17 @@ package tests1 {
         unicode(30) unicode1;
         number(4) number1;
         decimal(14,2) decimal1;
-        enum color color1;
+        enum Color color1;
+        enum AlphaColor color2;
+        enum VariableLength varEnum1;
+        enum VariableLengthUnicode varEnum2;
         uuid myUuid;
+        uppercase(2..2) countryCode;
+        Ascii(2..5) regexp "[a-z][a-z](_[A-Z][A-Z])?" languageCode;
+        timestamp(0) hhmmss timestamp1a;
+        timestamp(3) hhmmss timestamp2a;
+        calendar(0) hhmmss timestamp3a;
+        calendar(3) hhmmss timestamp4a;
     }
     class References {
         countryCode country;
@@ -86,5 +124,15 @@ package tests1 {
     class XmlTest XML FIELD {
         ascii(20)          name;
         int                age;
+    }
+    
+    class UnicodeTest {
+        Unicode(10) allowControlChars string1; 
+        Unicode(10) noControlChars    string2; 
+    }
+    
+    class NoRounding {
+        signed Decimal(14,2) sum;
+        signed Decimal(14,2) [] elements;
     }
 }

@@ -41,7 +41,6 @@ public abstract class ByteArrayConstants extends Settings {
 	protected static final byte RECORD_BEGIN = '\022';              // ctrl-R
 	protected static final byte RECORD_OPT_TERMINATOR = '\015';     // ctrl-M
 	protected static final byte RECORD_TERMINATOR = '\012';         // ctrl-J
-	protected static final byte OBJECT_TERMINATOR = '\017';         // ctrl-O
 	protected static final byte PARENT_SEPARATOR = '\020';          // ctrl-P
 	protected static final byte OBJECT_BEGIN = '\023';              // ctrl-S
 	protected static final byte ESCAPE_CHAR = '\005';               // ctrl-E

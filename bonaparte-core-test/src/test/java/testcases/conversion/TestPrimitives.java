@@ -14,7 +14,7 @@
   * limitations under the License.
   */
 
-package testcases;
+package testcases.conversion;
 
 import org.testng.annotations.Test;
 

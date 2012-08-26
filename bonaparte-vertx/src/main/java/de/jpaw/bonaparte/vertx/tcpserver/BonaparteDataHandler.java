@@ -19,7 +19,7 @@ public class BonaparteDataHandler implements Handler<Buffer> {
 	
 	@Override
 	public void handle(Buffer data) {
-		MessageParser p = new ByteArrayParser(data.getBytes(), 0, -1);
+		MessageParser<MessageParserException> p = new ByteArrayParser(data.getBytes(), 0, -1);
 		try {
 			BonaPortable objectIn;
 			objectIn = p.readRecord();

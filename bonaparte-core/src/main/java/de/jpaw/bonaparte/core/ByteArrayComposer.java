@@ -34,7 +34,7 @@ import org.joda.time.LocalDateTime;
  *          Implements the serialization for the bonaparte format using byte arrays.
  */
 
-public class ByteArrayComposer extends ByteArrayConstants implements MessageComposer {
+public class ByteArrayComposer extends ByteArrayConstants implements BufferedMessageComposer<RuntimeException> {
 	// variables for serialization
 	private ByteBuilder work;
 
@@ -101,19 +101,6 @@ public class ByteArrayComposer extends ByteArrayConstants implements MessageComp
 	}
 
 	@Override
-	public void terminateObject() {
-		work.append(OBJECT_TERMINATOR);
-	}
-
-	@Override
-	public void startObject(String name, String version) {
-		work.append(OBJECT_BEGIN);
-		work.appendAscii(name);
-		terminateField();
-		addField(version, 2);
-	}
-
-	@Override
 	public void writeSuperclassSeparator() {
 		work.append(PARENT_SEPARATOR);
 	}
@@ -127,11 +114,11 @@ public class ByteArrayComposer extends ByteArrayConstants implements MessageComp
 	@Override
 	public void writeRecord(BonaPortable o) {
 		startRecord();
-		o.serialise(this);
+		addField(o);
 		terminateRecord();
 	}
 	
-	private void addCharSub(char c) {
+	private void addCharSub(int c) {
 		if (c < ' ' && c != '\t') {
 			work.append(ESCAPE_CHAR);
 			work.append((byte)(c + '@'));
@@ -146,8 +133,10 @@ public class ByteArrayComposer extends ByteArrayConstants implements MessageComp
 	@Override
 	public void addUnicodeString(String s, int length, boolean allowCtrls) {
 		if (s != null) {
-			for (int i = 0; i < s.length(); ++i) {
-				addCharSub(s.charAt(i));
+			for (int i = 0; i < s.length();) {
+				int c = s.codePointAt(i);
+				addCharSub(c);
+				i += Character.charCount(c);
 			}
 			terminateField();
 		} else {
@@ -157,13 +146,9 @@ public class ByteArrayComposer extends ByteArrayConstants implements MessageComp
 
 	// character
 	@Override
-	public void addField(Character c) {
-		if (c != null) {
-			addCharSub(c.charValue());
-			terminateField();
-		} else {
-			writeNull();
-		}
+	public void addField(char c) {
+		addCharSub(c);
+		terminateField();
 	}
 	// ascii only (unicode uses different method)
 	@Override
@@ -190,33 +175,21 @@ public class ByteArrayComposer extends ByteArrayConstants implements MessageComp
 	
 	// byte
 	@Override
-	public void addField(Byte n) {
-		if (n != null) {
-			work.appendAscii(n.toString());
-			terminateField();
-		} else {
-			writeNull();
-		}
+	public void addField(byte n) {
+		work.appendAscii(Byte.toString(n));
+		terminateField();
 	}
 	// short
 	@Override
-	public void addField(Short n) {
-		if (n != null) {
-			work.appendAscii(n.toString());
-			terminateField();
-		} else {
-			writeNull();
-		}
+	public void addField(short n) {
+		work.appendAscii(Short.toString(n));
+		terminateField();
 	}
 	// integer
 	@Override
-	public void addField(Integer n) {
-		if (n != null) {
-			work.appendAscii(n.toString());
-			terminateField();
-		} else {
-			writeNull();
-		}
+	public void addField(int n) {
+		work.appendAscii(Integer.toString(n));
+		terminateField();
 	}
 	
 	// int(n)
@@ -232,27 +205,19 @@ public class ByteArrayComposer extends ByteArrayConstants implements MessageComp
 
 	// long
 	@Override
-	public void addField(Long n) {
-		if (n != null) {
-			work.appendAscii(n.toString());
-			terminateField();
-		} else {
-			writeNull();
-		}
+	public void addField(long n) {
+		work.appendAscii(Long.toString(n));
+		terminateField();
 	}
 
 	// boolean
 	@Override
-	public void addField(Boolean b) {
-		if (b != null) {
-			if (b)
-				work.append((byte)'1');
-			else
-				work.append((byte)'0');
-			terminateField();
-		} else {
-			writeNull();
-		}
+	public void addField(boolean b) {
+		if (b)
+			work.append((byte) '1');
+		else
+			work.append((byte) '0');
+		terminateField();
 	}
 
 
@@ -269,31 +234,23 @@ public class ByteArrayComposer extends ByteArrayConstants implements MessageComp
 	
 	// float
 	@Override
-	public void addField(Float f) {
-		if (f != null) {
-			work.appendAscii(f.toString());
-			terminateField();
-		} else {
-			writeNull();
-		}		
+	public void addField(float f) {
+		work.appendAscii(Float.toString(f));
+		terminateField();
 	}
 
 	// double
 	@Override
-	public void addField(Double d) {
-		if (d != null) {
-			work.appendAscii(d.toString());
-			terminateField();
-		} else {
-			writeNull();
-		}
+	public void addField(double d) {
+		work.appendAscii(Double.toString(d));
+		terminateField();
 	}
 
 	// ByteArray: initial quick & dirty implementation
 	@Override
 	public void addField(ByteArray b, int length) {
 		if (b != null) {
-			Base64.encodeToByte(work, b.getBytes());
+			b.appendBase64(work);
 			//work.append(DatatypeConverter.printBase64Binary(b));
 			//work.append(DatatypeConverter.printHexBinary(b));
 			terminateField();
@@ -306,7 +263,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements MessageComp
 	@Override
 	public void addField(byte[] b, int length) {
 		if (b != null) {
-			Base64.encodeToByte(work, b);
+			Base64.encodeToByte(work, b, 0, b.length);
 			//work.append(DatatypeConverter.printBase64Binary(b));
 			//work.append(DatatypeConverter.printHexBinary(b));
 			terminateField();
@@ -325,15 +282,19 @@ public class ByteArrayComposer extends ByteArrayConstants implements MessageComp
 
 	// converters for DAY und TIMESTAMP
 	@Override
-	public void addField(GregorianCalendar t, int length) {  // TODO: length is not needed for this one
+	public void addField(GregorianCalendar t, boolean hhmmss, int length) {  // TODO: length is not needed for this one
 		if (t != null) {
 			int tmpValue = 10000 * t.get(Calendar.YEAR) + 100
 					* (t.get(Calendar.MONTH) + 1) + t.get(Calendar.DAY_OF_MONTH);
 			work.appendAscii(Integer.toString(tmpValue));
 			if (length >= 0) {
 				// not only day, but also time
-				tmpValue = 10000 * t.get(Calendar.HOUR_OF_DAY) + 100
-						* t.get(Calendar.MINUTE) + t.get(Calendar.SECOND);
+				if (hhmmss)
+					tmpValue = 10000 * t.get(Calendar.HOUR_OF_DAY) + 100
+					       * t.get(Calendar.MINUTE) + t.get(Calendar.SECOND);
+				else
+					tmpValue = 3600 * t.get(Calendar.HOUR_OF_DAY) + 60
+				       * t.get(Calendar.MINUTE) + t.get(Calendar.SECOND);
 				if (tmpValue != 0 || (length > 0 && t.get(Calendar.MILLISECOND) != 0)) {
 					work.append((byte) '.');
 					lpad(Integer.toString(tmpValue), 6, (byte) '0');
@@ -365,24 +326,26 @@ public class ByteArrayComposer extends ByteArrayConstants implements MessageComp
 	}
 
 	@Override
-	public void addField(LocalDateTime t, int length) {
+	public void addField(LocalDateTime t, boolean hhmmss, int length) {
 		if (t != null) {
 			int [] values = t.getValues(); // 4 values: year, month, day, millis of day
-			int tmpValue = 10000 * values[0] + 100 * values[1] + values[2];
 			//int tmpValue = 10000 * t.getYear() + 100 * t.getMonthOfYear() + t.getDayOfMonth();
-			work.appendAscii(Integer.toString(tmpValue));
+			work.appendAscii(Integer.toString(10000 * values[0] + 100 * values[1] + values[2]));
 			if (length >= 0) {
 				// not only day, but also time
 				//tmpValue = 10000 * t.getHourOfDay() + 100 * t.getMinuteOfHour() + t.getSecondOfMinute();
 				if (length > 0 ? (values[3] != 0) : (values[3] / 1000 != 0)) {
 					work.append((byte) '.');
-					int milliSeconds = values[3] % 60000; // seconds and millis
-					tmpValue = values[3] / 60000; // minutes and hours
-					tmpValue = 100 * (tmpValue / 60) + (tmpValue % 60);
-					lpad(Integer.toString(tmpValue * 100 + milliSeconds / 1000), 6, (byte) '0');
+					if (hhmmss) {
+						int tmpValue = values[3] / 60000; // minutes and hours
+						tmpValue = 100 * (tmpValue / 60) + (tmpValue % 60);
+						lpad(Integer.toString(tmpValue * 100 + (values[3] % 60000) / 1000), 6, (byte) '0');
+					} else {
+						lpad(Integer.toString(values[3] / 1000), 6, (byte) '0');
+					}
 					if (length > 0) {
 						// add milliseconds
-						milliSeconds = milliSeconds % 1000;
+						int milliSeconds = values[3] % 1000;
 						if (milliSeconds != 0)
 							lpad(Integer.toString(milliSeconds), 3, (byte) '0');
 					}
@@ -412,11 +375,13 @@ public class ByteArrayComposer extends ByteArrayConstants implements MessageComp
 			writeNull();
 		} else {
 			// start a new object
-			startObject(obj.get$PQON(), obj.get$Revision());
-			// do all fields
-			obj.serialiseSub(this);
-			// terminate the object
-			terminateObject();
+			work.append(OBJECT_BEGIN);
+			work.appendAscii(obj.get$PQON());
+			terminateField();
+			addField(obj.get$Revision(), 0);
+
+			// do all fields (now includes terminator)
+			obj.serializeSub(this);
 		}
 	}
 

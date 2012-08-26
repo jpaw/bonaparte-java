@@ -1,0 +1,31 @@
+package access {
+     
+    class NoDefaults {
+        int isDefault;
+        private int isPrivate;
+        protected int isProtected;
+        public int isPublic;
+    }
+    
+    class DefaultPublic {
+        default public;
+        int isDefault;
+        private int isPrivate;
+        protected int isProtected;
+        public int isPublic;
+    }
+    class DefaultProtected {
+        default protected;
+        int isDefault;
+        private int isPrivate;
+        protected int isProtected;
+        public int isPublic;
+    }
+    class DefaultPrivate {
+        default private;
+        int isDefault;
+        private int isPrivate;
+        protected int isProtected;
+        public int isPublic;
+    }
+}

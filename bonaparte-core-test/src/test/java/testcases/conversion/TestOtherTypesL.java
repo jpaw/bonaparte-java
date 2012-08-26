@@ -14,7 +14,7 @@
   * limitations under the License.
   */
 
-package testcases;
+package testcases.conversion;
 
 import org.testng.annotations.Test;
 
@@ -28,12 +28,12 @@ import de.jpaw.bonaparte.coretests.util.SimpleTestRunner;
  * @version $Revision$
  * 
  *          This is a simple testcase which calls the SimpleTestRunner with a class
- *          consisting of some other special types. Using small arrays.
+ *          consisting of some other special types. Using large arrays.
  */
 
-public class TestOtherTypesS {
+public class TestOtherTypesL {
 	@Test
 	public void testOtherTypes() throws Exception {
-		SimpleTestRunner.run(FillOtherTypes.test1(), false);
+		SimpleTestRunner.run(FillOtherTypes.test2(1000000), false);
 	}	
 }

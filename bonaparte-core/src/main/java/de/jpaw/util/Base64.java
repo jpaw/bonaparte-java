@@ -75,7 +75,7 @@ import java.util.Arrays;
  * encoder modified to work with ByteBuilder
  */
 
-public class Base64 {
+public final class Base64 {
 	private static final char[] CA = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".toCharArray();
 	private static final int[] IA = new int[256];
 	static {
@@ -96,22 +96,22 @@ public class Base64 {
 	 * little faster.
 	 * @return A BASE64 encoded array. Never <code>null</code>.
 	 */
-	public final static void encodeToByte(ByteBuilder target, byte[] sArr) {
+	public final static void encodeToByte(ByteBuilder target, byte[] sArr, int offset, int length) {
 		// Check special case
-		int sLen = sArr.length;
-		if (sLen == 0)
+		if (length == 0)
 			return;
 		int d = target.length();
-		int eLen = (sLen / 3) * 3;                              // Length of even 24-bits.
-		int cCnt = ((sLen - 1) / 3 + 1) << 2;                   // Returned character count
+		int eLen = (length / 3) * 3 + offset;                              // Length of even 24-bits.
+		int cCnt = ((length - 1) / 3 + 1) << 2;                   // Returned character count
 		int dLen = d + cCnt; // end position of returned array
 		target.ensureCapacity(dLen);
 		byte[] dArr = target.getCurrentBuffer();
+		int left = offset + length - eLen; // 0 - 2.
 		
 		// Encode even 24-bits
-		for (int s = 0, cc = 0; s < eLen;) {
-			// Copy next three bytes into lower 24 bits of int, paying attension to sign.
-			int i = (sArr[s++] & 0xff) << 16 | (sArr[s++] & 0xff) << 8 | (sArr[s++] & 0xff);
+		while (offset < eLen) {
+			// Copy next three bytes into lower 24 bits of int, paying attention to sign.
+			int i = (sArr[offset++] & 0xff) << 16 | (sArr[offset++] & 0xff) << 8 | (sArr[offset++] & 0xff);
 
 			// Encode the int into four chars
 			dArr[d++] = (byte) CA[(i >>> 18) & 0x3f];
@@ -121,10 +121,9 @@ public class Base64 {
 		}
 
 		// Pad and encode last bits if source isn't an even 24 bits.
-		int left = sLen - eLen; // 0 - 2.
 		if (left > 0) {
 			// Prepare the int
-			int i = ((sArr[eLen] & 0xff) << 10) | (left == 2 ? ((sArr[sLen - 1] & 0xff) << 2) : 0);
+			int i = ((sArr[eLen] & 0xff) << 10) | (left == 2 ? ((sArr[length - 1] & 0xff) << 2) : 0);
 			if (d != dLen - 4)
 				System.out.println("Mismatch! d = " + d + ", dLen-4 = " + (dLen - 4));
 			

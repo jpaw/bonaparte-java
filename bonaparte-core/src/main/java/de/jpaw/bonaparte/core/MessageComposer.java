@@ -16,7 +16,6 @@
 package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
-import java.nio.charset.Charset;
 import java.util.UUID;
 import java.util.GregorianCalendar;
 import org.joda.time.LocalDate;
@@ -33,50 +32,47 @@ import de.jpaw.util.ByteArray;
  *          Defines the methods required for any serialization implementation
  */
 
-public interface MessageComposer {
-    // generic methods
-    public void reset();	    // restart the output
-    public int getLength();	    // obtain the number of written bytes (composer)
-    public byte[] getBuffer();	// get the buffer (byte array of maybe too big size)
-    public byte[] getBytes();	// get exact byte array of produced output
+public interface MessageComposer<E extends Exception> {
     
     // serialization methods: structure 
-	public void writeNull();
-    public void startTransmission();
-    public void startRecord();
-    public void startObject(String name, String version);
-    public void startArray(int currentMembers, int maxMembers);
-	public void writeSuperclassSeparator();  // this is bad. It should be transparent to the classes if the message format contains separators or not.
-    public void terminateArray();
-    public void terminateObject();
-    public void terminateRecord();
-    public void terminateTransmission();
-	public void writeRecord(BonaPortable o);
+	public void writeNull() throws E;
+    public void startTransmission() throws E;
+    public void startRecord() throws E;
+    public void startArray(int currentMembers, int maxMembers) throws E;
+	public void writeSuperclassSeparator() throws E;  // this is bad. It should be transparent to the classes if the message format contains separators or not.
+    public void terminateArray() throws E;
+    public void terminateRecord() throws E;
+    public void terminateTransmission() throws E;
+	public void writeRecord(BonaPortable o) throws E;
 
     // serialization methods: field type specific
-    void addUnicodeString(String s,  int length, boolean allowCtrls); // length is max length as specified in DSL
-    void addField(String s,  int length);				// length is max length as specified in DSL
-    void addField(Character c);
-    void addField(Byte n);
-    void addField(Short n);
-    void addField(Double d);
-    void addField(Float f);
-    void addField(Long n);
-    void addField(Integer n);
-    void addField(Integer n, int length, boolean isSigned); // length is max length as specified in DSL
-    void addField(BigDecimal n, int length, int decimals, boolean isSigned);
-    void addField(Boolean b);
-    void addField(UUID n);
-    void addField(ByteArray b, int length);
-    void addField(byte [] b, int length);
-    void addField(GregorianCalendar t, int length);
-    void addField(LocalDate t);
-    void addField(LocalDateTime t, int length);
-    void addField(BonaPortable obj);
+    void addUnicodeString(String s,  int length, boolean allowCtrls) throws E; // length is max length as specified in DSL
+    void addField(String s,  int length) throws E;				// length is max length as specified in DSL
+    
+    // primitives
+    void addField(boolean b) throws E;
+    void addField(char c) throws E;
+    void addField(double d) throws E;
+    void addField(float f) throws E;
+    void addField(byte n) throws E;
+    void addField(short n) throws E;
+    void addField(int n) throws E;
+    void addField(long n) throws E;
+    
+    void addField(Integer n, int length, boolean isSigned) throws E; // length is max length as specified in DSL
+    void addField(BigDecimal n, int length, int decimals, boolean isSigned) throws E;
+    void addField(UUID n) throws E;
+    void addField(ByteArray b, int length) throws E;
+    void addField(byte [] b, int length) throws E;
+    void addField(GregorianCalendar t, boolean hhmmss, int length) throws E;
+    void addField(LocalDate t) throws E;
+    void addField(LocalDateTime t, boolean hhmmss, int length) throws E;
+    void addField(BonaPortable obj) throws E;
     
     // methods from common settings
-    public boolean doWriteCRs();
-	public void setWriteCRs(boolean writeCRs);
-	public Charset getCharset();
-	public void setCharset(Charset charset);
+    // omit, these are only valid for the ASCII / UTF format. Set them on the Composer object directly, or create an "ASCIIComposer" interface
+    //public boolean doWriteCRs();
+	//public void setWriteCRs(boolean writeCRs);
+	//public Charset getCharset();
+	//public void setCharset(Charset charset);
 }

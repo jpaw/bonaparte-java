@@ -65,6 +65,7 @@ package meta {
 		Ascii(20) ^revision;
 		identifier parent;
         identifier ^bundle;  // OSGi bundle / module
+        signed long serialUID;      // Java serializable serialVersionUID
 		int numberOfFields;
 		optional (FieldDefinition...)[] fields;
 		optional Timestamp(3) whenLoaded;
