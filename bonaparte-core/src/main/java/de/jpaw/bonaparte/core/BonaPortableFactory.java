@@ -48,15 +48,24 @@ public class BonaPortableFactory {
 		String FQON = null;
 		BonaPortable instance = null;
 		int lastDot = name.lastIndexOf('.');
-		if (lastDot <= 0 || lastDot >= name.length() - 1)
+		if (lastDot == 0 || lastDot >= name.length() - 1)
 			throw new MessageParserException(MessageParserException.BAD_OBJECT_NAME,
 					null, -1, name);
-		String myPackage = name.substring(0, lastDot);
+		String myPackage;
+		String myClass;
+		if (lastDot < 0) {
+			myPackage ="";
+			myClass = name;
+		} else {
+			myPackage = name.substring(0, lastDot); 
+			myClass = name.substring(lastDot+1);
+		}
+		
 		
 		if (packagePrefixMap != null) {
 			String mappedPackagePart = packagePrefixMap.get(myPackage);
 			if (mappedPackagePart != null)
-				FQON = mappedPackagePart + "." + name.substring(lastDot+1);
+				FQON = mappedPackagePart + "." + myClass;
 		}
 		if (FQON == null)
 			// prefix by fixed package

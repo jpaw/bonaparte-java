@@ -9,10 +9,10 @@
     </parent>
 
     <groupId>de.jpaw</groupId>
-    <artifactId>bonaparte-camel</artifactId>
+    <artifactId>bonaparte-netty</artifactId>
     <packaging>jar</packaging>
 
-    <name>BONAPARTE integration with Apache Camel</name>
+    <name>BONAPARTE Netty encoder/decoder</name>
     <url>http://www.jpaw.de</url>
 
     <dependencies>
@@ -22,9 +22,9 @@
             <version>${bonaparte.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-core</artifactId>
-            <version>2.10.1</version>
+            <groupId>io.netty</groupId>
+            <artifactId>netty</artifactId>
+            <version>4.0.0.Alpha2</version>
         </dependency>
     </dependencies>
 </project>
