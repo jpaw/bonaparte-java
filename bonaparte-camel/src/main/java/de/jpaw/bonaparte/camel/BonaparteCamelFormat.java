@@ -28,8 +28,6 @@ import org.slf4j.LoggerFactory;
 
 import de.jpaw.bonaparte.core.StringBuilderParser;
 import de.jpaw.bonaparte.core.StringBuilderComposer;
-import de.jpaw.bonaparte.core.MessageComposer;
-import de.jpaw.bonaparte.core.MessageParser;
 import de.jpaw.bonaparte.core.BonaPortable;
 
 /**
@@ -53,7 +51,7 @@ public final class BonaparteCamelFormat implements DataFormat {
     private int initialBufferSize = 65500;  // start big to avoid frequent reallocation 
 	
 	
-	private void writeOptions(OutputStream stream, MessageComposer w) throws IOException {
+	private void writeOptions(OutputStream stream, StringBuilderComposer w) throws IOException {
 		String encoding = "\030E€\031"; 
 		if (writeEncoding)
 			stream.write(encoding.getBytes(w.getCharset()));
@@ -64,7 +62,7 @@ public final class BonaparteCamelFormat implements DataFormat {
 		
 		work = new StringBuilder(initialBufferSize);
 
-		MessageComposer w = new StringBuilderComposer(work);
+		StringBuilderComposer w = new StringBuilderComposer(work);
 		if (java.util.List.class.isInstance(graph)) {
 			//w.startTransmission();
 			stream.write('T'-'@'); // transmission begin
@@ -101,7 +99,7 @@ public final class BonaparteCamelFormat implements DataFormat {
 			isMultiRecord = true;
 		
 		StringBuilder work = new StringBuilder(new String (byteBuffer, useCharset)); 
-		MessageParser w = new StringBuilderParser(work, 0, -1);
+		StringBuilderParser w = new StringBuilderParser(work, 0, -1);
 		List<BonaPortable> resultSet = w.readTransmission();
 		if (isMultiRecord)
 			return resultSet;		// which may be empty

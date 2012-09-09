@@ -26,43 +26,47 @@ import de.jpaw.util.ByteBuilder;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 /**
- * The ByteArrayComposer class.
+ * Implements the serialization for the bonaparte format into byte arrays, using the {@link de.jpaw.util.ByteBuilder ByteBuilder} class, which is similar to the well known {@link java.lang.StringBuilder StringBuilder}.
  * 
  * @author Michael Bischoff
- * @version $Revision$
  * 
- *          Implements the serialization for the bonaparte format using byte arrays.
  */
 
 public class ByteArrayComposer extends ByteArrayConstants implements BufferedMessageComposer<RuntimeException> {
 	// variables for serialization
 	private ByteBuilder work;
 
-	// create a processor for writing
+	/** Creates a new ByteArrayComposer, using this classes static default Charset **/ 
 	public ByteArrayComposer() {
-		this.work = new ByteBuilder(0, getCharset());
+		this.work = new ByteBuilder(0, getDefaultCharset());
 	}
 
-    // restart the output
+    /** Sets the current length to 0, allowing reuse of the allocated output buffer for a new message. */  
 	@Override
     public void reset() {
         work.setLength(0);
     }
+	
+	/** Returns the number of bytes written. */
 	@Override
     public int getLength() {	// obtain the number of written bytes (composer)
     	return work.length();
     }
+	
+	/** Returns the current buffer as a Java byte array. Only the first <code>getLength()</code> bytes of this buffer are valid. */
 	@Override
     public byte[] getBuffer() {
     	return work.getCurrentBuffer();
     }
+	
+	/** returns the result as a deep copy byte array of precise length of the result. */
 	@Override
 	public byte[] getBytes() {
 		return work.getBytes();  // slow!
 	}
 
     
-	/**************************************************************************************************
+	/* *************************************************************************************************
 	 * Serialization goes here
 	 **************************************************************************************************/
 

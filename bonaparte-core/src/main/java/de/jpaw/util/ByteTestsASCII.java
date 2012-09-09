@@ -16,15 +16,13 @@
 package de.jpaw.util;
 
 /**
- * The ByteTestsASCII class.
- * 
- * @author Michael Bischoff
- * @version $Revision$
- * 
- *          This class defines a couple of simple tests which correspond to the
+ *          This class defines a couple of simple tests for the Java primitive type {@code byte} which correspond to the
  *          macros included in the header file ctype.h for the programming
  *          language C. These macros really should have been included in the
  *          standard Java class "Byte".
+ * 
+ * @author Michael Bischoff
+ * 
  */
 
 public class ByteTestsASCII {

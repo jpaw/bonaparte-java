@@ -19,12 +19,26 @@ public class BonaparteNettyDecoder extends MessageToMessageDecoder<ByteBuf, Bona
 
     @Override
     public BonaPortable decode(ChannelHandlerContext ctx, ByteBuf msg) throws Exception {
+        byte[] array;
         if (msg.hasArray()) {
-            final int offset = msg.readerIndex();
-            ByteArrayParser p = new ByteArrayParser(msg.array(), msg.arrayOffset() + offset, msg.readableBytes());
-            return p.readRecord();
+            if (msg.arrayOffset() == 0 && msg.readableBytes() == msg.capacity()) {
+                // we have no offset and the length is the same as the capacity. Its safe to reuse
+                // the array without copy it first
+                array = msg.array();
+            } else {
+                // copy the ChannelBuffer to a byte array
+                array = new byte[msg.readableBytes()];
+                msg.getBytes(0, array);
+            }
+        } else {
+            // copy the ChannelBuffer to a byte array
+            array = new byte[msg.readableBytes()];
+            msg.getBytes(0, array);
         }
-    	return null;
+        
+        ByteArrayParser p = new ByteArrayParser(array, 0, -1);
+        BonaPortable obj = p.readRecord();
+        logger.info("Receiving data of class {}", obj.getClass());
+        return obj;
     }
-
 }

@@ -13,23 +13,10 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-package de.jpaw.util;
-
-import java.util.GregorianCalendar;
-import java.util.Date;
-
 /**
- * Some convenience functions for days and timestamps. 
- * 
+ * Provides a collection of some utility classes not worth their own project / separate package.
+ *
  * @author Michael Bischoff
  * 
  */
-public class DayTime {
-
-	/** Provides functionality missing in the {@link java.util.GregorianCalendar} class, to create a new object initialized with the current timestamp. */
-	static public GregorianCalendar getCurrentTimestamp() {
-		GregorianCalendar now = new GregorianCalendar();
-		now.setTime(new Date());
-		return now;  // TODO: set timezone to UTC as well?
-	}
-}
+package de.jpaw.util;

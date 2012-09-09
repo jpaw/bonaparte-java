@@ -19,12 +19,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * The CharTestsASCII class.
- * 
- * @author Michael Bischoff
- * @version $Revision$
- * 
- *          This class defines a couple of simple tests which correspond to the
+ *          This class defines a couple of simple tests for the Java primitive type {@code char} which correspond to the
  *          macros included in the header file ctype.h for the programming
  *          language C. These macros really should have been included in the
  *          standard Java class "Character", but that class seems to focus more
@@ -32,6 +27,9 @@ import java.util.regex.Pattern;
  *          There is an implementation in apache.commons.lang.CharUtils,
  *          but for such a small functionality we avoid an external dependency and
  *          create the required methods here. 
+ * 
+ * @author Michael Bischoff
+ * 
  */
 
 public class CharTestsASCII {

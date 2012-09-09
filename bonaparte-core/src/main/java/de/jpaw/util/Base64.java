@@ -3,7 +3,8 @@ package de.jpaw.util;
 import java.util.Arrays;
 
 /** A very fast and memory efficient class to encode and decode to and from BASE64 in full accordance
- * with RFC 2045.<br><br>
+ * with RFC 2045.
+ * <p>
  * On Windows XP sp1 with 1.4.2_04 and later ;), this encoder and decoder is about 10 times faster
  * on small arrays (10 - 1000 bytes) and 2-3 times as fast on larger arrays (10000 - 1000000 bytes)
  * compared to <code>sun.misc.Encoder()/Decoder()</code>.<br><br>
@@ -23,7 +24,7 @@ import java.util.Arrays;
  * The encoder produces the same output as the Sun one except that the Sun's encoder appends
  * a trailing line separator if the last character isn't a pad. Unclear why but it only adds to the
  * length and is probably a side effect. Both are in conformance with RFC 2045 though.<br>
- * Commons codec seem to always att a trailing line separator.<br><br>
+ * Commons codec seem to always add a trailing line separator.<br><br>
  *
  * <b>Note!</b>
  * The encode/decode method pairs (types) come in three versions with the <b>exact</b> same algorithm and

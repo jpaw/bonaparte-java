@@ -17,7 +17,6 @@ package de.jpaw.bonaparte.camel;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.charset.Charset;
 import java.util.List;
 
 import org.apache.camel.Exchange;
@@ -27,8 +26,6 @@ import org.slf4j.LoggerFactory;
 
 import de.jpaw.bonaparte.core.ByteArrayComposer;
 import de.jpaw.bonaparte.core.ByteArrayParser;
-import de.jpaw.bonaparte.core.MessageComposer;
-import de.jpaw.bonaparte.core.MessageParser;
 import de.jpaw.bonaparte.core.BonaPortable;
 
 /**
@@ -45,7 +42,7 @@ public final class NewDataFormat implements DataFormat {
 	private static final Logger logger = LoggerFactory.getLogger(BonaparteCamelFormat.class);
     private int initialBufferSize = 65500;  // start big to avoid frequent reallocation 
 	
-    private MessageComposer w = null;
+    private ByteArrayComposer w = null;
 	
 	public void marshal(Exchange exchange, Object graph, OutputStream stream) throws Exception {
 		if (w == null)
@@ -67,8 +64,8 @@ public final class NewDataFormat implements DataFormat {
 		if (byteBuffer[0] == '\024')   // multi record (transmission)
 			isMultiRecord = true;
 		
-		MessageParser w = new ByteArrayParser(byteBuffer, 0, numbytes);
-		List<BonaPortable> resultSet = w.readTransmission();
+		ByteArrayParser p = new ByteArrayParser(byteBuffer, 0, numbytes);
+		List<BonaPortable> resultSet = p.readTransmission();
 		if (isMultiRecord)
 			return resultSet;		// which may be empty
 		else if (resultSet.size() == 0)

@@ -22,15 +22,14 @@ import java.io.ObjectOutput;
 
 
 /**
- * The ByteArray class.
- * 
- * @author Michael Bischoff
- * @version $Revision$
- * 
  *          Functionality which corresponds to String, but for byte arrays.
  *          Essential feature is that the class is immutable, so you can use it in messaging without making deep copies.
- *          Mimicking java.lang.String, the class contains offset and length fields to allow sharing of the buffer. 
+ *          Mimicking {@link java.lang.String}, the class contains offset and length fields to allow sharing of the buffer. 
+ *          <p>
  *          This should really exist in Java SE already.
+ * 
+ * @author Michael Bischoff
+ * 
  */
 
 

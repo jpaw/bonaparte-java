@@ -18,13 +18,12 @@ package de.jpaw.util;
 import java.nio.charset.Charset;
 
 /**
- * The ByteBuilder class.
+ *          Functionality which corresponds to StringBuilder, but for byte arrays.
+ *          <p>
+ *          This should really exist in Java SE already.
  * 
  * @author Michael Bischoff
- * @version $Revision$
  * 
- *          Functionality which corresponds to StringBuilder, but for byte arrays.
- *          This should really exist in Java SE already.
  */
 
 public class ByteBuilder {

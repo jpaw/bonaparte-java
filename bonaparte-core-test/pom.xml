@@ -13,7 +13,7 @@
 	<version>1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>BONAPARTE core libraries</name>
+	<name>BONAPARTE core library extended unit tests</name>
 	<url>http://www.jpaw.de</url>
 
 	<dependencies>
