@@ -62,6 +62,11 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
 		return work.toString().getBytes(getCharset());
 	}
 	
+	/** allows to add raw data to the produced byte array. Use this for protocol support at beginning or end of a message */
+	public void addRawData(String data) {
+		work.append(data);
+	}
+
 	/**************************************************************************************************
 	 * Serialization goes here
 	 **************************************************************************************************/
@@ -70,7 +75,7 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
 	// code the single command each time,
 	// with the intention that they max become extended or redefined and reused
 	// for CSV output to files with
-	// customised separators.
+	// customized separators.
 	// Because this class is defined as final, I hope the JIT will inline them
 	// for better performance
 	// THIS IS REQUIRED ONLY LOCALLY

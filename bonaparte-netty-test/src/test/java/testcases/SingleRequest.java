@@ -5,7 +5,7 @@ import java.util.UUID;
 import org.testng.annotations.Test;
 
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.netty.testServer.SimpleUnpooledClient;
+import de.jpaw.bonaparte.netty.testClient.SimpleUnpooledClient;
 import de.jpaw.bonaparte.pojos.rqrs.Request;
 import de.jpaw.bonaparte.pojos.rqrs.Response;
 

@@ -18,25 +18,64 @@ package de.jpaw.bonaparte.core;
 import java.io.Serializable;
 
 /** 
- * This interface defines the methods any object which should be serialized into the bonaparte format must implement.
- * The class and its implementation is usually created by the bonaparte DSL. 
+ * Defines the methods any object which should be serialized into the bonaparte format must implement.
+ * The class and its implementation is usually created by the bonaparte DSL.
+ *  
  * @author Michael Bischoff
  *
  **/
 public interface BonaPortable extends Serializable {
-	// methods to return static class data
-	public String get$PQON();      	// partially qualified object name:  embed $ to avoid conflict with other getters
-	public String get$Revision();  	// use $ to avoid name clash / conflict with other getters
-    public String get$Parent();		// get the parent class (also possible via getClass() )
-    public String get$Bundle();		// get the bundle this class / package is supposed to sit in
+	/** Gets the partially qualified object name (the fully qualified name minus some constant package prefix).
+	 * This is a constant string (static final), but defined as a member function in order to be able to declare it in the interface.
+	 * 
+	 * @return the partially qualified object name as a not-null Java String.
+	 */
+	public String get$PQON();
+	/** Gets the object revision (version number) as defined in the DSL.
+	 * This is a constant string (static final), but defined as a member function in order to be able to declare it in the interface.
+	 * The expression <code>getClass().getCanonicalName()</code> consists of some package prefix concatenated with the return value of this function. 
+	 * @return the revision as Java String, or null if it has not been defined (which usually corresponds to the initial revision of an object).
+	 */
+	public String get$Revision();
+	/** Gets the partially qualified object name of this object's parent, or null if the object does not extend another object.
+	 * This is a constant string (static final), but defined as a member function in order to be able to declare it in the interface.
+	 * The expression <code>getClass().getCanonicalName()</code> applied to the object's parent consists of some package prefix concatenated with the return value of this function. 
+	 *  
+	 * @return the partially qualified object name of the parent class as a Java String, or null if the object has no explicit superclass.
+	 */
+    public String get$Parent();
+    /** Gets the bundle information as defined in the DSL, or null. Bundles do not yet have any functional effect, they are reserved to allow the grouping into OSGi bundles in the future. 
+     * Therefore, do not yet use this feature.
+	 * This is a constant string (static final), but defined as a member function in order to be able to declare it in the interface.
+     *  
+     * @return the bundle as defined in the DSL as a Java String, or null, if no bundle has been defined for objects of this class.
+     */
+    public String get$Bundle();
     
-    // public void serialize(MessageComposer w);	// not required any more, only serializeSub is called by the composers
-    public <E extends Exception> void serializeSub(MessageComposer<E> w) throws E;             // serialize the fields of an object
+    /** Serializes this object into the format implemented by the MessageComposer parameter. The method will invoke methods of the MessageComposer interface for every member field, and also for some metadata. Class headers itself are assumed to have been serialized before.
+     *  Different implementations are provided with the bonaparte library, for ASCII-like formats (bonaparte) or binary formats plugging into the standard Java {@link java.io.Serializable}/{@link java.io.Externalizable} interface.
+     *  
+     * @param w the implementation of the serializer.
+     * @throws E is usually either {@link RuntimeException}, for serializers writing to in-memory buffers, where no checked exceptions are thrown, or {@link java.io.IOException}, for serializers writing to streams. 
+     */
+    public <E extends Exception> void serializeSub(MessageComposer<E> w) throws E;
+    /** Parses data from a stream or in-memory buffer into a preallocated object.
+     * The reference to the IO stream or memory sits in the {@link MessageParser} parameter.
+     * Parsers for different serialization formats have been implemented, corresponding to the serializer implementations.
+     * 
+     * @param p the implementation of the message parser. The generic type E is an exception which is thrown in case of I/O errors or parsing problems. Current implementations use either {@link java.io.IOException} as type for E, or {@link MessageParserException}. 
+     * @throws E
+     */
     public <E extends Exception> void deserialize(MessageParser<E> p) throws E;
-    public boolean hasSameContentsAs(BonaPortable that);     // returns same result as equals(), but starts with a more type specific object
-    public void validate() throws ObjectValidationException; // verify that data is compliant with patterns, required data is not null etc.
-
-    // WIP and moved to a separate interface extending this one...
-    // next method is not required by serialization, but for marshalling (it could be replaced by reflection methods)
-	// public ClassDefinition get$MetaData();  // name, revision etc as a ClassDefinitiob object. Use $ to avoid conflict with other getters
+    /** An implementation of <code>equals</code>, which receives an object of the BonaPortable type as a parameter.
+     *  
+     * @param that the object to compare.
+     * @return true, if the objects have the same content, false otherwise.
+     */
+    public boolean hasSameContentsAs(BonaPortable that);
+    /** Will provide an explicit implementation of object validation, similar to JSR 303 Bean Validation. This is still work in progress, please use the reflection based validation for now.
+     * 
+     * @throws ObjectValidationException
+     */
+    public void validate() throws ObjectValidationException;
 }

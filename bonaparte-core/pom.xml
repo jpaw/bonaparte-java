@@ -14,7 +14,8 @@
 	<packaging>jar</packaging>
 
 	<name>BONAPARTE core libraries</name>
-	<url>http://www.jpaw.de</url>
+    <description>Definition and implementation of BONAPARTE serializers and deserializers</description>
+	<url>http://www.jpaw.de/projects/bonaparte/core/index.html</url>
 
 	<dependencies>
 		<dependency>

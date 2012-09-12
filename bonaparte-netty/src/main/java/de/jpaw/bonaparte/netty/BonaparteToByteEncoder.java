@@ -18,7 +18,7 @@ public class BonaparteToByteEncoder extends MessageToByteEncoder<BonaPortable> {
 	public void encode(ChannelHandlerContext ctx, BonaPortable msg, ByteBuf out) throws Exception {
 		ByteArrayComposer w = new ByteArrayComposer();
 		w.writeRecord((BonaPortable) msg);
-		logger.info("Writing object {} with contents {}", msg.getClass().getCanonicalName(), new String(w.getBytes()));
+		logger.trace("Writing object {} with contents {}", msg.getClass().getCanonicalName(), new String(w.getBytes()));
 		// create a new ByteBuf with the contents of w.getBuffer()
 		out.setBytes(0, w.getBuffer(), 0, w.getLength());
 	}

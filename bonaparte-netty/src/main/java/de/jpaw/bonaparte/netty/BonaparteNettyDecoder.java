@@ -38,7 +38,7 @@ public class BonaparteNettyDecoder extends MessageToMessageDecoder<ByteBuf, Bona
         
         ByteArrayParser p = new ByteArrayParser(array, 0, -1);
         BonaPortable obj = p.readRecord();
-        logger.info("Receiving data of class {}", obj.getClass());
+        logger.trace("Receiving data of class {}", obj.getClass());
         return obj;
     }
 }

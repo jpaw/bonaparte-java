@@ -51,7 +51,7 @@ public class TestServerHandler extends ChannelInboundMessageHandlerAdapter<BonaP
 
 	@Override
 	public void messageReceived(ChannelHandlerContext ctx, BonaPortable request) throws Exception {
-		logger.info("Received an object of type " + request.getClass().getCanonicalName());
+		logger.trace("Received an object of type " + request.getClass().getCanonicalName());
 		Request myRequest = (Request) request;
 		Response myResponse = new Response();
 

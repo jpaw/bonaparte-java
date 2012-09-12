@@ -73,6 +73,12 @@ public final class StringBuilderParser extends StringBuilderConstants implements
         			String.format("(expected 0x%02x, got 0x%02x)", (int)c, (int)d), parseIndex, currentClass);
 	}
 	
+	/* If byte c occurs, eat it */
+	private void skipChar(char c) {
+        if (parseIndex < messageLength && work.charAt(parseIndex) == c)
+        	++parseIndex;
+	}
+	
 	// check for Null called for field members inside a class
 	private boolean checkForNull(boolean allowNull) throws MessageParserException {
 		char c = needChar();
@@ -499,6 +505,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
 		needChar(RECORD_BEGIN);
 		needChar(NULL_FIELD); // version no
 		result = readObject(BonaPortable.class, false, true);
+		skipChar(RECORD_OPT_TERMINATOR);
 		needChar(RECORD_TERMINATOR);
 		return result;
 	}

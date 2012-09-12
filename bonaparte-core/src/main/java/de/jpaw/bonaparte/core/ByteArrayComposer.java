@@ -65,6 +65,10 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
 		return work.getBytes();  // slow!
 	}
 
+	/** allows to add raw data to the produced byte array. Use this for protocol support at beginning or end of a message */
+	public void addRawData(byte [] data) {
+		work.append(data);
+	}
     
 	/* *************************************************************************************************
 	 * Serialization goes here
@@ -74,7 +78,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
 	// code the single command each time,
 	// with the intention that they max become extended or redefined and reused
 	// for CSV output to files with
-	// customised separators.
+	// customized separators.
 	// Because this class is defined as final, I hope the JIT will inline them
 	// for better performance
 	// THIS IS REQUIRED ONLY LOCALLY
