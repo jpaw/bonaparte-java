@@ -17,6 +17,8 @@ package de.jpaw.util;
 
 import java.util.GregorianCalendar;
 import java.util.Date;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 
 /**
  * Some convenience functions for days and timestamps. 
@@ -31,5 +33,19 @@ public class DayTime {
 		GregorianCalendar now = new GregorianCalendar();
 		now.setTime(new Date());
 		return now;  // TODO: set timezone to UTC as well?
+	}
+	
+	/** Provides functionality to convert a Joda timestamp to a GregorianCalendar. */
+	static public GregorianCalendar toGregorianCalendar(LocalDateTime when) {
+		GregorianCalendar then = new GregorianCalendar();
+		then.setTime(when.toDate());
+		return then;  // TODO: set timezone to UTC as well?
+	}
+	
+	/** Provides functionality to convert a Joda date to a GregorianCalendar. */
+	static public GregorianCalendar toGregorianCalendar(LocalDate when) {
+		GregorianCalendar then = new GregorianCalendar();
+		then.setTime(when.toDate());
+		return then;  // TODO: set timezone to UTC as well?
 	}
 }
