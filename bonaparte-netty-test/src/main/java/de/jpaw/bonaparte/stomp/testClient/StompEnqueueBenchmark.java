@@ -9,25 +9,30 @@ public class StompEnqueueBenchmark {
 		Thread threads[];
 		Date start;
 		Date stop;
+		String hostname = "localhost";
 
 		if (args.length > 0) {
 			numberOfThreads = Integer.valueOf(args[0]);
 		} else {
-			System.out.println("Usage: Benchmark (threads) [(calls / thread)]");
+			System.out.println("Usage: Benchmark (threads) [(calls / thread) [(remotehost)]]");
 			// System.exit(1);
 		}
 		if (args.length > 1) {
 			callsPerThread = Integer.valueOf(args[1]);
 		}
+        if (args.length > 2) {
+            hostname = args[2];
+        }
 
-		System.out.println("Starting enqueuing benchmark with " + numberOfThreads + " threads and " + callsPerThread + " calls per thread");
+		System.out.println("Starting enqueuing benchmark with " + numberOfThreads + " threads and "
+		   + callsPerThread + " calls per thread on host " + hostname);
 
 		start = new Date();
 		threads = new Thread[numberOfThreads];
 
 		// start all the threads...
 		for (int i = 0; i < numberOfThreads; ++i) {
-			Runnable worker = new OneThread(callsPerThread, i, "localhost");
+			Runnable worker = new OneThread(callsPerThread, i, hostname);
 			threads[i] = new Thread(worker);
 			threads[i].start();
 		}

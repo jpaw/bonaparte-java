@@ -16,6 +16,7 @@
 package de.jpaw.bonaparte.core;
 
 import java.io.Serializable;
+import java.util.concurrent.ConcurrentMap;
 
 /** 
  * Defines the methods any object which should be serialized into the bonaparte format must implement.
@@ -51,6 +52,21 @@ public interface BonaPortable extends Serializable {
      * @return the bundle as defined in the DSL as a Java String, or null, if no bundle has been defined for objects of this class.
      */
     public String get$Bundle();
+    
+    /** Retrieves a single property from the current map.
+     * 
+     * @param id the key of the property.
+     * @return the property for the given parameter, or null if it does not exist.
+     */    
+    public String get$Property(String id);
+    
+    /** Gets the map of current properties of this class. Normally all properties are defines by the DSL, but it is explicitly allowed 
+     * to add or modify properties during runtime (for example loading some from a database setup or properties file). For this reason,
+     * the concurrent implementation of the map has been selected.
+     * 
+     * @return the current map of properties, which is never null, but may be empty.
+     */
+    public ConcurrentMap<String,String> get$PropertyMap();
     
     /** Serializes this object into the format implemented by the MessageComposer parameter. The method will invoke methods of the MessageComposer interface for every member field, and also for some metadata. Class headers itself are assumed to have been serialized before.
      *  Different implementations are provided with the bonaparte library, for ASCII-like formats (bonaparte) or binary formats plugging into the standard Java {@link java.io.Serializable}/{@link java.io.Externalizable} interface.

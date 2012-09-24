@@ -10,11 +10,12 @@ public class NettyBenchmark {
 		Thread threads[];
 		Date start;
 		Date stop;
+		String hostname = "localhost";
 
 		if (args.length > 0) {
 			delay = Integer.valueOf(args[0]);
 		} else {
-			System.out.println("Usage: Benchmark (delay in ms) [(threads) [(calls / thread)]]");
+			System.out.println("Usage: Benchmark (delay in ms) [(threads) [(calls / thread) [(remotehost)]]]");
 			System.exit(1);
 		}
 		if (args.length > 1) {
@@ -23,15 +24,19 @@ public class NettyBenchmark {
 		if (args.length > 2) {
 			callsPerThread = Integer.valueOf(args[2]);
 		}
+        if (args.length > 3) {
+            hostname = args[3];
+        }
 
-		System.out.println("Starting benchmark with delay " + delay + " ms with " + numberOfThreads + " threads and " + callsPerThread + " calls per thread");
+		System.out.println("Starting benchmark with delay " + delay + " ms with " + numberOfThreads + " threads and "
+		+ callsPerThread + " calls per thread to host " + hostname);
 
 		start = new Date();
 		threads = new Thread[numberOfThreads];
 
 		// start all the threads...
 		for (int i = 0; i < numberOfThreads; ++i) {
-			Runnable worker = new OneThread(delay, callsPerThread, i, "localhost");
+			Runnable worker = new OneThread(delay, callsPerThread, i, hostname);
 			threads[i] = new Thread(worker);
 			threads[i].start();
 		}

@@ -16,7 +16,7 @@ public class SimpleUnpooledClient {
 	private byte [] responseBuffer;
 	
 	public SimpleUnpooledClient(String hostname, int port) throws IOException {
-		addr = InetAddress.getByName("localhost");
+		addr = InetAddress.getByName(hostname);
 		conn = new Socket(addr, port);
 		w = new ByteArrayComposer();
 		responseBuffer = new byte [10000];

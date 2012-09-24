@@ -15,7 +15,8 @@
   */
 package de.jpaw.bonaparte.core;
 
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -23,12 +24,12 @@ import org.slf4j.LoggerFactory;
 
 public class BonaPortableFactory {
 	private static final Logger logger = LoggerFactory.getLogger(BonaPortableFactory.class);
-	static private Map<String, Class<? extends BonaPortable>> map = new HashMap<String, Class<? extends BonaPortable>>();
+	static private ConcurrentMap<String, Class<? extends BonaPortable>> map = new ConcurrentHashMap<String, Class<? extends BonaPortable>>();
 	static private String bonaparteClassDefaultPackagePrefix = "de.jpaw.bonaparte.pojos";
 	static private Map<String, String> packagePrefixMap = null;
 
-	private static synchronized void registerClass(String name, Class<? extends BonaPortable> clatz) {
-		map.put(name, clatz);
+	private static void registerClass(String name, Class<? extends BonaPortable> clatz) {
+		map.putIfAbsent(name, clatz);
 		logger.debug("Factory: registered class {}", name);
 	}
 	

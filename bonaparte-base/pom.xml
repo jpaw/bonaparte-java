@@ -38,13 +38,18 @@
 		</developer>
 	</developers>
 
-	<distributionManagement>
-		<snapshotRepository>
-			<id>booster</id>
-			<name>booster-snapshots</name>
-			<url>http://localhost:8081/artifactory/libs-snapshot-local</url>
-		</snapshotRepository>
-	</distributionManagement>
+    <distributionManagement>
+        <snapshotRepository>
+            <id>repo-snapshots</id>
+            <name>repo-snapshots</name>
+            <url>${repo.url}/libs-snapshot-local</url>
+        </snapshotRepository>
+        <repository>
+            <id>repo-releases</id>
+            <name>repo-releases</name>
+            <url>${repo.url}/libs-release-local</url>
+        </repository>
+    </distributionManagement>
 
 	<build>
 		<plugins>

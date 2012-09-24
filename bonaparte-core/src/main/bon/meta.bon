@@ -57,6 +57,11 @@ package meta {
         ascii(500) ^regexp;
     }
 	
+	class PropertyDefinition {
+	   required ascii(80) id;
+	   required Unicode(512) value;    
+	}
+	
 	// holds all meta information for a class
 	class ClassDefinition {
 		boolean isAbstract;
@@ -68,6 +73,8 @@ package meta {
         signed long serialUID;      // Java serializable serialVersionUID
 		int numberOfFields;
 		optional (FieldDefinition...)[] fields;
+        optional (PropertyDefinition) [] ^properties;
+        boolean propertiesInherited;
 		optional Timestamp(3) whenLoaded;
 	}
 	

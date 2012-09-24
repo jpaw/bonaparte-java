@@ -4,9 +4,20 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public class Wrapper implements BonaPortable, Externalizable {
-
+	private static final ConcurrentMap<String,String> property$Map = new ConcurrentHashMap<>();
+	
+	public ConcurrentMap<String,String> get$PropertyMap() {
+		return property$Map;
+	}
+	
+	public String get$Property(String id) {
+		return property$Map.get(id);
+	}
+	
     public BonaPortable data;
     
     public BonaPortable getData() {
@@ -55,7 +66,6 @@ public class Wrapper implements BonaPortable, Externalizable {
 	}
 	@Override
 	public boolean hasSameContentsAs(BonaPortable that) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 	@Override

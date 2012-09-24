@@ -1,0 +1,36 @@
+package pt {
+    properties color, weight, unused;
+    
+    class MyHouse {
+        properties color="red", weight="heavy";
+        
+        int a;
+    }
+}
+
+package pt2 {
+    properties inherited, color, price ;
+    
+    class AnotherHouse {
+        int b;
+    }
+    class YetAnotherHouse extends pt.MyHouse {
+        int b;
+    }
+    class YetAnotherHouseRepainted extends pt.MyHouse {
+        properties color="green";
+        int b;
+    }
+}
+
+package pt3 {
+    properties permission ;
+    
+    class TheBus {
+        properties permission="forbidden";
+        int c;
+    }
+    class AnotherBus extends pt2.YetAnotherHouse {
+        int c;
+    }
+}
