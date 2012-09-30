@@ -32,85 +32,85 @@ import java.util.Map;
  */
 
 public class ApplicationException extends Exception {
-	private static final long serialVersionUID = 1122421467960337766L;
-	
-	
-	/** The classification of return codes indicating success (which would never be instantiated as an exception). */ 
-	static public final int SUCCESS = 0;
-	/** The classification of return codes indicating a decline or negative decision, without being a parameter or processing problem, and therefore also never be instantiated as an exception. */ 
-	static public final int DENIED  = 1;
-	/** The classification of return codes indicating an invalid message format. */ 
-	static public final int PARSER_ERROR = 2;
-	/** The classification of return codes indicating an invalid reference or field value (for example an invalid customer no or invalid country code). */ 
-	static public final int PARAMETER_ERROR = 3;
-	/** The classification of return codes indicating a processing timeout. The requester should react by resending the request some time later. The resource was available but did not respond back in the expected time. */
-	static public final int TIMEOUT = 4;
-	/** The classification of return codes indicating a (hopefully temporary) problem of resource shortage (no free sockets, disk full, cannot fork due to too many processes...). */
-	static public final int RESOURCE_EXHAUSTED = 5;
-	/** The classification of return codes indicating a resource or service which is temporarily unavailable. This could be due to a downtime of an OSGi component or remote service. Senders should treat such return code similar to a timeout return code and retry later. */
-	static public final int SERVICE_UNAVAILABLE = 6;
-	/** An intermediate classification returned by internal validation algorithms such as bonaparte validation or Java Bean Validation. Contentwise, this is a subset of the <code>PARAMETER_ERROR</code> range, but these codes will most likely be caught and mapped to more generic return codes, or used as user feedback in the UI. */
-	static public final int VALIDATION_ERROR = 7;
-	/** The classification of return codes indicating failure of an internal plausibility check. This should never happen and therefore usually indicates a programming error. */
-	static public final int INTERNAL_LOGIC_ERROR = 8;  // assertion failed
-	/** The classification of problems occurring in the persistence layer (usually database), which has not been caught by a specific exception handler. This can be due to resource exhaustion, but also programming errors. Usually deeper investigation is required. Callers receiving this code should retry at maximum one time, and then defer the request and queue it into a manual analysis queue. */
-	static public final int DATABASE_ERROR = 9;
-	
-	
-	/** The factor by which the classification code is multiplied. An error code modulus the classification factor gives details about where and why the problem occured. */ 
-	static public final int CLASSIFICATION_FACTOR = 100000000;
+    private static final long serialVersionUID = 1122421467960337766L;
+    
+    
+    /** The classification of return codes indicating success (which would never be instantiated as an exception). */ 
+    static public final int SUCCESS = 0;
+    /** The classification of return codes indicating a decline or negative decision, without being a parameter or processing problem, and therefore also never be instantiated as an exception. */ 
+    static public final int DENIED  = 1;
+    /** The classification of return codes indicating an invalid message format. */ 
+    static public final int PARSER_ERROR = 2;
+    /** The classification of return codes indicating an invalid reference or field value (for example an invalid customer no or invalid country code). */ 
+    static public final int PARAMETER_ERROR = 3;
+    /** The classification of return codes indicating a processing timeout. The requester should react by resending the request some time later. The resource was available but did not respond back in the expected time. */
+    static public final int TIMEOUT = 4;
+    /** The classification of return codes indicating a (hopefully temporary) problem of resource shortage (no free sockets, disk full, cannot fork due to too many processes...). */
+    static public final int RESOURCE_EXHAUSTED = 5;
+    /** The classification of return codes indicating a resource or service which is temporarily unavailable. This could be due to a downtime of an OSGi component or remote service. Senders should treat such return code similar to a timeout return code and retry later. */
+    static public final int SERVICE_UNAVAILABLE = 6;
+    /** An intermediate classification returned by internal validation algorithms such as bonaparte validation or Java Bean Validation. Contentwise, this is a subset of the <code>PARAMETER_ERROR</code> range, but these codes will most likely be caught and mapped to more generic return codes, or used as user feedback in the UI. */
+    static public final int VALIDATION_ERROR = 7;
+    /** The classification of return codes indicating failure of an internal plausibility check. This should never happen and therefore usually indicates a programming error. */
+    static public final int INTERNAL_LOGIC_ERROR = 8;  // assertion failed
+    /** The classification of problems occurring in the persistence layer (usually database), which has not been caught by a specific exception handler. This can be due to resource exhaustion, but also programming errors. Usually deeper investigation is required. Callers receiving this code should retry at maximum one time, and then defer the request and queue it into a manual analysis queue. */
+    static public final int DATABASE_ERROR = 9;
+    
+    
+    /** The factor by which the classification code is multiplied. An error code modulus the classification factor gives details about where and why the problem occured. */ 
+    static public final int CLASSIFICATION_FACTOR = 100000000;
 
-	/** Provides the mapping of error codes to textual descriptions. It is the responsibility of superclasses
-	 *  inheriting this class to populate this map for the descriptions of the codes they represent.
-	 *  It is recommended to perform such initialization not during class load, but lazily, once the first exception is thrown.
-	 */
-	static protected Map<Integer,String> codeToDescription = new HashMap<Integer, String>(200);
-	
-	private final int errorCode;
+    /** Provides the mapping of error codes to textual descriptions. It is the responsibility of superclasses
+     *  inheriting this class to populate this map for the descriptions of the codes they represent.
+     *  It is recommended to perform such initialization not during class load, but lazily, once the first exception is thrown.
+     */
+    static protected Map<Integer,String> codeToDescription = new HashMap<Integer, String>(200);
+    
+    private final int errorCode;
 
-	/** Returns the error code for this exception */
-	public final int getErrorCode() {
-		return errorCode;
-	}
+    /** Returns the error code for this exception */
+    public final int getErrorCode() {
+        return errorCode;
+    }
 
-	/** Creates a new ApplicationException for a given error code. */
-	public ApplicationException(int errorCode) {
+    /** Creates a new ApplicationException for a given error code. */
+    public ApplicationException(int errorCode) {
         super();
-		this.errorCode = errorCode;
-	}
-	
-	/** Creates a new ApplicationException for a given error code, with some explanatory details. */
-	public ApplicationException(int errorCode, String detailedMessage) {
+        this.errorCode = errorCode;
+    }
+    
+    /** Creates a new ApplicationException for a given error code, with some explanatory details. */
+    public ApplicationException(int errorCode, String detailedMessage) {
         super(detailedMessage);
-		this.errorCode = errorCode;
-	}
-	
-	/** Returns the classification code for this exception. */
-	public final int getClassification() {
-		return (errorCode / CLASSIFICATION_FACTOR);
-	}
+        this.errorCode = errorCode;
+    }
+    
+    /** Returns the classification code for this exception. */
+    public final int getClassification() {
+        return (errorCode / CLASSIFICATION_FACTOR);
+    }
 
-	/** Returns a textual description of the error code.
-	 *  The method is declared as final as long as it's used from the constructors of superclasses.
-	 *  
-	 * @return the textual description.
-	 */
-	public final String getStandardDescription() {
-		String msg;
-		synchronized(codeToDescription) {
-			msg = codeToDescription.get(errorCode);
-		}
-		return msg != null ? msg : "unknown error code";
-	}
-	
-	/** Returns a textual description of the exception.
-	 *  
-	 * @return the textual description.
-	 */
-	@Override
-	public String toString() {
-		return "Error code " + errorCode + " (" + getStandardDescription() + "): " + super.toString();
-	}
+    /** Returns a textual description of the error code.
+     *  The method is declared as final as long as it's used from the constructors of superclasses.
+     *  
+     * @return the textual description.
+     */
+    public final String getStandardDescription() {
+        String msg;
+        synchronized(codeToDescription) {
+            msg = codeToDescription.get(errorCode);
+        }
+        return msg != null ? msg : "unknown error code";
+    }
+    
+    /** Returns a textual description of the exception.
+     *  
+     * @return the textual description.
+     */
+    @Override
+    public String toString() {
+        return "Error code " + errorCode + " (" + getStandardDescription() + "): " + super.toString();
+    }
 
     /**
      * Creates a localized description of the standard message

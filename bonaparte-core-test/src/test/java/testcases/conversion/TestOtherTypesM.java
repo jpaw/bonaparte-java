@@ -32,8 +32,8 @@ import de.jpaw.bonaparte.coretests.util.SimpleTestRunner;
  */
 
 public class TestOtherTypesM {
-	@Test
-	public void testOtherTypes() throws Exception {
-		SimpleTestRunner.run(FillOtherTypes.test2(555), false);
-	}	
+    @Test
+    public void testOtherTypes() throws Exception {
+        SimpleTestRunner.run(FillOtherTypes.test2(555), false);
+    }   
 }

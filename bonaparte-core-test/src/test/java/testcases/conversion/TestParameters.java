@@ -16,92 +16,92 @@ import de.jpaw.bonaparte.coretests.initializers.FillParameterTests;
 import de.jpaw.bonaparte.pojos.tests1.Parameters;
 
 public class TestParameters {
-	static private final Charset defaultCharset = Charset.forName("UTF-8");			 // always use UTF-8 unless explicitly requested differently
-	
-	@Test
-	public void testParameters1() throws Exception {
-		Parameters src = FillParameterTests.test1();
-		src.setTestNoTruncate("harmless");
-		
-		StringBuilderComposer sbc = new StringBuilderComposer(new StringBuilder());
-		sbc.reset();
-		sbc.writeRecord(src);
-		byte [] sbcResult = sbc.getBytes();
-		
-		ByteArrayComposer bac = new ByteArrayComposer();
-		bac.reset();
-		bac.writeRecord(src);
-		byte [] bacResult = bac.getBytes();
+    static private final Charset defaultCharset = Charset.forName("UTF-8");          // always use UTF-8 unless explicitly requested differently
+    
+    @Test
+    public void testParameters1() throws Exception {
+        Parameters src = FillParameterTests.test1();
+        src.setTestNoTruncate("harmless");
+        
+        StringBuilderComposer sbc = new StringBuilderComposer(new StringBuilder());
+        sbc.reset();
+        sbc.writeRecord(src);
+        byte [] sbcResult = sbc.getBytes();
+        
+        ByteArrayComposer bac = new ByteArrayComposer();
+        bac.reset();
+        bac.writeRecord(src);
+        byte [] bacResult = bac.getBytes();
 
-		System.out.println("Length with SBC is " + sbcResult.length + ", length with BAC is " + bacResult.length);
-		assert sbcResult.length == bacResult.length : "produced byte data should have the same length";
-		assert Arrays.equals(sbcResult, bacResult) : "produced byte data should be identical";
+        System.out.println("Length with SBC is " + sbcResult.length + ", length with BAC is " + bacResult.length);
+        assert sbcResult.length == bacResult.length : "produced byte data should have the same length";
+        assert Arrays.equals(sbcResult, bacResult) : "produced byte data should be identical";
 
-		// deserialize again
-		System.out.println("parser StringBuilder");
-		StringBuilder work = new StringBuilder(new String (bacResult, defaultCharset)); 
-		MessageParser<MessageParserException> w1 = new StringBuilderParser(work, 0, -1);
-		BonaPortable dst1 = w1.readRecord();
-		assert dst1.getClass() == src.getClass() : "returned obj is of wrong type (StringBuilderParser)"; // assuming we have one class loader only
-		Parameters dst1p = (Parameters)dst1;
-		
-		// alternate deserializer
-		System.out.println("parser ByteArray");
-		MessageParser<MessageParserException> w2 = new ByteArrayParser(sbcResult, 0, -1);
-		BonaPortable dst2 = w2.readRecord();
-		assert dst2.getClass() == src.getClass() : "returned obj is of wrong type (ByteArrayParser)"; // assuming we have one class loader only
-		assert dst1.hasSameContentsAs(dst2) : "returned obj is not equal to original one (ByteArrayParser)";
-		Parameters dst2p = (Parameters)dst2;
-		assert dst1.equals(dst2p);
-		
-		// extra tests
-		assert src.getTestNoTrim().equals(dst1p.getTestNoTrim());
-		assert !src.getTestTrim().equals(dst1p.getTestTrim());
-		assert dst1p.getTestTrim().equals("no trim");
-		assert dst1p.getTestTruncate().equals("I am a string which ");
-	}
-	
-	@Test
-	public void testParametersTruncate() throws Exception {
-		Parameters src = FillParameterTests.test1();
-		
-		StringBuilderComposer sbc = new StringBuilderComposer(new StringBuilder());
-		sbc.reset();
-		sbc.writeRecord(src);
-		byte [] sbcResult = sbc.getBytes();
-		
-		ByteArrayComposer bac = new ByteArrayComposer();
-		bac.reset();
-		bac.writeRecord(src);
-		byte [] bacResult = bac.getBytes();
+        // deserialize again
+        System.out.println("parser StringBuilder");
+        StringBuilder work = new StringBuilder(new String (bacResult, defaultCharset)); 
+        MessageParser<MessageParserException> w1 = new StringBuilderParser(work, 0, -1);
+        BonaPortable dst1 = w1.readRecord();
+        assert dst1.getClass() == src.getClass() : "returned obj is of wrong type (StringBuilderParser)"; // assuming we have one class loader only
+        Parameters dst1p = (Parameters)dst1;
+        
+        // alternate deserializer
+        System.out.println("parser ByteArray");
+        MessageParser<MessageParserException> w2 = new ByteArrayParser(sbcResult, 0, -1);
+        BonaPortable dst2 = w2.readRecord();
+        assert dst2.getClass() == src.getClass() : "returned obj is of wrong type (ByteArrayParser)"; // assuming we have one class loader only
+        assert dst1.hasSameContentsAs(dst2) : "returned obj is not equal to original one (ByteArrayParser)";
+        Parameters dst2p = (Parameters)dst2;
+        assert dst1.equals(dst2p);
+        
+        // extra tests
+        assert src.getTestNoTrim().equals(dst1p.getTestNoTrim());
+        assert !src.getTestTrim().equals(dst1p.getTestTrim());
+        assert dst1p.getTestTrim().equals("no trim");
+        assert dst1p.getTestTruncate().equals("I am a string which ");
+    }
+    
+    @Test
+    public void testParametersTruncate() throws Exception {
+        Parameters src = FillParameterTests.test1();
+        
+        StringBuilderComposer sbc = new StringBuilderComposer(new StringBuilder());
+        sbc.reset();
+        sbc.writeRecord(src);
+        byte [] sbcResult = sbc.getBytes();
+        
+        ByteArrayComposer bac = new ByteArrayComposer();
+        bac.reset();
+        bac.writeRecord(src);
+        byte [] bacResult = bac.getBytes();
 
-		System.out.println("Length with SBC is " + sbcResult.length + ", length with BAC is " + bacResult.length);
-		assert sbcResult.length == bacResult.length : "produced byte data should have the same length";
-		assert Arrays.equals(sbcResult, bacResult) : "produced byte data should be identical";
+        System.out.println("Length with SBC is " + sbcResult.length + ", length with BAC is " + bacResult.length);
+        assert sbcResult.length == bacResult.length : "produced byte data should have the same length";
+        assert Arrays.equals(sbcResult, bacResult) : "produced byte data should be identical";
 
-		// deserialize again
-		System.out.println("parser StringBuilder");
-		StringBuilder work = new StringBuilder(new String (bacResult, defaultCharset)); 
-		MessageParser<MessageParserException> w1 = new StringBuilderParser(work, 0, -1);
-		try {
-			@SuppressWarnings("unused")
-			BonaPortable dst1 = w1.readRecord();
-			assert false : "Should have thrown exception due to field too long";
-		} catch (MessageParserException e) {
-			assert(e.getErrorCode() == MessageParserException.STRING_TOO_LONG);
-			System.out.println("got the expected error");
-		}
-		
-		// alternate deserializer
-		System.out.println("parser ByteArray");
-		MessageParser<MessageParserException> w2 = new ByteArrayParser(sbcResult, 0, -1);
-		try {
-			@SuppressWarnings("unused")
-			BonaPortable dst2 = w2.readRecord();
-			assert false : "Should have thrown exception due to field too long";
-		} catch (MessageParserException e) {
-			assert(e.getErrorCode() == MessageParserException.STRING_TOO_LONG);
-			System.out.println("got the expected error");
-		}
-	}
+        // deserialize again
+        System.out.println("parser StringBuilder");
+        StringBuilder work = new StringBuilder(new String (bacResult, defaultCharset)); 
+        MessageParser<MessageParserException> w1 = new StringBuilderParser(work, 0, -1);
+        try {
+            @SuppressWarnings("unused")
+            BonaPortable dst1 = w1.readRecord();
+            assert false : "Should have thrown exception due to field too long";
+        } catch (MessageParserException e) {
+            assert(e.getErrorCode() == MessageParserException.STRING_TOO_LONG);
+            System.out.println("got the expected error");
+        }
+        
+        // alternate deserializer
+        System.out.println("parser ByteArray");
+        MessageParser<MessageParserException> w2 = new ByteArrayParser(sbcResult, 0, -1);
+        try {
+            @SuppressWarnings("unused")
+            BonaPortable dst2 = w2.readRecord();
+            assert false : "Should have thrown exception due to field too long";
+        } catch (MessageParserException e) {
+            assert(e.getErrorCode() == MessageParserException.STRING_TOO_LONG);
+            System.out.println("got the expected error");
+        }
+    }
 }

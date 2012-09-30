@@ -30,5 +30,5 @@ import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
  *
  **/
 public interface BonaPortableWithMetaData extends BonaPortable {
-	public ClassDefinition get$MetaData();  // name, revision etc as a class object. Use $ to avoid conflict with other getters
+    public ClassDefinition get$MetaData();  // name, revision etc as a class object. Use $ to avoid conflict with other getters
 }

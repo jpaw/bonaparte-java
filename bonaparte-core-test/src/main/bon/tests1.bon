@@ -104,6 +104,8 @@ package tests1 {
         calendar(3) hhmmss timestamp4a;
     }
     class References {
+        object someGenericRecord;
+        Object someOtherGenericRecord;
         countryCode country;
         (Primitives) preciseRef;
         (Primitives...) classOrDerivedObject;

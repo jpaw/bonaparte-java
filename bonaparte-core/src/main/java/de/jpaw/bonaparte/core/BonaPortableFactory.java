@@ -23,96 +23,96 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class BonaPortableFactory {
-	private static final Logger logger = LoggerFactory.getLogger(BonaPortableFactory.class);
-	static private ConcurrentMap<String, Class<? extends BonaPortable>> map = new ConcurrentHashMap<String, Class<? extends BonaPortable>>();
-	static private String bonaparteClassDefaultPackagePrefix = "de.jpaw.bonaparte.pojos";
-	static private Map<String, String> packagePrefixMap = null;
+    private static final Logger logger = LoggerFactory.getLogger(BonaPortableFactory.class);
+    static private ConcurrentMap<String, Class<? extends BonaPortable>> map = new ConcurrentHashMap<String, Class<? extends BonaPortable>>();
+    static private String bonaparteClassDefaultPackagePrefix = "de.jpaw.bonaparte.pojos";
+    static private Map<String, String> packagePrefixMap = null;
 
-	private static void registerClass(String name, Class<? extends BonaPortable> clatz) {
-		map.putIfAbsent(name, clatz);
-		logger.debug("Factory: registered class {}", name);
-	}
-	
-	// prevent instance creation
-	private BonaPortableFactory() {
-	}
-	
-	// generalized factory: create an instance of the requested type. Caches class types.
-	// We receive PQCN (partially qualified class name) as parameter.
-	// Anything before the last '.' is the Bonaparte package name (which is null is there is no '.').
-	// The package determines the possible bundle specification, not-null bundles are loaded in their
-	// own classloaders, so they can be unloaded again.
-	// Package to bundle mapping is contained in the static class data, however we cannot known that
-	// before actually loading the class. Therefore, bundle information must be fed in separately
-	// and can only be consistency-checked afterwards.
-	public static BonaPortable createObject(String name) throws MessageParserException {
-		String FQON = null;
-		BonaPortable instance = null;
-		int lastDot = name.lastIndexOf('.');
-		if (lastDot == 0 || lastDot >= name.length() - 1)
-			throw new MessageParserException(MessageParserException.BAD_OBJECT_NAME,
-					null, -1, name);
-		String myPackage;
-		String myClass;
-		if (lastDot < 0) {
-			myPackage ="";
-			myClass = name;
-		} else {
-			myPackage = name.substring(0, lastDot); 
-			myClass = name.substring(lastDot+1);
-		}
-		
-		
-		if (packagePrefixMap != null) {
-			String mappedPackagePart = packagePrefixMap.get(myPackage);
-			if (mappedPackagePart != null)
-				FQON = mappedPackagePart + "." + myClass;
-		}
-		if (FQON == null)
-			// prefix by fixed package
-			FQON = bonaparteClassDefaultPackagePrefix + "." + name;
-			
-		Class<? extends BonaPortable> f = map.get(FQON);
-		if (f == null) {
-			try {
-				// String classname = "de.adata.server." + name;
-				logger.debug("Factory: loading class {}", FQON);
-				f = Class.forName(FQON).asSubclass(BonaPortable.class);
-				registerClass(FQON, f);
-			} catch (ClassNotFoundException e) {
-				logger.error("ClassNotFound exception for {}", FQON);
-			}
-		}
-		if (f != null) {
-			try {
-				instance = f.newInstance();
-			} catch (InstantiationException e) {
-				logger.error("Instantiation exception for {}", name);
-			} catch (IllegalAccessException e) {
-				logger.error("IllegalAccess exception for {}", name);
-			}
-		}
-		return instance;
-	}
+    private static void registerClass(String name, Class<? extends BonaPortable> clatz) {
+        map.putIfAbsent(name, clatz);
+        logger.debug("Factory: registered class {}", name);
+    }
+    
+    // prevent instance creation
+    private BonaPortableFactory() {
+    }
+    
+    // generalized factory: create an instance of the requested type. Caches class types.
+    // We receive PQCN (partially qualified class name) as parameter.
+    // Anything before the last '.' is the Bonaparte package name (which is null is there is no '.').
+    // The package determines the possible bundle specification, not-null bundles are loaded in their
+    // own classloaders, so they can be unloaded again.
+    // Package to bundle mapping is contained in the static class data, however we cannot known that
+    // before actually loading the class. Therefore, bundle information must be fed in separately
+    // and can only be consistency-checked afterwards.
+    public static BonaPortable createObject(String name) throws MessageParserException {
+        String FQON = null;
+        BonaPortable instance = null;
+        int lastDot = name.lastIndexOf('.');
+        if (lastDot == 0 || lastDot >= name.length() - 1)
+            throw new MessageParserException(MessageParserException.BAD_OBJECT_NAME,
+                    null, -1, name);
+        String myPackage;
+        String myClass;
+        if (lastDot < 0) {
+            myPackage ="";
+            myClass = name;
+        } else {
+            myPackage = name.substring(0, lastDot); 
+            myClass = name.substring(lastDot+1);
+        }
+        
+        
+        if (packagePrefixMap != null) {
+            String mappedPackagePart = packagePrefixMap.get(myPackage);
+            if (mappedPackagePart != null)
+                FQON = mappedPackagePart + "." + myClass;
+        }
+        if (FQON == null)
+            // prefix by fixed package
+            FQON = bonaparteClassDefaultPackagePrefix + "." + name;
+            
+        Class<? extends BonaPortable> f = map.get(FQON);
+        if (f == null) {
+            try {
+                // String classname = "de.adata.server." + name;
+                logger.debug("Factory: loading class {}", FQON);
+                f = Class.forName(FQON).asSubclass(BonaPortable.class);
+                registerClass(FQON, f);
+            } catch (ClassNotFoundException e) {
+                logger.error("ClassNotFound exception for {}", FQON);
+            }
+        }
+        if (f != null) {
+            try {
+                instance = f.newInstance();
+            } catch (InstantiationException e) {
+                logger.error("Instantiation exception for {}", name);
+            } catch (IllegalAccessException e) {
+                logger.error("IllegalAccess exception for {}", name);
+            }
+        }
+        return instance;
+    }
 
-	
-	// auto getters and setters only following 
-	public static Map<String, String> getPackagePrefixMap() {
-		return packagePrefixMap;
-	}
+    
+    // auto getters and setters only following 
+    public static Map<String, String> getPackagePrefixMap() {
+        return packagePrefixMap;
+    }
 
-	public static void setPackagePrefixMap(Map<String, String> packagePrefixMap) {
-		BonaPortableFactory.packagePrefixMap = packagePrefixMap;
-	}
+    public static void setPackagePrefixMap(Map<String, String> packagePrefixMap) {
+        BonaPortableFactory.packagePrefixMap = packagePrefixMap;
+    }
 
-	public static String getBonaparteClassDefaultPackagePrefix() {
-		return bonaparteClassDefaultPackagePrefix;
-	}
+    public static String getBonaparteClassDefaultPackagePrefix() {
+        return bonaparteClassDefaultPackagePrefix;
+    }
 
-	public static void setBonaparteClassDefaultPackagePrefix(
-			String bonaparteClassDefaultPackagePrefix) {
-		BonaPortableFactory.bonaparteClassDefaultPackagePrefix = bonaparteClassDefaultPackagePrefix;
-	}
+    public static void setBonaparteClassDefaultPackagePrefix(
+            String bonaparteClassDefaultPackagePrefix) {
+        BonaPortableFactory.bonaparteClassDefaultPackagePrefix = bonaparteClassDefaultPackagePrefix;
+    }
 
 
 }

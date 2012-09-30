@@ -32,9 +32,9 @@ import de.jpaw.bonaparte.coretests.util.SimpleTestRunner;
  */
 
 public class TestPrimitives {
-	
-	@Test
-	public void testPrimitives() throws Exception {
-		SimpleTestRunner.run(FillPrimitives.test1(), false);
-	}	
+    
+    @Test
+    public void testPrimitives() throws Exception {
+        SimpleTestRunner.run(FillPrimitives.test1(), false);
+    }   
 }

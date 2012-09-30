@@ -35,19 +35,19 @@ import de.jpaw.util.ByteArray;
 public interface MessageComposer<E extends Exception> {
     
     // serialization methods: structure 
-	public void writeNull() throws E;
+    public void writeNull() throws E;
     public void startTransmission() throws E;
     public void startRecord() throws E;
     public void startArray(int currentMembers, int maxMembers, int sizeOfElement) throws E;
-	public void writeSuperclassSeparator() throws E;  // this is bad. It should be transparent to the classes if the message format contains separators or not.
+    public void writeSuperclassSeparator() throws E;  // this is bad. It should be transparent to the classes if the message format contains separators or not.
     public void terminateArray() throws E;
     public void terminateRecord() throws E;
     public void terminateTransmission() throws E;
-	public void writeRecord(BonaPortable o) throws E;
+    public void writeRecord(BonaPortable o) throws E;
 
     // serialization methods: field type specific
     void addUnicodeString(String s,  int length, boolean allowCtrls) throws E; // length is max length as specified in DSL
-    void addField(String s,  int length) throws E;				// length is max length as specified in DSL
+    void addField(String s,  int length) throws E;              // length is max length as specified in DSL
     
     // primitives
     void addField(boolean b) throws E;

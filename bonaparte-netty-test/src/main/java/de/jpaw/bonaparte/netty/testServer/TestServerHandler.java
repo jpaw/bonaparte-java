@@ -34,43 +34,43 @@ import org.slf4j.LoggerFactory;
  */
 @Sharable
 public class TestServerHandler extends ChannelInboundMessageHandlerAdapter<BonaPortable> {
-	static AtomicInteger threadSerial = new AtomicInteger(0);
-	private AtomicInteger counterInThread = new AtomicInteger(0);
-	private final int thisThreadId;
+    static AtomicInteger threadSerial = new AtomicInteger(0);
+    private AtomicInteger counterInThread = new AtomicInteger(0);
+    private final int thisThreadId;
 
-	private static final Logger logger = LoggerFactory.getLogger(TestServerHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(TestServerHandler.class);
 
-	TestServerHandler() {
-		thisThreadId = threadSerial.incrementAndGet();
-	}
+    TestServerHandler() {
+        thisThreadId = threadSerial.incrementAndGet();
+    }
 
-	@Override
-	public void channelActive(ChannelHandlerContext ctx) throws Exception {
-		logger.info("New incoming channel requested for thread " + thisThreadId);
-	}
+    @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        logger.info("New incoming channel requested for thread " + thisThreadId);
+    }
 
-	@Override
-	public void messageReceived(ChannelHandlerContext ctx, BonaPortable request) throws Exception {
-		logger.trace("Received an object of type " + request.getClass().getCanonicalName());
-		Request myRequest = (Request) request;
-		Response myResponse = new Response();
+    @Override
+    public void messageReceived(ChannelHandlerContext ctx, BonaPortable request) throws Exception {
+        logger.trace("Received an object of type " + request.getClass().getCanonicalName());
+        Request myRequest = (Request) request;
+        Response myResponse = new Response();
 
-		myResponse.setSerialNo(myRequest.getSerialNo());
-		myResponse.setUniqueId(myRequest.getUniqueId());
-		myResponse.setThreadNo(thisThreadId);
-		myResponse.setSerialInThread(counterInThread.incrementAndGet());
-		myResponse.setWhenReceiced(new LocalDateTime());
+        myResponse.setSerialNo(myRequest.getSerialNo());
+        myResponse.setUniqueId(myRequest.getUniqueId());
+        myResponse.setThreadNo(thisThreadId);
+        myResponse.setSerialInThread(counterInThread.incrementAndGet());
+        myResponse.setWhenReceiced(new LocalDateTime());
 
-		if (myRequest.getDuration() > 0)
-			Thread.sleep(myRequest.getDuration());
+        if (myRequest.getDuration() > 0)
+            Thread.sleep(myRequest.getDuration());
 
-		ctx.write(myResponse);
-		ctx.flush();
-	}
+        ctx.write(myResponse);
+        ctx.flush();
+    }
 
-	@Override
-	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-		logger.warn("Unexpected exception from downstream.", cause);
-		ctx.close();
-	}
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        logger.warn("Unexpected exception from downstream.", cause);
+        ctx.close();
+    }
 }

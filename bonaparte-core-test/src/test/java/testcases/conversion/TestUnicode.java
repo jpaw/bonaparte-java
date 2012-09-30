@@ -15,9 +15,9 @@ import de.jpaw.bonaparte.coretests.util.SimpleTestRunner;
  */
 
 public class TestUnicode {
-	
-	@Test
-	public void testUnicode() throws Exception {
-		SimpleTestRunner.run(FillUnicodeTest.test1(), false);
-	}	
+    
+    @Test
+    public void testUnicode() throws Exception {
+        SimpleTestRunner.run(FillUnicodeTest.test1(), false);
+    }   
 }

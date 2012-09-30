@@ -14,16 +14,16 @@ import org.slf4j.LoggerFactory;
  */
 
 public class EnumException extends ApplicationException {
-	private static final long serialVersionUID = 6578705245543364726L;
-	private static final Logger logger = LoggerFactory.getLogger(EnumException.class);
-	
-	private static final int OFFSET = PARAMETER_ERROR * CLASSIFICATION_FACTOR + 18000; // offset for all codes in this class
-	private static boolean textsInitialized = false;
-	private String badParameter;
-	
+    private static final long serialVersionUID = 6578705245543364726L;
+    private static final Logger logger = LoggerFactory.getLogger(EnumException.class);
+    
+    private static final int OFFSET = PARAMETER_ERROR * CLASSIFICATION_FACTOR + 18000; // offset for all codes in this class
+    private static boolean textsInitialized = false;
+    private String badParameter;
+    
     static public final int INVALID_NUM                  = OFFSET + 1;
     static public final int INVALID_TOKEN                = OFFSET + 2;
-	
+    
     /**
      * Method lazyInitialization.
      * 
@@ -33,37 +33,37 @@ public class EnumException extends ApplicationException {
      * synchronized, but duplicate upload does not hurt (is idempotent)
      */
     static private void lazyInitialization() {
-    	synchronized (codeToDescription) {
-    		textsInitialized = true;
-    		codeToDescription.put(INVALID_NUM                  , "Invalid Enum ordinal");
-    		codeToDescription.put(INVALID_TOKEN                , "Invalid Enum token");
-    	}
+        synchronized (codeToDescription) {
+            textsInitialized = true;
+            codeToDescription.put(INVALID_NUM                  , "Invalid Enum ordinal");
+            codeToDescription.put(INVALID_TOKEN                , "Invalid Enum token");
+        }
     }
-	
+    
     private final String getSpecificDescription() {
-    	return badParameter == null ? "?" : "Token <" + badParameter + ">";
+        return badParameter == null ? "?" : "Token <" + badParameter + ">";
     }
     
     private final void constructorSubroutine(String parameter) {
-    	this.badParameter = parameter;
-    	if (!textsInitialized)
-    		lazyInitialization();
-    	// for the logger call, do NOT use toString, because that can be overridden, and we're called from a constructor here
-    	logger.error("Error " + getErrorCode() + " (" + getStandardDescription() + ") for " + getSpecificDescription());
+        this.badParameter = parameter;
+        if (!textsInitialized)
+            lazyInitialization();
+        // for the logger call, do NOT use toString, because that can be overridden, and we're called from a constructor here
+        logger.error("Error " + getErrorCode() + " (" + getStandardDescription() + ") for " + getSpecificDescription());
     }
     
-	public EnumException(int errorCode, String parameter) {
-		super(errorCode, null);
-		constructorSubroutine(parameter);
-	}
-	
-	public EnumException(int errorCode) {
-		super(errorCode, null);
-		constructorSubroutine(null);
-	}
-	
-	@Override
-	public String toString() {
-		return getSpecificDescription() + ": " + super.toString();
-	}
+    public EnumException(int errorCode, String parameter) {
+        super(errorCode, null);
+        constructorSubroutine(parameter);
+    }
+    
+    public EnumException(int errorCode) {
+        super(errorCode, null);
+        constructorSubroutine(null);
+    }
+    
+    @Override
+    public String toString() {
+        return getSpecificDescription() + ": " + super.toString();
+    }
 }

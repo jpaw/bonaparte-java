@@ -28,24 +28,24 @@ import org.joda.time.LocalDateTime;
  */
 public class DayTime {
 
-	/** Provides functionality missing in the {@link java.util.GregorianCalendar} class, to create a new object initialized with the current timestamp. */
-	static public GregorianCalendar getCurrentTimestamp() {
-		GregorianCalendar now = new GregorianCalendar();
-		now.setTime(new Date());
-		return now;  // TODO: set timezone to UTC as well?
-	}
-	
-	/** Provides functionality to convert a Joda timestamp to a GregorianCalendar. */
-	static public GregorianCalendar toGregorianCalendar(LocalDateTime when) {
-		GregorianCalendar then = new GregorianCalendar();
-		then.setTime(when.toDate());
-		return then;  // TODO: set timezone to UTC as well?
-	}
-	
-	/** Provides functionality to convert a Joda date to a GregorianCalendar. */
-	static public GregorianCalendar toGregorianCalendar(LocalDate when) {
-		GregorianCalendar then = new GregorianCalendar();
-		then.setTime(when.toDate());
-		return then;  // TODO: set timezone to UTC as well?
-	}
+    /** Provides functionality missing in the {@link java.util.GregorianCalendar} class, to create a new object initialized with the current timestamp. */
+    static public GregorianCalendar getCurrentTimestamp() {
+        GregorianCalendar now = new GregorianCalendar();
+        now.setTime(new Date());
+        return now;  // TODO: set timezone to UTC as well?
+    }
+    
+    /** Provides functionality to convert a Joda timestamp to a GregorianCalendar. */
+    static public GregorianCalendar toGregorianCalendar(LocalDateTime when) {
+        GregorianCalendar then = new GregorianCalendar();
+        then.setTime(when.toDate());
+        return then;  // TODO: set timezone to UTC as well?
+    }
+    
+    /** Provides functionality to convert a Joda date to a GregorianCalendar. */
+    static public GregorianCalendar toGregorianCalendar(LocalDate when) {
+        GregorianCalendar then = new GregorianCalendar();
+        then.setTime(when.toDate());
+        return then;  // TODO: set timezone to UTC as well?
+    }
 }

@@ -9,12 +9,12 @@ import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.Delimiters;
 
 public class BonaparteNettyPipelineFactory extends ChannelInitializer<SocketChannel> {
-	private final int maximumMessageLength;
+    private final int maximumMessageLength;
     private final ChannelInboundMessageHandlerAdapter<BonaPortable> objectHandler;
     
     public BonaparteNettyPipelineFactory(int maximumMessageLength, ChannelInboundMessageHandlerAdapter<BonaPortable> objectHandler) {
-    	this.maximumMessageLength = maximumMessageLength;
-    	this.objectHandler = objectHandler;
+        this.maximumMessageLength = maximumMessageLength;
+        this.objectHandler = objectHandler;
     }
     
     @Override

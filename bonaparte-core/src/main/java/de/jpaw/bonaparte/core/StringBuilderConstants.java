@@ -25,19 +25,19 @@ package de.jpaw.bonaparte.core;
  */
 
 public abstract class StringBuilderConstants extends Settings {
-	protected static final String EMPTY_STRING = new String("");
-	
-	protected static final char FIELD_TERMINATOR = '\006'; // ctrl-F
-	protected static final char TRANSMISSION_TERMINATOR = '\025'; // ctrl-U
-	protected static final char TRANSMISSION_TERMINATOR2 = '\032'; // ctrl-Z
-	protected static final char ARRAY_TERMINATOR = '\001'; // ctrl-A
-	protected static final char ARRAY_BEGIN = '\002'; // ctrl-B
-	protected static final char TRANSMISSION_BEGIN = '\024'; // ctrl-T
-	protected static final char RECORD_BEGIN = '\022'; // ctrl-R
-	protected static final char RECORD_OPT_TERMINATOR = '\015'; // ctrl-M
-	protected static final char RECORD_TERMINATOR = '\012'; // ctrl-J
-	protected static final char PARENT_SEPARATOR = '\020'; // ctrl-P
-	protected static final char OBJECT_BEGIN = '\023'; // ctrl-S                NEW
-	protected static final char ESCAPE_CHAR = '\005'; // ctrl-E
-	protected static final char NULL_FIELD = '\016'; // ctrl-N                  NEW
+    protected static final String EMPTY_STRING = new String("");
+    
+    protected static final char FIELD_TERMINATOR = '\006'; // ctrl-F
+    protected static final char TRANSMISSION_TERMINATOR = '\025'; // ctrl-U
+    protected static final char TRANSMISSION_TERMINATOR2 = '\032'; // ctrl-Z
+    protected static final char ARRAY_TERMINATOR = '\001'; // ctrl-A
+    protected static final char ARRAY_BEGIN = '\002'; // ctrl-B
+    protected static final char TRANSMISSION_BEGIN = '\024'; // ctrl-T
+    protected static final char RECORD_BEGIN = '\022'; // ctrl-R
+    protected static final char RECORD_OPT_TERMINATOR = '\015'; // ctrl-M
+    protected static final char RECORD_TERMINATOR = '\012'; // ctrl-J
+    protected static final char PARENT_SEPARATOR = '\020'; // ctrl-P
+    protected static final char OBJECT_BEGIN = '\023'; // ctrl-S                NEW
+    protected static final char ESCAPE_CHAR = '\005'; // ctrl-E
+    protected static final char NULL_FIELD = '\016'; // ctrl-N                  NEW
 }

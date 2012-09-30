@@ -15,9 +15,9 @@ import de.jpaw.bonaparte.coretests.util.SimpleTestRunner;
  */
 
 public class TestNoRounding {
-	
-	@Test
-	public void testNoRounding() throws Exception {
-		SimpleTestRunner.run(FillNoRounding.test1(), false);
-	}	
+    
+    @Test
+    public void testNoRounding() throws Exception {
+        SimpleTestRunner.run(FillNoRounding.test1(), false);
+    }   
 }

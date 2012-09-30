@@ -32,8 +32,8 @@ import de.jpaw.bonaparte.coretests.util.SimpleTestRunner;
  */
 
 public class TestBoxedTypes {
-	@Test
-	public void testBoxedTypes() throws Exception {
-		SimpleTestRunner.run(FillBoxedTypes.test1(), false);
-	}	
+    @Test
+    public void testBoxedTypes() throws Exception {
+        SimpleTestRunner.run(FillBoxedTypes.test1(), false);
+    }   
 }

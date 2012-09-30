@@ -10,8 +10,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
 
 public class BonaparteNettyDecoder extends MessageToMessageDecoder<ByteBuf, BonaPortable> {
-	private static final Logger logger = LoggerFactory.getLogger(BonaparteNettyDecoder.class);
-	
+    private static final Logger logger = LoggerFactory.getLogger(BonaparteNettyDecoder.class);
+    
     @Override
     public boolean isDecodable(Object msg) throws Exception {
         return msg instanceof ByteBuf;

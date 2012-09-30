@@ -35,351 +35,351 @@ import de.jpaw.util.ByteArray;
  */
 
 public final class StringBuilderComposer extends StringBuilderConstants implements BufferedMessageComposer<RuntimeException> {
-	// variables set by constructor
-	private StringBuilder work;
+    // variables set by constructor
+    private StringBuilder work;
 
     // restart the output
-	@Override
+    @Override
     public void reset() {
         work.setLength(0);
     }
 
-	public StringBuilderComposer(StringBuilder work) {
-		this.work = work;
-	}
-	
-	@Override
-    public int getLength() {	// obtain the number of written bytes (composer)
-    	return work.length();
+    public StringBuilderComposer(StringBuilder work) {
+        this.work = work;
     }
-	@Override
+    
+    @Override
+    public int getLength() {    // obtain the number of written bytes (composer)
+        return work.length();
+    }
+    @Override
     public byte[] getBuffer() {
-    	return getBytes();
+        return getBytes();
     }
 
-	@Override
-	public byte[] getBytes() {
-		return work.toString().getBytes(getCharset());
-	}
-	
-	/** allows to add raw data to the produced byte array. Use this for protocol support at beginning or end of a message */
-	public void addRawData(String data) {
-		work.append(data);
-	}
+    @Override
+    public byte[] getBytes() {
+        return work.toString().getBytes(getCharset());
+    }
+    
+    /** allows to add raw data to the produced byte array. Use this for protocol support at beginning or end of a message */
+    public void addRawData(String data) {
+        work.append(data);
+    }
 
-	/**************************************************************************************************
-	 * Serialization goes here
-	 **************************************************************************************************/
+    /**************************************************************************************************
+     * Serialization goes here
+     **************************************************************************************************/
 
-	// the following two methods are provided as separate methods instead of
-	// code the single command each time,
-	// with the intention that they max become extended or redefined and reused
-	// for CSV output to files with
-	// customized separators.
-	// Because this class is defined as final, I hope the JIT will inline them
-	// for better performance
-	// THIS IS REQUIRED ONLY LOCALLY
-	private void terminateField() {
-		work.append(FIELD_TERMINATOR);
-	}
-	@Override
-	public void writeNull() {
-		work.append(NULL_FIELD);
-	}
+    // the following two methods are provided as separate methods instead of
+    // code the single command each time,
+    // with the intention that they max become extended or redefined and reused
+    // for CSV output to files with
+    // customized separators.
+    // Because this class is defined as final, I hope the JIT will inline them
+    // for better performance
+    // THIS IS REQUIRED ONLY LOCALLY
+    private void terminateField() {
+        work.append(FIELD_TERMINATOR);
+    }
+    @Override
+    public void writeNull() {
+        work.append(NULL_FIELD);
+    }
 
-	@Override
+    @Override
     public void startTransmission() {
-		work.append(TRANSMISSION_BEGIN);
-		writeNull();    // blank version number
-	}
-	@Override
+        work.append(TRANSMISSION_BEGIN);
+        writeNull();    // blank version number
+    }
+    @Override
     public void terminateTransmission() {
-		work.append(TRANSMISSION_TERMINATOR);
-		work.append(TRANSMISSION_TERMINATOR2);
-	}
+        work.append(TRANSMISSION_TERMINATOR);
+        work.append(TRANSMISSION_TERMINATOR2);
+    }
 
-	@Override
-	public void terminateRecord() {
-		if (doWriteCRs())
-			work.append(RECORD_OPT_TERMINATOR);
-		work.append(RECORD_TERMINATOR);
-	}
+    @Override
+    public void terminateRecord() {
+        if (doWriteCRs())
+            work.append(RECORD_OPT_TERMINATOR);
+        work.append(RECORD_TERMINATOR);
+    }
 
-	@Override
-	public void writeSuperclassSeparator() {
-		work.append(PARENT_SEPARATOR);
-	}
+    @Override
+    public void writeSuperclassSeparator() {
+        work.append(PARENT_SEPARATOR);
+    }
 
-	@Override
-	public void startRecord() {
-		work.append(RECORD_BEGIN);
-		writeNull();  // blank version number
-	}
+    @Override
+    public void startRecord() {
+        work.append(RECORD_BEGIN);
+        writeNull();  // blank version number
+    }
 
-	@Override
-	public void writeRecord(BonaPortable o) {
-		startRecord();
-		addField(o);
-		terminateRecord();
-	}
-	
-	private void addCharSub(char c) {
-		if (c >= 0 && c < ' ' && c != '\t') {
-			work.append(ESCAPE_CHAR);
-			work.append((char)(c + '@'));
-		} else {
-			work.append(c);
-		}		
-	}
+    @Override
+    public void writeRecord(BonaPortable o) {
+        startRecord();
+        addField(o);
+        terminateRecord();
+    }
+    
+    private void addCharSub(char c) {
+        if (c >= 0 && c < ' ' && c != '\t') {
+            work.append(ESCAPE_CHAR);
+            work.append((char)(c + '@'));
+        } else {
+            work.append(c);
+        }       
+    }
 
-	// field type specific output functions
-	@Override
-	public void addUnicodeString(String s, int length, boolean allowCtrls) {
-		if (s != null) {
-			for (int i = 0; i < s.length(); ++i) {
-				addCharSub(s.charAt(i));
-			}
-			terminateField();
-		} else {
-			writeNull();
-		}
-	}
+    // field type specific output functions
+    @Override
+    public void addUnicodeString(String s, int length, boolean allowCtrls) {
+        if (s != null) {
+            for (int i = 0; i < s.length(); ++i) {
+                addCharSub(s.charAt(i));
+            }
+            terminateField();
+        } else {
+            writeNull();
+        }
+    }
 
-	// character
-	@Override
-	public void addField(char c) {
-		addCharSub(c);
-		terminateField();
-	}
-	// ascii only (unicode uses different method)
-	@Override
-	public void addField(String s, int length) {
-		if (s != null) {
-			work.append(s);
-			terminateField();
-		} else {
-			writeNull();
-		}
-	}
+    // character
+    @Override
+    public void addField(char c) {
+        addCharSub(c);
+        terminateField();
+    }
+    // ascii only (unicode uses different method)
+    @Override
+    public void addField(String s, int length) {
+        if (s != null) {
+            work.append(s);
+            terminateField();
+        } else {
+            writeNull();
+        }
+    }
 
-	// decimal
-	@Override
-	public void addField(BigDecimal n, int length, int decimals,
-			boolean isSigned) {
-		if (n != null) {
-			work.append(n.toPlainString());
-			terminateField();
-		} else {
-			writeNull();
-		}
-	}
-	
-	// byte
-	@Override
-	public void addField(byte n) {
-		work.append(Byte.toString(n));
-		terminateField();
-	}
-	// short
-	@Override
-	public void addField(short n) {
-		work.append(Short.toString(n));
-		terminateField();
-	}
-	// integer
-	@Override
-	public void addField(int n) {
-		work.append(Integer.toString(n));
-		terminateField();
-	}
-	
-	// int(n)
-	@Override
-	public void addField(Integer n, int length, boolean isSigned) {
-		if (n != null) {
-			work.append(n.toString());
-			terminateField();
-		} else {
-			writeNull();
-		}
-	}
+    // decimal
+    @Override
+    public void addField(BigDecimal n, int length, int decimals,
+            boolean isSigned) {
+        if (n != null) {
+            work.append(n.toPlainString());
+            terminateField();
+        } else {
+            writeNull();
+        }
+    }
+    
+    // byte
+    @Override
+    public void addField(byte n) {
+        work.append(Byte.toString(n));
+        terminateField();
+    }
+    // short
+    @Override
+    public void addField(short n) {
+        work.append(Short.toString(n));
+        terminateField();
+    }
+    // integer
+    @Override
+    public void addField(int n) {
+        work.append(Integer.toString(n));
+        terminateField();
+    }
+    
+    // int(n)
+    @Override
+    public void addField(Integer n, int length, boolean isSigned) {
+        if (n != null) {
+            work.append(n.toString());
+            terminateField();
+        } else {
+            writeNull();
+        }
+    }
 
-	// long
-	@Override
-	public void addField(long n) {
-		work.append(Long.toString(n));
-		terminateField();
-	}
+    // long
+    @Override
+    public void addField(long n) {
+        work.append(Long.toString(n));
+        terminateField();
+    }
 
-	// boolean
-	@Override
-	public void addField(boolean b) {
-		if (b)
-			work.append('1');
-		else
-			work.append('0');
-		terminateField();
-	}
+    // boolean
+    @Override
+    public void addField(boolean b) {
+        if (b)
+            work.append('1');
+        else
+            work.append('0');
+        terminateField();
+    }
 
-	// float
-	@Override
-	public void addField(float f) {
-		work.append(Float.toString(f));
-		terminateField();
-	}
+    // float
+    @Override
+    public void addField(float f) {
+        work.append(Float.toString(f));
+        terminateField();
+    }
 
-	// double
-	@Override
-	public void addField(double d) {
-		work.append(Double.toString(d));
-		terminateField();
-	}
+    // double
+    @Override
+    public void addField(double d) {
+        work.append(Double.toString(d));
+        terminateField();
+    }
 
-	// UUID
-	@Override
-	public void addField(UUID n) {
-		if (n != null) {
-			work.append(n.toString());
-			terminateField();
-		} else {
-			writeNull();
-		}
-	}
-	
-	// ByteArray: initial quick & dirty implementation
-	@Override
-	public void addField(ByteArray b, int length) {
-		if (b != null) {
-			work.append(DatatypeConverter.printBase64Binary(b.getBytes()));
-			//work.append(DatatypeConverter.printBase64Binary(b));
-			//work.append(DatatypeConverter.printHexBinary(b));
-			terminateField();
-		} else {
-			writeNull();
-		}
-	}
-	
-	// raw
-	@Override
-	public void addField(byte[] b, int length) {
-		if (b != null) {
-			work.append(DatatypeConverter.printBase64Binary(b));
-			//work.append(DatatypeConverter.printHexBinary(b));
-			terminateField();
-		} else {
-			writeNull();
-		}
-	}
+    // UUID
+    @Override
+    public void addField(UUID n) {
+        if (n != null) {
+            work.append(n.toString());
+            terminateField();
+        } else {
+            writeNull();
+        }
+    }
+    
+    // ByteArray: initial quick & dirty implementation
+    @Override
+    public void addField(ByteArray b, int length) {
+        if (b != null) {
+            work.append(DatatypeConverter.printBase64Binary(b.getBytes()));
+            //work.append(DatatypeConverter.printBase64Binary(b));
+            //work.append(DatatypeConverter.printHexBinary(b));
+            terminateField();
+        } else {
+            writeNull();
+        }
+    }
+    
+    // raw
+    @Override
+    public void addField(byte[] b, int length) {
+        if (b != null) {
+            work.append(DatatypeConverter.printBase64Binary(b));
+            //work.append(DatatypeConverter.printHexBinary(b));
+            terminateField();
+        } else {
+            writeNull();
+        }
+    }
 
-	// append a left padded String
-	private void lpad(String s, int length, char padCharacter) {
-		int l = s.length();
-		while (l++ < length)
-			work.append(padCharacter);
-		work.append(s);
-	}
-	
-	// converters for DAY und TIMESTAMP
-	@Override
-	public void addField(GregorianCalendar t, boolean hhmmss, int length) {  // TODO: length is not needed for this one
-		if (t != null) {
-			int tmpValue = 10000 * t.get(Calendar.YEAR) + 100
-					* (t.get(Calendar.MONTH) + 1) + t.get(Calendar.DAY_OF_MONTH);
-			work.append(Integer.toString(tmpValue));
-			if (length >= 0) {
-				// not only day, but also time
-				if (hhmmss)
-					tmpValue = 10000 * t.get(Calendar.HOUR_OF_DAY) + 100
-					       * t.get(Calendar.MINUTE) + t.get(Calendar.SECOND);
-				else
-					tmpValue = 3600 * t.get(Calendar.HOUR_OF_DAY) + 60
-				       * t.get(Calendar.MINUTE) + t.get(Calendar.SECOND);
-				if (tmpValue != 0 || (length > 0 && t.get(Calendar.MILLISECOND) != 0)) {
-					work.append('.');
-					lpad(Integer.toString(tmpValue), 6, '0');
-					if (length > 0) {
-						// add milliseconds
-						tmpValue = t.get(Calendar.MILLISECOND);
-						if (tmpValue != 0)
-							lpad(Integer.toString(tmpValue), 3, '0');
-					}
-				}
-			}
-			terminateField();
-		} else {
-			writeNull();
-		}
-	}
-	@Override
-	public void addField(LocalDate t) {
-		if (t != null) {
-			int [] values = t.getValues();   // 3 values: year, month, day
-			int tmpValue = 10000 * values[0] + 100 * values[1] + values[2];
-			// int tmpValue = 10000 * t.getYear() + 100 * t.getMonthOfYear() + t.getDayOfMonth();
-			work.append(Integer.toString(tmpValue));
-			terminateField();
-		} else {
-			writeNull();
-		}		
-	}
+    // append a left padded String
+    private void lpad(String s, int length, char padCharacter) {
+        int l = s.length();
+        while (l++ < length)
+            work.append(padCharacter);
+        work.append(s);
+    }
+    
+    // converters for DAY und TIMESTAMP
+    @Override
+    public void addField(GregorianCalendar t, boolean hhmmss, int length) {  // TODO: length is not needed for this one
+        if (t != null) {
+            int tmpValue = 10000 * t.get(Calendar.YEAR) + 100
+                    * (t.get(Calendar.MONTH) + 1) + t.get(Calendar.DAY_OF_MONTH);
+            work.append(Integer.toString(tmpValue));
+            if (length >= 0) {
+                // not only day, but also time
+                if (hhmmss)
+                    tmpValue = 10000 * t.get(Calendar.HOUR_OF_DAY) + 100
+                           * t.get(Calendar.MINUTE) + t.get(Calendar.SECOND);
+                else
+                    tmpValue = 3600 * t.get(Calendar.HOUR_OF_DAY) + 60
+                       * t.get(Calendar.MINUTE) + t.get(Calendar.SECOND);
+                if (tmpValue != 0 || (length > 0 && t.get(Calendar.MILLISECOND) != 0)) {
+                    work.append('.');
+                    lpad(Integer.toString(tmpValue), 6, '0');
+                    if (length > 0) {
+                        // add milliseconds
+                        tmpValue = t.get(Calendar.MILLISECOND);
+                        if (tmpValue != 0)
+                            lpad(Integer.toString(tmpValue), 3, '0');
+                    }
+                }
+            }
+            terminateField();
+        } else {
+            writeNull();
+        }
+    }
+    @Override
+    public void addField(LocalDate t) {
+        if (t != null) {
+            int [] values = t.getValues();   // 3 values: year, month, day
+            int tmpValue = 10000 * values[0] + 100 * values[1] + values[2];
+            // int tmpValue = 10000 * t.getYear() + 100 * t.getMonthOfYear() + t.getDayOfMonth();
+            work.append(Integer.toString(tmpValue));
+            terminateField();
+        } else {
+            writeNull();
+        }       
+    }
 
-	@Override
-	public void addField(LocalDateTime t, boolean hhmmss, int length) {
-		if (t != null) {
-			int [] values = t.getValues(); // 4 values: year, month, day, millis of day
-			//int tmpValue = 10000 * t.getYear() + 100 * t.getMonthOfYear() + t.getDayOfMonth();
-			work.append(Integer.toString(10000 * values[0] + 100 * values[1] + values[2]));
-			if (length >= 0) {
-				// not only day, but also time
-				//tmpValue = 10000 * t.getHourOfDay() + 100 * t.getMinuteOfHour() + t.getSecondOfMinute();
-				if (length > 0 ? (values[3] != 0) : (values[3] / 1000 != 0)) {
-					work.append('.');
-					if (hhmmss) {
-						int tmpValue = values[3] / 60000; // minutes and hours
-						tmpValue = 100 * (tmpValue / 60) + (tmpValue % 60);
-						lpad(Integer.toString(tmpValue * 100 + (values[3] % 60000) / 1000), 6, '0');
-					} else {
-						lpad(Integer.toString(values[3] / 1000), 6, '0');
-					}
-					if (length > 0) {
-						// add milliseconds
-						int milliSeconds = values[3] % 1000;
-						if (milliSeconds != 0)
-							lpad(Integer.toString(milliSeconds), 3, '0');
-					}
-				}
-			}
-			terminateField();
-		} else {
-			writeNull();
-		}		
-	}
+    @Override
+    public void addField(LocalDateTime t, boolean hhmmss, int length) {
+        if (t != null) {
+            int [] values = t.getValues(); // 4 values: year, month, day, millis of day
+            //int tmpValue = 10000 * t.getYear() + 100 * t.getMonthOfYear() + t.getDayOfMonth();
+            work.append(Integer.toString(10000 * values[0] + 100 * values[1] + values[2]));
+            if (length >= 0) {
+                // not only day, but also time
+                //tmpValue = 10000 * t.getHourOfDay() + 100 * t.getMinuteOfHour() + t.getSecondOfMinute();
+                if (length > 0 ? (values[3] != 0) : (values[3] / 1000 != 0)) {
+                    work.append('.');
+                    if (hhmmss) {
+                        int tmpValue = values[3] / 60000; // minutes and hours
+                        tmpValue = 100 * (tmpValue / 60) + (tmpValue % 60);
+                        lpad(Integer.toString(tmpValue * 100 + (values[3] % 60000) / 1000), 6, '0');
+                    } else {
+                        lpad(Integer.toString(values[3] / 1000), 6, '0');
+                    }
+                    if (length > 0) {
+                        // add milliseconds
+                        int milliSeconds = values[3] % 1000;
+                        if (milliSeconds != 0)
+                            lpad(Integer.toString(milliSeconds), 3, '0');
+                    }
+                }
+            }
+            terminateField();
+        } else {
+            writeNull();
+        }       
+    }
 
-	@Override
-	public void startArray(int currentMembers, int maxMembers, int sizeOfElement) {
-		work.append(ARRAY_BEGIN);
-		addField(currentMembers);
-	}
+    @Override
+    public void startArray(int currentMembers, int maxMembers, int sizeOfElement) {
+        work.append(ARRAY_BEGIN);
+        addField(currentMembers);
+    }
 
-	@Override
-	public void terminateArray() {
-		work.append(ARRAY_TERMINATOR);
-		
-	}
+    @Override
+    public void terminateArray() {
+        work.append(ARRAY_TERMINATOR);
+        
+    }
 
-	@Override
-	public void addField(BonaPortable obj) {
-		if (obj == null) {
-			writeNull();
-		} else {
-			// start a new object
-			work.append(OBJECT_BEGIN);
-			work.append(obj.get$PQON());
-			terminateField();
-			addField(obj.get$Revision(), 0);
-			
-			// do all fields (now includes terminator)
-			obj.serializeSub(this);
-		}
-	}
+    @Override
+    public void addField(BonaPortable obj) {
+        if (obj == null) {
+            writeNull();
+        } else {
+            // start a new object
+            work.append(OBJECT_BEGIN);
+            work.append(obj.get$PQON());
+            terminateField();
+            addField(obj.get$Revision(), 0);
+            
+            // do all fields (now includes terminator)
+            obj.serializeSub(this);
+        }
+    }
 }

@@ -32,9 +32,9 @@ import de.jpaw.bonaparte.coretests.util.SimpleTestRunner;
  */
 
 public class TestBoxedTypeArrays {
-	
-	@Test
-	public void testBoxedTypeArrays() throws Exception {
-		SimpleTestRunner.run(FillBoxedTypeArrays.test1(), false);
-	}	
+    
+    @Test
+    public void testBoxedTypeArrays() throws Exception {
+        SimpleTestRunner.run(FillBoxedTypeArrays.test1(), false);
+    }   
 }

@@ -14,25 +14,25 @@ import io.netty.handler.codec.MessageToMessageEncoder;
 
 @Sharable
 public class BonaparteNettyEncoder extends MessageToMessageEncoder<BonaPortable, ByteBuf> {
-	private static final Logger logger = LoggerFactory.getLogger(BonaparteNettyEncoder.class);
+    private static final Logger logger = LoggerFactory.getLogger(BonaparteNettyEncoder.class);
 
-	@Override
-	public MessageBuf<BonaPortable> newOutboundBuffer(ChannelHandlerContext ctx) throws Exception {
-		return Unpooled.messageBuffer();
-	}
+    @Override
+    public MessageBuf<BonaPortable> newOutboundBuffer(ChannelHandlerContext ctx) throws Exception {
+        return Unpooled.messageBuffer();
+    }
 
-	@Override
-	public boolean isEncodable(Object msg) throws Exception {
-		return msg instanceof BonaPortable;
-	}
+    @Override
+    public boolean isEncodable(Object msg) throws Exception {
+        return msg instanceof BonaPortable;
+    }
 
-	@Override
-	public ByteBuf encode(ChannelHandlerContext ctx, BonaPortable msg) throws Exception {
-		ByteArrayComposer w = new ByteArrayComposer();
-		w.writeRecord(msg);
-		logger.trace("Writing object {} with contents {}", msg.getClass().getCanonicalName(), new String(w.getBytes()));
-		// create a new ByteBuf with the contents of w.getBuffer()
+    @Override
+    public ByteBuf encode(ChannelHandlerContext ctx, BonaPortable msg) throws Exception {
+        ByteArrayComposer w = new ByteArrayComposer();
+        w.writeRecord(msg);
+        logger.trace("Writing object {} with contents {}", msg.getClass().getCanonicalName(), new String(w.getBytes()));
+        // create a new ByteBuf with the contents of w.getBuffer()
         return Unpooled.wrappedBuffer(w.getBuffer(), 0, w.getLength());
-	}
+    }
 
 }

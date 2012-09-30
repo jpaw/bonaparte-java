@@ -13,28 +13,10 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
-
-package testcases.conversion;
-
-import org.testng.annotations.Test;
-
-import de.jpaw.bonaparte.coretests.initializers.FillPrimitiveArrays;
-import de.jpaw.bonaparte.coretests.util.SimpleTestRunner;
-
 /**
- * The TestPrimitives class.
- * 
+ * Provides interfaces implemented by the secondary DSL, BDDL (persistence add-on).
+ *
  * @author Michael Bischoff
- * @version $Revision$
  * 
- *          This is a simple testcase which calls the SimpleTestRunner with a class
- *          consisting of arrays of all supported Java primitives.
  */
-
-public class TestPrimitiveArrays {
-    
-    @Test
-    public void testPrimitiveArrays() throws Exception {
-        SimpleTestRunner.run(FillPrimitiveArrays.test1(), false);
-    }   
-}
+package de.jpaw.bonaparte.jpa;

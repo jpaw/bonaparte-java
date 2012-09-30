@@ -6,14 +6,14 @@ import org.vertx.java.core.Handler;
 import org.vertx.java.core.net.NetSocket;
 
 public class BonaparteConnectHandler implements Handler<NetSocket> {
-	private static final Logger logger = LoggerFactory.getLogger(BonaparteConnectHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(BonaparteConnectHandler.class);
 
-	@Override
-	public void handle(NetSocket sock) {
+    @Override
+    public void handle(NetSocket sock) {
         logger.info("A client has connected!");
         //Handler<Buffer> hd = new BonaparteDataHandler(sock);
         
         sock.dataHandler(new BonaparteDataHandler(sock));
-	}
+    }
 
 }

@@ -31,15 +31,15 @@ import de.jpaw.util.ApplicationException;
  */
 
 public class MessageParserException extends ApplicationException {
-	private static final long serialVersionUID = 6578705245543364726L;
-	private static final Logger logger = LoggerFactory.getLogger(MessageParserException.class);
-	
-	private static final int OFFSET = PARSER_ERROR * CLASSIFICATION_FACTOR + 17000; // offset for all codes in this class
-	private static boolean textsInitialized = false;
-	
-	private int characterIndex; // the byte count of the message at which the error occured  
-	private String fieldName;	// if known, the name of the field where the error occured
-	private String className;	// if known, the name of the class which contained the field
+    private static final long serialVersionUID = 6578705245543364726L;
+    private static final Logger logger = LoggerFactory.getLogger(MessageParserException.class);
+    
+    private static final int OFFSET = PARSER_ERROR * CLASSIFICATION_FACTOR + 17000; // offset for all codes in this class
+    private static boolean textsInitialized = false;
+    
+    private int characterIndex; // the byte count of the message at which the error occured  
+    private String fieldName;   // if known, the name of the field where the error occured
+    private String className;   // if known, the name of the class which contained the field
 
     static public final int MISSING_FIELD_TERMINATOR     = OFFSET + 1;
     static public final int MISSING_RECORD_TERMINATOR    = OFFSET + 2;
@@ -77,7 +77,7 @@ public class MessageParserException extends ApplicationException {
     static public final int BAD_OBJECT_NAME              = OFFSET + 34;
     static public final int BAD_UUID_FORMAT              = OFFSET + 35;
     static public final int INVALID_ENUM_TOKEN           = OFFSET + 36;
-	
+    
     /**
      * Method lazyInitialization.
      * 
@@ -87,74 +87,74 @@ public class MessageParserException extends ApplicationException {
      * synchronized, but duplicate upload does not hurt (is idempotent)
      */
     static private void lazyInitialization() {
-    	synchronized (codeToDescription) {
-    		textsInitialized = true;
-    		codeToDescription.put(MISSING_FIELD_TERMINATOR     , "Missing field terminator");
-    		codeToDescription.put(MISSING_RECORD_TERMINATOR    , "Missing record terminator");
-    		codeToDescription.put(MISSING_TERMINATOR           , "Missing message terminator");
-    		codeToDescription.put(PREMATURE_END                , "Unexpected end of message");
-    		codeToDescription.put(FIELD_PARSE                  , "Field parsing error");
-    		codeToDescription.put(ILLEGAL_CHAR_ASCII           , "Field contains non-ASCII character");
-    		codeToDescription.put(ILLEGAL_CHAR_UPPER           , "Field must consist of uppercase ASCII only");
-    		codeToDescription.put(ILLEGAL_CHAR_LOWER           , "Field must consist of lowercase ASCII only");
-    		codeToDescription.put(ILLEGAL_CHAR_DIGIT           , "Field contains non-digit");
-    		codeToDescription.put(EMPTY_BUT_REQUIRED_FIELD     , "Field was empty but required non-blank");
-    		codeToDescription.put(UNEXPECTED_CHARACTER         , "Character found was not one required next");
-    		codeToDescription.put(ILLEGAL_EXPLICIT_NULL        , "NULL not allowed here (required field)");
-    		codeToDescription.put(ILLEGAL_IMPLICIT_NULL        , "implicit NULL found due to end of object, not allowed (required field)");
-    		codeToDescription.put(NO_DIGITS_FOUND              , "no digits found while parsing a numeric field (possible before exponent)");
-    		codeToDescription.put(SUPERFLUOUS_DECIMAL_POINT    , "decimal point found for an integral type, in an exponent, or multiple decimal signs");
-    		codeToDescription.put(SUPERFLUOUS_EXPONENT         , "exponent sign encountered for a fixed point field, or multiple exponent signs");
-    		codeToDescription.put(SUPERFLUOUS_SIGN             , "minus sign encountered for an unsigned field, or multiple minus signs");
-    		codeToDescription.put(ILLEGAL_CHAR_CTRL            , "Field contains control characters");
-    		codeToDescription.put(ILLEGAL_CHAR_NOT_NUMERIC     , "Illegal character in numeric field (allowed are only [-.eE0-9]");
-    		codeToDescription.put(NUMERIC_TOO_LONG             , "numeric field too long (max 40 characters allowed)");
-    		codeToDescription.put(STRING_TOO_LONG              , "String longer than allowed");
-    		codeToDescription.put(ILLEGAL_ESCAPE_SEQUENCE      , "Invalid escape sequence (second character must be between @ and _ (0x40..0x5f)");
-    		codeToDescription.put(ILLEGAL_BOOLEAN              , "only 0 and 1 are allowed for a boolean field");
-    		codeToDescription.put(BASE64_PARSING_ERROR         , "problem parsing a base64 encoded raw field");
-    		codeToDescription.put(ILLEGAL_CHAR_BASE64          , "illegal character found while parsing a base64 encoded raw field");
-    		codeToDescription.put(ARRAY_SIZE_OUT_OF_BOUNDS     , "negative item count or item count > 1000000000");
-    		codeToDescription.put(BAD_CLASS                    , "parsed class is not a subclass of the expected one or subclassing is not allowed");
-    		codeToDescription.put(BAD_TRANSMISSION_START       , "Illegal character at the start of a transmission");
-    		codeToDescription.put(BAD_TIMESTAMP_FRACTIONALS    , "Illegal number of fractional digits for timestamp (must be 6..9 for precision 0..3)");
-    		codeToDescription.put(ILLEGAL_DAY                  , "Illegal day");
-    		codeToDescription.put(ILLEGAL_TIME                 , "Illegal time");
-    		codeToDescription.put(ILLEGAL_CALENDAR_VALUE       , "Exception converting the date/time");
-    		codeToDescription.put(EMPTY_CHAR                   , "empty character field");
-    		codeToDescription.put(BAD_OBJECT_NAME              , "bad object name (must contain a dot, and not as first or last character)");
-    		codeToDescription.put(BAD_UUID_FORMAT              , "malformed UUID");
-    		codeToDescription.put(INVALID_ENUM_TOKEN           , "invalid token to instanciate enum");
-    	}
+        synchronized (codeToDescription) {
+            textsInitialized = true;
+            codeToDescription.put(MISSING_FIELD_TERMINATOR     , "Missing field terminator");
+            codeToDescription.put(MISSING_RECORD_TERMINATOR    , "Missing record terminator");
+            codeToDescription.put(MISSING_TERMINATOR           , "Missing message terminator");
+            codeToDescription.put(PREMATURE_END                , "Unexpected end of message");
+            codeToDescription.put(FIELD_PARSE                  , "Field parsing error");
+            codeToDescription.put(ILLEGAL_CHAR_ASCII           , "Field contains non-ASCII character");
+            codeToDescription.put(ILLEGAL_CHAR_UPPER           , "Field must consist of uppercase ASCII only");
+            codeToDescription.put(ILLEGAL_CHAR_LOWER           , "Field must consist of lowercase ASCII only");
+            codeToDescription.put(ILLEGAL_CHAR_DIGIT           , "Field contains non-digit");
+            codeToDescription.put(EMPTY_BUT_REQUIRED_FIELD     , "Field was empty but required non-blank");
+            codeToDescription.put(UNEXPECTED_CHARACTER         , "Character found was not one required next");
+            codeToDescription.put(ILLEGAL_EXPLICIT_NULL        , "NULL not allowed here (required field)");
+            codeToDescription.put(ILLEGAL_IMPLICIT_NULL        , "implicit NULL found due to end of object, not allowed (required field)");
+            codeToDescription.put(NO_DIGITS_FOUND              , "no digits found while parsing a numeric field (possible before exponent)");
+            codeToDescription.put(SUPERFLUOUS_DECIMAL_POINT    , "decimal point found for an integral type, in an exponent, or multiple decimal signs");
+            codeToDescription.put(SUPERFLUOUS_EXPONENT         , "exponent sign encountered for a fixed point field, or multiple exponent signs");
+            codeToDescription.put(SUPERFLUOUS_SIGN             , "minus sign encountered for an unsigned field, or multiple minus signs");
+            codeToDescription.put(ILLEGAL_CHAR_CTRL            , "Field contains control characters");
+            codeToDescription.put(ILLEGAL_CHAR_NOT_NUMERIC     , "Illegal character in numeric field (allowed are only [-.eE0-9]");
+            codeToDescription.put(NUMERIC_TOO_LONG             , "numeric field too long (max 40 characters allowed)");
+            codeToDescription.put(STRING_TOO_LONG              , "String longer than allowed");
+            codeToDescription.put(ILLEGAL_ESCAPE_SEQUENCE      , "Invalid escape sequence (second character must be between @ and _ (0x40..0x5f)");
+            codeToDescription.put(ILLEGAL_BOOLEAN              , "only 0 and 1 are allowed for a boolean field");
+            codeToDescription.put(BASE64_PARSING_ERROR         , "problem parsing a base64 encoded raw field");
+            codeToDescription.put(ILLEGAL_CHAR_BASE64          , "illegal character found while parsing a base64 encoded raw field");
+            codeToDescription.put(ARRAY_SIZE_OUT_OF_BOUNDS     , "negative item count or item count > 1000000000");
+            codeToDescription.put(BAD_CLASS                    , "parsed class is not a subclass of the expected one or subclassing is not allowed");
+            codeToDescription.put(BAD_TRANSMISSION_START       , "Illegal character at the start of a transmission");
+            codeToDescription.put(BAD_TIMESTAMP_FRACTIONALS    , "Illegal number of fractional digits for timestamp (must be 6..9 for precision 0..3)");
+            codeToDescription.put(ILLEGAL_DAY                  , "Illegal day");
+            codeToDescription.put(ILLEGAL_TIME                 , "Illegal time");
+            codeToDescription.put(ILLEGAL_CALENDAR_VALUE       , "Exception converting the date/time");
+            codeToDescription.put(EMPTY_CHAR                   , "empty character field");
+            codeToDescription.put(BAD_OBJECT_NAME              , "bad object name (must contain a dot, and not as first or last character)");
+            codeToDescription.put(BAD_UUID_FORMAT              , "malformed UUID");
+            codeToDescription.put(INVALID_ENUM_TOKEN           , "invalid token to instanciate enum");
+        }
     }
-	
+    
     private final String getSpecificDescription() {
-    	return (className == null ? "?" : className) + "."
-			 + (fieldName == null ? "?" : fieldName) + " at position " + characterIndex;
+        return (className == null ? "?" : className) + "."
+             + (fieldName == null ? "?" : fieldName) + " at position " + characterIndex;
     }
     
     private final void constructorSubroutine(int characterIndex, String className, String fieldName) {
-    	this.characterIndex = characterIndex;
-    	this.fieldName = fieldName;
-    	this.className = className;
-    	if (!textsInitialized)
-    		lazyInitialization();
-    	// for the logger call, do NOT use toString, because that can be overridden, and we're called from a constructor here
-    	logger.error("Error " + getErrorCode() + " (" + getStandardDescription() + ") for " + getSpecificDescription());
+        this.characterIndex = characterIndex;
+        this.fieldName = fieldName;
+        this.className = className;
+        if (!textsInitialized)
+            lazyInitialization();
+        // for the logger call, do NOT use toString, because that can be overridden, and we're called from a constructor here
+        logger.error("Error " + getErrorCode() + " (" + getStandardDescription() + ") for " + getSpecificDescription());
     }
     
-	public MessageParserException(int errorCode, String message, int characterIndex, String className) {
-		super(errorCode, message);
-		constructorSubroutine(characterIndex, className, null);
-	}
-	
-	public MessageParserException(int errorCode) {
-		super(errorCode, null);
-		constructorSubroutine(-1, null, null);
-	}
-	
-	@Override
-	public String toString() {
-		return getSpecificDescription() + ": " + super.toString();
-	}
+    public MessageParserException(int errorCode, String message, int characterIndex, String className) {
+        super(errorCode, message);
+        constructorSubroutine(characterIndex, className, null);
+    }
+    
+    public MessageParserException(int errorCode) {
+        super(errorCode, null);
+        constructorSubroutine(-1, null, null);
+    }
+    
+    @Override
+    public String toString() {
+        return getSpecificDescription() + ": " + super.toString();
+    }
 }

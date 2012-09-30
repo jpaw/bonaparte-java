@@ -39,39 +39,39 @@ import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
  *          
  */
 public class Bundle {
-	private static ConcurrentMap<String,BundleInformation> bundleMap = new ConcurrentHashMap<String,BundleInformation>(20);
-	private static ConcurrentMap<String,Bundle> packageToBundle = new ConcurrentHashMap<String,Bundle>(20);;
-	
-	private BundleInformation staticBundleData;
-	private ConcurrentMap<String,ClassDefinition> loadedClasses;
-	private URLClassLoader loader;
-	
-	// create a new bundle entry for tracking
-	Bundle(String bundleName, String classPath) throws MalformedURLException {
-		URL [] searchPath;
-		if (classPath == null) {
-			searchPath = new URL[0];
-		} else {
-			searchPath = new URL[1];
-			searchPath[0] = new URL(classPath);
-		}
-		loader = new URLClassLoader(searchPath);
-		loadedClasses = new ConcurrentHashMap<String,ClassDefinition>(100);
-		staticBundleData = new BundleInformation();
-		staticBundleData.setName(bundleName);
-		staticBundleData.setBundleStatus(BundleStatus.UNUSED);
-		staticBundleData.setWhenStatusChanged(new LocalDateTime());
-	}
-	
-	static Bundle getBundleByPackageName(String packageName) {
-		return packageToBundle.get(packageName);
-	}
-	
-	void addClass(ClassDefinition cl) {
-		loadedClasses.put(cl.get$PQON(), cl.get$MetaData());
-	}
-	
-	ClassDefinition [] getAllClasses() {
-		return loadedClasses.values().toArray(new ClassDefinition [0]);
-	}
+    private static ConcurrentMap<String,BundleInformation> bundleMap = new ConcurrentHashMap<String,BundleInformation>(20);
+    private static ConcurrentMap<String,Bundle> packageToBundle = new ConcurrentHashMap<String,Bundle>(20);;
+    
+    private BundleInformation staticBundleData;
+    private ConcurrentMap<String,ClassDefinition> loadedClasses;
+    private URLClassLoader loader;
+    
+    // create a new bundle entry for tracking
+    Bundle(String bundleName, String classPath) throws MalformedURLException {
+        URL [] searchPath;
+        if (classPath == null) {
+            searchPath = new URL[0];
+        } else {
+            searchPath = new URL[1];
+            searchPath[0] = new URL(classPath);
+        }
+        loader = new URLClassLoader(searchPath);
+        loadedClasses = new ConcurrentHashMap<String,ClassDefinition>(100);
+        staticBundleData = new BundleInformation();
+        staticBundleData.setName(bundleName);
+        staticBundleData.setBundleStatus(BundleStatus.UNUSED);
+        staticBundleData.setWhenStatusChanged(new LocalDateTime());
+    }
+    
+    static Bundle getBundleByPackageName(String packageName) {
+        return packageToBundle.get(packageName);
+    }
+    
+    void addClass(ClassDefinition cl) {
+        loadedClasses.put(cl.get$PQON(), cl.get$MetaData());
+    }
+    
+    ClassDefinition [] getAllClasses() {
+        return loadedClasses.values().toArray(new ClassDefinition [0]);
+    }
 }

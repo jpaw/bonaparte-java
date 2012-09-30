@@ -39,51 +39,51 @@ import de.jpaw.bonaparte.core.BonaPortable;
  */
 
 public final class NewDataFormat implements DataFormat {
-	private static final Logger logger = LoggerFactory.getLogger(BonaparteCamelFormat.class);
+    private static final Logger logger = LoggerFactory.getLogger(BonaparteCamelFormat.class);
     private int initialBufferSize = 65500;  // start big to avoid frequent reallocation 
-	
+    
     private ByteArrayComposer w = null;
-	
-	public void marshal(Exchange exchange, Object graph, OutputStream stream) throws Exception {
-		if (w == null)
-			w = new ByteArrayComposer();  // create on demand
-		w.reset();
-		w.writeRecord((BonaPortable) graph);
-		stream.write(w.getBytes());
-	}
+    
+    public void marshal(Exchange exchange, Object graph, OutputStream stream) throws Exception {
+        if (w == null)
+            w = new ByteArrayComposer();  // create on demand
+        w.reset();
+        w.writeRecord((BonaPortable) graph);
+        stream.write(w.getBytes());
+    }
 
-	public Object unmarshal(Exchange exchange, InputStream stream) throws Exception {
-		// get the bytes, convert to String, parse
-		// TODO: avoid byte buffer breaks within UTF-8-sequence!
-		boolean isMultiRecord = false;
-		byte [] byteBuffer = new byte[initialBufferSize];
-		int numbytes = stream.read(byteBuffer, 0, initialBufferSize);
-		logger.debug("read {} bytes from the input stream", numbytes);
-		if (numbytes == initialBufferSize)
-			throw new Exception("multi-reads for big messages not yet supported");
-		if (byteBuffer[0] == '\024')   // multi record (transmission)
-			isMultiRecord = true;
-		
-		ByteArrayParser p = new ByteArrayParser(byteBuffer, 0, numbytes);
-		List<BonaPortable> resultSet = p.readTransmission();
-		if (isMultiRecord)
-			return resultSet;		// which may be empty
-		else if (resultSet.size() == 0)
-			return null;
-		else {
-			if (resultSet.size() > 1)
-				throw new Exception("more than 1 record without a transmission header!");
-			return resultSet.get(0);
-		}
-	}
+    public Object unmarshal(Exchange exchange, InputStream stream) throws Exception {
+        // get the bytes, convert to String, parse
+        // TODO: avoid byte buffer breaks within UTF-8-sequence!
+        boolean isMultiRecord = false;
+        byte [] byteBuffer = new byte[initialBufferSize];
+        int numbytes = stream.read(byteBuffer, 0, initialBufferSize);
+        logger.debug("read {} bytes from the input stream", numbytes);
+        if (numbytes == initialBufferSize)
+            throw new Exception("multi-reads for big messages not yet supported");
+        if (byteBuffer[0] == '\024')   // multi record (transmission)
+            isMultiRecord = true;
+        
+        ByteArrayParser p = new ByteArrayParser(byteBuffer, 0, numbytes);
+        List<BonaPortable> resultSet = p.readTransmission();
+        if (isMultiRecord)
+            return resultSet;       // which may be empty
+        else if (resultSet.size() == 0)
+            return null;
+        else {
+            if (resultSet.size() > 1)
+                throw new Exception("more than 1 record without a transmission header!");
+            return resultSet.get(0);
+        }
+    }
 
 
-	public int getInitialBufferSize() {
-		return initialBufferSize;
-	}
+    public int getInitialBufferSize() {
+        return initialBufferSize;
+    }
 
-	public void setInitialBufferSize(int initialBufferSize) {
-		this.initialBufferSize = initialBufferSize;
-	}
+    public void setInitialBufferSize(int initialBufferSize) {
+        this.initialBufferSize = initialBufferSize;
+    }
 
 }

@@ -13,28 +13,15 @@
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
+package de.jpaw.bonaparte.core;
 
-package testcases.conversion;
-
-import org.testng.annotations.Test;
-
-import de.jpaw.bonaparte.coretests.initializers.FillPrimitiveArrays;
-import de.jpaw.bonaparte.coretests.util.SimpleTestRunner;
-
-/**
- * The TestPrimitives class.
- * 
+/** 
+ * This interface adds methods to retrieve a single value (boxed primitive or BonaPortable Object) or set it.
+ *  
  * @author Michael Bischoff
- * @version $Revision$
- * 
- *          This is a simple testcase which calls the SimpleTestRunner with a class
- *          consisting of arrays of all supported Java primitives.
- */
-
-public class TestPrimitiveArrays {
-    
-    @Test
-    public void testPrimitiveArrays() throws Exception {
-        SimpleTestRunner.run(FillPrimitiveArrays.test1(), false);
-    }   
+ *
+ **/
+public interface BonaPortableSingleValue<T> extends BonaPortable {
+	public T getValue();   			// retrieve the value
+	public void setValue(T _val);	// set the value
 }

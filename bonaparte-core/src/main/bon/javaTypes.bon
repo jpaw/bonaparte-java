@@ -1,0 +1,27 @@
+/* boxed java types */
+package core {
+    default signed notrim allowControlChars;
+
+    abstract class SingleValueBase {
+        // nothing in here
+    }
+    
+    class Integer_ {
+        Integer value;
+    }
+    class Long_ {
+        Long value;
+    }
+    /*
+    abstract class SingleValueBase implements de.jpaw.bonaparte.core.BonaPortableSingleValue<T> {
+        // nothing in here
+    }
+    
+    class Integer_ implements de.jpaw.bonaparte.core.BonaPortableSingleValue<Integer> {
+        Integer value;
+    }
+    class Long_ implements de.jpaw.bonaparte.core.BonaPortableSingleValue<Long> {
+        Long value;
+    } */
+    // TODO: add the others
+}

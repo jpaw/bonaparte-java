@@ -31,62 +31,62 @@ import de.jpaw.util.ApplicationException;
  */
 
 public class ObjectValidationException extends ApplicationException {
-	private static final long serialVersionUID = 8530206162841355351L;
-	private static final Logger logger = LoggerFactory.getLogger(MessageParserException.class);
-	
-	private static final int OFFSET = VALIDATION_ERROR * CLASSIFICATION_FACTOR + 17000;  // offset for all codes in this class
-	private static boolean textsInitialized = false;
+    private static final long serialVersionUID = 8530206162841355351L;
+    private static final Logger logger = LoggerFactory.getLogger(MessageParserException.class);
+    
+    private static final int OFFSET = VALIDATION_ERROR * CLASSIFICATION_FACTOR + 17000;  // offset for all codes in this class
+    private static boolean textsInitialized = false;
 
-	private String fieldName;	// if known, the name of the field where the error occured
-	private String className;	// if known, the name of the class which contained the field
+    private String fieldName;   // if known, the name of the field where the error occured
+    private String className;   // if known, the name of the class which contained the field
 
-	static public final int MAY_NOT_BE_BLANK      = OFFSET + 1;
-	static public final int NO_PATTERN_MATCH      = OFFSET + 2;
-	static public final int TOO_MANY_ELEMENTS     = OFFSET + 3;
-	static public final int TOO_LONG              = OFFSET + 4;
-	static public final int TOO_SHORT             = OFFSET + 5;
-	
+    static public final int MAY_NOT_BE_BLANK      = OFFSET + 1;
+    static public final int NO_PATTERN_MATCH      = OFFSET + 2;
+    static public final int TOO_MANY_ELEMENTS     = OFFSET + 3;
+    static public final int TOO_LONG              = OFFSET + 4;
+    static public final int TOO_SHORT             = OFFSET + 5;
+    
     // Upload textual descriptions only once they're needed for this type of exception class.
     // The idea is that in working environments, we will never need them ;-).
     // There is a small chance of duplicate initialization, because the access to the flag textsInitialized is not
     // synchronized, but duplicate upload does not hurt (is idempotent)
     static private void lazyInitialization() {
-    	synchronized (codeToDescription) {
-    		textsInitialized = true;
-    		codeToDescription.put(MAY_NOT_BE_BLANK     , "Empty, but required field");
-    		codeToDescription.put(NO_PATTERN_MATCH     , "Field contents does not match required pattern");
-    		codeToDescription.put(TOO_MANY_ELEMENTS    , "Array contains too many elements");
-    		codeToDescription.put(TOO_LONG             , "String is too long");
-    		codeToDescription.put(TOO_SHORT            , "String is too short");
-    	}
+        synchronized (codeToDescription) {
+            textsInitialized = true;
+            codeToDescription.put(MAY_NOT_BE_BLANK     , "Empty, but required field");
+            codeToDescription.put(NO_PATTERN_MATCH     , "Field contents does not match required pattern");
+            codeToDescription.put(TOO_MANY_ELEMENTS    , "Array contains too many elements");
+            codeToDescription.put(TOO_LONG             , "String is too long");
+            codeToDescription.put(TOO_SHORT            , "String is too short");
+        }
     }
-	
+    
     private final String getSpecificDescription() {
-    	return (className == null ? "?" : className) + "."
-			 + (fieldName == null ? "?" : fieldName);
+        return (className == null ? "?" : className) + "."
+             + (fieldName == null ? "?" : fieldName);
     }
 
     private final void constructorSubroutine(String className, String fieldName) {
-    	this.fieldName = fieldName;
-    	this.className = className;
-    	if (!textsInitialized)
-    		lazyInitialization();
-    	// for the logger call, do NOT use toString, because that can be overridden, and we're called from a constructor here
-    	logger.error("Error " + getErrorCode() + " (" + getStandardDescription() + ") for " + getSpecificDescription());
+        this.fieldName = fieldName;
+        this.className = className;
+        if (!textsInitialized)
+            lazyInitialization();
+        // for the logger call, do NOT use toString, because that can be overridden, and we're called from a constructor here
+        logger.error("Error " + getErrorCode() + " (" + getStandardDescription() + ") for " + getSpecificDescription());
     }
 
-	public ObjectValidationException(int errorCode, String fieldName, String className) {
-		super(errorCode, null);
-		constructorSubroutine(className, fieldName);
-	}
-	
-	public ObjectValidationException(int errorCode) {
-		super(errorCode, null);
-		constructorSubroutine(null, null);
-	}
-	
-	@Override
-	public String toString() {
-		return getSpecificDescription() + ": " + super.toString();
-	}
+    public ObjectValidationException(int errorCode, String fieldName, String className) {
+        super(errorCode, null);
+        constructorSubroutine(className, fieldName);
+    }
+    
+    public ObjectValidationException(int errorCode) {
+        super(errorCode, null);
+        constructorSubroutine(null, null);
+    }
+    
+    @Override
+    public String toString() {
+        return getSpecificDescription() + ": " + super.toString();
+    }
 }

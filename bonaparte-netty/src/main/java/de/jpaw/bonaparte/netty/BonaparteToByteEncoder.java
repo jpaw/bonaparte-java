@@ -12,14 +12,14 @@ import io.netty.handler.codec.MessageToByteEncoder;
 
 @Sharable
 public class BonaparteToByteEncoder extends MessageToByteEncoder<BonaPortable> {
-	private static final Logger logger = LoggerFactory.getLogger(BonaparteToByteEncoder.class);
+    private static final Logger logger = LoggerFactory.getLogger(BonaparteToByteEncoder.class);
 
-	@Override
-	public void encode(ChannelHandlerContext ctx, BonaPortable msg, ByteBuf out) throws Exception {
-		ByteArrayComposer w = new ByteArrayComposer();
-		w.writeRecord((BonaPortable) msg);
-		logger.trace("Writing object {} with contents {}", msg.getClass().getCanonicalName(), new String(w.getBytes()));
-		// create a new ByteBuf with the contents of w.getBuffer()
-		out.setBytes(0, w.getBuffer(), 0, w.getLength());
-	}
+    @Override
+    public void encode(ChannelHandlerContext ctx, BonaPortable msg, ByteBuf out) throws Exception {
+        ByteArrayComposer w = new ByteArrayComposer();
+        w.writeRecord((BonaPortable) msg);
+        logger.trace("Writing object {} with contents {}", msg.getClass().getCanonicalName(), new String(w.getBytes()));
+        // create a new ByteBuf with the contents of w.getBuffer()
+        out.setBytes(0, w.getBuffer(), 0, w.getLength());
+    }
 }
