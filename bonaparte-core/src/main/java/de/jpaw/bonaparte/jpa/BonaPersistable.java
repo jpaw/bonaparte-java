@@ -29,6 +29,11 @@ import de.jpaw.util.ApplicationException;
  *
  **/
 public interface BonaPersistable<K extends Serializable, D extends BonaPortable, T extends BonaPortable> {
+    /** Gets some optional RTTI (runtime type information). If no rtti has been supplied, the rtti of a parent class is returned.
+     * 
+     * @return some numeric value defined in the DSL.
+     */
+	public int get$rtti();
     /** Gets the class of the underlying key class for the data object.
      * 
      * @return the class type of the underlying key class, never null.
@@ -79,4 +84,15 @@ public interface BonaPersistable<K extends Serializable, D extends BonaPortable,
      */
     public T get$Tracking() throws ApplicationException;
     public void set$Tracking(T _d);
+    
+    /** method to activate or deactivate a row */ 
+    public void set$Active(boolean _a);
+    /** method to query activeness */ 
+    public boolean get$Active();
+    
+    /** method to set an integer version */ 
+    public void set$IntVersion(int _v);
+    /** method to query current version.
+     * @returns -1 if no version column of type int or Integer in this entity */ 
+    public int get$IntVersion();
 }

@@ -48,4 +48,17 @@ public class DayTime {
         then.setTime(when.toDate());
         return then;  // TODO: set timezone to UTC as well?
     }
+    
+    /** Computes the difference between two LocalDateTime instances with millisecond precision.
+     * Unfortunately the method getLocalMillis() which returns the time since the epoch is protected (as of JodaTime 2.1),
+     * therefore we have to use the millis of a day ad work around the day wrap. (This is a solution for short time periods only!)
+     * TODO: Should test that (by comparing start + 23 hours with end, and throwing an exception if start + 23 hours is still < end). 
+     */
+    static public int LocalDateTimeDifference(LocalDateTime start, LocalDateTime end) {
+    	long t0 = start.getMillisOfDay();
+    	long t1 = end.getMillisOfDay();
+    	if (t0 > t1)
+    		return (int)(t1 + 86400_000L - t0);
+    	return (int)(t1 - t0);
+    }
 }

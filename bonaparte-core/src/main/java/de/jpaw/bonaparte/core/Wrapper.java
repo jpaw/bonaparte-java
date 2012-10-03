@@ -15,6 +15,10 @@ public class Wrapper implements BonaPortable, Externalizable {
         return property$Map;
     }
     
+	public int get$rtti() {
+		return 0;
+	}
+	
     public String get$Property(String id) {
         return property$Map.get(id);
     }

@@ -26,6 +26,11 @@ import java.util.concurrent.ConcurrentMap;
  *
  **/
 public interface BonaPortable extends Serializable {
+    /** Gets some optional RTTI (runtime type information). If no rtti has been supplied, the rtti of a parent class is returned.
+     * 
+     * @return some numeric value defined in the DSL.
+     */
+	public int get$rtti();
     /** Gets the partially qualified object name (the fully qualified name minus some constant package prefix).
      * This is a constant string (static final), but defined as a member function in order to be able to declare it in the interface.
      * 
