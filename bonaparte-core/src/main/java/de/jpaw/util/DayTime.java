@@ -37,6 +37,8 @@ public class DayTime {
     
     /** Provides functionality to convert a Joda timestamp to a GregorianCalendar. */
     static public GregorianCalendar toGregorianCalendar(LocalDateTime when) {
+    	if (when == null)
+    		return null;
         GregorianCalendar then = new GregorianCalendar();
         then.setTime(when.toDate());
         return then;  // TODO: set timezone to UTC as well?
@@ -44,6 +46,8 @@ public class DayTime {
     
     /** Provides functionality to convert a Joda date to a GregorianCalendar. */
     static public GregorianCalendar toGregorianCalendar(LocalDate when) {
+    	if (when == null)
+    		return null;
         GregorianCalendar then = new GregorianCalendar();
         then.setTime(when.toDate());
         return then;  // TODO: set timezone to UTC as well?
