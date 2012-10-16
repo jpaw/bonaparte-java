@@ -6,9 +6,9 @@
         <groupId>de.jpaw</groupId>
         <artifactId>bonaparte-base</artifactId>
         <version>1.0-SNAPSHOT</version>
+		<relativePath>../bonaparte-base</relativePath>
     </parent>
 
-    <groupId>de.jpaw</groupId>
     <artifactId>bonaparte-netty</artifactId>
     <packaging>jar</packaging>
 

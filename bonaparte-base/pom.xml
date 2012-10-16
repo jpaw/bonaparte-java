@@ -11,6 +11,23 @@
 	<description>Common configuration settings for all BONAPARTE projects</description>
 	<url>http://www.jpaw.de/projects/bonaparte/index.html</url>
 
+	<modules>
+		<module>../bonaparte-core/generator/pom.xml</module>
+		<module>../bonaparte-core/pom.xml</module>
+
+		<module>../bonaparte-core-test/generator/pom.xml</module>
+		<module>../bonaparte-core-test/pom.xml</module>
+
+		<module>../bonaparte-netty/pom.xml</module>
+
+		<module>../bonaparte-netty-test/generator/pom.xml</module>
+		<module>../bonaparte-netty-test/pom.xml</module>
+
+		<module>../bonaparte-camel/pom.xml</module>
+
+		<module>../bonaparte-vertx/pom.xml</module>
+	</modules>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<!-- define releases we want to use, to ensure consistency -->
@@ -24,7 +41,7 @@
 			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
 		</license>
 	</licenses>
-	
+
 	<organization>
 		<name>Michael Bischoff</name>
 		<url>http://www.jpaw.de</url>
@@ -38,18 +55,54 @@
 		</developer>
 	</developers>
 
-    <distributionManagement>
-        <snapshotRepository>
-            <id>repo-snapshots</id>
-            <name>repo-snapshots</name>
-            <url>${repo.url}/libs-snapshot-local</url>
-        </snapshotRepository>
-        <repository>
-            <id>repo-releases</id>
-            <name>repo-releases</name>
-            <url>${repo.url}/libs-release-local</url>
-        </repository>
-    </distributionManagement>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>xtend.plugin.repository</id>
+			<name>Xtend2 Plugin Repository</name>
+			<url>http://build.eclipse.org/common/xtend/maven/</url>
+		</pluginRepository>
+		<pluginRepository>
+			<id>fornax.plugin.repository</id>
+			<name>Fornax Plugin Repository</name>
+			<url>http://www.fornax-platform.org/m2/repository</url>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<repositories>
+		<repository>
+			<id>maven.eclipse.org</id>
+			<url>
+      http://maven.eclipse.org/nexus/content/groups/public/</url>
+		</repository>
+		<repository>
+			<id>xtend.repository</id>
+			<name>Xtend Repository</name>
+			<url>http://build.eclipse.org/common/xtend/maven/</url>
+		</repository>
+		<repository>
+			<id>xtext</id>
+			<url>
+      http://build.eclipse.org/common/xtext/maven/maven-snapshot/final/</url>
+		</repository>
+		<repository>
+			<id>fornax.repository</id>
+			<name>Fornax Repository</name>
+			<url>http://www.fornax-platform.org/m2/repository</url>
+		</repository>
+	</repositories>
+
+	<distributionManagement>
+		<snapshotRepository>
+			<id>repo-snapshots</id>
+			<name>repo-snapshots</name>
+			<url>${repo.url}/libs-snapshot-local</url>
+		</snapshotRepository>
+		<repository>
+			<id>repo-releases</id>
+			<name>repo-releases</name>
+			<url>${repo.url}/libs-release-local</url>
+		</repository>
+	</distributionManagement>
 
 	<build>
 		<plugins>
@@ -63,6 +116,7 @@
 					<encoding>${project.build.sourceEncoding}</encoding>
 				</configuration>
 			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
@@ -73,17 +127,18 @@
 			</plugin>
 		</plugins>
 	</build>
+
 	<reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.8.1</version>
-                <configuration>
-                    <charset>UTF-8</charset>
-                </configuration>
-            </plugin>
-        </plugins>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.8.1</version>
+				<configuration>
+					<charset>UTF-8</charset>
+				</configuration>
+			</plugin>
+		</plugins>
 	</reporting>
 
 	<dependencies>
@@ -93,4 +148,5 @@
 			<version>${slf4j.version}</version>
 		</dependency>
 	</dependencies>
+
 </project>
