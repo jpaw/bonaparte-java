@@ -49,7 +49,7 @@ public interface BonaPersistable<K extends Serializable, D extends BonaPortable,
      * 
      * @return the class type of the underlying message base class, never null.
      */
-    public Class<D> get$DataClass();
+    public Class<? extends D> get$DataClass();
     
     /** Gets the partially qualified object name (the fully qualified name minus some constant package prefix) of the underlying message base class.
      * 
