@@ -1,0 +1,121 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>de.jpaw</groupId>
+		<artifactId>bonaparte-base</artifactId>
+		<version>1.0-SNAPSHOT</version>
+		<relativePath>../../bonaparte-base</relativePath>
+	</parent>
+
+	<artifactId>bonaparte-demorqrs-source</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>eclipse-plugin</packaging>
+
+	<name>BONAPARTE demorqrs libraries - generated files</name>
+	<description>Definition and implementation of BONAPARTE serializers and deserializers</description>
+	<url>http://www.jpaw.de/projects/bonaparte/core/index.html</url>
+
+	<properties>
+		<tycho-version>0.15.0</tycho-version>
+		<bonaparte-plugin-version>1.0.0-SNAPSHOT</bonaparte-plugin-version>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-maven-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<extensions>true</extensions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-p2-repository-plugin</artifactId>
+				<version>${tycho-version}</version>
+			</plugin>
+
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-packaging-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<strictBinIncludes>false</strictBinIncludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.fornax.toolsupport</groupId>
+				<artifactId>fornax-oaw-m2-plugin</artifactId>
+				<version>3.4.0</version>
+				<executions>
+					<execution>
+						<id>xtext</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>run-workflow</goal>
+						</goals>
+						<configuration>
+							<timestampFileName>xtext-generator.timestamp</timestampFileName>
+							<workflowDescriptor>jar:file:${user.home}/.m2/repository/de/jpaw/bonaparte/de.jpaw.bonaparte.dsl/${bonaparte-plugin-version}/de.jpaw.bonaparte.dsl-${bonaparte-plugin-version}.jar!/de/jpaw/bonaparte/dsl/generator/BonScriptGeneratorMWE.mwe2</workflowDescriptor>
+							<properties>
+								<modelPath>../src/main/bon</modelPath>
+								<targetDir>../src/generated</targetDir>
+							</properties>
+						</configuration>
+					</execution>
+				</executions>
+				<configuration>
+					<workflowEngine>mwe2</workflowEngine>
+					<jvmSettings>
+						<fork>true</fork>
+						<jvmArgs>
+							<jvmArg>-Xms100m</jvmArg>
+							<jvmArg>-Xmx700m</jvmArg>
+							<jvmArg>-XX:MaxPermSize=256m</jvmArg>
+						</jvmArgs>
+					</jvmSettings>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<!-- must deleted generated sources -->
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>2.5</version>
+				<configuration>
+					<filesets>
+						<fileset>
+							<directory>../src/generated</directory>
+							<includes>
+								<include>**</include>
+							</includes>
+						</fileset>
+					</filesets>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>de.jpaw.bonaparte</groupId>
+			<artifactId>de.jpaw.bonaparte.dsl</artifactId>
+			<version>${bonaparte-plugin-version}</version>
+		</dependency>
+	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>p2-juno</id>
+			<layout>p2</layout>
+			<url>http://download.eclipse.org/releases/juno</url>
+		</repository>
+		<repository>
+			<id>p2-xtext</id>
+			<layout>p2</layout>
+			<url>http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases</url>
+		</repository>
+	</repositories>
+
+</project>
