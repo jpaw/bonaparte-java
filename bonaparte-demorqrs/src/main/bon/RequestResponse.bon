@@ -1,0 +1,18 @@
+package rqrs {
+     
+    class Request {
+        int duration;   // instructs the server to wait this many milliseconds
+        int serialNo;   // some messageId
+        Unicode(80) message;
+        uuid uniqueId;
+    }
+    
+    class Response {
+        // repeats some properties of the request in order to identify it
+        int serialNo;   // some messageId
+        uuid uniqueId;
+        timestamp(3) whenReceiced;
+        int threadNo;
+        int serialInThread;
+    }
+}
