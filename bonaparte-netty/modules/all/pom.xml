@@ -8,11 +8,11 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
     
-	<artifactId>bonaparte-core-all</artifactId>
+	<artifactId>bonaparte-netty-all</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<name>BONAPARTE core parent</name>
+	<name>BONAPARTE netty parent</name>
 
 	<modules>
 		<module>../generator</module>
