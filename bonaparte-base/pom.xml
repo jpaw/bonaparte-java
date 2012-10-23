@@ -108,6 +108,14 @@
                     http://nexus.kreios.lu/nexus/content/repositories/ast-snapshots/</url>
                 </repository>
             </distributionManagement>
+            <repositories>
+                <repository>
+                    <id>kreios-ast-snapshots</id>
+                    <name>Bonaparte Snapshots</name>
+                    <url>
+      http://nexus.kreios.lu/nexus/content/repositories/ast-snapshots/</url>
+                </repository>
+            </repositories>
         </profile>
         <profile>
             <id>jpaw</id>
