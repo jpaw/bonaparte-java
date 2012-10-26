@@ -338,7 +338,11 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
     @Override
     public void addField(Integer n, int length, boolean isSigned)
             throws IOException {
-        writeVarInt(n);
+        if (n == null) {
+            out.writeByte(NULL_FIELD);
+        } else {
+        	writeVarInt(n);
+        }
     }
 
 
