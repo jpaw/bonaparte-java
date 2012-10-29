@@ -1,0 +1,12 @@
+// ------------------------------
+// config on all machines
+akka {
+    actor {
+        provider = akka.remote.RemoteActorRefProvider
+        deployment {
+            /greeter {
+                remote = "akka://MySystem@localhost:2552"
+            }
+        }
+    }
+}
