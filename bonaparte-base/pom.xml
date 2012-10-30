@@ -92,6 +92,10 @@
             <name>Fornax Repository</name>
             <url>http://www.fornax-platform.org/m2/repository</url>
         </repository>
+        <repository>
+            <id>EclipseLink Repo</id>
+            <url>http://download.eclipse.org/rt/eclipselink/maven.repo</url>
+        </repository>
     </repositories>
 
     <profiles>
