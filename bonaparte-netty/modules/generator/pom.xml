@@ -8,11 +8,11 @@
 		<version>1.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>bonaparte-core-srcgen</artifactId>
+	<artifactId>bonaparte-netty-srcgen</artifactId>
     <version>1.0.0-SNAPSHOT</version>   <!-- 1.0-SNAPSHOT gives number parsing error -->
 	<packaging>eclipse-plugin</packaging>
 
-	<name>BONAPARTE core source generator</name>
+	<name>BONAPARTE netty source generator</name>
 
 	<build>
         <plugins>
