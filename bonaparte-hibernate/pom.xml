@@ -9,18 +9,24 @@
         <relativePath>../bonaparte-base</relativePath>
     </parent>
 
-    <artifactId>bonaparte-core</artifactId>
+    <artifactId>bonaparte-hibernate</artifactId>
     <packaging>jar</packaging>
 
-    <name>BONAPARTE core libraries</name>
+    <name>BONAPARTE Usertypes for custom fields</name>
     <description>Definition and implementation of BONAPARTE serializers and deserializers</description>
     <url>http://www.jpaw.de/projects/bonaparte/core/index.html</url>
 
     <dependencies>
         <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-            <version>2.1</version>
+            <groupId>de.jpaw</groupId>
+            <artifactId>bonaparte-core</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>4.1.7.Final</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.testng</groupId>

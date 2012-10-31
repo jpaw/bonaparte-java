@@ -18,6 +18,9 @@
         <module>../bonaparte-core-test/generator/pom.xml</module>
         <module>../bonaparte-core-test/pom.xml</module>
 
+        <module>../bonaparte-hibernate/pom.xml</module>
+        <module>../bonaparte-eclipselink/pom.xml</module>
+
         <module>../bonaparte-demorqrs/generator/pom.xml</module>
         <module>../bonaparte-demorqrs/pom.xml</module>
 
