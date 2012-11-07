@@ -259,8 +259,6 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
     public void addField(ByteArray b, int length) {
         if (b != null) {
             b.appendBase64(work);
-            //work.append(DatatypeConverter.printBase64Binary(b));
-            //work.append(DatatypeConverter.printHexBinary(b));
             terminateField();
         } else {
             writeNull();
@@ -272,8 +270,6 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
     public void addField(byte[] b, int length) {
         if (b != null) {
             Base64.encodeToByte(work, b, 0, b.length);
-            //work.append(DatatypeConverter.printBase64Binary(b));
-            //work.append(DatatypeConverter.printHexBinary(b));
             terminateField();
         } else {
             writeNull();

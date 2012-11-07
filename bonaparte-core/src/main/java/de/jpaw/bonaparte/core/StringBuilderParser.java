@@ -22,8 +22,9 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.UUID;
 // according to http://stackoverflow.com/questions/469695/decode-base64-data-in-java , xml.bind is included in Java 6 SE
-import javax.xml.bind.DatatypeConverter;
+//import javax.xml.bind.DatatypeConverter;
 
+import de.jpaw.util.Base64;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.CharTestsASCII;
 import de.jpaw.util.EnumException;
@@ -291,7 +292,8 @@ public final class StringBuilderParser extends StringBuilderConstants implements
         String tmp = work.substring(parseIndex, i);
         parseIndex = i+1;
         try {
-            return DatatypeConverter.parseBase64Binary(tmp);
+        	byte [] btmp = tmp.getBytes(); 
+            return Base64.decode(btmp, 0, btmp.length);
         } catch (IllegalArgumentException e) {
             throw new MessageParserException(MessageParserException.BASE64_PARSING_ERROR, null, parseIndex, currentClass);
         }
