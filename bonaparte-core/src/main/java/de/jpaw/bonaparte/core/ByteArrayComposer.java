@@ -17,7 +17,7 @@ package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.util.Calendar;
 import java.util.UUID;
 
 import de.jpaw.util.Base64;
@@ -259,8 +259,6 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
     public void addField(ByteArray b, int length) {
         if (b != null) {
             b.appendBase64(work);
-            //work.append(DatatypeConverter.printBase64Binary(b));
-            //work.append(DatatypeConverter.printHexBinary(b));
             terminateField();
         } else {
             writeNull();
@@ -272,8 +270,6 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
     public void addField(byte[] b, int length) {
         if (b != null) {
             Base64.encodeToByte(work, b, 0, b.length);
-            //work.append(DatatypeConverter.printBase64Binary(b));
-            //work.append(DatatypeConverter.printHexBinary(b));
             terminateField();
         } else {
             writeNull();
@@ -290,7 +286,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
 
     // converters for DAY und TIMESTAMP
     @Override
-    public void addField(GregorianCalendar t, boolean hhmmss, int length) {  // TODO: length is not needed for this one
+    public void addField(Calendar t, boolean hhmmss, int length) {  // TODO: length is not needed for this one
         if (t != null) {
             int tmpValue = 10000 * t.get(Calendar.YEAR) + 100
                     * (t.get(Calendar.MONTH) + 1) + t.get(Calendar.DAY_OF_MONTH);

@@ -17,14 +17,16 @@ package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.util.Calendar;
 import java.util.UUID;
 // according to http://stackoverflow.com/questions/469695/decode-base64-data-in-java , xml.bind is included in Java 6 SE
-import javax.xml.bind.DatatypeConverter;
+//import javax.xml.bind.DatatypeConverter;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
+import de.jpaw.util.Base64;
 import de.jpaw.util.ByteArray;
+import de.jpaw.util.ByteBuilder;
 /**
  * The StringBuilderComposer class.
  * 
@@ -250,7 +252,9 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
     @Override
     public void addField(ByteArray b, int length) {
         if (b != null) {
-            work.append(DatatypeConverter.printBase64Binary(b.getBytes()));
+        	ByteBuilder tmp = new ByteBuilder(b.length() * 2 + 4, null);
+            Base64.encodeToByte(tmp, b.getBytes(), 0, b.length());
+            work.append(new String(tmp.getCurrentBuffer(), 0, tmp.length()));
             //work.append(DatatypeConverter.printBase64Binary(b));
             //work.append(DatatypeConverter.printHexBinary(b));
             terminateField();
@@ -263,7 +267,9 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
     @Override
     public void addField(byte[] b, int length) {
         if (b != null) {
-            work.append(DatatypeConverter.printBase64Binary(b));
+        	ByteBuilder tmp = new ByteBuilder(b.length * 2 + 4, null);
+            Base64.encodeToByte(tmp, b, 0, b.length);
+            work.append(new String(tmp.getCurrentBuffer(), 0, tmp.length()));
             //work.append(DatatypeConverter.printHexBinary(b));
             terminateField();
         } else {
@@ -281,7 +287,7 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
     
     // converters for DAY und TIMESTAMP
     @Override
-    public void addField(GregorianCalendar t, boolean hhmmss, int length) {  // TODO: length is not needed for this one
+    public void addField(Calendar t, boolean hhmmss, int length) {  // TODO: length is not needed for this one
         if (t != null) {
             int tmpValue = 10000 * t.get(Calendar.YEAR) + 100
                     * (t.get(Calendar.MONTH) + 1) + t.get(Calendar.DAY_OF_MONTH);

@@ -16,7 +16,7 @@
 package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
-import java.util.GregorianCalendar;
+import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 import org.joda.time.LocalDate;
@@ -49,9 +49,9 @@ public interface MessageParser<E extends Exception> {
     public String  readAscii    (boolean allowNull, int length, boolean doTrim, boolean doTruncate) throws E;
     public String  readString   (boolean allowNull, int length, boolean doTrim, boolean doTruncate, boolean allowCtrls, boolean allowUnicode) throws E;
     public ByteArray readByteArray(boolean allowNull, int length) throws E;
-    public byte [] readRaw      (boolean allowNull, int length) throws E;
-    public GregorianCalendar readGregorianCalendar(boolean allowNull, boolean hhmmss, int fractionalDigits) throws E;
-    public LocalDate readDay    (boolean allowNull) throws E;
+    public byte []   readRaw      (boolean allowNull, int length) throws E;
+    public Calendar  readCalendar (boolean allowNull, boolean hhmmss, int fractionalDigits) throws E;
+    public LocalDate readDay      (boolean allowNull) throws E;
     public LocalDateTime readDayTime(boolean allowNull, boolean hhmmss, int length) throws E;
     // composite methods
     public BonaPortable readRecord() throws E;

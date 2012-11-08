@@ -17,7 +17,7 @@ package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
 import java.util.UUID;
-import java.util.GregorianCalendar;
+import java.util.Calendar;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
@@ -64,7 +64,7 @@ public interface MessageComposer<E extends Exception> {
     void addField(UUID n) throws E;
     void addField(ByteArray b, int length) throws E;
     void addField(byte [] b, int length) throws E;
-    void addField(GregorianCalendar t, boolean hhmmss, int length) throws E;
+    void addField(Calendar t, boolean hhmmss, int length) throws E;
     void addField(LocalDate t) throws E;
     void addField(LocalDateTime t, boolean hhmmss, int length) throws E;
     void addField(BonaPortable obj) throws E;

@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.ObjectOutput;
 import java.math.BigDecimal;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.util.Calendar;
 import java.util.UUID;
 
 import org.joda.time.LocalDate;
@@ -210,7 +210,7 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
         }
     }
     @Override
-    public void addField(GregorianCalendar t, boolean hhmmss, int length)
+    public void addField(Calendar t, boolean hhmmss, int length)
             throws IOException {
         if (t == null) {
             out.writeByte(NULL_FIELD);
