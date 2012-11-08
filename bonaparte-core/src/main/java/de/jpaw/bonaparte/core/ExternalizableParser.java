@@ -239,7 +239,7 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
     }
     
     @Override
-    public GregorianCalendar readGregorianCalendar(boolean allowNull, boolean hhmmss, int fractionalDigits) throws IOException {
+    public Calendar readCalendar(boolean allowNull, boolean hhmmss, int fractionalDigits) throws IOException {
         if (checkForNull(allowNull))
             return null;
         int fractional = 0;

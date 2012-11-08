@@ -301,7 +301,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
     }
 
     @Override
-    public GregorianCalendar readGregorianCalendar(boolean allowNull, boolean hhmmss, int fractionalDigits) throws MessageParserException {
+    public Calendar readCalendar(boolean allowNull, boolean hhmmss, int fractionalDigits) throws MessageParserException {
         if (checkForNull(allowNull))
             return null;
         String tmp = nextIndexParseAscii(false, fractionalDigits >= 0, false);  // parse an unsigned numeric string without exponent
