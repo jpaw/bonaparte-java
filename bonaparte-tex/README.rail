@@ -1,0 +1,7 @@
+How to create the railway diagrams:
+
+latex bonaparte.tex creates bonaparte.rai
+
+rail bonaparte    creates bonaparte.rao from bonaparte.rai
+
+next tex run creates the  diagrams

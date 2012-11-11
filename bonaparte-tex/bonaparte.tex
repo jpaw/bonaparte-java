@@ -1,0 +1,453 @@
+\documentclass[11pt,a4paper,oneside]{article}
+% \usepackage{ngerman}
+\usepackage{ucs}
+\usepackage{a4wide}
+\usepackage[utf8x]{inputenc}
+\usepackage{listings}
+    \lstset{numbers=left, numberstyle=\tiny, numbersep=5pt,frame=leftline}
+    \lstset{language=Java} 
+    \lstset{basicstyle=\small,tabsize=4,extendedchars=false,columns=flexible}
+%    \lstset{keywordstyle=\ttfamily\bfseries}
+    \lstset{keywordstyle=\bfseries}
+    \lstset{identifierstyle=\ttfamily}
+    \lstset{stringstyle=\rmfamily,showstringspaces=false}
+    \lstset{commentstyle=\rmfamily\itshape}
+\usepackage{graphicx}
+\usepackage{geometry}
+\geometry{a4paper,left=20mm,right=20mm, top=1cm, bottom=2cm, includeheadfoot}
+\usepackage[pdfborder={0 0 0}]{hyperref}
+
+\usepackage{rail}
+% \hypersetup{pdfborder=0 0 0}  evtl auch 4 Nullen angeben!
+
+%\title{Atbon - Almost Text Based Object Notation}
+\title{BONAPARTE - Binary Object Notation As Portable And Readable Text
+Extension}
+\author{Michael Bischoff}
+\begin{document}
+\maketitle
+\begin{abstract}
+Bonaparte is an Eclipse XText based domain specific language (DSL), with the purpose to generate code for fast object serialization / deserialization.
+There is a preferred serialization format (the ``Bonaparte format''), but the DSL itself is independent of the serialization format. 
+The Bonaparte serialization format combines features of CSV, JSON, Java serialization and Google protocol buffers.
+\end{abstract}
+\section{Why another serialization format?}
+Object serialization is an important function in today's distributed computing
+environments. No matter if you want to exchange synchronous or asynchronous
+messages in a service-oriented modular software environment, persist
+arbitrary data in some NoSQL database, use distributed caches, or just dump data
+to a file.
+Because it's used in so many places, often transparent to the application,
+serialization / deserialization (or marshalling /unmarshalling) must be fast. In
+addition, a compact presentation is important, because it helps reducing
+required storage space and network traffic.
+Many implementations sacrifice readability or portability for size. Others (like XML)
+emphasize readability but neglect the message size.
+
+The Bonaparte message format was designed with the following goals in mind:
+\begin{itemize}
+  \item Small message size without sacrifizing portability (computer byte order
+  / programming language independence)
+  \item fast serialization / deserialization
+  \item good support for typical data types found in nowadays programming
+  languages
+  \item support of object inheritance
+  \item extensibility of the message format
+  \item compatibility of serialized formats if the underlying objects are
+  changed
+\end{itemize}
+Normally, Bonaparte serialized formats are defined as UTF-8 encoded character byte streams.
+Using an extension mechanism or via external setting of the encoding, other encodings are also supported (provided they cover all required code points of transmitted text fields).
+In fact, the serialized format can be converted between UTF-8 and other formats during transmission and parsed in a different encoding. 
+
+\section{Why a specialized DSL?}
+The key driver for the development of the DSL was the desire to have a notation which is independent of the target language and also very compact.
+The advantage of a DSL (and especially DSLs based on Eclipse XText) is, that you can get full syntax checking and syntax highlighting while entering the code
+(this of course has the prerequisite that you use the Eclipse IDE). In addition, DSLs offer the most compact notation for a given purpose. If you don't like boilerplate code, DSLs are for you!
+
+The grammar elements are
+\begin{itemize}
+  \item packages / modules
+  \item type definitions (C / C++ developers miss those in Java)
+  \item classes / objects (including enums)
+  \item data fields / member variables
+\end{itemize}
+The grammar of the DSL is loosely derived from the Java language syntax.
+
+At the moment, the only open source code generator is for the Java programming language. A generator for Google DART is planned as soon as dynamic class loading is supported by DART.
+
+Generic key properties are defined in the core DSL. The DSL can be extended to
+provide additional plausibility checks / restrictions, additional language components
+(keywords, annotations) or output formats. Thus, the core DSL can be kept clean
+of aspects used for exotic languages only, for example restrictions on field
+name lengths (SQL, COBOL), or annotations specifying alternate names (as in
+JPA).
+
+In addition to the code generator, for every supported language a basic library providing one or more
+implementations of support functions for the marshaller / unmarshaller are provided.
+
+Lastly, adapters to use the functionality in commonly used libraries are
+provided.
+
+
+\section{Version compatibility}
+Software systems are a volatile world. New features require extensions of the
+data model on a regular base. In distributed environments, new releases
+cannot be deployed on all nodes at the same time. This means that some nodes run
+the older software release and must cooperate with nodes using the new software
+release already. Even in single node environments, where objects have been
+persisted using an older release, and will be read back into memory with the new
+software release, we require interoperability of different versions.
+Therefore, version compatibility is one of the core concepts of Bonaparte.
+
+Bonaparte distinguishes two kinds of object changes.
+
+\subsection{Compatible changes}
+A compatible change is defined as a change of the object / class definition
+which allows straightforward deserialization of an object serialized with the
+older version. For the Bonaparte format, the following object changes are
+compatible:
+\begin{itemize}
+  \item Extension of the maximum length of a field. Every field is stored
+  using its actual size only, not its maximum size. Therefore, length increases
+  do not cause any issues.
+  \item Adding optional (nullable) fields at the end of an object. If an
+  ``end of object'' code is encountered during the parse process, while an
+  additional object is expected, the object is interpreted as if it had been
+  stred with a null value.
+  \item Certain type conversions. Conversions from unsigned to signed numbers,
+  conversions from ascii to unicode types, or conversion of a boolean to a
+  numeric type or from any numeric data type to an ascii or unicode type is
+  possible. This is possible, because alphanumeric types are not enclosed in
+  quotes in the serialized format.
+  \item Changing a required field to optional / nullable.
+  \item Renaming a field (unless meta data is used, but in that case, it is
+  typically used to dynamically create the receiving objects anyway, which
+  implies that both sides will be in sync).
+\end{itemize}
+% TODO: provide diagram outlining all conversions
+The reverse will usually cause parsing errors. It is planned as a future
+extension to allow configuration of the parser to accept the following reverse
+changes:
+\begin{itemize}
+  \item Reduction of maximum length of alphanumeric fields (implemented by
+  truncation of data where the data length exceeds the maximum allowed field
+  length).
+  \item Ignoring extra fields at the end of an object. (Null fields at the end
+  of an object will be ignored by default)
+\end{itemize}
+
+\subsection{Incompatible changes}
+Sometimes, an incompatible change cannot be avoided (adding required fields,
+cleaning up by removing no longer used fields). A parser encountering an
+incompatible change will break. Therefore, the concept of object revisions
+(version numbers) is part of the grammar definition. The revision can be seen as
+a second part of an object's class name. A later release will add functionality
+to provide parsers for all current object revisions, and allow manually written
+converters to be hooked into, such that all object revisions will be converted
+to the latest revision.
+
+
+
+
+
+\section{The Bonaparte serialization format in detail}
+The Bonaparte serialization format supports the following specific features. We believe that no other
+currently existing format supports all of them.
+\begin{itemize}
+    \item Smart escaping: Instead of just prepending escape characters to
+    characters of special meaning (with the effect that some occurences will be escape characters, some others not, like in CSV (,) or SQL (')), escape characters or other special
+    characters will always have their special meaning, while payload characters of this value will be represented by tokens
+    (such as in markup languages). In this case, due to the limited number of special characters, the token will be a single
+    character.
+    \item Object oriented features: Whenever an instance of a specific class is
+    serialized, the grammar can specify if exactly that class, or also any
+    subclass can be (de-)serialized instead.
+    \item Data domains. The implemention can provide a mapping of HQONs (Half
+    Qualified Object Names) to class names. 
+    \item Auto-detection of encoding conversions (for certain formats: one single-byte, one multi-byte) $=>$ use the EURO currency
+    sign as criteria:
+    ISO 8859-15, UTF-8? (Future feature, requires extension parsing)
+    \item DSL to define message format without boilerplate code
+    \item Object versioning for incompatible changes (a high level concept exists at the moment, implementation is planned as a future extension)
+    \item Smart metadata handling. Some formats do not store metadata at all,
+    some accompany parts of it with every record (field names for JSON / XML).
+    Bonaparte support configurable metadata sending at transmission begin, or
+    lazyly, once an object is required. The metadata contains enough information
+    to allow the dynamic creation of the data classes and is sent as data
+    objects defined in the ``meta'' package.
+    \item Generics support. At the moment, it's the same halfhearted approach as in Java (namely, with type erasure), but the plan is to extend it to
+    a full-featured implementation, comparable to C\# or C++'s templates. 
+\end{itemize}
+
+\section{Description of the format}
+A serialized object in Bonaparte fromat is a series of bytes, where text fields
+(strings) are represented by their UTF-8 encoded presentation, unless they
+contain control characters, which are the only characters requiring escaping.
+
+Bonaparte can directly support the following elementary data types:
+\begin{itemize}
+\item booleans. A boolean is either true (represented by the digit 1) or false (represented by the digit 0).
+\item numbers. A number is of the pattern [-]{0-9}*[.]{0-9}*[e[-]{0-9}+].
+The Bonaparte DSL allows to distinguish between int, long, float, double, or a
+specification of an integral type with a maximum number of digits.
+\item strings. (Either ASCII or Unicode.) A string is a sequence of characters,
+in message format corresponding notation. Control characters (characters with
+codepoint < 0x20) are escaped as follows: Escape character (ctrl-C), followed by
+a character with codepoint 0x40 to 0x5f. The resulting character will be the one
+with the codepoint of the second byte, modulus 32. Often such control characters
+are not permitted due to business reasons, in which case the string serialized
+form does not rely on escaping at all. A special control character is directly
+converted into a space (ctrl-E), with the intent that parsers stripping leading
+and trailing spaces treat this as a non-strippable space character.
+\item Timestamp. A timestamp is represented in the following form:
+YYYYMMDDHHMISS(fff), or any subsequence of this which at least defines the
+day. The timestamp is assumed to be in UTC, Gregorian Calendar. The maximum
+number of sub-second fractional digits is implementation defined,
+implementations which see more digits presented than they support are expected to silently ignore them.  
+\item raw data (binary bytes). Binary data is transmitted in base64 encoding.
+\end{itemize}
+Any elementary field is terminated by a field terminator character (ctrl-F). Any
+field may be empty, which means, it consists only of the field terminator
+character. If during parsing of an object the object termination character
+(ctrl-O) is found, any additional fields are assumed to be empty. 
+
+Arrays are represented by an introduction character ctrl-B, followed by an
+arbitrary number of objects or elementary data items, followed by the array
+termination character, ctrl-A. Converting a singular data item in an object into
+an array therefore is (from a message presentation form) an upwards compatible operation. 
+
+Objects are represented by an identifier giving their name (any valid Java
+identifier of up to 30 characters length is fine) and a version number (default
+0). Both object ID and version number are treated as regular fields, i.e. are
+terminated by a field termination character. 
+
+\subsection{Special characters}
+
+\begin{tabular}{|c|c|c|p{8cm}|}
+\hline
+Hex & Char & Meaning & Comments \\
+\hline
+00 & \textasciicircum {@} & N/A & Does not appear, because it is used as a
+string terminator character in some languages \\
+01 & \textasciicircum A & array terminator  & is inserted after the last array
+entry. Is not followed by an additional field terminator \\
+02 & \textasciicircum B & array start       & Immediately followed by the number
+of entries (0 .. n), then field terminator, then the entries itself \\
+03 & \textasciicircum C & comment record    & everything until the next
+record terminator is a comment. Escaping of special characters does apply within
+comments.
+\\
+04 & \textasciicircum D & unused            & allows creation of input files
+via Unix console \\
+05 & \textasciicircum E & escape char       & allows the transmission of control
+characters in String fields. Is followed by the control character, offset by 0x40 ({@}) \\
+06 & \textasciicircum F & field terminator  & is sent after every atomic field
+\\
+07 & \textasciicircum G &       -            & \\
+08 & \textasciicircum H & unused             & reserved for backspace while
+typing \\
+09 & \textasciicircum I &       tab          & if escape characters are
+allowed, a tab is represented via the normal tab character inside unicode
+fields \\
+0A & \textasciicircum J & record terminator & terminates a record (in files,
+matches the newline character) \\
+0B & \textasciicircum K &       -            & \\
+0C & \textasciicircum L &       -            & \\
+0D & \textasciicircum M & ignored           & is used immediately ahead of the record
+terminator character in some operating systems, will cause an error if not
+immediately followed by \textasciicircum J \\
+0E & \textasciicircum N & NULL & used to serialise a field with null contents.
+This token is not followed by a field terminator. Allows distinguishing between
+an empty string (zero characters) and a null string.\\
+0F & \textasciicircum O &
+former object terminator & was sent after the last field of an object has been serialized, now replaced by \textasciicircum P \\
+10 & \textasciicircum P & parent separator   & separates fields of parent object
+from next derived object in order to allow extensions of objects at every level. Now also sent at the end of an object.\\
+11 & \textasciicircum Q & quit      & close the connection (optional, after
+transmission end)
+\\
+12 & \textasciicircum R & record start       & starts every record, is
+followed by a version number (or blank) and a field terminator, to indicate
+the format version (currently always 0 / blank) \\
+\hline
+\end{tabular}
+
+\begin{tabular}{|c|c|c|p{8cm}|}
+\hline
+Hex & Char & Meaning & Comments \\
+\hline
+13 & \textasciicircum S & start object       & start a new (sub-) object. Is
+followed by the object name (with optional package prefix in Java-style dot notation (minus a
+configurable start package prefix)), then a field terminator, then the object's
+version number (empty if default / 0), and another field terminator, then the
+object's fields \\
+14 & \textasciicircum T & transmission start & starts a multi-record block, is
+followed by a version number (or blank) and a field terminator, to indicate
+the format version (currently always 0 / blank) \\
+15 & \textasciicircum U & transmission end   & follows the last record of a
+transmission. Optionally followed by a ctrl-Z character \\
+16 & \textasciicircum V &       -            & \\
+17 & \textasciicircum W &       -            & \\
+18 & \textasciicircum X & extension start   & provides optional extension information,
+usually sent once at the start of a transmission. Is followed by one character
+defining the type of the extension, then extension specific data. Currently,
+only E is defined (charset encoding), followed by a Euro sign, which defines
+either UTF-8 or ISO-8859-15 or we1252-? (standard character set converters will
+convert this character as well, allowing an auto-detection of the char set)\\
+19 & \textasciicircum Y & end of extension  & is sent after extension information ends.
+Allows parsers to skip all (unknown) extensions. \\
+1A & \textasciicircum Z & - & optionally send after the end of data
+transmission character. closes connection (for example for sockets). \\
+1B & \textasciicircum [ &       -            & \\
+1C & \textasciicircum \textbackslash &                   & \\
+1D & \textasciicircum ] & -& \\
+1E & \textasciicircum \textasciicircum &   -                & \\
+1F & \textasciicircum \_ &  unused         & \\
+\hline
+\end{tabular}
+
+\vspace{8mm}
+
+\subsection{Message format railroad diagrams}
+In the following diagrams, a single uppercase letter inside a circle represents the single byte control code represented by the ASCII code of the letter minus 64 (0x40).
+ 
+\railoptions{+ac}   % \railoptions{-h}
+
+
+\begin{rail}
+null : 'N'
+    ;
+   
+atomicfield : value 'F'
+    ;
+   
+array :
+    'B' count 'F' (member *) 'A'
+    ;
+
+member : null | atomicfield | array | object
+    ;
+
+revision : 'N' | (revisionstring 'F')
+    ;
+   
+\end{rail}
+        
+\begin{rail}
+versionedmemberlist :
+    revision (member*)
+    ;
+\end{rail}
+        
+\begin{rail}
+object :
+    'S' objectname 'F' versionedmemberlist
+          (('P' versionedmemberlist) *)
+    'P'
+    ;
+\end{rail}
+        
+\begin{rail}
+record :
+    'R' revision
+                          (('C' comment) | (object))
+                                                    ('M')? 'J'
+    ;
+\end{rail}
+        
+\begin{rail}
+transmission :
+    'T' revision
+    (('X' extension 'Y')+) 
+    ( record *) 
+    ('Z')?
+    ('Q')?
+    ;
+\end{rail}
+
+\vspace{8mm}
+
+
+\section{Message compatibility rules}
+In a large distributed platform, extensions of data objects frequently occur. Atbon is designed to support upgrades of platform
+components at different points in time. In order to support this, the
+``cooperative extension'' model is used. This means, that some data model changes are supported, while others are not.
+
+The changes not supported (while keeping the same version number) are:
+\begin{itemize}
+    \item Swapping of field order within a class. This is due to skipping the field names from the message for sake of
+    compactness.
+    \item Changing a data type (some changes are allowed, see exceptions below)
+    \item Changing a class name
+    \item adding required (not NULLable) fields
+    \item Modifying the inheritance structure (i.e. switching between C extends A and C extends B, B extends A)
+\end{itemize}
+
+The following changes are supported:
+\begin{itemize}
+    \item renaming a field within a class
+    \item adding extra fields at the end of a class (even if this class is used as a base class and subclasses are serialized)
+    \item changing a boolean into a number or character field
+    \item changing an ASCII field into a UNICODE field
+    \item removing an existing field, which is not the last field of a class. 
+\end{itemize}
+
+If incompatible changes cannot be avoided, use of the ``versioning feature'' is required. This requires additional development
+at the application side.
+
+
+
+
+
+
+
+\section{Backend implementations}
+
+\subsubsection{Domain / package name mapping}
+In order to convert between domain names and Java / Scala packages, the following rules are implemented, in order of increasing
+priority:
+\begin{itemize}
+    \item Use of {\ttfamily de.jpaw.bonaparte.pojos.}$Domainname$ as a package name (fallback)
+    \item Use of a customized $packageNamePart1$.$Domainname$.$packageNamePart2$ package name (configurable by static setter
+    function).
+    \item Use of a Java collections {\ttfamily Map<String,String>}, which maps between Domain and package, using the previous rules as a
+    fallback, if the domain has not been found in the map.
+\end{itemize}
+
+
+\subsection{Interoperability / Message transport}
+The core Bonaparte project focusses on POJO serialization only, but a number of implementations are provided as separate add-on projects, which offer seamless support for different transport libraries:
+
+\subsubsection{Netty4}
+Bonaparte integrates well with Netty4 (currently available as alpha release only, but works very well).
+The bonaparte-netty project offers an API to transmit objects via Netty4.
+This has been tested with Netty 4.0.0.Alpha6
+
+\subsubsection{vert.x}
+This has been tested with vert.x 1.3.0
+
+\subsubsection{HornetQ (JMS API)}
+This has been tested with HornetQ 2.2.21 GA.
+
+\subsubsection{Apache activeMQ Apollo (STOMP API)}
+This has been tested only with an external Apollo server.
+
+\subsubsection{Apache Camel}
+This has been tested with Camel 2.10. There is an unexplained performance issue that Camel using the Bonaparte serialization is slower than Camel with GSON or Jackson,
+ despite the serializer / deserializer of Bonaparte standalone is 2 to 5 times faster than GSON or Jackson. (It looks like the integration is not yet optimal.)
+
+\subsubsection{Akka}
+Akka is a very promising actor framework. Actors can communicate via the Bonaparte serialization format as shown in the bonaparte-akka sample project.
+
+\section{License}
+The Bonaparte DSL and the default serialization / deserialization implementation for Java
+are available under the Apache license, version 2 (\url{http://www.apache.org/licenses/}). 
+
+\section{References and Prerequisites}
+The source of the Bonaparte DSL can be obtained here: \url{https://github.com/jpaw/bonaparte-dsl}.
+
+At \url{https://github.com/jpaw/bonaparte-java}, there is a Java implementation of the (de)serializers for the Bonaparte message format. This repository also holds the transport integration projects.
+
+All implementations require Java Standard Edition, version~7 ($1.7.0\_09$ or better), the DSL is based on Eclipse 4.2 (Juno) with XText 2.3.1 or better. 
+\end{document}
