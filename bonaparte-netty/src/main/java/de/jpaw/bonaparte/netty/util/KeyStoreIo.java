@@ -1,6 +1,10 @@
 package de.jpaw.bonaparte.netty.util;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -27,14 +31,25 @@ public class KeyStoreIo {
         String pwFilename = System.getProperty("user.home") + File.separator + ".keystorePW";
         String keyStoreFilename = System.getProperty("user.home") + File.separator + ".keystore";
         logger.info("Reading keystore from file {} with PW in {}", pwFilename, keyStoreFilename);
-        /*
-         * try (BufferedReader rpw = new BufferedReader(new FileReader(pwFilename))) { String line = rpw.readLine(); rpw.close(); // get user password char[]
-         * password = line.toCharArray();
-         * 
-         * try (FileInputStream kis = new java.io.FileInputStream(keyStoreFilename)) { ks.load(kis, password); kis.close(); } catch(Exception e) {
-         * logger.error("Cannot read from keystore file: {}", e.getStackTrace()); return null; } } catch(IOException e) {
-         * logger.error("Cannot read from pw file: {}", e.getStackTrace()); return null; }
-         */
+
+        try (BufferedReader rpw = new BufferedReader(new FileReader(pwFilename))) {
+            String line = rpw.readLine();
+            rpw.close();
+            // get user password
+            char[] password = line.toCharArray();
+
+            try (FileInputStream kis = new java.io.FileInputStream(keyStoreFilename)) {
+                ks.load(kis, password);
+                kis.close();
+            } catch (Exception e) {
+                logger.error("Cannot read from keystore file: {}", e.getStackTrace());
+                return null;
+            }
+        } catch (IOException e) {
+            logger.error("Cannot read from pw file: {}", e.getStackTrace());
+            return null;
+        }
+
         return ks;
     }
 
@@ -55,12 +70,20 @@ public class KeyStoreIo {
             logger.error("Cannot instantiate key manager factory: {}", e2.getStackTrace());
             return null;
         }
-        /*
-         * String keyPwFilename = System.getProperty("user.home") + File.separator + ".keyPW"; logger.info("Reading key password from file {}", keyPwFilename);
-         * try (BufferedReader rpw = new BufferedReader(new FileReader(keyPwFilename))) { String line = rpw.readLine(); rpw.close(); // get user password char[]
-         * keyPassword = line.toCharArray(); kmf.init(ks, keyPassword); } catch(Exception e) { logger.error("Cannot read from key pw file: {}",
-         * e.getStackTrace()); return null; }
-         */
+
+        String keyPwFilename = System.getProperty("user.home") + File.separator + ".keyPW";
+        logger.info("Reading key password from file {}", keyPwFilename);
+        try (BufferedReader rpw = new BufferedReader(new FileReader(keyPwFilename))) {
+            String line = rpw.readLine();
+            rpw.close();
+            // get user password
+            char[] keyPassword = line.toCharArray();
+            kmf.init(ks, keyPassword);
+        } catch (Exception e) {
+            logger.error("Cannot read from key pw file: {}", e.getStackTrace());
+            return null;
+        }
+
         return kmf;
     }
 
