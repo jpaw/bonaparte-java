@@ -17,14 +17,14 @@ package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
-import java.util.Calendar;
 import java.util.UUID;
+
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 
 import de.jpaw.util.Base64;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.ByteBuilder;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
 /**
  * Implements the serialization for the bonaparte format into byte arrays, using the {@link de.jpaw.util.ByteBuilder ByteBuilder} class, which is similar to the well known {@link java.lang.StringBuilder StringBuilder}.
  * 
@@ -103,8 +103,9 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
 
     @Override
     public void terminateRecord() {
-        if (doWriteCRs())
+        if (doWriteCRs()) {
             work.append(RECORD_OPT_TERMINATOR);
+        }
         work.append(RECORD_TERMINATOR);
     }
 
@@ -127,7 +128,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
     }
     
     private void addCharSub(int c) {
-        if (c < ' ' && c != '\t') {
+        if ((c < ' ') && (c != '\t')) {
             work.append(ESCAPE_CHAR);
             work.append((byte)(c + '@'));
         } else if (c <= 127) {
@@ -221,10 +222,11 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
     // boolean
     @Override
     public void addField(boolean b) {
-        if (b)
+        if (b) {
             work.append((byte) '1');
-        else
+        } else {
             work.append((byte) '0');
+        }
         terminateField();
     }
 
@@ -279,8 +281,9 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
     // append a left padded ASCII String
     private void lpad(String s, int length, byte padCharacter) {
         int l = s.length();
-        while (l++ < length)
+        while (l++ < length) {
             work.append(padCharacter);
+        }
         work.appendAscii(s);
     }
 
@@ -288,25 +291,27 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
     @Override
     public void addField(Calendar t, boolean hhmmss, int length) {  // TODO: length is not needed for this one
         if (t != null) {
-            int tmpValue = 10000 * t.get(Calendar.YEAR) + 100
-                    * (t.get(Calendar.MONTH) + 1) + t.get(Calendar.DAY_OF_MONTH);
+            int tmpValue = (10000 * t.get(Calendar.YEAR)) + (100
+                    * (t.get(Calendar.MONTH) + 1)) + t.get(Calendar.DAY_OF_MONTH);
             work.appendAscii(Integer.toString(tmpValue));
             if (length >= 0) {
                 // not only day, but also time
-                if (hhmmss)
-                    tmpValue = 10000 * t.get(Calendar.HOUR_OF_DAY) + 100
-                           * t.get(Calendar.MINUTE) + t.get(Calendar.SECOND);
-                else
-                    tmpValue = 3600 * t.get(Calendar.HOUR_OF_DAY) + 60
-                       * t.get(Calendar.MINUTE) + t.get(Calendar.SECOND);
-                if (tmpValue != 0 || (length > 0 && t.get(Calendar.MILLISECOND) != 0)) {
+                if (hhmmss) {
+                    tmpValue = (10000 * t.get(Calendar.HOUR_OF_DAY)) + (100
+                           * t.get(Calendar.MINUTE)) + t.get(Calendar.SECOND);
+                } else {
+                    tmpValue = (3600 * t.get(Calendar.HOUR_OF_DAY)) + (60
+                       * t.get(Calendar.MINUTE)) + t.get(Calendar.SECOND);
+                }
+                if ((tmpValue != 0) || ((length > 0) && (t.get(Calendar.MILLISECOND) != 0))) {
                     work.append((byte) '.');
                     lpad(Integer.toString(tmpValue), 6, (byte) '0');
                     if (length > 0) {
                         // add milliseconds
                         tmpValue = t.get(Calendar.MILLISECOND);
-                        if (tmpValue != 0)
+                        if (tmpValue != 0) {
                             lpad(Integer.toString(tmpValue), 3, (byte) '0');
+                        }
                     }
                 }
             }
@@ -320,7 +325,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
     public void addField(LocalDate t) {
         if (t != null) {
             int [] values = t.getValues();   // 3 values: year, month, day
-            int tmpValue = 10000 * values[0] + 100 * values[1] + values[2];
+            int tmpValue = (10000 * values[0]) + (100 * values[1]) + values[2];
             // int tmpValue = 10000 * t.getYear() + 100 * t.getMonthOfYear() + t.getDayOfMonth();
             work.appendAscii(Integer.toString(tmpValue));
             terminateField();
@@ -334,24 +339,25 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
         if (t != null) {
             int [] values = t.getValues(); // 4 values: year, month, day, millis of day
             //int tmpValue = 10000 * t.getYear() + 100 * t.getMonthOfYear() + t.getDayOfMonth();
-            work.appendAscii(Integer.toString(10000 * values[0] + 100 * values[1] + values[2]));
+            work.appendAscii(Integer.toString((10000 * values[0]) + (100 * values[1]) + values[2]));
             if (length >= 0) {
                 // not only day, but also time
                 //tmpValue = 10000 * t.getHourOfDay() + 100 * t.getMinuteOfHour() + t.getSecondOfMinute();
-                if (length > 0 ? (values[3] != 0) : (values[3] / 1000 != 0)) {
+                if (length > 0 ? (values[3] != 0) : ((values[3] / 1000) != 0)) {
                     work.append((byte) '.');
                     if (hhmmss) {
                         int tmpValue = values[3] / 60000; // minutes and hours
-                        tmpValue = 100 * (tmpValue / 60) + (tmpValue % 60);
-                        lpad(Integer.toString(tmpValue * 100 + (values[3] % 60000) / 1000), 6, (byte) '0');
+                        tmpValue = (100 * (tmpValue / 60)) + (tmpValue % 60);
+                        lpad(Integer.toString((tmpValue * 100) + ((values[3] % 60000) / 1000)), 6, (byte) '0');
                     } else {
                         lpad(Integer.toString(values[3] / 1000), 6, (byte) '0');
                     }
                     if (length > 0) {
                         // add milliseconds
                         int milliSeconds = values[3] % 1000;
-                        if (milliSeconds != 0)
+                        if (milliSeconds != 0) {
                             lpad(Integer.toString(milliSeconds), 3, (byte) '0');
+                        }
                     }
                 }
             }

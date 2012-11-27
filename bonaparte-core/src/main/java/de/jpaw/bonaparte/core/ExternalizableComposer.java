@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.ObjectOutput;
 import java.math.BigDecimal;
 import java.util.Calendar;
-import java.util.Calendar;
 import java.util.UUID;
 
 import org.joda.time.LocalDate;
@@ -140,8 +139,9 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
             out.writeByte(NULL_FIELD);
         } else {
             int scale = n.scale();
-            if (scale < 0 || scale > 18)
+            if ((scale < 0) || (scale > 18)) {
                 throw new IOException("cannot convert BigDecimal with negative scale or scale > 18: " + scale);
+            }
             long fraction = n.unscaledValue().longValue() % powersOfTen[scale];
             if (fraction != 0) {
                 out.writeByte(FRAC_SCALE_0 + scale);
@@ -153,12 +153,12 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
     
     // the following method will be used for byte, short, int
     private void writeVarInt(int i) throws IOException {
-        if (i >= -1 && i <= 16) {
+        if ((i >= -1) && (i <= 16)) {
             out.writeByte(i + INT_ZERO);
-        } else if (i >= -128 && i <= 127) {
+        } else if ((i >= -128) && (i <= 127)) {
             out.writeByte(INT_ONEBYTE);
             out.writeByte(i);
-        } else if (i >= -32768 && i <= 32767) {
+        } else if ((i >= -32768) && (i <= 32767)) {
             out.writeByte(INT_TWOBYTES);
             out.writeShort(i);
         } else {
@@ -168,9 +168,9 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
     }
     // the following method will be used for byte, short, int
     private void writeVarLong(long l) throws IOException {
-        if ((long)(int)l == l)
+        if ((long)(int)l == l) {
             writeVarInt((int)l);
-        else {
+        } else {
             out.writeByte(INT_EIGHTBYTES);
             out.writeLong(l);
         }
@@ -183,7 +183,7 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
             out.writeByte(NULL_FIELD);
         } else {
             int [] values = t.getValues();   // 3 values: year, month, day
-            writeVarInt(10000 * values[0] + 100 * values[1] + values[2]);
+            writeVarInt((10000 * values[0]) + (100 * values[1]) + values[2]);
         }
     }
     @Override
@@ -199,14 +199,14 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
                 if (hhmmss) {
                     // convert milliseconds to hhmmssfff format
                     int tmp = values[3] / 60000; // number of minutes
-                    tmp = (tmp / 60) * 100 + (tmp % 60);
-                    writeVarInt(tmp * 100000 + (values[3] % 60000));
+                    tmp = ((tmp / 60) * 100) + (tmp % 60);
+                    writeVarInt((tmp * 100000) + (values[3] % 60000));
                 } else {
                     writeVarInt(values[3]);
                 }
             }
             // then integral part
-            writeVarInt(10000 * values[0] + 100 * values[1] + values[2]);
+            writeVarInt((10000 * values[0]) + (100 * values[1]) + values[2]);
         }
     }
     @Override
@@ -216,19 +216,20 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
             out.writeByte(NULL_FIELD);
         } else {
             int tmpValue;
-            if (hhmmss)
-                tmpValue = (10000 * t.get(Calendar.HOUR_OF_DAY) + 100
-                    * t.get(Calendar.MINUTE) + t.get(Calendar.SECOND)) * 1000 + t.get(Calendar.MILLISECOND);
-            else
-                tmpValue = (3600 * t.get(Calendar.HOUR_OF_DAY) + 60
-                        * t.get(Calendar.MINUTE) + t.get(Calendar.SECOND)) * 1000 + t.get(Calendar.MILLISECOND);
+            if (hhmmss) {
+                tmpValue = (((10000 * t.get(Calendar.HOUR_OF_DAY)) + (100
+                    * t.get(Calendar.MINUTE)) + t.get(Calendar.SECOND)) * 1000) + t.get(Calendar.MILLISECOND);
+            } else {
+                tmpValue = (((3600 * t.get(Calendar.HOUR_OF_DAY)) + (60
+                        * t.get(Calendar.MINUTE)) + t.get(Calendar.SECOND)) * 1000) + t.get(Calendar.MILLISECOND);
+            }
             if (tmpValue != 0) {
                 out.writeByte(FRAC_SCALE_0 + 9);
                 writeVarInt(tmpValue);
             }
             // then integral part
-            writeVarInt(10000 * t.get(Calendar.YEAR) + 100
-                    * (t.get(Calendar.MONTH) + 1) + t.get(Calendar.DAY_OF_MONTH));
+            writeVarInt((10000 * t.get(Calendar.YEAR)) + (100
+                    * (t.get(Calendar.MONTH) + 1)) + t.get(Calendar.DAY_OF_MONTH));
         }
     }
     

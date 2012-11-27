@@ -17,16 +17,16 @@ package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
-import java.util.Calendar;
 import java.util.UUID;
-// according to http://stackoverflow.com/questions/469695/decode-base64-data-in-java , xml.bind is included in Java 6 SE
-//import javax.xml.bind.DatatypeConverter;
+
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
 import de.jpaw.util.Base64;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.ByteBuilder;
+// according to http://stackoverflow.com/questions/469695/decode-base64-data-in-java , xml.bind is included in Java 6 SE
+//import javax.xml.bind.DatatypeConverter;
 /**
  * The StringBuilderComposer class.
  * 
@@ -102,8 +102,9 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
 
     @Override
     public void terminateRecord() {
-        if (doWriteCRs())
+        if (doWriteCRs()) {
             work.append(RECORD_OPT_TERMINATOR);
+        }
         work.append(RECORD_TERMINATOR);
     }
 
@@ -126,7 +127,7 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
     }
     
     private void addCharSub(char c) {
-        if (c >= 0 && c < ' ' && c != '\t') {
+        if ((c >= 0) && (c < ' ') && (c != '\t')) {
             work.append(ESCAPE_CHAR);
             work.append((char)(c + '@'));
         } else {
@@ -216,10 +217,11 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
     // boolean
     @Override
     public void addField(boolean b) {
-        if (b)
+        if (b) {
             work.append('1');
-        else
+        } else {
             work.append('0');
+        }
         terminateField();
     }
 
@@ -252,7 +254,7 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
     @Override
     public void addField(ByteArray b, int length) {
         if (b != null) {
-        	ByteBuilder tmp = new ByteBuilder(b.length() * 2 + 4, null);
+        	ByteBuilder tmp = new ByteBuilder((b.length() * 2) + 4, null);
             Base64.encodeToByte(tmp, b.getBytes(), 0, b.length());
             work.append(new String(tmp.getCurrentBuffer(), 0, tmp.length()));
             //work.append(DatatypeConverter.printBase64Binary(b));
@@ -267,7 +269,7 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
     @Override
     public void addField(byte[] b, int length) {
         if (b != null) {
-        	ByteBuilder tmp = new ByteBuilder(b.length * 2 + 4, null);
+        	ByteBuilder tmp = new ByteBuilder((b.length * 2) + 4, null);
             Base64.encodeToByte(tmp, b, 0, b.length);
             work.append(new String(tmp.getCurrentBuffer(), 0, tmp.length()));
             //work.append(DatatypeConverter.printHexBinary(b));
@@ -280,8 +282,9 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
     // append a left padded String
     private void lpad(String s, int length, char padCharacter) {
         int l = s.length();
-        while (l++ < length)
+        while (l++ < length) {
             work.append(padCharacter);
+        }
         work.append(s);
     }
     
@@ -289,25 +292,27 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
     @Override
     public void addField(Calendar t, boolean hhmmss, int length) {  // TODO: length is not needed for this one
         if (t != null) {
-            int tmpValue = 10000 * t.get(Calendar.YEAR) + 100
-                    * (t.get(Calendar.MONTH) + 1) + t.get(Calendar.DAY_OF_MONTH);
+            int tmpValue = (10000 * t.get(Calendar.YEAR)) + (100
+                    * (t.get(Calendar.MONTH) + 1)) + t.get(Calendar.DAY_OF_MONTH);
             work.append(Integer.toString(tmpValue));
             if (length >= 0) {
                 // not only day, but also time
-                if (hhmmss)
-                    tmpValue = 10000 * t.get(Calendar.HOUR_OF_DAY) + 100
-                           * t.get(Calendar.MINUTE) + t.get(Calendar.SECOND);
-                else
-                    tmpValue = 3600 * t.get(Calendar.HOUR_OF_DAY) + 60
-                       * t.get(Calendar.MINUTE) + t.get(Calendar.SECOND);
-                if (tmpValue != 0 || (length > 0 && t.get(Calendar.MILLISECOND) != 0)) {
+                if (hhmmss) {
+                    tmpValue = (10000 * t.get(Calendar.HOUR_OF_DAY)) + (100
+                           * t.get(Calendar.MINUTE)) + t.get(Calendar.SECOND);
+                } else {
+                    tmpValue = (3600 * t.get(Calendar.HOUR_OF_DAY)) + (60
+                       * t.get(Calendar.MINUTE)) + t.get(Calendar.SECOND);
+                }
+                if ((tmpValue != 0) || ((length > 0) && (t.get(Calendar.MILLISECOND) != 0))) {
                     work.append('.');
                     lpad(Integer.toString(tmpValue), 6, '0');
                     if (length > 0) {
                         // add milliseconds
                         tmpValue = t.get(Calendar.MILLISECOND);
-                        if (tmpValue != 0)
+                        if (tmpValue != 0) {
                             lpad(Integer.toString(tmpValue), 3, '0');
+                        }
                     }
                 }
             }
@@ -320,7 +325,7 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
     public void addField(LocalDate t) {
         if (t != null) {
             int [] values = t.getValues();   // 3 values: year, month, day
-            int tmpValue = 10000 * values[0] + 100 * values[1] + values[2];
+            int tmpValue = (10000 * values[0]) + (100 * values[1]) + values[2];
             // int tmpValue = 10000 * t.getYear() + 100 * t.getMonthOfYear() + t.getDayOfMonth();
             work.append(Integer.toString(tmpValue));
             terminateField();
@@ -334,24 +339,25 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
         if (t != null) {
             int [] values = t.getValues(); // 4 values: year, month, day, millis of day
             //int tmpValue = 10000 * t.getYear() + 100 * t.getMonthOfYear() + t.getDayOfMonth();
-            work.append(Integer.toString(10000 * values[0] + 100 * values[1] + values[2]));
+            work.append(Integer.toString((10000 * values[0]) + (100 * values[1]) + values[2]));
             if (length >= 0) {
                 // not only day, but also time
                 //tmpValue = 10000 * t.getHourOfDay() + 100 * t.getMinuteOfHour() + t.getSecondOfMinute();
-                if (length > 0 ? (values[3] != 0) : (values[3] / 1000 != 0)) {
+                if (length > 0 ? (values[3] != 0) : ((values[3] / 1000) != 0)) {
                     work.append('.');
                     if (hhmmss) {
                         int tmpValue = values[3] / 60000; // minutes and hours
-                        tmpValue = 100 * (tmpValue / 60) + (tmpValue % 60);
-                        lpad(Integer.toString(tmpValue * 100 + (values[3] % 60000) / 1000), 6, '0');
+                        tmpValue = (100 * (tmpValue / 60)) + (tmpValue % 60);
+                        lpad(Integer.toString((tmpValue * 100) + ((values[3] % 60000) / 1000)), 6, '0');
                     } else {
                         lpad(Integer.toString(values[3] / 1000), 6, '0');
                     }
                     if (length > 0) {
                         // add milliseconds
                         int milliSeconds = values[3] % 1000;
-                        if (milliSeconds != 0)
+                        if (milliSeconds != 0) {
                             lpad(Integer.toString(milliSeconds), 3, '0');
+                        }
                     }
                 }
             }
