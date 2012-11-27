@@ -15,19 +15,20 @@
  */
 package de.jpaw.bonaparte.netty.testServer;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundMessageHandlerAdapter;
+import io.netty.handler.ssl.SslHandler;
 
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.pojos.rqrs.Request;
-import de.jpaw.bonaparte.pojos.rqrs.Response;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.pojos.rqrs.Request;
+import de.jpaw.bonaparte.pojos.rqrs.Response;
 
 /**
  * Handler implementation for the echo server.
@@ -47,11 +48,24 @@ public class TestServerHandler extends ChannelInboundMessageHandlerAdapter<BonaP
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         logger.info("New incoming channel requested for thread " + thisThreadId);
+        // sslHandler not yet valid here, handshake only starts now!
+    }
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        logger.info("Channel for thread " + thisThreadId + " closed after " + counterInThread.get() + " requests");
+        // number of requests is cumulative, as this instance is reused for future new connections
     }
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, BonaPortable request) throws Exception {
-        logger.trace("Received an object of type " + request.getClass().getCanonicalName());
+        String cipher;
+        SslHandler sslH = ctx.pipeline().get(SslHandler.class);
+        if (sslH != null) {
+            cipher = " (with cipher " + sslH.getEngine().getSession().getCipherSuite() + ")";
+        } else {
+            cipher = " (unencrypted)";
+        }
+        logger.info("Received an object of type " + request.getClass().getCanonicalName() + cipher);
         Request myRequest = (Request) request;
         Response myResponse = new Response();
 
@@ -61,8 +75,9 @@ public class TestServerHandler extends ChannelInboundMessageHandlerAdapter<BonaP
         myResponse.setSerialInThread(counterInThread.incrementAndGet());
         myResponse.setWhenReceiced(new LocalDateTime());
 
-        if (myRequest.getDuration() > 0)
+        if (myRequest.getDuration() > 0) {
             Thread.sleep(myRequest.getDuration());
+        }
 
         ctx.write(myResponse);
         ctx.flush();

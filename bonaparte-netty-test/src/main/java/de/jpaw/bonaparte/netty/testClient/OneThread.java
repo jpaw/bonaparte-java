@@ -12,16 +12,18 @@ public class OneThread implements Runnable {
     private final int threadIndex;
     private final int delay;
     private final int callsPerThread;
+    private final int port;
     private final SimpleUnpooledClient conn;
 
     private Date start;
     private Date stop;
 
-    OneThread(int delay, int callsPerThread, int threadIndex, String host) throws IOException {
+    OneThread(int delay, int callsPerThread, int threadIndex, String host, int port, boolean useSsl) throws IOException {
         this.delay = delay;
         this.callsPerThread = callsPerThread;
         this.threadIndex = threadIndex;
-        conn = new SimpleUnpooledClient(host, 8077);
+        this.port = port;
+        conn = new SimpleUnpooledClient(host, port, useSsl);
     }
 
     @Override
@@ -36,11 +38,12 @@ public class OneThread implements Runnable {
         start = new Date();
         try {
             for (int i = 0; i < callsPerThread; ++i) {
-                myRequest.setSerialNo(threadIndex * 100000000 + i);
+                myRequest.setSerialNo((threadIndex * 100000000) + i);
                 BonaPortable response = conn.doIO(myRequest);
                 Response myResponse = (Response) response;
-                if (myResponse.getSerialNo() != myRequest.getSerialNo())
+                if (myResponse.getSerialNo() != myRequest.getSerialNo()) {
                     throw new Exception("Difference in serial nos for thread " + threadIndex + " and loop no " + i);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

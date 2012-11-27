@@ -43,12 +43,12 @@ public class SslServer {
         ServerBootstrap b = new ServerBootstrap();
         try {
             b.group(new NioEventLoopGroup(), new NioEventLoopGroup())
-             .channel(NioServerSocketChannel.class)
-             .option(ChannelOption.SO_BACKLOG, 100)
-             .localAddress(new InetSocketAddress(port))
-             .childOption(ChannelOption.TCP_NODELAY, true)
-             .handler(new LoggingHandler(LogLevel.INFO))
-             .childHandler(new BonaparteNettySslPipelineFactory(1000, new TestServerHandler()));
+            .channel(NioServerSocketChannel.class)
+            .option(ChannelOption.SO_BACKLOG, 100)
+            .localAddress(new InetSocketAddress(port))
+            .childOption(ChannelOption.TCP_NODELAY, true)
+            .handler(new LoggingHandler(LogLevel.INFO))
+            .childHandler(new BonaparteNettySslPipelineFactory(1000, new TestServerHandler(), false, false));
 
             // Start the server.
             ChannelFuture f = b.bind().sync();
@@ -66,7 +66,7 @@ public class SslServer {
         if (args.length > 0) {
             port = Integer.parseInt(args[0]);
         }
-        System.out.println("Starting a test server on port " + port);
-        new TestServer(port).run();
+        System.out.println("Starting an SSL test server on port " + port);
+        new SslServer(port).run();
     }
 }

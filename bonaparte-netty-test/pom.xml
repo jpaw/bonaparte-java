@@ -32,6 +32,11 @@
             <version>${bonaparte.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.martiansoftware</groupId>
+            <artifactId>jsap</artifactId>
+            <version>2.1</version>
+        </dependency>
+        <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
             <version>5.12.1</version>   <!-- 5.14.9 or 6.7 use waaay more dependencies -->
@@ -48,8 +53,8 @@
     <build>
         <plugins>
             <plugin>
-                <!-- must deleted generated source as well as unit test output for the 
-                    clean target -->
+                <!-- must deleted generated source as well as unit test output 
+                    for the clean target -->
                 <artifactId>maven-clean-plugin</artifactId>
                 <version>2.5</version>
                 <configuration>
@@ -64,7 +69,8 @@
                 </configuration>
             </plugin>
             <plugin>
-                <!-- must add the generated sources to the java source search path -->
+                <!-- must add the generated sources to the java source search 
+                    path -->
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
                 <version>1.7</version>
