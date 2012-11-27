@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.ByteArrayComposer;
 import de.jpaw.bonaparte.core.ByteArrayParser;
+import de.jpaw.bonaparte.netty.util.SessionInfo;
 
 public class SimpleUnpooledClient {
     private static final Logger logger = LoggerFactory.getLogger(SimpleUnpooledClient.class);
@@ -47,6 +48,8 @@ public class SimpleUnpooledClient {
             SSLSocket c = (SSLSocket) conn;
             printSocketInfo(c);
             c.startHandshake();
+            SSLSession session = c.getSession();
+            SessionInfo.logSessionInfo(session, "Server");
         } else {
             conn = new Socket(addr, port);
         }

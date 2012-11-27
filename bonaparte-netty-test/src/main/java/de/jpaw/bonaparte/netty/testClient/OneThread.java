@@ -12,7 +12,6 @@ public class OneThread implements Runnable {
     private final int threadIndex;
     private final int delay;
     private final int callsPerThread;
-    private final int port;
     private final SimpleUnpooledClient conn;
 
     private Date start;
@@ -22,7 +21,6 @@ public class OneThread implements Runnable {
         this.delay = delay;
         this.callsPerThread = callsPerThread;
         this.threadIndex = threadIndex;
-        this.port = port;
         conn = new SimpleUnpooledClient(host, port, useSsl);
     }
 

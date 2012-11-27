@@ -22,11 +22,14 @@ import io.netty.handler.ssl.SslHandler;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.net.ssl.SSLSession;
+
 import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.netty.util.SessionInfo;
 import de.jpaw.bonaparte.pojos.rqrs.Request;
 import de.jpaw.bonaparte.pojos.rqrs.Response;
 
@@ -61,7 +64,9 @@ public class TestServerHandler extends ChannelInboundMessageHandlerAdapter<BonaP
         String cipher;
         SslHandler sslH = ctx.pipeline().get(SslHandler.class);
         if (sslH != null) {
-            cipher = " (with cipher " + sslH.getEngine().getSession().getCipherSuite() + ")";
+            SSLSession session = sslH.getEngine().getSession();
+            cipher = " (with cipher " + session.getCipherSuite() + ")";
+            SessionInfo.logSessionInfo(session, "Client");
         } else {
             cipher = " (unencrypted)";
         }
