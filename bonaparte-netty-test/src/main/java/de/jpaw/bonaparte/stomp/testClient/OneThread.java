@@ -4,9 +4,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.UUID;
 
-import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.rqrs.Request;
-import de.jpaw.bonaparte.pojos.rqrs.Response;
 
 public class OneThread implements Runnable {
     private final int threadIndex;
@@ -34,7 +32,7 @@ public class OneThread implements Runnable {
         start = new Date();
         try {
             for (int i = 0; i < callsPerThread; ++i) {
-                myRequest.setSerialNo(threadIndex * 100000000 + i);
+                myRequest.setSerialNo((threadIndex * 100000000) + i);
                 conn.doIO(myRequest);
             }
         } catch (Exception e) {
