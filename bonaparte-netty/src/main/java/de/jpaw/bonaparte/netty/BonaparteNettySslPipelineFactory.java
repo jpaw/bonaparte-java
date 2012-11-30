@@ -15,13 +15,15 @@ import de.jpaw.bonaparte.core.BonaPortable;
 public class BonaparteNettySslPipelineFactory extends ChannelInitializer<SocketChannel> {
     private final int maximumMessageLength;
     private final ChannelInboundMessageHandlerAdapter<BonaPortable> objectHandler;
+    private final boolean useSsl; // if true, enables SSL, otherwise performs exactly as the non-SSL version
     private final boolean clientMode; // false
     private final boolean needClientAuth; // true
 
-    public BonaparteNettySslPipelineFactory(int maximumMessageLength, ChannelInboundMessageHandlerAdapter<BonaPortable> objectHandler, boolean clientMode,
-            boolean needClientAuth) {
+    public BonaparteNettySslPipelineFactory(int maximumMessageLength, ChannelInboundMessageHandlerAdapter<BonaPortable> objectHandler, boolean useSsl,
+            boolean clientMode, boolean needClientAuth) {
         this.maximumMessageLength = maximumMessageLength;
         this.objectHandler = objectHandler;
+        this.useSsl = useSsl;
         this.clientMode = clientMode;
         this.needClientAuth = needClientAuth;
     }
@@ -30,13 +32,15 @@ public class BonaparteNettySslPipelineFactory extends ChannelInitializer<SocketC
     public void initChannel(SocketChannel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();
 
-        // create the SSL engine
-        SSLEngine engine = NettySslContextFactory.getServerContext().createSSLEngine();
-        engine.setUseClientMode(clientMode);
-        engine.setNeedClientAuth(needClientAuth);
+        if (useSsl) {
+            // create the SSL engine
+            SSLEngine engine = NettySslContextFactory.getServerContext().createSSLEngine();
+            engine.setUseClientMode(clientMode);
+            engine.setNeedClientAuth(needClientAuth);
 
-        // add ssl to pipeline first, as in the SecureChat example
-        pipeline.addLast("ssl",     new SslHandler(engine));
+            // add ssl to pipeline first, as in the SecureChat example
+            pipeline.addLast("ssl", new SslHandler(engine));
+        }
 
         // Add the text line codec combination first,
         pipeline.addLast("framer",  new DelimiterBasedFrameDecoder(maximumMessageLength, false, Delimiters.lineDelimiter()));

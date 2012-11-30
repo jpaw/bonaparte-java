@@ -25,6 +25,13 @@ import io.netty.handler.logging.LoggingHandler;
 
 import java.net.InetSocketAddress;
 
+import com.martiansoftware.jsap.FlaggedOption;
+import com.martiansoftware.jsap.JSAP;
+import com.martiansoftware.jsap.JSAPResult;
+import com.martiansoftware.jsap.Parameter;
+import com.martiansoftware.jsap.SimpleJSAP;
+import com.martiansoftware.jsap.Switch;
+
 import de.jpaw.bonaparte.netty.BonaparteNettySslPipelineFactory;
 
 /**
@@ -33,9 +40,13 @@ import de.jpaw.bonaparte.netty.BonaparteNettySslPipelineFactory;
 public class SslServer {
 
     private final int port;
+    private final boolean useSsl;
+    private final boolean requirePeerAuthentication;
 
-    public SslServer(int port) {
+    public SslServer(int port, boolean useSsl, boolean requirePeerAuthentication) {
         this.port = port;
+        this.useSsl = useSsl;
+        this.requirePeerAuthentication = requirePeerAuthentication;
     }
 
     public void run() throws Exception {
@@ -48,7 +59,7 @@ public class SslServer {
             .localAddress(new InetSocketAddress(port))
             .childOption(ChannelOption.TCP_NODELAY, true)
             .handler(new LoggingHandler(LogLevel.INFO))
-            .childHandler(new BonaparteNettySslPipelineFactory(1000, new TestServerHandler(), false, false));
+            .childHandler(new BonaparteNettySslPipelineFactory(1000, new TestServerHandler(), useSsl, false, requirePeerAuthentication));
 
             // Start the server.
             ChannelFuture f = b.bind().sync();
@@ -63,10 +74,28 @@ public class SslServer {
 
     public static void main(String[] args) throws Exception {
         int port = 8077;
+        boolean useSsl = false;
+        boolean requirePeerAuthentication = false;
+
+        // TODO: add more options for SSL to configure CRT etc.
+        SimpleJSAP commandLineOptions = new SimpleJSAP("NettyServer", "Runs a simple SSL or non-SSL netty server", new Parameter[] {
+                new FlaggedOption("port", JSAP.INTEGER_PARSER, "8077", JSAP.NOT_REQUIRED, 'p', "port", "listener port"),
+                new Switch("ssl", 's', "ssl", "enforces SSL connection"),
+                new Switch("peer", 'p', "peer", "enforces peer certification authentication (in SSL mode)") });
+        JSAPResult cmd = commandLineOptions.parse(args);
+        if (commandLineOptions.messagePrinted()) {
+            System.err.println("(use option --help for usage)");
+            System.exit(1);
+        }
+
+        port = cmd.getInt("port");
+        useSsl = cmd.getBoolean("ssl");
+        requirePeerAuthentication = cmd.getBoolean("peer");
+
         if (args.length > 0) {
             port = Integer.parseInt(args[0]);
         }
         System.out.println("Starting an SSL test server on port " + port);
-        new SslServer(port).run();
+        new SslServer(port, useSsl, requirePeerAuthentication).run();
     }
 }
