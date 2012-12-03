@@ -1,5 +1,7 @@
 package de.jpaw.bonaparte.netty;
 
+import java.io.File;
+
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 
@@ -11,6 +13,7 @@ import de.jpaw.bonaparte.netty.util.KeyStoreIo;
 
 public class NettySslContextFactory {
     private static final Logger logger = LoggerFactory.getLogger(NettySslContextFactory.class);
+    private static final String keyFilename = System.getProperty("user.home") + File.separator + ".key";
 
     private static final String PROTOCOL = "TLS";
     private static final SSLContext SERVER_CONTEXT;
@@ -20,7 +23,7 @@ public class NettySslContextFactory {
 
         SSLContext serverContext;
         SSLContext clientContext;
-        KeyManagerFactory kmf = KeyStoreIo.getKeyManagerFactory();
+        KeyManagerFactory kmf = KeyStoreIo.getKeyManagerFactory(keyFilename);
         if (kmf == null) {
             throw new Error("Could not get key manager factory");
         }
