@@ -1,7 +1,6 @@
 package de.jpaw.bonaparte.netty.util;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -18,7 +17,7 @@ import org.slf4j.LoggerFactory;
 public class KeyStoreIo {
     private static final Logger logger = LoggerFactory.getLogger(KeyStoreIo.class);
 
-    static public KeyStore keyStoreFromFile() {
+    static public KeyStore keyStoreFromFile(String filename) {
         KeyStore ks;
         try {
             ks = KeyStore.getInstance("JKS");
@@ -28,8 +27,8 @@ public class KeyStoreIo {
         }
 
         // read the password from a file in the user's HOME
-        String pwFilename = System.getProperty("user.home") + File.separator + ".keystorePW";
-        String keyStoreFilename = System.getProperty("user.home") + File.separator + ".keystore";
+        String pwFilename = filename + "storePW";
+        String keyStoreFilename = filename + "store";
         logger.info("Reading keystore from file {} with PW in {}", pwFilename, keyStoreFilename);
 
         try (BufferedReader rpw = new BufferedReader(new FileReader(pwFilename))) {
@@ -53,8 +52,8 @@ public class KeyStoreIo {
         return ks;
     }
 
-    static public KeyManagerFactory getKeyManagerFactory() {
-        KeyStore ks = keyStoreFromFile();
+    static public KeyManagerFactory getKeyManagerFactory(String filename) {
+        KeyStore ks = keyStoreFromFile(filename);
         if (ks == null) {
             return null;
         }
@@ -71,7 +70,7 @@ public class KeyStoreIo {
             return null;
         }
 
-        String keyPwFilename = System.getProperty("user.home") + File.separator + ".keyPW";
+        String keyPwFilename = filename + "PW";
         logger.info("Reading key password from file {}", keyPwFilename);
         try (BufferedReader rpw = new BufferedReader(new FileReader(keyPwFilename))) {
             String line = rpw.readLine();
