@@ -1,18 +1,18 @@
- /*
-  * Copyright 2012 Michael Bischoff
-  *
-  * Licensed under the Apache License, Version 2.0 (the "License");
-  * you may not use this file except in compliance with the License.
-  * You may obtain a copy of the License at
-  *
-  *   http://www.apache.org/licenses/LICENSE-2.0
-  *
-  * Unless required by applicable law or agreed to in writing, software
-  * distributed under the License is distributed on an "AS IS" BASIS,
-  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  * See the License for the specific language governing permissions and
-  * limitations under the License.
-  */
+/*
+ * Copyright 2012 Michael Bischoff
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.jpaw.bonaparte.core;
 
 import java.io.IOException;
@@ -24,11 +24,11 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.UUID;
 
-import de.jpaw.util.ByteArray;
-import de.jpaw.util.EnumException;
-
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
+
+import de.jpaw.util.ByteArray;
+import de.jpaw.util.EnumException;
 /**
  * The StringBuilderParser class.
  * 
@@ -47,12 +47,12 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
     public ExternalizableParser(ObjectInput in) {
         this.in = in;
     }
-    
+
     /**************************************************************************************************
      * Deserialization goes here
-     * @throws IOException 
+     * @throws IOException
      **************************************************************************************************/
-    
+
     private byte nextByte() throws IOException {
         if (hasByte) {
             hasByte = false;
@@ -60,42 +60,46 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         }
         return in.readByte();
     }
-    
+
     private void pushBack(byte b) {
-        if (hasByte)
+        if (hasByte) {
             throw new RuntimeException("Duplicate pushback");
+        }
         hasByte = true;
         pushedBackByte = b;
     }
-    
+
     private void needByte(byte c) throws IOException {
         byte d = nextByte();
-        if (c != d)
+        if (c != d) {
             throw new IOException(String.format("Unexpected byte: expected 0x%02x, got 0x%02x in class %s",
                     (int)c, (int)d, currentClass));
+        }
     }
 
     // check for Null called for field members inside a class
     private boolean checkForNull(boolean allowNull) throws IOException {
         byte c = nextByte();
         if (c == NULL_FIELD) {
-            if (allowNull)
+            if (allowNull) {
                 return true;
-            else
+            } else {
                 throw new IOException("ILLEGAL EXPLICIT NULL in " + currentClass);
+            }
         }
-        if (c == PARENT_SEPARATOR || c == ARRAY_TERMINATOR) {
+        if ((c == PARENT_SEPARATOR) || (c == ARRAY_TERMINATOR)) {
             if (allowNull) {
                 // uneat it
                 pushBack(c);
                 return true;
-            } else
+            } else {
                 throw new IOException("ILLEGAL IMPLICIT NULL in " + currentClass);
+            }
         }
         pushBack(c);
         return false;
     }
-    
+
     private void skipNulls() throws IOException {
         for (;;)  {
             byte c = nextByte();
@@ -105,18 +109,19 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
             }
         }
     }
-    
+
     @Override
     public BigDecimal readBigDecimal(boolean allowNull, int length, int decimals, boolean isSigned) throws IOException {
-        if (checkForNull(allowNull))
+        if (checkForNull(allowNull)) {
             return null;
+        }
         byte c = nextByte();
-        if (c > FRAC_SCALE_0 && c <= FRAC_SCALE_18) {
+        if ((c > FRAC_SCALE_0) && (c <= FRAC_SCALE_18)) {
             // read fractional part
             long fraction = readLongNoNull();
             int scale = c-FRAC_SCALE_0;
             // combine with integral part and create scaled result
-            return BigDecimal.valueOf(powersOfTen[scale] * readLongNoNull() + fraction, scale);  
+            return BigDecimal.valueOf((powersOfTen[scale] * readLongNoNull()) + fraction, scale);
         } else {
             pushBack(c);
             return BigDecimal.valueOf(readLongNoNull());
@@ -126,106 +131,124 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
     @Override
     public Character readCharacter(boolean allowNull) throws IOException {
         String tmp = readString(allowNull, 1, false, false, true, true);
-        if (tmp == null)
+        if (tmp == null) {
             return null;
-        if (tmp.length() == 0)
+        }
+        if (tmp.length() == 0) {
             throw new IOException("EMPTY CHAR in " + currentClass);
+        }
         return tmp.charAt(0);
     }
 
     // readString does the job for Unicode as well as ASCII, but only used for Unicode (have an optimized version for ASCII)
     @Override
     public String readString(boolean allowNull, int length, boolean doTrim, boolean doTruncate, boolean allowCtrls, boolean allowUnicode) throws IOException {
-        if (checkForNull(allowNull))
+        if (checkForNull(allowNull)) {
             return null;
+        }
         needByte(TEXT);
         String s = in.readUTF();
         if (doTrim) {
             // skip leading spaces
             s = s.trim();
         }
-        if (doTruncate && length > 0 && s.length() > length)
+        if (doTruncate && (length > 0) && (s.length() > length)) {
             s = s.substring(0, length);
+        }
         return s;
-    }       
-    
-    // specialized version without charset conversion 
+    }
+
+    // specialized version without charset conversion
     @Override
     public String readAscii(boolean allowNull, int length, boolean doTrim, boolean doTruncate) throws IOException {
         return readString(allowNull, length, doTrim, doTruncate, false, false);
-    }       
+    }
 
     @Override
     public Boolean readBoolean(boolean allowNull) throws IOException {
-        if (checkForNull(allowNull))
+        if (checkForNull(allowNull)) {
             return null;
+        }
         byte c = nextByte();
-        if (c == INT_ZERO)
+        if (c == INT_ZERO) {
             return false;
-        else if (c == INT_ONE)
+        } else if (c == INT_ONE) {
             return true;
+        }
         throw new IOException(String.format("ILLEGAL BOOLEAN: found 0x%02x in %s", (int)c, currentClass));
     }
 
+    @Override
     public ByteArray readByteArray(boolean allowNull, int length) throws IOException {
-        if (checkForNull(allowNull))
+        if (checkForNull(allowNull)) {
             return null;
+        }
         needByte(BINARY);
         assert !hasByte; // readInt() does not respect pushed back byte
         return ByteArray.read(in);
     }
-    
+
     @Override
     public byte[] readRaw(boolean allowNull, int length) throws IOException {
-        if (checkForNull(allowNull))
+        if (checkForNull(allowNull)) {
             return null;
+        }
         needByte(BINARY);
         assert !hasByte; // readInt() does not respect pushed back byte
         byte [] tmp = ByteArray.readBytes(in);
-        if (length > 0 && tmp.length > length)
+        if ((length > 0) && (tmp.length > length)) {
             throw new IOException(String.format("byte buffer too long (found %d where only %d is allowed in %s)",
                     tmp.length, length, currentClass));
+        }
         return tmp;
     }
-    
+
     private int readVarInt(int maxBits) throws IOException {
         byte c = nextByte();
-        if (c >= INT_MINUS_ONE && c <= NUMERIC_MAX)
+        if ((c >= INT_MINUS_ONE) && (c <= NUMERIC_MAX)) {
             return c - INT_ZERO;
-        if (c == INT_ONEBYTE)
+        }
+        if (c == INT_ONEBYTE) {
             return in.readByte();
-        if (c == INT_TWOBYTES && maxBits >= 16)
+        }
+        if ((c == INT_TWOBYTES) && (maxBits >= 16)) {
             return in.readShort();
-        if (c == INT_FOURBYTES && maxBits >= 32)
+        }
+        if ((c == INT_FOURBYTES) && (maxBits >= 32)) {
             return in.readInt();
+        }
         throw new IOException(String.format("No suitable integral token: %02x in %s", c, currentClass));
     }
 
     @Override
     public Byte readByte(boolean allowNull, boolean isSigned) throws IOException {
-        if (checkForNull(allowNull))
+        if (checkForNull(allowNull)) {
             return null;
+        }
         return (byte)readVarInt(8);
     }
 
     @Override
     public Short readShort(boolean allowNull, boolean isSigned) throws IOException {
-        if (checkForNull(allowNull))
+        if (checkForNull(allowNull)) {
             return null;
+        }
         return (short)readVarInt(16);
     }
-    
+
     @Override
     public Integer readInteger(boolean allowNull, boolean isSigned) throws IOException {
-        if (checkForNull(allowNull))
+        if (checkForNull(allowNull)) {
             return null;
+        }
         return readVarInt(32);
     }
 
     @Override
     public Long readLong(boolean allowNull, boolean isSigned) throws IOException {
-        if (checkForNull(allowNull))
+        if (checkForNull(allowNull)) {
             return null;
+        }
         return readLongNoNull();
     }
 
@@ -237,14 +260,15 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         pushBack(c);
         return (long)readVarInt(64);
     }
-    
+
     @Override
     public Calendar readCalendar(boolean allowNull, boolean hhmmss, int fractionalDigits) throws IOException {
-        if (checkForNull(allowNull))
+        if (checkForNull(allowNull)) {
             return null;
+        }
         int fractional = 0;
         byte c = nextByte();
-        if (c > FRAC_SCALE_0 && c <= FRAC_SCALE_18) {
+        if ((c > FRAC_SCALE_0) && (c <= FRAC_SCALE_18)) {
             // read fractional part
             long fraction = readLongNoNull();
             int scale = c-FRAC_SCALE_0;
@@ -258,9 +282,10 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
             pushBack(c);
         }
         int date = readVarInt(32);
-        if (date < 0 || fractional < 0)
+        if ((date < 0) || (fractional < 0)) {
             throw new IOException(String.format("negative numbers found for date field: %d.%d in %s",
                     date, fractional, currentClass));
+        }
         // set the date and time
         int day, month, year, hour, minute, second;
         year = date / 10000;
@@ -277,12 +302,14 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         }
         fractional %= 1000;
         // first checks
-        if (year < 1601 || year > 2399 || month == 0 || month > 12 || day == 0
-                || day > 31)
+        if ((year < 1601) || (year > 2399) || (month == 0) || (month > 12) || (day == 0)
+                || (day > 31)) {
             throw new IOException(String.format("ILLEGAL DAY: found %d-%d-%d in %s",
                     year, month, day, currentClass));
-        if (hour > 23 || minute > 59 || second > 59) // TODO: allow leap seconds? (that would be seconds == 60)
+        }
+        if ((hour > 23) || (minute > 59) || (second > 59)) {
             throw new IOException(String.format("ILLEGAL TIME: found %d:%d:%d in %s", hour, minute, second, currentClass));
+        }
         // now set the return value
         GregorianCalendar result;
         try {
@@ -297,14 +324,15 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         result.set(Calendar.MILLISECOND, fractional);
         return result;
     }
-    
+
     @Override
     public LocalDateTime readDayTime(boolean allowNull, boolean hhmmss, int fractionalDigits) throws IOException {
-        if (checkForNull(allowNull))
+        if (checkForNull(allowNull)) {
             return null;
+        }
         int fractional = 0;
         byte c = nextByte();
-        if (c > FRAC_SCALE_0 && c <= FRAC_SCALE_18) {
+        if ((c > FRAC_SCALE_0) && (c <= FRAC_SCALE_18)) {
             // read fractional part
             long fraction = readLongNoNull();
             int scale = c-FRAC_SCALE_0;
@@ -318,9 +346,10 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
             pushBack(c);
         }
         int date = readVarInt(32);
-        if (date < 0 || fractional < 0)
+        if ((date < 0) || (fractional < 0)) {
             throw new IOException(String.format("negative numbers found for date field: %d.%d in %s",
                     date, fractional, currentClass));
+        }
         // set the date and time
         int day, month, year, hour, minute, second;
         year = date / 10000;
@@ -337,12 +366,14 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         }
         fractional %= 1000;
         // first checks
-        if (year < 1601 || year > 2399 || month == 0 || month > 12 || day == 0
-                || day > 31)
+        if ((year < 1601) || (year > 2399) || (month == 0) || (month > 12) || (day == 0)
+                || (day > 31)) {
             throw new IOException(String.format("ILLEGAL DAY: found %d-%d-%d in %s",
                     year, month, day, currentClass));
-        if (hour > 23 || minute > 59 || second > 59) // TODO: allow leap seconds? (that would be seconds == 60)
+        }
+        if ((hour > 23) || (minute > 59) || (second > 59)) {
             throw new IOException(String.format("ILLEGAL TIME: found %d:%d:%d in %s", hour, minute, second, currentClass));
+        }
         // now set the return value
         LocalDateTime result;
         try {
@@ -357,22 +388,25 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
     }
     @Override
     public LocalDate readDay(boolean allowNull) throws IOException {
-        if (checkForNull(allowNull))
+        if (checkForNull(allowNull)) {
             return null;
+        }
         int date = readVarInt(32);
-        if (date < 0)
+        if (date < 0) {
             throw new IOException(String.format("negative numbers found for date field: %d in %s",
                     date, currentClass));
+        }
         // set the date and time
         int day, month, year;
         year = date / 10000;
         month = (date %= 10000) / 100;
         day = date %= 100;
         // first checks
-        if (year < 1601 || year > 2399 || month == 0 || month > 12 || day == 0
-                || day > 31)
+        if ((year < 1601) || (year > 2399) || (month == 0) || (month > 12) || (day == 0)
+                || (day > 31)) {
             throw new IOException(String.format("ILLEGAL DAY: found %d-%d-%d in %s",
                     year, month, day, currentClass));
+        }
         // now set the return value
         LocalDate result;
         try {
@@ -389,23 +423,22 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
     @Override
     public int parseArrayStart(int max,
             int sizeOfChild) throws IOException {
-        byte c = nextByte();
-        if (c == NULL_FIELD)
+        if (checkForNull(true)) {
             return -1;
-        if (c != ARRAY_BEGIN)
-            throw new IOException(String.format("UNEXPECTED_CHARACTER: expected array start, got 0x%02x in %s",
-                    (int)c, currentClass));
+        }
+        needByte(ARRAY_BEGIN);
         int n = readVarInt(32);
-        if (n < 0 || n > 1000000000)
+        if ((n < 0) || (n > 1000000000)) {
             throw new IOException(String.format("ARRAY_SIZE_OUT_OF_BOUNDS: got %d entries (0x%x)) in %s",
                     n, n, currentClass));
+        }
         return n;
     }
 
     @Override
     public void parseArrayEnd() throws IOException {
         needByte(ARRAY_TERMINATOR);
-        
+
     }
 
     @Override
@@ -417,11 +450,12 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         needByte(RECORD_TERMINATOR);
         return result;
     }
-    
+
     @Override
     public Float readFloat(boolean allowNull, boolean isSigned) throws IOException {
-        if (checkForNull(allowNull))
+        if (checkForNull(allowNull)) {
             return null;
+        }
         // TODO: accept other numeric types as well & perform conversion
         needByte(BINARY_FLOAT);
         return in.readFloat();
@@ -429,8 +463,9 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
 
     @Override
     public Double readDouble(boolean allowNull, boolean isSigned) throws IOException {
-        if (checkForNull(allowNull))
+        if (checkForNull(allowNull)) {
             return null;
+        }
         needByte(BINARY_DOUBLE);
         return in.readDouble();
     }
@@ -444,15 +479,17 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
 
     @Override
     public Integer readNumber(boolean allowNull, int length, boolean isSigned) throws IOException {
-        if (checkForNull(allowNull))
+        if (checkForNull(allowNull)) {
             return null;
+        }
         return Integer.valueOf(readVarInt(32));
     }
-    
+
     @Override
     public BonaPortable readObject(Class<? extends BonaPortable> type, boolean allowNull, boolean allowSubtypes) throws IOException {
-        if (checkForNull(allowNull))
+        if (checkForNull(allowNull)) {
             return null;
+        }
         String previousClass = currentClass;
         needByte(OBJECT_BEGIN);  // version not yet allowed
         BonaPortable newObject;
@@ -471,10 +508,11 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
             // check if the object is of expected type
             if (newObject.getClass() != type) {
                 // check if it is a superclass
-                if (!allowSubtypes || !type.isAssignableFrom(newObject.getClass()))
+                if (!allowSubtypes || !type.isAssignableFrom(newObject.getClass())) {
                     throw new IOException(String.format("BAD_CLASS: got %s, expected %s, subclassing = %b in %s",
-                                    newObject.getClass().getSimpleName(), type.getSimpleName(), allowSubtypes,
-                                    currentClass));
+                            newObject.getClass().getSimpleName(), type.getSimpleName(), allowSubtypes,
+                            currentClass));
+                }
             }
             // all good here. Parse the contents
             currentClass = classname;
@@ -488,10 +526,11 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
             // the following test happens AFTER the class has been read. With the internal variant, it is done BEFORE any fields are parsed.
             if (newObject.getClass() != type) {
                 // check if it is a superclass
-                if (!allowSubtypes || !type.isAssignableFrom(newObject.getClass()))
+                if (!allowSubtypes || !type.isAssignableFrom(newObject.getClass())) {
                     throw new IOException(String.format("BAD_CLASS: got %s, expected %s, subclassing = %b in %s",
-                                    newObject.getClass().getSimpleName(), type.getSimpleName(), allowSubtypes,
-                                    currentClass));
+                            newObject.getClass().getSimpleName(), type.getSimpleName(), allowSubtypes,
+                            currentClass));
+                }
             }
         }
         currentClass = previousClass;       // pop class name
@@ -515,8 +554,8 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         } else if (c == RECORD_BEGIN /* || c == EXTENSION_BEGIN */) {
             // allow single record as a special case
             // TODO: parse extensions here
-            
-            
+
+
             pushBack(c);
             results.add(readRecord());
         } else {
@@ -530,8 +569,9 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
     @Override
     public UUID readUUID(boolean allowNull) throws IOException {
         String tmp = readAscii(allowNull, 36, true, false);
-        if (tmp == null)
+        if (tmp == null) {
             return null;
+        }
         try {
             return UUID.fromString(tmp);
         } catch (IllegalArgumentException e) {
@@ -543,7 +583,7 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
     public IOException enumExceptionConverter(EnumException e) {
         return new IOException(e);
     }
-    
+
     @Override
     public void setClassName(String newClassName) {
         currentClass = newClassName;
