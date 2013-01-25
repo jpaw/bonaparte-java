@@ -4,9 +4,10 @@
 
 	<parent>
 		<groupId>de.jpaw</groupId>
-		<artifactId>bonaparte-basegen</artifactId>
-		<version>1.0-SNAPSHOT</version>
-	</parent>
+		<artifactId>bonaparte-srcgen</artifactId>
+        <version>1.0-SNAPSHOT</version>
+        <relativePath>../../../bonaparte-srcgen</relativePath>
+    </parent>
 
 	<artifactId>bonaparte-core-srcgen</artifactId>
     <version>1.0.0-SNAPSHOT</version>   <!-- 1.0-SNAPSHOT gives number parsing error -->
@@ -14,26 +15,29 @@
 
 	<name>BONAPARTE core source generator</name>
 
-	<build>
+    <!-- In build, just reference the plugins configured in the parent pom -->
+    <build>
         <plugins>
             <plugin>
                 <groupId>org.eclipse.tycho</groupId>
                 <artifactId>tycho-maven-plugin</artifactId>
-                <version>${tycho-version}</version>
-                <extensions>true</extensions>
             </plugin>
-
             <plugin>
                 <groupId>org.eclipse.tycho</groupId>
                 <artifactId>tycho-p2-repository-plugin</artifactId>
-                <version>${tycho-version}</version>
             </plugin>
-			<plugin>
-				<groupId>org.fornax.toolsupport</groupId>
-				<artifactId>fornax-oaw-m2-plugin</artifactId>
-				<version>3.4.0</version>
-			</plugin>
-		</plugins>
-
-	</build>
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>tycho-packaging-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.fornax.toolsupport</groupId>
+                <artifactId>fornax-oaw-m2-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 </project>
