@@ -9,11 +9,11 @@
         <relativePath>../../../bonaparte-base</relativePath>
     </parent>
     
-	<artifactId>bonaparte-netty-all</artifactId>
+	<artifactId>bonaparte-netty-test-all</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<name>BONAPARTE netty parent</name>
+	<name>BONAPARTE netty-test parent</name>
 
 	<modules>
 		<module>../generator</module>

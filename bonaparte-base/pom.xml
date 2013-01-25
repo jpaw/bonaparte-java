@@ -91,9 +91,8 @@
         <module>../bonaparte-core/modules/all/pom.xml</module>
         <module>../bonaparte-core-test/modules/all/pom.xml</module>
         <module>../bonaparte-demorqrs/modules/all/pom.xml</module>
-<!--
         <module>../bonaparte-netty/modules/all/pom.xml</module>
-        <module>../bonaparte-netty-test/modules/all/pom.xml</module>  -->
+        <module>../bonaparte-netty-test/modules/all/pom.xml</module>
     </modules>
 
 </project>
