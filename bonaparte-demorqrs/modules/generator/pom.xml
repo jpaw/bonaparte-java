@@ -9,11 +9,11 @@
         <relativePath>../../../bonaparte-srcgen</relativePath>
     </parent>
 
-	<artifactId>bonaparte-core-srcgen</artifactId>
+	<artifactId>bonaparte-demorqrs-srcgen</artifactId>
     <version>1.0.0-SNAPSHOT</version>   <!-- 1.0-SNAPSHOT gives number parsing error -->
 	<packaging>eclipse-plugin</packaging>
 
-	<name>BONAPARTE core source generator</name>
+	<name>BONAPARTE demorqrs source generator</name>
 
     <!-- In build, just reference the plugins configured in the parent pom -->
     <build>
