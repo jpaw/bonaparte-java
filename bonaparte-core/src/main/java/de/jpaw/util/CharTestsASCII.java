@@ -1,22 +1,25 @@
- /*
-  * Copyright 2012 Michael Bischoff
-  *
-  * Licensed under the Apache License, Version 2.0 (the "License");
-  * you may not use this file except in compliance with the License.
-  * You may obtain a copy of the License at
-  *
-  *   http://www.apache.org/licenses/LICENSE-2.0
-  *
-  * Unless required by applicable law or agreed to in writing, software
-  * distributed under the License is distributed on an "AS IS" BASIS,
-  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  * See the License for the specific language governing permissions and
-  * limitations under the License.
-  */
+/*
+ * Copyright 2012 Michael Bischoff
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.jpaw.util;
- 
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *          This class defines a couple of simple tests for the Java primitive type {@code char} which correspond to the
@@ -26,13 +29,15 @@ import java.util.regex.Pattern;
  *          on localization dependent tests rather than file processing.
  *          There is an implementation in apache.commons.lang.CharUtils,
  *          but for such a small functionality we avoid an external dependency and
- *          create the required methods here. 
+ *          create the required methods here.
  * 
  * @author Michael Bischoff
  * 
  */
 
 public class CharTestsASCII {
+    private static final Logger logger = LoggerFactory.getLogger(CharTestsASCII.class);
+
     public static final Pattern UPPERCASE_PATTERN = Pattern.compile("\\A[A-Z]*\\z");  // tests if a field consists of uppercase characters only
     public static final Pattern LOWERCASE_PATTERN = Pattern.compile("\\A[a-z]*\\z");  // tests if a field consists of lowercase characters only
 
@@ -45,15 +50,19 @@ public class CharTestsASCII {
     }
 
     public static boolean isUpperCase(String s) {
-        for (int i = 0; i < s.length(); ++i)
-            if (!isAsciiUpperCase(s.charAt(i))) // maximum inlining.  Alternative "Character.isUpperCase(s.charAt(i))" may use locales
+        for (int i = 0; i < s.length(); ++i) {
+            if (!isAsciiUpperCase(s.charAt(i))) {
                 return false;
+            }
+        }
         return true;
     }
     public static boolean isLowerCase(String s) {
-        for (int i = 0; i < s.length(); ++i)
-            if (!isAsciiLowerCase(s.charAt(i))) // maximum inlining.  Alternative "Character.isLowerCase(s.charAt(i))" may use locales
+        for (int i = 0; i < s.length(); ++i) {
+            if (!isAsciiLowerCase(s.charAt(i))) {
                 return false;
+            }
+        }
         return true;
     }
     // same functionality, manual implementation. Which one is faster?
@@ -65,7 +74,7 @@ public class CharTestsASCII {
         Matcher m = LOWERCASE_PATTERN.matcher(s);
         return m.find();
     }
-    
+
     /**
      * <code>isAsciiPrintable()</code> tests if a character is a US-ASCII (7
      * bit) printable character, which mainly means that such a character is
@@ -78,7 +87,7 @@ public class CharTestsASCII {
      *         character, <code>false</code> otherwise.
      */
     public static boolean isAsciiPrintable(char c) {
-        return c >= 0x20 && c <= 0x7f;
+        return (c >= 0x20) && (c <= 0x7f);
     }
 
     /**
@@ -92,7 +101,7 @@ public class CharTestsASCII {
      *         character, <code>false</code> otherwise.
      */
     public static boolean isAsciiUpperCase(char c) {
-        return c >= 'A' && c <= 'Z';
+        return (c >= 'A') && (c <= 'Z');
     }
 
     /**
@@ -106,7 +115,7 @@ public class CharTestsASCII {
      *         character, <code>false</code> otherwise.
      */
     public static boolean isAsciiLowerCase(char c) {
-        return c >= 'a' && c <= 'z';
+        return (c >= 'a') && (c <= 'z');
     }
 
     /**
@@ -119,7 +128,47 @@ public class CharTestsASCII {
      *         <code>false</code> otherwise.
      */
     public static boolean isAsciiDigit(char c) {
-        return c >= '0' && c <= '9';
+        return (c >= '0') && (c <= '9');
+    }
+
+    /**
+     * <code>checkAsciiAndFixIfRequired()</code> tests if a String is indeed an ASCII string and does not exceed tge maximum length. It will issue a warning and
+     * replace offending characters with a question mark.
+     * 
+     * @param s
+     *            the string to test
+     * @param maxlength
+     *            if > 0, the maximum allowable string length
+     * @return The sanitized string.
+     */
+    public static String checkAsciiAndFixIfRequired(String s, int maxlength) {
+        if ((maxlength > 0) && (s.length() > maxlength)) {
+            logger.warn("Application violating interface specs: trying to send contents which is too long: {} instead of {} characters", s.length(), maxlength);
+            s = s.substring(0, maxlength);
+        }
+        // check contents
+        int i;
+        for (i = 0; i < s.length(); ++i) {
+            char c = s.charAt(i);
+            if ((c != '\t') && !CharTestsASCII.isAsciiPrintable(c)) {
+                break;
+            }
+        }
+        if (i != s.length()) {
+            // violated a test
+            logger.warn("Application violating interface specs: illegal character in ASCII field: code {}", Character.codePointAt(s, i));
+            StringBuilder buff = new StringBuilder(s.length());
+            for (i = 0; i < s.length(); ++i) {
+                char c = s.charAt(i);
+                if ((c != '\t') && !CharTestsASCII.isAsciiPrintable(c)) {
+                    buff.append('?');
+                } else {
+                    buff.append(c);
+                }
+            }
+            s = buff.toString();
+        }
+        return s;
     }
 
 }
