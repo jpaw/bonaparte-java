@@ -1,18 +1,18 @@
- /*
-  * Copyright 2012 Michael Bischoff
-  *
-  * Licensed under the Apache License, Version 2.0 (the "License");
-  * you may not use this file except in compliance with the License.
-  * You may obtain a copy of the License at
-  *
-  *   http://www.apache.org/licenses/LICENSE-2.0
-  *
-  * Unless required by applicable law or agreed to in writing, software
-  * distributed under the License is distributed on an "AS IS" BASIS,
-  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  * See the License for the specific language governing permissions and
-  * limitations under the License.
-  */
+/*
+ * Copyright 2012 Michael Bischoff
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
@@ -25,6 +25,7 @@ import org.joda.time.LocalDateTime;
 import de.jpaw.util.Base64;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.ByteBuilder;
+import de.jpaw.util.CharTestsASCII;
 /**
  * Implements the serialization for the bonaparte format into byte arrays, using the {@link de.jpaw.util.ByteBuilder ByteBuilder} class, which is similar to the well known {@link java.lang.StringBuilder StringBuilder}.
  * 
@@ -33,32 +34,33 @@ import de.jpaw.util.ByteBuilder;
  */
 
 public class ByteArrayComposer extends ByteArrayConstants implements BufferedMessageComposer<RuntimeException> {
+
     // variables for serialization
     private ByteBuilder work;
 
-    /** Creates a new ByteArrayComposer, using this classes static default Charset **/ 
+    /** Creates a new ByteArrayComposer, using this classes static default Charset **/
     public ByteArrayComposer() {
         this.work = new ByteBuilder(0, getDefaultCharset());
     }
 
-    /** Sets the current length to 0, allowing reuse of the allocated output buffer for a new message. */  
+    /** Sets the current length to 0, allowing reuse of the allocated output buffer for a new message. */
     @Override
     public void reset() {
         work.setLength(0);
     }
-    
+
     /** Returns the number of bytes written. */
     @Override
     public int getLength() {    // obtain the number of written bytes (composer)
         return work.length();
     }
-    
+
     /** Returns the current buffer as a Java byte array. Only the first <code>getLength()</code> bytes of this buffer are valid. */
     @Override
     public byte[] getBuffer() {
         return work.getCurrentBuffer();
     }
-    
+
     /** returns the result as a deep copy byte array of precise length of the result. */
     @Override
     public byte[] getBytes() {
@@ -69,7 +71,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
     public void addRawData(byte [] data) {
         work.append(data);
     }
-    
+
     /* *************************************************************************************************
      * Serialization goes here
      **************************************************************************************************/
@@ -126,7 +128,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
         addField(o);
         terminateRecord();
     }
-    
+
     private void addCharSub(int c) {
         if ((c < ' ') && (c != '\t')) {
             work.append(ESCAPE_CHAR);
@@ -136,7 +138,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
             work.append((byte)c);
         } else {
             work.appendUnicode(c);
-        }       
+        }
     }
     // field type specific output functions
     @Override
@@ -159,11 +161,13 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
         addCharSub(c);
         terminateField();
     }
-    // ascii only (unicode uses different method)
+
+    // ascii only (unicode uses different method). This one does a validity check now.
     @Override
     public void addField(String s, int length) {
         if (s != null) {
-            work.appendAscii(s);
+            // don't trust them!
+            work.append(CharTestsASCII.checkAsciiAndFixIfRequired(s, length));
             terminateField();
         } else {
             writeNull();
@@ -176,12 +180,12 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
             boolean isSigned) {
         if (n != null) {
             work.appendAscii(n.toPlainString());
-        terminateField();
+            terminateField();
         } else {
             writeNull();
         }
     }
-    
+
     // byte
     @Override
     public void addField(byte n) {
@@ -200,7 +204,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
         work.appendAscii(Integer.toString(n));
         terminateField();
     }
-    
+
     // int(n)
     @Override
     public void addField(Integer n, int length, boolean isSigned) {
@@ -241,7 +245,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
             writeNull();
         }
     }
-    
+
     // float
     @Override
     public void addField(float f) {
@@ -298,10 +302,10 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
                 // not only day, but also time
                 if (hhmmss) {
                     tmpValue = (10000 * t.get(Calendar.HOUR_OF_DAY)) + (100
-                           * t.get(Calendar.MINUTE)) + t.get(Calendar.SECOND);
+                            * t.get(Calendar.MINUTE)) + t.get(Calendar.SECOND);
                 } else {
                     tmpValue = (3600 * t.get(Calendar.HOUR_OF_DAY)) + (60
-                       * t.get(Calendar.MINUTE)) + t.get(Calendar.SECOND);
+                            * t.get(Calendar.MINUTE)) + t.get(Calendar.SECOND);
                 }
                 if ((tmpValue != 0) || ((length > 0) && (t.get(Calendar.MILLISECOND) != 0))) {
                     work.append((byte) '.');
@@ -331,7 +335,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
             terminateField();
         } else {
             writeNull();
-        }       
+        }
     }
 
     @Override
@@ -364,9 +368,9 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
             terminateField();
         } else {
             writeNull();
-        }       
+        }
     }
-    
+
     @Override
     public void startArray(int currentMembers, int maxMembers, int sizeOfElement) {
         work.append(ARRAY_BEGIN);
@@ -376,7 +380,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
     @Override
     public void terminateArray() {
         work.append(ARRAY_TERMINATOR);
-        
+
     }
 
     @Override

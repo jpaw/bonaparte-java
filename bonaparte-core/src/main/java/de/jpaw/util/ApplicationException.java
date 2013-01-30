@@ -1,18 +1,18 @@
- /*
-  * Copyright 2012 Michael Bischoff
-  *
-  * Licensed under the Apache License, Version 2.0 (the "License");
-  * you may not use this file except in compliance with the License.
-  * You may obtain a copy of the License at
-  *
-  *   http://www.apache.org/licenses/LICENSE-2.0
-  *
-  * Unless required by applicable law or agreed to in writing, software
-  * distributed under the License is distributed on an "AS IS" BASIS,
-  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  * See the License for the specific language governing permissions and
-  * limitations under the License.
-  */
+/*
+ * Copyright 2012 Michael Bischoff
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.jpaw.util;
 
 import java.util.HashMap;
@@ -33,15 +33,15 @@ import java.util.Map;
 
 public class ApplicationException extends Exception {
     private static final long serialVersionUID = 1122421467960337766L;
-    
-    
-    /** The classification of return codes indicating success (which would never be instantiated as an exception). */ 
+
+
+    /** The classification of return codes indicating success (which would never be instantiated as an exception). */
     static public final int SUCCESS = 0;
-    /** The classification of return codes indicating a decline or negative decision, without being a parameter or processing problem, and therefore also never be instantiated as an exception. */ 
+    /** The classification of return codes indicating a decline or negative decision, without being a parameter or processing problem, and therefore also never be instantiated as an exception. */
     static public final int DENIED  = 1;
-    /** The classification of return codes indicating an invalid message format. */ 
+    /** The classification of return codes indicating an invalid message format. */
     static public final int PARSER_ERROR = 2;
-    /** The classification of return codes indicating an invalid reference or field value (for example an invalid customer no or invalid country code). */ 
+    /** The classification of return codes indicating an invalid reference or field value (for example an invalid customer no or invalid country code). */
     static public final int PARAMETER_ERROR = 3;
     /** The classification of return codes indicating a processing timeout. The requester should react by resending the request some time later. The resource was available but did not respond back in the expected time. */
     static public final int TIMEOUT = 4;
@@ -55,9 +55,9 @@ public class ApplicationException extends Exception {
     static public final int INTERNAL_LOGIC_ERROR = 8;  // assertion failed
     /** The classification of problems occurring in the persistence layer (usually database), which has not been caught by a specific exception handler. This can be due to resource exhaustion, but also programming errors. Usually deeper investigation is required. Callers receiving this code should retry at maximum one time, and then defer the request and queue it into a manual analysis queue. */
     static public final int DATABASE_ERROR = 9;
-    
-    
-    /** The factor by which the classification code is multiplied. An error code modulus the classification factor gives details about where and why the problem occured. */ 
+
+
+    /** The factor by which the classification code is multiplied. An error code modulus the classification factor gives details about where and why the problem occured. */
     static public final int CLASSIFICATION_FACTOR = 100000000;
 
     /** Provides the mapping of error codes to textual descriptions. It is the responsibility of superclasses
@@ -65,7 +65,7 @@ public class ApplicationException extends Exception {
      *  It is recommended to perform such initialization not during class load, but lazily, once the first exception is thrown.
      */
     static protected Map<Integer,String> codeToDescription = new HashMap<Integer, String>(200);
-    
+
     private final int errorCode;
 
     /** Returns the error code for this exception */
@@ -78,13 +78,13 @@ public class ApplicationException extends Exception {
         super();
         this.errorCode = errorCode;
     }
-    
+
     /** Creates a new ApplicationException for a given error code, with some explanatory details. */
     public ApplicationException(int errorCode, String detailedMessage) {
         super(detailedMessage);
         this.errorCode = errorCode;
     }
-    
+
     /** Returns the classification code for this exception. */
     public final int getClassification() {
         return (errorCode / CLASSIFICATION_FACTOR);
@@ -92,7 +92,7 @@ public class ApplicationException extends Exception {
 
     /** Returns a textual description of the error code.
      *  The method is declared as final as long as it's used from the constructors of superclasses.
-     *  
+     * 
      * @return the textual description.
      */
     public final String getStandardDescription() {
@@ -102,9 +102,9 @@ public class ApplicationException extends Exception {
         }
         return msg != null ? msg : "unknown error code";
     }
-    
+
     /** Returns a textual description of the exception.
-     *  
+     * 
      * @return the textual description.
      */
     @Override
@@ -123,5 +123,14 @@ public class ApplicationException extends Exception {
      */
     public String getLocalizedStandardDescription() {
         return getStandardDescription();
+    }
+
+    /** returns a text representation of an error code, independent of an existing exception */
+    public static String codeToString(int code) {
+        String msg = null;
+        synchronized(codeToDescription) {
+            msg = codeToDescription.get(code);
+        }
+        return msg != null ? msg : "unknown code";
     }
 }

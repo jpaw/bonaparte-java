@@ -1,18 +1,18 @@
- /*
-  * Copyright 2012 Michael Bischoff
-  *
-  * Licensed under the Apache License, Version 2.0 (the "License");
-  * you may not use this file except in compliance with the License.
-  * You may obtain a copy of the License at
-  *
-  *   http://www.apache.org/licenses/LICENSE-2.0
-  *
-  * Unless required by applicable law or agreed to in writing, software
-  * distributed under the License is distributed on an "AS IS" BASIS,
-  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  * See the License for the specific language governing permissions and
-  * limitations under the License.
-  */
+/*
+ * Copyright 2012 Michael Bischoff
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
@@ -25,6 +25,7 @@ import org.joda.time.LocalDateTime;
 import de.jpaw.util.Base64;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.ByteBuilder;
+import de.jpaw.util.CharTestsASCII;
 // according to http://stackoverflow.com/questions/469695/decode-base64-data-in-java , xml.bind is included in Java 6 SE
 //import javax.xml.bind.DatatypeConverter;
 /**
@@ -49,7 +50,7 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
     public StringBuilderComposer(StringBuilder work) {
         this.work = work;
     }
-    
+
     @Override
     public int getLength() {    // obtain the number of written bytes (composer)
         return work.length();
@@ -63,7 +64,7 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
     public byte[] getBytes() {
         return work.toString().getBytes(getCharset());
     }
-    
+
     /** allows to add raw data to the produced byte array. Use this for protocol support at beginning or end of a message */
     public void addRawData(String data) {
         work.append(data);
@@ -125,14 +126,14 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
         addField(o);
         terminateRecord();
     }
-    
+
     private void addCharSub(char c) {
         if ((c >= 0) && (c < ' ') && (c != '\t')) {
             work.append(ESCAPE_CHAR);
             work.append((char)(c + '@'));
         } else {
             work.append(c);
-        }       
+        }
     }
 
     // field type specific output functions
@@ -158,7 +159,7 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
     @Override
     public void addField(String s, int length) {
         if (s != null) {
-            work.append(s);
+            work.append(CharTestsASCII.checkAsciiAndFixIfRequired(s, length));
             terminateField();
         } else {
             writeNull();
@@ -176,7 +177,7 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
             writeNull();
         }
     }
-    
+
     // byte
     @Override
     public void addField(byte n) {
@@ -195,7 +196,7 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
         work.append(Integer.toString(n));
         terminateField();
     }
-    
+
     // int(n)
     @Override
     public void addField(Integer n, int length, boolean isSigned) {
@@ -249,12 +250,12 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
             writeNull();
         }
     }
-    
+
     // ByteArray: initial quick & dirty implementation
     @Override
     public void addField(ByteArray b, int length) {
         if (b != null) {
-        	ByteBuilder tmp = new ByteBuilder((b.length() * 2) + 4, null);
+            ByteBuilder tmp = new ByteBuilder((b.length() * 2) + 4, null);
             Base64.encodeToByte(tmp, b.getBytes(), 0, b.length());
             work.append(new String(tmp.getCurrentBuffer(), 0, tmp.length()));
             //work.append(DatatypeConverter.printBase64Binary(b));
@@ -264,12 +265,12 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
             writeNull();
         }
     }
-    
+
     // raw
     @Override
     public void addField(byte[] b, int length) {
         if (b != null) {
-        	ByteBuilder tmp = new ByteBuilder((b.length * 2) + 4, null);
+            ByteBuilder tmp = new ByteBuilder((b.length * 2) + 4, null);
             Base64.encodeToByte(tmp, b, 0, b.length);
             work.append(new String(tmp.getCurrentBuffer(), 0, tmp.length()));
             //work.append(DatatypeConverter.printHexBinary(b));
@@ -287,7 +288,7 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
         }
         work.append(s);
     }
-    
+
     // converters for DAY und TIMESTAMP
     @Override
     public void addField(Calendar t, boolean hhmmss, int length) {  // TODO: length is not needed for this one
@@ -299,10 +300,10 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
                 // not only day, but also time
                 if (hhmmss) {
                     tmpValue = (10000 * t.get(Calendar.HOUR_OF_DAY)) + (100
-                           * t.get(Calendar.MINUTE)) + t.get(Calendar.SECOND);
+                            * t.get(Calendar.MINUTE)) + t.get(Calendar.SECOND);
                 } else {
                     tmpValue = (3600 * t.get(Calendar.HOUR_OF_DAY)) + (60
-                       * t.get(Calendar.MINUTE)) + t.get(Calendar.SECOND);
+                            * t.get(Calendar.MINUTE)) + t.get(Calendar.SECOND);
                 }
                 if ((tmpValue != 0) || ((length > 0) && (t.get(Calendar.MILLISECOND) != 0))) {
                     work.append('.');
@@ -331,7 +332,7 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
             terminateField();
         } else {
             writeNull();
-        }       
+        }
     }
 
     @Override
@@ -364,7 +365,7 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
             terminateField();
         } else {
             writeNull();
-        }       
+        }
     }
 
     @Override
@@ -376,7 +377,7 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
     @Override
     public void terminateArray() {
         work.append(ARRAY_TERMINATOR);
-        
+
     }
 
     @Override
@@ -389,7 +390,7 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
             work.append(obj.get$PQON());
             terminateField();
             addField(obj.get$Revision(), 0);
-            
+
             // do all fields (now includes terminator)
             obj.serializeSub(this);
         }
