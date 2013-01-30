@@ -26,3 +26,9 @@ xtend-gen/
 bin/
 test-output/
 generated/
+
+# Eclipse project files
+.project
+.settings/
+.classpath
+
