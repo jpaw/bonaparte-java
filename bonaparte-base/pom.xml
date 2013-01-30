@@ -11,29 +11,6 @@
     <description>Common configuration settings for all BONAPARTE projects</description>
     <url>http://www.jpaw.de/projects/bonaparte/index.html</url>
 
-    <modules>
-        <module>../bonaparte-core/generator/pom.xml</module>
-        <module>../bonaparte-core/pom.xml</module>
-
-        <module>../bonaparte-core-test/generator/pom.xml</module>
-        <module>../bonaparte-core-test/pom.xml</module>
-
-        <module>../bonaparte-hibernate/pom.xml</module>
-        <module>../bonaparte-eclipselink/pom.xml</module>
-
-        <module>../bonaparte-demorqrs/generator/pom.xml</module>
-        <module>../bonaparte-demorqrs/pom.xml</module>
-
-        <module>../bonaparte-netty/pom.xml</module>
-
-        <module>../bonaparte-netty-test/generator/pom.xml</module>
-        <module>../bonaparte-netty-test/pom.xml</module>
-
-        <module>../bonaparte-camel/pom.xml</module>
-
-        <module>../bonaparte-vertx/pom.xml</module>
-    </modules>
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- define releases we want to use, to ensure consistency -->
