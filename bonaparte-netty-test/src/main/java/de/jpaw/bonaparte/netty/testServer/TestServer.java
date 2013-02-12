@@ -43,12 +43,12 @@ public class TestServer {
         ServerBootstrap b = new ServerBootstrap();
         try {
             b.group(new NioEventLoopGroup(), new NioEventLoopGroup())
-             .channel(NioServerSocketChannel.class)
-             .option(ChannelOption.SO_BACKLOG, 100)
-             .localAddress(new InetSocketAddress(port))
-             .childOption(ChannelOption.TCP_NODELAY, true)
-             .handler(new LoggingHandler(LogLevel.INFO))
-             .childHandler(new BonaparteNettyPipelineFactory(1000, new TestServerHandler()));
+            .channel(NioServerSocketChannel.class)
+            .option(ChannelOption.SO_BACKLOG, 100)
+            .localAddress(new InetSocketAddress(port))
+            .childOption(ChannelOption.TCP_NODELAY, true)
+            .handler(new LoggingHandler(LogLevel.INFO))
+                    .childHandler(new BonaparteNettyPipelineFactory(1000, new TestServerHandler(), null));
 
             // Start the server.
             ChannelFuture f = b.bind().sync();
