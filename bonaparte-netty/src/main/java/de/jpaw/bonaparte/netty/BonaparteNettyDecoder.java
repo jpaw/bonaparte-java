@@ -13,6 +13,11 @@ import de.jpaw.bonaparte.core.MessageParserException;
 
 public class BonaparteNettyDecoder extends MessageToMessageDecoder<ByteBuf, BonaPortable> {
     private static final Logger logger = LoggerFactory.getLogger(BonaparteNettyDecoder.class);
+    private final ErrorForwarder errorForwarder;
+
+    public BonaparteNettyDecoder(ErrorForwarder errorForwarder) {
+        this.errorForwarder = errorForwarder;
+    }
 
     @Override
     public boolean isDecodable(Object msg) throws Exception {
@@ -48,7 +53,11 @@ public class BonaparteNettyDecoder extends MessageToMessageDecoder<ByteBuf, Bona
         } catch (MessageParserException e) {
             logger.error("Cannot parse {} bytes of data", array.length);
             logger.error("Message received is <{}>", array.length <= 200 ? new String(array) : new String(array).substring(0, 200));
-            throw e;
+            if (errorForwarder == null) {
+                throw e;
+            } else {
+                return errorForwarder.createErrorObject(e.getErrorCode(), e.getSpecificDescription(), array);
+            }
         }
     }
 }

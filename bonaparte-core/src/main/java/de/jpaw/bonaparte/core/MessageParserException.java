@@ -1,18 +1,18 @@
- /*
-  * Copyright 2012 Michael Bischoff
-  *
-  * Licensed under the Apache License, Version 2.0 (the "License");
-  * you may not use this file except in compliance with the License.
-  * You may obtain a copy of the License at
-  *
-  *   http://www.apache.org/licenses/LICENSE-2.0
-  *
-  * Unless required by applicable law or agreed to in writing, software
-  * distributed under the License is distributed on an "AS IS" BASIS,
-  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  * See the License for the specific language governing permissions and
-  * limitations under the License.
-  */
+/*
+ * Copyright 2012 Michael Bischoff
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package de.jpaw.bonaparte.core;
 
 import org.slf4j.Logger;
@@ -33,11 +33,11 @@ import de.jpaw.util.ApplicationException;
 public class MessageParserException extends ApplicationException {
     private static final long serialVersionUID = 6578705245543364726L;
     private static final Logger logger = LoggerFactory.getLogger(MessageParserException.class);
-    
-    private static final int OFFSET = PARSER_ERROR * CLASSIFICATION_FACTOR + 17000; // offset for all codes in this class
+
+    private static final int OFFSET = (PARSER_ERROR * CLASSIFICATION_FACTOR) + 17000; // offset for all codes in this class
     private static boolean textsInitialized = false;
-    
-    private int characterIndex; // the byte count of the message at which the error occured  
+
+    private int characterIndex; // the byte count of the message at which the error occured
     private String fieldName;   // if known, the name of the field where the error occured
     private String className;   // if known, the name of the class which contained the field
 
@@ -77,7 +77,7 @@ public class MessageParserException extends ApplicationException {
     static public final int BAD_OBJECT_NAME              = OFFSET + 34;
     static public final int BAD_UUID_FORMAT              = OFFSET + 35;
     static public final int INVALID_ENUM_TOKEN           = OFFSET + 36;
-    
+
     /**
      * Method lazyInitialization.
      * 
@@ -127,32 +127,32 @@ public class MessageParserException extends ApplicationException {
             codeToDescription.put(INVALID_ENUM_TOKEN           , "invalid token to instanciate enum");
         }
     }
-    
-    private final String getSpecificDescription() {
-        return (className == null ? "?" : className) + "."
-             + (fieldName == null ? "?" : fieldName) + " at position " + characterIndex;
+
+    public final String getSpecificDescription() {
+        return (className == null ? "?" : className) + "." + (fieldName == null ? "?" : fieldName) + " at position " + characterIndex;
     }
-    
+
     private final void constructorSubroutine(int characterIndex, String className, String fieldName) {
         this.characterIndex = characterIndex;
         this.fieldName = fieldName;
         this.className = className;
-        if (!textsInitialized)
+        if (!textsInitialized) {
             lazyInitialization();
+        }
         // for the logger call, do NOT use toString, because that can be overridden, and we're called from a constructor here
         logger.error("Error " + getErrorCode() + " (" + getStandardDescription() + ") for " + getSpecificDescription());
     }
-    
+
     public MessageParserException(int errorCode, String message, int characterIndex, String className) {
         super(errorCode, message);
         constructorSubroutine(characterIndex, className, null);
     }
-    
+
     public MessageParserException(int errorCode) {
         super(errorCode, null);
         constructorSubroutine(-1, null, null);
     }
-    
+
     @Override
     public String toString() {
         return getSpecificDescription() + ": " + super.toString();

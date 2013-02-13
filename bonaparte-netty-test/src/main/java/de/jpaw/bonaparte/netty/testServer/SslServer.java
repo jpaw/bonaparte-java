@@ -59,7 +59,7 @@ public class SslServer {
             .localAddress(new InetSocketAddress(port))
             .childOption(ChannelOption.TCP_NODELAY, true)
             .handler(new LoggingHandler(LogLevel.INFO))
-            .childHandler(new BonaparteNettySslPipelineFactory(1000, new TestServerHandler(), useSsl, false, requirePeerAuthentication));
+                    .childHandler(new BonaparteNettySslPipelineFactory(1000, new TestServerHandler(), useSsl, false, requirePeerAuthentication, null));
 
             // Start the server.
             ChannelFuture f = b.bind().sync();

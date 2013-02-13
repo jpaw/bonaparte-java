@@ -18,14 +18,16 @@ public class BonaparteNettySslPipelineFactory extends ChannelInitializer<SocketC
     private final boolean useSsl; // if true, enables SSL, otherwise performs exactly as the non-SSL version
     private final boolean clientMode; // false
     private final boolean needClientAuth; // true
+    private final ErrorForwarder errorForwarder;
 
     public BonaparteNettySslPipelineFactory(int maximumMessageLength, ChannelInboundMessageHandlerAdapter<BonaPortable> objectHandler, boolean useSsl,
-            boolean clientMode, boolean needClientAuth) {
+            boolean clientMode, boolean needClientAuth, ErrorForwarder errorForwarder) {
         this.maximumMessageLength = maximumMessageLength;
         this.objectHandler = objectHandler;
         this.useSsl = useSsl;
         this.clientMode = clientMode;
         this.needClientAuth = needClientAuth;
+        this.errorForwarder = errorForwarder;
     }
 
     @Override
@@ -45,7 +47,7 @@ public class BonaparteNettySslPipelineFactory extends ChannelInitializer<SocketC
         // Add the text line codec combination first,
         pipeline.addLast("framer",  new DelimiterBasedFrameDecoder(maximumMessageLength, false, Delimiters.lineDelimiter()));
         // transmission serialization format
-        pipeline.addLast("decoder", new BonaparteNettyDecoder());
+        pipeline.addLast("decoder", new BonaparteNettyDecoder(errorForwarder));
         pipeline.addLast("encoder", new BonaparteNettyEncoder());
         // and then business logic.
         pipeline.addLast("handler", objectHandler);
