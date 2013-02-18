@@ -18,7 +18,7 @@ package de.jpaw.bonaparte.netty.testServer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
-import io.netty.channel.socket.nio.NioEventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
@@ -59,7 +59,7 @@ public class SslServer {
             .localAddress(new InetSocketAddress(port))
             .childOption(ChannelOption.TCP_NODELAY, true)
             .handler(new LoggingHandler(LogLevel.INFO))
-                    .childHandler(new BonaparteNettySslPipelineFactory(1000, new TestServerHandler(), useSsl, false, requirePeerAuthentication, null));
+            .childHandler(new BonaparteNettySslPipelineFactory(1000, new TestServerHandler(), useSsl, false, requirePeerAuthentication, null));
 
             // Start the server.
             ChannelFuture f = b.bind().sync();

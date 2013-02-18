@@ -15,6 +15,11 @@
     <name>BONAPARTE Netty encoder/decoder</name>
     <url>http://www.jpaw.de</url>
 
+    <properties>
+        <!-- starting netty 4.0.0.Beta1, netty has been split into separate JARs, so it's more effective to define the release centrally here -->
+        <netty.version>4.0.0.Beta1</netty.version>
+    </properties>
+    
     <dependencies>
         <dependency>
             <groupId>de.jpaw</groupId>
@@ -23,23 +28,18 @@
         </dependency>
         <dependency>
             <groupId>io.netty</groupId>
-            <artifactId>netty</artifactId>
-            <version>4.0.0.Alpha8</version>
+            <artifactId>netty-common</artifactId>
+            <version>${netty.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-handler</artifactId>
+            <version>${netty.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-codec</artifactId>
+            <version>${netty.version}</version>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.5.1</version>
-                <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 </project>

@@ -11,17 +11,12 @@ import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.ByteArrayParser;
 import de.jpaw.bonaparte.core.MessageParserException;
 
-public class BonaparteNettyDecoder extends MessageToMessageDecoder<ByteBuf, BonaPortable> {
+public class BonaparteNettyDecoder extends MessageToMessageDecoder<ByteBuf> {
     private static final Logger logger = LoggerFactory.getLogger(BonaparteNettyDecoder.class);
     private final ErrorForwarder errorForwarder;
 
     public BonaparteNettyDecoder(ErrorForwarder errorForwarder) {
         this.errorForwarder = errorForwarder;
-    }
-
-    @Override
-    public boolean isDecodable(Object msg) throws Exception {
-        return msg instanceof ByteBuf;
     }
 
     @Override

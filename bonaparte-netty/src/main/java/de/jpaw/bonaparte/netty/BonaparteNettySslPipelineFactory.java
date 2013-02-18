@@ -4,8 +4,7 @@ import io.netty.channel.ChannelInboundMessageHandlerAdapter;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.handler.codec.DelimiterBasedFrameDecoder;
-import io.netty.handler.codec.Delimiters;
+import io.netty.handler.codec.LineBasedFrameDecoder;
 import io.netty.handler.ssl.SslHandler;
 
 import javax.net.ssl.SSLEngine;
@@ -45,7 +44,7 @@ public class BonaparteNettySslPipelineFactory extends ChannelInitializer<SocketC
         }
 
         // Add the text line codec combination first,
-        pipeline.addLast("framer",  new DelimiterBasedFrameDecoder(maximumMessageLength, false, Delimiters.lineDelimiter()));
+        pipeline.addLast("framer", new LineBasedFrameDecoder(maximumMessageLength, false, false));
         // transmission serialization format
         pipeline.addLast("decoder", new BonaparteNettyDecoder(errorForwarder));
         pipeline.addLast("encoder", new BonaparteNettyEncoder());

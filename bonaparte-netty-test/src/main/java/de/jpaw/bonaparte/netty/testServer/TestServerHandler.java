@@ -64,7 +64,7 @@ public class TestServerHandler extends ChannelInboundMessageHandlerAdapter<BonaP
         String cipher;
         SslHandler sslH = ctx.pipeline().get(SslHandler.class);
         if (sslH != null) {
-            SSLSession session = sslH.getEngine().getSession();
+            SSLSession session = sslH.engine().getSession();
             cipher = " (with cipher " + session.getCipherSuite() + ")";
             SessionInfo.logSessionInfo(session, "Client");
         } else {
