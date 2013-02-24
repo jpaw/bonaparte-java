@@ -57,7 +57,7 @@ package meta {
         boolean                 allowControlCharacters;
         int                     length;
         int                     minLength;
-        ascii(500)              ^regexp;
+        optional Ascii(500)     ^regexp;
     }
 	
 	class PropertyDefinition {
