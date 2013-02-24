@@ -1,60 +1,63 @@
 package meta {
-	default unsigned required trim noControlChars;
+	default private unsigned required trim noControlChars;
 
     type identifier is Ascii(255);
     
     enum Visibility { DEFAULT, PRIVATE, PROTECTED, PUBLIC }
     enum BundleStatus { UNUSED, RESOLVED, INSTALLED, STARTING, SHUTTING_DOWN, MAINTENANCE }  // borrow OSGi statuses
-    
-        
-	abstract class FieldDefinition {
-	    enum Visibility visibility;
-		boolean isRequired;
-		required identifier name;
-		boolean isArray;
-		Integer maxCount;
+    enum Multiplicity { SCALAR, ARRAY, LIST }
+    // the DataCategory matches the enum of same name in the Bonaparte DSL generator project
+    enum DataCategory { OBJECT, ENUM, NUMERIC, STRING, TEMPORAL, MISC }  // misc is boolean, binary, char, uuid, ...
+
+	abstract immutable class FieldDefinition {
+	    enum Visibility         visibility;
+		boolean                 isRequired;
+		required identifier     name;
+		enum Multiplicity       multiplicity;
+		Integer                 maxCount;         // maximum number of occurrences, if ARRAY or LIST
+        enum DataCategory       dataCategory;     // gives high level information about the data 
+        ascii(20)               dataType;       // the Bonaparte data type
+        boolean                 isPrimitive;    // true if the field is a primitive data type in Java 
 	}
 	
 	class ObjectReference extends FieldDefinition {
-        boolean allowSubclasses;    
-		required identifier objectName;		
+        boolean                 allowSubclasses;    
+		required identifier     objectName;		
 	}
 	
 	// ElementaryDataItem is used for some as well as for types which don't need a parameter
 	// day, char, boolean
     class ElementaryDataItem extends FieldDefinition {
-        ascii(20) dataType;
-        boolean isPrimitive;
     }
 
     // EnumDataItem represents the special enum type
     class EnumDataItem extends ElementaryDataItem {
-        required identifier enumName;  // HQON of enum
-        ascii(39) [] values;
+        required identifier     enumName;  // HQON of enum
+        ascii(39) []            values;
     }
 
     // MiscElementaryDataItem represents some miscellaneous types
-    // timestamp, raw
+    // timestamp, raw, binary
     class MiscElementaryDataItem extends ElementaryDataItem {
-        boolean isSigned;
-        int totalDigits;
-        int decimalDigits;
+        int                     length;
     }
 
     // NumericElementaryDataItem represents all numeric items (float and double and other primitives only fill the isSigned) 
     class NumericElementaryDataItem extends ElementaryDataItem {
-        boolean isSigned;
-        int totalDigits;
-        int decimalDigits;
+        boolean                 isSigned;
+        int                     totalDigits;
+        int                     decimalDigits;
     }
 
     // AlphanumericElementaryDataItem represents all text based fields
-    // ascii, unicode, uppercase, lowercase, string 
+    // ascii, unicode, uppercase, lowercase 
     class AlphanumericElementaryDataItem extends ElementaryDataItem {
-        boolean doTrim;
-        boolean allowControlCharacters;
-        int length;
-        ascii(500) ^regexp;
+        boolean                 doTrim;
+        boolean                 doTruncate;
+        boolean                 allowControlCharacters;
+        int                     length;
+        int                     minLength;
+        ascii(500)              ^regexp;
     }
 	
 	class PropertyDefinition {
