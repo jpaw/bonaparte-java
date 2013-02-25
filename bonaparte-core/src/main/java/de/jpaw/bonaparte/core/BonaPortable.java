@@ -105,4 +105,8 @@ public interface BonaPortable extends Serializable {
      * @throws ObjectValidationException
      */
     public void validate() throws ObjectValidationException;
+    
+    /** Can be invoked to apply a String converter to all String typed fields in the object, parent objects, and included child objects. */
+    public void treeWalkString(StringConverter _cvt);
+
 }

@@ -87,4 +87,10 @@ public class Wrapper implements BonaPortable, Externalizable {
     public long get$Serial() {
         return serialVersionUID;
     }
+
+    @Override
+    public void treeWalkString(StringConverter _cvt) {
+        if (data != null)
+            data.treeWalkString(_cvt);
+    }
 }
