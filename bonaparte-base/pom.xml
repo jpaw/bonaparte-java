@@ -15,6 +15,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- define releases we want to use, to ensure consistency -->
         <bonaparte.version>1.0-SNAPSHOT</bonaparte.version>
+        <bonaparte-plugin-version>1.3.1-SNAPSHOT</bonaparte-plugin-version>
         <slf4j.version>1.6.6</slf4j.version>
         <logback.version>1.0.9</logback.version>
     </properties>
@@ -91,8 +92,13 @@
         <module>../bonaparte-core/modules/all/pom.xml</module>
         <module>../bonaparte-core-test/modules/all/pom.xml</module>
         <module>../bonaparte-demorqrs/modules/all/pom.xml</module>
-        <module>../bonaparte-netty/modules/all/pom.xml</module>
-        <module>../bonaparte-netty-test/modules/all/pom.xml</module>
+        <module>../bonaparte-netty/pom.xml</module>
+        <module>../bonaparte-netty-test/pom.xml</module>
+        <module>../bonaparte-akka/pom.xml</module>
+        <module>../bonaparte-camel/pom.xml</module>
+        <module>../bonaparte-mina-test/pom.xml</module>
+        <module>../bonaparte-hornetq-test/pom.xml</module>
+        <module>../bonaparte-vertx/pom.xml</module>
     </modules>
 
 </project>

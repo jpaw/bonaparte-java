@@ -13,9 +13,7 @@
 
     <properties>
         <tycho-version>0.15.0</tycho-version>
-        <fortytwo-version>1.0-SNAPSHOT</fortytwo-version>
         <bonaparte-plugin-version>1.0.0-SNAPSHOT</bonaparte-plugin-version>
-        <persistence-plugin-version>1.0.0-SNAPSHOT</persistence-plugin-version>
     </properties>
 
     <build>

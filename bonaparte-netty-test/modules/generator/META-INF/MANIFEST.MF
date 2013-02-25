@@ -1,8 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Bonaparte-Source-Generator
-Bundle-SymbolicName: bonaparte-netty-test-srcgen;singleton:=true
-Bundle-Version: 1.0.0.qualifier
-Require-Bundle: org.eclipse.emf.mwe2.launch,
- org.eclipse.xtext.builder
- 

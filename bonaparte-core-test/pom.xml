@@ -6,11 +6,10 @@
         <groupId>de.jpaw</groupId>
         <artifactId>bonaparte-base</artifactId>
         <version>1.0-SNAPSHOT</version>
+        <relativePath>../bonaparte-base/pom.xml</relativePath>
     </parent>
 
-    <groupId>de.jpaw</groupId>
     <artifactId>bonaparte-core-test</artifactId>
-    <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>BONAPARTE core library extended unit tests</name>
