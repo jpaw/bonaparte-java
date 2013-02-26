@@ -2,15 +2,15 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>de.jpaw</groupId>
-		<artifactId>bonaparte-base</artifactId>
-		<version>1.0-SNAPSHOT</version>
-		<relativePath>../bonaparte-base</relativePath>
-	</parent>
+    <parent>
+        <groupId>de.jpaw</groupId>
+        <artifactId>bonaparte-base</artifactId>
+        <version>1.2.1-SNAPSHOT</version>
+        <relativePath>../bonaparte-base/pom.xml</relativePath>
+    </parent>
 
-	<artifactId>bonaparte-core-test</artifactId>
-	<packaging>jar</packaging>
+    <artifactId>bonaparte-core-test</artifactId>
+    <packaging>jar</packaging>
 
     <name>BONAPARTE core library extended unit tests</name>
     <url>http://www.jpaw.de</url>
