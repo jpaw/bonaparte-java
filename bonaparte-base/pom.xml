@@ -82,9 +82,6 @@
     <profiles>
         <profile>
             <id>kreios</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
             <distributionManagement>
                 <repository>
                     <id>kreios-ast-snapshots</id>
@@ -116,6 +113,26 @@
                     <url>${repo.url}/libs-release-local</url>
                 </repository>
             </distributionManagement>
+        </profile>
+        <profile>
+            <id>build</id>
+            <modules>
+                <module>../bonaparte-core/modules/all/pom.xml</module>
+                <module>../bonaparte-core-test/modules/all/pom.xml</module>
+                <module>../bonaparte-demorqrs/modules/all/pom.xml</module>
+                <module>../bonaparte-netty/modules/all/pom.xml</module>
+                <module>../bonaparte-netty-test/modules/all/pom.xml</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>eclipse</id>
+            <modules>
+                <module>../bonaparte-core</module>
+                <module>../bonaparte-core-test</module>
+                <module>../bonaparte-demorqrs</module>
+                <module>../bonaparte-netty</module>
+                <module>../bonaparte-netty-test</module>
+            </modules>
         </profile>
     </profiles>
 
@@ -154,13 +171,4 @@
             </plugin>
         </plugins>
     </reporting>
-
-    <modules>
-        <module>../bonaparte-core/modules/all/pom.xml</module>
-        <module>../bonaparte-core-test/modules/all/pom.xml</module>
-        <module>../bonaparte-demorqrs/modules/all/pom.xml</module>
-        <module>../bonaparte-netty/modules/all/pom.xml</module>
-        <module>../bonaparte-netty-test/modules/all/pom.xml</module>
-    </modules>
-
 </project>
