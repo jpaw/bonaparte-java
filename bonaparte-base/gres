@@ -1,0 +1,13 @@
+#!/bin/sh
+# gres - grep and substitute
+FROM=$1
+TO=$2
+shift
+shift
+for file in $@
+do
+    echo $file
+    sed -e "1,\$s/$FROM/$TO/g" < $file > s
+    touch -r $file s 
+    mv s $file
+done
