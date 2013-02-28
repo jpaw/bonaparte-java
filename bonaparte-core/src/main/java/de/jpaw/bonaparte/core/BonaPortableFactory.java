@@ -50,8 +50,7 @@ public class BonaPortableFactory {
         BonaPortable instance = null;
         int lastDot = name.lastIndexOf('.');
         if ((lastDot == 0) || (lastDot >= (name.length() - 1))) {
-            throw new MessageParserException(MessageParserException.BAD_OBJECT_NAME,
-                    null, -1, name);
+            throw new MessageParserException(MessageParserException.BAD_OBJECT_NAME, null, -1, name);
         }
         String myPackage;
         String myClass;
@@ -94,6 +93,8 @@ public class BonaPortableFactory {
                 logger.error("IllegalAccess exception for {}", name);
             }
         }
+        if (instance == null)
+            throw new MessageParserException(MessageParserException.CLASS_NOT_FOUND, FQON, 0, FQON);
         return instance;
     }
 
