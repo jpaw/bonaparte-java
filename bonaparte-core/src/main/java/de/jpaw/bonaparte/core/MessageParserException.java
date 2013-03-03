@@ -35,6 +35,7 @@ public class MessageParserException extends ApplicationException {
     private static final Logger logger = LoggerFactory.getLogger(MessageParserException.class);
 
     private static final int OFFSET = (PARSER_ERROR * CLASSIFICATION_FACTOR) + 17000; // offset for all codes in this class
+    private static final int OFFSET3 = (PARAMETER_ERROR * CLASSIFICATION_FACTOR) + 17000; // offset for all codes in this class
     private static boolean textsInitialized = false;
 
     private int characterIndex; // the byte count of the message at which the error occured
@@ -77,6 +78,7 @@ public class MessageParserException extends ApplicationException {
     static public final int BAD_OBJECT_NAME              = OFFSET + 34;
     static public final int BAD_UUID_FORMAT              = OFFSET + 35;
     static public final int INVALID_ENUM_TOKEN           = OFFSET + 36;
+    static public final int CLASS_NOT_FOUND              = OFFSET3 + 37;
 
     /**
      * Method lazyInitialization.
@@ -125,6 +127,7 @@ public class MessageParserException extends ApplicationException {
             codeToDescription.put(BAD_OBJECT_NAME              , "bad object name (must contain a dot, and not as first or last character)");
             codeToDescription.put(BAD_UUID_FORMAT              , "malformed UUID");
             codeToDescription.put(INVALID_ENUM_TOKEN           , "invalid token to instanciate enum");
+            codeToDescription.put(CLASS_NOT_FOUND              , "class could not be found or instantiated");
         }
     }
 

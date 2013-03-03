@@ -84,6 +84,7 @@
 				<version>${tycho-version}</version>
 				<configuration>
 					<strictBinIncludes>false</strictBinIncludes>
+                        <strictVersions>false</strictVersions>  <!-- essential for releases - should run SNAPSHOTs without this setting to verify MANFEST OK -->
 				</configuration>
 			</plugin>
 			<plugin>
@@ -101,7 +102,33 @@
 					</filesets>
 				</configuration>
 			</plugin>
-		</plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>1.2</version>
+                <executions>
+                    <execution>
+                        <id>enforce-no-snapshots</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <rules>
+                        <requireReleaseDeps>
+                            <message>No snapshots dependencies allowed on the master branch!</message>
+                            <searchTransitive>true</searchTransitive>
+                            <failWhenParentIsSnapshot>true</failWhenParentIsSnapshot>
+                            <onlyWhenRelease>true</onlyWhenRelease>
+                        </requireReleaseDeps>
+                    </rules>
+                    <fail>true</fail>
+                    <failFast>true</failFast>
+                </configuration>
+            </plugin>
+        </plugins>
 
 		<pluginManagement>
 			<plugins>

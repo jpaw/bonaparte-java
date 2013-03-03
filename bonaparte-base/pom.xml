@@ -73,6 +73,32 @@
                     <charset>UTF-8</charset>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>1.2</version>
+                <executions>
+                    <execution>
+                        <id>enforce-no-snapshots</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <rules>
+                        <requireReleaseDeps>
+                            <message>No snapshots dependencies allowed on the master branch!</message>
+                            <searchTransitive>true</searchTransitive>
+                            <failWhenParentIsSnapshot>true</failWhenParentIsSnapshot>
+                            <onlyWhenRelease>true</onlyWhenRelease>
+                        </requireReleaseDeps>
+                    </rules>
+                    <fail>true</fail>
+                    <failFast>true</failFast>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <reporting>
