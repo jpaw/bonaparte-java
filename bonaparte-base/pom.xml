@@ -84,19 +84,27 @@
         <profile>
             <id>kreios</id>
             <distributionManagement>
-                <repository>
+                <snapshotRepository>
                     <id>kreios-ast-snapshots</id>
                     <name>Bonaparte Snapshots</name>
-                    <url>
-                    http://nexus.kreios.lu/nexus/content/repositories/ast-snapshots/</url>
-                </repository>
+                    <url>http://nexus.kreios.lu/nexus/content/repositories/ast-snapshots/</url>
+                </snapshotRepository>
+                <repository>
+                     <id>kreios-ast-releases</id>
+                     <name>Bonaparte Releases</name>
+                     <url>http://nexus.kreios.lu/nexus/content/repositories/ast-releases/</url>
+                 </repository>
             </distributionManagement>
             <repositories>
                 <repository>
                     <id>kreios-ast-snapshots</id>
                     <name>Bonaparte Snapshots</name>
-                    <url>
-      http://nexus.kreios.lu/nexus/content/repositories/ast-snapshots/</url>
+                    <url>http://nexus.kreios.lu/nexus/content/repositories/ast-snapshots/</url>
+                </repository>
+                <repository>
+                    <id>kreios-ast-releases</id>
+                    <name>Bonaparte Releases</name>
+                    <url>http://nexus.kreios.lu/nexus/content/repositories/ast-releases/</url>
                 </repository>
             </repositories>
         </profile>
