@@ -21,6 +21,7 @@
             <artifactId>bonaparte-core</artifactId>
             <version>${bonaparte.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-core</artifactId>
