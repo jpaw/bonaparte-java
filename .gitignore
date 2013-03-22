@@ -17,6 +17,9 @@
 *.log
 *.out
 
+# backup files of the maven version plugin
+pom.xml.versionsBackup
+
 # maven target directories
 target/
 
