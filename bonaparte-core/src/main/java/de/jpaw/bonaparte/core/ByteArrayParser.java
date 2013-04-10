@@ -85,7 +85,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
     }
 
     // check for Null called for field members inside a class
-    private boolean checkForNull(boolean allowNull) throws MessageParserException {
+    private boolean checkForNull(String fieldname, boolean allowNull) throws MessageParserException {
         byte c = needByte();
         if (c == NULL_FIELD) {
             if (allowNull) {
@@ -189,16 +189,16 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
     }
 
     @Override
-    public BigDecimal readBigDecimal(boolean allowNull, int length, int decimals, boolean isSigned) throws MessageParserException {
-        if (checkForNull(allowNull)) {
+    public BigDecimal readBigDecimal(String fieldname, boolean allowNull, int length, int decimals, boolean isSigned) throws MessageParserException {
+        if (checkForNull(fieldname, allowNull)) {
             return null;
         }
         return new BigDecimal(nextIndexParseAscii(isSigned, true, false));
     }
 
     @Override
-    public Character readCharacter(boolean allowNull) throws MessageParserException {
-        String tmp = readString(allowNull, 1, false, false, true, true);
+    public Character readCharacter(String fieldname, boolean allowNull) throws MessageParserException {
+        String tmp = readString(fieldname, allowNull, 1, false, false, true, true);
         if (tmp == null) {
             return null;
         }
@@ -210,8 +210,8 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
 
     // readString does the job for Unicode as well as ASCII, but only used for Unicode (have an optimized version for ASCII)
     @Override
-    public String readString(boolean allowNull, int length, boolean doTrim, boolean doTruncate, boolean allowCtrls, boolean allowUnicode) throws MessageParserException {
-        if (checkForNull(allowNull)) {
+    public String readString(String fieldname, boolean allowNull, int length, boolean doTrim, boolean doTruncate, boolean allowCtrls, boolean allowUnicode) throws MessageParserException {
+        if (checkForNull(fieldname, allowNull)) {
             return null;
         }
         if (doTrim) {
@@ -297,8 +297,8 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
 
     // specialized version without charset conversion
     @Override
-    public String readAscii(boolean allowNull, int length, boolean doTrim, boolean doTruncate) throws MessageParserException {
-        if (checkForNull(allowNull)) {
+    public String readAscii(String fieldname, boolean allowNull, int length, boolean doTrim, boolean doTruncate) throws MessageParserException {
+        if (checkForNull(fieldname, allowNull)) {
             return null;
         }
         if (doTrim) {
@@ -350,9 +350,9 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
     }
 
     @Override
-    public Boolean readBoolean(boolean allowNull) throws MessageParserException {
+    public Boolean readBoolean(String fieldname, boolean allowNull) throws MessageParserException {
         boolean result;
-        if (checkForNull(allowNull)) {
+        if (checkForNull(fieldname, allowNull)) {
             return null;
         }
         byte c = needByte();
@@ -369,8 +369,8 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
     }
 
     @Override
-    public ByteArray readByteArray(boolean allowNull, int length) throws MessageParserException {
-        if (checkForNull(allowNull)) {
+    public ByteArray readByteArray(String fieldname, boolean allowNull, int length) throws MessageParserException {
+        if (checkForNull(fieldname, allowNull)) {
             return null;
         }
         skipLeadingSpaces();
@@ -400,8 +400,8 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
     }
 
     @Override
-    public byte[] readRaw(boolean allowNull, int length) throws MessageParserException {
-        if (checkForNull(allowNull)) {
+    public byte[] readRaw(String fieldname, boolean allowNull, int length) throws MessageParserException {
+        if (checkForNull(fieldname, allowNull)) {
             return null;
         }
         skipLeadingSpaces();
@@ -438,8 +438,8 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
     }
 
     @Override
-    public Calendar readCalendar(boolean allowNull, boolean hhmmss, int fractionalDigits) throws MessageParserException {
-        if (checkForNull(allowNull)) {
+    public Calendar readCalendar(String fieldname, boolean allowNull, boolean hhmmss, int fractionalDigits) throws MessageParserException {
+        if (checkForNull(fieldname, allowNull)) {
             return null;
         }
         String tmp = nextIndexParseAscii(false, fractionalDigits >= 0, false);  // parse an unsigned numeric string without exponent
@@ -514,8 +514,8 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
         return result;
     }
     @Override
-    public LocalDateTime readDayTime(boolean allowNull, boolean hhmmss, int fractionalDigits) throws MessageParserException {
-        if (checkForNull(allowNull)) {
+    public LocalDateTime readDayTime(String fieldname, boolean allowNull, boolean hhmmss, int fractionalDigits) throws MessageParserException {
+        if (checkForNull(fieldname, allowNull)) {
             return null;
         }
         String tmp = nextIndexParseAscii(false, fractionalDigits >= 0, false);  // parse an unsigned numeric string without exponent
@@ -591,8 +591,8 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
         return result;
     }
     @Override
-    public LocalDate readDay(boolean allowNull) throws MessageParserException {
-        if (checkForNull(allowNull)) {
+    public LocalDate readDay(String fieldname, boolean allowNull) throws MessageParserException {
+        if (checkForNull(fieldname, allowNull)) {
             return null;
         }
         String tmp = nextIndexParseAscii(false, false, false);  // parse an unsigned numeric string without exponent
@@ -625,16 +625,15 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
     }
 
     @Override
-    public int parseArrayStart(int max,
-            int sizeOfChild) throws MessageParserException {
-        if (checkForNull(true)) {
+    public int parseArrayStart(String fieldname, int max, int sizeOfChild) throws MessageParserException {
+        if (checkForNull(fieldname, true)) {
             return -1;
         }
         needByte(ARRAY_BEGIN);
-        int n = readInteger(false, false);
+        int n = readInteger(fieldname, false, false);
         if ((n < 0) || (n > 1000000000)) {
             throw new MessageParserException(MessageParserException.ARRAY_SIZE_OUT_OF_BOUNDS,
-                    String.format("(got %d entries (0x%x))", n, n), parseIndex, currentClass);
+                    String.format("(got %d entries (0x%x) for %s)", n, n, fieldname), parseIndex, currentClass);
         }
         return n;
     }
@@ -650,55 +649,55 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
         BonaPortable result;
         needByte(RECORD_BEGIN);
         needByte(NULL_FIELD); // version no
-        result = readObject(BonaPortable.class, false, true);
+        result = readObject(GENERIC_RECORD, BonaPortable.class, false, true);
         skipByte(RECORD_OPT_TERMINATOR);
         needByte(RECORD_TERMINATOR);
         return result;
     }
 
     @Override
-    public Byte readByte(boolean allowNull, boolean isSigned) throws MessageParserException {
-        if (checkForNull(allowNull)) {
+    public Byte readByte(String fieldname, boolean allowNull, boolean isSigned) throws MessageParserException {
+        if (checkForNull(fieldname, allowNull)) {
             return null;
         }
         return Byte.valueOf(nextIndexParseAscii(isSigned, false, false));
     }
 
     @Override
-    public Short readShort(boolean allowNull, boolean isSigned) throws MessageParserException {
-        if (checkForNull(allowNull)) {
+    public Short readShort(String fieldname, boolean allowNull, boolean isSigned) throws MessageParserException {
+        if (checkForNull(fieldname, allowNull)) {
             return null;
         }
         return Short.valueOf(nextIndexParseAscii(isSigned, false, false));
     }
 
     @Override
-    public Long readLong(boolean allowNull, boolean isSigned) throws MessageParserException {
-        if (checkForNull(allowNull)) {
+    public Long readLong(String fieldname, boolean allowNull, boolean isSigned) throws MessageParserException {
+        if (checkForNull(fieldname, allowNull)) {
             return null;
         }
         return Long.valueOf(nextIndexParseAscii(isSigned, false, false));
     }
 
     @Override
-    public Integer readInteger(boolean allowNull, boolean isSigned) throws MessageParserException {
-        if (checkForNull(allowNull)) {
+    public Integer readInteger(String fieldname, boolean allowNull, boolean isSigned) throws MessageParserException {
+        if (checkForNull(fieldname, allowNull)) {
             return null;
         }
         return Integer.valueOf(nextIndexParseAscii(isSigned, false, false));
     }
 
     @Override
-    public Float readFloat(boolean allowNull, boolean isSigned) throws MessageParserException {
-        if (checkForNull(allowNull)) {
+    public Float readFloat(String fieldname, boolean allowNull, boolean isSigned) throws MessageParserException {
+        if (checkForNull(fieldname, allowNull)) {
             return null;
         }
         return Float.valueOf(nextIndexParseAscii(isSigned, true, true));
     }
 
     @Override
-    public Double readDouble(boolean allowNull, boolean isSigned) throws MessageParserException {
-        if (checkForNull(allowNull)) {
+    public Double readDouble(String fieldname, boolean allowNull, boolean isSigned) throws MessageParserException {
+        if (checkForNull(fieldname, allowNull)) {
             return null;
         }
         return Double.valueOf(nextIndexParseAscii(isSigned, true, true));
@@ -712,9 +711,9 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
     }
 
     @Override
-    public Integer readNumber(boolean allowNull, int length, boolean isSigned)
+    public Integer readNumber(String fieldname, boolean allowNull, int length, boolean isSigned)
             throws MessageParserException {
-        if (checkForNull(allowNull)) {
+        if (checkForNull(fieldname, allowNull)) {
             return null;
         }
         String tmp = nextIndexParseAscii(isSigned, false, false);
@@ -726,13 +725,13 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
     }
 
     @Override
-    public BonaPortable readObject(Class<? extends BonaPortable> type, boolean allowNull, boolean allowSubtypes) throws MessageParserException {
-        if (checkForNull(allowNull)) {
+    public BonaPortable readObject(String fieldname, Class<? extends BonaPortable> type, boolean allowNull, boolean allowSubtypes) throws MessageParserException {
+        if (checkForNull(fieldname, allowNull)) {
             return null;
         }
         String previousClass = currentClass;
         needByte(OBJECT_BEGIN);  // version not yet allowed
-        String classname = readString(false, 0, false, false, false, false);
+        String classname = readString(fieldname, false, 0, false, false, false, false);
         // String revision = readAscii(true, 0, false, false);
         needByte(NULL_FIELD);  // version not yet allowed
         BonaPortable newObject = BonaPortableFactory.createObject(classname);
@@ -783,8 +782,8 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
 
 
     @Override
-    public UUID readUUID(boolean allowNull) throws MessageParserException {
-        String tmp = readAscii(allowNull, 36, true, false);
+    public UUID readUUID(String fieldname, boolean allowNull) throws MessageParserException {
+        String tmp = readAscii(fieldname, allowNull, 36, true, false);
         if (tmp == null) {
             return null;
         }

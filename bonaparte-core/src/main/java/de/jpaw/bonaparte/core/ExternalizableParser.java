@@ -78,7 +78,7 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
     }
 
     // check for Null called for field members inside a class
-    private boolean checkForNull(boolean allowNull) throws IOException {
+    private boolean checkForNull(String fieldname, boolean allowNull) throws IOException {
         byte c = nextByte();
         if (c == NULL_FIELD) {
             if (allowNull) {
@@ -111,8 +111,8 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
     }
 
     @Override
-    public BigDecimal readBigDecimal(boolean allowNull, int length, int decimals, boolean isSigned) throws IOException {
-        if (checkForNull(allowNull)) {
+    public BigDecimal readBigDecimal(String fieldname, boolean allowNull, int length, int decimals, boolean isSigned) throws IOException {
+        if (checkForNull(fieldname, allowNull)) {
             return null;
         }
         byte c = nextByte();
@@ -129,8 +129,8 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
     }
 
     @Override
-    public Character readCharacter(boolean allowNull) throws IOException {
-        String tmp = readString(allowNull, 1, false, false, true, true);
+    public Character readCharacter(String fieldname, boolean allowNull) throws IOException {
+        String tmp = readString(fieldname, allowNull, 1, false, false, true, true);
         if (tmp == null) {
             return null;
         }
@@ -142,8 +142,8 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
 
     // readString does the job for Unicode as well as ASCII, but only used for Unicode (have an optimized version for ASCII)
     @Override
-    public String readString(boolean allowNull, int length, boolean doTrim, boolean doTruncate, boolean allowCtrls, boolean allowUnicode) throws IOException {
-        if (checkForNull(allowNull)) {
+    public String readString(String fieldname, boolean allowNull, int length, boolean doTrim, boolean doTruncate, boolean allowCtrls, boolean allowUnicode) throws IOException {
+        if (checkForNull(fieldname, allowNull)) {
             return null;
         }
         needByte(TEXT);
@@ -160,13 +160,13 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
 
     // specialized version without charset conversion
     @Override
-    public String readAscii(boolean allowNull, int length, boolean doTrim, boolean doTruncate) throws IOException {
-        return readString(allowNull, length, doTrim, doTruncate, false, false);
+    public String readAscii(String fieldname, boolean allowNull, int length, boolean doTrim, boolean doTruncate) throws IOException {
+        return readString(fieldname, allowNull, length, doTrim, doTruncate, false, false);
     }
 
     @Override
-    public Boolean readBoolean(boolean allowNull) throws IOException {
-        if (checkForNull(allowNull)) {
+    public Boolean readBoolean(String fieldname, boolean allowNull) throws IOException {
+        if (checkForNull(fieldname, allowNull)) {
             return null;
         }
         byte c = nextByte();
@@ -179,8 +179,8 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
     }
 
     @Override
-    public ByteArray readByteArray(boolean allowNull, int length) throws IOException {
-        if (checkForNull(allowNull)) {
+    public ByteArray readByteArray(String fieldname, boolean allowNull, int length) throws IOException {
+        if (checkForNull(fieldname, allowNull)) {
             return null;
         }
         needByte(BINARY);
@@ -189,8 +189,8 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
     }
 
     @Override
-    public byte[] readRaw(boolean allowNull, int length) throws IOException {
-        if (checkForNull(allowNull)) {
+    public byte[] readRaw(String fieldname, boolean allowNull, int length) throws IOException {
+        if (checkForNull(fieldname, allowNull)) {
             return null;
         }
         needByte(BINARY);
@@ -221,32 +221,32 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
     }
 
     @Override
-    public Byte readByte(boolean allowNull, boolean isSigned) throws IOException {
-        if (checkForNull(allowNull)) {
+    public Byte readByte(String fieldname, boolean allowNull, boolean isSigned) throws IOException {
+        if (checkForNull(fieldname, allowNull)) {
             return null;
         }
         return (byte)readVarInt(8);
     }
 
     @Override
-    public Short readShort(boolean allowNull, boolean isSigned) throws IOException {
-        if (checkForNull(allowNull)) {
+    public Short readShort(String fieldname, boolean allowNull, boolean isSigned) throws IOException {
+        if (checkForNull(fieldname, allowNull)) {
             return null;
         }
         return (short)readVarInt(16);
     }
 
     @Override
-    public Integer readInteger(boolean allowNull, boolean isSigned) throws IOException {
-        if (checkForNull(allowNull)) {
+    public Integer readInteger(String fieldname, boolean allowNull, boolean isSigned) throws IOException {
+        if (checkForNull(fieldname, allowNull)) {
             return null;
         }
         return readVarInt(32);
     }
 
     @Override
-    public Long readLong(boolean allowNull, boolean isSigned) throws IOException {
-        if (checkForNull(allowNull)) {
+    public Long readLong(String fieldname, boolean allowNull, boolean isSigned) throws IOException {
+        if (checkForNull(fieldname, allowNull)) {
             return null;
         }
         return readLongNoNull();
@@ -262,8 +262,8 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
     }
 
     @Override
-    public Calendar readCalendar(boolean allowNull, boolean hhmmss, int fractionalDigits) throws IOException {
-        if (checkForNull(allowNull)) {
+    public Calendar readCalendar(String fieldname, boolean allowNull, boolean hhmmss, int fractionalDigits) throws IOException {
+        if (checkForNull(fieldname, allowNull)) {
             return null;
         }
         int fractional = 0;
@@ -326,8 +326,8 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
     }
 
     @Override
-    public LocalDateTime readDayTime(boolean allowNull, boolean hhmmss, int fractionalDigits) throws IOException {
-        if (checkForNull(allowNull)) {
+    public LocalDateTime readDayTime(String fieldname, boolean allowNull, boolean hhmmss, int fractionalDigits) throws IOException {
+        if (checkForNull(fieldname, allowNull)) {
             return null;
         }
         int fractional = 0;
@@ -387,8 +387,8 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         return result;
     }
     @Override
-    public LocalDate readDay(boolean allowNull) throws IOException {
-        if (checkForNull(allowNull)) {
+    public LocalDate readDay(String fieldname, boolean allowNull) throws IOException {
+        if (checkForNull(fieldname, allowNull)) {
             return null;
         }
         int date = readVarInt(32);
@@ -421,16 +421,15 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
     }
 
     @Override
-    public int parseArrayStart(int max,
-            int sizeOfChild) throws IOException {
-        if (checkForNull(true)) {
+    public int parseArrayStart(String fieldname, int max, int sizeOfChild) throws IOException {
+        if (checkForNull(fieldname, true)) {
             return -1;
         }
         needByte(ARRAY_BEGIN);
         int n = readVarInt(32);
         if ((n < 0) || (n > 1000000000)) {
-            throw new IOException(String.format("ARRAY_SIZE_OUT_OF_BOUNDS: got %d entries (0x%x)) in %s",
-                    n, n, currentClass));
+            throw new IOException(String.format("ARRAY_SIZE_OUT_OF_BOUNDS: got %d entries (0x%x) for %s) in %s",
+                    n, n, fieldname, currentClass));
         }
         return n;
     }
@@ -446,14 +445,14 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         BonaPortable result;
         needByte(RECORD_BEGIN);
         needByte(NULL_FIELD); // version no
-        result = readObject(BonaPortable.class, false, true);
+        result = readObject(GENERIC_RECORD, BonaPortable.class, false, true);
         needByte(RECORD_TERMINATOR);
         return result;
     }
 
     @Override
-    public Float readFloat(boolean allowNull, boolean isSigned) throws IOException {
-        if (checkForNull(allowNull)) {
+    public Float readFloat(String fieldname, boolean allowNull, boolean isSigned) throws IOException {
+        if (checkForNull(fieldname, allowNull)) {
             return null;
         }
         // TODO: accept other numeric types as well & perform conversion
@@ -462,8 +461,8 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
     }
 
     @Override
-    public Double readDouble(boolean allowNull, boolean isSigned) throws IOException {
-        if (checkForNull(allowNull)) {
+    public Double readDouble(String fieldname, boolean allowNull, boolean isSigned) throws IOException {
+        if (checkForNull(fieldname, allowNull)) {
             return null;
         }
         needByte(BINARY_DOUBLE);
@@ -478,16 +477,16 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
     }
 
     @Override
-    public Integer readNumber(boolean allowNull, int length, boolean isSigned) throws IOException {
-        if (checkForNull(allowNull)) {
+    public Integer readNumber(String fieldname, boolean allowNull, int length, boolean isSigned) throws IOException {
+        if (checkForNull(fieldname, allowNull)) {
             return null;
         }
         return Integer.valueOf(readVarInt(32));
     }
 
     @Override
-    public BonaPortable readObject(Class<? extends BonaPortable> type, boolean allowNull, boolean allowSubtypes) throws IOException {
-        if (checkForNull(allowNull)) {
+    public BonaPortable readObject(String fieldname, Class<? extends BonaPortable> type, boolean allowNull, boolean allowSubtypes) throws IOException {
+        if (checkForNull(fieldname, allowNull)) {
             return null;
         }
         String previousClass = currentClass;
@@ -567,8 +566,8 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
 
 
     @Override
-    public UUID readUUID(boolean allowNull) throws IOException {
-        String tmp = readAscii(allowNull, 36, true, false);
+    public UUID readUUID(String fieldname, boolean allowNull) throws IOException {
+        String tmp = readAscii(fieldname, allowNull, 36, true, false);
         if (tmp == null) {
             return null;
         }

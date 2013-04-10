@@ -70,7 +70,7 @@ public class Wrapper implements BonaPortable, Externalizable {
     }
     @Override
     public <E extends Exception> void deserialize(MessageParser<E> p) throws E {
-        data = p.readObject(BonaPortable.class, true, true);
+        data = p.readObject("data", BonaPortable.class, true, true);
     }
     @Override
     public boolean hasSameContentsAs(BonaPortable that) {

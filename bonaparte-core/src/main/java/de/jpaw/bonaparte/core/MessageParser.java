@@ -34,31 +34,33 @@ import de.jpaw.util.EnumException;
  */
 
 public interface MessageParser<E extends Exception> {
+    static public final String GENERIC_RECORD = "RECORD";   // field name to be used when parsing top level record
+    
     // unmarshaller methods: field type specific
-    public BigDecimal readBigDecimal(boolean allowNull, int length, int decimals, boolean isSigned) throws E;
-    public Character  readCharacter (boolean allowNull) throws E;
-    public UUID    readUUID     (boolean allowNull) throws E;
-    public Boolean readBoolean  (boolean allowNull) throws E;
-    public Double  readDouble   (boolean allowNull, boolean isSigned) throws E;
-    public Float   readFloat    (boolean allowNull, boolean isSigned) throws E;
-    public Long    readLong     (boolean allowNull, boolean isSigned) throws E;
-    public Integer readInteger  (boolean allowNull, boolean isSigned) throws E;
-    public Short   readShort    (boolean allowNull, boolean isSigned) throws E;
-    public Byte    readByte     (boolean allowNull, boolean isSigned) throws E;
-    public Integer readNumber   (boolean allowNull, int length, boolean isSigned)   throws E;
-    public String  readAscii    (boolean allowNull, int length, boolean doTrim, boolean doTruncate) throws E;
-    public String  readString   (boolean allowNull, int length, boolean doTrim, boolean doTruncate, boolean allowCtrls, boolean allowUnicode) throws E;
-    public ByteArray readByteArray(boolean allowNull, int length) throws E;
-    public byte []   readRaw      (boolean allowNull, int length) throws E;
-    public Calendar  readCalendar (boolean allowNull, boolean hhmmss, int fractionalDigits) throws E;
-    public LocalDate readDay      (boolean allowNull) throws E;
-    public LocalDateTime readDayTime(boolean allowNull, boolean hhmmss, int length) throws E;
+    public BigDecimal readBigDecimal(String fieldname, boolean allowNull, int length, int decimals, boolean isSigned) throws E;
+    public Character  readCharacter (String fieldname, boolean allowNull) throws E;
+    public UUID    readUUID         (String fieldname, boolean allowNull) throws E;
+    public Boolean readBoolean      (String fieldname, boolean allowNull) throws E;
+    public Double  readDouble       (String fieldname, boolean allowNull, boolean isSigned) throws E;
+    public Float   readFloat        (String fieldname, boolean allowNull, boolean isSigned) throws E;
+    public Long    readLong         (String fieldname, boolean allowNull, boolean isSigned) throws E;
+    public Integer readInteger      (String fieldname, boolean allowNull, boolean isSigned) throws E;
+    public Short   readShort        (String fieldname, boolean allowNull, boolean isSigned) throws E;
+    public Byte    readByte         (String fieldname, boolean allowNull, boolean isSigned) throws E;
+    public Integer readNumber       (String fieldname, boolean allowNull, int length, boolean isSigned)   throws E;
+    public String  readAscii        (String fieldname, boolean allowNull, int length, boolean doTrim, boolean doTruncate) throws E;
+    public String  readString       (String fieldname, boolean allowNull, int length, boolean doTrim, boolean doTruncate, boolean allowCtrls, boolean allowUnicode) throws E;
+    public ByteArray readByteArray  (String fieldname, boolean allowNull, int length) throws E;
+    public byte []   readRaw        (String fieldname, boolean allowNull, int length) throws E;
+    public Calendar  readCalendar   (String fieldname, boolean allowNull, boolean hhmmss, int fractionalDigits) throws E;
+    public LocalDate readDay        (String fieldname, boolean allowNull) throws E;
+    public LocalDateTime readDayTime(String fieldname, boolean allowNull, boolean hhmmss, int length) throws E;
+    public BonaPortable readObject  (String fieldname, Class<? extends BonaPortable> type, boolean allowNull, boolean allowSubtypes) throws E; // parser factory
     // composite methods
-    public BonaPortable readRecord() throws E;
-    public int parseArrayStart(int max, int sizeOfElement) throws E;
-    public void parseArrayEnd()     throws E;
-    public BonaPortable readObject(Class<? extends BonaPortable> type, boolean allowNull, boolean allowSubtypes) throws E; // parser factory
-    public List<BonaPortable> readTransmission()        throws E;
+    public int parseArrayStart      (String fieldname, int max, int sizeOfElement) throws E;
+    public void parseArrayEnd() throws E;
+    public BonaPortable       readRecord()       throws E;
+    public List<BonaPortable> readTransmission() throws E;
     // helper functions
     public void setClassName(String newClassName); // returns the previously active class name
     public void eatParentSeparator() throws E;  // restores the previous class name
