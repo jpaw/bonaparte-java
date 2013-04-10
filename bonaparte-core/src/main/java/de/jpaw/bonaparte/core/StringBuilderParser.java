@@ -91,7 +91,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
             if (allowNull) {
                 return true;
             } else {
-                throw new MessageParserException(MessageParserException.ILLEGAL_EXPLICIT_NULL, null, parseIndex, currentClass);
+                throw new MessageParserException(MessageParserException.ILLEGAL_EXPLICIT_NULL, fieldname, parseIndex, currentClass);
             }
         }
         if ((c == PARENT_SEPARATOR) || (c == ARRAY_TERMINATOR)) {
@@ -100,7 +100,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
                 --parseIndex;
                 return true;
             } else {
-                throw new MessageParserException(MessageParserException.ILLEGAL_IMPLICIT_NULL, null, parseIndex, currentClass);
+                throw new MessageParserException(MessageParserException.ILLEGAL_IMPLICIT_NULL, fieldname, parseIndex, currentClass);
             }
         }
         --parseIndex;
@@ -129,7 +129,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
         }
     }
 
-    private String nextIndexParseAscii(boolean allowSign, boolean allowDecimalPoint, boolean allowExponent) throws MessageParserException {
+    private String nextIndexParseAscii(String fieldname, boolean allowSign, boolean allowDecimalPoint, boolean allowExponent) throws MessageParserException {
         final int BUFFER_SIZE = 40;
         boolean allowSignNextIteration = false;
         boolean gotAnyDigit = false;
@@ -145,7 +145,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
             char c = work.charAt(parseIndex);
             if (c == FIELD_TERMINATOR) {
                 if (!gotAnyDigit) {
-                    throw new MessageParserException(MessageParserException.NO_DIGITS_FOUND, null, parseIndex, currentClass);
+                    throw new MessageParserException(MessageParserException.NO_DIGITS_FOUND, fieldname, parseIndex, currentClass);
                 }
                 ++parseIndex;  // eat it!
                 return tmp.toString();
@@ -153,19 +153,19 @@ public final class StringBuilderParser extends StringBuilderConstants implements
 
             if (c == '-') {
                 if (!allowSign) {
-                    throw new MessageParserException(MessageParserException.SUPERFLUOUS_SIGN, null, parseIndex, currentClass);
+                    throw new MessageParserException(MessageParserException.SUPERFLUOUS_SIGN, fieldname, parseIndex, currentClass);
                 }
             } else if (c == '.') {
                 if (!allowDecimalPoint) {
-                    throw new MessageParserException(MessageParserException.SUPERFLUOUS_DECIMAL_POINT, null, parseIndex, currentClass);
+                    throw new MessageParserException(MessageParserException.SUPERFLUOUS_DECIMAL_POINT, fieldname, parseIndex, currentClass);
                 }
                 allowDecimalPoint = false;  // no 2 in a row allowed
             } else if ((c == 'e') || (c == 'E')) {
                 if (!allowExponent) {
-                    throw new MessageParserException(MessageParserException.SUPERFLUOUS_EXPONENT, null, parseIndex, currentClass);
+                    throw new MessageParserException(MessageParserException.SUPERFLUOUS_EXPONENT, fieldname, parseIndex, currentClass);
                 }
                 if (!gotAnyDigit) {
-                    throw new MessageParserException(MessageParserException.NO_DIGITS_FOUND, null, parseIndex, currentClass);
+                    throw new MessageParserException(MessageParserException.NO_DIGITS_FOUND, fieldname, parseIndex, currentClass);
                 }
                 allowSignNextIteration = true;
                 allowExponent = false;
@@ -173,10 +173,10 @@ public final class StringBuilderParser extends StringBuilderConstants implements
             } else if (CharTestsASCII.isAsciiDigit(c)) {
                 gotAnyDigit = true;
             } else {
-                throw new MessageParserException(MessageParserException.ILLEGAL_CHAR_NOT_NUMERIC, null, parseIndex, currentClass);
+                throw new MessageParserException(MessageParserException.ILLEGAL_CHAR_NOT_NUMERIC, fieldname, parseIndex, currentClass);
             }
             if (tmp.length() >= BUFFER_SIZE) {
-                throw new MessageParserException(MessageParserException.NUMERIC_TOO_LONG, null, parseIndex, currentClass);
+                throw new MessageParserException(MessageParserException.NUMERIC_TOO_LONG, fieldname, parseIndex, currentClass);
             }
             tmp.append(c);
             ++parseIndex;
@@ -184,7 +184,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
             allowSignNextIteration = false;
         }
         // end of message without appropriate terminator character
-        throw new MessageParserException(MessageParserException.MISSING_TERMINATOR, "(numeric field)", parseIndex, currentClass);
+        throw new MessageParserException(MessageParserException.MISSING_TERMINATOR, fieldname, parseIndex, currentClass);
     }
 
     @Override
@@ -192,7 +192,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
         if (checkForNull(fieldname, allowNull)) {
             return null;
         }
-        return new BigDecimal(nextIndexParseAscii(isSigned, true, false));
+        return new BigDecimal(nextIndexParseAscii(fieldname, isSigned, true, false));
     }
 
     @Override
@@ -202,7 +202,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
             return null;
         }
         if (tmp.length() == 0) {
-            throw new MessageParserException(MessageParserException.EMPTY_CHAR, null, parseIndex, currentClass);
+            throw new MessageParserException(MessageParserException.EMPTY_CHAR, fieldname, parseIndex, currentClass);
         }
         return tmp.charAt(0);
     }
@@ -234,17 +234,17 @@ public final class StringBuilderParser extends StringBuilderConstants implements
                         c = needChar();
                         if ((c < 0x40) || (c >= 0x60)) {
                             throw new MessageParserException(MessageParserException.ILLEGAL_ESCAPE_SEQUENCE,
-                                    String.format("(found 0x%02x)", (int)c), parseIndex, currentClass);
+                                    String.format("(found 0x%02x for %s)", (int)c, fieldname), parseIndex, currentClass);
                         }
                         c -= 0x40;
                     } else {
-                        throw new MessageParserException(MessageParserException.ILLEGAL_CHAR_CTRL, null, parseIndex, currentClass);
+                        throw new MessageParserException(MessageParserException.ILLEGAL_CHAR_CTRL, fieldname, parseIndex, currentClass);
                     }
                 }
             } else {
                 if (!CharTestsASCII.isAsciiPrintable(c)) {
                     throw new MessageParserException(MessageParserException.ILLEGAL_CHAR_ASCII,
-                            String.format("(found 0x%02x)", (int)c), parseIndex, currentClass);
+                            String.format("(found 0x%02x for %s)", (int)c, fieldname), parseIndex, currentClass);
                 }
             }
             tmp.append(c);
@@ -271,7 +271,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
                     tmp.setLength(length);
                 } else {
                     throw new MessageParserException(MessageParserException.STRING_TOO_LONG,
-                            String.format("(exceeds length %d, got so far %s)", length, tmp.toString()),
+                            String.format("(exceeds length %d for %s, got so far %s)", length, fieldname, tmp.toString()),
                             parseIndex, currentClass);
                 }
             }
@@ -292,7 +292,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
             result = true;
         } else {
             throw new MessageParserException(MessageParserException.ILLEGAL_BOOLEAN,
-                    String.format("(found 0x%02x)", (int)c), parseIndex, currentClass);
+                    String.format("(found 0x%02x for %s)", (int)c, fieldname), parseIndex, currentClass);
         }
         needChar(FIELD_TERMINATOR);
         return result;
@@ -318,7 +318,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
             ++i;
         }
         if (i == messageLength) {
-            throw new MessageParserException(MessageParserException.MISSING_TERMINATOR, "(raw field)", parseIndex, currentClass);
+            throw new MessageParserException(MessageParserException.MISSING_TERMINATOR, fieldname, parseIndex, currentClass);
         }
         String tmp = work.substring(parseIndex, i);
         parseIndex = i+1;
@@ -326,7 +326,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
             byte [] btmp = tmp.getBytes();
             return Base64.decode(btmp, 0, btmp.length);
         } catch (IllegalArgumentException e) {
-            throw new MessageParserException(MessageParserException.BASE64_PARSING_ERROR, null, parseIndex, currentClass);
+            throw new MessageParserException(MessageParserException.BASE64_PARSING_ERROR, fieldname, parseIndex, currentClass);
         }
         // return DatatypeConverter.parseHexBinary(tmp);
     }
@@ -336,7 +336,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
         if (checkForNull(fieldname, allowNull)) {
             return null;
         }
-        String tmp = nextIndexParseAscii(false, fractionalDigits >= 0, false);  // parse an unsigned numeric string without exponent
+        String tmp = nextIndexParseAscii(fieldname, false, fractionalDigits >= 0, false);  // parse an unsigned numeric string without exponent
         int date;
         int fractional = 0;
         if (fractionalDigits < 0) {
@@ -359,7 +359,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
                 case 9:  break;  // maximum resolution (milliseconds)
                 default:  // something weird
                     throw new MessageParserException(MessageParserException.BAD_TIMESTAMP_FRACTIONALS,
-                            String.format("(found %d)", tmp.length() - dpoint - 1), parseIndex, currentClass);
+                            String.format("(found %d for %s)", tmp.length() - dpoint - 1, fieldname), parseIndex, currentClass);
                 }
             }
         }
@@ -383,13 +383,13 @@ public final class StringBuilderParser extends StringBuilderConstants implements
                 || (day > 31)) {
             throw new MessageParserException(
                     MessageParserException.ILLEGAL_DAY, String.format(
-                            "(found %d)", date), parseIndex, currentClass);
+                            "(found %d for %s)", date, fieldname), parseIndex, currentClass);
         }
         if ((hour > 23) || (minute > 59) || (second > 59)) {
             throw new MessageParserException(
                     MessageParserException.ILLEGAL_TIME,
-                    String.format("(found %d)", (hour * 10000) + (minute * 100)
-                            + second), parseIndex, currentClass);
+                    String.format("(found %d for %s)", (hour * 10000) + (minute * 100)
+                            + second, fieldname), parseIndex, currentClass);
         }
         // now set the return value
         GregorianCalendar result;
@@ -401,7 +401,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
                     second);
         } catch (Exception e) {
             throw new MessageParserException(
-                    MessageParserException.ILLEGAL_CALENDAR_VALUE, null,
+                    MessageParserException.ILLEGAL_CALENDAR_VALUE, fieldname,
                     parseIndex, currentClass);
         }
         result.set(Calendar.MILLISECOND, fractional);
@@ -412,7 +412,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
         if (checkForNull(fieldname, allowNull)) {
             return null;
         }
-        String tmp = nextIndexParseAscii(false, fractionalDigits >= 0, false);  // parse an unsigned numeric string without exponent
+        String tmp = nextIndexParseAscii(fieldname, false, fractionalDigits >= 0, false);  // parse an unsigned numeric string without exponent
         int date;
         int fractional = 0;
         int dpoint;
@@ -438,7 +438,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
             default: // something weird
                 throw new MessageParserException(
                         MessageParserException.BAD_TIMESTAMP_FRACTIONALS,
-                        String.format("(found %d)", tmp.length() - dpoint - 1),
+                        String.format("(found %d for %s)", tmp.length() - dpoint - 1, fieldname),
                         parseIndex, currentClass);
             }
         }
@@ -462,13 +462,13 @@ public final class StringBuilderParser extends StringBuilderConstants implements
                 || (day > 31)) {
             throw new MessageParserException(
                     MessageParserException.ILLEGAL_DAY, String.format(
-                            "(found %d)", date), parseIndex, currentClass);
+                            "(found %d for %s)", date, fieldname), parseIndex, currentClass);
         }
         if ((hour > 23) || (minute > 59) || (second > 59)) {
             throw new MessageParserException(
                     MessageParserException.ILLEGAL_TIME,
-                    String.format("(found %d)", (hour * 10000) + (minute * 100)
-                            + second), parseIndex, currentClass);
+                    String.format("(found %d for %s)", (hour * 10000) + (minute * 100)
+                            + second, fieldname), parseIndex, currentClass);
         }
         // now set the return value
         LocalDateTime result;
@@ -479,7 +479,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
             result = new LocalDateTime(year, month, day, hour, minute, second, fractional);
         } catch (Exception e) {
             throw new MessageParserException(
-                    MessageParserException.ILLEGAL_CALENDAR_VALUE, null,
+                    MessageParserException.ILLEGAL_CALENDAR_VALUE, fieldname,
                     parseIndex, currentClass);
         }
         return result;
@@ -489,7 +489,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
         if (checkForNull(fieldname, allowNull)) {
             return null;
         }
-        String tmp = nextIndexParseAscii(false, false, false);  // parse an unsigned numeric string without exponent
+        String tmp = nextIndexParseAscii(fieldname, false, false, false);  // parse an unsigned numeric string without exponent
         int date = Integer.parseInt(tmp);
         // set the date and time
         int day, month, year;
@@ -501,7 +501,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
                 || (day > 31)) {
             throw new MessageParserException(
                     MessageParserException.ILLEGAL_DAY, String.format(
-                            "(found %d)", date), parseIndex, currentClass);
+                            "(found %d for %s)", date, fieldname), parseIndex, currentClass);
         }
         // now set the return value
         LocalDate result;
@@ -512,7 +512,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
             result = new LocalDate(year, month, day);
         } catch (Exception e) {
             throw new MessageParserException(
-                    MessageParserException.ILLEGAL_CALENDAR_VALUE, null,
+                    MessageParserException.ILLEGAL_CALENDAR_VALUE, fieldname,
                     parseIndex, currentClass);
         }
         return result;
@@ -555,7 +555,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
         if (checkForNull(fieldname, allowNull)) {
             return null;
         }
-        return Byte.valueOf(nextIndexParseAscii(isSigned, false, false));
+        return Byte.valueOf(nextIndexParseAscii(fieldname, isSigned, false, false));
     }
 
     @Override
@@ -563,7 +563,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
         if (checkForNull(fieldname, allowNull)) {
             return null;
         }
-        return Short.valueOf(nextIndexParseAscii(isSigned, false, false));
+        return Short.valueOf(nextIndexParseAscii(fieldname, isSigned, false, false));
     }
 
     @Override
@@ -571,7 +571,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
         if (checkForNull(fieldname, allowNull)) {
             return null;
         }
-        return Long.valueOf(nextIndexParseAscii(isSigned, false, false));
+        return Long.valueOf(nextIndexParseAscii(fieldname, isSigned, false, false));
     }
 
     @Override
@@ -579,7 +579,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
         if (checkForNull(fieldname, allowNull)) {
             return null;
         }
-        return Integer.valueOf(nextIndexParseAscii(isSigned, false, false));
+        return Integer.valueOf(nextIndexParseAscii(fieldname, isSigned, false, false));
     }
 
     @Override
@@ -587,7 +587,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
         if (checkForNull(fieldname, allowNull)) {
             return null;
         }
-        return Float.valueOf(nextIndexParseAscii(isSigned, true, true));
+        return Float.valueOf(nextIndexParseAscii(fieldname, isSigned, true, true));
     }
 
     @Override
@@ -595,7 +595,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
         if (checkForNull(fieldname, allowNull)) {
             return null;
         }
-        return Double.valueOf(nextIndexParseAscii(isSigned, true, true));
+        return Double.valueOf(nextIndexParseAscii(fieldname, isSigned, true, true));
     }
 
     @Override
@@ -611,10 +611,10 @@ public final class StringBuilderParser extends StringBuilderConstants implements
         if (checkForNull(fieldname, allowNull)) {
             return null;
         }
-        String tmp = nextIndexParseAscii(isSigned, false, false);
+        String tmp = nextIndexParseAscii(fieldname, isSigned, false, false);
         if (tmp.length() > (length + (((tmp.charAt(0) == '-') || (tmp.charAt(0) == '+')) ? 1 : 0))) {
             throw new MessageParserException(MessageParserException.NUMERIC_TOO_LONG,
-                    String.format("(allowed %d, found %d)", length, tmp.length()), parseIndex, currentClass);
+                    String.format("(allowed %d, found %d for %s)", length, tmp.length(), fieldname), parseIndex, currentClass);
         }
         return Integer.valueOf(tmp);
     }
@@ -636,8 +636,8 @@ public final class StringBuilderParser extends StringBuilderConstants implements
             // check if it is a superclass
             if (!allowSubtypes || !type.isAssignableFrom(newObject.getClass())) {
                 throw new MessageParserException(MessageParserException.BAD_CLASS,
-                        String.format("(got %s, expected %s, subclassing = %b)",
-                                newObject.getClass().getSimpleName(), type.getSimpleName(), allowSubtypes),
+                        String.format("(got %s, expected %s for %s, subclassing = %b)",
+                                newObject.getClass().getSimpleName(), type.getSimpleName(), fieldname, allowSubtypes),
                                 parseIndex, currentClass);
             }
         }

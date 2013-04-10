@@ -84,7 +84,7 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
             if (allowNull) {
                 return true;
             } else {
-                throw new IOException("ILLEGAL EXPLICIT NULL in " + currentClass);
+                throw new IOException("ILLEGAL EXPLICIT NULL in " + currentClass + "." + fieldname);
             }
         }
         if ((c == PARENT_SEPARATOR) || (c == ARRAY_TERMINATOR)) {
@@ -93,7 +93,7 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
                 pushBack(c);
                 return true;
             } else {
-                throw new IOException("ILLEGAL IMPLICIT NULL in " + currentClass);
+                throw new IOException("ILLEGAL IMPLICIT NULL in " + currentClass + "." + fieldname);
             }
         }
         pushBack(c);
@@ -118,13 +118,13 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         byte c = nextByte();
         if ((c > FRAC_SCALE_0) && (c <= FRAC_SCALE_18)) {
             // read fractional part
-            long fraction = readLongNoNull();
+            long fraction = readLongNoNull(fieldname);
             int scale = c-FRAC_SCALE_0;
             // combine with integral part and create scaled result
-            return BigDecimal.valueOf((powersOfTen[scale] * readLongNoNull()) + fraction, scale);
+            return BigDecimal.valueOf((powersOfTen[scale] * readLongNoNull(fieldname)) + fraction, scale);
         } else {
             pushBack(c);
-            return BigDecimal.valueOf(readLongNoNull());
+            return BigDecimal.valueOf(readLongNoNull(fieldname));
         }
     }
 
@@ -135,7 +135,7 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
             return null;
         }
         if (tmp.length() == 0) {
-            throw new IOException("EMPTY CHAR in " + currentClass);
+            throw new IOException("EMPTY CHAR in " + currentClass + "." + fieldname);
         }
         return tmp.charAt(0);
     }
@@ -175,7 +175,7 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         } else if (c == INT_ONE) {
             return true;
         }
-        throw new IOException(String.format("ILLEGAL BOOLEAN: found 0x%02x in %s", (int)c, currentClass));
+        throw new IOException(String.format("ILLEGAL BOOLEAN: found 0x%02x for %s.%s", (int)c, currentClass, fieldname));
     }
 
     @Override
@@ -197,13 +197,13 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         assert !hasByte; // readInt() does not respect pushed back byte
         byte [] tmp = ByteArray.readBytes(in);
         if ((length > 0) && (tmp.length > length)) {
-            throw new IOException(String.format("byte buffer too long (found %d where only %d is allowed in %s)",
-                    tmp.length, length, currentClass));
+            throw new IOException(String.format("byte buffer too long (found %d where only %d is allowed in %s.%s)",
+                    tmp.length, length, currentClass, fieldname));
         }
         return tmp;
     }
 
-    private int readVarInt(int maxBits) throws IOException {
+    private int readVarInt(String fieldname, int maxBits) throws IOException {
         byte c = nextByte();
         if ((c >= INT_MINUS_ONE) && (c <= NUMERIC_MAX)) {
             return c - INT_ZERO;
@@ -217,7 +217,7 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         if ((c == INT_FOURBYTES) && (maxBits >= 32)) {
             return in.readInt();
         }
-        throw new IOException(String.format("No suitable integral token: %02x in %s", c, currentClass));
+        throw new IOException(String.format("No suitable integral token: %02x in %s.%s", c, currentClass, fieldname));
     }
 
     @Override
@@ -225,7 +225,7 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         if (checkForNull(fieldname, allowNull)) {
             return null;
         }
-        return (byte)readVarInt(8);
+        return (byte)readVarInt(fieldname, 8);
     }
 
     @Override
@@ -233,7 +233,7 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         if (checkForNull(fieldname, allowNull)) {
             return null;
         }
-        return (short)readVarInt(16);
+        return (short)readVarInt(fieldname, 16);
     }
 
     @Override
@@ -241,7 +241,7 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         if (checkForNull(fieldname, allowNull)) {
             return null;
         }
-        return readVarInt(32);
+        return readVarInt(fieldname, 32);
     }
 
     @Override
@@ -249,16 +249,16 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         if (checkForNull(fieldname, allowNull)) {
             return null;
         }
-        return readLongNoNull();
+        return readLongNoNull(fieldname);
     }
 
-    private long readLongNoNull() throws IOException {
+    private long readLongNoNull(String fieldname) throws IOException {
         byte c = nextByte();
         if (c == INT_EIGHTBYTES) {
             return in.readLong();
         }
         pushBack(c);
-        return (long)readVarInt(64);
+        return (long)readVarInt(fieldname, 64);
     }
 
     @Override
@@ -270,7 +270,7 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         byte c = nextByte();
         if ((c > FRAC_SCALE_0) && (c <= FRAC_SCALE_18)) {
             // read fractional part
-            long fraction = readLongNoNull();
+            long fraction = readLongNoNull(fieldname);
             int scale = c-FRAC_SCALE_0;
             if (scale > 9) {
                 fraction /= powersOfTen[scale - 9];
@@ -281,10 +281,10 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         } else {
             pushBack(c);
         }
-        int date = readVarInt(32);
+        int date = readVarInt(fieldname, 32);
         if ((date < 0) || (fractional < 0)) {
-            throw new IOException(String.format("negative numbers found for date field: %d.%d in %s",
-                    date, fractional, currentClass));
+            throw new IOException(String.format("negative numbers found for date field: %d.%d in %s.%s",
+                    date, fractional, currentClass, fieldname));
         }
         // set the date and time
         int day, month, year, hour, minute, second;
@@ -304,11 +304,11 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         // first checks
         if ((year < 1601) || (year > 2399) || (month == 0) || (month > 12) || (day == 0)
                 || (day > 31)) {
-            throw new IOException(String.format("ILLEGAL DAY: found %d-%d-%d in %s",
-                    year, month, day, currentClass));
+            throw new IOException(String.format("ILLEGAL DAY: found %d-%d-%d in %s.%s",
+                    year, month, day, currentClass, fieldname));
         }
         if ((hour > 23) || (minute > 59) || (second > 59)) {
-            throw new IOException(String.format("ILLEGAL TIME: found %d:%d:%d in %s", hour, minute, second, currentClass));
+            throw new IOException(String.format("ILLEGAL TIME: found %d:%d:%d in %s.%s", hour, minute, second, currentClass, fieldname));
         }
         // now set the return value
         GregorianCalendar result;
@@ -319,7 +319,7 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
             result = new GregorianCalendar(year, month - 1, day, hour, minute,
                     second);
         } catch (Exception e) {
-            throw new IOException(String.format("exception creating GregorianCalendar for %d-%d-%d in %s", year, month, day, currentClass));
+            throw new IOException(String.format("exception creating GregorianCalendar for %d-%d-%d in %s.%s", year, month, day, currentClass, fieldname));
         }
         result.set(Calendar.MILLISECOND, fractional);
         return result;
@@ -334,7 +334,7 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         byte c = nextByte();
         if ((c > FRAC_SCALE_0) && (c <= FRAC_SCALE_18)) {
             // read fractional part
-            long fraction = readLongNoNull();
+            long fraction = readLongNoNull(fieldname);
             int scale = c-FRAC_SCALE_0;
             if (scale > 9) {
                 fraction /= powersOfTen[scale - 9];
@@ -345,10 +345,10 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         } else {
             pushBack(c);
         }
-        int date = readVarInt(32);
+        int date = readVarInt(fieldname, 32);
         if ((date < 0) || (fractional < 0)) {
-            throw new IOException(String.format("negative numbers found for date field: %d.%d in %s",
-                    date, fractional, currentClass));
+            throw new IOException(String.format("negative numbers found for date field: %d.%d in %s.%s",
+                    date, fractional, currentClass, fieldname));
         }
         // set the date and time
         int day, month, year, hour, minute, second;
@@ -368,11 +368,11 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         // first checks
         if ((year < 1601) || (year > 2399) || (month == 0) || (month > 12) || (day == 0)
                 || (day > 31)) {
-            throw new IOException(String.format("ILLEGAL DAY: found %d-%d-%d in %s",
-                    year, month, day, currentClass));
+            throw new IOException(String.format("ILLEGAL DAY: found %d-%d-%d in %s.%s",
+                    year, month, day, currentClass, fieldname));
         }
         if ((hour > 23) || (minute > 59) || (second > 59)) {
-            throw new IOException(String.format("ILLEGAL TIME: found %d:%d:%d in %s", hour, minute, second, currentClass));
+            throw new IOException(String.format("ILLEGAL TIME: found %d:%d:%d in %s.%s", hour, minute, second, currentClass, fieldname));
         }
         // now set the return value
         LocalDateTime result;
@@ -382,7 +382,7 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
             // and year
             result = new LocalDateTime(year, month, day, hour, minute, second, fractional);
         } catch (Exception e) {
-            throw new IOException(String.format("exception creating LocalDateTime for %d-%d-%d in %s", year, month, day, currentClass));
+            throw new IOException(String.format("exception creating LocalDateTime for %d-%d-%d in %s.%s", year, month, day, currentClass, fieldname));
         }
         return result;
     }
@@ -391,10 +391,10 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         if (checkForNull(fieldname, allowNull)) {
             return null;
         }
-        int date = readVarInt(32);
+        int date = readVarInt(fieldname, 32);
         if (date < 0) {
-            throw new IOException(String.format("negative numbers found for date field: %d in %s",
-                    date, currentClass));
+            throw new IOException(String.format("negative numbers found for date field: %d in %s.%s",
+                    date, currentClass, fieldname));
         }
         // set the date and time
         int day, month, year;
@@ -404,8 +404,8 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         // first checks
         if ((year < 1601) || (year > 2399) || (month == 0) || (month > 12) || (day == 0)
                 || (day > 31)) {
-            throw new IOException(String.format("ILLEGAL DAY: found %d-%d-%d in %s",
-                    year, month, day, currentClass));
+            throw new IOException(String.format("ILLEGAL DAY: found %d-%d-%d in %s.%s",
+                    year, month, day, currentClass, fieldname));
         }
         // now set the return value
         LocalDate result;
@@ -415,7 +415,7 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
             // and year
             result = new LocalDate(year, month, day);
         } catch (Exception e) {
-            throw new IOException(String.format("exception creating LocalDate for %d-%d-%d in %s", year, month, day, currentClass));
+            throw new IOException(String.format("exception creating LocalDate for %d-%d-%d in %s.%s", year, month, day, currentClass, fieldname));
         }
         return result;
     }
@@ -426,10 +426,10 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
             return -1;
         }
         needByte(ARRAY_BEGIN);
-        int n = readVarInt(32);
+        int n = readVarInt(fieldname, 32);
         if ((n < 0) || (n > 1000000000)) {
-            throw new IOException(String.format("ARRAY_SIZE_OUT_OF_BOUNDS: got %d entries (0x%x) for %s) in %s",
-                    n, n, fieldname, currentClass));
+            throw new IOException(String.format("ARRAY_SIZE_OUT_OF_BOUNDS: got %d entries (0x%x) for %s) in %s.%s",
+                    n, n, fieldname, currentClass, fieldname));
         }
         return n;
     }
@@ -481,7 +481,7 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         if (checkForNull(fieldname, allowNull)) {
             return null;
         }
-        return Integer.valueOf(readVarInt(32));
+        return Integer.valueOf(readVarInt(fieldname, 32));
     }
 
     @Override
@@ -508,9 +508,9 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
             if (newObject.getClass() != type) {
                 // check if it is a superclass
                 if (!allowSubtypes || !type.isAssignableFrom(newObject.getClass())) {
-                    throw new IOException(String.format("BAD_CLASS: got %s, expected %s, subclassing = %b in %s",
+                    throw new IOException(String.format("BAD_CLASS: got %s, expected %s, subclassing = %b in %s.%s",
                             newObject.getClass().getSimpleName(), type.getSimpleName(), allowSubtypes,
-                            currentClass));
+                            currentClass, fieldname));
                 }
             }
             // all good here. Parse the contents
@@ -526,9 +526,9 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
             if (newObject.getClass() != type) {
                 // check if it is a superclass
                 if (!allowSubtypes || !type.isAssignableFrom(newObject.getClass())) {
-                    throw new IOException(String.format("BAD_CLASS: got %s, expected %s, subclassing = %b in %s",
+                    throw new IOException(String.format("BAD_CLASS: got %s, expected %s, subclassing = %b in %s.%s",
                             newObject.getClass().getSimpleName(), type.getSimpleName(), allowSubtypes,
-                            currentClass));
+                            currentClass, fieldname));
                 }
             }
         }

@@ -91,7 +91,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
             if (allowNull) {
                 return true;
             } else {
-                throw new MessageParserException(MessageParserException.ILLEGAL_EXPLICIT_NULL, null, parseIndex, currentClass);
+                throw new MessageParserException(MessageParserException.ILLEGAL_EXPLICIT_NULL, fieldname, parseIndex, currentClass);
             }
         }
         if ((c == PARENT_SEPARATOR) || (c == ARRAY_TERMINATOR)) {
@@ -100,7 +100,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
                 --parseIndex;
                 return true;
             } else {
-                throw new MessageParserException(MessageParserException.ILLEGAL_IMPLICIT_NULL, null, parseIndex, currentClass);
+                throw new MessageParserException(MessageParserException.ILLEGAL_IMPLICIT_NULL, fieldname, parseIndex, currentClass);
             }
         }
         --parseIndex;
@@ -129,7 +129,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
         }
     }
 
-    private String nextIndexParseAscii(boolean allowSign, boolean allowDecimalPoint, boolean allowExponent) throws MessageParserException {
+    private String nextIndexParseAscii(String fieldname, boolean allowSign, boolean allowDecimalPoint, boolean allowExponent) throws MessageParserException {
         final int BUFFER_SIZE = 40;
         boolean allowSignNextIteration = false;
         boolean gotAnyDigit = false;
@@ -146,7 +146,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
             byte c = inputdata[parseIndex];
             if (c == FIELD_TERMINATOR) {
                 if (!gotAnyDigit) {
-                    throw new MessageParserException(MessageParserException.NO_DIGITS_FOUND, null, parseIndex, currentClass);
+                    throw new MessageParserException(MessageParserException.NO_DIGITS_FOUND, fieldname, parseIndex, currentClass);
                 }
                 ++parseIndex;  // eat it!
                 return tmp.toString();
@@ -154,19 +154,19 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
 
             if (c == MINUS_SIGN) {
                 if (!allowSign) {
-                    throw new MessageParserException(MessageParserException.SUPERFLUOUS_SIGN, null, parseIndex, currentClass);
+                    throw new MessageParserException(MessageParserException.SUPERFLUOUS_SIGN, fieldname, parseIndex, currentClass);
                 }
             } else if (c == DECIMAL_POINT) {
                 if (!allowDecimalPoint) {
-                    throw new MessageParserException(MessageParserException.SUPERFLUOUS_DECIMAL_POINT, null, parseIndex, currentClass);
+                    throw new MessageParserException(MessageParserException.SUPERFLUOUS_DECIMAL_POINT, fieldname, parseIndex, currentClass);
                 }
                 allowDecimalPoint = false;  // no 2 in a row allowed
             } else if ((c == 'e') || (c == 'E')) {
                 if (!allowExponent) {
-                    throw new MessageParserException(MessageParserException.SUPERFLUOUS_EXPONENT, null, parseIndex, currentClass);
+                    throw new MessageParserException(MessageParserException.SUPERFLUOUS_EXPONENT, fieldname, parseIndex, currentClass);
                 }
                 if (!gotAnyDigit) {
-                    throw new MessageParserException(MessageParserException.NO_DIGITS_FOUND, null, parseIndex, currentClass);
+                    throw new MessageParserException(MessageParserException.NO_DIGITS_FOUND, fieldname, parseIndex, currentClass);
                 }
                 allowSignNextIteration = true;
                 allowExponent = false;
@@ -174,10 +174,10 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
             } else if (ByteTestsASCII.isAsciiDigit(c)) {
                 gotAnyDigit = true;
             } else {
-                throw new MessageParserException(MessageParserException.ILLEGAL_CHAR_NOT_NUMERIC, null, parseIndex, currentClass);
+                throw new MessageParserException(MessageParserException.ILLEGAL_CHAR_NOT_NUMERIC, fieldname, parseIndex, currentClass);
             }
             if (tmp.length() >= BUFFER_SIZE) {
-                throw new MessageParserException(MessageParserException.NUMERIC_TOO_LONG, null, parseIndex, currentClass);
+                throw new MessageParserException(MessageParserException.NUMERIC_TOO_LONG, fieldname, parseIndex, currentClass);
             }
             tmp.appendCodePoint(c);
             ++parseIndex;
@@ -185,7 +185,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
             allowSignNextIteration = false;
         }
         // end of message without appropriate terminator character
-        throw new MessageParserException(MessageParserException.MISSING_TERMINATOR, "(numeric field)", parseIndex, currentClass);
+        throw new MessageParserException(MessageParserException.MISSING_TERMINATOR, fieldname, parseIndex, currentClass);
     }
 
     @Override
@@ -193,7 +193,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
         if (checkForNull(fieldname, allowNull)) {
             return null;
         }
-        return new BigDecimal(nextIndexParseAscii(isSigned, true, false));
+        return new BigDecimal(nextIndexParseAscii(fieldname, isSigned, true, false));
     }
 
     @Override
@@ -203,7 +203,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
             return null;
         }
         if (tmp.length() == 0) {
-            throw new MessageParserException(MessageParserException.EMPTY_CHAR, null, parseIndex, currentClass);
+            throw new MessageParserException(MessageParserException.EMPTY_CHAR, fieldname, parseIndex, currentClass);
         }
         return tmp.charAt(0);
     }
@@ -239,7 +239,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
                     result = new String(inputdata, parseIndex, (lastNonBlank-parseIndex)+1, getCharset());
                 } else if (!allowCtrls || !allowUnicode) {
                     // check if escapes were allowed in the first place...   NO!
-                    throw new MessageParserException(MessageParserException.ILLEGAL_CHAR_CTRL, null, parseIndex, currentClass);
+                    throw new MessageParserException(MessageParserException.ILLEGAL_CHAR_CTRL, fieldname, parseIndex, currentClass);
                 } else {
                     // the ugly part. Must run through it again, replacing
                     // escapes, need a temporary buffer
@@ -256,7 +256,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
                             b = inputdata[parseIndex++];
                             if ((b < 0x40) || (b >= 0x60)) {
                                 throw new MessageParserException(MessageParserException.ILLEGAL_ESCAPE_SEQUENCE,
-                                        String.format("(found 0x%02x)", (int)b), parseIndex, currentClass);
+                                        String.format("(found 0x%02x for %s)", (int)b, fieldname), parseIndex, currentClass);
                             }
                             b -= 0x40;
                         }
@@ -273,7 +273,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
                             result = result.substring(0, length);
                         } else {
                             throw new MessageParserException(MessageParserException.STRING_TOO_LONG,
-                                    String.format("(exceeds length %d, got so far %s)", length, result.toString()),
+                                    String.format("(exceeds length %d for %s, got so far %s)", length, fieldname, result.toString()),
                                     parseIndex, currentClass);
                         }
                     }
@@ -287,12 +287,12 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
             } else if (!allowUnicode) {
                 if (!ByteTestsASCII.isAsciiPrintable(b) && (b != '\t')) {
                     throw new MessageParserException(MessageParserException.ILLEGAL_CHAR_ASCII,
-                            String.format("(found 0x%02x)", (int)b), parseIndex, currentClass);
+                            String.format("(found 0x%02x for %s)", (int)b, fieldname), parseIndex, currentClass);
                 }
             }
             ++currentIndex;
         }
-        throw new MessageParserException(MessageParserException.MISSING_TERMINATOR, "(alphanumeric field)", parseIndex, currentClass);
+        throw new MessageParserException(MessageParserException.MISSING_TERMINATOR, fieldname, parseIndex, currentClass);
     }
 
     // specialized version without charset conversion
@@ -328,7 +328,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
                         tmp.setLength(length);
                     } else {
                         throw new MessageParserException(MessageParserException.STRING_TOO_LONG,
-                                String.format("(exceeds length %d, got so far %s)", length, tmp.toString()),
+                                String.format("(exceeds length %d for %s, got so far %s)", length, fieldname, tmp.toString()),
                                 parseIndex, currentClass);
                     }
                 }
@@ -339,14 +339,14 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
                 }
             }
             if (b == ESCAPE_CHAR) {
-                throw new MessageParserException(MessageParserException.ILLEGAL_CHAR_CTRL, null, parseIndex, currentClass);
+                throw new MessageParserException(MessageParserException.ILLEGAL_CHAR_CTRL, fieldname, parseIndex, currentClass);
             } else if (!ByteTestsASCII.isAsciiPrintable(b) && (b != '\t')) {
                 throw new MessageParserException(MessageParserException.ILLEGAL_CHAR_ASCII,
-                        String.format("(found 0x%02x)", (int)b), parseIndex, currentClass);
+                        String.format("(found 0x%02x for %s)", (int)b, fieldname), parseIndex, currentClass);
             }
             tmp.append((char)b);
         }
-        throw new MessageParserException(MessageParserException.MISSING_TERMINATOR, "(ascii field)", parseIndex, currentClass);
+        throw new MessageParserException(MessageParserException.MISSING_TERMINATOR, fieldname, parseIndex, currentClass);
     }
 
     @Override
@@ -362,7 +362,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
             result = true;
         } else {
             throw new MessageParserException(MessageParserException.ILLEGAL_BOOLEAN,
-                    String.format("(found 0x%02x)", (int)c), parseIndex, currentClass);
+                    String.format("(found 0x%02x for %s)", (int)c, fieldname), parseIndex, currentClass);
         }
         needByte(FIELD_TERMINATOR);
         return result;
@@ -382,7 +382,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
             if (b == FIELD_TERMINATOR) {
                 ByteArray result = ByteArray.fromBase64(inputdata, parseIndex, i-parseIndex-1);
                 if (result == null) {
-                    throw new MessageParserException(MessageParserException.BASE64_PARSING_ERROR, null, parseIndex, currentClass);
+                    throw new MessageParserException(MessageParserException.BASE64_PARSING_ERROR, fieldname, parseIndex, currentClass);
                 }
                 parseIndex = i;
                 return result;
@@ -393,10 +393,10 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
                 ; // OK
             } else {
                 throw new MessageParserException(MessageParserException.ILLEGAL_CHAR_BASE64,
-                        String.format("(found 0x%02x)", (int)b), parseIndex, currentClass);
+                        String.format("(found 0x%02x for %s)", (int)b, fieldname), parseIndex, currentClass);
             }
         }
-        throw new MessageParserException(MessageParserException.MISSING_TERMINATOR, "(raw field)", parseIndex, currentClass);
+        throw new MessageParserException(MessageParserException.MISSING_TERMINATOR, fieldname, parseIndex, currentClass);
     }
 
     @Override
@@ -419,7 +419,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
                 } else {
                     result = Base64.decode(inputdata, parseIndex, i-parseIndex-1);
                     if (result == null) {
-                        throw new MessageParserException(MessageParserException.BASE64_PARSING_ERROR, null, parseIndex, currentClass);
+                        throw new MessageParserException(MessageParserException.BASE64_PARSING_ERROR, fieldname, parseIndex, currentClass);
                     }
                 }
                 parseIndex = i;
@@ -431,10 +431,10 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
                 ; // OK
             } else {
                 throw new MessageParserException(MessageParserException.ILLEGAL_CHAR_BASE64,
-                        String.format("(found 0x%02x)", (int)b), parseIndex, currentClass);
+                        String.format("(found 0x%02x for %s)", (int)b, fieldname), parseIndex, currentClass);
             }
         }
-        throw new MessageParserException(MessageParserException.MISSING_TERMINATOR, "(raw field)", parseIndex, currentClass);
+        throw new MessageParserException(MessageParserException.MISSING_TERMINATOR, fieldname, parseIndex, currentClass);
     }
 
     @Override
@@ -442,7 +442,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
         if (checkForNull(fieldname, allowNull)) {
             return null;
         }
-        String tmp = nextIndexParseAscii(false, fractionalDigits >= 0, false);  // parse an unsigned numeric string without exponent
+        String tmp = nextIndexParseAscii(fieldname, false, fractionalDigits >= 0, false);  // parse an unsigned numeric string without exponent
         int date;
         int fractional = 0;
         if (fractionalDigits < 0) {
@@ -465,7 +465,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
                 case 9:  break;  // maximum resolution (milliseconds)
                 default:  // something weird
                     throw new MessageParserException(MessageParserException.BAD_TIMESTAMP_FRACTIONALS,
-                            String.format("(found %d)", tmp.length() - dpoint - 1), parseIndex, currentClass);
+                            String.format("(found %d for %s)", tmp.length() - dpoint - 1, fieldname), parseIndex, currentClass);
                 }
             }
         }
@@ -488,14 +488,12 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
         if ((year < 1601) || (year > 2399) || (month == 0) || (month > 12) || (day == 0)
                 || (day > 31)) {
             throw new MessageParserException(
-                    MessageParserException.ILLEGAL_DAY, String.format(
-                            "(found %d)", date), parseIndex, currentClass);
+                    MessageParserException.ILLEGAL_DAY, String.format("(found %d for %s)", date, fieldname), parseIndex, currentClass);
         }
         if ((hour > 23) || (minute > 59) || (second > 59)) {
             throw new MessageParserException(
                     MessageParserException.ILLEGAL_TIME,
-                    String.format("(found %d)", (hour * 10000) + (minute * 100)
-                            + second), parseIndex, currentClass);
+                    String.format("(found %d for %s)", (hour * 10000) + (minute * 100) + second, fieldname), parseIndex, currentClass);
         }
         // now set the return value
         GregorianCalendar result;
@@ -503,12 +501,9 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
             // TODO! default is lenient mode, therefore will not check. Solution
             // is to read the data again and compare the values of day, month
             // and year
-            result = new GregorianCalendar(year, month - 1, day, hour, minute,
-                    second);
+            result = new GregorianCalendar(year, month - 1, day, hour, minute, second);
         } catch (Exception e) {
-            throw new MessageParserException(
-                    MessageParserException.ILLEGAL_CALENDAR_VALUE, null,
-                    parseIndex, currentClass);
+            throw new MessageParserException(MessageParserException.ILLEGAL_CALENDAR_VALUE, fieldname, parseIndex, currentClass);
         }
         result.set(Calendar.MILLISECOND, fractional);
         return result;
@@ -518,7 +513,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
         if (checkForNull(fieldname, allowNull)) {
             return null;
         }
-        String tmp = nextIndexParseAscii(false, fractionalDigits >= 0, false);  // parse an unsigned numeric string without exponent
+        String tmp = nextIndexParseAscii(fieldname, false, fractionalDigits >= 0, false);  // parse an unsigned numeric string without exponent
         int date;
         int fractional = 0;
         int dpoint;
@@ -544,7 +539,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
             default: // something weird
                 throw new MessageParserException(
                         MessageParserException.BAD_TIMESTAMP_FRACTIONALS,
-                        String.format("(found %d)", tmp.length() - dpoint - 1),
+                        String.format("(found %d for %s)", tmp.length() - dpoint - 1, fieldname),
                         parseIndex, currentClass);
             }
         }
@@ -568,13 +563,13 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
                 || (day > 31)) {
             throw new MessageParserException(
                     MessageParserException.ILLEGAL_DAY, String.format(
-                            "(found %d)", date), parseIndex, currentClass);
+                            "(found %d for %s)", date, fieldname), parseIndex, currentClass);
         }
         if ((hour > 23) || (minute > 59) || (second > 59)) {
             throw new MessageParserException(
                     MessageParserException.ILLEGAL_TIME,
-                    String.format("(found %d)", (hour * 10000) + (minute * 100)
-                            + second), parseIndex, currentClass);
+                    String.format("(found %d for %s)", (hour * 10000) + (minute * 100)
+                            + second, fieldname), parseIndex, currentClass);
         }
         // now set the return value
         LocalDateTime result;
@@ -585,7 +580,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
             result = new LocalDateTime(year, month, day, hour, minute, second, fractional);
         } catch (Exception e) {
             throw new MessageParserException(
-                    MessageParserException.ILLEGAL_CALENDAR_VALUE, null,
+                    MessageParserException.ILLEGAL_CALENDAR_VALUE, fieldname,
                     parseIndex, currentClass);
         }
         return result;
@@ -595,7 +590,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
         if (checkForNull(fieldname, allowNull)) {
             return null;
         }
-        String tmp = nextIndexParseAscii(false, false, false);  // parse an unsigned numeric string without exponent
+        String tmp = nextIndexParseAscii(fieldname, false, false, false);  // parse an unsigned numeric string without exponent
         int date = Integer.parseInt(tmp);
         // set the date and time
         int day, month, year;
@@ -607,7 +602,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
                 || (day > 31)) {
             throw new MessageParserException(
                     MessageParserException.ILLEGAL_DAY, String.format(
-                            "(found %d)", date), parseIndex, currentClass);
+                            "(found %d for %s)", date, fieldname), parseIndex, currentClass);
         }
         // now set the return value
         LocalDate result;
@@ -617,9 +612,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
             // and year
             result = new LocalDate(year, month, day);
         } catch (Exception e) {
-            throw new MessageParserException(
-                    MessageParserException.ILLEGAL_CALENDAR_VALUE, null,
-                    parseIndex, currentClass);
+            throw new MessageParserException(MessageParserException.ILLEGAL_CALENDAR_VALUE, fieldname,  parseIndex, currentClass);
         }
         return result;
     }
@@ -660,7 +653,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
         if (checkForNull(fieldname, allowNull)) {
             return null;
         }
-        return Byte.valueOf(nextIndexParseAscii(isSigned, false, false));
+        return Byte.valueOf(nextIndexParseAscii(fieldname, isSigned, false, false));
     }
 
     @Override
@@ -668,7 +661,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
         if (checkForNull(fieldname, allowNull)) {
             return null;
         }
-        return Short.valueOf(nextIndexParseAscii(isSigned, false, false));
+        return Short.valueOf(nextIndexParseAscii(fieldname, isSigned, false, false));
     }
 
     @Override
@@ -676,7 +669,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
         if (checkForNull(fieldname, allowNull)) {
             return null;
         }
-        return Long.valueOf(nextIndexParseAscii(isSigned, false, false));
+        return Long.valueOf(nextIndexParseAscii(fieldname, isSigned, false, false));
     }
 
     @Override
@@ -684,7 +677,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
         if (checkForNull(fieldname, allowNull)) {
             return null;
         }
-        return Integer.valueOf(nextIndexParseAscii(isSigned, false, false));
+        return Integer.valueOf(nextIndexParseAscii(fieldname, isSigned, false, false));
     }
 
     @Override
@@ -692,7 +685,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
         if (checkForNull(fieldname, allowNull)) {
             return null;
         }
-        return Float.valueOf(nextIndexParseAscii(isSigned, true, true));
+        return Float.valueOf(nextIndexParseAscii(fieldname, isSigned, true, true));
     }
 
     @Override
@@ -700,7 +693,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
         if (checkForNull(fieldname, allowNull)) {
             return null;
         }
-        return Double.valueOf(nextIndexParseAscii(isSigned, true, true));
+        return Double.valueOf(nextIndexParseAscii(fieldname, isSigned, true, true));
     }
 
     @Override
@@ -716,10 +709,10 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
         if (checkForNull(fieldname, allowNull)) {
             return null;
         }
-        String tmp = nextIndexParseAscii(isSigned, false, false);
+        String tmp = nextIndexParseAscii(fieldname, isSigned, false, false);
         if (tmp.length() > (length + (((tmp.charAt(0) == '-') || (tmp.charAt(0) == '+')) ? 1 : 0))) {
             throw new MessageParserException(MessageParserException.NUMERIC_TOO_LONG,
-                    String.format("(allowed %d, found %d)", length, tmp.length()), parseIndex, currentClass);
+                    String.format("(allowed %d, found %d for %s)", length, tmp.length(), fieldname), parseIndex, currentClass);
         }
         return Integer.valueOf(tmp);
     }
@@ -741,8 +734,8 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
             // check if it is a superclass
             if (!allowSubtypes || !type.isAssignableFrom(newObject.getClass())) {
                 throw new MessageParserException(MessageParserException.BAD_CLASS,
-                        String.format("(got %s, expected %s, subclassing = %b)",
-                                newObject.getClass().getSimpleName(), type.getSimpleName(), allowSubtypes),
+                        String.format("(got %s, expected %s for %s, subclassing = %b)",
+                                newObject.getClass().getSimpleName(), type.getSimpleName(), fieldname, allowSubtypes),
                                 parseIndex, currentClass);
             }
         }
@@ -790,8 +783,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
         try {
             return UUID.fromString(tmp);
         } catch (IllegalArgumentException e) {
-            throw new MessageParserException(MessageParserException.BAD_UUID_FORMAT,
-                    tmp, parseIndex, currentClass);
+            throw new MessageParserException(MessageParserException.BAD_UUID_FORMAT, tmp, parseIndex, currentClass);
         }
     }
 
