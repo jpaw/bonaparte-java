@@ -1,5 +1,5 @@
 package meta {
-	default private unsigned required trim noControlChars;
+	default private unsigned trim noControlChars;
 
     type identifier is Ascii(255);
     

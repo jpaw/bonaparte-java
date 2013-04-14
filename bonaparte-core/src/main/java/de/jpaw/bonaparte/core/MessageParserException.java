@@ -148,7 +148,7 @@ public class MessageParserException extends ApplicationException {
 
     public MessageParserException(int errorCode, String message, int characterIndex, String className) {
         super(errorCode, message);
-        constructorSubroutine(characterIndex, className, null);
+        constructorSubroutine(characterIndex, className, message);
     }
 
     public MessageParserException(int errorCode) {
