@@ -251,8 +251,14 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
     }
 
     @Override
-    public void startArray(int currentMembers, int maxMembers, int sizeOfElement)
-            throws IOException {
+    public void startMap(int currentMembers, int indexID) throws IOException {
+        out.writeByte(MAP_BEGIN);
+        writeVarInt(indexID);
+        writeVarInt(currentMembers);
+    }
+
+    @Override
+    public void startArray(int currentMembers, int maxMembers, int sizeOfElement) throws IOException {
         out.writeByte(ARRAY_BEGIN);
         writeVarInt(currentMembers);
     }

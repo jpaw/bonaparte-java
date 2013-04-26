@@ -39,6 +39,7 @@ public interface MessageComposer<E extends Exception> {
     public void startTransmission() throws E;
     public void startRecord() throws E;
     public void startArray(int currentMembers, int maxMembers, int sizeOfElement) throws E;
+    public void startMap  (int currentMembers, int indexID) throws E;
     public void writeSuperclassSeparator() throws E;  // this is bad. It should be transparent to the classes if the message format contains separators or not.
     public void terminateArray() throws E;
     public void terminateRecord() throws E;

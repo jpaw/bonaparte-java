@@ -419,6 +419,25 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         }
         return result;
     }
+    
+    @Override
+    public int parseMapStart(String fieldname, int indexID) throws IOException {
+        if (checkForNull(fieldname, true)) {
+            return -1;
+        }
+        needByte(MAP_BEGIN);
+        int foundIndexType = readVarInt(fieldname, 32);
+        if (foundIndexType != indexID) {
+            throw new IOException(String.format("WRONG_MAP_INDEX_TYPE: got %d, expected for %s.%s",
+                    foundIndexType, indexID, currentClass, fieldname));
+        }
+        int n = readVarInt(fieldname, 32);
+        if ((n < 0) || (n > 1000000000)) {
+            throw new IOException(String.format("ARRAY_SIZE_OUT_OF_BOUNDS: got %d entries (0x%x) for %s.%s",
+                    n, n, currentClass, fieldname));
+        }
+        return n;
+    }
 
     @Override
     public int parseArrayStart(String fieldname, int max, int sizeOfChild) throws IOException {
@@ -428,8 +447,8 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         needByte(ARRAY_BEGIN);
         int n = readVarInt(fieldname, 32);
         if ((n < 0) || (n > 1000000000)) {
-            throw new IOException(String.format("ARRAY_SIZE_OUT_OF_BOUNDS: got %d entries (0x%x) for %s) in %s.%s",
-                    n, n, fieldname, currentClass, fieldname));
+            throw new IOException(String.format("ARRAY_SIZE_OUT_OF_BOUNDS: got %d entries (0x%x) for %s.%s",
+                    n, n, currentClass, fieldname));
         }
         return n;
     }

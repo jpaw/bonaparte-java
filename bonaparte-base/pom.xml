@@ -18,6 +18,8 @@
         <bonaparte-plugin-version>1.5.1-SNAPSHOT</bonaparte-plugin-version>
         <slf4j.version>1.6.6</slf4j.version>
         <logback.version>1.0.9</logback.version>
+        <hornetq.version>2.2.14.Final</hornetq.version>
+        <!-- <hornetq.version>2.3.0.Final</hornetq.version>  -->
     </properties>
 
     <licenses>

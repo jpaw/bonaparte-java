@@ -5,7 +5,7 @@ package meta {
     
     enum Visibility { DEFAULT, PRIVATE, PROTECTED, PUBLIC }
     enum BundleStatus { UNUSED, RESOLVED, INSTALLED, STARTING, SHUTTING_DOWN, MAINTENANCE }  // borrow OSGi statuses
-    enum Multiplicity { SCALAR, ARRAY, LIST }
+    enum Multiplicity { SCALAR, ARRAY, LIST, MAP }
     // the DataCategory matches the enum of same name in the Bonaparte DSL generator project
     enum DataCategory { OBJECT, ENUM, NUMERIC, STRING, TEMPORAL, MISC }  // misc is boolean, binary, char, uuid, ...
 

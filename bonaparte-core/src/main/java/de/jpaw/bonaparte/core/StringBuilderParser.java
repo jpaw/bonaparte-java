@@ -517,6 +517,25 @@ public final class StringBuilderParser extends StringBuilderConstants implements
         }
         return result;
     }
+    
+    @Override
+    public int parseMapStart(String fieldname, int indexID) throws MessageParserException {
+        if (checkForNull(fieldname, true)) {
+            return -1;
+        }
+        needChar(MAP_BEGIN);
+        int foundIndexType = readInteger(fieldname, false, false);
+        if (foundIndexType != indexID) {
+            throw new MessageParserException(MessageParserException.WRONG_MAP_INDEX_TYPE,
+                    String.format("(got %d, expected for %s)", foundIndexType, indexID, fieldname), parseIndex, currentClass);
+        }
+        int n = readInteger(fieldname, false, false);
+        if ((n < 0) || (n > 1000000000)) {
+            throw new MessageParserException(MessageParserException.ARRAY_SIZE_OUT_OF_BOUNDS,
+                    String.format("(got %d entries (0x%x) for %s)", n, n, fieldname), parseIndex, currentClass);
+        }
+        return n;
+    }
 
     @Override
     public int parseArrayStart(String fieldname, int max, int sizeOfChild) throws MessageParserException {

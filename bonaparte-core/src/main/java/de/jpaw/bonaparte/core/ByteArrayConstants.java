@@ -45,4 +45,5 @@ public abstract class ByteArrayConstants extends Settings {
     protected static final byte OBJECT_BEGIN = '\023';              // ctrl-S
     protected static final byte ESCAPE_CHAR = '\005';               // ctrl-E
     protected static final byte NULL_FIELD = '\016';                // ctrl-N
+    protected static final byte MAP_BEGIN = '\036';                 // 
 }

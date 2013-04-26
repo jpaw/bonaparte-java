@@ -372,6 +372,13 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
     }
 
     @Override
+    public void startMap(int currentMembers, int indexID) {
+        work.append(MAP_BEGIN);
+        addField(indexID);
+        addField(currentMembers);
+    }
+    
+    @Override
     public void startArray(int currentMembers, int maxMembers, int sizeOfElement) {
         work.append(ARRAY_BEGIN);
         addField(currentMembers);

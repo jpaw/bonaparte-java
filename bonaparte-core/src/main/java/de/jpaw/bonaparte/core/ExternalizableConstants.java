@@ -37,7 +37,8 @@ public class ExternalizableConstants {
     protected static final byte OBJECT_BEGIN = '\023';              // ctrl-S
     protected static final byte ESCAPE_CHAR = '\005';               // ctrl-E
     protected static final byte NULL_FIELD = '\016';                // ctrl-N
-
+    protected static final byte MAP_BEGIN = '\036';                 // 
+    
     // variable length integers
 
     // numeric tokens:21 tokens in sequential order

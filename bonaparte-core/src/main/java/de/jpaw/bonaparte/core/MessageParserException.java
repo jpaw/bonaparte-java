@@ -79,6 +79,7 @@ public class MessageParserException extends ApplicationException {
     static public final int BAD_UUID_FORMAT              = OFFSET + 35;
     static public final int INVALID_ENUM_TOKEN           = OFFSET + 36;
     static public final int CLASS_NOT_FOUND              = OFFSET3 + 37;
+    static public final int WRONG_MAP_INDEX_TYPE         = OFFSET + 38;
 
     /**
      * Method lazyInitialization.
@@ -128,6 +129,7 @@ public class MessageParserException extends ApplicationException {
             codeToDescription.put(BAD_UUID_FORMAT              , "malformed UUID");
             codeToDescription.put(INVALID_ENUM_TOKEN           , "invalid token to instanciate enum");
             codeToDescription.put(CLASS_NOT_FOUND              , "class could not be found or instantiated");
+            codeToDescription.put(WRONG_MAP_INDEX_TYPE         , "parsed index type of map mismatches expected one");
         }
     }
 
