@@ -2,6 +2,7 @@ package de.jpaw.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import de.jpaw.bonaparte.core.StringConverter;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
@@ -30,9 +31,21 @@ public class StringConverterEmptyToNull implements StringConverter {
 
     @Override
     public String[] convertArray(String[] oldArray, final AlphanumericElementaryDataItem meta) {
+        if (oldArray == null)
+            return null;
         for (int i = 0; i < oldArray.length; ++i)
             oldArray[i] = convert(oldArray[i], meta);
         return oldArray;  // no conversion of the array itself done here
+    }
+
+    @Override
+    public <K> Map<K, String> convertMap(Map<K, String> oldMap, AlphanumericElementaryDataItem meta) {
+        if (oldMap == null)
+            return null;
+        for (Map.Entry<K, String> i : oldMap.entrySet()) {
+            oldMap.put(i.getKey(), convert(i.getValue(), meta));
+        }
+        return oldMap;
     }
 
 }

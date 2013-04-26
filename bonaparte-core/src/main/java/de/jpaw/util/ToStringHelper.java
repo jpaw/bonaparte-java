@@ -2,6 +2,7 @@ package de.jpaw.util;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Map;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 
@@ -82,7 +83,7 @@ public class ToStringHelper {
                     // output a list of objects
                     boolean firstInList = true;
                     _buffer.append("{");
-                    for (Object e : (java.util.List)value) {
+                    for (Object e : (java.util.List<?>)value) {
                         if (!firstInList)
                             _buffer.append(", ");
                         firstInList = false;
@@ -95,6 +96,27 @@ public class ToStringHelper {
                         }
                     }
                     _buffer.append("}");
+                } else if (value instanceof java.util.Map) {
+                    // output a map of objects
+                    boolean firstInList = true;
+                    _buffer.append("(");
+                    Map<?,?> m = (java.util.Map<?,?>)value;
+                    for (Map.Entry<?,?> e : m.entrySet()) {
+                        if (!firstInList)
+                            _buffer.append(", ");
+                        firstInList = false;
+                        _buffer.append(e.getKey().toString());
+                        _buffer.append(":");
+                        Object v = e.getValue();
+                        if (v == null) {
+                            _buffer.append("null");
+                        } else if (v instanceof BonaPortable) {
+                            BonaPortable(_buffer, _currentIndent, showNulls, (BonaPortable)v);
+                        } else {
+                            _buffer.append(v.toString());
+                        }
+                    }
+                    _buffer.append(")");
                 } else {
                     _buffer.append(value.toString());
                 }

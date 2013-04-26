@@ -1,11 +1,12 @@
 package de.jpaw.bonaparte.core;
 
 import java.util.List;
+import java.util.Map;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 
 /**
- * The StringConverter interface is used to run some preprocessor over objects whih are mapped to type String (Ascii, Unicode, Upper, Lower).
+ * The StringConverter interface is used to run some preprocessor over objects which are mapped to type String (Ascii, Unicode, Upper, Lower).
  * 
  * @author Michael Bischoff
  * @version $Revision$
@@ -23,4 +24,6 @@ public interface StringConverter {
      * Please note that the converter is only invoked on the array itself, not on the individual elements. */
     String [] convertArray(String [] oldArray, final AlphanumericElementaryDataItem meta);
 
+    /** Map-type methods. The tree walker converses the value parts of the map only. */
+    public <K> Map<K, String> convertMap(Map<K, String> oldMap, final AlphanumericElementaryDataItem meta);
 }
