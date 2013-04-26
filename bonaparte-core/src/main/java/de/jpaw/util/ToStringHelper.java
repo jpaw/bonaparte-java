@@ -1,6 +1,7 @@
 package de.jpaw.util;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 
@@ -18,19 +19,38 @@ public class ToStringHelper {
         return _buffer.toString();
     }
 
-    public static void BonaPortable(StringBuilder _buffer, StringBuilder _currentIndent, boolean showNulls, BonaPortable obj) {
-        boolean firstField = true;
-        _buffer.append(obj.get$PQON());
-        _buffer.append("(");
-        if (_currentIndent != null) {
-            _currentIndent.append("  ");                                // indent more
-            _buffer.append(_currentIndent);
+    private static void delimiter(StringBuilder _buffer, StringBuilder _currentIndent, boolean ofSuperClass) {
+        if (_currentIndent == null) {
+            // single line output
+            _buffer.append(ofSuperClass ? "< " : ", ");
+        } else {
+            if (ofSuperClass) {
+                _buffer.append(_currentIndent);
+                _buffer.append("^^^");
+                _buffer.append(_currentIndent);
+            } else {
+                _buffer.append(",");
+                _buffer.append(_currentIndent);
+            }
         }
-        // object output
-        // this is mainly used for debugging, so speed is not as relevant and reflection can be used instead of generated code
-        for (Field field : obj.getClass().getFields()) {
+    }
+    
+    // returns true if at leastone field has been printed
+    private static boolean BonaPortableSub(StringBuilder _buffer, StringBuilder _currentIndent, boolean showNulls, BonaPortable obj,
+            Class<?> thisClass) {
+        boolean firstField = true;
+        boolean didSome = false;
+        if (thisClass.getSuperclass() != Object.class) {
+            // descend
+            didSome = BonaPortableSub(_buffer, _currentIndent, showNulls, obj, thisClass.getSuperclass());
+            if (didSome)
+                delimiter(_buffer, _currentIndent, true);
+        }
+        for (Field field : thisClass.getDeclaredFields()) {
+            if ((field.getModifiers() & Modifier.STATIC) != 0)
+                continue;           // skip static fields
             if (!firstField)
-                _buffer.append(", ");
+                delimiter(_buffer, _currentIndent, false);
             field.setAccessible(true); // You might want to set modifier to public first.
             Object value = null;
             try {
@@ -80,6 +100,19 @@ public class ToStringHelper {
                 }
             }
         }
+        return didSome || !firstField;
+    }
+
+    public static void BonaPortable(StringBuilder _buffer, StringBuilder _currentIndent, boolean showNulls, BonaPortable obj) {
+        _buffer.append(obj.get$PQON());
+        _buffer.append("(");
+        if (_currentIndent != null) {
+            _currentIndent.append("  ");                                // indent more
+            _buffer.append(_currentIndent);
+        }
+        // object output
+        // this is mainly used for debugging, so speed is not as relevant and reflection can be used instead of generated code
+        BonaPortableSub(_buffer, _currentIndent, showNulls, obj, obj.getClass());
         // closure
         if (_currentIndent != null) {
             _currentIndent.setLength(_currentIndent.length() - 2);      // restore previous length
