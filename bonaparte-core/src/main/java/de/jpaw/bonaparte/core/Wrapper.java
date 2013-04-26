@@ -7,6 +7,8 @@ import java.io.ObjectOutput;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import de.jpaw.util.ToStringHelper;
+
 public class Wrapper implements BonaPortable, Externalizable {
     private static final long serialVersionUID = 130622384733L;
     private static final ConcurrentMap<String, String> property$Map = new ConcurrentHashMap<String, String>();
@@ -93,4 +95,10 @@ public class Wrapper implements BonaPortable, Externalizable {
         if (data != null)
             data.treeWalkString(_cvt);
     }
+    
+    @Override
+    public String toString() {
+        return ToStringHelper.toStringSL(this);
+    }
+
 }
