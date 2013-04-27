@@ -22,7 +22,7 @@ import de.jpaw.bonaparte.coretests.initializers.FillBoxedTypes;
 import de.jpaw.bonaparte.coretests.util.SimpleTestRunner;
 
 /**
- * The TestPrimitives class.
+ * The TestBoxedTypes class.
  * 
  * @author Michael Bischoff
  * @version $Revision$

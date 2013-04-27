@@ -1,0 +1,20 @@
+package mapTests {
+    default public;
+    
+    type countryCode is uppercase(3);
+    enum Color { RED, GREEN, BLUE }
+    enum AlphaColor { RED="R", GREEN="G", BLUE="B" }
+
+    class Unrelated {
+        int             t;
+        Ascii(32)       str;
+    }
+    
+    class Maps1 {
+        Integer                 Map<Integer>    primes;
+        Unicode(50)             Map<String>     ccConverter;
+        Integer                 Map<String>     unused;
+        enum AlphaColor         Map<String>     primaryColor;
+        required (Unrelated...) Map<Long>       longToBonaPortable;
+    }
+}

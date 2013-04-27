@@ -2,22 +2,23 @@ package testcases.conversion;
 
 import org.testng.annotations.Test;
 
-import de.jpaw.bonaparte.coretests.initializers.FillLists;
+import de.jpaw.bonaparte.coretests.initializers.FillMaps;
 import de.jpaw.bonaparte.coretests.util.SimpleTestRunner;
 
 /**
- * The TestLists class.
+ * The TestMaps class.
  * 
  * @author Michael Bischoff
  * @version $Revision$
  * 
  *          This is a simple testcase which calls the SimpleTestRunner with a class
- *          consisting of all supported BonaPortable List types.
+ *          consisting of all supported BonaPortable Map types.
  */
-public class TestLists {
-    
+public class TestMaps {
+
     @Test
     public void testLists() throws Exception {
-        SimpleTestRunner.run(FillLists.test1(), false);
+        SimpleTestRunner.run(FillMaps.test1(), false);
     }
+
 }
