@@ -17,4 +17,10 @@ package mapTests {
         enum AlphaColor         Map<String>     primaryColor;
         required (Unrelated...) Map<Long>       longToBonaPortable;
     }
+    
+    class Sets1 {
+        Integer                 Set<20>         iSet;
+        Ascii(10)               Set<>           sSet;
+        required (Unrelated...) Set<>           bSet;
+    }
 }

@@ -82,8 +82,25 @@ public class ToStringHelper {
                 } else if (value instanceof java.util.List) {
                     // output a list of objects
                     boolean firstInList = true;
-                    _buffer.append("{");
+                    _buffer.append("[");
                     for (Object e : (java.util.List<?>)value) {
+                        if (!firstInList)
+                            _buffer.append(", ");
+                        firstInList = false;
+                        if (e == null) {
+                            _buffer.append("null");
+                        } else if (e instanceof BonaPortable) {
+                            BonaPortable(_buffer, _currentIndent, showNulls, (BonaPortable)e);
+                        } else {
+                            _buffer.append(e.toString());
+                        }
+                    }
+                    _buffer.append("]");
+                } else if (value instanceof java.util.Set) {
+                    // output a list of objects
+                    boolean firstInList = true;
+                    _buffer.append("{");
+                    for (Object e : (java.util.Set<?>)value) {
                         if (!firstInList)
                             _buffer.append(", ");
                         firstInList = false;

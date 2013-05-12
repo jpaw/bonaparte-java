@@ -1,8 +1,10 @@
 package de.jpaw.util;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import de.jpaw.bonaparte.core.StringConverter;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
@@ -46,6 +48,17 @@ public class StringConverterEmptyToNull implements StringConverter {
             oldMap.put(i.getKey(), convert(i.getValue(), meta));
         }
         return oldMap;
+    }
+
+    @Override
+    public Set<String> convertSet(Set<String> oldSet, AlphanumericElementaryDataItem meta) {
+        if (oldSet == null)
+            return null;
+        Set<String> newSet = new HashSet<String>(oldSet.size());
+        for (String i : oldSet) {
+            newSet.add(convert(i, meta));
+        }
+        return newSet;
     }
 
 }

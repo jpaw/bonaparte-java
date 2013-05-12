@@ -14,11 +14,11 @@ import de.jpaw.bonaparte.coretests.util.SimpleTestRunner;
  *          This is a simple testcase which calls the SimpleTestRunner with a class
  *          consisting of all supported BonaPortable Map types.
  */
-public class TestMaps {
+public class TestSets {
 
     @Test
-    public void testMaps() throws Exception {
-        SimpleTestRunner.run(FillMaps.test1(), false);
+    public void testSets() throws Exception {
+        SimpleTestRunner.run(FillMaps.testSets1(), false);
     }
 
 }

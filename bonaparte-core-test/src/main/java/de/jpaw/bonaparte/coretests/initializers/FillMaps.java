@@ -1,9 +1,11 @@
 package de.jpaw.bonaparte.coretests.initializers;
 
 import java.util.HashMap;
+import java.util.HashSet;
 
 import de.jpaw.bonaparte.pojos.mapTests.AlphaColor;
 import de.jpaw.bonaparte.pojos.mapTests.Maps1;
+import de.jpaw.bonaparte.pojos.mapTests.Sets1;
 import de.jpaw.bonaparte.pojos.mapTests.Unrelated;
 
 public class FillMaps {
@@ -31,6 +33,25 @@ public class FillMaps {
         x.longToBonaPortable = new HashMap<Long, Unrelated>(12);
         x.longToBonaPortable.put(Long.valueOf(42L), new Unrelated(4242, "Fortytwotimestwo"));
         x.longToBonaPortable.put(Long.valueOf(101L), new Unrelated(-1, "oneoone"));
+        return x;
+    }
+    
+    static public Sets1 testSets1() {
+        Sets1 x = new Sets1();
+        x.iSet = new HashSet<Integer>(10);
+        x.iSet.add(7);
+        x.iSet.add(11);
+        x.iSet.add(13);
+        x.iSet.add(17);
+        x.iSet.add(19);
+        x.sSet = new HashSet<String>(10);
+        x.sSet.add("EUR");
+        x.sSet.add("USD");
+        x.sSet.add("GBP");
+        x.sSet.add("JPY");
+        x.bSet = new HashSet<Unrelated>(5);
+        x.bSet.add(new Unrelated(4242, "Fortytwotimestwo"));
+        x.bSet.add(new Unrelated(-1, "oneoone"));
         return x;
     }
 
