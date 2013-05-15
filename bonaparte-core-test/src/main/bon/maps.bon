@@ -23,4 +23,17 @@ package mapTests {
         Ascii(10)               Set<>           sSet;
         required (Unrelated...) Set<>           bSet;
     }
+    
+    class ReqTests {
+        required Integer        ar;
+        optional Integer        ao;
+        required Integer List<> lro;
+        optional Integer List<> loo;
+        required Integer Map<String> mro;
+        optional Integer Map<String> moo;
+        required Integer required List<> lrr;
+        optional Integer required List<> lor;
+        required Integer required Map<String> mrr;
+        optional Integer required Map<String> mor;
+    }
 }
