@@ -57,8 +57,8 @@ public interface MessageParser<E extends Exception> {
     public LocalDateTime readDayTime(String fieldname, boolean allowNull, boolean hhmmss, int length) throws E;
     public BonaPortable readObject  (String fieldname, Class<? extends BonaPortable> type, boolean allowNull, boolean allowSubtypes) throws E; // parser factory
     // composite methods
-    public int parseMapStart        (String fieldname, int indexID) throws E;
-    public int parseArrayStart      (String fieldname, int max, int sizeOfElement) throws E;
+    public int parseMapStart        (String fieldname, boolean allowNull, int indexID) throws E;
+    public int parseArrayStart      (String fieldname, boolean allowNull, int max, int sizeOfElement) throws E;
     public void parseArrayEnd() throws E;
     public BonaPortable       readRecord()       throws E;
     public List<BonaPortable> readTransmission() throws E;

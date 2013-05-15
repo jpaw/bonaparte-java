@@ -80,6 +80,8 @@ public class MessageParserException extends ApplicationException {
     static public final int INVALID_ENUM_TOKEN           = OFFSET + 36;
     static public final int CLASS_NOT_FOUND              = OFFSET3 + 37;
     static public final int WRONG_MAP_INDEX_TYPE         = OFFSET + 38;
+    static public final int NULL_MAP_NOT_ALLOWED_HERE    = OFFSET + 39;
+    static public final int NULL_COLLECTION_NOT_ALLOWED  = OFFSET + 40;
 
     /**
      * Method lazyInitialization.
@@ -130,6 +132,8 @@ public class MessageParserException extends ApplicationException {
             codeToDescription.put(INVALID_ENUM_TOKEN           , "invalid token to instanciate enum");
             codeToDescription.put(CLASS_NOT_FOUND              , "class could not be found or instantiated");
             codeToDescription.put(WRONG_MAP_INDEX_TYPE         , "parsed index type of map mismatches expected one");
+            codeToDescription.put(NULL_MAP_NOT_ALLOWED_HERE    , "parsed NULL for a required Map<>");
+            codeToDescription.put(NULL_COLLECTION_NOT_ALLOWED  , "parsed NULL for a required List, Set or Array");
         }
     }
 

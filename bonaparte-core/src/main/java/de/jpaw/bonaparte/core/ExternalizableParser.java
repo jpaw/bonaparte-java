@@ -421,8 +421,10 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
     }
     
     @Override
-    public int parseMapStart(String fieldname, int indexID) throws IOException {
-        if (checkForNull(fieldname, true)) {
+    public int parseMapStart(String fieldname, boolean allowNull, int indexID) throws IOException {
+        if (checkForNull(fieldname, true)) {  // check it separately in order to give a distinct error message
+            if (!allowNull)
+                throw new IOException("ILLEGAL NULL Map in " + currentClass + "." + fieldname);
             return -1;
         }
         needByte(MAP_BEGIN);
@@ -440,8 +442,10 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
     }
 
     @Override
-    public int parseArrayStart(String fieldname, int max, int sizeOfChild) throws IOException {
-        if (checkForNull(fieldname, true)) {
+    public int parseArrayStart(String fieldname, boolean allowNull, int max, int sizeOfChild) throws IOException {
+        if (checkForNull(fieldname, true)) {  // check it separately in order to give a distinct error message
+            if (!allowNull)
+                throw new IOException("ILLEGAL NULL List, Set or Array in " + currentClass + "." + fieldname);
             return -1;
         }
         needByte(ARRAY_BEGIN);

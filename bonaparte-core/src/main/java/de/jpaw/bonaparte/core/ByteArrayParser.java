@@ -618,8 +618,10 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
     }
 
     @Override
-    public int parseMapStart(String fieldname, int indexID) throws MessageParserException {
-        if (checkForNull(fieldname, true)) {
+    public int parseMapStart(String fieldname, boolean allowNull, int indexID) throws MessageParserException {
+        if (checkForNull(fieldname, true)) {  // check it separately in order to give a distinct error message
+            if (!allowNull)
+                throw new MessageParserException(MessageParserException.NULL_MAP_NOT_ALLOWED_HERE, fieldname, parseIndex, currentClass);
             return -1;
         }
         needByte(MAP_BEGIN);
@@ -637,8 +639,10 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
     }
 
     @Override
-    public int parseArrayStart(String fieldname, int max, int sizeOfChild) throws MessageParserException {
+    public int parseArrayStart(String fieldname, boolean allowNull, int max, int sizeOfChild) throws MessageParserException {
         if (checkForNull(fieldname, true)) {
+            if (!allowNull)
+                throw new MessageParserException(MessageParserException.NULL_COLLECTION_NOT_ALLOWED, fieldname, parseIndex, currentClass);
             return -1;
         }
         needByte(ARRAY_BEGIN);
