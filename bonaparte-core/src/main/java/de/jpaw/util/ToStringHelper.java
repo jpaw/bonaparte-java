@@ -7,6 +7,9 @@ import java.util.Map;
 import de.jpaw.bonaparte.core.BonaPortable;
 
 public class ToStringHelper {
+    public static int maxSet = -1;
+    public static int maxList = -1;
+    public static int maxMap = -1;
     
     public static String toStringML(BonaPortable obj) {
         StringBuilder _buffer = new StringBuilder(1000);
@@ -72,6 +75,7 @@ public class ToStringHelper {
                     firstField = false;
                 }
             } else {
+                int count = 0;
                 firstField = false;
                 _buffer.append(field.getName());
                 _buffer.append("=");
@@ -87,6 +91,12 @@ public class ToStringHelper {
                         if (!firstInList)
                             _buffer.append(", ");
                         firstInList = false;
+                        ++count;
+                        if (maxList >= 0 && count > maxList) {
+                            // abort, list too long
+                            _buffer.append("...");
+                            break;
+                        }
                         if (e == null) {
                             _buffer.append("null");
                         } else if (e instanceof BonaPortable) {
@@ -104,6 +114,12 @@ public class ToStringHelper {
                         if (!firstInList)
                             _buffer.append(", ");
                         firstInList = false;
+                        ++count;
+                        if (maxSet >= 0 && count > maxSet) {
+                            // abort, list too long
+                            _buffer.append("...");
+                            break;
+                        }
                         if (e == null) {
                             _buffer.append("null");
                         } else if (e instanceof BonaPortable) {
@@ -122,6 +138,12 @@ public class ToStringHelper {
                         if (!firstInList)
                             _buffer.append(", ");
                         firstInList = false;
+                        ++count;
+                        if (maxMap >= 0 && count > maxMap) {
+                            // abort, list too long
+                            _buffer.append("...");
+                            break;
+                        }
                         _buffer.append(e.getKey().toString());
                         _buffer.append(":");
                         Object v = e.getValue();
