@@ -37,7 +37,7 @@ public interface MessageParser<E extends Exception> {
     static public final String GENERIC_RECORD = "RECORD";   // field name to be used when parsing top level record
     
     // unmarshaller methods: field type specific
-    public BigDecimal readBigDecimal(String fieldname, boolean allowNull, int length, int decimals, boolean isSigned) throws E;
+    public BigDecimal readBigDecimal(String fieldname, boolean allowNull, int length, int decimals, boolean isSigned, boolean rounding, boolean autoScale) throws E;
     public Character  readCharacter (String fieldname, boolean allowNull) throws E;
     public UUID    readUUID         (String fieldname, boolean allowNull) throws E;
     public Boolean readBoolean      (String fieldname, boolean allowNull) throws E;

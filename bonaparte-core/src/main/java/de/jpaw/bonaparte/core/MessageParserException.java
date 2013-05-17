@@ -82,6 +82,7 @@ public class MessageParserException extends ApplicationException {
     static public final int WRONG_MAP_INDEX_TYPE         = OFFSET + 38;
     static public final int NULL_MAP_NOT_ALLOWED_HERE    = OFFSET + 39;
     static public final int NULL_COLLECTION_NOT_ALLOWED  = OFFSET + 40;
+    static public final int TOO_MANY_DECIMALS            = OFFSET + 41;
 
     /**
      * Method lazyInitialization.
@@ -134,6 +135,7 @@ public class MessageParserException extends ApplicationException {
             codeToDescription.put(WRONG_MAP_INDEX_TYPE         , "parsed index type of map mismatches expected one");
             codeToDescription.put(NULL_MAP_NOT_ALLOWED_HERE    , "parsed NULL for a required Map<>");
             codeToDescription.put(NULL_COLLECTION_NOT_ALLOWED  , "parsed NULL for a required List, Set or Array");
+            codeToDescription.put(TOO_MANY_DECIMALS            , "number contains more decimal places than allowed");
         }
     }
 

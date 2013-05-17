@@ -16,6 +16,7 @@
 package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -188,11 +189,20 @@ public final class StringBuilderParser extends StringBuilderConstants implements
     }
 
     @Override
-    public BigDecimal readBigDecimal(String fieldname, boolean allowNull, int length, int decimals, boolean isSigned) throws MessageParserException {
+    public BigDecimal readBigDecimal(String fieldname, boolean allowNull, int length, int decimals, boolean isSigned, boolean rounding, boolean autoScale) throws MessageParserException {
         if (checkForNull(fieldname, allowNull)) {
             return null;
         }
-        return new BigDecimal(nextIndexParseAscii(fieldname, isSigned, true, false));
+        BigDecimal r = new BigDecimal(nextIndexParseAscii(fieldname, isSigned, true, false));
+        try {
+            if (r.scale() > decimals)
+                r = r.setScale(decimals, rounding ? RoundingMode.HALF_EVEN : RoundingMode.UNNECESSARY);
+            if (autoScale && r.scale() < decimals)  // round for smaller as well!
+                r = r.setScale(decimals, RoundingMode.UNNECESSARY);
+        } catch (ArithmeticException a) {
+            throw new MessageParserException(MessageParserException.TOO_MANY_DECIMALS, fieldname, parseIndex, currentClass);
+        }
+        return r;
     }
 
     @Override

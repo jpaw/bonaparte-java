@@ -18,6 +18,7 @@ package de.jpaw.bonaparte.core;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -111,21 +112,32 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
     }
 
     @Override
-    public BigDecimal readBigDecimal(String fieldname, boolean allowNull, int length, int decimals, boolean isSigned) throws IOException {
+    public BigDecimal readBigDecimal(String fieldname, boolean allowNull, int length, int decimals, boolean isSigned, boolean rounding, boolean autoScale) throws IOException {
         if (checkForNull(fieldname, allowNull)) {
             return null;
         }
+        BigDecimal r;
         byte c = nextByte();
         if ((c > FRAC_SCALE_0) && (c <= FRAC_SCALE_18)) {
             // read fractional part
             long fraction = readLongNoNull(fieldname);
             int scale = c-FRAC_SCALE_0;
             // combine with integral part and create scaled result
-            return BigDecimal.valueOf((powersOfTen[scale] * readLongNoNull(fieldname)) + fraction, scale);
+            r = BigDecimal.valueOf((powersOfTen[scale] * readLongNoNull(fieldname)) + fraction, scale);
         } else {
             pushBack(c);
-            return BigDecimal.valueOf(readLongNoNull(fieldname));
+            r = BigDecimal.valueOf(readLongNoNull(fieldname));
         }
+        // now check precision, if required, convert!
+        try {
+            if (r.scale() > decimals)
+                r = r.setScale(decimals, rounding ? RoundingMode.HALF_EVEN : RoundingMode.UNNECESSARY);
+            if (autoScale && r.scale() < decimals)  // round for smaller as well!
+                r = r.setScale(decimals, RoundingMode.UNNECESSARY);
+        } catch (ArithmeticException a) {
+            throw new IOException("Too many decimals, would need to round for " + currentClass + "." + fieldname);
+        }
+        return r;
     }
 
     @Override

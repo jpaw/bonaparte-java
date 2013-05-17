@@ -1,0 +1,5 @@
+package bigdecimal {
+    class BDTest BeanVal {
+        Decimal(18,6) amount;    
+    }    
+}
