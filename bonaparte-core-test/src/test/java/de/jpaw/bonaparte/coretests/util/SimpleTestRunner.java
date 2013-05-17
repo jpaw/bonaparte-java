@@ -57,6 +57,43 @@ public class SimpleTestRunner {
         stream.close();
     }
 
+    // convert a BonaPortable to byte [] and back
+    static public BonaPortable runThroughByteArray(BonaPortable src) throws MessageParserException {
+        int srcHash = src.hashCode(); 
+        ByteArrayComposer bac = new ByteArrayComposer();
+        bac.reset();
+        bac.writeRecord(src);
+        byte [] bacResult = bac.getBytes();
+        MessageParser<MessageParserException> w2 = new ByteArrayParser(bacResult, 0, -1);
+        BonaPortable dst2 = w2.readRecord();
+        assert dst2.getClass() == src.getClass() : "returned obj is of wrong type (ByteArrayParser)"; // assuming we have one class loader only
+        assert src.hasSameContentsAs(dst2) : "returned obj is not equal to original one (ByteArrayParser)";
+        // the inherited equals() normally does not return true
+        assert src.equals(dst2) : "returned obj is not equal to original one (ByteArrayParser) (with equals())";
+        // verify the hashCodes
+        assert dst2.hashCode() == srcHash : "hash code differs for dst2";
+        return dst2;
+    }
+    
+    // convert a BonaPortable to StringBuilder and back
+    static public BonaPortable runThroughStringBuilder(BonaPortable src) throws MessageParserException {
+        int srcHash = src.hashCode(); 
+        StringBuilderComposer sbc = new StringBuilderComposer(new StringBuilder());
+        sbc.reset();
+        sbc.writeRecord(src);
+        byte [] sbcResult = sbc.getBytes();
+        StringBuilder work = new StringBuilder(new String (sbcResult, defaultCharset)); 
+        MessageParser<MessageParserException> w1 = new StringBuilderParser(work, 0, -1);
+        BonaPortable dst1 = w1.readRecord();
+        assert dst1.getClass() == src.getClass() : "returned obj is of wrong type (StringBuilderParser)"; // assuming we have one class loader only
+        assert src.hasSameContentsAs(dst1) : "returned obj is not equal to original one (StringBuilderParser)";
+        // the inherited equals() normally does not return true
+        assert src.equals(dst1) : "returned obj is not equal to original one (StringBuilderParser) (with equals())";
+        // verify the hashCodes
+        assert dst1.hashCode() == srcHash : "hash code differs for dst1";
+        return dst1;
+    }
+    
     static public void run(BonaPortable src, boolean doDumpToFile) throws Exception {
         int srcHash = src.hashCode(); 
         System.out.println("");
