@@ -119,7 +119,6 @@
 
     <modules>
         <module>../bonaparte-core/generator/pom.xml</module>
-        <!-- 
         <module>../bonaparte-core-test/generator/pom.xml</module>
         <module>../bonaparte-money/generator/pom.xml</module>
         <module>../bonaparte-demorqrs/generator/pom.xml</module>
@@ -134,21 +133,7 @@
         <module>../bonaparte-camel/pom.xml</module>
         <module>../bonaparte-mina-test/pom.xml</module>
         <module>../bonaparte-hornetq-test/pom.xml</module>
-        <module>../bonaparte-vertx/pom.xml</module>  -->
+        <module>../bonaparte-vertx/pom.xml</module>
     </modules>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>5.12.1</version>   <!-- 5.14.9 or 6.7 use waaay more dependencies -->
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>${slf4j.version}</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
 </project>
