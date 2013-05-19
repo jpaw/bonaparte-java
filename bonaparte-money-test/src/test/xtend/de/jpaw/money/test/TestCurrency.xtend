@@ -4,6 +4,8 @@ import org.testng.annotations.Test
 import de.jpaw.money.BonaCurrency
 import de.jpaw.money.MonetaryException
 
+/** xtend test cases. To run "as TestNG" from inside Eclipse, find the generated/java folder, and run the Java class there. */
+
 public class TestCurrency {
 
     def private testISO(String code, int expectDigits, int expectedErrorCode) throws Exception {
