@@ -118,6 +118,7 @@
     </reporting>
 
     <modules>
+        <module>generator/pom.xml</module>
         <module>../bonaparte-core/generator/pom.xml</module>
         <module>../bonaparte-core-test/generator/pom.xml</module>
         <module>../bonaparte-money/generator/pom.xml</module>
@@ -125,7 +126,8 @@
         <module>../bonaparte-core/pom.xml</module>
         <module>../bonaparte-core-test/pom.xml</module>
         <module>../bonaparte-money/pom.xml</module>
-        <module>../bonaparte-money-test/pom.xml</module>
+<!--
+        <module>../bonaparte-money-test/pom.xml</module> -->
         <module>../bonaparte-demorqrs/pom.xml</module>
         <module>../bonaparte-netty/pom.xml</module>
         <module>../bonaparte-netty-test/pom.xml</module>
