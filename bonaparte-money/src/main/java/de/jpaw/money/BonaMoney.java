@@ -22,13 +22,6 @@ public final class BonaMoney implements Serializable, MoneyGetter {
 
     static private final BigDecimal [] EMPTY_ARRAY = new BigDecimal[0];
     static private final ImmutableList<BigDecimal> EMPTY_LIST = ImmutableList.of();
-    static private final BigDecimal [] SCALED_ZEROES;       // provides a preinitialized array of a few zeroes
-    static {
-        SCALED_ZEROES = new BigDecimal [BonaCurrency.MAX_DECIMALS + 1];
-        SCALED_ZEROES[0] = BigDecimal.ZERO;
-        for (int i = 1; i <= BonaCurrency.MAX_DECIMALS; ++i)
-            SCALED_ZEROES[i] = BigDecimal.ZERO.setScale(i);
-    }
     
     private final BonaCurrency currency;
 
@@ -52,7 +45,7 @@ public final class BonaMoney implements Serializable, MoneyGetter {
     public BonaMoney(BonaCurrency currency) {
         this.currency = currency;
         this.numTaxAmounts = 0;
-        this.grossAmount = SCALED_ZEROES[currency.getDecimals()];
+        this.grossAmount = currency.getZero();
         this.netAmount = this.grossAmount;
         this.taxAmounts = EMPTY_LIST;
     }
@@ -223,7 +216,7 @@ public final class BonaMoney implements Serializable, MoneyGetter {
                 throw new MonetaryException(MonetaryException.INCORRECT_NUMBER_TAX_AMOUNTS, "Want " + numTaxAmounts + ", got " + got);
             // Add some ZEROES
             for (int i = got; i < numTaxAmounts; ++i)
-                taxAmounts[i] = SCALED_ZEROES[currency.getDecimals()];  // save later scaling!
+                taxAmounts[i] = currency.getZero();  // save later scaling by using a correctly scaled zero already now!
         }
         // no easy shortcut this time when numTaxAmounts = 0, because the source is unsecure, gross could be <> net
         return new BonaMoney(currency, allowRounding, source.getGrossAmount(), source.getNetAmount(), taxAmounts);

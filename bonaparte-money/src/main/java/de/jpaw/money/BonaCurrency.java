@@ -16,6 +16,28 @@ public final class BonaCurrency implements Serializable {
      * allow for 6 in order to support potential virtual currencies as well as unit values with a higher precision.
      */
     public static final int MAX_DECIMALS = 6;
+    
+    /** Scaled zeroes holds a cached array of zero with respect to the different scales.
+     * This is purely for speed optimization.
+     */
+    static private final BigDecimal [] SCALED_ZEROES;       // provides a preinitialized array of a few zeroes
+    static {
+        SCALED_ZEROES = new BigDecimal [BonaCurrency.MAX_DECIMALS + 1];
+        SCALED_ZEROES[0] = BigDecimal.ZERO;
+        for (int i = 1; i <= MAX_DECIMALS; ++i)
+            SCALED_ZEROES[i] = BigDecimal.ZERO.setScale(i);
+    }
+
+    /** Smallest unit holds a cached array of the smallest representable unit with respect to the different scales.
+     * This is purely for speed optimization.
+     */
+    static private final BigDecimal [] SMALLEST_UNITS;       // provides a preinitialized array of a few smallest units
+    static {
+        SMALLEST_UNITS = new BigDecimal [BonaCurrency.MAX_DECIMALS + 1];
+        SMALLEST_UNITS[0] = BigDecimal.ONE;
+        for (int i = 1; i <= MAX_DECIMALS; ++i)
+            SMALLEST_UNITS[i] = BigDecimal.valueOf(1L, i);
+    }
 
     /**
      * A string which defines the currency in a human readable form. It has always 3 letters and must match the ISO 4217 code in case of real currencies.
@@ -47,11 +69,25 @@ public final class BonaCurrency implements Serializable {
             throw new MonetaryException(MonetaryException.ILLEGAL_CURRENCY_CODE);
         }
         this.currencyCode = currencyCode4217;
-
-        int digits = Currency.getInstance(currencyCode4217).getDefaultFractionDigits();
-        this.decimals = (digits < 0 || digits > MAX_DECIMALS) ? MAX_DECIMALS : digits;
+        try {
+            this.decimals = Currency.getInstance(currencyCode4217).getDefaultFractionDigits();
+            if ((decimals < 0) || (decimals > MAX_DECIMALS)) {
+                throw new MonetaryException(MonetaryException.ILLEGAL_NUMBER_OF_DECIMALS);
+            }
+        } catch (IllegalArgumentException e) {
+            throw new MonetaryException(MonetaryException.NOT_AN_ISO4217_CODE, currencyCode4217);
+        }
     }
 
+    /** Returns a BigDecimal representing 0 in the currency's scale. */
+    public BigDecimal getZero() {
+        return SCALED_ZEROES[decimals];
+    }
+    
+    /** Returns a BigDecimal representing the smallest number greater than 0. */
+    public BigDecimal getSmallestUnit() {
+        return SMALLEST_UNITS[decimals];
+    }
     
     /** scale the provided amount to the scale as defined in this currency. */
     public BigDecimal scale(BigDecimal amount, RoundingMode roundingMode) throws MonetaryException {

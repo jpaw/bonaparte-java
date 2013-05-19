@@ -16,6 +16,7 @@
         <!-- define releases we want to use, to ensure consistency -->
         <bonaparte.version>1.5.2-SNAPSHOT</bonaparte.version>
         <bonaparte-plugin-version>1.5.2-SNAPSHOT</bonaparte-plugin-version>
+        <xtend.version>2.4.1</xtend.version>
         <slf4j.version>1.6.6</slf4j.version>
         <logback.version>1.0.9</logback.version>
         <hornetq.version>2.2.14.Final</hornetq.version>
@@ -117,9 +118,14 @@
     </reporting>
 
     <modules>
-        <module>../bonaparte-core/modules/all/pom.xml</module>
-        <module>../bonaparte-core-test/modules/all/pom.xml</module>
-        <module>../bonaparte-demorqrs/modules/all/pom.xml</module>
+        <module>../bonaparte-core/modules/generator/pom.xml</module>
+        <module>../bonaparte-core-test/modules/generator/pom.xml</module>
+        <module>../bonaparte-demorqrs/modules/generator/pom.xml</module>
+        <module>../bonaparte-core/pom.xml</module>
+        <module>../bonaparte-core-test/pom.xml</module>
+        <module>../bonaparte-money/pom.xml</module>
+        <module>../bonaparte-money-test/pom.xml</module>
+        <module>../bonaparte-demorqrs/pom.xml</module>
         <module>../bonaparte-netty/pom.xml</module>
         <module>../bonaparte-netty-test/pom.xml</module>
         <module>../bonaparte-akka/pom.xml</module>
@@ -129,4 +135,18 @@
         <module>../bonaparte-vertx/pom.xml</module>
     </modules>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>5.12.1</version>   <!-- 5.14.9 or 6.7 use waaay more dependencies -->
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>

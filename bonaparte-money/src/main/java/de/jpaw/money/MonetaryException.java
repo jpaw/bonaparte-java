@@ -51,6 +51,7 @@ public class MonetaryException extends ApplicationException {
     static public final int SIGNS_DIFFER                 = OFFSET + 7;
     static public final int INCOMPATIBLE_OPERANDS        = OFFSET + 8;
     static public final int INCORRECT_NUMBER_TAX_AMOUNTS = OFFSET + 9;
+    static public final int NOT_AN_ISO4217_CODE          = OFFSET + 10;
 
     static public final int UNEXPECTED_ROUNDING_PROBLEM  = OFFSET_ILE + 21;
 
@@ -75,6 +76,7 @@ public class MonetaryException extends ApplicationException {
             codeToDescription.put(UNEXPECTED_ROUNDING_PROBLEM  , "Unexpected exception from constructor");
             codeToDescription.put(INCOMPATIBLE_OPERANDS        , "The operands differ in either currency or number of tax amounts");
             codeToDescription.put(INCORRECT_NUMBER_TAX_AMOUNTS , "Incorrect number of tax amounts supplied");
+            codeToDescription.put(NOT_AN_ISO4217_CODE          , "No decimals supplied and provided code not an official ISO 4217 code");
         }
     }
 

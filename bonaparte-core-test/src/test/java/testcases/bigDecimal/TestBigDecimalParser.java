@@ -4,9 +4,7 @@ import java.math.BigDecimal;
 import org.testng.annotations.Test;
 
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.core.MessageParserException;
 import de.jpaw.bonaparte.coretests.util.SimpleTestRunner;
-import de.jpaw.bonaparte.pojos.bigdecimal.BDTest;
 import de.jpaw.bonaparte.pojos.bigdecimal.BDTestWithAutoRounding;
 import de.jpaw.bonaparte.pojos.bigdecimal.BDTestWithAutoRoundingAndScaling;
 
