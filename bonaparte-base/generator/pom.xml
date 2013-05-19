@@ -5,7 +5,7 @@
         <groupId>de.jpaw</groupId>
         <artifactId>bonaparte-base</artifactId>
         <version>1.5.2-SNAPSHOT</version>
-        <relativePath>../bonaparte-base</relativePath>
+        <relativePath>..</relativePath>
     </parent>
 
     <artifactId>bonaparte-srcgen</artifactId>
@@ -55,8 +55,8 @@
                                 <timestampFileName>xtext-generator-bon.timestamp</timestampFileName>
                                 <workflowDescriptor>jar:file:${user.home}/.m2/repository/de/jpaw/bonaparte-dsl/de.jpaw.bonaparte.dsl/${bonaparte-plugin-version}/de.jpaw.bonaparte.dsl-${bonaparte-plugin-version}.jar!/de/jpaw/bonaparte/dsl/generator/BonScriptGeneratorMWE.mwe2</workflowDescriptor>
                                 <properties>
-                                    <modelPath>../../src/main/bon</modelPath>
-                                    <targetDir>../../src/generated</targetDir>
+                                    <modelPath>../src/main/bon</modelPath>
+                                    <targetDir>../src/generated</targetDir>
                                 </properties>
                             </configuration>
                         </execution>
@@ -82,7 +82,7 @@
                     <configuration>
                         <filesets>
                             <fileset>
-                                <directory>../../src/generated</directory>
+                                <directory>../src/generated</directory>
                                 <includes>
                                     <include>**</include>
                                 </includes>

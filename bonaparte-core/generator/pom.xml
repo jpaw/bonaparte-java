@@ -6,7 +6,7 @@
 		<groupId>de.jpaw</groupId>
 		<artifactId>bonaparte-srcgen</artifactId>
         <version>1.5.2-SNAPSHOT</version>
-        <relativePath>../../../bonaparte-srcgen</relativePath>
+        <relativePath>../../bonaparte-base/generator</relativePath>
     </parent>
 
 	<artifactId>bonaparte-core-srcgen</artifactId>
