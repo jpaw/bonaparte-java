@@ -120,6 +120,7 @@
     <modules>
         <module>../bonaparte-core/modules/generator/pom.xml</module>
         <module>../bonaparte-core-test/modules/generator/pom.xml</module>
+        <module>../bonaparte-money/modules/generator/pom.xml</module>
         <module>../bonaparte-demorqrs/modules/generator/pom.xml</module>
         <module>../bonaparte-core/pom.xml</module>
         <module>../bonaparte-core-test/pom.xml</module>
