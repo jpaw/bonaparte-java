@@ -23,98 +23,89 @@ public final class BonaMoney implements Serializable, MoneyGetter {
     static private final BigDecimal [] EMPTY_ARRAY = new BigDecimal[0];
     static private final ImmutableList<BigDecimal> EMPTY_LIST = ImmutableList.of();
     
-    private final BonaCurrency currency;
-
-    /** Specifies the number of VAT amounts in this object. If 0, then we have a single amount here. */
-    private final int numTaxAmounts;
-
-    private final BigDecimal grossAmount;
-    private final BigDecimal netAmount;
-    private final ImmutableList<BigDecimal> taxAmounts;
+    private final BonaCurrency currency;                        // the currency of this amount
+    private final BigDecimal amount;                            // the main (gross) amount (or total)
+    private final ImmutableList<BigDecimal> componentAmounts;   // net + taxes (or components)
 
     /** Constructor for a single amount */
     public BonaMoney(BonaCurrency currency, boolean allowRounding, BigDecimal amount) throws MonetaryException {
         this.currency = currency;
-        this.numTaxAmounts = 0;
-        this.grossAmount = currency.scale(amount, allowRounding ? RoundingMode.HALF_EVEN : RoundingMode.UNNECESSARY);
-        this.netAmount = this.grossAmount;
-        taxAmounts = EMPTY_LIST;
+        this.amount = currency.scale(amount, allowRounding ? RoundingMode.HALF_EVEN : RoundingMode.UNNECESSARY);
+        componentAmounts = EMPTY_LIST;
     }
 
     /** Creates a BonaMoney instance of value 0 for the given currency. */
     public BonaMoney(BonaCurrency currency) {
         this.currency = currency;
-        this.numTaxAmounts = 0;
-        this.grossAmount = currency.getZero();
-        this.netAmount = this.grossAmount;
-        this.taxAmounts = EMPTY_LIST;
+        this.amount = currency.getZero();
+        this.componentAmounts = EMPTY_LIST;
     }
         
-    public BonaMoney(BonaCurrency currency, boolean allowRounding, BigDecimal grossAmount, BigDecimal netAmount, BigDecimal ... tax)
+    /** Constructor for a single with a breakdown of equal-sign components (for example net + taxes). */
+    public BonaMoney(BonaCurrency currency, boolean allowRounding, boolean requireSameSign, BigDecimal amount, BigDecimal ... components)
             throws MonetaryException {
         this.currency = currency;
-        this.numTaxAmounts = tax.length;
+        if (components == null || components.length == 0) {
+            // simple case: no breakdown given, same as above
+            if (amount == null)
+                throw new MonetaryException(MonetaryException.UNDEFINED_AMOUNTS);
+            this.amount = currency.scale(amount, allowRounding ? RoundingMode.HALF_EVEN : RoundingMode.UNNECESSARY);
+            this.componentAmounts = EMPTY_LIST;
+            return;
+        }
         
-        // Plausibility checks. Throw an exception if anything looks weird, better than trying to find rounding problems later.
-        if (grossAmount == null && netAmount == null)
-            throw new MonetaryException(MonetaryException.UNDEFINED_AMOUNTS);
+        if (requireSameSign) {
+            boolean useNegatives = false;
+            boolean usePositives = false;
+            for (BigDecimal t : components) {
+                int sign = t.signum();
+                if (sign < 0)
+                    useNegatives = true; 
+                if (sign > 0)
+                    usePositives = true;
+            }
+            // now check if all signs are the same. 
+            if (usePositives && useNegatives)
+                throw new MonetaryException(MonetaryException.SIGNS_DIFFER);
+        }
+        
         // plausi check: if all amounts are provided, the sum must match!
         BigDecimal sum = BigDecimal.ZERO;
-        boolean useNegatives = false;
-        boolean usePositives = false;
-        for (BigDecimal t : tax) {
+        for (BigDecimal t : components) {
             sum = sum.add(t);
-            int sign = t.signum();
-            if (sign < 0)
-                useNegatives = true; 
-            if (sign > 0)
-                usePositives = true; 
         }
-        if (netAmount != null) {
-            sum = sum.add(netAmount);
-            // now grossAmount is set to net + taxes
-            if (grossAmount != null) {
-                if (grossAmount.compareTo(sum) != 0)
-                    throw new MonetaryException(MonetaryException.SUM_MISMATCH, grossAmount.toPlainString() + " <> " + sum.toPlainString());
-            } else {
-                // net <> null, but gross => define gross by sum of all amounts
-                grossAmount = sum;
-            }
+        // Plausibility checks. Throw an exception if anything looks weird, better than trying to find rounding problems later.
+        if (amount == null) {
+            if (components.length == 0)
+                throw new MonetaryException(MonetaryException.UNDEFINED_AMOUNTS);
+            // set gross to sum
+            amount = sum;
         } else {
-            // netAmount is null, but gross not (by prior check). Define net to be the difference!
-            netAmount = grossAmount.subtract(sum);
+            // if no components: fine, else the sum must match
+            if (amount.compareTo(sum) != 0)
+                throw new MonetaryException(MonetaryException.SUM_MISMATCH, amount.toPlainString() + " <> " + sum.toPlainString());
         }
-        // now check if all signs are the same. The missing one is the net sign.
-        int sign = netAmount.signum();
-        if (sign < 0)
-            useNegatives = true; 
-        if (sign > 0)
-            usePositives = true;
-        if (usePositives && useNegatives)
-            throw new MonetaryException(MonetaryException.SIGNS_DIFFER);
+        
         // we're good so far. Now see if there is any rounding issue. If rounding is disable, this is an easy job. Shortcut this.
         try {
             ImmutableList.Builder<BigDecimal> b = ImmutableList.builder();
             if (!allowRounding) {
-                for (BigDecimal t : tax)
+                for (BigDecimal t : components)
                     b.add(currency.scale(t, RoundingMode.UNNECESSARY));
-                this.taxAmounts = b.build();
-                this.netAmount = currency.scale(netAmount, RoundingMode.UNNECESSARY);
-                this.grossAmount = currency.scale(grossAmount, RoundingMode.UNNECESSARY);
+                this.componentAmounts = b.build();
+                this.amount = currency.scale(amount, RoundingMode.UNNECESSARY);
             } else {
                 // complex case? Scaling could lead to a difference, which then needs to be allocated to the elements.
                 // we assign all values to some big array and delegate to the BonaCurrency class to do the heavy lifting 
-                BigDecimal [] unscaled = new BigDecimal [2 + numTaxAmounts];
-                unscaled[0] = grossAmount;
-                unscaled[1] = netAmount;
-                for (int i = 0; i < numTaxAmounts; ++i)
-                    unscaled[i + 2] = tax[i];
+                BigDecimal [] unscaled = new BigDecimal [1 + components.length];
+                unscaled[0] = amount;
+                for (int i = 0; i < components.length; ++i)
+                    unscaled[i + 1] = components[i];
                 BigDecimal [] scaled = currency.roundWithErrorDistribution(unscaled);
-                for (int i = 0; i < numTaxAmounts; ++i)
-                    b.add(scaled[i + 2]);
-                this.taxAmounts = b.build();
-                this.netAmount = scaled[1];
-                this.grossAmount = scaled[0];
+                for (int i = 0; i < components.length; ++i)
+                    b.add(scaled[i + 1]);
+                this.componentAmounts = b.build();
+                this.amount = scaled[0];
             }
         } catch (ArithmeticException e) {
             throw new MonetaryException(MonetaryException.ROUNDING_PROBLEM);
@@ -127,21 +118,21 @@ public final class BonaMoney implements Serializable, MoneyGetter {
      * unit price to final price conversion (in which case factor is the quantity). Finally, factor can be 1.0, but the currencies differ, in which case
      * rounding is desired.
      * @throws MonetaryException if */
-    BonaMoney multiply(BonaCurrency targetCurrency, BigDecimal factor) throws MonetaryException {
+    public BonaMoney multiply(BonaCurrency targetCurrency, BigDecimal factor) throws MonetaryException {
         // shortcut if the new currency is the same as the old, and the fxRate is 1.0
         if (currency.equals(targetCurrency) && BigDecimal.ONE.compareTo(factor) == 0)
             return this;
         try {
             // OK, run the multiplication
-            if (numTaxAmounts == 0) {
+            if (componentAmounts.size() == 0) {
                 // easy case, no allocation of any differences
-                return new BonaMoney(targetCurrency, true, grossAmount.multiply(factor));
+                return new BonaMoney(targetCurrency, true, amount.multiply(factor));
             }
-            // at least one tax amount, possible rounding issues. Compute with stupid approach and delegate to constructor.
-            BigDecimal taxes[] = new BigDecimal[numTaxAmounts];
-            for (int i = 0; i < numTaxAmounts; ++i)
-                taxes[i] = taxAmounts.get(i).multiply(factor);
-            return new BonaMoney(targetCurrency, true, grossAmount.multiply(factor), netAmount.multiply(factor), taxes);
+            // at least one component amount, possible rounding issues. Compute with stupid approach and delegate to constructor.
+            BigDecimal components[] = new BigDecimal[componentAmounts.size()];
+            for (int i = 0; i < componentAmounts.size(); ++i)
+                components[i] = componentAmounts.get(i).multiply(factor);
+            return new BonaMoney(targetCurrency, true, false, amount.multiply(factor), components);
         } catch (MonetaryException e) {
             throw new MonetaryException(MonetaryException.UNEXPECTED_ROUNDING_PROBLEM, "Code " + e.getErrorCode()
                     + " while converting from " + currency.toShortString() + " to " + targetCurrency.toShortString()
@@ -151,56 +142,56 @@ public final class BonaMoney implements Serializable, MoneyGetter {
 
     /** Add two BonaMoney instances. Both operands must have the identical currency and the same number of tax amounts.
      * A check is performed, if all signs all still consistent after the operation. */
-    BonaMoney add(BonaMoney augent) throws MonetaryException {
-        if (!currency.equals(augent.getCurrency()) || numTaxAmounts != augent.getNumTaxAmounts())
+    public BonaMoney add(BonaMoney augent) throws MonetaryException {
+        if (!currency.equals(augent.getCurrency()) || componentAmounts.size() != augent.getNumComponentAmounts())
             throw new MonetaryException(MonetaryException.INCOMPATIBLE_OPERANDS, "add: "
-                    + currency.toShortString() + "-" + numTaxAmounts + " <> "
-                    + augent.getCurrency().toShortString() + "-" + augent.getNumTaxAmounts());
-        if (numTaxAmounts == 0) {
+                    + currency.toShortString() + "-" + componentAmounts.size() + " <> "
+                    + augent.getCurrency().toShortString() + "-" + augent.getNumComponentAmounts());
+        if (componentAmounts.size() == 0) {
             // easy case again, no chance of differing signs
-            return new BonaMoney(currency, false, grossAmount.add(augent.getGrossAmount()));
+            return new BonaMoney(currency, false, amount.add(augent.amount));
         }
-        BigDecimal taxes[] = new BigDecimal[numTaxAmounts];
-        for (int i = 0; i < numTaxAmounts; ++i)
-            taxes[i] = taxAmounts.get(i).add(augent.getGrossAmount());
-        return new BonaMoney(currency, false, grossAmount.add(augent.getGrossAmount()), netAmount.add(augent.getNetAmount()), taxes);
+        BigDecimal taxes[] = new BigDecimal[componentAmounts.size()];
+        for (int i = 0; i < componentAmounts.size(); ++i)
+            taxes[i] = componentAmounts.get(i).add(augent.amount);
+        return new BonaMoney(currency, false, false, amount.add(augent.amount), taxes);
     }
 
     /** Subtract two BonaMoney instances. Both operands must have the identical currency and the same number of tax amounts.
      * A check is performed, if all signs all still consistent after the operation.
      * Essentially same code as add. */
-    BonaMoney subtract(BonaMoney subtrahend) throws MonetaryException {
-        if (!currency.equals(subtrahend.getCurrency()) || numTaxAmounts != subtrahend.getNumTaxAmounts())
+    public BonaMoney subtract(BonaMoney subtrahend) throws MonetaryException {
+        if (!currency.equals(subtrahend.getCurrency()) || componentAmounts.size() != subtrahend.componentAmounts.size())
             throw new MonetaryException(MonetaryException.INCOMPATIBLE_OPERANDS, "subtract: "
-                    + currency.toShortString() + "-" + numTaxAmounts + " <> "
-                    + subtrahend.getCurrency().toShortString() + "-" + subtrahend.getNumTaxAmounts());
-        if (numTaxAmounts == 0) {
+                    + currency.toShortString() + "-" + componentAmounts.size() + " <> "
+                    + subtrahend.getCurrency().toShortString() + "-" + subtrahend.componentAmounts.size());
+        if (componentAmounts.size() == 0) {
             // easy case again, no chance of differing signs
-            return new BonaMoney(currency, false, grossAmount.subtract(subtrahend.getGrossAmount()));
+            return new BonaMoney(currency, false, amount.subtract(subtrahend.amount));
         }
-        BigDecimal taxes[] = new BigDecimal[numTaxAmounts];
-        for (int i = 0; i < numTaxAmounts; ++i)
-            taxes[i] = taxAmounts.get(i).subtract(subtrahend.getGrossAmount());
-        return new BonaMoney(currency, false, grossAmount.subtract(subtrahend.getGrossAmount()), netAmount.subtract(subtrahend.getNetAmount()), taxes);
+        BigDecimal taxes[] = new BigDecimal[componentAmounts.size()];
+        for (int i = 0; i < componentAmounts.size(); ++i)
+            taxes[i] = componentAmounts.get(i).subtract(subtrahend.amount);
+        return new BonaMoney(currency, false, false, amount.subtract(subtrahend.amount), taxes);
     }
     
     /** Stores the amounts of this instance in a mutable object (for example BonaPortable DTO).
      * The currency is skipped, due to most likely duplication. */ 
     public void storeAmounts(MoneySetter target) {
-        target.setGrossAmount(grossAmount);
-        target.setNetAmount(netAmount);
-        target.setTaxAmounts(taxAmounts);
+        target.setAmount(amount);
+        target.setComponentAmounts(componentAmounts);
     }
     
     /** Factory method to create a new BonaMoney from a readable source of amounts.
-     * If numTaxAmounts >= 0, expects the list to have exactly that many amounts, else (-1) don't care. 
+     * If componentAmounts.size() >= 0, expects the list to have exactly that many amounts, else (-1) don't care. 
      * @throws MonetaryException */
-    public static BonaMoney fromAmounts(BonaCurrency currency, boolean allowRounding, int numTaxAmounts, boolean addMissingTaxAmounts, MoneyGetter source)
+    public static BonaMoney fromAmounts(BonaCurrency currency, boolean allowRounding, int numTaxAmounts, boolean addMissingTaxAmounts, boolean requireSameSign,
+            MoneyGetter source)
             throws MonetaryException {
-        int got = source.getTaxAmounts().size();
-        BigDecimal [] taxAmounts = numTaxAmounts == 0 ? EMPTY_ARRAY : new BigDecimal[numTaxAmounts];
+        int got = source.getComponentAmounts().size();
+        BigDecimal [] componentAmounts = numTaxAmounts == 0 ? EMPTY_ARRAY : new BigDecimal[numTaxAmounts];
         for (int i = 0; i < got; ++i)
-            taxAmounts[i] = source.getTaxAmounts().get(i);
+            componentAmounts[i] = source.getComponentAmounts().get(i);
         if (numTaxAmounts != got) {
             // maybe a list extension is required
             if (!addMissingTaxAmounts || numTaxAmounts < got)
@@ -208,10 +199,10 @@ public final class BonaMoney implements Serializable, MoneyGetter {
                 throw new MonetaryException(MonetaryException.INCORRECT_NUMBER_TAX_AMOUNTS, "Want " + numTaxAmounts + ", got " + got);
             // Add some ZEROES
             for (int i = got; i < numTaxAmounts; ++i)
-                taxAmounts[i] = currency.getZero();  // save later scaling by using a correctly scaled zero already now!
+                componentAmounts[i] = currency.getZero();  // save later scaling by using a correctly scaled zero already now!
         }
         // no easy shortcut this time when numTaxAmounts = 0, because the source is unsecure, gross could be <> net
-        return new BonaMoney(currency, allowRounding, source.getGrossAmount(), source.getNetAmount(), taxAmounts);
+        return new BonaMoney(currency, allowRounding, requireSameSign, source.getAmount(), componentAmounts);
     }
     
     @Override
@@ -220,15 +211,13 @@ public final class BonaMoney implements Serializable, MoneyGetter {
         a.append("BonaMoney[");
         a.append(currency.toString());
         a.append(", gross=");
-        a.append(grossAmount.toPlainString());
-        if (numTaxAmounts > 0) {
-            a.append(", net=");
-            a.append(netAmount.toPlainString());
-            a.append(", tax=(");
-            for (int i = 0; i < numTaxAmounts; ++i) {
+        a.append(amount.toPlainString());
+        if (componentAmounts.size() > 0) {
+            a.append(", net&tax=(");
+            for (int i = 0; i < componentAmounts.size(); ++i) {
                 if (i > 0)
                     a.append(", ");
-                a.append(taxAmounts.get(i).toPlainString());
+                a.append(componentAmounts.get(i).toPlainString());
             }
             a.append(")");
         }
@@ -248,13 +237,12 @@ public final class BonaMoney implements Serializable, MoneyGetter {
             return false;
         }
         BonaMoney other = (BonaMoney) obj;
-        if (numTaxAmounts != other.numTaxAmounts ||
+        if (componentAmounts.size() != other.componentAmounts.size() ||
                 !currency.equals(other.currency) ||
-                !grossAmount.equals(other.grossAmount) ||
-                !netAmount.equals(other.netAmount))
+                !amount.equals(other.amount))
             return false;
-        for (int i = 0; i < numTaxAmounts; ++i)
-            if (!taxAmounts.get(i).equals(other.taxAmounts.get(i)))
+        for (int i = 0; i < componentAmounts.size(); ++i)
+            if (!componentAmounts.get(i).equals(other.componentAmounts.get(i)))
                 return false;
         return true;
     }
@@ -263,13 +251,11 @@ public final class BonaMoney implements Serializable, MoneyGetter {
     public int hashCode() {
         final int prime = 31;
         int result = currency.hashCode();
-        result = (prime * result) + grossAmount.hashCode();
-        result = (prime * result) + netAmount.hashCode();
-        for (int i = 0; i < numTaxAmounts; ++i)
-            result = (prime * result) + taxAmounts.get(i).hashCode();
+        result = (prime * result) + amount.hashCode();
+        for (int i = 0; i < componentAmounts.size(); ++i)
+            result = (prime * result) + componentAmounts.get(i).hashCode();
         return result;
     }
-    
     
     // autogenerated stuff below
     
@@ -277,20 +263,16 @@ public final class BonaMoney implements Serializable, MoneyGetter {
         return currency;
     }
 
-    public int getNumTaxAmounts() {
-        return numTaxAmounts;
+    public int getNumComponentAmounts() {
+        return componentAmounts.size();
     }
 
-    public BigDecimal getGrossAmount() {
-        return grossAmount;
+    public BigDecimal getAmount() {
+        return amount;
     }
 
-    public BigDecimal getNetAmount() {
-        return netAmount;
-    }
-
-    public ImmutableList<BigDecimal> getTaxAmounts() {
-        return taxAmounts;
+    public ImmutableList<BigDecimal> getComponentAmounts() {
+        return componentAmounts;
     }
 
 }

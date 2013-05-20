@@ -17,7 +17,7 @@ public class Demo {
         BonaMoney m = new BonaMoney(currency, false, new BigDecimal("3.14"));
         System.out.println("Single Amount: " + m.toString());
 
-        BonaMoney mt = new BonaMoney(currency, false, null, new BigDecimal("100.14"), new BigDecimal("19.0"), new BigDecimal("7.0"));
+        BonaMoney mt = new BonaMoney(currency, false, true, null, new BigDecimal("100.14"), new BigDecimal("19.0"), new BigDecimal("7.0"));
         System.out.println("Taxed Amount: " + mt.toString());
 
     }

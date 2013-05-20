@@ -2,9 +2,8 @@ package money {
     type amount         is Decimal(18,6);   // this is an example, pick any precision, and allow any rounding and / or autoscaling
 
     class PriceWithTax implements de.jpaw.money.MoneyGetter, de.jpaw.money.MoneySetter {
-        optional amount                 grossAmount;
-        optional amount                 netAmount;
-        required amount required List<> taxAmounts;
+        optional amount                 amount;
+        required amount required List<> componentAmounts;
     } 
 }
 

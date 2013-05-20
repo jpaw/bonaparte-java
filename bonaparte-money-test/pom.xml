@@ -156,6 +156,9 @@
                         </goals>
                         <configuration>
                             <sources>
+                                <!-- repeat non-std productive source dires here as well! -->
+                                <source>src/main/xtend</source>
+                                <source>src/generated/java</source>
                                 <source>src/test/xtend</source>
                                 <source>src/generated/test/java</source>
                             </sources>
