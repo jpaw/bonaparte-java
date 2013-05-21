@@ -1,5 +1,6 @@
 package testcases.validation;
 
+import java.math.BigDecimal;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
@@ -10,6 +11,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import de.jpaw.bonaparte.coretests.initializers.FillOtherTypes;
+import de.jpaw.bonaparte.pojos.bigdecimal.BDTest;
 import de.jpaw.bonaparte.pojos.tests1.OtherTypes;
 
 public class TestJSR303Validation {
@@ -41,5 +43,14 @@ public class TestJSR303Validation {
         ConstraintViolation<OtherTypes> v = v1[0];
         System.out.println("Problem was " + v.getMessage()); */
     }   
+    
+    @Test
+    public void testBeanValidationTooFewDigits() throws Exception {
+        Set<ConstraintViolation<BDTest>> violations;
+        BDTest x = new BDTest(new BigDecimal("3.1"));
+        violations = validator.validate(x);
+        assert violations.isEmpty() : "There should be no violations without a language code";
+        
+    }
 
 }

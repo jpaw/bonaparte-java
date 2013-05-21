@@ -1,0 +1,76 @@
+import demo.typedefs.*
+import tutorial1.BaseClass
+
+package othersourcefile.demo {
+    
+    class TypeDefUse3 {
+        currencyCode     yetAnotherCurrencyField;
+    }
+    
+    class Child3 extends BaseClass {
+        Unicode(80)      text3;
+    }
+}
+
+
+package special XML FIELD noExt BeanVal {
+    class WithJaxbAndBeanVal {
+        required Ascii(10..100)     demoString1;
+        optional Integer            demoInt;
+    }
+    
+    class TheException XML noXML Ext noBeanVal {  // undo package defaults
+        required Ascii(10..100)     demoString1;
+        optional Integer            demoInt;
+    }
+}
+
+package enumDemo {
+    type unused           is Integer;
+
+    enum Grade { A, B, C }
+    enum Color { RED="R", YELLOW="Y", GREEN="G" }
+    enum Gender { MALE="M", FEMALE="F", UNKNONW="U" }
+    enum Transition { RED_TO_YELLOW="R2Y", YELLOW_TO_GREEN="Y2G", BREAK="?" }
+
+    class Demo3 {
+        enum Grade              grade;
+        enum Color              myColor;
+    }
+}
+
+package demo.classreferences {
+    
+    class CustomerReference {
+        Long            id;
+    }
+    class GenericCustomerReference extends CustomerReference {
+        Unicode (100)   name;
+        Ascii(32)       externalCustomerId;
+    }
+    
+    class Order {
+        (CustomerReference)    customer;
+        Decimal(14,2)          amount;
+    }    
+    class OrderWithFlexibleReference {
+        (CustomerReference...) customer;
+        Decimal(14,2)          amount;
+    }    
+    
+}
+
+package arraydemo {
+    type AddressLine       is Unicode(80);
+    
+    class ArrayDemo {
+        int [7]             winningNumbers;     // primitive types
+        AddressLine[10]     addressLines;       // typedef to object type
+        Long []             unboundedArray;     // my favorite numbers (any number)
+        Int List<7>         sevenIntsInAList;
+        AddressLine List<3> moreAddressLines;   // same as above, but as list
+        (demo.classreferences.Order) List<>     asManyOrdersAsICanProcess;  // class reference in a list
+        Enum enumDemo.Color [3] trafficLight;   // the colors of a traffic light, as array of enums.                
+    }
+    
+}

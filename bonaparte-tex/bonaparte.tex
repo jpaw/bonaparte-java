@@ -22,7 +22,8 @@
 
 %\title{Atbon - Almost Text Based Object Notation}
 \title{BONAPARTE - Binary Object Notation As Portable And Readable Text
-Extension}
+Extension\footnote{SHIPANWABE - Should Have I Picked Another Name With A Better Expansion?}
+}
 \author{Michael Bischoff}
 \begin{document}
 \maketitle
@@ -233,7 +234,7 @@ string terminator character in some languages \\
 01 & \textasciicircum A & array terminator  & is inserted after the last array
 entry. Is not followed by an additional field terminator \\
 02 & \textasciicircum B & array start       & Immediately followed by the number
-of entries (0 .. n), then field terminator, then the entries itself \\
+of entries (0 .. n), then field terminator, then the entries itself. Used for array, List and Set data types. \\
 03 & \textasciicircum C & comment record    & everything until the next
 record terminator is a comment. Escaping of special characters does apply within
 comments.
@@ -302,7 +303,9 @@ transmission character. closes connection (for example for sockets). \\
 1B & \textasciicircum [ &       -            & \\
 1C & \textasciicircum \textbackslash &                   & \\
 1D & \textasciicircum ] & -& \\
-1E & \textasciicircum \textasciicircum &   -                & \\
+1E & \textasciicircum \textasciicircum & begin Map data & Starts a block immediately followed by an index type identifier
+(Integer / Long / String), the number of entries (0 .. n), then field terminator, then the with key / value pairs (serialized
+form of Java maps)\\
 1F & \textasciicircum \_ &  unused         & \\
 \hline
 \end{tabular}
@@ -382,6 +385,7 @@ The changes not supported (while keeping the same version number) are:
     \item Changing a class name
     \item adding required (not NULLable) fields
     \item Modifying the inheritance structure (i.e. switching between C extends A and C extends B, B extends A)
+    \item Changing the index type of a map
 \end{itemize}
 
 The following changes are supported:
@@ -390,7 +394,8 @@ The following changes are supported:
     \item adding extra fields at the end of a class (even if this class is used as a base class and subclasses are serialized)
     \item changing a boolean into a number or character field
     \item changing an ASCII field into a UNICODE field
-    \item removing an existing field, which is not the last field of a class. 
+    \item removing an existing field, which is not the last field of a class.
+    \item Swapping between array, List and Set data structures 
 \end{itemize}
 
 If incompatible changes cannot be avoided, use of the ``versioning feature'' is required. This requires additional development
@@ -422,7 +427,7 @@ The core Bonaparte project focusses on POJO serialization only, but a number of 
 \subsubsection{Netty4}
 Bonaparte integrates well with Netty4 (currently available as alpha release only, but works very well).
 The bonaparte-netty project offers an API to transmit objects via Netty4.
-This has been tested with Netty 4.0.0.Alpha6
+This has been tested with Netty 4.0.0.CR1
 
 \subsubsection{vert.x}
 This has been tested with vert.x 1.3.0
@@ -449,5 +454,6 @@ The source of the Bonaparte DSL can be obtained here: \url{https://github.com/jp
 
 At \url{https://github.com/jpaw/bonaparte-java}, there is a Java implementation of the (de)serializers for the Bonaparte message format. This repository also holds the transport integration projects.
 
-All implementations require Java Standard Edition, version~7 ($1.7.0\_09$ or better), the DSL is based on Eclipse 4.2 (Juno) with XText 2.3.1 or better. 
+All implementations require Java Standard Edition, version~7 ($1.7.0\_09$ or better), the DSL is based on Eclipse 4.2.2 (Juno
+SR2) with XText / Xtend 2.4.1 or better (for Bonaparte-1.5.1 or later).
 \end{document}

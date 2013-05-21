@@ -25,15 +25,16 @@ package mapTests {
     }
     
     class ReqTests {
-        required Integer        ar;
-        optional Integer        ao;
-        required Integer List<> lro;
-        optional Integer List<> loo;
-        required Integer Map<String> mro;
-        optional Integer Map<String> moo;
-        required Integer required List<> lrr;
-        optional Integer required List<> lor;
-        required Integer required Map<String> mrr;
-        optional Integer required Map<String> mor;
+        required Integer                        ar;     // null generates an exception
+        optional Integer                        ao;     // null is allowed
+        
+        required Integer List<>                 lro;    // an optional list, all elements must be non-null
+        optional Integer List<>                 loo;    // an optional list, with elements possibly also null (discouraged)
+        required Integer required List<>        lrr;    // the List must be non-null and all elements must be non-null
+        optional Integer required List<>        lor;    // the List must be non-null, but the Integer elements may be null (discouraged!)
+        required Integer Map<String>            mro;
+        optional Integer Map<String>            moo;
+        required Integer required Map<String>   mrr;
+        optional Integer required Map<String>   mor;
     }
 }

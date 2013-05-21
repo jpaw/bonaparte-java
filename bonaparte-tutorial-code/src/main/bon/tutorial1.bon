@@ -1,0 +1,68 @@
+package tutorial1 {
+    
+    abstract class BaseClass {
+        Long                        reference;
+    }
+    
+    class Child1 extends BaseClass {
+        Ascii(100)                  description;        
+    }    
+
+    final class Child2 extends BaseClass {
+        Ascii(1000)                 longDescription;
+    }    
+    
+    
+    class MyFirstClass {
+        required Integer                            myInteger;
+        unsigned Integer                            anotherInteger;
+        Ascii(3) trim regexp "[A-Z][A-Z][0-9]"      customId;
+        Unicode(100) truncate                       truncatedField;
+        Unicode(10..100)                            fieldWithMinLength; 
+    }
+    
+    class VisibilityDemo {
+        private int         a;
+        public int          b;
+        protected int       c;
+        int                 d;      // default visibility
+    }
+}
+
+package demo.defaults {
+    default public unsigned;    
+    
+    class Demo1 {
+        int             unsignedInt1;
+        Long            usignedLong1;
+    }
+    
+    class Demo2 {
+        default trim;
+        Ascii(100)      trimmedText1;
+        Unicode(1000)   trimmedText2;
+    }
+    
+}
+
+package demo.typedefs {
+    type currencyCode    is Uppercase(3..3);  // an ISO 4217 alphanumeric currency code
+    type positiveInt     is unsigned Integer;
+    
+    class TypeDefUse1 {
+        currencyCode     orderCurrency;
+        positiveInt      numberOfRetries;
+    }    
+}
+
+package demo.typedefUsePackage {
+    class TypeDefUse2 {
+        demo.typedefs.currencyCode     anotherCurrency;
+    }
+}
+
+
+
+package tutorial.chapter1.anotherpackage {
+    
+}

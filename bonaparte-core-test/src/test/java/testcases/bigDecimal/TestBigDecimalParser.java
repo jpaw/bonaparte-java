@@ -5,10 +5,18 @@ import org.testng.annotations.Test;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.coretests.util.SimpleTestRunner;
+import de.jpaw.bonaparte.pojos.bigdecimal.BDTest;
 import de.jpaw.bonaparte.pojos.bigdecimal.BDTestWithAutoRounding;
 import de.jpaw.bonaparte.pojos.bigdecimal.BDTestWithAutoRoundingAndScaling;
 
 public class TestBigDecimalParser {
+    
+    @Test
+    public void testBigDecimalByteArrayRd0() throws Exception {
+        BonaPortable dst = SimpleTestRunner.runThroughByteArray(new BDTest(new BigDecimal("3.1")));      // fewer digits than provided
+        assert(dst instanceof BDTest);
+        assert(((BDTest)(dst)).getAmount().scale() == 1);   // accepted as is
+    }
     
     @Test
     public void testBigDecimalByteArrayRd1() throws Exception {

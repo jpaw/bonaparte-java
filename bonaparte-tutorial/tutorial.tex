@@ -41,12 +41,13 @@ is ideal to work in cross-language environments.
 
 
 \section{A first example}
-Before digging into too much detail, let's start with a small example.  You need an Eclipse IDE (release 4.2 Juno) and special plugins
-(available at \url{https://www.jpaw.de/eclipse/juno/site.xml}) to follow the examples.
+Before digging into too much detail, let's start with a small example.  You need an Eclipse IDE (release 4.2.2 Juno SR2) and
+special plugins (available at \url{https://www.jpaw.de/eclipse/master/site.xml} for stable releases or
+\url{https://www.jpaw.de/eclipse/develop/site.xml} for development milestones) to follow the examples.
 
 Create a new Java project, create a new source folder (for example {\ttfamily src/main/bon}), and create a new file with extension {\ttfamily .bon},
-for example {\ttfamily tutorial1.bon}. If everything is set up correctly, Eclipse will ask ``Do you want to assign the XText Nature to the project
- {\it{ (your project name)}}?''.
+for example {\ttfamily tutorial1.bon}. If everything is set up correctly, Eclipse will ask ``Do you want to assign the XText
+Nature to the project {\it{ (your project name)}}?''.
 It is important to say ``Yes'' here, only then the specific editor features will be available.
 
 Create a package and a class in it. In Bonaparte, scopes are consistently defined by curly brackets. You can define multiple packages in a single source file.
@@ -169,9 +170,9 @@ Up to now, there's not a lot which would justify the overhead of a DSL.
 We now want to provide directives to the parser which instruct it when to accept and when to reject data. 
 
 Any field you can prefix with the {\ttfamily required} keyword, which tells the parser to reject any record where no data for this field is specified.
-This ensures, that in Java, you do not get {\ttfamily null} as the field value. (In other words, a {\ttfamily required Ascii(10} field would be equivalent
-to the notation {\ttfamily ascii(10)}. The prior one offers better readability, and we will learn another use of the {\ttfamily required} keyword in a later
-chapter.)
+This ensures, that in Java, you do not get {\ttfamily null} as the field value. (In other words, a {\ttfamily required
+Ascii(10)} field would be equivalent to the notation {\ttfamily ascii(10)}.
+The prior one offers better readability, and we will learn another use of the {\ttfamily required} keyword in a later chapter.)
 
 For numeric fields, you can prefix them with the {\ttfamily unsigned} keyword. The parser will then reject negative values.
 
@@ -192,7 +193,23 @@ This screenshot shows a class where the directives explained above are used:
 \vspace{2mm}
 
 \hspace{1cm}\includegraphics[scale=0.5]{images/tut1-005.png}
- 
+
+Numeric fields with fractional digits (type {\ttfamily Decimal} allow the following directives:
+\begin{itemize}
+  \item {\ttfamily round} instructs the parser round any input with more fractional digits to the number of fractional decimals
+  specified. Gaussian rounding (also known as Banker's rounding / twopenny rounding / half-to-even
+  \url{http://en.wikipedia.org/wiki/Rounding#Round_half_to_even}) is used for this. This is also the default IEEE 754 rounding
+  mode. space.
+  \item {\ttfamily failOnExtraDecimals} Opposite of {\ttfamily round}, tells the parser to throw an exception if input if more
+  decimal digits is provided. Use this for financial data. This is also the default setting, but the directive is required if
+  {\ttfamily round} has been specified as package or class default.
+  \item {\ttfamily autoScale} instructs the parser return any parsed data scaled to exactly the specified number of decimals
+  (useful in Java to compensate for the odditiy of the {\ttfamily BigDecimal} class, namely that 2.5 not equals 2.50.
+  \item {\ttfamily noScale} Opposite of {\ttfamily autoScale}, tells the parser to return data as provided (i.e. in Java,
+  the receiving application can determine the actual number of trailing zeroes sent, unless they exceed the maximum number, in
+  which scaling is applied regardless. This is the default setting.
+\end{itemize}
+
 \section{Default settings}
 Often, some settings apply to a whole class or package. 
 In Bonaparte, you can define field visibility and also some of the field specific parser directives at package and class level.
@@ -217,6 +234,10 @@ The following default directives are supported:
   \item {\ttfamily trim}, {\ttfamily notrim} (apply to {\ttfamily Unicode}, {\ttfamily Ascii}, {\ttfamily Lowercase}, {\ttfamily Uppercase} fields):
     Specify stripping of leading and trailing whitespace. 
   \item {\ttfamily truncate}, {\ttfamily notruncate} (apply to the same types): Specify if encountering oversize input will cause silent truncation or throwing an exception.
+  \item {\ttfamily round}, {\ttfamily failOnExtraDecimas} (apply to {\ttfamily Decimal} fields): specifies whether too many
+  non-zero fractional digits are rounded or an exception is thrown.
+  \item {\ttfamily autoScale}, {\ttfamily noScale} (apply to {\ttfamily Decimal} fields): specifies
+  whether returned {\ttfamily BigDecimal} instances in Java are all scaled to the specified number of decimals.
   \item {\ttfamily allowControlChars}, {\ttfamily noControlChars} (apply to {\ttfamily Unicode} fields): specifies whether special characters such as line feeds are accepted.
     The Bonaparte format will escape them properly such that they do not break the format, but if you export data to regular CSV files as well, you might want to
     forbid such characters.
@@ -301,15 +322,26 @@ would accept a {\ttfamily CustomerReference} or {\ttfamily GenericCustomerRefere
 references. (Again, this check is only implemented when parsing serialized messages. As Java does not support such functionality, nothing prevents you
 from assigned an instance of {\ttfamily GenericCustomerReference}  to the {\ttfamily Order.customer} field directly in Java.
 
-\section{Arrays and lists}
-Often, fields do not occur a single time only. Bonaparte supports arrays and lists. Both are serialized to the same format, therefore switching between
-both alternatives does not break message compatibility. Use which ever is better suitable for your application.
+\section{Arrays, Lists, Sets and Maps}
+Often, fields do not occur a single time only. Bonaparte supports arrays, lists, sets and maps. All except maps are
+serialized to the same format, therefore switching between both alternatives does not break message compatibility.
+Use which ever is better suitable for your application.
 Both forms can optionally specify a maximum number of entries. 
-The syntax for arrays is similar to Java, the list syntax differs from Java (for sake of grammar simplicity).
+The syntax for arrays is similar to Java, the list / set / map syntax differs from Java (for sake of grammar simplicity).
 
 \vspace{2mm}
 
 \hspace{1cm}\includegraphics[scale=0.5]{images/tut1-015-arrays.png}
+
+For collection types, you can specify at two levels, if {\ttfamily null}s are allowed: for the collection itself, and for the
+collection elements.  The recommendation is to set collection elements always to {\ttfamily required}. There are some
+implementations, which also require that, for example most classes of the Google {\ttfamily guava} library (see
+\url{http://code.google.com/p/guava-libraries/wiki/LivingWithNullHostileCollections}).
+
+\vspace{2mm}
+
+\hspace{1cm}\includegraphics[scale=0.5]{images/tut1-016-collections.png}
+
 
 \section{Generics}
 TODO
