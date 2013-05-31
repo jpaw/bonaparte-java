@@ -1,8 +1,9 @@
 package de.jpaw.bonaparte.netty;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.MessageBuf;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.MessageToMessageDecoder;
+import io.netty.handler.codec.ByteToMessageDecoder;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +12,7 @@ import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.ByteArrayParser;
 import de.jpaw.bonaparte.core.MessageParserException;
 
-public class BonaparteNettyDecoder extends MessageToMessageDecoder<ByteBuf> {
+public class BonaparteNettyDecoder extends ByteToMessageDecoder {
     private static final Logger logger = LoggerFactory.getLogger(BonaparteNettyDecoder.class);
     private final ErrorForwarder errorForwarder;
 
@@ -20,7 +21,7 @@ public class BonaparteNettyDecoder extends MessageToMessageDecoder<ByteBuf> {
     }
 
     @Override
-    public BonaPortable decode(ChannelHandlerContext ctx, ByteBuf msg) throws Exception {
+    public void decode(ChannelHandlerContext ctx, ByteBuf msg, MessageBuf<Object> out) throws Exception {
         byte[] array;
         if (msg.hasArray()) {
             if ((msg.arrayOffset() == 0) && (msg.readableBytes() == msg.capacity())) {
@@ -43,15 +44,14 @@ public class BonaparteNettyDecoder extends MessageToMessageDecoder<ByteBuf> {
             ByteArrayParser p = new ByteArrayParser(array, 0, -1);
             BonaPortable obj = p.readRecord();
             logger.debug("Successfully parsed data of class {}", obj.getClass());
-            return obj;
-
+            out.add(obj);
         } catch (MessageParserException e) {
             logger.error("Cannot parse {} bytes of data", array.length);
             logger.error("Message received is <{}>", array.length <= 200 ? new String(array) : new String(array).substring(0, 200));
             if (errorForwarder == null) {
                 throw e;
             } else {
-                return errorForwarder.createErrorObject(e.getErrorCode(), e.getSpecificDescription(), array);
+                out.add(errorForwarder.createErrorObject(e.getErrorCode(), e.getSpecificDescription(), array));
             }
         }
     }
