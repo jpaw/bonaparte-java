@@ -4,7 +4,7 @@
 
     <groupId>de.jpaw</groupId>
     <artifactId>bonaparte-base</artifactId>
-    <version>1.5.2-SNAPSHOT</version>
+    <version>1.5.2</version>
     <packaging>pom</packaging>
 
     <name>BONAPARTE common configuration (parent pom)</name>
@@ -14,8 +14,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- define releases we want to use, to ensure consistency -->
-        <bonaparte.version>1.5.2-SNAPSHOT</bonaparte.version>
-        <bonaparte-plugin-version>1.5.2-SNAPSHOT</bonaparte-plugin-version>
+        <bonaparte.version>1.5.2</bonaparte.version>
+        <bonaparte-plugin-version>1.5.2</bonaparte-plugin-version>
         <xtend.version>2.4.1</xtend.version>
         <slf4j.version>1.6.6</slf4j.version>
         <logback.version>1.0.9</logback.version>
