@@ -177,8 +177,8 @@
                             <goal>testCompile</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>src/generated/java</outputDirectory>
-                            <testOutputDirectory>src/generated/test/java</testOutputDirectory>
+                            <outputDirectory>${project.basedir}/src/generated/java</outputDirectory>
+                            <testOutputDirectory>${project.basedir}/src/generated/test/java</testOutputDirectory>
                         </configuration>
                     </execution>
                 </executions>
