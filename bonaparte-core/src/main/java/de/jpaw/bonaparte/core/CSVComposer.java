@@ -15,6 +15,7 @@
  */
 package de.jpaw.bonaparte.core;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.util.Calendar;
@@ -34,10 +35,10 @@ import de.jpaw.util.ByteArray;
  * @author Michael Bischoff
  * @version $Revision$
  * 
- *          Implements the serialization for the bonaparte format using StringBuilder, for CSV output
+ *          Implements the serialization for the bonaparte format using a character Appendable, for CSV output
  */
 
-public class CSVComposer extends StringBuilderComposer {
+public class CSVComposer extends AppendableComposer {
     private static final Logger LOGGER = LoggerFactory.getLogger(CSVComposer.class);
     
     protected boolean recordStart = true;
@@ -50,7 +51,7 @@ public class CSVComposer extends StringBuilderComposer {
     protected final DateTimeFormatter dateFormat;
     protected final DateFormat calendarFormat; 
 
-    public CSVComposer(StringBuilder work, CSVConfiguration config) {
+    public CSVComposer(Appendable work, CSVConfiguration config) {
         super(work);
         this.cfg = config;
         this.stringQuote = (cfg.quote != null) ? String.valueOf(cfg.quote) : "";  // use this for cases where a String is required
@@ -61,7 +62,7 @@ public class CSVComposer extends StringBuilderComposer {
         this.calendarFormat = DateFormat.getDateInstance(DateFormat.MEDIUM, cfg.locale);
     }
 
-    protected void writeSeparator() {   // nothing to do in the standard bonaparte format
+    protected void writeSeparator() throws IOException {   // nothing to do in the standard bonaparte format
         if (recordStart)
             recordStart = false;
         else
@@ -94,13 +95,13 @@ public class CSVComposer extends StringBuilderComposer {
         recordStart = true;
     }
 
-    private void addCharSub(char c) {
+    private void addCharSub(char c) throws IOException {
         addRawData(c == cfg.quote ? stringQuote : c < 0x20 ? cfg.ctrlReplacement : String.valueOf(c));
     }
     
     // field type specific output functions
     @Override
-    public void addUnicodeString(String s, int length, boolean allowCtrls) {
+    public void addUnicodeString(String s, int length, boolean allowCtrls) throws IOException {
         writeSeparator();
         if (s != null) {
             addRawData(stringQuote);
@@ -113,20 +114,20 @@ public class CSVComposer extends StringBuilderComposer {
 
     // character
     @Override
-    public void addField(char c) {
+    public void addField(char c) throws IOException {
         writeSeparator();
         addCharSub(c);
     }
     // ascii only (unicode uses different method)
     @Override
-    public void addField(String s, int length) {
+    public void addField(String s, int length) throws IOException {
         addUnicodeString(s, length, true);
     }
 
     // decimal
     @Override
     public void addField(BigDecimal n, int length, int decimals,
-            boolean isSigned) {
+            boolean isSigned) throws IOException {
         writeSeparator();
         if (n != null) {
             String defaultFormat = n.toPlainString();
@@ -136,47 +137,47 @@ public class CSVComposer extends StringBuilderComposer {
 
     // byte
     @Override
-    public void addField(byte n) {
+    public void addField(byte n) throws IOException {
         writeSeparator();
         super.addField(n);
     }
     // short
     @Override
-    public void addField(short n) {
+    public void addField(short n) throws IOException {
         writeSeparator();
         super.addField(n);
     }
     // integer
     @Override
-    public void addField(int n) {
+    public void addField(int n) throws IOException {
         writeSeparator();
         super.addField(n);
     }
 
     // int(n)
     @Override
-    public void addField(Integer n, int length, boolean isSigned) {
+    public void addField(Integer n, int length, boolean isSigned) throws IOException {
         writeSeparator();
         super.addField(n, length, isSigned);
     }
 
     // long
     @Override
-    public void addField(long n) {
+    public void addField(long n) throws IOException {
         writeSeparator();
         super.addField(n);
     }
 
     // boolean
     @Override
-    public void addField(boolean b) {
+    public void addField(boolean b) throws IOException {
         writeSeparator();
         super.addRawData(b ? cfg.booleanTrue : cfg.booleanFalse);
     }
 
     // float
     @Override
-    public void addField(float f) {
+    public void addField(float f) throws IOException {
         writeSeparator();
         String defaultFormat = Float.toString(f);
         addRawData(usesDefaultDecimalPoint ? defaultFormat : defaultFormat.replace(".", cfg.decimalPoint));
@@ -188,7 +189,7 @@ public class CSVComposer extends StringBuilderComposer {
 
     // double
     @Override
-    public void addField(double d) {
+    public void addField(double d) throws IOException {
         writeSeparator();
         String defaultFormat = Double.toString(d);
         addRawData(usesDefaultDecimalPoint ? defaultFormat : defaultFormat.replace(".", cfg.decimalPoint));
@@ -200,7 +201,7 @@ public class CSVComposer extends StringBuilderComposer {
 
     // UUID
     @Override
-    public void addField(UUID n) {
+    public void addField(UUID n) throws IOException {
         writeSeparator();
         if (n != null) {
             addRawData(stringQuote);
@@ -211,7 +212,7 @@ public class CSVComposer extends StringBuilderComposer {
 
     // ByteArray: initial quick & dirty implementation
     @Override
-    public void addField(ByteArray b, int length) {
+    public void addField(ByteArray b, int length) throws IOException {
         writeSeparator();
         if (b != null) {
             addRawData(stringQuote);
@@ -222,7 +223,7 @@ public class CSVComposer extends StringBuilderComposer {
 
     // raw
     @Override
-    public void addField(byte[] b, int length) {
+    public void addField(byte[] b, int length) throws IOException {
         writeSeparator();
         if (b != null) {
             addRawData(stringQuote);
@@ -233,7 +234,7 @@ public class CSVComposer extends StringBuilderComposer {
 
     // converters for DAY und TIMESTAMP
     @Override
-    public void addField(Calendar t, boolean hhmmss, int length) {
+    public void addField(Calendar t, boolean hhmmss, int length) throws IOException {
         writeSeparator();
         if (t != null) {
             if (cfg.datesQuoted)
@@ -244,7 +245,7 @@ public class CSVComposer extends StringBuilderComposer {
         }
     }
     @Override
-    public void addField(LocalDate t) {
+    public void addField(LocalDate t) throws IOException {
         writeSeparator();
         if (t != null) {
             if (cfg.datesQuoted)
@@ -256,7 +257,7 @@ public class CSVComposer extends StringBuilderComposer {
     }
 
     @Override
-    public void addField(LocalDateTime t, boolean hhmmss, int length) {
+    public void addField(LocalDateTime t, boolean hhmmss, int length) throws IOException {
         writeSeparator();
         if (t != null) {
             if (cfg.datesQuoted)
@@ -268,7 +269,7 @@ public class CSVComposer extends StringBuilderComposer {
     }
     
     @Override
-    public void startMap(int currentMembers, int indexID) {
+    public void startMap(int currentMembers, int indexID) throws IOException {
         if (cfg.mapStart != null) {
             super.addRawData(cfg.mapStart);
             recordStart = true;
@@ -276,7 +277,7 @@ public class CSVComposer extends StringBuilderComposer {
     }
 
     @Override
-    public void startArray(int currentMembers, int maxMembers, int sizeOfElement) {
+    public void startArray(int currentMembers, int maxMembers, int sizeOfElement) throws IOException {
         if (cfg.arrayStart != null) {
             super.addRawData(cfg.arrayStart);
             recordStart = true;
@@ -284,19 +285,19 @@ public class CSVComposer extends StringBuilderComposer {
     }
 
     @Override
-    public void terminateArray() {
+    public void terminateArray() throws IOException {
         super.addRawData(cfg.arrayEnd);
         recordStart = true;
     }
     
     @Override
-    public void terminateMap() {
+    public void terminateMap() throws IOException {
         super.addRawData(cfg.mapEnd);
         recordStart = true;
     }
 
     @Override
-    public void addField(BonaPortable obj) {
+    public void addField(BonaPortable obj) throws IOException {
         if (obj != null) {
             if (cfg.objectStart != null) {
                 super.addRawData(cfg.objectStart);

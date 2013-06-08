@@ -1,11 +1,12 @@
 package csvTests {
-    
+
     class Test1 {
         Ascii(10)               string1;
         int                     int1;
         Decimal(14,2) autoScale dec1;
         Timestamp(0)            ts1;
         Day                     day1;
+        boolean                 really;
     }
 }
 
