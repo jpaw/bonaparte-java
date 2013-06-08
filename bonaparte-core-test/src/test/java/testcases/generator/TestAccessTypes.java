@@ -24,4 +24,18 @@ public class TestAccessTypes {
         testClass(DefaultProtected.class, Modifier.PROTECTED);
         testClass(DefaultPublic.class,    Modifier.PUBLIC);
     }
+    
+    @Test
+    public void testAccessTypesWT() throws Exception {
+        testClass(NoDefaultsWT.class,       0);
+        testClass(DefaultPrivateWT.class,   Modifier.PRIVATE);
+        testClass(DefaultProtectedWT.class, Modifier.PROTECTED);
+        testClass(DefaultPublicWT.class,    Modifier.PUBLIC);
+    }
+    
+    @Test
+    public void testTypeAccess() throws Exception {
+        assert ((Inherited.class.getDeclaredField("shouldBeDefault").getModifiers() & ACCESS_MODIFIERS) == 0);
+        assert ((Inherited.class.getDeclaredField("shouldBePrivate").getModifiers() & ACCESS_MODIFIERS) == Modifier.PRIVATE);
+    }
 }

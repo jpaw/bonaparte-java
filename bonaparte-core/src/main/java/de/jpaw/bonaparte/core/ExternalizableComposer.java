@@ -292,6 +292,11 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
         out.writeByte(ARRAY_TERMINATOR);
     }
 
+    @Override
+    public void terminateMap() throws IOException {
+        out.writeByte(ARRAY_TERMINATOR);
+    }
+
 
     @Override
     public void terminateRecord() throws IOException {

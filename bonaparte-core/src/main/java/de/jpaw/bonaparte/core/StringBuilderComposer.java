@@ -37,7 +37,7 @@ import de.jpaw.util.CharTestsASCII;
  *          Implements the serialization for the bonaparte format using StringBuilder.
  */
 
-public final class StringBuilderComposer extends StringBuilderConstants implements BufferedMessageComposer<RuntimeException> {
+public class StringBuilderComposer extends StringBuilderConstants implements BufferedMessageComposer<RuntimeException> {
     // variables set by constructor
     private StringBuilder work;
 
@@ -52,37 +52,30 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
     }
 
     @Override
-    public int getLength() {    // obtain the number of written bytes (composer)
+    public final int getLength() {    // obtain the number of written bytes (composer)
         return work.length();
     }
     @Override
-    public byte[] getBuffer() {
+    public final byte[] getBuffer() {
         return getBytes();
     }
 
     @Override
-    public byte[] getBytes() {
+    public final byte[] getBytes() {
         return work.toString().getBytes(getCharset());
-    }
-
-    /** allows to add raw data to the produced byte array. Use this for protocol support at beginning or end of a message */
-    public void addRawData(String data) {
-        work.append(data);
     }
 
     /**************************************************************************************************
      * Serialization goes here
      **************************************************************************************************/
 
-    // the following two methods are provided as separate methods instead of
-    // code the single command each time,
-    // with the intention that they max become extended or redefined and reused
-    // for CSV output to files with
-    // customized separators.
-    // Because this class is defined as final, I hope the JIT will inline them
-    // for better performance
-    // THIS IS REQUIRED ONLY LOCALLY
-    private void terminateField() {
+    /** allows to add raw data to the produced byte array. Use this for protocol support at beginning or end of a message */
+    public final void addRawData(String data) {
+        if (data != null)
+            work.append(data);
+    }
+
+    protected void terminateField() {
         work.append(FIELD_TERMINATOR);
     }
     @Override
@@ -384,7 +377,11 @@ public final class StringBuilderComposer extends StringBuilderConstants implemen
     @Override
     public void terminateArray() {
         work.append(ARRAY_TERMINATOR);
+    }
 
+    @Override
+    public void terminateMap() {
+        work.append(ARRAY_TERMINATOR);
     }
 
     @Override

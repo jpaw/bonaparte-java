@@ -1,5 +1,12 @@
+package def1 {
+    default public;
+    type grotto is Ascii(8);
+}
+
+
 package access {
-     
+    
+    // classes with primitive types (4 classes * 4 access methods = 16 cases) 
     class NoDefaults {
         int isDefault;
         private int isPrivate;
@@ -27,5 +34,41 @@ package access {
         private int isPrivate;
         protected int isProtected;
         public int isPublic;
+    }
+    
+    
+    // classes with class types / with typedef (4 classes * 4 access methods = 16 cases) 
+    class NoDefaultsWT {
+        def1.grotto isDefault;
+        private def1.grotto isPrivate;
+        protected def1.grotto isProtected;
+        public def1.grotto isPublic;
+    }
+    
+    class DefaultPublicWT {
+        default public;
+        def1.grotto isDefault;
+        private def1.grotto isPrivate;
+        protected def1.grotto isProtected;
+        public def1.grotto isPublic;
+    }
+    class DefaultProtectedWT {
+        default protected;
+        def1.grotto isDefault;
+        private def1.grotto isPrivate;
+        protected def1.grotto isProtected;
+        public def1.grotto isPublic;
+    }
+    class DefaultPrivateWT {
+        default private;
+        def1.grotto isDefault;
+        private def1.grotto isPrivate;
+        protected def1.grotto isProtected;
+        public def1.grotto isPublic;
+    }
+    
+    class Inherited {
+        def1.grotto shouldBeDefault;
+        private def1.grotto shouldBePrivate;
     }
 }

@@ -159,6 +159,7 @@
                                 <!-- repeat non-std productive source dires here as well! -->
                                 <source>src/main/xtend</source>
                                 <source>src/generated/java</source>
+                                <source>src/xtend-gen/java</source>
                                 <source>src/test/xtend</source>
                                 <source>src/generated/test/java</source>
                             </sources>
@@ -177,7 +178,7 @@
                             <goal>testCompile</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.basedir}/src/generated/java</outputDirectory>
+                            <outputDirectory>${project.basedir}/src/xtend-gen/java</outputDirectory>
                             <testOutputDirectory>${project.basedir}/src/generated/test/java</testOutputDirectory>
                         </configuration>
                     </execution>

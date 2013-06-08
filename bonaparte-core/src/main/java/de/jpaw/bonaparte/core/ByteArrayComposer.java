@@ -387,7 +387,11 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
     @Override
     public void terminateArray() {
         work.append(ARRAY_TERMINATOR);
-
+    }
+    
+    @Override
+    public void terminateMap() {
+        work.append(ARRAY_TERMINATOR);
     }
 
     @Override
