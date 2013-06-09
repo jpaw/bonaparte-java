@@ -13,7 +13,6 @@
     <packaging>jar</packaging>
 
     <name>BONAPARTE integration with Apache Camel</name>
-    <url>http://www.jpaw.de</url>
 
     <dependencies>
         <dependency>

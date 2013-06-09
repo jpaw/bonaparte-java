@@ -13,7 +13,6 @@
     <packaging>jar</packaging>
 
     <name>BONAPARTE core library extended unit tests</name>
-    <url>http://www.jpaw.de</url>
 
     <dependencies>
         <dependency>
@@ -57,45 +56,11 @@
     <build>
         <plugins>
             <plugin>
-                <!-- must deleted generated source as well as unit test output for the 
-                    clean target -->
                 <artifactId>maven-clean-plugin</artifactId>
-                <version>2.5</version>
-                <configuration>
-                    <filesets>
-                        <fileset>
-                            <directory>src/generated</directory>
-                            <includes>
-                                <include>**</include>
-                            </includes>
-                        </fileset>
-                        <fileset>
-                            <directory>test-output</directory>
-                            <includes>
-                                <include>**</include>
-                            </includes>
-                        </fileset>
-                    </filesets>
-                </configuration>
             </plugin>
             <plugin>
-                <!-- must add the generated sources to the java source search path -->
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.7</version>
-                <executions>
-                    <execution>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>add-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <source>src/generated/java</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

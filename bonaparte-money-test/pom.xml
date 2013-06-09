@@ -11,7 +11,7 @@
 
     <artifactId>bonaparte-money-test</artifactId>
     <packaging>jar</packaging>
-    
+
     <name>Testcases for the money library, using xtend for smaller code</name>
     <url>http://www.jpaw.de/projects/bonaparte/index.html</url>
 
@@ -30,163 +30,47 @@
     </pluginRepositories>
 
     <build>
-        <!-- The project works fine without the lifecycle management in pluginManagement below. In case of problems, try to comment that section and try again. -->
-        <!-- http://wiki.eclipse.org/M2E_plugin_execution_not_covered#m2e_maven_plugin_coverage_status
-         and http://wiki.eclipse.org/M2E_compatible_maven_plugins
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.eclipse.m2e</groupId>
-                    <artifactId>lifecycle-mapping</artifactId>
-                    <version>1.0.0</version>
-                    <configuration>
-                        <lifecycleMappingMetadata>
-                            <pluginExecutions>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>org.eclipse.xtend</groupId>
-                                        <artifactId>xtend-maven-plugin</artifactId>
-                                        <versionRange>[2.3.0,]</versionRange>
-                                        <goals>
-                                            <goal>compile</goal>
-                                            <goal>testCompile</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <execute>
-                                            <runOnIncremental>true</runOnIncremental>
-                                            <runOnConfiguration>true</runOnConfiguration>
-                                        </execute>
-                                    </action>
-                                </pluginExecution>
-                            </pluginExecutions>
-                        </lifecycleMappingMetadata>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    -->
+        <!-- The project works fine without the lifecycle management in pluginManagement 
+            below. In case of problems, try to comment that section and try again. -->
+        <!-- http://wiki.eclipse.org/M2E_plugin_execution_not_covered#m2e_maven_plugin_coverage_status 
+            and http://wiki.eclipse.org/M2E_compatible_maven_plugins <pluginManagement> 
+            <plugins> <plugin> <groupId>org.eclipse.m2e</groupId> <artifactId>lifecycle-mapping</artifactId> 
+            <version>1.0.0</version> <configuration> <lifecycleMappingMetadata> <pluginExecutions> 
+            <pluginExecution> <pluginExecutionFilter> <groupId>org.eclipse.xtend</groupId> 
+            <artifactId>xtend-maven-plugin</artifactId> <versionRange>[2.3.0,]</versionRange> 
+            <goals> <goal>compile</goal> <goal>testCompile</goal> </goals> </pluginExecutionFilter> 
+            <action> <execute> <runOnIncremental>true</runOnIncremental> <runOnConfiguration>true</runOnConfiguration> 
+            </execute> </action> </pluginExecution> </pluginExecutions> </lifecycleMappingMetadata> 
+            </configuration> </plugin> </plugins> </pluginManagement> -->
 
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.5.1</version>
-                <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.8.1</version>
-                <configuration>
-                    <charset>UTF-8</charset>
-                </configuration>
             </plugin>
             <plugin>
-                <!-- must delete generated sources as well -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-clean-plugin</artifactId>
-                <version>2.5</version>
-                <configuration>
-                    <filesets>
-                        <fileset>
-                            <directory>src/generated</directory>
-                            <includes>
-                                <include>**</include>
-                            </includes>
-                        </fileset>
-                    </filesets>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>1.2</version>
-                <executions>
-                    <execution>
-                        <id>enforce-no-snapshots</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>enforce</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <rules>
-                        <requireReleaseDeps>
-                            <message>No snapshots dependencies allowed on the master branch!</message>
-                            <searchTransitive>true</searchTransitive>
-                            <failWhenParentIsSnapshot>true</failWhenParentIsSnapshot>
-                            <onlyWhenRelease>true</onlyWhenRelease>
-                        </requireReleaseDeps>
-                    </rules>
-                    <fail>true</fail>
-                    <failFast>true</failFast>
-                </configuration>
             </plugin>
-
-
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.7</version>
-                <executions>
-                    <execution>
-                        <id>add-source</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>add-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <source>src/main/xtend</source>
-                                <source>src/generated/java</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>add-test-source</id>
-                        <phase>generate-test-sources</phase>
-                        <goals>
-                            <goal>add-test-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <!-- repeat non-std productive source dires here as well! -->
-                                <source>src/main/xtend</source>
-                                <source>src/generated/java</source>
-                                <source>src/xtend-gen/java</source>
-                                <source>src/test/xtend</source>
-                                <source>src/generated/test/java</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.eclipse.xtend</groupId>
                 <artifactId>xtend-maven-plugin</artifactId>
-                <version>${xtend.version}</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>compile</goal>
-                            <goal>testCompile</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.basedir}/src/xtend-gen/java</outputDirectory>
-                            <testOutputDirectory>${project.basedir}/src/generated/test/java</testOutputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
-
         </plugins>
     </build>
+
     <reporting>
         <plugins>
             <plugin>
