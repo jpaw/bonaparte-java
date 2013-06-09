@@ -12,10 +12,6 @@
     <artifactId>bonaparte-poi</artifactId>
     <packaging>jar</packaging>
 
-    <properties>
-        <poi.version>3.9</poi.version>
-    </properties>
-    
     <dependencies>
         <dependency>
             <groupId>de.jpaw</groupId>

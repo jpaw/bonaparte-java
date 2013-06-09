@@ -14,11 +14,6 @@
 
     <name>BONAPARTE Netty encoder/decoder</name>
 
-    <properties>
-        <!-- starting netty 4.0.0.Beta1, netty has been split into separate JARs, so it's more effective to define the release centrally here -->
-        <netty.version>4.0.0.CR3</netty.version>
-    </properties>
-    
     <dependencies>
         <dependency>
             <groupId>de.jpaw</groupId>

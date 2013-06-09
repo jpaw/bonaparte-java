@@ -11,10 +11,6 @@
 
     <artifactId>bonaparte-poix</artifactId>
     <packaging>jar</packaging>
-
-    <properties>
-        <poi.version>3.9</poi.version>
-    </properties>
     
     <dependencies>
         <dependency>
