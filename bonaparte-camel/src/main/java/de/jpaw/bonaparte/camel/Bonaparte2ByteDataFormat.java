@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import de.jpaw.bonaparte.core.ByteArrayComposer;
 import de.jpaw.bonaparte.core.ByteArrayParser;
 import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.extensions.ComposerExtensions;
 
 /**
  * The NewDataFormat class.
@@ -38,8 +39,8 @@ import de.jpaw.bonaparte.core.BonaPortable;
  *          Work in progress - needs major rework to provide better separation of outer transmission layer.
  */
 
-public final class NewDataFormat implements DataFormat {
-    private static final Logger logger = LoggerFactory.getLogger(BonaparteCamelFormat.class);
+public final class Bonaparte2ByteDataFormat implements DataFormat {
+    private static final Logger logger = LoggerFactory.getLogger(Bonaparte2ByteDataFormat.class);
     private int initialBufferSize = 65500;  // start big to avoid frequent reallocation 
     
     private ByteArrayComposer w = null;
@@ -47,9 +48,11 @@ public final class NewDataFormat implements DataFormat {
     public void marshal(Exchange exchange, Object graph, OutputStream stream) throws Exception {
         if (w == null)
             w = new ByteArrayComposer();  // create on demand
-        w.reset();
-        w.writeRecord((BonaPortable) graph);
-        stream.write(w.getBytes());
+        if (java.util.List.class.isInstance(graph))
+            ComposerExtensions.transmission(w, (List<BonaPortable>)graph);
+        else
+            w.writeRecord((BonaPortable) graph);
+        stream.write(w.getBuffer(), 0, w.getLength());
     }
 
     public Object unmarshal(Exchange exchange, InputStream stream) throws Exception {

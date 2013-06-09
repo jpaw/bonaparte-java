@@ -17,18 +17,17 @@
         <bonaparte.version>1.5.3-SNAPSHOT</bonaparte.version>
         <bonaparte-plugin-version>1.5.3-SNAPSHOT</bonaparte-plugin-version>
         <xtend.version>2.4.2-SNAPSHOT</xtend.version>
-        <slf4j.version>1.6.6</slf4j.version>
-        <logback.version>1.0.9</logback.version>
-        <guava.version>14.0.1</guava.version>
+        <slf4j.version>1.6.6</slf4j.version>            <!-- http://www.slf4j.org/  latest: 1.7.5  -->
+        <logback.version>1.0.9</logback.version>        <!-- http://logback.qos.ch/ latest: 1.0.13 -->
+        <guava.version>14.0.1</guava.version>           <!-- http://code.google.com/p/guava-libraries/ UPTODATE 2013-06-09 -->
 
         <!-- Some more versions, used by specific dependent projects -->        
-        <netty.version>4.0.0.CR3</netty.version>
-        <poi.version>3.9</poi.version>
-        <mina.version>2.0.5</mina.version>
-        <camel.version>2.10.4</camel.version>
-        <vertx.version>1.3.1.final</vertx.version>
-        <hornetq.version>2.2.14.Final</hornetq.version>
-        <!-- <hornetq.version>2.3.0.Final</hornetq.version> -->
+        <netty.version>4.0.0.CR3</netty.version>        <!-- https://netty.io/news/         UPTODATE 2013-06-09 -->
+        <poi.version>3.9</poi.version>                  <!-- http://poi.apache.org/         UPTODATE 2013-06-09 -->
+        <mina.version>2.0.5</mina.version>              <!-- http://mina.apache.org/        2.0.7 -->
+        <camel.version>2.11.0</camel.version>           <!-- http://camel.apache.org/       UPTODATE 2013-06-09 -->
+        <vertx.version>1.3.1.final</vertx.version>      <!-- http://vertx.io/               UPTODATE 2013-06-09 -->
+        <hornetq.version>2.2.14.Final</hornetq.version> <!-- http://www.jboss.org/hornetq   2.3.0.Final -->
     </properties>
 
     <licenses>
