@@ -1,0 +1,12 @@
+package csvTests {
+    
+    class UnixPasswd {
+        ascii(16)       name;       // login name
+        ascii(32)       passwd;     // password (salted & encrypted)
+        int             uid;        // numeric user ID
+        int             gid;        // numeric group ID
+        Unicode(80)     gecos;      // full name
+        Unicode(255)    dir;        // HOME directory
+        Unicode(255)    shell;      // logjn shell
+    }
+}

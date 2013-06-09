@@ -3,41 +3,51 @@ package de.jpaw.bonaparte.core;
 import java.util.Locale;
 
 public class CSVConfiguration {
-    public final static String EMPTY = "";         // used instead of null Strings
+    public final static String EMPTY_STRING = "";                           // used instead of null Strings
+    public final static String DEFAULT_DAY_FORMAT = "yyyyMMdd";             // default pattern for LocalDate (bonaparte Day) outputs 
+    public final static String DEFAULT_TIMESTAMP_FORMAT = "yyyyMMddHHmmss"; // default pattern for LocalDatetime (bonaparte Timestamp(0)) outputs 
+    public final static String DEFAULT_TS_WITH_MS_FORMAT = "yyyyMMddHHmmssSSS"; // default pattern for LocalDatetime (bonaparte Timestamp(3)) outputs 
+    public final static String DEFAULT_CALENDAR_FORMAT = "yyyyMMddHHmmss";  // default pattern for Calendar (bonaparte Calendar) outputs 
     
-    public final String separator;         // delimiter between fields
-    public final Character quote;          // quote character for strings, null means no quotes used
-    public final String quoteReplacement;  // string to insert for quotes inside the string
-    public final String ctrlReplacement;   // string to insert for control characters
-    public final boolean datesQuoted;      // are date fields quoted or not?
-    public final String decimalPoint;      // . or ,
-    public final String arrayStart;        // string to output for array start, List<> and Set<>
-    public final String arrayEnd;          // string to output for array end
-    public final String mapStart;          // string to output for map start
-    public final String mapEnd;            // string to output for map end
-    public final String objectStart;       // string to output for array start
-    public final String objectEnd;         // string to output for array end
-    public final String booleanTrue;       // string to output for boolean true value
-    public final String booleanFalse;      // string to output for boolean false value
+    public final String separator;          // delimiter between fields
+    public final Character quote;           // quote character for strings, null means no quotes used
+    public final String quoteReplacement;   // string to insert for quotes inside the string
+    public final String ctrlReplacement;    // string to insert for control characters
+    public final boolean datesQuoted;       // are date fields quoted or not?
+    public final boolean removePoint4BD;    // SPECIAL: remove decimal point for BigDecimal output, to support some specific interfaces  
+    public final String arrayStart;         // string to output for array start, List<> and Set<>
+    public final String arrayEnd;           // string to output for array end
+    public final String mapStart;           // string to output for map start
+    public final String mapEnd;             // string to output for map end
+    public final String objectStart;        // string to output for array start
+    public final String objectEnd;          // string to output for array end
+    public final String booleanTrue;        // string to output for boolean true value
+    public final String booleanFalse;       // string to output for boolean false value
     public final Locale locale;             // used to determine date format
     public final CSVStyle dateStyle;        // verbosity for day output
     public final CSVStyle timeStyle;        // verbosity for time output
+    public final String customDayFormat;             // set to override locale specific LocalDate formatter
+    public final String customTimestampFormat;       // set to override locale specific LocalDateTime formatter
+    public final String customTimestampWithMsFormat; // set to override locale specific LocalDateTime formatter if milliseconds should be printed
+    public final String customCalendarFormat;        // set to override locale specific Calendar formatter
     
     public final static CSVConfiguration CSV_DEFAULT_CONFIGURATION = new CSVConfiguration(
-            ";", '\"', "'", "?", false, ".", null, null, null, null, null, null, "1", "0", Locale.ROOT, CSVStyle.SHORT, CSVStyle.SHORT);    
+            ";", '\"', "\"\"", "?", false, false, null, null, null, null, null, null, "1", "0", Locale.ROOT, CSVStyle.SHORT, CSVStyle.SHORT,
+            DEFAULT_DAY_FORMAT, DEFAULT_TIMESTAMP_FORMAT, DEFAULT_TS_WITH_MS_FORMAT, DEFAULT_CALENDAR_FORMAT);    
 
     public static final String nvl(String s) {
-        return s != null ? s : EMPTY;
+        return s != null ? s : EMPTY_STRING;
     }
-    public CSVConfiguration(String separator, Character quote, String quoteReplacement, String ctrlReplacement, boolean datesQuoted, String decimalPoint,
+    public CSVConfiguration(String separator, Character quote, String quoteReplacement, String ctrlReplacement, boolean datesQuoted, boolean removePoint4BD,
             String mapStart, String mapEnd, String arrayStart, String arrayEnd, String objectStart, String objectEnd, String booleanTrue, String booleanFalse,
-            Locale locale, CSVStyle dateStyle, CSVStyle timeStyle) {
+            Locale locale, CSVStyle dateStyle, CSVStyle timeStyle, String customDayFormat, String customTimestampFormat, String customTimestampWithMsFormat,
+            String customCalendarFormat) {
         this.separator = nvl(separator);
         this.quote = quote;
         this.quoteReplacement = nvl(quoteReplacement);
         this.ctrlReplacement = nvl(ctrlReplacement);
         this.datesQuoted = datesQuoted;
-        this.decimalPoint = nvl(decimalPoint);
+        this.removePoint4BD = removePoint4BD;
         this.arrayStart = nvl(arrayStart);
         this.arrayEnd = nvl(arrayEnd);
         this.mapStart = nvl(mapStart);
@@ -49,6 +59,10 @@ public class CSVConfiguration {
         this.locale = locale;
         this.dateStyle = dateStyle;
         this.timeStyle = timeStyle;
+        this.customDayFormat = customDayFormat;
+        this.customTimestampFormat = customTimestampFormat;
+        this.customTimestampWithMsFormat = customTimestampWithMsFormat;
+        this.customCalendarFormat = customCalendarFormat;
     }
     
     /** Creates a new CSVConfiguration.Builder based on the current object. */
@@ -58,23 +72,27 @@ public class CSVConfiguration {
     
     /** Builder for the configuration */
     public static class Builder {
-        private String separator;         // delimiter between fields
-        private Character quote;          // quote character for strings
-        private String quoteReplacement;  // string to insert for quotes inside the string
-        private String ctrlReplacement;   // string to insert for control characters
-        private boolean datesQuoted;      // are date fields quoted or not?
-        private String decimalPoint;      // Normally "." or ",", but a setting of empty is valid and will result in numbers scaled, as required for some older interfaces.
-        private String arrayStart;        // string to output for array start, List<> and Set<>
-        private String arrayEnd;          // string to output for array end
-        private String mapStart;          // string to output for map start
-        private String mapEnd;            // string to output for map end
-        private String objectStart;       // string to output for array start
-        private String objectEnd;         // string to output for array end
-        private String booleanTrue;       // string to output for boolean true value
-        private String booleanFalse;      // string to output for boolean false value
-        private Locale locale;             // used to determine date format
-        private CSVStyle dateStyle;        // verbosity for day output
-        private CSVStyle timeStyle;        // verbosity for time output
+        private String separator;           // delimiter between fields
+        private Character quote;            // quote character for strings
+        private String quoteReplacement;    // string to insert for quotes inside the string
+        private String ctrlReplacement;     // string to insert for control characters
+        private boolean datesQuoted;        // are date fields quoted or not?
+        private boolean removePoint4BD;     // SPECIAL: remove decimal point for BigDecimal output, to support some specific interfaces
+        private String arrayStart;          // string to output for array start, List<> and Set<>
+        private String arrayEnd;            // string to output for array end
+        private String mapStart;            // string to output for map start
+        private String mapEnd;              // string to output for map end
+        private String objectStart;         // string to output for array start
+        private String objectEnd;           // string to output for array end
+        private String booleanTrue;         // string to output for boolean true value
+        private String booleanFalse;        // string to output for boolean false value
+        private Locale locale;              // used to determine date format
+        private CSVStyle dateStyle;         // verbosity for day output
+        private CSVStyle timeStyle;         // verbosity for time output
+        private String customDayFormat;             // set to override locale specific LocalDate formatter
+        private String customTimestampFormat;       // set to override locale specific LocalDateTime formatter
+        private String customTimestampWithMsFormat; // set to override locale specific LocalDateTime formatter if milliseconds should be printed
+        private String customCalendarFormat;        // set to override locale specific Calendar formatter
         
         /** Transfers the parameter as passed by the argument into this builder.
          * Must be final because called from a constructor.
@@ -86,7 +104,7 @@ public class CSVConfiguration {
             this.quoteReplacement = cfg.quoteReplacement;
             this.ctrlReplacement = cfg.ctrlReplacement;
             this.datesQuoted = cfg.datesQuoted;
-            this.decimalPoint = cfg.decimalPoint;
+            this.removePoint4BD = cfg.removePoint4BD;
             this.arrayStart = cfg.arrayStart;
             this.arrayEnd = cfg.arrayEnd;
             this.mapStart = cfg.mapStart;
@@ -98,6 +116,10 @@ public class CSVConfiguration {
             this.locale = cfg.locale;
             this.dateStyle = cfg.dateStyle;
             this.timeStyle = cfg.timeStyle;
+            this.customDayFormat = cfg.customDayFormat;
+            this.customTimestampFormat = cfg.customTimestampFormat;
+            this.customTimestampWithMsFormat = cfg.customTimestampWithMsFormat;
+            this.customCalendarFormat = cfg.customCalendarFormat;
         }
         /** Creates a new CSVConfiguration.Builder with default settings. */ 
         public Builder() {
@@ -116,9 +138,9 @@ public class CSVConfiguration {
         
         /** Constructs the CSVConfiguration from the data collected so far */
         public CSVConfiguration build() {
-            return new CSVConfiguration(separator, quote, quoteReplacement, ctrlReplacement, datesQuoted, decimalPoint,
+            return new CSVConfiguration(separator, quote, quoteReplacement, ctrlReplacement, datesQuoted, removePoint4BD,
                     mapStart, mapEnd, arrayStart, arrayEnd, objectStart, objectEnd, booleanTrue, booleanFalse,
-                    locale, dateStyle, timeStyle);
+                    locale, dateStyle, timeStyle, customDayFormat, customTimestampFormat, customTimestampWithMsFormat, customCalendarFormat);
         }
         
         // now the individual builder setters follow
@@ -150,8 +172,8 @@ public class CSVConfiguration {
             this.separator = separator;
             return this;
         }
-        public Builder usingDecimalPoint(String decimalPoint) {
-            this.decimalPoint = decimalPoint;
+        public Builder usingDecimalPoint(boolean removePoint4BD) {
+            this.removePoint4BD = removePoint4BD;
             return this;
         }
         public Builder usingQuoteCharacter(Character quote) {
@@ -173,6 +195,18 @@ public class CSVConfiguration {
         public Builder dateTimeStyle(CSVStyle dateStyle, CSVStyle timeStyle) {
             this.dateStyle = dateStyle;
             this.timeStyle = timeStyle;
+            return this;
+        }
+        /** Custom format setting. See http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html for format description. */
+        public Builder setCustomDayTimeFormats(String customDayFormat, String customTimestampFormat, String customTimestampWithMsFormat) {
+            this.customDayFormat = customDayFormat;
+            this.customTimestampFormat = customTimestampFormat;
+            this.customTimestampWithMsFormat = customTimestampWithMsFormat;
+            return this;
+        }
+        /** Custom format setting. See http://docs.oracle.com/javase/tutorial/i18n/format/simpleDateFormat.html for format description. */
+        public Builder setCustomCalendarFormat(String customCalendarFormat) {
+            this.customCalendarFormat = customCalendarFormat;
             return this;
         }
     }

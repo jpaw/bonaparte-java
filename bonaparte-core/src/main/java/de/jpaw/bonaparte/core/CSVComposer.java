@@ -18,6 +18,8 @@ package de.jpaw.bonaparte.core;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DateFormat;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.UUID;
 
@@ -42,24 +44,78 @@ public class CSVComposer extends AppendableComposer {
     private static final Logger LOGGER = LoggerFactory.getLogger(CSVComposer.class);
     
     protected boolean recordStart = true;
-    protected boolean shouldWarnWhenUsingFloat;
+    //protected boolean shouldWarnWhenUsingFloat;
     protected final CSVConfiguration cfg;
     // derived data
     protected final String stringQuote;       // quote character for strings, as a string
-    protected final boolean usesDefaultDecimalPoint;   // just for speedup, to avoid frequent String equals()
-    protected final DateTimeFormatter dateTimeFormat;
-    protected final DateTimeFormatter dateFormat;
-    protected final DateFormat calendarFormat; 
+    //protected final boolean usesDefaultDecimalPoint;   // just for speedup, to avoid frequent String equals()
+    protected final DateTimeFormatter dayFormat;            // day without time (Joda)
+    protected final DateTimeFormatter timestampFormat;      // day and time on second precision (Joda)
+    protected final DateTimeFormatter timestamp3Format;     // day and time on millisecond precision (Joda)
+    protected final DateFormat calendarFormat;              // Java's mutable Calendar. Use with caution (or better, don't use at all) 
+    protected final NumberFormat numberFormat;              // locale's default format for formatting float and double, covers decimal point and sign
+    protected final NumberFormat bigDecimalFormat;          // locale's default format for formatting BigDecimal, covers decimal point and sign
 
-    public CSVComposer(Appendable work, CSVConfiguration config) {
+    private DateFormat determineCalendarFormat(CSVConfiguration cfg) {
+        try {
+            return cfg.customCalendarFormat == null ? DateFormat.getDateInstance(DateFormat.MEDIUM, cfg.locale) : new SimpleDateFormat(cfg.customCalendarFormat, cfg.locale);
+        } catch (IllegalArgumentException e) {
+            // could occur if the user provided format is invalid
+            LOGGER.error("Provided format is not valid: " + cfg.customCalendarFormat, e);
+            return new SimpleDateFormat(CSVConfiguration.DEFAULT_CALENDAR_FORMAT);// use default locale now, format must be corrected anyway 
+        }
+    }
+
+    private DateTimeFormatter determineDayFormatter(CSVConfiguration cfg) {
+        try {
+            return cfg.customTimestampFormat == null
+                    ? DateTimeFormat.forStyle(cfg.dateStyle.getToken() + "-")
+                    : DateTimeFormat.forPattern(cfg.customDayFormat);
+        } catch (IllegalArgumentException e) {
+            // could occur if the user provided format is invalid
+            LOGGER.error("Provided format is not valid: " + cfg.customDayFormat, e);
+            return DateTimeFormat.forPattern(CSVConfiguration.DEFAULT_DAY_FORMAT); 
+        }
+    }
+
+    private DateTimeFormatter determineTimestampFormatter(CSVConfiguration cfg) {
+        try {
+            return cfg.customTimestampFormat == null
+                    ? DateTimeFormat.forStyle(cfg.dateStyle.getToken() + cfg.timeStyle.getToken())
+                    : DateTimeFormat.forPattern(cfg.customTimestampFormat);
+        } catch (IllegalArgumentException e) {
+            // could occur if the user provided format is invalid
+            LOGGER.error("Provided format is not valid: " + cfg.customTimestampFormat, e);
+            return DateTimeFormat.forPattern(CSVConfiguration.DEFAULT_TIMESTAMP_FORMAT); 
+        }
+    }
+
+    private DateTimeFormatter determineTimestamp3Formatter(CSVConfiguration cfg) {
+        try {
+            return cfg.customTimestampWithMsFormat == null
+                    ? DateTimeFormat.forStyle(cfg.dateStyle.getToken() + cfg.timeStyle.getToken())
+                    : DateTimeFormat.forPattern(cfg.customTimestampWithMsFormat);
+        } catch (IllegalArgumentException e) {
+            // could occur if the user provided format is invalid
+            LOGGER.error("Provided format is not valid: " + cfg.customTimestampWithMsFormat, e);
+            return DateTimeFormat.forPattern(CSVConfiguration.DEFAULT_TS_WITH_MS_FORMAT); 
+        }
+    }
+
+    public CSVComposer(Appendable work, CSVConfiguration cfg) {
         super(work);
-        this.cfg = config;
+        this.cfg = cfg;
         this.stringQuote = (cfg.quote != null) ? String.valueOf(cfg.quote) : "";  // use this for cases where a String is required
-        this.usesDefaultDecimalPoint = cfg.decimalPoint.equals(".");
-        this.shouldWarnWhenUsingFloat = cfg.decimalPoint.length() == 0;  // removing decimal points from float or double is a bad idea, because no scale is defined
-        this.dateTimeFormat = DateTimeFormat.forStyle(cfg.dateStyle.getToken() + cfg.timeStyle.getToken()).withLocale(cfg.locale).withZoneUTC();
-        this.dateFormat = DateTimeFormat.forStyle(cfg.dateStyle.getToken() + "-").withZoneUTC().withLocale(cfg.locale);
-        this.calendarFormat = DateFormat.getDateInstance(DateFormat.MEDIUM, cfg.locale);
+        //this.usesDefaultDecimalPoint = cfg.decimalPoint.equals(".");
+        //this.shouldWarnWhenUsingFloat = cfg.decimalPoint.length() == 0;     // removing decimal points from float or double is a bad idea, because no scale is defined
+        this.dayFormat = determineDayFormatter(cfg).withLocale(cfg.locale).withZoneUTC();
+        this.timestampFormat = determineTimestampFormatter(cfg).withLocale(cfg.locale).withZoneUTC();
+        this.timestamp3Format = determineTimestamp3Formatter(cfg).withLocale(cfg.locale).withZoneUTC();
+        this.calendarFormat = determineCalendarFormat(cfg);
+        this.numberFormat = NumberFormat.getInstance(cfg.locale);
+        this.numberFormat.setGroupingUsed(false);                           // this is for interfaces, don't do pretty-printing
+        this.bigDecimalFormat = cfg.removePoint4BD ? null : (NumberFormat)this.numberFormat.clone();    // make a copy for BigDecimal, where we set fractional digits as required
+        //this.decimalFormat = this.numberFormat instanceof DecimalFormat ? (DecimalFormat)numberFormat : null;
     }
 
     protected void writeSeparator() throws IOException {   // nothing to do in the standard bonaparte format
@@ -96,7 +152,7 @@ public class CSVComposer extends AppendableComposer {
     }
 
     private void addCharSub(char c) throws IOException {
-        addRawData(c == cfg.quote ? stringQuote : c < 0x20 ? cfg.ctrlReplacement : String.valueOf(c));
+        addRawData(cfg.quote != null && c == cfg.quote ? stringQuote : c < 0x20 ? cfg.ctrlReplacement : String.valueOf(c));
     }
     
     // field type specific output functions
@@ -130,8 +186,15 @@ public class CSVComposer extends AppendableComposer {
             boolean isSigned) throws IOException {
         writeSeparator();
         if (n != null) {
-            String defaultFormat = n.toPlainString();
-            addRawData(usesDefaultDecimalPoint ? defaultFormat : defaultFormat.replace(".", cfg.decimalPoint));
+            if (cfg.removePoint4BD) {
+                // use standard BigDecimal formatter, and remove the "." from the output
+                addRawData(n.toPlainString().replace(".", ""));
+            } else {
+                // use standard locale formatter
+                bigDecimalFormat.setMaximumFractionDigits(n.scale());
+                bigDecimalFormat.setMinimumFractionDigits(n.scale());
+                addRawData(bigDecimalFormat.format(n));
+            }
         }
     }
 
@@ -179,24 +242,28 @@ public class CSVComposer extends AppendableComposer {
     @Override
     public void addField(float f) throws IOException {
         writeSeparator();
+        addRawData(numberFormat.format(f));            // format using the locale's approach
+        /*
         String defaultFormat = Float.toString(f);
         addRawData(usesDefaultDecimalPoint ? defaultFormat : defaultFormat.replace(".", cfg.decimalPoint));
         if (shouldWarnWhenUsingFloat) {
             shouldWarnWhenUsingFloat = false;  // only warn once per record
             LOGGER.warn("Using float or double and removal of decimal point may result in undefined output");
-        }
+        } */
     }
 
     // double
     @Override
     public void addField(double d) throws IOException {
         writeSeparator();
+        addRawData(numberFormat.format(d));            // format using the locale's approach
+        /*
         String defaultFormat = Double.toString(d);
         addRawData(usesDefaultDecimalPoint ? defaultFormat : defaultFormat.replace(".", cfg.decimalPoint));
         if (shouldWarnWhenUsingFloat) {
             shouldWarnWhenUsingFloat = false;  // only warn once per record
             LOGGER.warn("Using float or double and removal of decimal point may result in undefined output");
-        }
+        } */
     }
 
     // UUID
@@ -250,7 +317,7 @@ public class CSVComposer extends AppendableComposer {
         if (t != null) {
             if (cfg.datesQuoted)
                 addRawData(stringQuote);
-            addRawData(dateFormat.print(t));
+            addRawData(dayFormat.print(t));
             if (cfg.datesQuoted)
                 addRawData(stringQuote);
         }
@@ -262,7 +329,10 @@ public class CSVComposer extends AppendableComposer {
         if (t != null) {
             if (cfg.datesQuoted)
                 addRawData(stringQuote);
-            addRawData(dateTimeFormat.print(t));
+            if (length == 0)
+                addRawData(timestampFormat.print(t));   // second precision
+            else
+                addRawData(timestamp3Format.print(t));  // millisecond precision
             if (cfg.datesQuoted)
                 addRawData(stringQuote);
         }

@@ -38,8 +38,9 @@ public class CSVDemo {
                 .forLocale(Locale.GERMANY)
                 .dateTimeStyle(CSVStyle.MEDIUM, CSVStyle.MEDIUM)
                 .usingSeparator("; ")
-                .usingDecimalPoint(",")
                 .booleanTokens("WAHR", "FALSCH")  // as used by Excel
+                .setCustomCalendarFormat(null)
+                .setCustomDayTimeFormats(null, null, null)
                 .build(), "DE extended");
     }
 
