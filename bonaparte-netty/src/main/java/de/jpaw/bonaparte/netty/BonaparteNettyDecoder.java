@@ -31,12 +31,12 @@ public class BonaparteNettyDecoder extends ByteToMessageDecoder {
             } else {
                 // copy the ChannelBuffer to a byte array
                 array = new byte[msg.readableBytes()];
-                msg.getBytes(0, array);
+                msg.readBytes(array);
             }
         } else {
             // copy the ChannelBuffer to a byte array
             array = new byte[msg.readableBytes()];
-            msg.getBytes(0, array);
+            msg.readBytes(array);
         }
 
         logger.debug("Received {} bytes of data", array.length);
