@@ -18,6 +18,7 @@ package de.jpaw.bonaparte.core;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DateFormat;
+import java.text.Format;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -53,7 +54,7 @@ public class CSVComposer extends AppendableComposer {
     protected final DateTimeFormatter timestampFormat;      // day and time on second precision (Joda)
     protected final DateTimeFormatter timestamp3Format;     // day and time on millisecond precision (Joda)
     protected final DateFormat calendarFormat;              // Java's mutable Calendar. Use with caution (or better, don't use at all) 
-    protected final NumberFormat numberFormat;              // locale's default format for formatting float and double, covers decimal point and sign
+    protected Format numberFormat;              // locale's default format for formatting float and double, covers decimal point and sign
     protected final NumberFormat bigDecimalFormat;          // locale's default format for formatting BigDecimal, covers decimal point and sign
 
     private DateFormat determineCalendarFormat(CSVConfiguration cfg) {
@@ -112,9 +113,11 @@ public class CSVComposer extends AppendableComposer {
         this.timestampFormat = determineTimestampFormatter(cfg).withLocale(cfg.locale).withZoneUTC();
         this.timestamp3Format = determineTimestamp3Formatter(cfg).withLocale(cfg.locale).withZoneUTC();
         this.calendarFormat = determineCalendarFormat(cfg);
-        this.numberFormat = NumberFormat.getInstance(cfg.locale);
-        this.numberFormat.setGroupingUsed(false);                           // this is for interfaces, don't do pretty-printing
-        this.bigDecimalFormat = cfg.removePoint4BD ? null : (NumberFormat)this.numberFormat.clone();    // make a copy for BigDecimal, where we set fractional digits as required
+        this.calendarFormat.setCalendar(Calendar.getInstance(cfg.locale));
+        NumberFormat myNumberFormat = NumberFormat.getInstance(cfg.locale); 
+        myNumberFormat.setGroupingUsed(false);                           // this is for interfaces, don't do pretty-printing
+        this.numberFormat = myNumberFormat;
+        this.bigDecimalFormat = cfg.removePoint4BD ? null : (NumberFormat)myNumberFormat.clone();    // make a copy for BigDecimal, where we set fractional digits as required
         //this.decimalFormat = this.numberFormat instanceof DecimalFormat ? (DecimalFormat)numberFormat : null;
     }
 
@@ -306,7 +309,7 @@ public class CSVComposer extends AppendableComposer {
         if (t != null) {
             if (cfg.datesQuoted)
                 addRawData(stringQuote);
-            addRawData(calendarFormat.format(t));
+            addRawData(calendarFormat.format(t.getTime()));
             if (cfg.datesQuoted)
                 addRawData(stringQuote);
         }

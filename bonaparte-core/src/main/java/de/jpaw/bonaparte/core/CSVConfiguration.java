@@ -72,27 +72,27 @@ public class CSVConfiguration {
     
     /** Builder for the configuration */
     public static class Builder {
-        private String separator;           // delimiter between fields
-        private Character quote;            // quote character for strings
-        private String quoteReplacement;    // string to insert for quotes inside the string
-        private String ctrlReplacement;     // string to insert for control characters
-        private boolean datesQuoted;        // are date fields quoted or not?
-        private boolean removePoint4BD;     // SPECIAL: remove decimal point for BigDecimal output, to support some specific interfaces
-        private String arrayStart;          // string to output for array start, List<> and Set<>
-        private String arrayEnd;            // string to output for array end
-        private String mapStart;            // string to output for map start
-        private String mapEnd;              // string to output for map end
-        private String objectStart;         // string to output for array start
-        private String objectEnd;           // string to output for array end
-        private String booleanTrue;         // string to output for boolean true value
-        private String booleanFalse;        // string to output for boolean false value
-        private Locale locale;              // used to determine date format
-        private CSVStyle dateStyle;         // verbosity for day output
-        private CSVStyle timeStyle;         // verbosity for time output
-        private String customDayFormat;             // set to override locale specific LocalDate formatter
-        private String customTimestampFormat;       // set to override locale specific LocalDateTime formatter
-        private String customTimestampWithMsFormat; // set to override locale specific LocalDateTime formatter if milliseconds should be printed
-        private String customCalendarFormat;        // set to override locale specific Calendar formatter
+        protected String separator;           // delimiter between fields
+        protected Character quote;            // quote character for strings
+        protected String quoteReplacement;    // string to insert for quotes inside the string
+        protected String ctrlReplacement;     // string to insert for control characters
+        protected boolean datesQuoted;        // are date fields quoted or not?
+        protected boolean removePoint4BD;     // SPECIAL: remove decimal point for BigDecimal output, to support some specific interfaces
+        protected String arrayStart;          // string to output for array start, List<> and Set<>
+        protected String arrayEnd;            // string to output for array end
+        protected String mapStart;            // string to output for map start
+        protected String mapEnd;              // string to output for map end
+        protected String objectStart;         // string to output for array start
+        protected String objectEnd;           // string to output for array end
+        protected String booleanTrue;         // string to output for boolean true value
+        protected String booleanFalse;        // string to output for boolean false value
+        protected Locale locale;              // used to determine date format
+        protected CSVStyle dateStyle;         // verbosity for day output
+        protected CSVStyle timeStyle;         // verbosity for time output
+        protected String customDayFormat;             // set to override locale specific LocalDate formatter
+        protected String customTimestampFormat;       // set to override locale specific LocalDateTime formatter
+        protected String customTimestampWithMsFormat; // set to override locale specific LocalDateTime formatter if milliseconds should be printed
+        protected String customCalendarFormat;        // set to override locale specific Calendar formatter
         
         /** Transfers the parameter as passed by the argument into this builder.
          * Must be final because called from a constructor.
