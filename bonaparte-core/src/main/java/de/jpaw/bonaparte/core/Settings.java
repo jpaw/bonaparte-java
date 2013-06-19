@@ -19,9 +19,9 @@ import java.nio.charset.Charset;
 
 /**
  * Defines the parameters for most serializers / marshallers and deserializers / unmarshallers of the bonaparte format.
- * 
+ *
  * @author Michael Bischoff
- * 
+ *
  */
 public abstract class Settings {
     // Java 7 required:
@@ -40,14 +40,14 @@ public abstract class Settings {
 
     /** Changes the end-of-record character sequence for the current serializer. Not relevant for deserializers.
      *  The initial behaviour is set via a static class variable, which can be set via {@link setDefaultWriteCRs}.
-     * 
+     *
      * @param writeCRs - true means write a "carriage return / linefeed" sequence, false means write just a linefeed. */
     public void setWriteCRs(boolean writeCRs) {
         this.writeCRs = writeCRs;
     }
 
     /** Retrieves the current setting, in which encoding conversions between Strings and byte arrays are done for Unicode characters.
-     * 
+     *
      * @return the current {@link java.nio.Charset} setting.
      */
     public Charset getCharset() {
@@ -56,7 +56,7 @@ public abstract class Settings {
 
     /** Specifies the encoding for conversions between Strings and byte arrays.
      *  The initial value is determined by a static class variable, which can be set via {@setDefaultCharset}.
-     * 
+     *
      * @param charset - the encoding for future conversions.
      *  If the encoding is changed within a conversion process, i.e. after data has been serialized, but before it has been retrieved, the result is implementation dependent.
      */
@@ -79,7 +79,7 @@ public abstract class Settings {
 
     /** Changes the end-of-record character sequence for instances of this class constructed in the future.
      *  The initial behaviour is operating system dependent, it is "CR/LF" for MS-Windows and "LF" for Unix/Linux.
-     * 
+     *
      * @param writeCRs - true means write a "carriage return / linefeed" sequence, false means write just a linefeed. */
     public static void setDefaultWriteCRs(boolean writeCRs) {
         defaultCRs = writeCRs;
@@ -93,7 +93,7 @@ public abstract class Settings {
 
     /** Specifies the initial encoding for conversions between Strings and byte arrays for instances of this class constructed in the future.
      *  The load-time default is set to "UTF-8".
-     * 
+     *
      * @param charset - the encoding for future classes.
      */
     public static void setDefaultCharset(Charset charset) {

@@ -26,9 +26,9 @@ import java.util.Map;
  *          Error codes are defined in a way such that the 8th digit (error code divided by 10 to the power of 8)
  *          provides a good classification of the problem.
  *          The classifications provided are actually targeting at full application coverage and not only message serialization / deserialization.
- * 
+ *
  * @author Michael Bischoff
- * 
+ *
  */
 
 public class ApplicationException extends Exception {
@@ -92,7 +92,7 @@ public class ApplicationException extends Exception {
 
     /** Returns a textual description of the error code.
      *  The method is declared as final as long as it's used from the constructors of superclasses.
-     * 
+     *
      * @return the textual description.
      */
     public final String getStandardDescription() {
@@ -104,7 +104,7 @@ public class ApplicationException extends Exception {
     }
 
     /** Returns a textual description of the exception.
-     * 
+     *
      * @return the textual description.
      */
     @Override

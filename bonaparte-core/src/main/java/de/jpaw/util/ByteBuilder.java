@@ -21,29 +21,29 @@ import java.nio.charset.Charset;
  *          Functionality which corresponds to StringBuilder, but for byte arrays.
  *          <p>
  *          This should really exist in Java SE already.
- * 
+ *
  * @author Michael Bischoff
- * 
+ *
  */
 
 public class ByteBuilder {
     // static variables
     private static final int DEFAULT_INITIAL_CAPACITY = 65502; // 64 KB - 32 Byte for overhead
     private static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");    // default character set is available on all platforms
-    
+
     // per instance variables
     private Charset charset;
     private int currentAllocSize;
     private int currentLength;
     private byte[] buffer;
-    
+
     // set all private variables except charset
     private final void constructorHelper(int size) {
         buffer = new byte[size];
         currentAllocSize = size;
         currentLength = 0;
     }
-    
+
     public ByteBuilder() {  // default constructor
         constructorHelper(DEFAULT_INITIAL_CAPACITY);
         charset = DEFAULT_CHARSET;
@@ -52,7 +52,7 @@ public class ByteBuilder {
         constructorHelper(initialSize > 0 ? initialSize : DEFAULT_INITIAL_CAPACITY);
         this.charset = charset == null ? DEFAULT_CHARSET : charset;
     }
-    
+
     // extend the buffer because we ran out of space
     private void createMoreSpace(int minimumRequired) {
         // allocate the space
@@ -136,13 +136,13 @@ public class ByteBuilder {
         for (int i = 0; i < length; ++i)
             buffer[currentLength++] = (byte)s.charAt(i);
     }
-    
+
     public byte byteAt(int pos) {
         if (pos < 0 || pos >= currentLength)
             throw new IndexOutOfBoundsException();
         return buffer[pos];
     }
-    
+
     // getBytes() can be very slow!
     // beware, this call needs to be accompanied by length()!
     public byte[] getCurrentBuffer() {
@@ -151,14 +151,14 @@ public class ByteBuilder {
     public int length() {
         return currentLength;
     }
-    
+
     // returns a defensive copy of the contents
     public byte[] getBytes() {
         byte [] tmp = new byte[currentLength];
         System.arraycopy(buffer, 0, tmp, 0, currentLength);
         return tmp;
     }
-    
+
     public String toString() {
         return new String(buffer, 0, currentLength, charset);
     }

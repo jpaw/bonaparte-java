@@ -23,18 +23,18 @@ import de.jpaw.bonaparte.coretests.util.SimpleTestRunner;
 
 /**
  * The TestPrimitives class.
- * 
+ *
  * @author Michael Bischoff
  * @version $Revision$
- * 
+ *
  *          This is a simple testcase which calls the SimpleTestRunner with a class
  *          consisting of arrays of all supported boxed primitives.
  */
 
 public class TestBoxedTypeArrays {
-    
+
     @Test
     public void testBoxedTypeArrays() throws Exception {
         SimpleTestRunner.run(FillBoxedTypeArrays.test1(), false);
-    }   
+    }
 }

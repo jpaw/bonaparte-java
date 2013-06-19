@@ -28,9 +28,9 @@ import de.jpaw.util.ByteBuilder;
 import de.jpaw.util.CharTestsASCII;
 /**
  * Implements the serialization for the bonaparte format into byte arrays, using the {@link de.jpaw.util.ByteBuilder ByteBuilder} class, which is similar to the well known {@link java.lang.StringBuilder StringBuilder}.
- * 
+ *
  * @author Michael Bischoff
- * 
+ *
  */
 
 public class ByteArrayComposer extends ByteArrayConstants implements BufferedMessageComposer<RuntimeException> {
@@ -377,7 +377,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
         addField(indexID);
         addField(currentMembers);
     }
-    
+
     @Override
     public void startArray(int currentMembers, int maxMembers, int sizeOfElement) {
         work.append(ARRAY_BEGIN);
@@ -388,7 +388,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
     public void terminateArray() {
         work.append(ARRAY_TERMINATOR);
     }
-    
+
     @Override
     public void terminateMap() {
         work.append(ARRAY_TERMINATOR);

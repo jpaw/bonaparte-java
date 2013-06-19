@@ -23,10 +23,10 @@ import de.jpaw.bonaparte.coretests.util.SimpleTestRunner;
 
 /**
  * The TestBoxedTypes class.
- * 
+ *
  * @author Michael Bischoff
  * @version $Revision$
- * 
+ *
  *          This is a simple testcase which calls the SimpleTestRunner with a class
  *          consisting of all supported Java boxed types.
  */
@@ -35,5 +35,5 @@ public class TestBoxedTypes {
     @Test
     public void testBoxedTypes() throws Exception {
         SimpleTestRunner.run(FillBoxedTypes.test1(), false);
-    }   
+    }
 }

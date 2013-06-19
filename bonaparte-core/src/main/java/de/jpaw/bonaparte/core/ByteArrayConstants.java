@@ -18,10 +18,10 @@ package de.jpaw.bonaparte.core;
 
 /**
  * The ByteArrayConstants class.
- * 
+ *
  * @author Michael Bischoff
  * @version $Revision$
- * 
+ *
  *          Defines some constants which are used by Byte(Array) based parsers and composers.
  */
 
@@ -31,7 +31,7 @@ public abstract class ByteArrayConstants extends Settings {
     protected static final byte PLUS_SIGN = '+';
     protected static final byte MINUS_SIGN = '-';
     protected static final byte DECIMAL_POINT = '.';
-    
+
     protected static final byte FIELD_TERMINATOR = '\006';          // ctrl-F
     protected static final byte TRANSMISSION_TERMINATOR = '\025';   // ctrl-U
     protected static final byte TRANSMISSION_TERMINATOR2 = '\032';  // ctrl-Z
@@ -45,5 +45,5 @@ public abstract class ByteArrayConstants extends Settings {
     protected static final byte OBJECT_BEGIN = '\023';              // ctrl-S
     protected static final byte ESCAPE_CHAR = '\005';               // ctrl-E
     protected static final byte NULL_FIELD = '\016';                // ctrl-N
-    protected static final byte MAP_BEGIN = '\036';                 // 
+    protected static final byte MAP_BEGIN = '\036';                 //
 }

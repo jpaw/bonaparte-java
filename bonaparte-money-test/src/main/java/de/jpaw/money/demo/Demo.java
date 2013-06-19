@@ -10,7 +10,7 @@ public class Demo {
 
     /**
      * @param args
-     * @throws MonetaryException 
+     * @throws MonetaryException
      */
     public static void main(String[] args) throws MonetaryException {
         BonaCurrency currency = new BonaCurrency("EUR");

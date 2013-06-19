@@ -23,10 +23,10 @@ import de.jpaw.bonaparte.coretests.util.SimpleTestRunner;
 
 /**
  * The TestPrimitives class.
- * 
+ *
  * @author Michael Bischoff
  * @version $Revision$
- * 
+ *
  *          This is a simple testcase which calls the SimpleTestRunner with a class
  *          consisting of some other special types. Using small arrays.
  */
@@ -35,5 +35,5 @@ public class TestOtherTypesS {
     @Test
     public void testOtherTypes() throws Exception {
         SimpleTestRunner.run(FillOtherTypes.test1(), false);
-    }   
+    }
 }

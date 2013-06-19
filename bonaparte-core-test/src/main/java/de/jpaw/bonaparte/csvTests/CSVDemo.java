@@ -29,12 +29,12 @@ public class CSVDemo {
         }
         System.out.print("Format " + formatName + " is " + buffer);
     }
-    
+
     private static void runTest(CSVConfiguration cfg, String formatName) {
         run2Tests(cfg, formatName, false);
         run2Tests(cfg, formatName, true);
     }
-    
+
     private static void testTag(String tag, String name) {
         runTest(new CSVConfiguration.Builder()
         .forLocale(Locale.forLanguageTag(tag))
@@ -43,9 +43,9 @@ public class CSVDemo {
         .setCustomCalendarFormat(null)
         .setCustomDayTimeFormats(null, null, null)
         .build(), name);
-        
+
     }
-    
+
     public static void main(String[] args) {
         CSVConfiguration.Builder builder = new CSVConfiguration.Builder();
 

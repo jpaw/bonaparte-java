@@ -25,16 +25,16 @@ import de.jpaw.util.ByteArray;
 
 /**
  * The MessageComposer interface.
- * 
+ *
  * @author Michael Bischoff
  * @version $Revision$
- * 
+ *
  *          Defines the methods required for any serialization implementation
  */
 
 public interface MessageComposer<E extends Exception> {
-    
-    // serialization methods: structure 
+
+    // serialization methods: structure
     public void writeNull() throws E;
     public void startTransmission() throws E;
     public void startRecord() throws E;
@@ -50,7 +50,7 @@ public interface MessageComposer<E extends Exception> {
     // serialization methods: field type specific
     void addUnicodeString(String s,  int length, boolean allowCtrls) throws E; // length is max length as specified in DSL
     void addField(String s,  int length) throws E;              // length is max length as specified in DSL
-    
+
     // primitives
     void addField(boolean b) throws E;
     void addField(char c) throws E;
@@ -60,7 +60,7 @@ public interface MessageComposer<E extends Exception> {
     void addField(short n) throws E;
     void addField(int n) throws E;
     void addField(long n) throws E;
-    
+
     void addField(Integer n, int length, boolean isSigned) throws E; // length is max length as specified in DSL
     void addField(BigDecimal n, int length, int decimals, boolean isSigned) throws E;
     void addField(UUID n) throws E;

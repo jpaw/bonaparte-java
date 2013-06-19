@@ -40,10 +40,10 @@ import org.apache.poi.ss.util.DateFormatConverter;
 //import javax.xml.bind.DatatypeConverter;
 /**
  * Implements the output of Bonaparte objects into Excel formats.
- * 
+ *
  * For a description of the codes MS Excel wants, please see here:
  * http://office.microsoft.com/assistance/hfws.aspx?AssetID=HA010346351033#BMnumeralshape
- * 
+ *
  * @author Michael Bischoff
  * @version $Revision$
  */
@@ -51,7 +51,7 @@ import org.apache.poi.ss.util.DateFormatConverter;
 public class BaseExcelComposer implements MessageComposer<RuntimeException> {
     protected static final int MAX_DECIMALS = 18;
     protected final Workbook xls;
-    protected final DataFormat xlsDataFormat; 
+    protected final DataFormat xlsDataFormat;
     protected final CellStyle csLong;
     protected final CellStyle [] csBigDecimal;  // one per number of decimals, cache
     protected final CellStyle csDay;
@@ -82,7 +82,7 @@ public class BaseExcelComposer implements MessageComposer<RuntimeException> {
     private int rownum = -1;
     private int column = 0;
     private int sheetNum = 0;
-    
+
     public BaseExcelComposer(Workbook xls) {
         this.xls = xls;
         // create a few data formats
@@ -95,7 +95,7 @@ public class BaseExcelComposer implements MessageComposer<RuntimeException> {
         csTimestamp = xls.createCellStyle();
         csTimestamp.setDataFormat(xlsDataFormat.getFormat("yyyy-mm-dd hh:mm:ss"));
     }
-    
+
     public void newSheet(String name) {
         sheet = xls.createSheet();
         xls.setSheetName(sheetNum, name);
@@ -169,13 +169,13 @@ public class BaseExcelComposer implements MessageComposer<RuntimeException> {
             cell.setCellStyle(cs);
         return cell;
     }
-    
+
     private void newStringCell(String s) {
         ++column;
         if (s != null)
             row.createCell(column).setCellValue(s);
     }
-    
+
     // field type specific output functions
     @Override
     public void addUnicodeString(String s, int length, boolean allowCtrls) {
@@ -314,7 +314,7 @@ public class BaseExcelComposer implements MessageComposer<RuntimeException> {
             writeNull();
         }
     }
-    
+
     @Override
     public void startMap(int currentMembers, int indexID) {
     }

@@ -22,17 +22,17 @@ import de.jpaw.util.ApplicationException;
 
 /**
  * The MonetaryException class.
- * 
+ *
  * @author Michael Bischoff
  * @version $Revision$
- * 
+ *
  *          Extends the generic ApplicationException class in order to provide error details which are
  *          specific to currency conversion and monetary rounding.
  */
 
 public class MonetaryException extends ApplicationException {
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 5464727960916479900L;
 
@@ -57,7 +57,7 @@ public class MonetaryException extends ApplicationException {
 
     /**
      * Method lazyInitialization.
-     * 
+     *
      * Upload textual descriptions only once they're needed for this type of exception class.
      * The idea is that in working environments, we will never need them ;-).
      * There is a small chance of duplicate initialization, because the access to the flag textsInitialized is not

@@ -13,16 +13,16 @@ import com.google.common.collect.ImmutableList;
  * The sum of net and tax amounts equal the gross amount.
  * All amounts are of same scale, and therefore can be compared with equals().
  * All amounts are of same sign (all >= 0 or all <= 0)
- * Any rounding is done with appropriate error distribution. 
+ * Any rounding is done with appropriate error distribution.
  * @author BISC02
- * 
+ *
  */
 public final class BonaMoney implements Serializable, MoneyGetter {
     private static final long serialVersionUID = 6269291861207854500L;
 
     static private final BigDecimal [] EMPTY_ARRAY = new BigDecimal[0];
     static private final ImmutableList<BigDecimal> EMPTY_LIST = ImmutableList.of();
-    
+
     private final BonaCurrency currency;                        // the currency of this amount
     private final BigDecimal amount;                            // the main (gross) amount (or total)
     private final ImmutableList<BigDecimal> componentAmounts;   // net + taxes (or components)
@@ -40,7 +40,7 @@ public final class BonaMoney implements Serializable, MoneyGetter {
         this.amount = currency.getZero();
         this.componentAmounts = EMPTY_LIST;
     }
-        
+
     /** Constructor for a single with a breakdown of equal-sign components (for example net + taxes). */
     public BonaMoney(BonaCurrency currency, boolean allowRounding, boolean requireSameSign, BigDecimal amount, BigDecimal ... components)
             throws MonetaryException {
@@ -53,22 +53,22 @@ public final class BonaMoney implements Serializable, MoneyGetter {
             this.componentAmounts = EMPTY_LIST;
             return;
         }
-        
+
         if (requireSameSign) {
             boolean useNegatives = false;
             boolean usePositives = false;
             for (BigDecimal t : components) {
                 int sign = t.signum();
                 if (sign < 0)
-                    useNegatives = true; 
+                    useNegatives = true;
                 if (sign > 0)
                     usePositives = true;
             }
-            // now check if all signs are the same. 
+            // now check if all signs are the same.
             if (usePositives && useNegatives)
                 throw new MonetaryException(MonetaryException.SIGNS_DIFFER);
         }
-        
+
         // plausi check: if all amounts are provided, the sum must match!
         BigDecimal sum = BigDecimal.ZERO;
         for (BigDecimal t : components) {
@@ -85,7 +85,7 @@ public final class BonaMoney implements Serializable, MoneyGetter {
             if (amount.compareTo(sum) != 0)
                 throw new MonetaryException(MonetaryException.SUM_MISMATCH, amount.toPlainString() + " <> " + sum.toPlainString());
         }
-        
+
         // we're good so far. Now see if there is any rounding issue. If rounding is disable, this is an easy job. Shortcut this.
         try {
             ImmutableList.Builder<BigDecimal> b = ImmutableList.builder();
@@ -96,7 +96,7 @@ public final class BonaMoney implements Serializable, MoneyGetter {
                 this.amount = currency.scale(amount, RoundingMode.UNNECESSARY);
             } else {
                 // complex case? Scaling could lead to a difference, which then needs to be allocated to the elements.
-                // we assign all values to some big array and delegate to the BonaCurrency class to do the heavy lifting 
+                // we assign all values to some big array and delegate to the BonaCurrency class to do the heavy lifting
                 BigDecimal [] unscaled = new BigDecimal [1 + components.length];
                 unscaled[0] = amount;
                 for (int i = 0; i < components.length; ++i)
@@ -174,16 +174,16 @@ public final class BonaMoney implements Serializable, MoneyGetter {
             taxes[i] = componentAmounts.get(i).subtract(subtrahend.amount);
         return new BonaMoney(currency, false, false, amount.subtract(subtrahend.amount), taxes);
     }
-    
+
     /** Stores the amounts of this instance in a mutable object (for example BonaPortable DTO).
-     * The currency is skipped, due to most likely duplication. */ 
+     * The currency is skipped, due to most likely duplication. */
     public void storeAmounts(MoneySetter target) {
         target.setAmount(amount);
         target.setComponentAmounts(componentAmounts);
     }
-    
+
     /** Factory method to create a new BonaMoney from a readable source of amounts.
-     * If componentAmounts.size() >= 0, expects the list to have exactly that many amounts, else (-1) don't care. 
+     * If componentAmounts.size() >= 0, expects the list to have exactly that many amounts, else (-1) don't care.
      * @throws MonetaryException */
     public static BonaMoney fromAmounts(BonaCurrency currency, boolean allowRounding, int numTaxAmounts, boolean addMissingTaxAmounts, boolean requireSameSign,
             MoneyGetter source)
@@ -204,7 +204,7 @@ public final class BonaMoney implements Serializable, MoneyGetter {
         // no easy shortcut this time when numTaxAmounts = 0, because the source is unsecure, gross could be <> net
         return new BonaMoney(currency, allowRounding, requireSameSign, source.getAmount(), componentAmounts);
     }
-    
+
     @Override
     public String toString() {
         StringBuilder a = new StringBuilder();
@@ -224,7 +224,7 @@ public final class BonaMoney implements Serializable, MoneyGetter {
         a.append("]");
         return a.toString();
     }
-    
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -246,7 +246,7 @@ public final class BonaMoney implements Serializable, MoneyGetter {
                 return false;
         return true;
     }
-    
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -256,9 +256,9 @@ public final class BonaMoney implements Serializable, MoneyGetter {
             result = (prime * result) + componentAmounts.get(i).hashCode();
         return result;
     }
-    
+
     // autogenerated stuff below
-    
+
     public BonaCurrency getCurrency() {
         return currency;
     }

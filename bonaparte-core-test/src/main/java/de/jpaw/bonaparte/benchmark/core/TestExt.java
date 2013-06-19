@@ -31,7 +31,7 @@ public class TestExt {
             System.err.println(e);
         }
     }
-    
+
     static private void runBench(int millionCallsPerThread, Serializable x) {
         Date start = new Date();
         serializableAlternative(millionCallsPerThread * 1000000, x);
@@ -50,7 +50,7 @@ public class TestExt {
         BoxedTypes b = FillBoxedTypes.test1();
         PrimitivesS ps = FillPrimitivesS.test1();
         BoxedTypesS bs = FillBoxedTypesS.test1();
-        
+
         // run multiple tests to avoid effects of JIT kicking in
         runBench(millionCallsPerThread, b);
         runBench(millionCallsPerThread, p);

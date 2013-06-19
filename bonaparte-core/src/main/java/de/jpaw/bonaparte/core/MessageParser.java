@@ -26,16 +26,16 @@ import de.jpaw.util.EnumException;
 
 /**
  * The MessageParser interface.
- * 
+ *
  * @author Michael Bischoff
  * @version $Revision$
- * 
+ *
  *          Defines the methods required for any parser implementation
  */
 
 public interface MessageParser<E extends Exception> {
     static public final String GENERIC_RECORD = "RECORD";   // field name to be used when parsing top level record
-    
+
     // unmarshaller methods: field type specific
     public BigDecimal readBigDecimal(String fieldname, boolean allowNull, int length, int decimals, boolean isSigned, boolean rounding, boolean autoScale) throws E;
     public Character  readCharacter (String fieldname, boolean allowNull) throws E;
@@ -68,7 +68,7 @@ public interface MessageParser<E extends Exception> {
     public E enumExceptionConverter(EnumException e);  // convert e to an exception of appropriate type. Also enrich it with current parser status
     // upload of current class to be parsed: now all done locally within the parser
     // public String setCurrentClass(String classname);
-    
+
     // methods from common settings
     // omit, these are only valid for the ASCII / UTF format. Set them on the Composer object directly, or create an "ASCIIComposer" interface
     //public boolean doWriteCRs();

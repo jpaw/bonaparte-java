@@ -29,12 +29,12 @@ public class BonaMoneyOperators {
         else
             !a.equals(b)
     }
-    
+
     // allow for BigDecimal * BonaCurrency as a shorthand to create a BonaMoney instance
     def static operator_multiply(BigDecimal amount, BonaCurrency curr) {
         new BonaMoney(curr, false, amount)
     }
-    
+
     // allow for BigDecimal * String as a shorthand to create a BonaMoney instance
     def static operator_multiply(BigDecimal amount, String iso4217CurrencyCode) {
         new BonaMoney(new BonaCurrency(iso4217CurrencyCode), false, amount)

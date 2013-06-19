@@ -32,10 +32,10 @@ import de.jpaw.util.ByteTestsASCII;
 import de.jpaw.util.EnumException;
 /**
  * The ByteArrayParser class.
- * 
+ *
  * @author Michael Bischoff
  * @version $Revision$
- * 
+ *
  *          Implementation of the MessageParser, using byte arrays.
  */
 

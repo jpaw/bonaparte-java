@@ -25,14 +25,14 @@ public class Unix {
         String actualOutput = buffer.toString();
         assert(expectedOutput.equals(actualOutput));
     }
-    
+
     @Test
     public void testUnixPasswd() throws Exception {
         UnixPasswd pwEntry = new UnixPasswd("root", "x", 0, 0,"System superuser", "/root", "/bin/sh");
         UnixPasswd pwEntry2 = new UnixPasswd("jpaw", "x", 1003, 314,"Michael Bischoff", "/home/jpaw", "/bin/bash");
-        
+
         runTest(unixPasswdCfg, pwEntry, "root:x:0:0:System superuser:/root:/bin/sh\n");
         runTest(unixPasswdCfg, pwEntry2, "jpaw:x:1003:314:Michael Bischoff:/home/jpaw:/bin/bash\n");
-    }   
+    }
 
 }

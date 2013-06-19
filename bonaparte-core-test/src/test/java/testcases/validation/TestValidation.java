@@ -10,7 +10,7 @@ public class TestValidation {
     @Test
     public void testOtherTypes() throws Exception {
         OtherTypes x = FillOtherTypes.test1();
-        
+
         x.validate();  // should be OK
         x.setLanguageCode(null);
         x.validate();  // should be OK
@@ -23,6 +23,6 @@ public class TestValidation {
             else
                 throw e;
         }
-    }   
+    }
 
 }

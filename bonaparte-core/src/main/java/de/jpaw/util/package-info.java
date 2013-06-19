@@ -17,6 +17,6 @@
  * Provides a collection of some utility classes not worth their own project / separate package.
  *
  * @author Michael Bischoff
- * 
+ *
  */
 package de.jpaw.util;

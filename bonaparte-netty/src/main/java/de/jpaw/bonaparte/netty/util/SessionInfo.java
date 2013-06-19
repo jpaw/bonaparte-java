@@ -14,9 +14,9 @@ public class SessionInfo {
     /*
      * to extract the DN, we would need extra JARs from org.bouncycastle.asn1 public static String certToCn(X509Certificate cert) { X500Principal principal =
      * cert.getSubjectX500Principal();
-     * 
+     *
      * X500Name x500name = new X500Name( principal.getName() ); RDN cn = x500name.getRDNs(BCStyle.CN)[0]);
-     * 
+     *
      * return IETFUtils.valueToString(cn.getFirst().getValue()); }
      */
 

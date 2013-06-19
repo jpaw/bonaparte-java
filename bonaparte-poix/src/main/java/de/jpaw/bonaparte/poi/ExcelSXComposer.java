@@ -22,13 +22,13 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
 /**
  * Implements the output of Bonaparte objects into Excel xlsx format, using streaming (disk swapping).
- * 
+ *
  * @author Michael Bischoff
  * @version $Revision$
  */
 
 public class ExcelSXComposer extends BaseExcelComposer implements ExcelWriter {
-    
+
     public ExcelSXComposer() {
         super(new SXSSFWorkbook());
     }
@@ -44,5 +44,5 @@ public class ExcelSXComposer extends BaseExcelComposer implements ExcelWriter {
         out.close();
         ((SXSSFWorkbook)xls).dispose();
     }
-    
+
 }

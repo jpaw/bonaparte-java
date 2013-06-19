@@ -23,18 +23,18 @@ import de.jpaw.bonaparte.coretests.util.SimpleTestRunner;
 
 /**
  * The TestPrimitives class.
- * 
+ *
  * @author Michael Bischoff
  * @version $Revision$
- * 
+ *
  *          This is a simple testcase which calls the SimpleTestRunner with a class
  *          consisting of all supported Java primitives.
  */
 
 public class TestPrimitives {
-    
+
     @Test
     public void testPrimitives() throws Exception {
         SimpleTestRunner.run(FillPrimitives.test1(), false);
-    }   
+    }
 }

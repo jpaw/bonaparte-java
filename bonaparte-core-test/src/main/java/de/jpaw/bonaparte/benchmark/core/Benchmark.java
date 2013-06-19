@@ -12,14 +12,14 @@ public class Benchmark {
     public static void main(String[] args) throws Exception {
         int numberOfThreads = 1;
         int millionCallsPerThread = 1;
-        int method = 0; 
+        int method = 0;
         int objectId = 0;
-        int initialBufferSize = 65500; 
+        int initialBufferSize = 65500;
         BonaPortable src = null;
         Thread threads [];
         Date start;
         Date stop;
-        
+
         if (args.length > 0) {
             method = Integer.valueOf(args[0]);
         } else {
@@ -43,23 +43,23 @@ public class Benchmark {
                 + numberOfThreads + " threads, "
                 + millionCallsPerThread + " million calls per thread"
                 + " with object " + objectId);
-        
+
         start = new Date();
         threads = new Thread [numberOfThreads];
         switch (objectId) {
-        case 0: 
+        case 0:
             src = FillPrimitives.test1();
             break;
-        case 1: 
+        case 1:
             src = FillBoxedTypes.test1();
             break;
-        case 2: 
+        case 2:
             src = FillOtherTypes.test1();
             break;
-        case 3: 
+        case 3:
             src = FillOtherTypes.test2(1234567);
             break;
-        case 4: 
+        case 4:
             src = FillLists.test1();
             break;
         }

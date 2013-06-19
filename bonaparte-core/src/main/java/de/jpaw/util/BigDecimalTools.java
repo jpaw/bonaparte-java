@@ -12,21 +12,21 @@ import java.math.RoundingMode;
  *
  */
 public class BigDecimalTools {
-    
+
     /** Scales the BigDecimal to some predefined scale */
     static public BigDecimal scale(BigDecimal a, int decimals) {
         if (a != null && a.scale() != decimals)
             a = a.setScale(decimals, RoundingMode.HALF_EVEN);
         return a;
     }
-    
+
     /** Computes the hashCode of a BigDecimal at a specific scale. */
     static public int hashCode(BigDecimal a, int decimals) {
         if (a == null)
             return 0;
         return scale(a, decimals).hashCode();
     }
-    
+
     /** Compares to BigDecimal numbers. They can only be the same, if their rounded values are the same. */
     static public boolean equals(BigDecimal a, int aDecimals, BigDecimal b, int bDecimals) {
         if (a == null && b == null)

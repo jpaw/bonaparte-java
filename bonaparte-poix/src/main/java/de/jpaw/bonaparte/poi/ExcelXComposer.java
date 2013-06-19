@@ -22,14 +22,14 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
  * Implements the output of Bonaparte objects into Excel xlsx format, using the DOM approach.
- * 
+ *
  * @author Michael Bischoff
  * @version $Revision$
  */
 
 public class ExcelXComposer extends BaseExcelComposer implements ExcelWriter {
     // variables set by constructor
-    
+
     public ExcelXComposer() {
         super(new XSSFWorkbook());
     }
@@ -44,5 +44,5 @@ public class ExcelXComposer extends BaseExcelComposer implements ExcelWriter {
         write(out);
         out.close();
     }
-    
+
 }

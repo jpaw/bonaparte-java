@@ -21,7 +21,7 @@
         <logback.version>1.0.9</logback.version>        <!-- http://logback.qos.ch/ latest: 1.0.13 -->
         <guava.version>14.0.1</guava.version>           <!-- http://code.google.com/p/guava-libraries/ UPTODATE 2013-06-09 -->
 
-        <!-- Some more versions, used by specific dependent projects -->        
+        <!-- Some more versions, used by specific dependent projects -->
         <netty.version>4.0.0.CR3</netty.version>        <!-- https://netty.io/news/         UPTODATE 2013-06-09 -->
         <poi.version>3.9</poi.version>                  <!-- http://poi.apache.org/         UPTODATE 2013-06-09 -->
         <mina.version>2.0.5</mina.version>              <!-- http://mina.apache.org/        2.0.7 -->
@@ -49,7 +49,7 @@
             <url>http://www.jpaw.de</url>
         </developer>
     </developers>
-    
+
     <repositories>
         <repository>
             <id>xtend.repository</id>

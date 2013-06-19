@@ -4,17 +4,17 @@ import java.util.Locale;
 
 public class CSVConfiguration {
     public final static String EMPTY_STRING = "";                           // used instead of null Strings
-    public final static String DEFAULT_DAY_FORMAT = "yyyyMMdd";             // default pattern for LocalDate (bonaparte Day) outputs 
-    public final static String DEFAULT_TIMESTAMP_FORMAT = "yyyyMMddHHmmss"; // default pattern for LocalDatetime (bonaparte Timestamp(0)) outputs 
-    public final static String DEFAULT_TS_WITH_MS_FORMAT = "yyyyMMddHHmmssSSS"; // default pattern for LocalDatetime (bonaparte Timestamp(3)) outputs 
-    public final static String DEFAULT_CALENDAR_FORMAT = "yyyyMMddHHmmss";  // default pattern for Calendar (bonaparte Calendar) outputs 
-    
+    public final static String DEFAULT_DAY_FORMAT = "yyyyMMdd";             // default pattern for LocalDate (bonaparte Day) outputs
+    public final static String DEFAULT_TIMESTAMP_FORMAT = "yyyyMMddHHmmss"; // default pattern for LocalDatetime (bonaparte Timestamp(0)) outputs
+    public final static String DEFAULT_TS_WITH_MS_FORMAT = "yyyyMMddHHmmssSSS"; // default pattern for LocalDatetime (bonaparte Timestamp(3)) outputs
+    public final static String DEFAULT_CALENDAR_FORMAT = "yyyyMMddHHmmss";  // default pattern for Calendar (bonaparte Calendar) outputs
+
     public final String separator;          // delimiter between fields
     public final Character quote;           // quote character for strings, null means no quotes used
     public final String quoteReplacement;   // string to insert for quotes inside the string
     public final String ctrlReplacement;    // string to insert for control characters
     public final boolean datesQuoted;       // are date fields quoted or not?
-    public final boolean removePoint4BD;    // SPECIAL: remove decimal point for BigDecimal output, to support some specific interfaces  
+    public final boolean removePoint4BD;    // SPECIAL: remove decimal point for BigDecimal output, to support some specific interfaces
     public final String arrayStart;         // string to output for array start, List<> and Set<>
     public final String arrayEnd;           // string to output for array end
     public final String mapStart;           // string to output for map start
@@ -30,10 +30,10 @@ public class CSVConfiguration {
     public final String customTimestampFormat;       // set to override locale specific LocalDateTime formatter
     public final String customTimestampWithMsFormat; // set to override locale specific LocalDateTime formatter if milliseconds should be printed
     public final String customCalendarFormat;        // set to override locale specific Calendar formatter
-    
+
     public final static CSVConfiguration CSV_DEFAULT_CONFIGURATION = new CSVConfiguration(
             ";", '\"', "\"\"", "?", false, false, null, null, null, null, null, null, "1", "0", Locale.ROOT, CSVStyle.SHORT, CSVStyle.SHORT,
-            DEFAULT_DAY_FORMAT, DEFAULT_TIMESTAMP_FORMAT, DEFAULT_TS_WITH_MS_FORMAT, DEFAULT_CALENDAR_FORMAT);    
+            DEFAULT_DAY_FORMAT, DEFAULT_TIMESTAMP_FORMAT, DEFAULT_TS_WITH_MS_FORMAT, DEFAULT_CALENDAR_FORMAT);
 
     public static final String nvl(String s) {
         return s != null ? s : EMPTY_STRING;
@@ -64,12 +64,12 @@ public class CSVConfiguration {
         this.customTimestampWithMsFormat = customTimestampWithMsFormat;
         this.customCalendarFormat = customCalendarFormat;
     }
-    
+
     /** Creates a new CSVConfiguration.Builder based on the current object. */
     public Builder builder() {
         return new Builder(this);
     }
-    
+
     /** Builder for the configuration */
     public static class Builder {
         protected String separator;           // delimiter between fields
@@ -93,7 +93,7 @@ public class CSVConfiguration {
         protected String customTimestampFormat;       // set to override locale specific LocalDateTime formatter
         protected String customTimestampWithMsFormat; // set to override locale specific LocalDateTime formatter if milliseconds should be printed
         protected String customCalendarFormat;        // set to override locale specific Calendar formatter
-        
+
         /** Transfers the parameter as passed by the argument into this builder.
          * Must be final because called from a constructor.
          * @param cfg
@@ -121,28 +121,28 @@ public class CSVConfiguration {
             this.customTimestampWithMsFormat = cfg.customTimestampWithMsFormat;
             this.customCalendarFormat = cfg.customCalendarFormat;
         }
-        /** Creates a new CSVConfiguration.Builder with default settings. */ 
+        /** Creates a new CSVConfiguration.Builder with default settings. */
         public Builder() {
             xferBaseClass(CSV_DEFAULT_CONFIGURATION);
         }
-        
-        /** Creates a new CSVConfiguration.Builder from some existing configuration. */ 
+
+        /** Creates a new CSVConfiguration.Builder from some existing configuration. */
         public Builder(CSVConfiguration cfg) {
             xferBaseClass(cfg);
         }
-        
-        /** Creates a new CSVConfiguration.Builder (as a factory method). */ 
+
+        /** Creates a new CSVConfiguration.Builder (as a factory method). */
         public static Builder from(CSVConfiguration cfg) {
             return new Builder(cfg);
         }
-        
+
         /** Constructs the CSVConfiguration from the data collected so far */
         public CSVConfiguration build() {
             return new CSVConfiguration(separator, quote, quoteReplacement, ctrlReplacement, datesQuoted, removePoint4BD,
                     mapStart, mapEnd, arrayStart, arrayEnd, objectStart, objectEnd, booleanTrue, booleanFalse,
                     locale, dateStyle, timeStyle, customDayFormat, customTimestampFormat, customTimestampWithMsFormat, customCalendarFormat);
         }
-        
+
         // now the individual builder setters follow
         public Builder forLocale(Locale locale) {
             this.locale = locale;

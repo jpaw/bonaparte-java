@@ -13,11 +13,11 @@ import de.jpaw.bonaparte.core.MessageParserException;
 
 public class BonaparteDataHandler implements Handler<Buffer> {
     private NetSocket sock;
-    
+
     BonaparteDataHandler(NetSocket sock) {
         this.sock = sock;
     }
-    
+
     @Override
     public void handle(Buffer data) {
         MessageParser<MessageParserException> p = new ByteArrayParser(data.getBytes(), 0, -1);
@@ -32,7 +32,7 @@ public class BonaparteDataHandler implements Handler<Buffer> {
             byte [] dataOut = bac.getBytes();
             Buffer outputBuffer = new Buffer(dataOut);
             sock.write(outputBuffer);
-            
+
         } catch (MessageParserException e) {
             e.printStackTrace();
         }

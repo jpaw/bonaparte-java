@@ -29,7 +29,7 @@
     <build>
         <plugins>
             <plugin>
-                <!-- must deleted generated source as well as unit test output for the 
+                <!-- must deleted generated source as well as unit test output for the
                     clean target -->
                 <artifactId>maven-clean-plugin</artifactId>
                 <version>2.5</version>
@@ -71,5 +71,5 @@
             </plugin>
         </plugins>
     </build>
-    
+
 </project>

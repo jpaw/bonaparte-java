@@ -24,12 +24,12 @@ import java.io.ObjectOutput;
 /**
  *          Functionality which corresponds to String, but for byte arrays.
  *          Essential feature is that the class is immutable, so you can use it in messaging without making deep copies.
- *          Mimicking {@link java.lang.String}, the class contains offset and length fields to allow sharing of the buffer. 
+ *          Mimicking {@link java.lang.String}, the class contains offset and length fields to allow sharing of the buffer.
  *          <p>
  *          This should really exist in Java SE already.
- * 
+ *
  * @author Michael Bischoff
- * 
+ *
  */
 
 
@@ -37,22 +37,22 @@ public final class ByteArray implements Externalizable, Cloneable {
     private static final long serialVersionUID = 2782729564297256974L;
     private static final int MAGIC_LENGTH_INDICATING_32_BIT_SIZE = 247;  // if a single byte length of this value is written in the
     // serialized form, it indicates a full four byte length must be read instead. Not used 0 or 255 due to their frequent use.
-    
-    private final byte [] buffer;   
+
+    private final byte [] buffer;
     private final int offset;
     private final int length;
     private ByteArray extraFieldJustRequiredForDeserialization = null;  // transient temporary field
-    
-    static private final byte[] ZERO_JAVA_BYTE_ARRAY = new byte [0]; 
+
+    static private final byte[] ZERO_JAVA_BYTE_ARRAY = new byte [0];
     static public final ByteArray ZERO_BYTE_ARRAY = new ByteArray();
-    
+
     public ByteArray() {
         // constructs an empty ByteArray. Does not really make sense.
         buffer = ZERO_JAVA_BYTE_ARRAY;
         offset = 0;
         length = 0;
     }
-    
+
     // construct a ByteArray from a source byte []
     public ByteArray(byte [] source) {
         if (source == null || source.length == 0) {
@@ -108,13 +108,13 @@ public final class ByteArray implements Externalizable, Cloneable {
     public ByteArray(ByteArray source, int offset, int length) {
         if (source == null || offset < 0 || length < 0 || offset + length > source.length)
             throw new IllegalArgumentException();
-        
+
         this.buffer = source.buffer;  // no array copy required due to immutability
         this.offset = source.offset + offset;
         this.length = length;
     }
-    
-    // same as above, but as a member method, ensuring 
+
+    // same as above, but as a member method, ensuring
     public ByteArray subArray(int offset, int length) {
         if (offset < 0 || length < 0 || offset + length > this.length)
             throw new IllegalArgumentException();
@@ -125,11 +125,11 @@ public final class ByteArray implements Externalizable, Cloneable {
     public ByteArray clone() {
         return new ByteArray(this);
     }
-    
+
     public int length() {
         return this.length;
     }
-    
+
     public int indexOf(byte x) {
         int i = 0;
         while (i < length) {
@@ -139,7 +139,7 @@ public final class ByteArray implements Externalizable, Cloneable {
         }
         return -1;
     }
-    
+
     public int indexOf(byte x, int fromIndex) {
         int i = fromIndex >= 0 ? fromIndex : 0;
         while (i < length) {
@@ -149,7 +149,7 @@ public final class ByteArray implements Externalizable, Cloneable {
         }
         return -1;
     }
-    
+
     public int lastIndexOf(byte x) {
         int i = length;
         while (i > 0)
@@ -180,7 +180,7 @@ public final class ByteArray implements Externalizable, Cloneable {
         System.arraycopy(buffer, offset, result, 0, length);
         return result;
     }
-    
+
     // return a defensive copy of part of the contents. Shorthand for subArray(offset, length).getBytes(),
     // which would create a temporary object
     public byte [] getBytes(int offset, int length) {
@@ -199,7 +199,7 @@ public final class ByteArray implements Externalizable, Cloneable {
                 return false;
         return true;
     }
-    
+
     // following: all arguments must be not null
     public boolean contentEquals(ByteArray that) {
         return contentEqualsSub(that.buffer, that.offset, that.length);
@@ -212,12 +212,12 @@ public final class ByteArray implements Externalizable, Cloneable {
             throw new IllegalArgumentException();
         return contentEqualsSub(that, thatOffset, thatLength);
     }
-    
+
     // returns if the two instances share the same backing buffer (for debugging)
     public boolean shareBuffer(ByteArray that) {
         return buffer == that.buffer;
     }
-    
+
     @Override
     public int hashCode() {
         int hash = 997;
@@ -225,7 +225,7 @@ public final class ByteArray implements Externalizable, Cloneable {
             hash = 29 * hash + (int)buffer[offset + i];
         return hash;
     }
-    
+
     // two ByteArrays are considered equal if they have the same visible contents
     @Override
     public boolean equals(Object xthat) {
@@ -244,7 +244,7 @@ public final class ByteArray implements Externalizable, Cloneable {
                 return false;
         return true;
     }
-    
+
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
         //writeBytes(out, buffer, offset, length);
@@ -267,14 +267,14 @@ public final class ByteArray implements Externalizable, Cloneable {
         }
         out.write(buffer, offset, length);
     }
-    
+
     static public byte[] readBytes(ObjectInput in) throws IOException {
         int newlength = in.readByte();
         if (newlength < 0)
             newlength += 256;  // want full unsigned range
         if (newlength == MAGIC_LENGTH_INDICATING_32_BIT_SIZE) // magic to indicate four byte length
             newlength = in.readInt();
-        
+
         // System.out.println("ByteArray.readExternal() with length " + newlength);
         if (newlength == 0)
             return ZERO_JAVA_BYTE_ARRAY;
@@ -286,33 +286,33 @@ public final class ByteArray implements Externalizable, Cloneable {
                 throw new IOException("deserialization of ByteArray returned " + nRead + " while expecting " + (newlength-done));
             done += nRead;
         }
-        return localBuffer; 
+        return localBuffer;
     }
-    
+
     // factory method to read from objectInput via above helper function
     static public ByteArray read(ObjectInput in) throws IOException {
         return new ByteArray(readBytes(in), true);
     }
-        
+
     // a direct implementation of this method would conflict with the immutability / "final" attributes of the field
     // Weird Java language design again. If readExternal() is kind of a constructor, why are assignments to final fields not allowed here?
-    // alternatives around are to add artificial fields and use readResolve / proxies or to discard the "final" attributes, 
+    // alternatives around are to add artificial fields and use readResolve / proxies or to discard the "final" attributes,
     // or using reflection to set the values (!?). Bleh!
     // We're using kind of Bloch's "proxy" pattern (Essential Java, #78), namely a single-sided variant with just a single additonal member field,
-    // which lets us preserve the immutability   
+    // which lets us preserve the immutability
     // see also http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6379948 for discussion around this
     @Override
     public void readExternal(ObjectInput in) throws IOException {
         extraFieldJustRequiredForDeserialization = new ByteArray(readBytes(in), true);
     }
-    
+
     public Object readResolve() {
         // System.out.println("ByteArray.readResolve()");
         if (extraFieldJustRequiredForDeserialization == null)
             throw new RuntimeException("readResolve() called on instance not obtained via readExternal()");
         return extraFieldJustRequiredForDeserialization;
     }
-    
+
     // factory method to construct a byte array from a prevalidated base64 byte sequence. returns null if length is suspicious
     static public ByteArray fromBase64(byte [] data, int offset, int length) {
         if (length == 0)
@@ -322,11 +322,11 @@ public final class ByteArray implements Externalizable, Cloneable {
             return null;
         return new ByteArray(tmp, true);
     }
-    
+
     public void appendBase64(ByteBuilder b) {
         Base64.encodeToByte(b, buffer, offset, length);
     }
-    
+
     // returns the String representation of the visible bytes portion
     @Override
     public String toString() {

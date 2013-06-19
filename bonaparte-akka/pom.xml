@@ -21,7 +21,7 @@
         </repository>
     </repositories>
     -->
-    
+
     <dependencies>
         <dependency>
             <groupId>de.jpaw</groupId>

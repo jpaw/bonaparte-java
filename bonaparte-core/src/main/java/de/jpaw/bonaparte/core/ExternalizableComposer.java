@@ -30,28 +30,28 @@ import de.jpaw.util.ByteArray;
 
 /**
  * The ExternalizableComposer class.
- * 
+ *
  * @author Michael Bischoff
  * @version $Revision$
- * 
+ *
  *          Defines some constants and static utility methods for the Externalizable interface.
  *          About null checking, the principle is that boxed primitive types must be null-checked and possibly unboxed in
- *          the class itself (the caller), but any object which does not exist in primitive form has its null check here. 
+ *          the class itself (the caller), but any object which does not exist in primitive form has its null check here.
  */
 
 public class ExternalizableComposer extends ExternalizableConstants implements MessageComposer<IOException> {
-    
+
     private final ObjectOutput out;
-    
+
     public ExternalizableComposer(ObjectOutput out) {
         this.out = out;
     }
-    
+
     @Override
     public void writeNull() throws IOException {
         out.writeByte(NULL_FIELD);
     }
-    
+
     /**
      * Primitives
      * */
@@ -67,7 +67,7 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
         out.writeByte(BINARY_FLOAT);
         out.writeFloat(f);
     }
-    
+
     @Override
     public void addField(UUID n) throws IOException {
         if (n == null) {
@@ -77,7 +77,7 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
             out.writeUTF(n.toString());
         }
     }
-    
+
     @Override
     public void addUnicodeString(String s, int length, boolean allowCtrls)
             throws IOException {
@@ -98,7 +98,7 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
             out.writeUTF(s);
         }
     }
-    
+
     @Override
     public void addField(ByteArray b, int length) throws IOException {
         if (b == null) {
@@ -150,7 +150,7 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
             writeVarLong(n.longValue());
         }
     }
-    
+
     // the following method will be used for byte, short, int
     private void writeVarInt(int i) throws IOException {
         if ((i >= -1) && (i <= 16)) {
@@ -176,7 +176,7 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
         }
     }
 
-    
+
     @Override
     public void addField(LocalDate t) throws IOException {
         if (t == null) {
@@ -232,7 +232,7 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
                     * (t.get(Calendar.MONTH) + 1)) + t.get(Calendar.DAY_OF_MONTH));
         }
     }
-    
+
     static public void writeObject(ObjectOutput out, BonaPortable obj) throws IOException {
         if (obj == null) {
             out.writeByte(NULL_FIELD);
@@ -264,13 +264,13 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
     }
 
 
-    
-    
+
+
     /* the following do not really apply at object serialization level, but are provided
      * in order to be able to extend this composer to other tasks
      * @see de.jpaw.bonaparte.core.MessageComposer#startTransmission()
      */
-    
+
     @Override
     public void startTransmission() throws IOException {
         out.write(TRANSMISSION_BEGIN);
@@ -279,7 +279,7 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
 
     public void startObject(String name, String version) throws IOException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
@@ -301,7 +301,7 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
     @Override
     public void terminateRecord() throws IOException {
         out.write(RECORD_TERMINATOR);
-        
+
     }
 
     @Override
@@ -338,13 +338,13 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
     @Override
     public void addField(long n) throws IOException {
         writeVarLong(n);
-        
+
     }
 
     @Override
     public void addField(int n) throws IOException {
         writeVarInt(n);
-        
+
     }
 
     @Override
@@ -381,7 +381,7 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
                 out.writeObject(obj);   // so fall back to normal behaviour!
             }
         }
-        
+
     }
 
 }

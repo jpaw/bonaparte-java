@@ -24,7 +24,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
  * Implements the output of Bonaparte objects into Excel formats.
- * 
+ *
  * @author Michael Bischoff
  * @version $Revision$
  */
@@ -32,7 +32,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 public class GenericExcelComposer extends BaseExcelComposer implements ExcelWriter {
     // variables set by constructor
     private final ExcelFormat fmt;  // xls or xlsx
-    
+
     public GenericExcelComposer(ExcelFormat fmt) {
         super(fmt == ExcelFormat.XLSX_STREAMING ? new SXSSFWorkbook() : fmt == ExcelFormat.XLSX ? new XSSFWorkbook() : new HSSFWorkbook());
         this.fmt = fmt;
@@ -51,5 +51,5 @@ public class GenericExcelComposer extends BaseExcelComposer implements ExcelWrit
         if (fmt == ExcelFormat.XLSX_STREAMING)
             ((SXSSFWorkbook)xls).dispose();
     }
-    
+
 }

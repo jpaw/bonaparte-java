@@ -15,9 +15,9 @@
   */
 package de.jpaw.bonaparte.core;
 
-/** 
+/**
  * This interface adds methods to retrieve a single value (boxed primitive or BonaPortable Object) or set it.
- *  
+ *
  * @author Michael Bischoff
  *
  **/

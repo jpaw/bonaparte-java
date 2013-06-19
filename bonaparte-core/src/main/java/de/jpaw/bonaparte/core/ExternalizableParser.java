@@ -32,10 +32,10 @@ import de.jpaw.util.ByteArray;
 import de.jpaw.util.EnumException;
 /**
  * The StringBuilderParser class.
- * 
+ *
  * @author Michael Bischoff
  * @version $Revision$
- * 
+ *
  *          Implements the deserialization for the internal format using the Externalizable interface.
  */
 
@@ -431,7 +431,7 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         }
         return result;
     }
-    
+
     @Override
     public int parseMapStart(String fieldname, boolean allowNull, int indexID) throws IOException {
         if (checkForNull(fieldname, true)) {  // check it separately in order to give a distinct error message

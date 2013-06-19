@@ -31,20 +31,20 @@ import de.jpaw.bonaparte.extensions.ComposerExtensions;
 
 /**
  * The NewDataFormat class.
- * 
+ *
  * @author Michael Bischoff
  * @version $Revision$
- * 
+ *
  *          Implements the Apache Camel DataFormat interface using the ByteArray bonaparte implementation.
  *          Work in progress - needs major rework to provide better separation of outer transmission layer.
  */
 
 public final class Bonaparte2ByteDataFormat implements DataFormat {
     private static final Logger logger = LoggerFactory.getLogger(Bonaparte2ByteDataFormat.class);
-    private int initialBufferSize = 65500;  // start big to avoid frequent reallocation 
-    
+    private int initialBufferSize = 65500;  // start big to avoid frequent reallocation
+
     private ByteArrayComposer w = null;
-    
+
     public void marshal(Exchange exchange, Object graph, OutputStream stream) throws Exception {
         if (w == null)
             w = new ByteArrayComposer();  // create on demand
@@ -66,7 +66,7 @@ public final class Bonaparte2ByteDataFormat implements DataFormat {
             throw new Exception("multi-reads for big messages not yet supported");
         if (byteBuffer[0] == '\024')   // multi record (transmission)
             isMultiRecord = true;
-        
+
         ByteArrayParser p = new ByteArrayParser(byteBuffer, 0, numbytes);
         List<BonaPortable> resultSet = p.readTransmission();
         if (isMultiRecord)

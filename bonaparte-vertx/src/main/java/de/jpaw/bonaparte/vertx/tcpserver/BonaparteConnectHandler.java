@@ -12,7 +12,7 @@ public class BonaparteConnectHandler implements Handler<NetSocket> {
     public void handle(NetSocket sock) {
         logger.info("A client has connected!");
         //Handler<Buffer> hd = new BonaparteDataHandler(sock);
-        
+
         sock.dataHandler(new BonaparteDataHandler(sock));
     }
 

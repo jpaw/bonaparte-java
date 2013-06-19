@@ -22,10 +22,10 @@ import de.jpaw.util.ApplicationException;
 
 /**
  * The ObjectValidationException class.
- * 
+ *
  * @author Michael Bischoff
  * @version $Revision$
- * 
+ *
  *          Extends the generic ApplicationException class in order to provide error details which are
  *          specific to validation of fields.
  */
@@ -33,7 +33,7 @@ import de.jpaw.util.ApplicationException;
 public class ObjectValidationException extends ApplicationException {
     private static final long serialVersionUID = 8530206162841355351L;
     private static final Logger logger = LoggerFactory.getLogger(MessageParserException.class);
-    
+
     private static final int OFFSET = VALIDATION_ERROR * CLASSIFICATION_FACTOR + 17000;  // offset for all codes in this class
     private static boolean textsInitialized = false;
 
@@ -45,7 +45,7 @@ public class ObjectValidationException extends ApplicationException {
     static public final int TOO_MANY_ELEMENTS     = OFFSET + 3;
     static public final int TOO_LONG              = OFFSET + 4;
     static public final int TOO_SHORT             = OFFSET + 5;
-    
+
     // Upload textual descriptions only once they're needed for this type of exception class.
     // The idea is that in working environments, we will never need them ;-).
     // There is a small chance of duplicate initialization, because the access to the flag textsInitialized is not
@@ -60,7 +60,7 @@ public class ObjectValidationException extends ApplicationException {
             codeToDescription.put(TOO_SHORT            , "String is too short");
         }
     }
-    
+
     private final String getSpecificDescription() {
         return (className == null ? "?" : className) + "."
              + (fieldName == null ? "?" : fieldName);
@@ -79,12 +79,12 @@ public class ObjectValidationException extends ApplicationException {
         super(errorCode, null);
         constructorSubroutine(className, fieldName);
     }
-    
+
     public ObjectValidationException(int errorCode) {
         super(errorCode, null);
         constructorSubroutine(null, null);
     }
-    
+
     @Override
     public String toString() {
         return getSpecificDescription() + ": " + super.toString();

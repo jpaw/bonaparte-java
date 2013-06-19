@@ -23,7 +23,7 @@ public class ExternalizableConstants {
         100000000000000000L,
         1000000000000000000L
     };
-    
+
     protected static final byte FIELD_TERMINATOR = '\006';          // ctrl-F
     protected static final byte TRANSMISSION_TERMINATOR = '\025';   // ctrl-U
     protected static final byte TRANSMISSION_TERMINATOR2 = '\032';  // ctrl-Z
@@ -37,21 +37,21 @@ public class ExternalizableConstants {
     protected static final byte OBJECT_BEGIN = '\023';              // ctrl-S
     protected static final byte ESCAPE_CHAR = '\005';               // ctrl-E
     protected static final byte NULL_FIELD = '\016';                // ctrl-N
-    protected static final byte MAP_BEGIN = '\036';                 // 
-    
+    protected static final byte MAP_BEGIN = '\036';                 //
+
     // variable length integers
 
     // numeric tokens:21 tokens in sequential order
     protected static final byte NUMERIC_MIN      = (byte)0x21;
-    
+
     protected static final byte INT_ONEBYTE      = (byte)0x21;
     protected static final byte INT_TWOBYTES     = (byte)0x22;
     protected static final byte INT_FOURBYTES    = (byte)0x23;
     protected static final byte INT_EIGHTBYTES   = (byte)0x24;
-    
+
     protected static final byte FRAC_SCALE_0     = (byte)'a';
     protected static final byte FRAC_SCALE_18    = (byte)('a'+18);
-    
+
     // immediate single-byte values: 12 consecutive values -1 .. 10
     protected static final byte INT_MINUS_ONE = '/';                // 0x2F
     protected static final byte INT_ZERO      = '0';                // 0x30

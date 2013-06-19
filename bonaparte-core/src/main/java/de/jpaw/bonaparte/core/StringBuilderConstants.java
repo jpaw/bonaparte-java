@@ -17,16 +17,16 @@ package de.jpaw.bonaparte.core;
 
 /**
  * The StringBuilderConstants class.
- * 
+ *
  * @author Michael Bischoff
  * @version $Revision$
- * 
+ *
  *          Defines some constants which are used by both the StringBuilder parser and composer.
  */
 
 public abstract class StringBuilderConstants extends Settings {
     protected static final String EMPTY_STRING = new String("");
-    
+
     protected static final char FIELD_TERMINATOR = '\006'; // ctrl-F
     protected static final char TRANSMISSION_TERMINATOR = '\025'; // ctrl-U
     protected static final char TRANSMISSION_TERMINATOR2 = '\032'; // ctrl-Z
@@ -40,5 +40,5 @@ public abstract class StringBuilderConstants extends Settings {
     protected static final char OBJECT_BEGIN = '\023'; // ctrl-S                NEW
     protected static final char ESCAPE_CHAR = '\005'; // ctrl-E
     protected static final char NULL_FIELD = '\016'; // ctrl-N                  NEW
-    protected static final char MAP_BEGIN = '\036';                 // 
+    protected static final char MAP_BEGIN = '\036';                 //
 }

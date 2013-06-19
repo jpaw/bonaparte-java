@@ -16,7 +16,7 @@ public class Base64Test {
     }
     @Test
     public void testEncodeDecode() throws Exception {
-        // test runs with different padding, include the trivial zero length case 
+        // test runs with different padding, include the trivial zero length case
         for (int i = 0; i <= 12; ++i) {
             System.out.println("Testing length " + i);
             byte [] rawdata = new byte [i];

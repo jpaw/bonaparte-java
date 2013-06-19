@@ -34,16 +34,16 @@ import org.slf4j.LoggerFactory;
 import de.jpaw.util.ByteArray;
 /**
  * The CSVComposer class.
- * 
+ *
  * @author Michael Bischoff
  * @version $Revision$
- * 
+ *
  *          Implements the serialization for the bonaparte format using a character Appendable, for CSV output
  */
 
 public class CSVComposer extends AppendableComposer {
     private static final Logger LOGGER = LoggerFactory.getLogger(CSVComposer.class);
-    
+
     protected boolean recordStart = true;
     //protected boolean shouldWarnWhenUsingFloat;
     protected final CSVConfiguration cfg;
@@ -53,7 +53,7 @@ public class CSVComposer extends AppendableComposer {
     protected final DateTimeFormatter dayFormat;            // day without time (Joda)
     protected final DateTimeFormatter timestampFormat;      // day and time on second precision (Joda)
     protected final DateTimeFormatter timestamp3Format;     // day and time on millisecond precision (Joda)
-    protected final DateFormat calendarFormat;              // Java's mutable Calendar. Use with caution (or better, don't use at all) 
+    protected final DateFormat calendarFormat;              // Java's mutable Calendar. Use with caution (or better, don't use at all)
     protected Format numberFormat;              // locale's default format for formatting float and double, covers decimal point and sign
     protected final NumberFormat bigDecimalFormat;          // locale's default format for formatting BigDecimal, covers decimal point and sign
 
@@ -63,7 +63,7 @@ public class CSVComposer extends AppendableComposer {
         } catch (IllegalArgumentException e) {
             // could occur if the user provided format is invalid
             LOGGER.error("Provided format is not valid: " + cfg.customCalendarFormat, e);
-            return new SimpleDateFormat(CSVConfiguration.DEFAULT_CALENDAR_FORMAT);// use default locale now, format must be corrected anyway 
+            return new SimpleDateFormat(CSVConfiguration.DEFAULT_CALENDAR_FORMAT);// use default locale now, format must be corrected anyway
         }
     }
 
@@ -75,7 +75,7 @@ public class CSVComposer extends AppendableComposer {
         } catch (IllegalArgumentException e) {
             // could occur if the user provided format is invalid
             LOGGER.error("Provided format is not valid: " + cfg.customDayFormat, e);
-            return DateTimeFormat.forPattern(CSVConfiguration.DEFAULT_DAY_FORMAT); 
+            return DateTimeFormat.forPattern(CSVConfiguration.DEFAULT_DAY_FORMAT);
         }
     }
 
@@ -87,7 +87,7 @@ public class CSVComposer extends AppendableComposer {
         } catch (IllegalArgumentException e) {
             // could occur if the user provided format is invalid
             LOGGER.error("Provided format is not valid: " + cfg.customTimestampFormat, e);
-            return DateTimeFormat.forPattern(CSVConfiguration.DEFAULT_TIMESTAMP_FORMAT); 
+            return DateTimeFormat.forPattern(CSVConfiguration.DEFAULT_TIMESTAMP_FORMAT);
         }
     }
 
@@ -99,7 +99,7 @@ public class CSVComposer extends AppendableComposer {
         } catch (IllegalArgumentException e) {
             // could occur if the user provided format is invalid
             LOGGER.error("Provided format is not valid: " + cfg.customTimestampWithMsFormat, e);
-            return DateTimeFormat.forPattern(CSVConfiguration.DEFAULT_TS_WITH_MS_FORMAT); 
+            return DateTimeFormat.forPattern(CSVConfiguration.DEFAULT_TS_WITH_MS_FORMAT);
         }
     }
 
@@ -114,7 +114,7 @@ public class CSVComposer extends AppendableComposer {
         this.timestamp3Format = determineTimestamp3Formatter(cfg).withLocale(cfg.locale).withZoneUTC();
         this.calendarFormat = determineCalendarFormat(cfg);
         this.calendarFormat.setCalendar(Calendar.getInstance(cfg.locale));
-        NumberFormat myNumberFormat = NumberFormat.getInstance(cfg.locale); 
+        NumberFormat myNumberFormat = NumberFormat.getInstance(cfg.locale);
         myNumberFormat.setGroupingUsed(false);                           // this is for interfaces, don't do pretty-printing
         this.numberFormat = myNumberFormat;
         this.bigDecimalFormat = cfg.removePoint4BD ? null : (NumberFormat)myNumberFormat.clone();    // make a copy for BigDecimal, where we set fractional digits as required
@@ -127,12 +127,12 @@ public class CSVComposer extends AppendableComposer {
         else
             addRawData(cfg.separator);
     }
-    
+
 
     @Override
     protected void terminateField() {
     }
-    
+
     @Override
     public void writeNull() {
     }
@@ -140,7 +140,7 @@ public class CSVComposer extends AppendableComposer {
     @Override
     public void startTransmission() {
     }
-    
+
     @Override
     public void terminateTransmission() {
     }
@@ -157,7 +157,7 @@ public class CSVComposer extends AppendableComposer {
     private void addCharSub(char c) throws IOException {
         addRawData(cfg.quote != null && c == cfg.quote ? stringQuote : c < 0x20 ? cfg.ctrlReplacement : String.valueOf(c));
     }
-    
+
     // field type specific output functions
     @Override
     public void addUnicodeString(String s, int length, boolean allowCtrls) throws IOException {
@@ -340,7 +340,7 @@ public class CSVComposer extends AppendableComposer {
                 addRawData(stringQuote);
         }
     }
-    
+
     @Override
     public void startMap(int currentMembers, int indexID) throws IOException {
         if (cfg.mapStart != null) {
@@ -362,7 +362,7 @@ public class CSVComposer extends AppendableComposer {
         super.addRawData(cfg.arrayEnd);
         recordStart = true;
     }
-    
+
     @Override
     public void terminateMap() throws IOException {
         super.addRawData(cfg.mapEnd);

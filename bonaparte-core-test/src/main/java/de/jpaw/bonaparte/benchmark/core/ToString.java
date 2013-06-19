@@ -24,10 +24,10 @@ public class ToString {
         Maps1 maptest = FillMaps.test1();
         maptest.longToBonaPortable.put(Long.valueOf(0L), null);     // violation of required spec in bon, but want to show null output here
         System.out.println("Map output is " + ToStringHelper.toStringML(maptest) + "!");
-        
+
         Sets1 setTest = FillMaps.testSets1();
         System.out.println("Set output is " + ToStringHelper.toStringML(setTest) + "!");
-        
+
     }
 
 }

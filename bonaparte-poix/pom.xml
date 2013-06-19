@@ -11,7 +11,7 @@
 
     <artifactId>bonaparte-poix</artifactId>
     <packaging>jar</packaging>
-    
+
     <dependencies>
         <dependency>
             <groupId>de.jpaw</groupId>

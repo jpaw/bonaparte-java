@@ -31,16 +31,16 @@ import de.jpaw.util.CharTestsASCII;
 //import javax.xml.bind.DatatypeConverter;
 /**
  * The StringBuilderComposer class.
- * 
+ *
  * @author Michael Bischoff
  * @version $Revision$
- * 
+ *
  *          Implements the serialization for the bonaparte format using a generic Appendable.
  *          Unfortunately this generalization implies declaring a "throws IOException" for every method,
  *          even though a specific implementation using StringBuilder does not throw them.
  *          Java had better defined Appendable using Generics, allowing to specify the Exception thrown, as
  *          Appendable<? extends Throwable>. See complaints also here: http://confluence.jetbrains.com/display/Kotlin/Exceptions,
- *          however in this case it's not due to a language constraint but rather to poor definition of the interface Appendable.  
+ *          however in this case it's not due to a language constraint but rather to poor definition of the interface Appendable.
  */
 
 public class AppendableComposer extends StringBuilderConstants implements MessageComposer<IOException> {
@@ -56,7 +56,7 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
      * Serialization goes here
      **************************************************************************************************/
 
-    /** allows to add raw data to the produced byte array. Use this for protocol support at beginning or end of a message 
+    /** allows to add raw data to the produced byte array. Use this for protocol support at beginning or end of a message
      * @throws IOException */
     public final void addRawData(String data) throws IOException {
         if (data != null)
@@ -348,7 +348,7 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
             writeNull();
         }
     }
-    
+
     @Override
     public void startMap(int currentMembers, int indexID) throws IOException {
         work.append(MAP_BEGIN);

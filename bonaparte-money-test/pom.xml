@@ -30,17 +30,17 @@
     </pluginRepositories>
 
     <build>
-        <!-- The project works fine without the lifecycle management in pluginManagement 
+        <!-- The project works fine without the lifecycle management in pluginManagement
             below. In case of problems, try to comment that section and try again. -->
-        <!-- http://wiki.eclipse.org/M2E_plugin_execution_not_covered#m2e_maven_plugin_coverage_status 
-            and http://wiki.eclipse.org/M2E_compatible_maven_plugins <pluginManagement> 
-            <plugins> <plugin> <groupId>org.eclipse.m2e</groupId> <artifactId>lifecycle-mapping</artifactId> 
-            <version>1.0.0</version> <configuration> <lifecycleMappingMetadata> <pluginExecutions> 
-            <pluginExecution> <pluginExecutionFilter> <groupId>org.eclipse.xtend</groupId> 
-            <artifactId>xtend-maven-plugin</artifactId> <versionRange>[2.3.0,]</versionRange> 
-            <goals> <goal>compile</goal> <goal>testCompile</goal> </goals> </pluginExecutionFilter> 
-            <action> <execute> <runOnIncremental>true</runOnIncremental> <runOnConfiguration>true</runOnConfiguration> 
-            </execute> </action> </pluginExecution> </pluginExecutions> </lifecycleMappingMetadata> 
+        <!-- http://wiki.eclipse.org/M2E_plugin_execution_not_covered#m2e_maven_plugin_coverage_status
+            and http://wiki.eclipse.org/M2E_compatible_maven_plugins <pluginManagement>
+            <plugins> <plugin> <groupId>org.eclipse.m2e</groupId> <artifactId>lifecycle-mapping</artifactId>
+            <version>1.0.0</version> <configuration> <lifecycleMappingMetadata> <pluginExecutions>
+            <pluginExecution> <pluginExecutionFilter> <groupId>org.eclipse.xtend</groupId>
+            <artifactId>xtend-maven-plugin</artifactId> <versionRange>[2.3.0,]</versionRange>
+            <goals> <goal>compile</goal> <goal>testCompile</goal> </goals> </pluginExecutionFilter>
+            <action> <execute> <runOnIncremental>true</runOnIncremental> <runOnConfiguration>true</runOnConfiguration>
+            </execute> </action> </pluginExecution> </pluginExecutions> </lifecycleMappingMetadata>
             </configuration> </plugin> </plugins> </pluginManagement> -->
 
         <plugins>

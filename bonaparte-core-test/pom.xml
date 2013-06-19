@@ -32,9 +32,9 @@
             <version>${slf4j.version}</version>
             <scope>runtime</scope>
         </dependency>
-        <!-- need a Bean validation implementation. Apache BVal is said to be twice 
-            as fast, but required commons & beanutils dependencies as well. Also, the 
-            Hibernate validator is the current reference implementation, so choosing 
+        <!-- need a Bean validation implementation. Apache BVal is said to be twice
+            as fast, but required commons & beanutils dependencies as well. Also, the
+            Hibernate validator is the current reference implementation, so choosing
             this one. -->
         <!-- Uhm, the hibernate one uses JBOSS logging instead of slf4j. Bleh. -->
         <dependency>
@@ -42,7 +42,7 @@
             <artifactId>hibernate-validator</artifactId>
             <version>4.3.0.Final</version>
         </dependency>
-        <!-- Gson: Java to Json conversion (not required by bonaparte, just for 
+        <!-- Gson: Java to Json conversion (not required by bonaparte, just for
             performance comparison) -->
         <dependency>
             <groupId>com.google.code.gson</groupId>

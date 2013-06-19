@@ -20,9 +20,9 @@ package de.jpaw.util;
  *          macros included in the header file ctype.h for the programming
  *          language C. These macros really should have been included in the
  *          standard Java class "Byte".
- * 
+ *
  * @author Michael Bischoff
- * 
+ *
  */
 
 public class ByteTestsASCII {
@@ -39,7 +39,7 @@ public class ByteTestsASCII {
      * bit) printable character, which mainly means that such a character is
      * available in every character encoding, no matter if single byte or
      * multi-byte.
-     * 
+     *
      * @param c
      *            the byte to test
      * @return <code>true</code> if the parameter represents a printable ASCII
@@ -53,7 +53,7 @@ public class ByteTestsASCII {
      * <code>isAsciiUpperCase()</code> tests if a byte is a US-ASCII (7
      * bit) printable character, and represents an English upper case letter
      * <code>(A .. Z)</code>.
-     * 
+     *
      * @param c
      *            the character to test
      * @return <code>true</code> if the parameter represents an upper case ASCII
@@ -67,7 +67,7 @@ public class ByteTestsASCII {
      * <code>isAsciiLowerCase()</code> tests if a byte is a US-ASCII (7
      * bit) printable character, and represents an English lower case letter
      * <code>(a .. z)</code>.
-     * 
+     *
      * @param c
      *            the byte to test
      * @return <code>true</code> if the parameter represents an lower case ASCII
@@ -80,7 +80,7 @@ public class ByteTestsASCII {
     /**
      * <code>isAsciiDigit()</code> tests if a byte is a US-ASCII (7 bit)
      * printable character, and represents a valid digit <code>(0 .. 9)</code>.
-     * 
+     *
      * @param c
      *            the byte to test
      * @return <code>true</code> if the parameter represents a digit,

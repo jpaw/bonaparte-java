@@ -23,9 +23,9 @@ import org.joda.time.LocalDateTime;
 
 /**
  * Some convenience functions for days and timestamps.
- * 
+ *
  * @author Michael Bischoff
- * 
+ *
  */
 public class DayTime {
 

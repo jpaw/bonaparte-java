@@ -25,13 +25,13 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 //import javax.xml.bind.DatatypeConverter;
 /**
  * Implements the output of Bonaparte objects into Excel formats.
- * 
+ *
  * @author Michael Bischoff
  * @version $Revision$
  */
 
 public class ExcelComposer extends BaseExcelComposer implements ExcelWriter {
-    
+
     public ExcelComposer() {
         super(new HSSFWorkbook());
     }

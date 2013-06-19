@@ -18,7 +18,7 @@ public class EventbusMain {
         Vertx vertx = Vertx.newVertx();
         final EventBus eb = vertx.eventBus();
         final Date start = new Date();
-        
+
         Handler<Message<String>> echoHandler = new Handler<Message<String>>() {
             public void handle(Message<String> message) {
                 String body = message.body;
@@ -42,7 +42,7 @@ public class EventbusMain {
         };
         eb.registerHandler("service.echo", echoHandler);
         eb.registerHandler("service.pingpong", pingPongHandler);
-        
+
         // kick it off
         eb.send("service.echo", "Hello world");
         try {

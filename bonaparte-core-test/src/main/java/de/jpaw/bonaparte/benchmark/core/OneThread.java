@@ -32,7 +32,7 @@ public class OneThread implements Runnable {
     private byte [] srcExternalized;
     private String gsondata;
     private Class<? extends BonaPortable> srcClass;  // this is required by Gson
-    
+
     OneThread(BonaPortable src, int method, int millionCallsPerThread, int initialBufferSize) {
         this.src = src;
         this.method = method;
@@ -50,13 +50,13 @@ public class OneThread implements Runnable {
         ObjectOutputStream o = new ObjectOutputStream(fos);
         o.writeObject(src);
         o.close();
-        srcExternalized = fos.toByteArray();        
+        srcExternalized = fos.toByteArray();
         // create serialized JSON object for Gson
         Gson gson = new Gson();
         gsondata = gson.toJson(src);
         srcClass = src.getClass();
     }
-    
+
     // StringBuffer
     private void sbc(boolean retrieveBytes) {
         methodName = "Bonaparte StringBuilder Composer" + (retrieveBytes ? " with byte[] retrieval" : "");
@@ -74,7 +74,7 @@ public class OneThread implements Runnable {
     private void sbp() throws MessageParserException {
         methodName = "Bonaparte StringBuilder Parser";
         for (int i = 0; i < callsPerThread; ++i) {
-            StringBuilder work = new StringBuilder(new String(srcdata, useCharset)); 
+            StringBuilder work = new StringBuilder(new String(srcdata, useCharset));
             MessageParser<MessageParserException> w1 = new StringBuilderParser(work, 0, -1);
             @SuppressWarnings("unused")
             BonaPortable dst1 = w1.readRecord();
@@ -94,7 +94,7 @@ public class OneThread implements Runnable {
             }
         }
     }
-    
+
     private void bap() throws MessageParserException {
         methodName = "Bonaparte ByteArray Parser";
         for (int i = 0; i < callsPerThread; ++i) {
@@ -118,7 +118,7 @@ public class OneThread implements Runnable {
             }
         }
     }
-    
+
     private void extp() throws MessageParserException, IOException, ClassNotFoundException {
         methodName = "Bonaparte Externalizer Parser";
         for (int i = 0; i < callsPerThread; ++i) {
@@ -152,7 +152,7 @@ public class OneThread implements Runnable {
     }
 
 
-    
+
     @Override
     public void run() {
         try {
@@ -170,7 +170,7 @@ public class OneThread implements Runnable {
             case 2:
                 sbp();
                 break;
-            // 10..12 Bonaparte ByteArray 
+            // 10..12 Bonaparte ByteArray
             case 10:
                 bac(false);
                 break;
@@ -180,7 +180,7 @@ public class OneThread implements Runnable {
             case 12:
                 bap();
                 break;
-            // 20..22 Bonaparte Externalizer 
+            // 20..22 Bonaparte Externalizer
             case 20:
                 extc(false);
                 break;

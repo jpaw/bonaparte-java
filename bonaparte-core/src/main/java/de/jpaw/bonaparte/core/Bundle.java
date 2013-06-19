@@ -29,23 +29,23 @@ import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
 
 /**
  * The Bundles class.
- * 
+ *
  * @author Michael Bischoff
  * @version $Revision$
- * 
+ *
  *          Implements JVM-wide management of loaded bundles.
- *          
+ *
  *          This is unfinished WIP, maybe should use full OSGi instead if required.
- *          
+ *
  */
 public class Bundle {
     private static ConcurrentMap<String,BundleInformation> bundleMap = new ConcurrentHashMap<String,BundleInformation>(20);
     private static ConcurrentMap<String,Bundle> packageToBundle = new ConcurrentHashMap<String,Bundle>(20);;
-    
+
     private BundleInformation staticBundleData;
     private ConcurrentMap<String,ClassDefinition> loadedClasses;
     private URLClassLoader loader;
-    
+
     // create a new bundle entry for tracking
     Bundle(String bundleName, String classPath) throws MalformedURLException {
         URL [] searchPath;
@@ -62,15 +62,15 @@ public class Bundle {
         staticBundleData.setBundleStatus(BundleStatus.UNUSED);
         staticBundleData.setWhenStatusChanged(new LocalDateTime());
     }
-    
+
     static Bundle getBundleByPackageName(String packageName) {
         return packageToBundle.get(packageName);
     }
-    
+
     void addClass(ClassDefinition cl) {
         loadedClasses.put(cl.get$PQON(), cl.get$MetaData());
     }
-    
+
     ClassDefinition [] getAllClasses() {
         return loadedClasses.values().toArray(new ClassDefinition [0]);
     }

@@ -18,7 +18,7 @@ import de.jpaw.util.DayTime;
 
 public class FillOtherTypes {
     static byte [] shortraw = new byte [] { 1, 2, 13, 0, 127, -8, -33, 99, 42 };
-    
+
     static public OtherTypes test1() {
         OtherTypes x = new OtherTypes();
         x.setAscii1("Hello, world!");
@@ -45,7 +45,7 @@ public class FillOtherTypes {
         x.setTimestamp4a(DayTime.getCurrentTimestamp());
         return x;
     }
-    
+
     static public OtherTypes test2(int size) {  // test with a long raw() in order to verify line breaks of base64 encoding
         OtherTypes x = test1();
         byte [] longraw = new byte [size];

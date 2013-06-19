@@ -15,12 +15,12 @@
   */
 /**
  * The BONAPARTE core library provides the <code>BonaPortable</code> interface, which must be implemented by every class to be serializable with the bonaparte format, as well as interfaces and implementations for the serializers and deserializers.
- * 
+ *
  * An extended interface <code>BonaPortableWithMetaData</code> offers a method to return a description of the object itself in classes implementing the <code>BonaPortable</code> interface. (This is still work in progress.)
  * <p>
  * Currently, two different serialization formats are provided, one which is a binary format which replaces the standard Java serialization, and the bonaparte format, which is mainly text based and can be regarded as a generalized CSV format.
- * 
+ *
  * @author Michael Bischoff
- * 
+ *
  */
 package de.jpaw.bonaparte.core;

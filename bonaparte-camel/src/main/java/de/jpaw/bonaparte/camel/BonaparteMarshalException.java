@@ -17,24 +17,24 @@ package de.jpaw.bonaparte.camel;
 
 /**
  * The BonaparteMarshalException class.
- * 
+ *
  * @author Michael Bischoff
  * @version $Revision$
- * 
+ *
  *          Work in progress - needs major rework / rewrite from scratch
  */
 
 public class BonaparteMarshalException extends Exception {
     private static final long serialVersionUID = 6578705245543364726L;
     private String message;
-    
+
     static public final String OBJECT_NOT_OF_TYPE_BONAPARTE             = "Cannot marshal a generic object into BONAPARTE format";
     static public final String OBJECT_NOT_OF_TYPE_LIST                  = "Want a list";
-    
+
     public BonaparteMarshalException(String message) {
         this.message        = message;
     }
-    
+
     public String toString() {
         return "Bonaparte exception: " + message;
     }

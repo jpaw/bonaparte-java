@@ -14,14 +14,14 @@ public class SimpleUnpooledClient {
     private final Socket conn;
     private final ByteArrayComposer w;
     private byte [] responseBuffer;
-    
+
     public SimpleUnpooledClient(String queuename, int port) throws IOException {
         addr = InetAddress.getByName(queuename);
         conn = new Socket(addr, port);
         w = new ByteArrayComposer();
         responseBuffer = new byte [10000];
     }
-    
+
     public BonaPortable doIO(BonaPortable request) throws Exception {
         w.reset();
         w.writeRecord(request);
@@ -32,5 +32,5 @@ public class SimpleUnpooledClient {
         ByteArrayParser p = new ByteArrayParser(responseBuffer, 0, numbytes);
         return p.readRecord();
     }
-    
+
 }

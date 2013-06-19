@@ -30,9 +30,9 @@ import org.slf4j.LoggerFactory;
  *          There is an implementation in apache.commons.lang.CharUtils,
  *          but for such a small functionality we avoid an external dependency and
  *          create the required methods here.
- * 
+ *
  * @author Michael Bischoff
- * 
+ *
  */
 
 public class CharTestsASCII {
@@ -80,7 +80,7 @@ public class CharTestsASCII {
      * bit) printable character, which mainly means that such a character is
      * available in every character encoding, no matter if single byte or
      * multi-byte.
-     * 
+     *
      * @param c
      *            the character to test
      * @return <code>true</code> if the parameter represents a printable ASCII
@@ -94,7 +94,7 @@ public class CharTestsASCII {
      * <code>isAsciiUpperCase()</code> tests if a character is a US-ASCII (7
      * bit) printable character, and represents an English upper case character
      * <code>(A .. Z)</code>.
-     * 
+     *
      * @param c
      *            the character to test
      * @return <code>true</code> if the parameter represents an upper case ASCII
@@ -108,7 +108,7 @@ public class CharTestsASCII {
      * <code>isAsciiLowerCase()</code> tests if a character is a US-ASCII (7
      * bit) printable character, and represents an English lower case character
      * <code>(a .. z)</code>.
-     * 
+     *
      * @param c
      *            the character to test
      * @return <code>true</code> if the parameter represents an lower case ASCII
@@ -121,7 +121,7 @@ public class CharTestsASCII {
     /**
      * <code>isAsciiDigit()</code> tests if a character is a US-ASCII (7 bit)
      * printable character, and represents a valid digit <code>(0 .. 9)</code>.
-     * 
+     *
      * @param c
      *            the character to test
      * @return <code>true</code> if the parameter represents a digit,
@@ -134,7 +134,7 @@ public class CharTestsASCII {
     /**
      * <code>checkAsciiAndFixIfRequired()</code> tests if a String is indeed an ASCII string and does not exceed tge maximum length. It will issue a warning and
      * replace offending characters with a question mark.
-     * 
+     *
      * @param s
      *            the string to test
      * @param maxlength

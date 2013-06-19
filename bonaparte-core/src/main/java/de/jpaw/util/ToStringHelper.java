@@ -10,13 +10,13 @@ public class ToStringHelper {
     public static int maxSet = -1;
     public static int maxList = -1;
     public static int maxMap = -1;
-    
+
     public static String toStringML(BonaPortable obj) {
         StringBuilder _buffer = new StringBuilder(1000);
         BonaPortable(_buffer, new StringBuilder("\n"), true, obj);
         return _buffer.toString();
     }
-    
+
     public static String toStringSL(BonaPortable obj) {
         StringBuilder _buffer = new StringBuilder(1000);
         BonaPortable(_buffer, null, false, obj);
@@ -38,7 +38,7 @@ public class ToStringHelper {
             }
         }
     }
-    
+
     // returns true if at leastone field has been printed
     private static boolean BonaPortableSub(StringBuilder _buffer, StringBuilder _currentIndent, boolean showNulls, BonaPortable obj,
             Class<?> thisClass) {

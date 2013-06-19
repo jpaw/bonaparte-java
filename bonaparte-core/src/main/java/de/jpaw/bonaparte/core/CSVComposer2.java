@@ -18,17 +18,17 @@ package de.jpaw.bonaparte.core;
 import java.io.IOException;
 /**
  * The CSVComposer class.
- * 
+ *
  * @author Michael Bischoff
  * @version $Revision$
- * 
+ *
  *          CSV composer with more fields produced through (Number)Format.
  *          See difference to CSVFormat for integral numbers for Locale Locale.forLanguageTag("th-TH-u-nu-thai"),
  *          or negative numbers for new Locale("ar", "EG").
  */
 
 public class CSVComposer2 extends CSVComposer {
-    
+
 
     public CSVComposer2(Appendable work, CSVConfiguration cfg) {
         super(work, cfg);

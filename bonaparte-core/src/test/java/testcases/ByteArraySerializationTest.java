@@ -16,13 +16,13 @@ import de.jpaw.util.ByteArray;
 import de.jpaw.util.ByteBuilder;
 
 public class ByteArraySerializationTest {
-    
+
     static private void dumpToFile(String filename, byte [] data) throws Exception {
         OutputStream stream = new FileOutputStream(filename);
         stream.write(data);
         stream.close();
     }
-    
+
     static public byte [] serialize(Object x) throws IOException {
         ByteArrayOutputStream fos = new ByteArrayOutputStream(1000);
         ObjectOutputStream o = new ObjectOutputStream(fos);
@@ -40,19 +40,19 @@ public class ByteArraySerializationTest {
         i.close();
         return r;
     }
-    
+
     @Test
     public void testEncodeDecode() throws Exception {
         // test runs with different padding, include the trivial zero length case
         ByteArray test1 = new ByteArray("Hello, world".getBytes("UTF-8"));
         ByteArray test2 = test1.subArray(2, 5);
-        
+
         byte [] res1 = serialize(test1);
         byte [] res2 = serialize(test2);
 
         dumpToFile("/tmp/byte-array-1", res1);
         dumpToFile("/tmp/byte-array-2", res2);
-        
+
         Object r1 = deserialize(res1);
         System.out.println("Got object " + r1.getClass().getName());
         System.out.println("Text is " + new String(((ByteArray)r1).getBytes(), "UTF-8"));
