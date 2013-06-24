@@ -51,7 +51,7 @@ public class TestServerHandler extends IoHandlerAdapter /*<BonaPortable>*/{
     TestServerHandler() {
         thisThreadId = threadSerial.incrementAndGet();
     }
-    
+
     @Override
     public void sessionOpened(IoSession session) {
         LOGGER.info("New incoming channel requested for thread " + thisThreadId);

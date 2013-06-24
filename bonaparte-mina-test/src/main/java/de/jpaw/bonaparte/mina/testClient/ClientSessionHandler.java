@@ -16,7 +16,7 @@ public class ClientSessionHandler extends IoHandlerAdapter {
     private final static Logger LOGGER = LoggerFactory.getLogger(ClientSessionHandler.class);
     private boolean finished;
     Request myRequest ;
-    
+
     public ClientSessionHandler() {
     }
 
@@ -33,8 +33,8 @@ public class ClientSessionHandler extends IoHandlerAdapter {
         myRequest.setSerialNo(1 * 100000000);
         myRequest.setUniqueId(myUuid);
         this.myRequest = myRequest;
-        session.write(myRequest);       
-    }    
+        session.write(myRequest);
+    }
 
 
 
@@ -43,13 +43,13 @@ public class ClientSessionHandler extends IoHandlerAdapter {
 
         LOGGER.debug("messageReceived: "+ message);
         Response myResponse = (Response) message;
-        
+
         if (myResponse.getSerialNo() != myRequest.getSerialNo())
-            throw new IllegalArgumentException("Difference in serial nos "+ myResponse.getSerialNo());              
-        
-        
+            throw new IllegalArgumentException("Difference in serial nos "+ myResponse.getSerialNo());
+
+
         session.close(true);
-        
+
         finished = true;
 
 
