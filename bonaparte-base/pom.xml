@@ -16,7 +16,7 @@
         <!-- define releases we want to use, to ensure consistency -->
         <bonaparte.version>1.5.6-SNAPSHOT</bonaparte.version>
         <bonaparte-plugin-version>1.5.6-SNAPSHOT</bonaparte-plugin-version>
-        <xtend.version>2.4.2-SNAPSHOT</xtend.version>
+        <xtend.version>2.4.2</xtend.version>
         <slf4j.version>1.6.6</slf4j.version>            <!-- http://www.slf4j.org/  latest: 1.7.5  -->
         <logback.version>1.0.9</logback.version>        <!-- http://logback.qos.ch/ latest: 1.0.13 -->
         <guava.version>14.0.1</guava.version>           <!-- http://code.google.com/p/guava-libraries/ UPTODATE 2013-06-09 -->
@@ -55,6 +55,7 @@
             <id>xtend.repository</id>
             <name>Xtend Repository</name>
             <url>http://build.eclipse.org/common/xtend/maven/</url>
+            <!--  Snapshots at <url>https://oss.sonatype.org/content/repositories/snapshots/</url>  -->
         </repository>
     </repositories>
     <pluginRepositories>
