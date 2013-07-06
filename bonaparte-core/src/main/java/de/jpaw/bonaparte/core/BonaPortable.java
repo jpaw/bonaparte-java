@@ -18,6 +18,8 @@ package de.jpaw.bonaparte.core;
 import java.io.Serializable;
 import java.util.concurrent.ConcurrentMap;
 
+import de.jpaw.bonaparte.pojos.meta.ParsedFoldingComponent;
+
 /** 
  * Defines the methods any object which should be serialized into the bonaparte format must implement.
  * The class and its implementation is usually created by the bonaparte DSL.
@@ -105,6 +107,14 @@ public interface BonaPortable extends Serializable {
      * @throws ObjectValidationException
      */
     public void validate() throws ObjectValidationException;
+    
+    /** Serializes this object using a mapping. Not all fields are output, and not in the sequence they are declared in the class.
+     * In addition, specific indexes can be selected for arrays or Lists.
+     *  
+     * @param w the implementation of the serializer.
+     * @throws E is usually either {@link RuntimeException}, for serializers writing to in-memory buffers, where no checked exceptions are thrown, or {@link java.io.IOException}, for serializers writing to streams. 
+     */
+    public <E extends Exception> void foldedOutput(MessageComposer<E> w, ParsedFoldingComponent pfc) throws E;
     
     /** Can be invoked to apply a String converter to all String typed fields in the object, parent objects, and included child objects. */
     public void treeWalkString(StringConverter _cvt);

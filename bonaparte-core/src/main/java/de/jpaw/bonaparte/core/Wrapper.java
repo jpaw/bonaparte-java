@@ -7,6 +7,7 @@ import java.io.ObjectOutput;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import de.jpaw.bonaparte.pojos.meta.ParsedFoldingComponent;
 import de.jpaw.util.ToStringHelper;
 
 public class Wrapper implements BonaPortable, Externalizable {
@@ -99,6 +100,14 @@ public class Wrapper implements BonaPortable, Externalizable {
     @Override
     public String toString() {
         return ToStringHelper.toStringSL(this);
+    }
+
+    @Override
+    public <E extends Exception> void foldedOutput(MessageComposer<E> w, ParsedFoldingComponent pfc) throws E {
+        // must be accessing data, no other field here...
+        if (pfc.getFieldname().equals("data")) {
+            w.addField(data);
+        }
     }
 
 }

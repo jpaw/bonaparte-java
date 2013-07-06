@@ -8,7 +8,8 @@ package meta {
     enum Multiplicity { SCALAR, ARRAY, LIST, SET, MAP }
     // the DataCategory matches the enum of same name in the Bonaparte DSL generator project
     enum DataCategory { OBJECT, ENUM, NUMERIC, STRING, TEMPORAL, MISC }  // misc is boolean, binary, char, uuid, ...
-
+    enum FoldingStrategy { SKIP_UNMAPPED, TRY_SUPERCLASS, FULL_OUTPUT }  // what to do if no folding mapping is found
+    
 	abstract immutable class FieldDefinition {
 	    enum Visibility         visibility;
 		boolean                 isRequired;
@@ -90,4 +91,14 @@ package meta {
         enum BundleStatus bundleStatus;
 	    optional Timestamp(3) whenStatusChanged; 
 	}
+	
+	/** Hold a parsed structure of name[index].subcomponentName[index] */
+	class ParsedFoldingComponent {
+	    required identifier                fieldname;      // name without any subcomponents
+	    required int                       numDescends;    // >= 0 if known, -1 for unknown (allows fast-forward to superclasses)
+	    required int                       index;          // numeric index, -1 f all elements, 0..n-1 else
+	    optional Unicode(255)              alphaIndex;     // alphanumeric index, or null if none exists
+	    optional (ParsedFoldingComponent)  component;      // optional specification of the substructure
+	}
+	
 }

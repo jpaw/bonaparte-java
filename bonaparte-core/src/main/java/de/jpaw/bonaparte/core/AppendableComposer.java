@@ -372,17 +372,22 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
         work.append(ARRAY_TERMINATOR);
     }
 
+
+    @Override
+    public void startObject(BonaPortable obj) throws IOException {
+        work.append(OBJECT_BEGIN);
+        work.append(obj.get$PQON());
+        terminateField();
+        addField(obj.get$Revision(), 0);
+    }
+    
     @Override
     public void addField(BonaPortable obj) throws IOException {
         if (obj == null) {
             writeNull();
         } else {
             // start a new object
-            work.append(OBJECT_BEGIN);
-            work.append(obj.get$PQON());
-            terminateField();
-            addField(obj.get$Revision(), 0);
-
+            startObject(obj);
             // do all fields (now includes terminator)
             obj.serializeSub(this);
         }

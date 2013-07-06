@@ -38,6 +38,7 @@ public interface MessageComposer<E extends Exception> {
     public void writeNull() throws E;
     public void startTransmission() throws E;
     public void startRecord() throws E;
+    public void startObject(BonaPortable o) throws E;  // write the name and the revision
     public void startArray(int currentMembers, int maxMembers, int sizeOfElement) throws E;
     public void startMap  (int currentMembers, int indexID) throws E;
     public void writeSuperclassSeparator() throws E;  // this is bad. It should be transparent to the classes if the message format contains separators or not.

@@ -393,6 +393,15 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
     public void terminateMap() {
         work.append(ARRAY_TERMINATOR);
     }
+    
+    @Override
+    public void startObject(BonaPortable obj) {
+        work.append(OBJECT_BEGIN);
+        work.appendAscii(obj.get$PQON());
+        terminateField();
+        addField(obj.get$Revision(), 0);
+    }
+    
 
     @Override
     public void addField(BonaPortable obj) {
@@ -400,10 +409,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
             writeNull();
         } else {
             // start a new object
-            work.append(OBJECT_BEGIN);
-            work.appendAscii(obj.get$PQON());
-            terminateField();
-            addField(obj.get$Revision(), 0);
+            startObject(obj);
 
             // do all fields (now includes terminator)
             obj.serializeSub(this);

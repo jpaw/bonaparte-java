@@ -331,6 +331,10 @@ public class BaseExcelComposer implements MessageComposer<RuntimeException> {
     public void terminateMap() {
     }
 
+    @Override
+    public void startObject(BonaPortable obj) {
+    }
+
     /** Adding objects will lead to column misalignment if the objects itself are null. */
     @Override
     public void addField(BonaPortable obj) {

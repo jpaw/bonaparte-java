@@ -357,13 +357,9 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
         }
     }
 
-
-
-
-
-
-
-
+    @Override
+    public void startObject(BonaPortable obj) throws IOException {
+    }
 
     @Override
     public void addField(BonaPortable obj) throws IOException {
@@ -372,7 +368,8 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
         } else {
             // do not rely on Java logic, we know the object is BonaPortable and call the externalizer interface directly
             // do we really? (At the moment it's optional)
-            out.writeByte(OBJECT_BEGIN);
+            startObject(obj);
+            out.writeByte(OBJECT_BEGIN);  // this logically belongs to the lines below, do not split here!
             if (nestedObjectsInternally) {
                 out.writeUTF(obj.get$PQON());
                 addField(obj.get$Revision(), 0);
