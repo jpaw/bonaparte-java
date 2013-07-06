@@ -1,0 +1,17 @@
+package beanNames {
+    class OnlySimpleNames noJavaBeanNames {
+        Ascii(255)      url;
+        Timestamp(0)    mTimestamp;
+        int             defaultField;
+    }
+    class OnlyBeanNames onlyJavaBeanNames {
+        Ascii(255)      url;
+        Timestamp(0)    mTimestamp;
+        int             defaultField;
+    }
+    class BeanAndSimpleNames JavaBeanNames {
+        Ascii(255)      url;
+        Timestamp(0)    mTimestamp;
+        int             defaultField;
+    }
+}

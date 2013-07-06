@@ -343,7 +343,7 @@ public class CSVComposer extends AppendableComposer {
 
     @Override
     public void startMap(int currentMembers, int indexID) throws IOException {
-        if (cfg.mapStart != null) {
+        if (cfg.mapStart != null && cfg.mapStart.length() > 0) {
             super.addRawData(cfg.mapStart);
             recordStart = true;
         }
@@ -351,7 +351,7 @@ public class CSVComposer extends AppendableComposer {
 
     @Override
     public void startArray(int currentMembers, int maxMembers, int sizeOfElement) throws IOException {
-        if (cfg.arrayStart != null) {
+        if (cfg.arrayStart != null && cfg.arrayStart.length() > 0) {
             super.addRawData(cfg.arrayStart);
             recordStart = true;
         }
@@ -359,27 +359,38 @@ public class CSVComposer extends AppendableComposer {
 
     @Override
     public void terminateArray() throws IOException {
-        super.addRawData(cfg.arrayEnd);
-        recordStart = true;
+        if (cfg.arrayEnd != null && cfg.arrayEnd.length() > 0) {
+            super.addRawData(cfg.arrayEnd);
+            recordStart = true;
+        }
     }
 
     @Override
     public void terminateMap() throws IOException {
-        super.addRawData(cfg.mapEnd);
-        recordStart = true;
+        if (cfg.mapEnd != null && cfg.mapEnd.length() > 0) {
+            super.addRawData(cfg.mapEnd);
+            recordStart = true;
+        }
     }
 
     @Override
+    public void startObject(BonaPortable obj) throws IOException {
+        if (cfg.objectStart != null && cfg.objectStart.length() > 0) {
+            super.addRawData(cfg.objectStart);
+            recordStart = true;
+        }
+    }
+  
+    @Override
     public void addField(BonaPortable obj) throws IOException {
         if (obj != null) {
-            if (cfg.objectStart != null) {
-                super.addRawData(cfg.objectStart);
-                recordStart = true;
-            }
+            startObject(obj);
             // do all fields (now includes terminator)
             obj.serializeSub(this);
-            super.addRawData(cfg.objectEnd);
-            recordStart = true;
+            if (cfg.objectEnd != null && cfg.objectEnd.length() > 0) {
+                super.addRawData(cfg.objectEnd);
+                recordStart = true;
+            }
         }
     }
 }
