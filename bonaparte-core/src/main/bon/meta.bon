@@ -94,6 +94,7 @@ package meta {
 	
 	/** Hold a parsed structure of name[index].subcomponentName[index] */
 	class ParsedFoldingComponent {
+	    default public;
 	    required identifier                fieldname;      // name without any subcomponents
 	    required int                       numDescends;    // >= 0 if known, -1 for unknown (allows fast-forward to superclasses)
 	    required int                       index;          // numeric index, -1 f all elements, 0..n-1 else
