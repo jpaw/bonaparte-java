@@ -1,0 +1,17 @@
+package exchange {
+    default public;
+    class Currency {
+        Uppercase(3)    code;
+        Unicode(4)      symbol;
+        Unicode(80)     name;
+    }
+    
+    class Ratios {
+        (RatiosPerDay) Map<String>        forSrc; 
+    }
+    
+    class RatiosPerDay {
+        Day                         ^day;
+        Decimal(8,4) Map<String>    ratioToCurrency;
+    }
+}

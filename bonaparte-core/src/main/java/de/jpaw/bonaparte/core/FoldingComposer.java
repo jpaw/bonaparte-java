@@ -236,8 +236,30 @@ public class FoldingComposer<E extends Exception> implements MessageComposer<E> 
             pfc.setFieldname(f.substring(0, dotIndex));
             pfc.setComponent(createRecursiveFoldingComponent(null, f.substring(dotIndex+1)));
         }
-        pfc.setNumDescends(-1);
-        pfc.setIndex(-1);
+        // parse possible indexes, numeric or alphanumeric
+        pfc.setIndex(-1);  // default: all nont-existing
+        dotIndex = pfc.getFieldname().indexOf('[');
+        if (dotIndex >= 0) {
+            String indexStr = pfc.getFieldname().substring(dotIndex+1);
+            pfc.setFieldname(pfc.getFieldname().substring(0, dotIndex));
+            dotIndex = indexStr.indexOf(']');
+            if (dotIndex != indexStr.length()-1) {
+                LOGGER.error("Unparseable index for field {}: [{}, ignored", pfc.getFieldname(), indexStr);
+                return pfc;
+            }
+            indexStr = indexStr.substring(0, dotIndex);
+            pfc.setAlphaIndex(indexStr);
+            // try to parse a numeric index
+            if (Character.isDigit(indexStr.charAt(0))) {
+                try {
+                    pfc.setIndex(Integer.parseInt(indexStr));
+                } catch (Exception e) {
+                    LOGGER.error("Cannot parse numeric index for field {}: [{}], ignored", pfc.getFieldname(), indexStr);
+                    return pfc;
+                }
+            }
+        }
+        // pfc.setNumDescends(-1);
         return pfc;
     }
     
