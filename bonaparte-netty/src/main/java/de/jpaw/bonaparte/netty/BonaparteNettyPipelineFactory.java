@@ -1,8 +1,8 @@
 package de.jpaw.bonaparte.netty;
 
-import io.netty.channel.ChannelInboundMessageHandlerAdapter;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
+import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.LineBasedFrameDecoder;
 
@@ -10,10 +10,10 @@ import de.jpaw.bonaparte.core.BonaPortable;
 
 public class BonaparteNettyPipelineFactory extends ChannelInitializer<SocketChannel> {
     private final int maximumMessageLength;
-    private final ChannelInboundMessageHandlerAdapter<BonaPortable> objectHandler;
+    private final SimpleChannelInboundHandler<BonaPortable> objectHandler;
     private final ErrorForwarder errorForwarder;
 
-    public BonaparteNettyPipelineFactory(int maximumMessageLength, ChannelInboundMessageHandlerAdapter<BonaPortable> objectHandler,
+    public BonaparteNettyPipelineFactory(int maximumMessageLength, SimpleChannelInboundHandler<BonaPortable> objectHandler,
             ErrorForwarder errorForwarder) {
         this.maximumMessageLength = maximumMessageLength;
         this.objectHandler = objectHandler;

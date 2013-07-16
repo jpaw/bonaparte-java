@@ -17,7 +17,7 @@ package de.jpaw.bonaparte.netty.testServer;
 
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundMessageHandlerAdapter;
+import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.ssl.SslHandler;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -37,7 +37,7 @@ import de.jpaw.bonaparte.pojos.rqrs.Response;
  * Handler implementation for the echo server.
  */
 @Sharable
-public class TestServerHandler extends ChannelInboundMessageHandlerAdapter<BonaPortable> {
+public class TestServerHandler extends SimpleChannelInboundHandler<BonaPortable> {
     static AtomicInteger threadSerial = new AtomicInteger(0);
     private AtomicInteger counterInThread = new AtomicInteger(0);
     private final int thisThreadId;
@@ -60,7 +60,7 @@ public class TestServerHandler extends ChannelInboundMessageHandlerAdapter<BonaP
     }
 
     @Override
-    public void messageReceived(ChannelHandlerContext ctx, BonaPortable request) throws Exception {
+    public void channelRead0(ChannelHandlerContext ctx, BonaPortable request) throws Exception {
         String cipher;
         SslHandler sslH = ctx.pipeline().get(SslHandler.class);
         if (sslH != null) {

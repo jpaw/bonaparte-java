@@ -1,6 +1,6 @@
 package de.jpaw.bonaparte.netty;
 
-import io.netty.channel.ChannelInboundMessageHandlerAdapter;
+import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
@@ -13,13 +13,13 @@ import de.jpaw.bonaparte.core.BonaPortable;
 
 public class BonaparteNettySslPipelineFactory extends ChannelInitializer<SocketChannel> {
     private final int maximumMessageLength;
-    private final ChannelInboundMessageHandlerAdapter<BonaPortable> objectHandler;
+    private final SimpleChannelInboundHandler<BonaPortable> objectHandler;
     private final boolean useSsl; // if true, enables SSL, otherwise performs exactly as the non-SSL version
     private final boolean clientMode; // false
     private final boolean needClientAuth; // true
     private final ErrorForwarder errorForwarder;
 
-    public BonaparteNettySslPipelineFactory(int maximumMessageLength, ChannelInboundMessageHandlerAdapter<BonaPortable> objectHandler, boolean useSsl,
+    public BonaparteNettySslPipelineFactory(int maximumMessageLength, SimpleChannelInboundHandler<BonaPortable> objectHandler, boolean useSsl,
             boolean clientMode, boolean needClientAuth, ErrorForwarder errorForwarder) {
         this.maximumMessageLength = maximumMessageLength;
         this.objectHandler = objectHandler;

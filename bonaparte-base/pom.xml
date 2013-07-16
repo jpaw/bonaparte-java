@@ -22,7 +22,7 @@
         <guava.version>14.0.1</guava.version>           <!-- http://code.google.com/p/guava-libraries/ UPTODATE 2013-06-09 -->
 
         <!-- Some more versions, used by specific dependent projects -->
-        <netty.version>4.0.0.CR3</netty.version>        <!-- https://netty.io/news/         UPTODATE 2013-06-09 won't go further, continued API breakage despite "CR" status, wait til 4.0.3 or better is out. -->
+        <netty.version>4.0.0.Final</netty.version>      <!-- https://netty.io/news/         UPTODATE 2013-07-16 -->
         <poi.version>3.9</poi.version>                  <!-- http://poi.apache.org/         UPTODATE 2013-06-09 -->
         <mina.version>2.0.5</mina.version>              <!-- http://mina.apache.org/        2.0.7 -->
         <camel.version>2.11.0</camel.version>           <!-- http://camel.apache.org/       UPTODATE 2013-06-09 -->

@@ -1,7 +1,8 @@
 package de.jpaw.bonaparte.netty;
 
+import java.util.List;
+
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.MessageBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 
@@ -21,7 +22,7 @@ public class BonaparteNettyDecoder extends ByteToMessageDecoder {
     }
 
     @Override
-    public void decode(ChannelHandlerContext ctx, ByteBuf msg, MessageBuf<Object> out) throws Exception {
+    public void decode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
         byte[] array;
         if (msg.hasArray()) {
             if ((msg.arrayOffset() == 0) && (msg.readableBytes() == msg.capacity())) {
