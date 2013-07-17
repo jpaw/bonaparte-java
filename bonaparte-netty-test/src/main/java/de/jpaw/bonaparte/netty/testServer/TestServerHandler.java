@@ -46,16 +46,17 @@ public class TestServerHandler extends SimpleChannelInboundHandler<BonaPortable>
 
     TestServerHandler() {
         thisThreadId = threadSerial.incrementAndGet();
+        logger.info("Creating new thread {}", thisThreadId);
     }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        logger.info("New incoming channel requested for thread " + thisThreadId);
+        logger.info("New incoming channel requested for thread {}", thisThreadId);
         // sslHandler not yet valid here, handshake only starts now!
     }
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        logger.info("Channel for thread " + thisThreadId + " closed after " + counterInThread.get() + " requests");
+        logger.info("Channel for thread {} closed after {} requests", thisThreadId, counterInThread.get());
         // number of requests is cumulative, as this instance is reused for future new connections
     }
 

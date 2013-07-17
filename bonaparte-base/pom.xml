@@ -22,7 +22,7 @@
         <guava.version>14.0.1</guava.version>           <!-- http://code.google.com/p/guava-libraries/ UPTODATE 2013-06-09 -->
 
         <!-- Some more versions, used by specific dependent projects -->
-        <netty.version>4.0.0.Final</netty.version>      <!-- https://netty.io/news/         UPTODATE 2013-07-16 -->
+        <netty.version>4.0.2.Final</netty.version>      <!-- https://netty.io/news/         UPTODATE 2013-07-17 -->
         <poi.version>3.9</poi.version>                  <!-- http://poi.apache.org/         UPTODATE 2013-06-09 -->
         <mina.version>2.0.5</mina.version>              <!-- http://mina.apache.org/        2.0.7 -->
         <camel.version>2.11.0</camel.version>           <!-- http://camel.apache.org/       UPTODATE 2013-06-09 -->
@@ -189,7 +189,17 @@
                         <failFast>true</failFast>
                     </configuration>
                 </plugin>
-
+                <plugin>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>2.2.1</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
 
                 <plugin>
                     <groupId>org.eclipse.xtend</groupId>
@@ -222,6 +232,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
             </plugin>
         </plugins>
     </build>

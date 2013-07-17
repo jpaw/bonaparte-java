@@ -24,11 +24,17 @@ public class BonaparteNettyDecoder extends ByteToMessageDecoder {
     @Override
     public void decode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
         byte[] array;
+        if (msg.readableBytes() <= 0 || msg.getByte(msg.readableBytes()-1) != '\n') {
+            logger.debug("Ignoring {} bytes of data - no NL at end of message", msg.readableBytes());
+            return;  // message not yet complete
+        }
+        
         if (msg.hasArray()) {
             if ((msg.arrayOffset() == 0) && (msg.readableBytes() == msg.capacity())) {
                 // we have no offset and the length is the same as the capacity. Its safe to reuse
                 // the array without copy it first
                 array = msg.array();
+                msg.skipBytes(msg.readableBytes());  // void copying, as would be done via read()
             } else {
                 // copy the ChannelBuffer to a byte array
                 array = new byte[msg.readableBytes()];
