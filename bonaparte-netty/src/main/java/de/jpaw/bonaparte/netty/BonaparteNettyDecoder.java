@@ -21,12 +21,11 @@ public class BonaparteNettyDecoder extends ByteToMessageDecoder {
         this.errorForwarder = errorForwarder;
     }
 
-    @Override
-    public void decode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
+    public static byte [] getData(ByteBuf msg) {
         byte[] array;
         if (msg.readableBytes() <= 0 || msg.getByte(msg.readableBytes()-1) != '\n') {
             logger.debug("Ignoring {} bytes of data - no NL at end of message", msg.readableBytes());
-            return;  // message not yet complete
+            return null;  // message not yet complete
         }
         
         if (msg.hasArray()) {
@@ -35,17 +34,21 @@ public class BonaparteNettyDecoder extends ByteToMessageDecoder {
                 // the array without copy it first
                 array = msg.array();
                 msg.skipBytes(msg.readableBytes());  // void copying, as would be done via read()
-            } else {
-                // copy the ChannelBuffer to a byte array
-                array = new byte[msg.readableBytes()];
-                msg.readBytes(array);
+                return array;
             }
-        } else {
-            // copy the ChannelBuffer to a byte array
-            array = new byte[msg.readableBytes()];
-            msg.readBytes(array);
         }
-
+        // copy the ChannelBuffer to a byte array
+        array = new byte[msg.readableBytes()];
+        msg.readBytes(array);
+        return array;
+    }
+    
+    @Override
+    public void decode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
+        byte[] array = getData(msg);
+        if (array == null)
+            return;  // no data yet...
+        
         logger.debug("Received {} bytes of data", array.length);
         try {
             ByteArrayParser p = new ByteArrayParser(array, 0, -1);
