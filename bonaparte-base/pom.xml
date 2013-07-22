@@ -28,6 +28,7 @@
         <camel.version>2.11.1</camel.version>           <!-- http://camel.apache.org/       UPTODATE 2013-06-09 -->
         <vertx.version>1.3.1.final</vertx.version>      <!-- http://vertx.io/               UPTODATE 2013-06-09 -->
         <hornetq.version>2.2.14.Final</hornetq.version> <!-- http://www.jboss.org/hornetq   2.3.0.Final -->
+        <jaxb.version>2.2.9</jaxb.version>              <!-- http://repo1.maven.org/maven2/javax/xml/bind/jaxb-api/ -->
     </properties>
 
     <licenses>
@@ -264,6 +265,7 @@
 <!--
         <module>../bonaparte-money-test/pom.xml</module>
 -->
+        <module>../bonaparte-xml/pom.xml</module>
         <module>../bonaparte-poi/pom.xml</module>
         <module>../bonaparte-poix/pom.xml</module>
         <module>../bonaparte-demorqrs/pom.xml</module>
