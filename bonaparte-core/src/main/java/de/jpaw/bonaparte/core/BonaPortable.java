@@ -81,9 +81,6 @@ public interface BonaPortable extends Serializable {
      */
     public ConcurrentMap<String,String> get$PropertyMap();
     
-    /** Gets the defined class of a "return type" if it has been defined for this object or one of its superclasses. Returns null if none has defined a return type. */
-    public Class<? extends BonaPortable> get$returns();
-    
     /** Serializes this object into the format implemented by the MessageComposer parameter. The method will invoke methods of the MessageComposer interface for every member field, and also for some metadata. Class headers itself are assumed to have been serialized before.
      *  Different implementations are provided with the bonaparte library, for ASCII-like formats (bonaparte) or binary formats plugging into the standard Java {@link java.io.Serializable}/{@link java.io.Externalizable} interface.
      *  

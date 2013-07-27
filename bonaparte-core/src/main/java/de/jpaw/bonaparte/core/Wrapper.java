@@ -29,15 +29,6 @@ public class Wrapper implements BonaPortable, Externalizable {
         return property$Map.get(id);
     }
 
-    static public Class<? extends BonaPortable> class$returns() {
-        return null;
-    }
-
-    @Override
-    public Class<? extends BonaPortable> get$returns() {
-        return class$returns();
-    }
-    
     
     public BonaPortable data;
 
