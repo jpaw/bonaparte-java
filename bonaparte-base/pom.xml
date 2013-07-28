@@ -276,6 +276,7 @@
         <module>../bonaparte-mina-test/pom.xml</module>
         <module>../bonaparte-hornetq-test/pom.xml</module>
         <module>../bonaparte-vertx/pom.xml</module>
+        <module>../bonaparte-i18n/pom.xml</module>
     </modules>
 
 </project>
