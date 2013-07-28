@@ -1,5 +1,5 @@
 /* boxed java types */
-package core {
+package wrappers {
     default signed notrim allowControlChars;
 
     abstract class SingleValueBase {

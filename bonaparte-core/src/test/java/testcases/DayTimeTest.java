@@ -7,7 +7,7 @@ import de.jpaw.util.DayTime;
 
 public class DayTimeTest {
 	@Test
-	public void TestTimeDifference() throws Exception {
+	public void testTimeDifference() throws Exception {
 		LocalDateTime start = new LocalDateTime();
 		
 		Thread.sleep(155L);

@@ -26,7 +26,13 @@ public class BonaPortableFactory {
     private static final Logger logger = LoggerFactory.getLogger(BonaPortableFactory.class);
     static private ConcurrentMap<String, Class<? extends BonaPortable>> map = new ConcurrentHashMap<String, Class<? extends BonaPortable>>();
     static private String bonaparteClassDefaultPackagePrefix = "de.jpaw.bonaparte.pojos";
-    static private Map<String, String> packagePrefixMap = null;
+    static private Map<String, String> packagePrefixMap = new ConcurrentHashMap<String,String>(10);
+    static {
+        // mappings for bonaparte-core. Install a fresh map if you don't want these. Otherwise, add single mappings to them, or overwrite these
+        packagePrefixMap.put("meta", bonaparteClassDefaultPackagePrefix + ".meta");         // bonaparte-core
+        packagePrefixMap.put("wrappers", bonaparteClassDefaultPackagePrefix + ".wrappers"); // bonaparte-core
+        packagePrefixMap.put("money", bonaparteClassDefaultPackagePrefix + ".money");       // bonaparte-money
+    }
 
     private static void registerClass(String name, Class<? extends BonaPortable> clatz) {
         map.putIfAbsent(name, clatz);
@@ -37,6 +43,23 @@ public class BonaPortableFactory {
     private BonaPortableFactory() {
     }
 
+    // map the object name into a full package name
+    // returns null if no mapping specific for this package is found
+    // examines the map packagePrefixMap, looking for specific packages first
+    // this means it is possible to map test.zzz.* to another package than test.*
+    public static String mapPackage(String name) {
+        int lastDot = name.lastIndexOf('.');  // duplicate evaluation accepted for sake of API simplicity
+        while (lastDot > 0) {
+            String mappedPackagePart = packagePrefixMap.get(name.substring(0, lastDot));
+            if (mappedPackagePart != null) {
+                return mappedPackagePart + name.substring(lastDot);
+            }
+            // try another attempt, looking at a prior dot
+            lastDot = name.lastIndexOf('.', lastDot-1);
+        }
+        return null;
+    }
+    
     // generalized factory: create an instance of the requested type. Caches class types.
     // We receive PQCN (partially qualified class name) as parameter.
     // Anything before the last '.' is the Bonaparte package name (which is null is there is no '.').
@@ -52,23 +75,10 @@ public class BonaPortableFactory {
         if ((lastDot == 0) || (lastDot >= (name.length() - 1))) {
             throw new MessageParserException(MessageParserException.BAD_OBJECT_NAME, null, -1, name);
         }
-        String myPackage;
-        String myClass;
-        if (lastDot < 0) {
-            myPackage ="";
-            myClass = name;
-        } else {
-            myPackage = name.substring(0, lastDot);
-            myClass = name.substring(lastDot+1);
+        if (packagePrefixMap != null && lastDot > 0) {
+            FQON = mapPackage(name);
         }
-
-
-        if (packagePrefixMap != null) {
-            String mappedPackagePart = packagePrefixMap.get(myPackage);
-            if (mappedPackagePart != null) {
-                FQON = mappedPackagePart + "." + myClass;
-            }
-        }
+        
         if (FQON == null) {
             // prefix by fixed package
             FQON = bonaparteClassDefaultPackagePrefix + "." + name;
@@ -117,5 +127,12 @@ public class BonaPortableFactory {
         BonaPortableFactory.bonaparteClassDefaultPackagePrefix = bonaparteClassDefaultPackagePrefix;
     }
 
-
+    public static String addToPackagePrefixMap(String packagePrefix, String newFullPackage) {
+        if (newFullPackage == null) {
+            // remove a mapping.
+            return packagePrefixMap.remove(packagePrefix);
+        } else {
+            return packagePrefixMap.put(packagePrefix, newFullPackage);
+        }
+    }
 }
