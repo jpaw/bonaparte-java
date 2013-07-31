@@ -18,10 +18,15 @@ package de.jpaw.bonaparte.core;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.jpaw.util.Base64;
 import de.jpaw.util.ByteArray;
@@ -44,13 +49,38 @@ import de.jpaw.util.CharTestsASCII;
  */
 
 public class AppendableComposer extends StringBuilderConstants implements MessageComposer<IOException> {
+    //private static final Logger LOGGER = LoggerFactory.getLogger(ByteArrayComposer.class);
+    private final boolean useCache;
+    private final Map<BonaPortable,Integer> objectCache;
+    private int numberOfObjectsSerialized;
+    private int numberOfObjectReuses;
     // variables set by constructor
     private final Appendable work;
 
     public AppendableComposer(Appendable work) {
-        this.work = work;
+        this(work, ObjectReuseStrategy.defaultStrategy);
     }
 
+    /** Creates a new ByteArrayComposer, using this classes static default Charset **/
+    public AppendableComposer(Appendable work, ObjectReuseStrategy reuseStrategy) {
+        switch (reuseStrategy) {
+        case BY_CONTENTS:
+            this.objectCache = new HashMap<BonaPortable, Integer>(250);
+            this.useCache = true;
+            break;
+        case BY_REFERENCE:
+            this.objectCache = new IdentityHashMap<BonaPortable, Integer>(250);
+            this.useCache = true;
+            break;
+        default:
+            this.objectCache = null;
+            this.useCache = false;
+            break;
+        }
+        this.work = work;
+        numberOfObjectsSerialized = 0;
+        numberOfObjectReuses = 0;
+    }
 
     /**************************************************************************************************
      * Serialization goes here
@@ -386,10 +416,25 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
         if (obj == null) {
             writeNull();
         } else {
+            if (useCache) {
+                Integer previousIndex = objectCache.get(obj);
+                if (previousIndex != null) {
+                    // reuse this instance
+                    work.append(OBJECT_AGAIN);
+                    addField(previousIndex.intValue());
+                    ++numberOfObjectReuses;
+                    return;
+                }
+                // fall through
+            }
             // start a new object
             startObject(obj);
             // do all fields (now includes terminator)
             obj.serializeSub(this);
+            if (useCache) {
+                // add the new object to the cache of known objects
+                objectCache.put(obj, Integer.valueOf(numberOfObjectsSerialized++));
+            }            
         }
     }
 }

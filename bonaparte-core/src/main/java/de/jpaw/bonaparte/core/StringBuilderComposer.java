@@ -41,6 +41,11 @@ public class StringBuilderComposer extends AppendableComposer implements Buffere
         this.work = work;
     }
 
+    public StringBuilderComposer(StringBuilder work, ObjectReuseStrategy strategy) {
+        super(work, strategy);
+        this.work = work;
+    }
+
     // restart the output
     @Override
     public void reset() {

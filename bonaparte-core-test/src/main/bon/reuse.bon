@@ -1,0 +1,15 @@
+package reuse {
+    default public;
+    
+    class Element {
+        Ascii(8)    word;
+    }
+    
+    
+    class Body {
+        (Element)   w1;
+        (Element)   w2;
+        (Element)   w3;
+        (Element) List<> wl;
+    }
+}

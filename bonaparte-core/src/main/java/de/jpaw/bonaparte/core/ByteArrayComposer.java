@@ -17,10 +17,15 @@ package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.jpaw.util.Base64;
 import de.jpaw.util.ByteArray;
@@ -34,19 +39,49 @@ import de.jpaw.util.CharTestsASCII;
  */
 
 public class ByteArrayComposer extends ByteArrayConstants implements BufferedMessageComposer<RuntimeException> {
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(ByteArrayComposer.class);
+    private final boolean useCache;
+    private final Map<BonaPortable,Integer> objectCache;
+    private int numberOfObjectsSerialized;
+    private int numberOfObjectReuses;
+    
+    
     // variables for serialization
     private ByteBuilder work;
 
     /** Creates a new ByteArrayComposer, using this classes static default Charset **/
     public ByteArrayComposer() {
-        this.work = new ByteBuilder(0, getDefaultCharset());
+        this(ObjectReuseStrategy.defaultStrategy);
     }
 
+    /** Creates a new ByteArrayComposer, using this classes static default Charset **/
+    public ByteArrayComposer(ObjectReuseStrategy reuseStrategy) {
+        switch (reuseStrategy) {
+        case BY_CONTENTS:
+            this.objectCache = new HashMap<BonaPortable,Integer>(250);
+            this.useCache = true;
+            break;
+        case BY_REFERENCE:
+            this.objectCache = new IdentityHashMap<BonaPortable,Integer>(250);
+            this.useCache = true;
+            break;
+        default:
+            this.objectCache = null;
+            this.useCache = false;
+            break;
+        }
+        this.work = new ByteBuilder(0, getDefaultCharset());
+        numberOfObjectsSerialized = 0;
+        numberOfObjectReuses = 0;
+    }
+    
     /** Sets the current length to 0, allowing reuse of the allocated output buffer for a new message. */
     @Override
     public void reset() {
         work.setLength(0);
+        numberOfObjectsSerialized = 0;
+        numberOfObjectReuses = 0;
+        objectCache.clear();
     }
 
     /** Returns the number of bytes written. */
@@ -58,12 +93,14 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
     /** Returns the current buffer as a Java byte array. Only the first <code>getLength()</code> bytes of this buffer are valid. */
     @Override
     public byte[] getBuffer() {
+        LOGGER.debug("Buffer retrieved, {} bytes written, {} object reuses", work.length(), numberOfObjectReuses);
         return work.getCurrentBuffer();
     }
 
     /** returns the result as a deep copy byte array of precise length of the result. */
     @Override
     public byte[] getBytes() {
+        LOGGER.debug("Bytes retrieved, {} bytes written, {} object reuses", work.length(), numberOfObjectReuses);
         return work.getBytes();  // slow!
     }
 
@@ -408,11 +445,26 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
         if (obj == null) {
             writeNull();
         } else {
+            if (useCache) {
+                Integer previousIndex = objectCache.get(obj);
+                if (previousIndex != null) {
+                    // reuse this instance
+                    work.append(OBJECT_AGAIN);
+                    addField(previousIndex.intValue());
+                    ++numberOfObjectReuses;
+                    return;
+                }
+                // fall through
+            }
             // start a new object
             startObject(obj);
 
             // do all fields (now includes terminator)
             obj.serializeSub(this);
+            if (useCache) {
+                // add the new object to the cache of known objects
+                objectCache.put(obj, Integer.valueOf(numberOfObjectsSerialized++));
+            }            
         }
     }
 

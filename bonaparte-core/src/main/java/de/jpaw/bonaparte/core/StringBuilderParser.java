@@ -46,6 +46,8 @@ public final class StringBuilderParser extends StringBuilderConstants implements
     private int parseIndex;  // for parser
     private int messageLength;  // for parser
     private String currentClass;
+    private final boolean useCache = true;
+    private List<BonaPortable> objects;
 
 
     public StringBuilderParser(StringBuilder work, int offset, int length) {
@@ -53,6 +55,8 @@ public final class StringBuilderParser extends StringBuilderConstants implements
         parseIndex = offset;  // for parser
         messageLength = length < 0 ? work.length() : length; // -1 means full array size
         currentClass = "N/A";
+        if (useCache)
+            objects = new ArrayList<BonaPortable>(60);
     }
 
     /**************************************************************************************************
@@ -657,28 +661,48 @@ public final class StringBuilderParser extends StringBuilderConstants implements
         if (checkForNull(fieldname, allowNull)) {
             return null;
         }
-        needChar(OBJECT_BEGIN);  // version not yet allowed
-        String previousClass = currentClass;
-        String classname = readString(fieldname, false, 0, false, false, false, false);
-        // String revision = readAscii(true, 0, false, false);
-        needChar(NULL_FIELD);  // version not yet allowed
-        BonaPortable newObject = BonaPortableFactory.createObject(classname);
-        //System.out.println("Creating new obj " + classname + " gave me " + newObject);
-        // check if the object is of expected type
-        if (newObject.getClass() != type) {
-            // check if it is a superclass
-            if (!allowSubtypes || !type.isAssignableFrom(newObject.getClass())) {
-                throw new MessageParserException(MessageParserException.BAD_CLASS,
-                        String.format("(got %s, expected %s for %s, subclassing = %b)",
-                                newObject.getClass().getSimpleName(), type.getSimpleName(), fieldname, allowSubtypes),
-                                parseIndex, currentClass);
+        if (useCache && parseIndex < messageLength && work.charAt(parseIndex) == OBJECT_AGAIN) {
+            // we reuse an object
+            ++parseIndex;
+            int objectIndex = readInteger(fieldname, false, false).intValue();
+            if (objectIndex >= objects.size())
+                throw new MessageParserException(MessageParserException.INVALID_BACKREFERENCE, String.format(
+                        "at %s: requested object %d of only %d available", fieldname, objectIndex, objects.size()),
+                        parseIndex, currentClass);
+            BonaPortable newObject = objects.get(objectIndex);
+            // check if the object is of expected type
+            if (newObject.getClass() != type) {
+                // check if it is a superclass
+                if (!allowSubtypes || !type.isAssignableFrom(newObject.getClass())) {
+                    throw new MessageParserException(MessageParserException.BAD_CLASS, String.format("(got %s, expected %s for %s, subclassing = %b)",
+                            newObject.getClass().getSimpleName(), type.getSimpleName(), fieldname, allowSubtypes), parseIndex, currentClass);
+                }
             }
+            return newObject;
+        } else {
+            needChar(OBJECT_BEGIN); // version not yet allowed
+            String previousClass = currentClass;
+            String classname = readString(fieldname, false, 0, false, false, false, false);
+            // String revision = readAscii(true, 0, false, false);
+            needChar(NULL_FIELD); // version not yet allowed
+            BonaPortable newObject = BonaPortableFactory.createObject(classname);
+            // System.out.println("Creating new obj " + classname + " gave me " + newObject);
+            // check if the object is of expected type
+            if (newObject.getClass() != type) {
+                // check if it is a superclass
+                if (!allowSubtypes || !type.isAssignableFrom(newObject.getClass())) {
+                    throw new MessageParserException(MessageParserException.BAD_CLASS, String.format("(got %s, expected %s for %s, subclassing = %b)",
+                            newObject.getClass().getSimpleName(), type.getSimpleName(), fieldname, allowSubtypes), parseIndex, currentClass);
+                }
+            }
+            // all good here. Parse the contents
+            currentClass = classname;
+            newObject.deserialize(this);
+            currentClass = previousClass;
+            if (useCache)
+                objects.add(newObject);
+            return newObject;
         }
-        // all good here. Parse the contents
-        currentClass = classname;
-        newObject.deserialize(this);
-        currentClass = previousClass;
-        return newObject;
     }
 
     @Override
