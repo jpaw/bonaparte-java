@@ -81,7 +81,8 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
         work.setLength(0);
         numberOfObjectsSerialized = 0;
         numberOfObjectReuses = 0;
-        objectCache.clear();
+        if (useCache)
+            objectCache.clear();
     }
 
     /** Returns the number of bytes written. */

@@ -50,6 +50,7 @@ public class StringBuilderComposer extends AppendableComposer implements Buffere
     @Override
     public void reset() {
         work.setLength(0);
+        super.reset();   // reset cache!
     }
 
     @Override

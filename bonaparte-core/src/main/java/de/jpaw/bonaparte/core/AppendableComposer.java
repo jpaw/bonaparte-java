@@ -82,6 +82,14 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
         numberOfObjectReuses = 0;
     }
 
+    // must be overridden / called if caching / reuse is active!
+    public void reset() {
+        numberOfObjectsSerialized = 0;
+        numberOfObjectReuses = 0;
+        if (useCache)
+            objectCache.clear();
+        
+    }
     /**************************************************************************************************
      * Serialization goes here
      **************************************************************************************************/

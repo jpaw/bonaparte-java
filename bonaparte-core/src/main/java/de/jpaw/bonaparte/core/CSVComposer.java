@@ -104,7 +104,7 @@ public class CSVComposer extends AppendableComposer {
     }
 
     public CSVComposer(Appendable work, CSVConfiguration cfg) {
-        super(work);
+        super(work, ObjectReuseStrategy.NONE);  // CSV does not know about object backreferences...
         this.cfg = cfg;
         this.stringQuote = (cfg.quote != null) ? String.valueOf(cfg.quote) : "";  // use this for cases where a String is required
         //this.usesDefaultDecimalPoint = cfg.decimalPoint.equals(".");
