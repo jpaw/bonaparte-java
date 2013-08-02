@@ -22,7 +22,7 @@
         <guava.version>14.0.1</guava.version>           <!-- http://code.google.com/p/guava-libraries/ UPTODATE 2013-06-09 -->
 
         <!-- Some more versions, used by specific dependent projects -->
-        <netty.version>4.0.4.Final</netty.version>      <!-- https://netty.io/news/         UPTODATE 2013-07-23 -->
+        <netty.version>4.0.6.Final</netty.version>      <!-- https://netty.io/news/         UPTODATE 2013-08-02 -->
         <poi.version>3.9</poi.version>                  <!-- http://poi.apache.org/         UPTODATE 2013-06-09 -->
         <mina.version>2.0.5</mina.version>              <!-- http://mina.apache.org/        2.0.7 -->
         <camel.version>2.11.1</camel.version>           <!-- http://camel.apache.org/       UPTODATE 2013-06-09 -->
