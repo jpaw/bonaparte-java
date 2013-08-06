@@ -6,6 +6,8 @@ import java.math.RoundingMode;
 
 import com.google.common.collect.ImmutableList;
 
+import de.jpaw.algebra.AbelianGroup;
+
 /**
  * The BonaMoney class provides a series of functionality useful for working with monetary amounts.
  * These include scale normalization, and operations with rounding.
@@ -17,7 +19,7 @@ import com.google.common.collect.ImmutableList;
  * @author BISC02
  *
  */
-public final class BonaMoney implements Serializable, MoneyGetter {
+public final class BonaMoney implements Serializable, MoneyGetter, AbelianGroup<BonaMoney> {
     private static final long serialVersionUID = 6269291861207854500L;
 
     static private final BigDecimal [] EMPTY_ARRAY = new BigDecimal[0];
@@ -273,6 +275,21 @@ public final class BonaMoney implements Serializable, MoneyGetter {
 
     public ImmutableList<BigDecimal> getComponentAmounts() {
         return componentAmounts;
+    }
+
+    @Override
+    public BonaMoney negate() throws MonetaryException {
+        if (componentAmounts.size() == 0) {
+            // just one number to negate, (if at all)
+            if (amount.compareTo(BigDecimal.ZERO) == 0)
+                return this;  // - 0 = 0
+            return new BonaMoney(currency, false, amount.negate());
+        }
+        // BonaMoney with breakdown, more complex
+        BigDecimal taxes[] = new BigDecimal[componentAmounts.size()];
+        for (int i = 0; i < componentAmounts.size(); ++i)
+            taxes[i] = componentAmounts.get(i).negate();
+        return new BonaMoney(currency, false, false, amount.negate(), taxes);
     }
 
 }
