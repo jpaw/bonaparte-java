@@ -20,7 +20,7 @@ public class TestBeanNames {
         assert(names.size() == included.size());  // parameter plausi
         
         Method[] arrayOfMethods = x.getClass().getDeclaredMethods();
-        List<String> listOfMethods = new ArrayList(20);
+        List<String> listOfMethods = new ArrayList<String>(20);
         
         for (int i = 0; i < arrayOfMethods.length; ++i) {
             if (arrayOfMethods[i].getName().startsWith(prefix))

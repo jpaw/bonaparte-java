@@ -1,5 +1,6 @@
 package testcases.reuse;
 
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import de.jpaw.bonaparte.core.BonaPortable;
@@ -9,8 +10,6 @@ import de.jpaw.bonaparte.core.MessageParserException;
 import de.jpaw.bonaparte.core.ObjectReuseStrategy;
 import de.jpaw.bonaparte.core.StringBuilderComposer;
 import de.jpaw.bonaparte.core.StringBuilderParser;
-import de.jpaw.bonaparte.coretests.initializers.FillLists;
-import de.jpaw.bonaparte.coretests.util.SimpleTestRunner;
 import de.jpaw.bonaparte.pojos.reuse.Body;
 import de.jpaw.bonaparte.pojos.reuse.Element;
 
@@ -25,6 +24,11 @@ import de.jpaw.bonaparte.pojos.reuse.Element;
  */
 public class TestReuse {
 
+    @BeforeClass
+    public void setDefaultStrategy() {
+        ObjectReuseStrategy.defaultStrategy = ObjectReuseStrategy.NONE;
+    }
+    
     private Body setup() {
         Body r = new Body();
         r.w1 = new Element("hello");
