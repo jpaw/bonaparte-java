@@ -58,11 +58,31 @@
             <url>http://build.eclipse.org/common/xtend/maven/</url>
             <!--  Snapshots at <url>https://oss.sonatype.org/content/repositories/snapshots/</url>  -->
         </repository>
+        <repository>
+            <id>xtend.snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>
             <id>xtend</id>
             <url>http://build.eclipse.org/common/xtend/maven/</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>xtend.snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </pluginRepository>
     </pluginRepositories>
 
@@ -229,6 +249,10 @@
 
         <plugins>
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
             </plugin>
@@ -246,6 +270,7 @@
             </plugin>
         </plugins>
     </build>
+	
     <reporting>
         <plugins>
             <plugin>
@@ -268,9 +293,7 @@
         <module>../bonaparte-core/pom.xml</module>
         <module>../bonaparte-core-test/pom.xml</module>
         <module>../bonaparte-money/pom.xml</module>
-<!--
         <module>../bonaparte-money-test/pom.xml</module>
--->
         <module>../bonaparte-xml/pom.xml</module>
         <module>../bonaparte-poi/pom.xml</module>
         <module>../bonaparte-poix/pom.xml</module>

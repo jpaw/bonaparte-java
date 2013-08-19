@@ -90,6 +90,12 @@ public class ApplicationException extends Exception {
         return (errorCode / CLASSIFICATION_FACTOR);
     }
 
+    /** Returns information if a code is an "OK" code. */
+    public static boolean isOk(int returnCode) {
+        return returnCode >= 0 && returnCode < CLASSIFICATION_FACTOR;
+    }
+    
+    
     /** Returns a textual description of the error code.
      *  The method is declared as final as long as it's used from the constructors of superclasses.
      *
