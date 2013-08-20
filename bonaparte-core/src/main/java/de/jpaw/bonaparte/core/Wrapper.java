@@ -126,7 +126,7 @@ public class Wrapper implements BonaPortable, Externalizable {
 
     @Override
     public <T extends BonaPortable> T copyAs(Class<T> desiredSuperType) {
-        if (desiredSuperType == null || desiredSuperType == getClass())
+        if (desiredSuperType == null || desiredSuperType == Wrapper.class)
             return (T) new Wrapper(getData());
         throw new IllegalArgumentException("Wrapper does not support copyOf(" + desiredSuperType.getCanonicalName() + ")");
     }
