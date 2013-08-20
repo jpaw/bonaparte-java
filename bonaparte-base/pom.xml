@@ -291,9 +291,7 @@
         <module>../bonaparte-money/generator/pom.xml</module>
         <module>../bonaparte-demorqrs/generator/pom.xml</module>
         <module>../bonaparte-core/pom.xml</module>
-        <module>../bonaparte-core-test/pom.xml</module>
         <module>../bonaparte-money/pom.xml</module>
-        <module>../bonaparte-money-test/pom.xml</module>
         <module>../bonaparte-xml/pom.xml</module>
         <module>../bonaparte-poi/pom.xml</module>
         <module>../bonaparte-poix/pom.xml</module>
