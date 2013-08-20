@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import de.jpaw.bonaparte.pojos.meta.ParsedFoldingComponent;
+import de.jpaw.util.ApplicationException;
 import de.jpaw.util.ToStringHelper;
 
 public class Wrapper implements BonaPortable, Externalizable {
@@ -38,6 +39,9 @@ public class Wrapper implements BonaPortable, Externalizable {
         return class$returns();
     }
     
+    public Wrapper(BonaPortable data) {
+        this.data = data;
+    }
     
     public BonaPortable data;
 
@@ -118,6 +122,18 @@ public class Wrapper implements BonaPortable, Externalizable {
         if (pfc.getFieldname().equals("data")) {
             w.addField(data);
         }
+    }
+
+    @Override
+    public <T extends BonaPortable> T copyAs(Class<T> desiredSuperType) {
+        if (desiredSuperType == null || desiredSuperType == getClass())
+            return (T) new Wrapper(getData());
+        throw new IllegalArgumentException("Wrapper does not support copyOf(" + desiredSuperType.getCanonicalName() + ")");
+    }
+
+    @Override
+    public Class<? extends BonaPortable> get$pk() {
+        return null;
     }
 
 }

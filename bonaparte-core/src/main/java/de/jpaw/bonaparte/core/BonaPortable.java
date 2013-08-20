@@ -19,6 +19,7 @@ import java.io.Serializable;
 import java.util.concurrent.ConcurrentMap;
 
 import de.jpaw.bonaparte.pojos.meta.ParsedFoldingComponent;
+import de.jpaw.util.ApplicationException;
 
 /** 
  * Defines the methods any object which should be serialized into the bonaparte format must implement.
@@ -84,6 +85,9 @@ public interface BonaPortable extends Serializable {
     /** Gets the defined class of a "return type" if it has been defined for this object or one of its superclasses. Returns null if none has defined a return type. */
     public Class<? extends BonaPortable> get$returns();
     
+    /** Gets the defined class of a "pk type" if it has been defined for this object or one of its superclasses. Returns null if none has defined a pk type. */
+    public Class<? extends BonaPortable> get$pk();
+    
     /** Serializes this object into the format implemented by the MessageComposer parameter. The method will invoke methods of the MessageComposer interface for every member field, and also for some metadata. Class headers itself are assumed to have been serialized before.
      *  Different implementations are provided with the bonaparte library, for ASCII-like formats (bonaparte) or binary formats plugging into the standard Java {@link java.io.Serializable}/{@link java.io.Externalizable} interface.
      *  
@@ -110,6 +114,13 @@ public interface BonaPortable extends Serializable {
      * @throws ObjectValidationException
      */
     public void validate() throws ObjectValidationException;
+    
+    /** Provides a shallow copy of the (super)class specified as parameter.
+     * 
+     * @throws IllegalArgumentException  if no superclass of the requested type exists
+     */
+    public <T extends BonaPortable> T copyAs(Class<T> desiredSuperType);
+    
     
     /** Serializes this object using a mapping. Not all fields are output, and not in the sequence they are declared in the class.
      * In addition, specific indexes can be selected for arrays or Lists.
