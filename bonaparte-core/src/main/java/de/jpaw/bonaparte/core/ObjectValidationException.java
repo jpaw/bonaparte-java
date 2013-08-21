@@ -45,6 +45,7 @@ public class ObjectValidationException extends ApplicationException {
     static public final int TOO_MANY_ELEMENTS     = OFFSET + 3;
     static public final int TOO_LONG              = OFFSET + 4;
     static public final int TOO_SHORT             = OFFSET + 5;
+    static public final int NOT_ENOUGH_ELEMENTS   = OFFSET + 6;
 
     // Upload textual descriptions only once they're needed for this type of exception class.
     // The idea is that in working environments, we will never need them ;-).
@@ -58,6 +59,7 @@ public class ObjectValidationException extends ApplicationException {
             codeToDescription.put(TOO_MANY_ELEMENTS    , "Array contains too many elements");
             codeToDescription.put(TOO_LONG             , "String is too long");
             codeToDescription.put(TOO_SHORT            , "String is too short");
+            codeToDescription.put(NOT_ENOUGH_ELEMENTS  , "Array contains not enough elements");
         }
     }
 
