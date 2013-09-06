@@ -85,7 +85,7 @@
             </snapshots>
         </pluginRepository>
     </pluginRepositories>
-
+<!--
     <distributionManagement>
         <snapshotRepository>
             <id>repo-snapshots</id>
@@ -98,7 +98,7 @@
             <url>${repo.url}/libs-release-local</url>
         </repository>
     </distributionManagement>
-
+-->
     <build>
         <pluginManagement>
             <plugins>
