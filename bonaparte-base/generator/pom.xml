@@ -12,7 +12,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <tycho-version>0.18.0</tycho-version>
+        <tycho-version>0.18.1</tycho-version>
         <bonaparte-plugin-version>1.6.1-SNAPSHOT</bonaparte-plugin-version>
     </properties>
 
