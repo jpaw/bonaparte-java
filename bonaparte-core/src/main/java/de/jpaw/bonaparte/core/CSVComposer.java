@@ -191,9 +191,9 @@ public class CSVComposer extends AppendableComposer {
         if (n != null) {
             if (cfg.removePoint4BD) {
                 // use standard BigDecimal formatter, and remove the "." from the output
-                addRawData(n.toPlainString().replace(".", ""));
+                addRawData(n.setScale(decimals).toPlainString().replace(".", ""));
             } else {
-                // use standard locale formatter
+                // use standard locale formatter to get the localized . or ,
                 bigDecimalFormat.setMaximumFractionDigits(n.scale());
                 bigDecimalFormat.setMinimumFractionDigits(n.scale());
                 addRawData(bigDecimalFormat.format(n));
