@@ -10,5 +10,10 @@ package csvTests {
         Calendar                when;
         Long                    longNum;
     }
+
+    class Test2 extends Test1 {
+        (Test1...)              test1;
+        (Test1...) List<>       tests1;
+    }
 }
 
