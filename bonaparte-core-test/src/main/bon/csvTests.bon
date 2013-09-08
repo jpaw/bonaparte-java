@@ -7,8 +7,8 @@ package csvTests {
         Timestamp(0)            ts1;
         Day                     day1;
         boolean                 really;
-        Calendar                when;
-        Long                    longNum;
+        //Calendar                when;
+        unsigned Long           longNum;
     }
 }
 

@@ -36,6 +36,8 @@ import java.math.BigDecimal;
  *          - Number (nullable)
  *          - long (not null, unsigned, assuming a length of 18 characters)
  *          - int (not null, signed, assuming a length of 9 digits)
+ *          
+ *          As we currently don't have all information about the fields passed as parameters, we have to make some assumptions.
  */
 
 public class FixedWidthComposer extends CSVComposer {
@@ -91,7 +93,7 @@ public class FixedWidthComposer extends CSVComposer {
         }
     }
 
-    // decimal
+    // decimal using TRAILING SIGN
     @Override
     public void addField(BigDecimal n, int length, int decimals,
             boolean isSigned) throws IOException {
@@ -122,7 +124,7 @@ public class FixedWidthComposer extends CSVComposer {
         }
     }
     
-    // long
+    // long (UNSIGNED)
     @Override
     public void addField(long n) throws IOException {
         writeSeparator();
@@ -131,13 +133,28 @@ public class FixedWidthComposer extends CSVComposer {
         addRawData(val);
     }
     
-    // int
+    // int (SIGNED, LEADING SIGN)
     @Override
     public void addField(int n) throws IOException {
         writeSeparator();
+        addRawData(n < 0 ? "-" : " ");
         String val = Integer.toString(n < 0 ? -n : n);
         numericPad(9 - val.length());
         addRawData(val);
-        addRawData(n < 0 ? "-" : " ");
+    }
+    
+    // int(n) (SIGNED AND UNSIGNED; specific length, LEADING SIGN), null possible
+    @Override
+    public void addField(Integer n, int length, boolean isSigned) throws IOException {
+        writeSeparator();
+        if (n == null) {
+            addRawData(SPACE_PADDINGS[length + (isSigned ? 1 : 0)]);
+        } else {
+            if (isSigned)
+                addRawData(n < 0 ? "-" : " ");
+            String val = Integer.toString(n < 0 ? -n : n);
+            numericPad(length - val.length());
+            addRawData(val);
+        }
     }
 }

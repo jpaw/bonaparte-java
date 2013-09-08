@@ -1,8 +1,17 @@
 package de.jpaw.bonaparte.core;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class CSVConfiguration {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CSVConfiguration.class);
+    
     public final static String EMPTY_STRING = "";                           // used instead of null Strings
     public final static String DEFAULT_DAY_FORMAT = "yyyyMMdd";             // default pattern for LocalDate (bonaparte Day) outputs
     public final static String DEFAULT_TIMESTAMP_FORMAT = "yyyyMMddHHmmss"; // default pattern for LocalDatetime (bonaparte Timestamp(0)) outputs
@@ -218,4 +227,52 @@ public class CSVConfiguration {
             return this;
         }
     }
+    
+    // certain utility methods used by CSV parser / composers
+    public DateFormat determineCalendarFormat() {
+        try {
+            return customCalendarFormat == null ? DateFormat.getDateInstance(DateFormat.MEDIUM, locale) : new SimpleDateFormat(customCalendarFormat, locale);
+        } catch (IllegalArgumentException e) {
+            // could occur if the user provided format is invalid
+            LOGGER.error("Provided format is not valid: " + customCalendarFormat, e);
+            return new SimpleDateFormat(DEFAULT_CALENDAR_FORMAT);// use default locale now, format must be corrected anyway
+        }
+    }
+
+    public DateTimeFormatter determineDayFormatter() {
+        try {
+            return customTimestampFormat == null
+                    ? DateTimeFormat.forStyle(dateStyle.getToken() + "-")
+                    : DateTimeFormat.forPattern(customDayFormat);
+        } catch (IllegalArgumentException e) {
+            // could occur if the user provided format is invalid
+            LOGGER.error("Provided format is not valid: " + customDayFormat, e);
+            return DateTimeFormat.forPattern(DEFAULT_DAY_FORMAT);
+        }
+    }
+
+    public DateTimeFormatter determineTimestampFormatter() {
+        try {
+            return customTimestampFormat == null
+                    ? DateTimeFormat.forStyle(dateStyle.getToken() + timeStyle.getToken())
+                    : DateTimeFormat.forPattern(customTimestampFormat);
+        } catch (IllegalArgumentException e) {
+            // could occur if the user provided format is invalid
+            LOGGER.error("Provided format is not valid: " + customTimestampFormat, e);
+            return DateTimeFormat.forPattern(DEFAULT_TIMESTAMP_FORMAT);
+        }
+    }
+
+    public DateTimeFormatter determineTimestamp3Formatter() {
+        try {
+            return customTimestampWithMsFormat == null
+                    ? DateTimeFormat.forStyle(dateStyle.getToken() + timeStyle.getToken())
+                    : DateTimeFormat.forPattern(customTimestampWithMsFormat);
+        } catch (IllegalArgumentException e) {
+            // could occur if the user provided format is invalid
+            LOGGER.error("Provided format is not valid: " + customTimestampWithMsFormat, e);
+            return DateTimeFormat.forPattern(DEFAULT_TS_WITH_MS_FORMAT);
+        }
+    }
+
 }

@@ -42,7 +42,6 @@ import de.jpaw.util.ByteArray;
  */
 
 public class CSVComposer extends AppendableComposer {
-    private static final Logger LOGGER = LoggerFactory.getLogger(CSVComposer.class);
 
     protected boolean recordStart = true;
     //protected boolean shouldWarnWhenUsingFloat;
@@ -57,51 +56,6 @@ public class CSVComposer extends AppendableComposer {
     protected Format numberFormat;              // locale's default format for formatting float and double, covers decimal point and sign
     protected final NumberFormat bigDecimalFormat;          // locale's default format for formatting BigDecimal, covers decimal point and sign
 
-    private DateFormat determineCalendarFormat(CSVConfiguration cfg) {
-        try {
-            return cfg.customCalendarFormat == null ? DateFormat.getDateInstance(DateFormat.MEDIUM, cfg.locale) : new SimpleDateFormat(cfg.customCalendarFormat, cfg.locale);
-        } catch (IllegalArgumentException e) {
-            // could occur if the user provided format is invalid
-            LOGGER.error("Provided format is not valid: " + cfg.customCalendarFormat, e);
-            return new SimpleDateFormat(CSVConfiguration.DEFAULT_CALENDAR_FORMAT);// use default locale now, format must be corrected anyway
-        }
-    }
-
-    private DateTimeFormatter determineDayFormatter(CSVConfiguration cfg) {
-        try {
-            return cfg.customTimestampFormat == null
-                    ? DateTimeFormat.forStyle(cfg.dateStyle.getToken() + "-")
-                    : DateTimeFormat.forPattern(cfg.customDayFormat);
-        } catch (IllegalArgumentException e) {
-            // could occur if the user provided format is invalid
-            LOGGER.error("Provided format is not valid: " + cfg.customDayFormat, e);
-            return DateTimeFormat.forPattern(CSVConfiguration.DEFAULT_DAY_FORMAT);
-        }
-    }
-
-    private DateTimeFormatter determineTimestampFormatter(CSVConfiguration cfg) {
-        try {
-            return cfg.customTimestampFormat == null
-                    ? DateTimeFormat.forStyle(cfg.dateStyle.getToken() + cfg.timeStyle.getToken())
-                    : DateTimeFormat.forPattern(cfg.customTimestampFormat);
-        } catch (IllegalArgumentException e) {
-            // could occur if the user provided format is invalid
-            LOGGER.error("Provided format is not valid: " + cfg.customTimestampFormat, e);
-            return DateTimeFormat.forPattern(CSVConfiguration.DEFAULT_TIMESTAMP_FORMAT);
-        }
-    }
-
-    private DateTimeFormatter determineTimestamp3Formatter(CSVConfiguration cfg) {
-        try {
-            return cfg.customTimestampWithMsFormat == null
-                    ? DateTimeFormat.forStyle(cfg.dateStyle.getToken() + cfg.timeStyle.getToken())
-                    : DateTimeFormat.forPattern(cfg.customTimestampWithMsFormat);
-        } catch (IllegalArgumentException e) {
-            // could occur if the user provided format is invalid
-            LOGGER.error("Provided format is not valid: " + cfg.customTimestampWithMsFormat, e);
-            return DateTimeFormat.forPattern(CSVConfiguration.DEFAULT_TS_WITH_MS_FORMAT);
-        }
-    }
 
     public CSVComposer(Appendable work, CSVConfiguration cfg) {
         super(work, ObjectReuseStrategy.NONE);  // CSV does not know about object backreferences...
@@ -109,10 +63,10 @@ public class CSVComposer extends AppendableComposer {
         this.stringQuote = (cfg.quote != null) ? String.valueOf(cfg.quote) : "";  // use this for cases where a String is required
         //this.usesDefaultDecimalPoint = cfg.decimalPoint.equals(".");
         //this.shouldWarnWhenUsingFloat = cfg.decimalPoint.length() == 0;     // removing decimal points from float or double is a bad idea, because no scale is defined
-        this.dayFormat = determineDayFormatter(cfg).withLocale(cfg.locale).withZoneUTC();
-        this.timestampFormat = determineTimestampFormatter(cfg).withLocale(cfg.locale).withZoneUTC();
-        this.timestamp3Format = determineTimestamp3Formatter(cfg).withLocale(cfg.locale).withZoneUTC();
-        this.calendarFormat = determineCalendarFormat(cfg);
+        this.dayFormat = cfg.determineDayFormatter().withLocale(cfg.locale).withZoneUTC();
+        this.timestampFormat = cfg.determineTimestampFormatter().withLocale(cfg.locale).withZoneUTC();
+        this.timestamp3Format = cfg.determineTimestamp3Formatter().withLocale(cfg.locale).withZoneUTC();
+        this.calendarFormat = cfg.determineCalendarFormat();
         this.calendarFormat.setCalendar(Calendar.getInstance(cfg.locale));
         NumberFormat myNumberFormat = NumberFormat.getInstance(cfg.locale);
         myNumberFormat.setGroupingUsed(false);                           // this is for interfaces, don't do pretty-printing

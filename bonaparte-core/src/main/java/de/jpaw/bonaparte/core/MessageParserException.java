@@ -84,6 +84,8 @@ public class MessageParserException extends ApplicationException {
     static public final int NULL_COLLECTION_NOT_ALLOWED  = OFFSET + 40;
     static public final int TOO_MANY_DECIMALS            = OFFSET + 41;
     static public final int INVALID_BACKREFERENCE        = OFFSET + 42;
+    static public final int UNSUPPORTED_DATA_TYPE        = OFFSET + 43;
+    
 
     /**
      * Method lazyInitialization.
@@ -138,6 +140,7 @@ public class MessageParserException extends ApplicationException {
             codeToDescription.put(NULL_COLLECTION_NOT_ALLOWED  , "parsed NULL for a required List, Set or Array");
             codeToDescription.put(TOO_MANY_DECIMALS            , "number contains more decimal places than allowed");
             codeToDescription.put(INVALID_BACKREFERENCE        , "The serialized message contains an invalid backreference");
+            codeToDescription.put(UNSUPPORTED_DATA_TYPE        , "The request field type or operation is not supported for this cpomposer or parser");
         }
     }
 

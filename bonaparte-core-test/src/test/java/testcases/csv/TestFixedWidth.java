@@ -10,13 +10,15 @@ import org.testng.annotations.Test;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.CSVConfiguration;
 import de.jpaw.bonaparte.core.FixedWidthComposer;
+import de.jpaw.bonaparte.core.MessageParserException;
+import de.jpaw.bonaparte.core.StringCSVParser;
 import de.jpaw.bonaparte.pojos.csvTests.Test1;
 
 public class TestFixedWidth {
 
     private CSVConfiguration fixedWidthCfg = new CSVConfiguration.Builder().usingSeparator("").usingQuoteCharacter(null).usingZeroPadding(true).build();
 
-    private static void runTest(CSVConfiguration cfg, BonaPortable input, String expectedOutput) {
+    private static void runTest(CSVConfiguration cfg, BonaPortable input, String expectedOutput) throws MessageParserException {
         StringBuilder buffer = new StringBuilder(200);
         FixedWidthComposer cmp = new FixedWidthComposer(buffer, cfg);
         cmp.setWriteCRs(false);
@@ -28,15 +30,19 @@ public class TestFixedWidth {
         }
         String actualOutput = buffer.toString();
         assert(expectedOutput.equals(actualOutput));
+        
+        StringCSVParser p = new StringCSVParser(cfg, actualOutput);
+        BonaPortable result = p.readObject("root", input.getClass(), false, false);
+        assert(input.equals(result));
     }
 
     @Test
     public void testFixedWidth() throws Exception {
-        Test1 t1 = new Test1("Hello", 12, new BigDecimal("3.1"), new LocalDateTime(2013, 04, 01, 23, 55, 0), new LocalDate(2001, 11, 12), true, null, 1234567890123L);
+        Test1 t1 = new Test1("Hello", 12, new BigDecimal("3.1"), new LocalDateTime(2013, 04, 01, 23, 55, 0), new LocalDate(2001, 11, 12), true, 1234567890123L);
 
-        runTest(fixedWidthCfg,  t1, "Hello     000000012 000000000003.10 20130401235500200111121000001234567890123\n");
+        runTest(fixedWidthCfg,  t1, "Hello      000000012000000000003.10 20130401235500200111121000001234567890123\n");
         
         CSVConfiguration fixedWidthCfg2 = CSVConfiguration.Builder.from(fixedWidthCfg).booleanTokens("J", "N").setCustomDayTimeFormats("dd.MM.YYYY", "YYYY-MM-dd HH:mm:ss", "YYYY-MM-DD HH:mm:ss SSS").usingZeroPadding(false).build();
-        runTest(fixedWidthCfg2, t1, "Hello            12            3.10 2013-04-01 23:55:0012.11.2001J     1234567890123\n");
+        runTest(fixedWidthCfg2, t1, "Hello             12           3.10 2013-04-01 23:55:0012.11.2001J     1234567890123\n");
     }
 }

@@ -16,7 +16,7 @@ import de.jpaw.util.DayTime;
 
 public class CSVDemo {
     private static Test1 t = new Test1("Hello, world", 42, new BigDecimal("3.14"), LocalDateTime.now(), LocalDate.now(), true,
-            DayTime.getCurrentTimestamp(), -78653L);
+            -78653L);
 
     private static void run2Tests(CSVConfiguration cfg, String formatName, boolean useComposer2) {
         StringBuilder buffer = new StringBuilder(200);
