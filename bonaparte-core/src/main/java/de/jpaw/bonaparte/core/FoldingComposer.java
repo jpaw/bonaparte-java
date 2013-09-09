@@ -44,6 +44,11 @@ public class FoldingComposer<E extends Exception> implements MessageComposer<E> 
     }
 
     @Override
+    public void writeNullCollection(FieldDefinition di) throws E {
+        delegateComposer.writeNullCollection(di);
+    }
+    
+    @Override
     public void startTransmission() throws E {
         delegateComposer.startTransmission();
     }

@@ -24,6 +24,10 @@ public class NoOpComposer implements MessageComposer<RuntimeException> {
     @Override
     public void writeNull(FieldDefinition di) {
     }
+    
+    @Override
+    public void writeNullCollection(FieldDefinition di) {
+    }
 
     @Override
     public void startTransmission() {

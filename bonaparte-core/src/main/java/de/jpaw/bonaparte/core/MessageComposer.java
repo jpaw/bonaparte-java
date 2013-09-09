@@ -41,7 +41,8 @@ import de.jpaw.util.ByteArray;
 public interface MessageComposer<E extends Exception> {
 
     // serialization methods: structure
-    public void writeNull(FieldDefinition di) throws E;
+    public void writeNull(FieldDefinition di) throws E;             // write a null field
+    public void writeNullCollection(FieldDefinition di) throws E;   // the whole collection is null
     public void startTransmission() throws E;
     public void startRecord() throws E;
     public void startObject(BonaPortable o) throws E;  // write the name and the revision

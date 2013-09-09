@@ -118,6 +118,11 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
     public void writeNull(FieldDefinition di) throws IOException {
         work.append(NULL_FIELD);
     }
+    
+    @Override
+    public void writeNullCollection(FieldDefinition di) throws IOException {
+        work.append(NULL_FIELD);
+    }
 
     @Override
     public void startTransmission() throws IOException {

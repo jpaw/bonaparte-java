@@ -46,6 +46,11 @@ public class ListComposer extends NoOpComposer implements MessageComposer<Runtim
         storage.add(null);
     }
 
+    @Override
+    public void writeNullCollection(FieldDefinition di) {
+        storage.add(null);
+    }
+
 
     @Override
     public void writeRecord(BonaPortable o) {

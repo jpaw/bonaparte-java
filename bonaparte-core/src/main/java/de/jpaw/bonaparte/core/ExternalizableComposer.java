@@ -58,6 +58,11 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
         out.writeByte(NULL_FIELD);
     }
 
+    @Override
+    public void writeNullCollection(FieldDefinition di) throws IOException {
+        out.writeByte(NULL_FIELD);
+    }
+
     /**
      * Primitives
      * */

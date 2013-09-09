@@ -98,6 +98,10 @@ public class CSVComposer extends AppendableComposer {
     }
 
     @Override
+    public void writeNullCollection(FieldDefinition di) {
+    }
+
+    @Override
     public void startTransmission() {
     }
 

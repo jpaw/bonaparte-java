@@ -139,6 +139,11 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
     public void writeNull(FieldDefinition di) {
         work.append(NULL_FIELD);
     }
+    
+    @Override
+    public void writeNullCollection(FieldDefinition di) {
+        work.append(NULL_FIELD);
+    }
 
     @Override
     public void startTransmission() {

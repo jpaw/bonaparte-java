@@ -1,6 +1,6 @@
 package de.jpaw.bonaparte.core;
 
-public class ExternalizableConstants implements RevisionMeta {
+public class ExternalizableConstants implements StaticMeta {
     protected static boolean nestedObjectsInternally = true; // false = run through serializable, true = as on ASCII format
     protected static final long powersOfTen[] = {
         1L,

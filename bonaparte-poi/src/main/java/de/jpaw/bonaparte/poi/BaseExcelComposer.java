@@ -135,6 +135,11 @@ public class BaseExcelComposer implements MessageComposer<RuntimeException> {
     public void writeNull(FieldDefinition di) {
         ++column;   // no output for empty cells, but ensure that everything goes nicely into the correct column
     }
+    
+    @Override
+    public void writeNullCollection(FieldDefinition di) {
+        ++column;   // no output for empty cells, but ensure that everything goes nicely into the correct column
+    }
 
     @Override
     public void startTransmission() {

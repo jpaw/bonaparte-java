@@ -18,6 +18,7 @@ package de.jpaw.bonaparte.core;
 import java.io.Serializable;
 import java.util.concurrent.ConcurrentMap;
 
+import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
 import de.jpaw.bonaparte.pojos.meta.ParsedFoldingComponent;
 
 /** 
@@ -131,5 +132,8 @@ public interface BonaPortable extends Serializable {
     
     /** Can be invoked to apply a String converter to all String typed fields in the object, parent objects, and included child objects. */
     public void treeWalkString(StringConverter _cvt);
+
+    /** Gets the Metadata of the BonaPortable (which is a BonaPortable itself). */
+    public ClassDefinition get$MetaData();  // name, revision etc as a class object. Use $ to avoid conflict with other getters
 
 }
