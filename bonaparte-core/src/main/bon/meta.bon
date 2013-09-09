@@ -7,16 +7,18 @@ package meta {
     enum BundleStatus { UNUSED, RESOLVED, INSTALLED, STARTING, SHUTTING_DOWN, MAINTENANCE }  // borrow OSGi statuses
     enum Multiplicity { SCALAR, ARRAY, LIST, SET, MAP }
     // the DataCategory matches the enum of same name in the Bonaparte DSL generator project
-    enum DataCategory { OBJECT, ENUM, NUMERIC, STRING, TEMPORAL, MISC }  // misc is boolean, binary, char, uuid, ...
+    enum DataCategory { OBJECT, ENUM, NUMERIC, STRING, TEMPORAL, MISC, BINARY }  // misc is boolean, char, uuid, ...
     enum FoldingStrategy { SKIP_UNMAPPED, TRY_SUPERCLASS, FULL_OUTPUT }  // what to do if no folding mapping is found
     
 	abstract immutable class FieldDefinition {
 	    enum Visibility         visibility;
-		boolean                 isRequired;
+		boolean                 isRequired;     // if the fields allow null (if collections: the collection elements)
 		required identifier     name;
 		enum Multiplicity       multiplicity;
-		Integer                 maxCount;         // maximum number of occurrences, if ARRAY or LIST
-        enum DataCategory       dataCategory;     // gives high level information about the data 
+		int                     mapIndexType;
+        Integer                 minCount;       // minimum number of occurrences, if a collection or array
+		Integer                 maxCount;       // maximum number of occurrences, if a collection or array
+        enum DataCategory       dataCategory;   // gives high level information about the data 
         ascii(20)               dataType;       // the Bonaparte data type
         boolean                 isPrimitive;    // true if the field is a primitive data type in Java 
 	}
@@ -37,10 +39,19 @@ package meta {
         ascii(39) []            values;
     }
 
-    // MiscElementaryDataItem represents some miscellaneous types
-    // timestamp, raw, binary
-    class MiscElementaryDataItem extends ElementaryDataItem {
+    // TemporalElementaryDataItem represents day / timestamp types
+    class TemporalElementaryDataItem extends ElementaryDataItem {
+        int                     fractionalSeconds;      // decimals fraction of the second (-1 for day)
+        boolean                 ^hhmmss;
+    }
+    
+    // BinaryElementaryDataItem represents raw and binary
+    class BinaryElementaryDataItem extends ElementaryDataItem {
         int                     length;
+    }
+
+    // MiscElementaryDataItem represents some miscellaneous types without attributes (UUID, boolean, Object)
+    class MiscElementaryDataItem extends ElementaryDataItem {
     }
 
     // NumericElementaryDataItem represents all numeric items (float and double and other primitives only fill the isSigned) 
@@ -58,47 +69,48 @@ package meta {
         boolean                 doTrim;
         boolean                 doTruncate;
         boolean                 allowControlCharacters;
+        boolean                 restrictToAscii;
         int                     length;
         int                     minLength;
         optional Ascii(500)     ^regexp;
     }
 	
 	class PropertyDefinition {
-	   required ascii(80) id;
-	   required Unicode(512) value;    
+	   required ascii(80)       id;
+	   required Unicode(512)    value;    
 	}
 	
 	// holds all meta information for a class
 	class ClassDefinition {
-		boolean isAbstract;
-		boolean isFinal;
-		required identifier name;
-		Ascii(20) ^revision;
-		identifier parent;
-        identifier ^bundle;  // OSGi bundle / module
-        signed long serialUID;      // Java serializable serialVersionUID
-		int numberOfFields;
+		boolean                 isAbstract;
+		boolean                 isFinal;
+		required identifier     name;
+		Ascii(20)               ^revision;
+		identifier              parent;
+        identifier              ^bundle;            // OSGi bundle / module
+        signed long             serialUID;          // Java serializable serialVersionUID
+		int                     numberOfFields;
 		optional (FieldDefinition...)[] fields;
         optional (PropertyDefinition) [] ^properties;
-        boolean propertiesInherited;
-		optional Timestamp(3) whenLoaded;
+        boolean                 propertiesInherited;
+		optional Timestamp(3)   whenLoaded;
 	}
 	
 	class BundleInformation {
-	    required identifier name;
-        required identifier [] packages;
-	    unicode(255) classPath;
-        enum BundleStatus bundleStatus;
-	    optional Timestamp(3) whenStatusChanged; 
+	    required identifier     name;
+        required identifier []  packages;
+	    unicode(2048)           classPath;
+        enum BundleStatus       bundleStatus;
+	    optional Timestamp(3)   whenStatusChanged; 
 	}
 	
 	/** Hold a parsed structure of name[index].subcomponentName[index] */
 	class ParsedFoldingComponent {
 	    default public;
-	    required identifier                fieldname;      // name without any subcomponents
-	    // required int                       numDescends;    // >= 0 if known, -1 for unknown (allows fast-forward to superclasses)
-	    required int                       index;          // numeric index, -1 f all elements, 0..n-1 else
-	    optional Unicode(255)              alphaIndex;     // alphanumeric index, or null if none exists
+	    required identifier     fieldname;      // name without any subcomponents
+	    // required int           numDescends;    // >= 0 if known, -1 for unknown (allows fast-forward to superclasses)
+	    required int            index;          // numeric index, -1 f all elements, 0..n-1 else
+	    optional Unicode(255)   alphaIndex;     // alphanumeric index, or null if none exists
 	    optional (ParsedFoldingComponent)  component;      // optional specification of the substructure
 	}
 	

@@ -31,6 +31,12 @@ import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
+import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.util.ByteArray;
 /**
  * The CSVComposer class.
@@ -88,7 +94,7 @@ public class CSVComposer extends AppendableComposer {
     }
 
     @Override
-    public void writeNull() {
+    public void writeNull(FieldDefinition di) {
     }
 
     @Override
@@ -113,8 +119,16 @@ public class CSVComposer extends AppendableComposer {
     }
 
     // field type specific output functions
+
+    // character
     @Override
-    public void addUnicodeString(String s, int length, boolean allowCtrls) throws IOException {
+    public void addField(char c) throws IOException {
+        writeSeparator();
+        addCharSub(c);
+    }
+    // ascii only (unicode uses different method)
+    @Override
+    public void addField(AlphanumericElementaryDataItem di, String s) throws IOException {
         writeSeparator();
         if (s != null) {
             addRawData(stringQuote);
@@ -125,27 +139,14 @@ public class CSVComposer extends AppendableComposer {
         }
     }
 
-    // character
-    @Override
-    public void addField(char c) throws IOException {
-        writeSeparator();
-        addCharSub(c);
-    }
-    // ascii only (unicode uses different method)
-    @Override
-    public void addField(String s, int length) throws IOException {
-        addUnicodeString(s, length, true);
-    }
-
     // decimal
     @Override
-    public void addField(BigDecimal n, int length, int decimals,
-            boolean isSigned) throws IOException {
+    public void addField(NumericElementaryDataItem di, BigDecimal n) throws IOException {
         writeSeparator();
         if (n != null) {
             if (cfg.removePoint4BD) {
                 // use standard BigDecimal formatter, and remove the "." from the output
-                addRawData(n.setScale(decimals).toPlainString().replace(".", ""));
+                addRawData(n.setScale(di.getDecimalDigits()).toPlainString().replace(".", ""));
             } else {
                 // use standard locale formatter to get the localized . or ,
                 bigDecimalFormat.setMaximumFractionDigits(n.scale());
@@ -176,9 +177,9 @@ public class CSVComposer extends AppendableComposer {
 
     // int(n)
     @Override
-    public void addField(Integer n, int length, boolean isSigned) throws IOException {
+    public void addField(NumericElementaryDataItem di, Integer n) throws IOException {
         writeSeparator();
-        super.addField(n, length, isSigned);
+        super.addField(di, n);
     }
 
     // long
@@ -225,40 +226,40 @@ public class CSVComposer extends AppendableComposer {
 
     // UUID
     @Override
-    public void addField(UUID n) throws IOException {
+    public void addField(MiscElementaryDataItem di, UUID n) throws IOException {
         writeSeparator();
         if (n != null) {
             addRawData(stringQuote);
-            super.addField(n);
+            super.addField(di, n);
             addRawData(stringQuote);
         }
     }
 
     // ByteArray: initial quick & dirty implementation
     @Override
-    public void addField(ByteArray b, int length) throws IOException {
+    public void addField(BinaryElementaryDataItem di, ByteArray b) throws IOException {
         writeSeparator();
         if (b != null) {
             addRawData(stringQuote);
-            super.addField(b, length);
+            super.addField(di, b);
             addRawData(stringQuote);
         }
     }
 
     // raw
     @Override
-    public void addField(byte[] b, int length) throws IOException {
+    public void addField(BinaryElementaryDataItem di, byte[] b) throws IOException {
         writeSeparator();
         if (b != null) {
             addRawData(stringQuote);
-            super.addField(b, length);
+            super.addField(di, b);
             addRawData(stringQuote);
         }
     }
 
     // converters for DAY und TIMESTAMP
     @Override
-    public void addField(Calendar t, boolean hhmmss, int length) throws IOException {
+    public void addField(TemporalElementaryDataItem di, Calendar t) throws IOException {
         writeSeparator();
         if (t != null) {
             if (cfg.datesQuoted)
@@ -269,7 +270,7 @@ public class CSVComposer extends AppendableComposer {
         }
     }
     @Override
-    public void addField(LocalDate t) throws IOException {
+    public void addField(TemporalElementaryDataItem di, LocalDate t) throws IOException {
         writeSeparator();
         if (t != null) {
             if (cfg.datesQuoted)
@@ -281,12 +282,12 @@ public class CSVComposer extends AppendableComposer {
     }
 
     @Override
-    public void addField(LocalDateTime t, boolean hhmmss, int length) throws IOException {
+    public void addField(TemporalElementaryDataItem di, LocalDateTime t) throws IOException {
         writeSeparator();
         if (t != null) {
             if (cfg.datesQuoted)
                 addRawData(stringQuote);
-            if (length == 0)
+            if (di.getFractionalSeconds() <= 0)
                 addRawData(timestampFormat.print(t));   // second precision
             else
                 addRawData(timestamp3Format.print(t));  // millisecond precision

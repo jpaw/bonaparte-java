@@ -19,7 +19,6 @@ import java.io.Serializable;
 import java.util.concurrent.ConcurrentMap;
 
 import de.jpaw.bonaparte.pojos.meta.ParsedFoldingComponent;
-import de.jpaw.util.ApplicationException;
 
 /** 
  * Defines the methods any object which should be serialized into the bonaparte format must implement.

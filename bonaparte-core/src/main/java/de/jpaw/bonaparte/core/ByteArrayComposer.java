@@ -15,6 +15,7 @@
  */
 package de.jpaw.bonaparte.core;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -27,6 +28,12 @@ import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
+import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.util.Base64;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.ByteBuilder;
@@ -125,8 +132,11 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
     private void terminateField() {
         work.append(FIELD_TERMINATOR);
     }
+    protected void writeNull() {
+        work.append(NULL_FIELD);
+    }
     @Override
-    public void writeNull() {
+    public void writeNull(FieldDefinition di) {
         work.append(NULL_FIELD);
     }
 
@@ -179,19 +189,6 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
         }
     }
     // field type specific output functions
-    @Override
-    public void addUnicodeString(String s, int length, boolean allowCtrls) {
-        if (s != null) {
-            for (int i = 0; i < s.length();) {
-                int c = s.codePointAt(i);
-                addCharSub(c);
-                i += Character.charCount(c);
-            }
-            terminateField();
-        } else {
-            writeNull();
-        }
-    }
 
     // character
     @Override
@@ -202,10 +199,19 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
 
     // ascii only (unicode uses different method). This one does a validity check now.
     @Override
-    public void addField(String s, int length) {
+    public void addField(AlphanumericElementaryDataItem di, String s) {
         if (s != null) {
-            // don't trust them!
-            work.append(CharTestsASCII.checkAsciiAndFixIfRequired(s, length));
+            if (di.getRestrictToAscii()) {
+                // don't trust them!
+                work.append(CharTestsASCII.checkAsciiAndFixIfRequired(s, di.getLength()));
+            } else {
+                // tak care not to break multi-Sequences
+                for (int i = 0; i < s.length();) {
+                    int c = s.codePointAt(i);
+                    addCharSub(c);
+                    i += Character.charCount(c);
+                }
+            }
             terminateField();
         } else {
             writeNull();
@@ -214,8 +220,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
 
     // decimal
     @Override
-    public void addField(BigDecimal n, int length, int decimals,
-            boolean isSigned) {
+    public void addField(NumericElementaryDataItem di, BigDecimal n) {
         if (n != null) {
             work.appendAscii(n.toPlainString());
             terminateField();
@@ -245,7 +250,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
 
     // int(n)
     @Override
-    public void addField(Integer n, int length, boolean isSigned) {
+    public void addField(NumericElementaryDataItem di, Integer n) {
         if (n != null) {
             work.appendAscii(n.toString());
             terminateField();
@@ -275,7 +280,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
 
     // UUID
     @Override
-    public void addField(UUID n) {
+    public void addField(MiscElementaryDataItem di, UUID n) {
         if (n != null) {
             work.appendAscii(n.toString());
             terminateField();
@@ -300,7 +305,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
 
     // ByteArray: initial quick & dirty implementation
     @Override
-    public void addField(ByteArray b, int length) {
+    public void addField(BinaryElementaryDataItem di, ByteArray b) {
         if (b != null) {
             b.appendBase64(work);
             terminateField();
@@ -311,7 +316,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
 
     // raw
     @Override
-    public void addField(byte[] b, int length) {
+    public void addField(BinaryElementaryDataItem di, byte[] b) {
         if (b != null) {
             Base64.encodeToByte(work, b, 0, b.length);
             terminateField();
@@ -331,14 +336,15 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
 
     // converters for DAY und TIMESTAMP
     @Override
-    public void addField(Calendar t, boolean hhmmss, int length) {  // TODO: length is not needed for this one
+    public void addField(TemporalElementaryDataItem di, Calendar t) {  // TODO: length is not needed for this one
         if (t != null) {
             int tmpValue = (10000 * t.get(Calendar.YEAR)) + (100
                     * (t.get(Calendar.MONTH) + 1)) + t.get(Calendar.DAY_OF_MONTH);
             work.appendAscii(Integer.toString(tmpValue));
+            int length = di.getFractionalSeconds();
             if (length >= 0) {
                 // not only day, but also time
-                if (hhmmss) {
+                if (di.getHhmmss()) {
                     tmpValue = (10000 * t.get(Calendar.HOUR_OF_DAY)) + (100
                             * t.get(Calendar.MINUTE)) + t.get(Calendar.SECOND);
                 } else {
@@ -364,7 +370,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
     }
 
     @Override
-    public void addField(LocalDate t) {
+    public void addField(TemporalElementaryDataItem di, LocalDate t) {
         if (t != null) {
             int [] values = t.getValues();   // 3 values: year, month, day
             int tmpValue = (10000 * values[0]) + (100 * values[1]) + values[2];
@@ -377,17 +383,18 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
     }
 
     @Override
-    public void addField(LocalDateTime t, boolean hhmmss, int length) {
+    public void addField(TemporalElementaryDataItem di, LocalDateTime t) {
         if (t != null) {
             int [] values = t.getValues(); // 4 values: year, month, day, millis of day
             //int tmpValue = 10000 * t.getYear() + 100 * t.getMonthOfYear() + t.getDayOfMonth();
             work.appendAscii(Integer.toString((10000 * values[0]) + (100 * values[1]) + values[2]));
+            int length = di.getFractionalSeconds();
             if (length >= 0) {
                 // not only day, but also time
                 //tmpValue = 10000 * t.getHourOfDay() + 100 * t.getMinuteOfHour() + t.getSecondOfMinute();
                 if (length > 0 ? (values[3] != 0) : ((values[3] / 1000) != 0)) {
                     work.append((byte) '.');
-                    if (hhmmss) {
+                    if (di.getHhmmss()) {
                         int tmpValue = values[3] / 60000; // minutes and hours
                         tmpValue = (100 * (tmpValue / 60)) + (tmpValue % 60);
                         lpad(Integer.toString((tmpValue * 100) + ((values[3] % 60000) / 1000)), 6, (byte) '0');
@@ -435,9 +442,8 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
     @Override
     public void startObject(BonaPortable obj) {
         work.append(OBJECT_BEGIN);
-        work.appendAscii(obj.get$PQON());
-        terminateField();
-        addField(obj.get$Revision(), 0);
+        addField(OBJECT_CLASS, obj.get$PQON());
+        addField(REVISION_META, obj.get$Revision());
     }
     
 

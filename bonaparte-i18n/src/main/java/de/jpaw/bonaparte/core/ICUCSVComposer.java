@@ -21,6 +21,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.ibm.icu.text.NumberFormat;
+
+import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 /**
  * The CSVComposer class.
  *
@@ -48,14 +50,13 @@ public class ICUCSVComposer extends CSVComposer2 {
 
     // decimal
     @Override
-    public void addField(BigDecimal n, int length, int decimals,
-            boolean isSigned) throws IOException {
+    public void addField(NumericElementaryDataItem di, BigDecimal n) throws IOException {
         writeSeparator();
         if (n != null) {
-                // use standard locale formatter
-                bigDecimalFormat2.setMaximumFractionDigits(n.scale());
-                bigDecimalFormat2.setMinimumFractionDigits(n.scale());
-                addRawData(bigDecimalFormat2.format(n));
+            // use standard locale formatter
+            bigDecimalFormat2.setMaximumFractionDigits(n.scale());
+            bigDecimalFormat2.setMinimumFractionDigits(n.scale());
+            addRawData(bigDecimalFormat2.format(n));
         }
     }
 

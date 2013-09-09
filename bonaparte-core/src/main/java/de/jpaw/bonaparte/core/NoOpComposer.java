@@ -7,6 +7,12 @@ import java.util.UUID;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
+import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
+import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.util.ByteArray;
 
 /** Represents some stub methods. */
@@ -16,7 +22,7 @@ public class NoOpComposer implements MessageComposer<RuntimeException> {
     }
     
     @Override
-    public void writeNull() {
+    public void writeNull(FieldDefinition di) {
     }
 
     @Override
@@ -58,13 +64,9 @@ public class NoOpComposer implements MessageComposer<RuntimeException> {
     @Override
     public void writeRecord(BonaPortable o) {
     }
-
+    
     @Override
-    public void addUnicodeString(String s, int length, boolean allowCtrls) {
-    }
-
-    @Override
-    public void addField(String s, int length) {
+    public void addField(AlphanumericElementaryDataItem di, String s) {
     }
 
     @Override
@@ -100,35 +102,35 @@ public class NoOpComposer implements MessageComposer<RuntimeException> {
     }
 
     @Override
-    public void addField(Integer n, int length, boolean isSigned) {
+    public void addField(NumericElementaryDataItem di, Integer n) {
     }
 
     @Override
-    public void addField(BigDecimal n, int length, int decimals, boolean isSigned) {
+    public void addField(NumericElementaryDataItem di, BigDecimal n) {
     }
 
     @Override
-    public void addField(UUID n) {
+    public void addField(MiscElementaryDataItem di, UUID n) {
     }
 
     @Override
-    public void addField(ByteArray b, int length) {
+    public void addField(BinaryElementaryDataItem di, ByteArray b) {
     }
 
     @Override
-    public void addField(byte[] b, int length) {
+    public void addField(BinaryElementaryDataItem di, byte[] b) {
     }
 
     @Override
-    public void addField(Calendar t, boolean hhmmss, int length) {
+    public void addField(TemporalElementaryDataItem di, Calendar t) {
     }
 
     @Override
-    public void addField(LocalDate t) {
+    public void addField(TemporalElementaryDataItem di, LocalDate t) {
     }
 
     @Override
-    public void addField(LocalDateTime t, boolean hhmmss, int length) {
+    public void addField(TemporalElementaryDataItem di, LocalDateTime t) {
     }
 
     @Override

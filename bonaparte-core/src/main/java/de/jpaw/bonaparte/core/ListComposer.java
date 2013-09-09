@@ -9,6 +9,12 @@ import java.util.UUID;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
+import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
+import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.util.ByteArray;
 
 /** Represents composer which does not serialize, but instead appends all objects into a list.
@@ -36,7 +42,7 @@ public class ListComposer extends NoOpComposer implements MessageComposer<Runtim
     }
 
     @Override
-    public void writeNull() {
+    public void writeNull(FieldDefinition di) {
         storage.add(null);
     }
 
@@ -48,12 +54,7 @@ public class ListComposer extends NoOpComposer implements MessageComposer<Runtim
     }
 
     @Override
-    public void addUnicodeString(String s, int length, boolean allowCtrls) {
-        storage.add(s);
-    }
-
-    @Override
-    public void addField(String s, int length) {
+    public void addField(AlphanumericElementaryDataItem di, String s) {
         storage.add(s);
     }
 
@@ -98,53 +99,53 @@ public class ListComposer extends NoOpComposer implements MessageComposer<Runtim
     }
 
     @Override
-    public void addField(Integer n, int length, boolean isSigned) {
+    public void addField(NumericElementaryDataItem di, Integer n) {
         storage.add(Long.valueOf(n));
     }
 
     @Override
-    public void addField(BigDecimal n, int length, int decimals, boolean isSigned) {
+    public void addField(NumericElementaryDataItem di, BigDecimal n) {
         storage.add(n);
     }
 
     @Override
-    public void addField(UUID n) {
+    public void addField(MiscElementaryDataItem di, UUID n) {
         storage.add(n);
     }
 
     @Override
-    public void addField(ByteArray b, int length) {
+    public void addField(BinaryElementaryDataItem di, ByteArray b) {
         storage.add(b);
     }
 
     @Override
-    public void addField(byte[] b, int length) {
+    public void addField(BinaryElementaryDataItem di, byte[] b) {
         if (b == null)
-            writeNull();
+            writeNull(di);
         storage.add(doDeepCopies ? Arrays.copyOf(b, b.length) : b);
     }
 
     @Override
-    public void addField(Calendar t, boolean hhmmss, int length) {
+    public void addField(TemporalElementaryDataItem di, Calendar t) {
         if (t == null)
-            writeNull();
+            writeNull(di);
         storage.add(doDeepCopies ? (Calendar)t.clone() : t);
     }
 
     @Override
-    public void addField(LocalDate t) {
+    public void addField(TemporalElementaryDataItem di, LocalDate t) {
         storage.add(t);
     }
 
     @Override
-    public void addField(LocalDateTime t, boolean hhmmss, int length) {
+    public void addField(TemporalElementaryDataItem di, LocalDateTime t) {
         storage.add(t);
     }
 
     @Override
     public void addField(BonaPortable obj) {
         if (obj == null) {
-            writeNull();
+            writeNull(null);
         } else {
             startObject(obj);
             obj.serializeSub(this);

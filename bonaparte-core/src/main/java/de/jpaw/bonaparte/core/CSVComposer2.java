@@ -16,6 +16,8 @@
 package de.jpaw.bonaparte.core;
 
 import java.io.IOException;
+
+import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 /**
  * The CSVComposer class.
  *
@@ -55,7 +57,7 @@ public class CSVComposer2 extends CSVComposer {
 
     // int(n)
     @Override
-    public void addField(Integer n, int length, boolean isSigned) throws IOException {
+    public void addField(NumericElementaryDataItem di, Integer n) throws IOException {
         writeSeparator();
         addRawData(numberFormat.format(n));
     }

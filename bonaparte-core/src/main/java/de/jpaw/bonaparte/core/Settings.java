@@ -23,7 +23,7 @@ import java.nio.charset.Charset;
  * @author Michael Bischoff
  *
  */
-public abstract class Settings {
+public abstract class Settings implements RevisionMeta {
     // Java 7 required:
     // static private boolean defaultCRs = System.lineSeparator().length() == 2; // on Unix: false, on Windows: true
     static private boolean defaultCRs = System.getProperty("line.separator").length() == 2; // on Unix: false, on Windows: true

@@ -26,6 +26,12 @@ import java.util.UUID;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
+import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
+import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.util.ByteArray;
 
 /**
@@ -48,7 +54,7 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
     }
 
     @Override
-    public void writeNull() throws IOException {
+    public void writeNull(FieldDefinition di) throws IOException {
         out.writeByte(NULL_FIELD);
     }
 
@@ -69,7 +75,7 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
     }
 
     @Override
-    public void addField(UUID n) throws IOException {
+    public void addField(MiscElementaryDataItem di, UUID n) throws IOException {
         if (n == null) {
             out.writeByte(NULL_FIELD);
         } else {
@@ -79,8 +85,7 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
     }
 
     @Override
-    public void addUnicodeString(String s, int length, boolean allowCtrls)
-            throws IOException {
+    public void addField(AlphanumericElementaryDataItem di, String s) throws IOException {
         if (s == null) {
             out.writeByte(NULL_FIELD);
         } else {
@@ -90,17 +95,7 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
     }
 
     @Override
-    public void addField(String s, int length) throws IOException {
-        if (s == null) {
-            out.writeByte(NULL_FIELD);
-        } else {
-            out.writeByte(TEXT);
-            out.writeUTF(s);
-        }
-    }
-
-    @Override
-    public void addField(ByteArray b, int length) throws IOException {
+    public void addField(BinaryElementaryDataItem di, ByteArray b) throws IOException {
         if (b == null) {
             out.writeByte(NULL_FIELD);
         } else {
@@ -110,7 +105,7 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
     }
 
     @Override
-    public void addField(byte[] b, int length) throws IOException {
+    public void addField(BinaryElementaryDataItem di, byte[] b) throws IOException {
         if (b == null) {
             out.writeByte(NULL_FIELD);
         } else {
@@ -133,8 +128,7 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
     }
 
     @Override
-    public void addField(BigDecimal n, int length, int decimals,
-            boolean isSigned) throws IOException {
+    public void addField(NumericElementaryDataItem di, BigDecimal n) throws IOException {
         if (n == null) {
             out.writeByte(NULL_FIELD);
         } else {
@@ -178,7 +172,7 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
 
 
     @Override
-    public void addField(LocalDate t) throws IOException {
+    public void addField(TemporalElementaryDataItem di, LocalDate t) throws IOException {
         if (t == null) {
             out.writeByte(NULL_FIELD);
         } else {
@@ -187,8 +181,7 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
         }
     }
     @Override
-    public void addField(LocalDateTime t, boolean hhmmss, int length)
-            throws IOException {
+    public void addField(TemporalElementaryDataItem di, LocalDateTime t) throws IOException {
         if (t == null) {
             out.writeByte(NULL_FIELD);
         } else {
@@ -196,7 +189,7 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
             if (values[3] != 0) {
                 // fractional part first...
                 out.writeByte(FRAC_SCALE_0 + 9);
-                if (hhmmss) {
+                if (di.getHhmmss()) {
                     // convert milliseconds to hhmmssfff format
                     int tmp = values[3] / 60000; // number of minutes
                     tmp = ((tmp / 60) * 100) + (tmp % 60);
@@ -210,13 +203,12 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
         }
     }
     @Override
-    public void addField(Calendar t, boolean hhmmss, int length)
-            throws IOException {
+    public void addField(TemporalElementaryDataItem di, Calendar t) throws IOException {
         if (t == null) {
             out.writeByte(NULL_FIELD);
         } else {
             int tmpValue;
-            if (hhmmss) {
+            if (di.getHhmmss()) {
                 tmpValue = (((10000 * t.get(Calendar.HOUR_OF_DAY)) + (100
                     * t.get(Calendar.MINUTE)) + t.get(Calendar.SECOND)) * 1000) + t.get(Calendar.MILLISECOND);
             } else {
@@ -274,7 +266,7 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
     @Override
     public void startTransmission() throws IOException {
         out.write(TRANSMISSION_BEGIN);
-        writeNull();    // blank version number
+        writeNull(null);    // blank version number
     }
 
     public void startObject(String name, String version) throws IOException {
@@ -313,7 +305,7 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
     @Override
     public void startRecord() throws IOException {
         out.write(RECORD_BEGIN);
-        writeNull();  // blank version number
+        writeNull(null);  // blank version number
     }
 
     @Override
@@ -348,8 +340,7 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
     }
 
     @Override
-    public void addField(Integer n, int length, boolean isSigned)
-            throws IOException {
+    public void addField(NumericElementaryDataItem di, Integer n) throws IOException {
         if (n == null) {
             out.writeByte(NULL_FIELD);
         } else {
@@ -372,7 +363,7 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
             out.writeByte(OBJECT_BEGIN);  // this logically belongs to the lines below, do not split here!
             if (nestedObjectsInternally) {
                 out.writeUTF(obj.get$PQON());
-                addField(obj.get$Revision(), 0);
+                addField(REVISION_META, obj.get$Revision());
                 obj.serializeSub(this);
             } else {
                 out.writeObject(obj);   // so fall back to normal behaviour!

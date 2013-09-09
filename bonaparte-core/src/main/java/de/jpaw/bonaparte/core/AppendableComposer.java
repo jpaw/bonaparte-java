@@ -28,6 +28,12 @@ import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
+import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.util.Base64;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.ByteBuilder;
@@ -104,8 +110,12 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
     protected void terminateField() throws IOException {
         work.append(FIELD_TERMINATOR);
     }
+    protected void writeNull() throws IOException {
+        work.append(NULL_FIELD);
+    }
+    
     @Override
-    public void writeNull() throws IOException {
+    public void writeNull(FieldDefinition di) throws IOException {
         work.append(NULL_FIELD);
     }
 
@@ -156,17 +166,6 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
     }
 
     // field type specific output functions
-    @Override
-    public void addUnicodeString(String s, int length, boolean allowCtrls) throws IOException {
-        if (s != null) {
-            for (int i = 0; i < s.length(); ++i) {
-                addCharSub(s.charAt(i));
-            }
-            terminateField();
-        } else {
-            writeNull();
-        }
-    }
 
     // character
     @Override
@@ -176,9 +175,15 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
     }
     // ascii only (unicode uses different method)
     @Override
-    public void addField(String s, int length) throws IOException {
+    public void addField(AlphanumericElementaryDataItem di, String s) throws IOException {
         if (s != null) {
-            work.append(CharTestsASCII.checkAsciiAndFixIfRequired(s, length));
+            if (di.getRestrictToAscii()) {
+                work.append(CharTestsASCII.checkAsciiAndFixIfRequired(s, di.getLength()));
+            } else {
+                for (int i = 0; i < s.length(); ++i) {
+                    addCharSub(s.charAt(i));
+                }
+            }
             terminateField();
         } else {
             writeNull();
@@ -187,8 +192,7 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
 
     // decimal
     @Override
-    public void addField(BigDecimal n, int length, int decimals,
-            boolean isSigned) throws IOException {
+    public void addField(NumericElementaryDataItem di, BigDecimal n) throws IOException {
         if (n != null) {
             work.append(n.toPlainString());
             terminateField();
@@ -218,7 +222,7 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
 
     // int(n)
     @Override
-    public void addField(Integer n, int length, boolean isSigned) throws IOException {
+    public void addField(NumericElementaryDataItem di, Integer n) throws IOException {
         if (n != null) {
             work.append(n.toString());
             terminateField();
@@ -261,7 +265,7 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
 
     // UUID
     @Override
-    public void addField(UUID n) throws IOException {
+    public void addField(MiscElementaryDataItem di, UUID n) throws IOException {
         if (n != null) {
             work.append(n.toString());
             terminateField();
@@ -272,7 +276,7 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
 
     // ByteArray: initial quick & dirty implementation
     @Override
-    public void addField(ByteArray b, int length) throws IOException {
+    public void addField(BinaryElementaryDataItem di, ByteArray b) throws IOException {
         if (b != null) {
             ByteBuilder tmp = new ByteBuilder((b.length() * 2) + 4, null);
             Base64.encodeToByte(tmp, b.getBytes(), 0, b.length());
@@ -287,7 +291,7 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
 
     // raw
     @Override
-    public void addField(byte[] b, int length) throws IOException {
+    public void addField(BinaryElementaryDataItem di, byte[] b) throws IOException {
         if (b != null) {
             ByteBuilder tmp = new ByteBuilder((b.length * 2) + 4, null);
             Base64.encodeToByte(tmp, b, 0, b.length);
@@ -310,14 +314,15 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
 
     // converters for DAY und TIMESTAMP
     @Override
-    public void addField(Calendar t, boolean hhmmss, int length) throws IOException {  // TODO: length is not needed for this one
+    public void addField(TemporalElementaryDataItem di, Calendar t) throws IOException {  // TODO: length is not needed for this one
         if (t != null) {
             int tmpValue = (10000 * t.get(Calendar.YEAR)) + (100
                     * (t.get(Calendar.MONTH) + 1)) + t.get(Calendar.DAY_OF_MONTH);
             work.append(Integer.toString(tmpValue));
+            int length = di.getFractionalSeconds();
             if (length >= 0) {
                 // not only day, but also time
-                if (hhmmss) {
+                if (di.getHhmmss()) {
                     tmpValue = (10000 * t.get(Calendar.HOUR_OF_DAY)) + (100
                             * t.get(Calendar.MINUTE)) + t.get(Calendar.SECOND);
                 } else {
@@ -342,7 +347,7 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
         }
     }
     @Override
-    public void addField(LocalDate t) throws IOException {
+    public void addField(TemporalElementaryDataItem di, LocalDate t) throws IOException {
         if (t != null) {
             int [] values = t.getValues();   // 3 values: year, month, day
             int tmpValue = (10000 * values[0]) + (100 * values[1]) + values[2];
@@ -355,17 +360,18 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
     }
 
     @Override
-    public void addField(LocalDateTime t, boolean hhmmss, int length) throws IOException {
+    public void addField(TemporalElementaryDataItem di, LocalDateTime t) throws IOException {
         if (t != null) {
             int [] values = t.getValues(); // 4 values: year, month, day, millis of day
             //int tmpValue = 10000 * t.getYear() + 100 * t.getMonthOfYear() + t.getDayOfMonth();
             work.append(Integer.toString((10000 * values[0]) + (100 * values[1]) + values[2]));
+            int length = di.getFractionalSeconds();
             if (length >= 0) {
                 // not only day, but also time
                 //tmpValue = 10000 * t.getHourOfDay() + 100 * t.getMinuteOfHour() + t.getSecondOfMinute();
                 if (length > 0 ? (values[3] != 0) : ((values[3] / 1000) != 0)) {
                     work.append('.');
-                    if (hhmmss) {
+                    if (di.getHhmmss()) {
                         int tmpValue = values[3] / 60000; // minutes and hours
                         tmpValue = (100 * (tmpValue / 60)) + (tmpValue % 60);
                         lpad(Integer.toString((tmpValue * 100) + ((values[3] % 60000) / 1000)), 6, '0');
@@ -414,9 +420,8 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
     @Override
     public void startObject(BonaPortable obj) throws IOException {
         work.append(OBJECT_BEGIN);
-        work.append(obj.get$PQON());
-        terminateField();
-        addField(obj.get$Revision(), 0);
+        addField(OBJECT_CLASS, obj.get$PQON());
+        addField(REVISION_META, obj.get$Revision());
     }
     
     @Override

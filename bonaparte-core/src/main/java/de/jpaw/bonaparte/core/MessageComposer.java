@@ -21,6 +21,12 @@ import java.util.Calendar;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
+import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
+import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.util.ByteArray;
 
 /**
@@ -35,7 +41,7 @@ import de.jpaw.util.ByteArray;
 public interface MessageComposer<E extends Exception> {
 
     // serialization methods: structure
-    public void writeNull() throws E;
+    public void writeNull(FieldDefinition di) throws E;
     public void startTransmission() throws E;
     public void startRecord() throws E;
     public void startObject(BonaPortable o) throws E;  // write the name and the revision
@@ -49,8 +55,6 @@ public interface MessageComposer<E extends Exception> {
     public void writeRecord(BonaPortable o) throws E;
 
     // serialization methods: field type specific
-    void addUnicodeString(String s,  int length, boolean allowCtrls) throws E; // length is max length as specified in DSL
-    void addField(String s,  int length) throws E;              // length is max length as specified in DSL
 
     // primitives
     void addField(boolean b) throws E;
@@ -62,13 +66,14 @@ public interface MessageComposer<E extends Exception> {
     void addField(int n) throws E;
     void addField(long n) throws E;
 
-    void addField(Integer n, int length, boolean isSigned) throws E; // length is max length as specified in DSL
-    void addField(BigDecimal n, int length, int decimals, boolean isSigned) throws E;
-    void addField(UUID n) throws E;
-    void addField(ByteArray b, int length) throws E;
-    void addField(byte [] b, int length) throws E;
-    void addField(Calendar t, boolean hhmmss, int length) throws E;
-    void addField(LocalDate t) throws E;
-    void addField(LocalDateTime t, boolean hhmmss, int length) throws E;
+    void addField(AlphanumericElementaryDataItem di, String s) throws E;    // Ascii, Upper, Lower, Unicode
     void addField(BonaPortable obj) throws E;
+    void addField(MiscElementaryDataItem di, UUID n) throws E;
+    void addField(BinaryElementaryDataItem di, ByteArray b) throws E;
+    void addField(BinaryElementaryDataItem di, byte [] b) throws E;
+    void addField(NumericElementaryDataItem di, Integer n) throws E;
+    void addField(NumericElementaryDataItem di, BigDecimal n) throws E;
+    void addField(TemporalElementaryDataItem di, Calendar t) throws E;
+    void addField(TemporalElementaryDataItem di, LocalDate t) throws E;
+    void addField(TemporalElementaryDataItem di, LocalDateTime t) throws E;
 }

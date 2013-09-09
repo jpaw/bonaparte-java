@@ -25,6 +25,12 @@ import org.joda.time.LocalDateTime;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.MessageComposer;
+import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
+import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.util.Base64;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.ByteBuilder;
@@ -121,8 +127,12 @@ public class BaseExcelComposer implements MessageComposer<RuntimeException> {
      * Serialization goes here
      **************************************************************************************************/
 
+    protected void writeNull() {
+        ++column;   // no output for empty cells, but ensure that everything goes nicely into the correct column
+    }
+    
     @Override
-    public void writeNull() {
+    public void writeNull(FieldDefinition di) {
         ++column;   // no output for empty cells, but ensure that everything goes nicely into the correct column
     }
 
@@ -177,10 +187,6 @@ public class BaseExcelComposer implements MessageComposer<RuntimeException> {
     }
 
     // field type specific output functions
-    @Override
-    public void addUnicodeString(String s, int length, boolean allowCtrls) {
-        newStringCell(s);
-    }
 
     // character
     @Override
@@ -189,14 +195,13 @@ public class BaseExcelComposer implements MessageComposer<RuntimeException> {
     }
     // ascii only (unicode uses different method)
     @Override
-    public void addField(String s, int length) {
+    public void addField(AlphanumericElementaryDataItem di, String s) {
         newStringCell(s);
     }
 
     // decimal
     @Override
-    public void addField(BigDecimal n, int length, int decimals,
-            boolean isSigned) {
+    public void addField(NumericElementaryDataItem di, BigDecimal n) {
         if (n != null) {
             newCell(getCachedCellStyle(n.scale())).setCellValue(n.doubleValue());
         } else {
@@ -222,7 +227,7 @@ public class BaseExcelComposer implements MessageComposer<RuntimeException> {
 
     // int(n)
     @Override
-    public void addField(Integer n, int length, boolean isSigned) {
+    public void addField(NumericElementaryDataItem di, Integer n) {
         if (n != null) {
             newCell().setCellValue(n.doubleValue());
         } else {
@@ -256,7 +261,7 @@ public class BaseExcelComposer implements MessageComposer<RuntimeException> {
 
     // UUID
     @Override
-    public void addField(UUID n) {
+    public void addField(MiscElementaryDataItem di, UUID n) {
         if (n != null) {
             newCell().setCellValue(n.toString());
         } else {
@@ -266,7 +271,7 @@ public class BaseExcelComposer implements MessageComposer<RuntimeException> {
 
     // ByteArray: initial quick & dirty implementation
     @Override
-    public void addField(ByteArray b, int length) {
+    public void addField(BinaryElementaryDataItem di, ByteArray b) {
         if (b != null) {
             ByteBuilder tmp = new ByteBuilder((b.length() * 2) + 4, null);
             Base64.encodeToByte(tmp, b.getBytes(), 0, b.length());
@@ -278,7 +283,7 @@ public class BaseExcelComposer implements MessageComposer<RuntimeException> {
 
     // raw
     @Override
-    public void addField(byte[] b, int length) {
+    public void addField(BinaryElementaryDataItem di, byte[] b) {
         if (b != null) {
             ByteBuilder tmp = new ByteBuilder((b.length * 2) + 4, null);
             Base64.encodeToByte(tmp, b, 0, b.length);
@@ -290,7 +295,7 @@ public class BaseExcelComposer implements MessageComposer<RuntimeException> {
 
     // converters for DAY und TIMESTAMP
     @Override
-    public void addField(Calendar t, boolean hhmmss, int length) {  // TODO: length is not needed for this one
+    public void addField(TemporalElementaryDataItem di, Calendar t) {
         if (t != null) {
             newCell(csTimestamp).setCellValue(t);
         } else {
@@ -298,7 +303,7 @@ public class BaseExcelComposer implements MessageComposer<RuntimeException> {
         }
     }
     @Override
-    public void addField(LocalDate t) {
+    public void addField(TemporalElementaryDataItem di, LocalDate t) {
         if (t != null) {
             newCell(csDay).setCellValue(t.toDate());
         } else {
@@ -307,7 +312,7 @@ public class BaseExcelComposer implements MessageComposer<RuntimeException> {
     }
 
     @Override
-    public void addField(LocalDateTime t, boolean hhmmss, int length) {
+    public void addField(TemporalElementaryDataItem di, LocalDateTime t) {
         if (t != null) {
             newCell(csTimestamp).setCellValue(t.toDate());
         } else {

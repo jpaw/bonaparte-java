@@ -17,6 +17,9 @@ package de.jpaw.bonaparte.core;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+
+import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 /**
  * The CSVComposer class.
  *
@@ -82,22 +85,22 @@ public class FixedWidthComposer extends CSVComposer {
     
 
     @Override
-    public void addUnicodeString(String s, int length, boolean allowCtrls) throws IOException {
+    public void addField(AlphanumericElementaryDataItem di, String s) throws IOException {
         writeSeparator();
         if (s != null) {
             addRawData(s);
-            if (s.length() < length)
-                addRawData(getPadding(length - s.length()));
+            if (s.length() < di.getLength())
+                addRawData(getPadding(di.getLength() - s.length()));
         } else {
-            addRawData(getPadding(length));
+            addRawData(getPadding(di.getLength()));
         }
     }
 
     // decimal using TRAILING SIGN
     @Override
-    public void addField(BigDecimal n, int length, int decimals,
-            boolean isSigned) throws IOException {
+    public void addField(NumericElementaryDataItem di, BigDecimal n) throws IOException {
         writeSeparator();
+        int decimals = di.getDecimalDigits();
         if (n != null) {
             // space for the field is length + (1 if decimals > 0 && removePoint4BD == false) + (1 if isSigned)
             boolean isNegative = n.signum() == -1;
@@ -105,22 +108,22 @@ public class FixedWidthComposer extends CSVComposer {
             if (cfg.removePoint4BD) {
                 // use standard BigDecimal formatter, and remove the "." from the output
                 String pattern = absVal.setScale(decimals).toPlainString().replace(".", "");
-                numericPad(length - pattern.length());
+                numericPad(di.getTotalDigits() - pattern.length());
                 addRawData(pattern);
             } else {
                 // use standard locale formatter to get the localized . or ,
                 bigDecimalFormat.setMaximumFractionDigits(decimals);
                 bigDecimalFormat.setMinimumFractionDigits(decimals);
                 String pattern = bigDecimalFormat.format(absVal);
-                numericPad(length + (decimals > 0 ? 1 : 0) - pattern.length());
+                numericPad(di.getTotalDigits() + (decimals > 0 ? 1 : 0) - pattern.length());
                 addRawData(pattern);
             }
-            if (isSigned) {
+            if (di.getIsSigned()) {
                 addRawData(isNegative ? "-" : " ");
             }
         } else {
             // write an appropriate number of spaces
-            addRawData(getPadding(length) + (decimals > 0 && !cfg.removePoint4BD ? 1 : 0) + (isSigned ? 1 : 0));
+            addRawData(getPadding(di.getTotalDigits()) + (decimals > 0 && !cfg.removePoint4BD ? 1 : 0) + (di.getIsSigned() ? 1 : 0));
         }
     }
     
@@ -145,15 +148,15 @@ public class FixedWidthComposer extends CSVComposer {
     
     // int(n) (SIGNED AND UNSIGNED; specific length, LEADING SIGN), null possible
     @Override
-    public void addField(Integer n, int length, boolean isSigned) throws IOException {
+    public void addField(NumericElementaryDataItem di, Integer n) throws IOException {
         writeSeparator();
         if (n == null) {
-            addRawData(SPACE_PADDINGS[length + (isSigned ? 1 : 0)]);
+            addRawData(SPACE_PADDINGS[di.getTotalDigits() + (di.getIsSigned() ? 1 : 0)]);
         } else {
-            if (isSigned)
+            if (di.getIsSigned())
                 addRawData(n < 0 ? "-" : " ");
             String val = Integer.toString(n < 0 ? -n : n);
-            numericPad(length - val.length());
+            numericPad(di.getTotalDigits() - val.length());
             addRawData(val);
         }
     }

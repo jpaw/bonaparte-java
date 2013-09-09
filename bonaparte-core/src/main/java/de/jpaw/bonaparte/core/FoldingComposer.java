@@ -13,8 +13,14 @@ import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.FoldingStrategy;
+import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.ParsedFoldingComponent;
+import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.util.ByteArray;
 
 /** Delegates most output to the delegateComposer, but uses a permutation/selection of fields for the object output. */ 
@@ -33,8 +39,8 @@ public class FoldingComposer<E extends Exception> implements MessageComposer<E> 
     }
 
     @Override
-    public void writeNull() throws E {
-        delegateComposer.writeNull();
+    public void writeNull(FieldDefinition di) throws E {
+        delegateComposer.writeNull(di);
     }
 
     @Override
@@ -90,13 +96,8 @@ public class FoldingComposer<E extends Exception> implements MessageComposer<E> 
     }
 
     @Override
-    public void addUnicodeString(String s, int length, boolean allowCtrls) throws E {
-        delegateComposer.addUnicodeString(s, length, allowCtrls);
-    }
-
-    @Override
-    public void addField(String s, int length) throws E {
-        delegateComposer.addField(s, length);
+    public void addField(AlphanumericElementaryDataItem di, String s) throws E {
+        delegateComposer.addField(di, s);
     }
 
     @Override
@@ -140,43 +141,43 @@ public class FoldingComposer<E extends Exception> implements MessageComposer<E> 
     }
 
     @Override
-    public void addField(Integer n, int length, boolean isSigned) throws E {
-        delegateComposer.addField(n, length, isSigned);
+    public void addField(NumericElementaryDataItem di, Integer n) throws E {
+        delegateComposer.addField(di, n);
     }
 
     @Override
-    public void addField(BigDecimal n, int length, int decimals, boolean isSigned) throws E {
-        delegateComposer.addField(n, length, decimals, isSigned);
+    public void addField(NumericElementaryDataItem di, BigDecimal n) throws E {
+        delegateComposer.addField(di, n);
     }
 
     @Override
-    public void addField(UUID n) throws E {
-        delegateComposer.addField(n);
+    public void addField(MiscElementaryDataItem di, UUID n) throws E {
+        delegateComposer.addField(di, n);
     }
 
     @Override
-    public void addField(ByteArray b, int length) throws E {
-        delegateComposer.addField(b, length);
+    public void addField(BinaryElementaryDataItem di, ByteArray b) throws E {
+        delegateComposer.addField(di, b);
     }
 
     @Override
-    public void addField(byte[] b, int length) throws E {
-        delegateComposer.addField(b, length);
+    public void addField(BinaryElementaryDataItem di, byte[] b) throws E {
+        delegateComposer.addField(di, b);
     }
 
     @Override
-    public void addField(Calendar t, boolean hhmmss, int length) throws E {
-        delegateComposer.addField(t, hhmmss, length);
+    public void addField(TemporalElementaryDataItem di, Calendar t) throws E {
+        delegateComposer.addField(di, t);
     }
 
     @Override
-    public void addField(LocalDate t) throws E {
-        delegateComposer.addField(t);
+    public void addField(TemporalElementaryDataItem di, LocalDate t) throws E {
+        delegateComposer.addField(di, t);
     }
 
     @Override
-    public void addField(LocalDateTime t, boolean hhmmss, int length) throws E {
-        delegateComposer.addField(t, hhmmss, length);
+    public void addField(TemporalElementaryDataItem di, LocalDateTime t) throws E {
+        delegateComposer.addField(di, t);
     }
     
     @Override
@@ -266,7 +267,7 @@ public class FoldingComposer<E extends Exception> implements MessageComposer<E> 
     @Override
     public void addField(BonaPortable obj) throws E {
         if (obj == null) {
-            writeNull();
+            writeNull(null);
         } else {
             // only write the fields selectively
             // first, optionally create a cached mapping
