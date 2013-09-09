@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 /**
  * The CSVComposer class.
@@ -85,6 +86,34 @@ public class FixedWidthComposer extends CSVComposer {
     
 
     @Override
+    public void writeNull(FieldDefinition di) throws IOException {
+        // examine the type of field in order to write the correct number of spaces
+        // we have to cover at least all Wrapper types
+        switch (di.getDataCategory()) {
+        case BINARY:
+            break;
+        case TEMPORAL:
+            if (di.getDataType().equals("Day")) {
+                addRawData(SPACE_PADDINGS[10]); // FIXME
+                return;
+            }
+            if (di.getDataType().equals("Timestamp")) {
+                addRawData(SPACE_PADDINGS[19]);  // FIXME
+                return;
+            }
+            break;
+        case NUMERIC:
+            break;
+        case MISC:
+            if (di.getDataType().equals("Boolean")) {
+                addRawData(" ");
+                return;
+            }
+                
+        }
+    }
+
+    @Override
     public void addField(AlphanumericElementaryDataItem di, String s) throws IOException {
         writeSeparator();
         if (s != null) {
@@ -123,7 +152,7 @@ public class FixedWidthComposer extends CSVComposer {
             }
         } else {
             // write an appropriate number of spaces
-            addRawData(getPadding(di.getTotalDigits()) + (decimals > 0 && !cfg.removePoint4BD ? 1 : 0) + (di.getIsSigned() ? 1 : 0));
+            addRawData(getPadding(di.getTotalDigits() + (decimals > 0 && !cfg.removePoint4BD ? 1 : 0) + (di.getIsSigned() ? 1 : 0)));
         }
     }
     

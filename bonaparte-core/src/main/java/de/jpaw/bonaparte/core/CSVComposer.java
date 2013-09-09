@@ -20,17 +20,12 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.Format;
 import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.UUID;
 
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
-import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
@@ -94,11 +89,11 @@ public class CSVComposer extends AppendableComposer {
     }
 
     @Override
-    public void writeNull(FieldDefinition di) {
+    public void writeNull(FieldDefinition di) throws IOException {
     }
 
     @Override
-    public void writeNullCollection(FieldDefinition di) {
+    public void writeNullCollection(FieldDefinition di) throws IOException {
     }
 
     @Override
@@ -247,6 +242,8 @@ public class CSVComposer extends AppendableComposer {
             addRawData(stringQuote);
             super.addField(di, b);
             addRawData(stringQuote);
+        } else {
+            writeNull(di);
         }
     }
 
@@ -258,6 +255,8 @@ public class CSVComposer extends AppendableComposer {
             addRawData(stringQuote);
             super.addField(di, b);
             addRawData(stringQuote);
+        } else {
+            writeNull(di);
         }
     }
 
@@ -271,6 +270,8 @@ public class CSVComposer extends AppendableComposer {
             addRawData(calendarFormat.format(t.getTime()));
             if (cfg.datesQuoted)
                 addRawData(stringQuote);
+        } else {
+            writeNull(di);
         }
     }
     @Override
@@ -282,6 +283,8 @@ public class CSVComposer extends AppendableComposer {
             addRawData(dayFormat.print(t));
             if (cfg.datesQuoted)
                 addRawData(stringQuote);
+        } else {
+            writeNull(di);
         }
     }
 
@@ -297,6 +300,8 @@ public class CSVComposer extends AppendableComposer {
                 addRawData(timestamp3Format.print(t));  // millisecond precision
             if (cfg.datesQuoted)
                 addRawData(stringQuote);
+        } else {
+            writeNull(di);
         }
     }
 

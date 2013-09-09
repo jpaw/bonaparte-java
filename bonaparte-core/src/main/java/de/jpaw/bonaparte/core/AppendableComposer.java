@@ -25,9 +25,6 @@ import java.util.UUID;
 
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
@@ -96,6 +93,12 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
             objectCache.clear();
         
     }
+    
+    // for statistics
+    public int getNumberOfObjectReuses() {
+        return numberOfObjectReuses;
+    }
+    
     /**************************************************************************************************
      * Serialization goes here
      **************************************************************************************************/

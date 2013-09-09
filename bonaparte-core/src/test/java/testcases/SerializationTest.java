@@ -1,14 +1,9 @@
 package testcases;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.Arrays;
-import java.util.List;
-
 import org.testng.annotations.Test;
 
 import de.jpaw.bonaparte.core.BonaPortable;
@@ -16,6 +11,7 @@ import de.jpaw.bonaparte.core.ByteArrayComposer;
 import de.jpaw.bonaparte.core.ByteArrayParser;
 import de.jpaw.bonaparte.core.MessageComposer;
 import de.jpaw.bonaparte.core.MessageParser;
+import de.jpaw.bonaparte.core.MessageParserException;
 import de.jpaw.bonaparte.core.StringBuilderComposer;
 import de.jpaw.bonaparte.core.StringBuilderParser;
 import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
@@ -56,7 +52,7 @@ public class SerializationTest {
         byte [] sbcResult = sbc.getBytes();
 
         System.out.println("Test starting: composer ByteArray");
-        MessageComposer bac = new ByteArrayComposer();
+        MessageComposer<RuntimeException> bac = new ByteArrayComposer();
         bac.writeRecord(obj1);
         byte [] bacResult = sbc.getBytes();
 
@@ -69,14 +65,14 @@ public class SerializationTest {
 
         // deserialize again
         StringBuilder work = new StringBuilder(new String (bacResult, defaultCharset));
-        MessageParser w = new StringBuilderParser(work, 0, -1);
+        MessageParser<MessageParserException> w = new StringBuilderParser(work, 0, -1);
         BonaPortable obj2 = w.readRecord();
         assert obj2 instanceof ClassDefinition : "returned obj is of wrong type (StringBuilderParser)";
         assert compareTest1(obj1, (ClassDefinition)obj2) : "returned obj is not equal to original one (StringBuilderParser)";
         assert obj1.hasSameContentsAs(obj2) : "returned obj is not equal to original one (StringBuilderParser) (own test)";
 
         // alternate deserializer
-        MessageParser w2 = new ByteArrayParser(sbcResult, 0, -1);
+        MessageParser<MessageParserException> w2 = new ByteArrayParser(sbcResult, 0, -1);
         BonaPortable obj3 = w2.readRecord();
         assert obj3 instanceof ClassDefinition : "returned obj is of wrong type (ByteArrayParser)";
         assert compareTest1(obj1, (ClassDefinition)obj3) : "returned obj is not equal to original one (ByteArrayParser)";

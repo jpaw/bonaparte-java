@@ -133,7 +133,7 @@ public class MessageParserException extends ApplicationException {
             codeToDescription.put(EMPTY_CHAR                   , "empty character field");
             codeToDescription.put(BAD_OBJECT_NAME              , "bad object name (must contain a dot, and not as first or last character)");
             codeToDescription.put(BAD_UUID_FORMAT              , "malformed UUID");
-            codeToDescription.put(INVALID_ENUM_TOKEN           , "invalid token to instanciate enum");
+            codeToDescription.put(INVALID_ENUM_TOKEN           , "invalid token to instantiate enum");
             codeToDescription.put(CLASS_NOT_FOUND              , "class could not be found or instantiated");
             codeToDescription.put(WRONG_MAP_INDEX_TYPE         , "parsed index type of map mismatches expected one");
             codeToDescription.put(NULL_MAP_NOT_ALLOWED_HERE    , "parsed NULL for a required Map<>");
