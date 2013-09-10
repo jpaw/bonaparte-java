@@ -25,6 +25,7 @@ public class CSVConfiguration {
     public final boolean datesQuoted;       // are date fields quoted or not?
     public final boolean removePoint4BD;    // SPECIAL: remove decimal point for BigDecimal output, to support some specific interfaces
     public final boolean zeroPadNumbers;    // SPECIAL: (only if separator is null or empty (= fixed width format): left-pad numeric values with zeroes instead of spaces
+    public final boolean rightPadNumbers;   // SPECIAL: (only if separator is null or empty (= fixed width format): right-pad numeric values (Decimal or Number)
     public final String arrayStart;         // string to output for array start, List<> and Set<>
     public final String arrayEnd;           // string to output for array end
     public final String mapStart;           // string to output for map start
@@ -43,7 +44,7 @@ public class CSVConfiguration {
 
     public final static CSVConfiguration CSV_DEFAULT_CONFIGURATION = new CSVConfiguration(
             ";", '\"', "\"\"", "?", false, false, null, null, null, null, null, null, "1", "0", Locale.ROOT, CSVStyle.SHORT, CSVStyle.SHORT,
-            DEFAULT_DAY_FORMAT, DEFAULT_TIMESTAMP_FORMAT, DEFAULT_TS_WITH_MS_FORMAT, DEFAULT_CALENDAR_FORMAT, false);
+            DEFAULT_DAY_FORMAT, DEFAULT_TIMESTAMP_FORMAT, DEFAULT_TS_WITH_MS_FORMAT, DEFAULT_CALENDAR_FORMAT, false, false);
 
     public static final String nvl(String s) {
         return s != null ? s : EMPTY_STRING;
@@ -51,7 +52,7 @@ public class CSVConfiguration {
     public CSVConfiguration(String separator, Character quote, String quoteReplacement, String ctrlReplacement, boolean datesQuoted, boolean removePoint4BD,
             String mapStart, String mapEnd, String arrayStart, String arrayEnd, String objectStart, String objectEnd, String booleanTrue, String booleanFalse,
             Locale locale, CSVStyle dateStyle, CSVStyle timeStyle, String customDayFormat, String customTimestampFormat, String customTimestampWithMsFormat,
-            String customCalendarFormat, boolean zeroPadNumbers) {
+            String customCalendarFormat, boolean zeroPadNumbers, boolean rightPadNumbers) {
         this.separator = nvl(separator);
         this.quote = quote;
         this.quoteReplacement = nvl(quoteReplacement);
@@ -59,6 +60,7 @@ public class CSVConfiguration {
         this.datesQuoted = datesQuoted;
         this.removePoint4BD = removePoint4BD;
         this.zeroPadNumbers = zeroPadNumbers;
+        this.rightPadNumbers = rightPadNumbers;
         this.arrayStart = nvl(arrayStart);
         this.arrayEnd = nvl(arrayEnd);
         this.mapStart = nvl(mapStart);
@@ -90,6 +92,7 @@ public class CSVConfiguration {
         protected boolean datesQuoted;        // are date fields quoted or not?
         protected boolean removePoint4BD;     // SPECIAL: remove decimal point for BigDecimal output, to support some specific interfaces
         protected boolean zeroPadNumbers;     // SPECIAL: (only if separator is null or empty (= fixed width format): left-pad numeric values with zeroes instead of spaces
+        protected boolean rightPadNumbers;    // SPECIAL: (only if separator is null or empty (= fixed width format): right-pad numeric values (Decimal or Number)
         protected String arrayStart;          // string to output for array start, List<> and Set<>
         protected String arrayEnd;            // string to output for array end
         protected String mapStart;            // string to output for map start
@@ -118,6 +121,7 @@ public class CSVConfiguration {
             this.datesQuoted = cfg.datesQuoted;
             this.removePoint4BD = cfg.removePoint4BD;
             this.zeroPadNumbers = cfg.zeroPadNumbers;
+            this.rightPadNumbers = cfg.rightPadNumbers;
             this.arrayStart = cfg.arrayStart;
             this.arrayEnd = cfg.arrayEnd;
             this.mapStart = cfg.mapStart;
@@ -153,7 +157,8 @@ public class CSVConfiguration {
         public CSVConfiguration build() {
             return new CSVConfiguration(separator, quote, quoteReplacement, ctrlReplacement, datesQuoted, removePoint4BD,
                     mapStart, mapEnd, arrayStart, arrayEnd, objectStart, objectEnd, booleanTrue, booleanFalse,
-                    locale, dateStyle, timeStyle, customDayFormat, customTimestampFormat, customTimestampWithMsFormat, customCalendarFormat, zeroPadNumbers);
+                    locale, dateStyle, timeStyle, customDayFormat, customTimestampFormat, customTimestampWithMsFormat, customCalendarFormat,
+                    zeroPadNumbers, rightPadNumbers);
         }
 
         // now the individual builder setters follow
@@ -191,6 +196,10 @@ public class CSVConfiguration {
         }
         public Builder usingZeroPadding(boolean zeroPadNumbers) {
             this.zeroPadNumbers = zeroPadNumbers;
+            return this;
+        }
+        public Builder usingRightPadding(boolean rightPadNumbers) {
+            this.rightPadNumbers = rightPadNumbers;
             return this;
         }
         public Builder usingQuoteCharacter(Character quote) {

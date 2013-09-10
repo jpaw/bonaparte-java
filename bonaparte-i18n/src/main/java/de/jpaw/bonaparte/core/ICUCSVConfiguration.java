@@ -16,7 +16,7 @@ public class ICUCSVConfiguration extends CSVConfiguration {
             String customCalendarFormat, ULocale ulocale) {
         super(separator, quote, quoteReplacement, ctrlReplacement, datesQuoted, removePoint4BD, mapStart, mapEnd, arrayStart, arrayEnd, objectStart, objectEnd,
                 booleanTrue, booleanFalse, locale, dateStyle, timeStyle, customDayFormat, customTimestampFormat, customTimestampWithMsFormat,
-                customCalendarFormat, false);
+                customCalendarFormat, false, false);
         this.ulocale = ulocale;
     }
 

@@ -93,11 +93,11 @@ public class FixedWidthComposer extends CSVComposer {
         case BINARY:
             break;
         case TEMPORAL:
-            if (di.getDataType().equals("Day")) {
+            if (di.getDataType().equals("LocalDate")) {
                 addRawData(SPACE_PADDINGS[10]); // FIXME
                 return;
             }
-            if (di.getDataType().equals("Timestamp")) {
+            if (di.getDataType().equals("LocalDateTime")) {
                 addRawData(SPACE_PADDINGS[19]);  // FIXME
                 return;
             }
@@ -144,8 +144,13 @@ public class FixedWidthComposer extends CSVComposer {
                 bigDecimalFormat.setMaximumFractionDigits(decimals);
                 bigDecimalFormat.setMinimumFractionDigits(decimals);
                 String pattern = bigDecimalFormat.format(absVal);
-                numericPad(di.getTotalDigits() + (decimals > 0 ? 1 : 0) - pattern.length());
-                addRawData(pattern);
+                if (cfg.rightPadNumbers) {
+                    addRawData(pattern);
+                    numericPad(di.getTotalDigits() + (decimals > 0 ? 1 : 0) - pattern.length());
+                } else {
+                    numericPad(di.getTotalDigits() + (decimals > 0 ? 1 : 0) - pattern.length());
+                    addRawData(pattern);
+                }
             }
             if (di.getIsSigned()) {
                 addRawData(isNegative ? "-" : " ");
@@ -182,11 +187,17 @@ public class FixedWidthComposer extends CSVComposer {
         if (n == null) {
             addRawData(SPACE_PADDINGS[di.getTotalDigits() + (di.getIsSigned() ? 1 : 0)]);
         } else {
-            if (di.getIsSigned())
-                addRawData(n < 0 ? "-" : " ");
-            String val = Integer.toString(n < 0 ? -n : n);
-            numericPad(di.getTotalDigits() - val.length());
-            addRawData(val);
+            if (cfg.rightPadNumbers) {
+                String val = Integer.toString(n);
+                addRawData(val);
+                addRawData(SPACE_PADDINGS[di.getTotalDigits() - val.length()]);
+            } else {
+                if (di.getIsSigned())
+                    addRawData(n < 0 ? "-" : " ");
+                String val = Integer.toString(n < 0 ? -n : n);
+                numericPad(di.getTotalDigits() - val.length());
+                addRawData(val);
+            }
         }
     }
 }
