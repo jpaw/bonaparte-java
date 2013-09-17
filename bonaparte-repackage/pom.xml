@@ -1,0 +1,51 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>de.jpaw</groupId>
+        <artifactId>bonaparte-base</artifactId>
+        <version>1.6.2-SNAPSHOT</version>
+        <relativePath>../bonaparte-base/pom.xml</relativePath>
+    </parent>
+
+    <artifactId>bonaparte-repackage</artifactId>
+    <packaging>pom</packaging>
+
+    <name>BONAPARTE repackage parent for Android jars</name>
+    <description>Required to change references to javax.xml.bind to de.jpaw.xml.bind, in order to allow deployment to Android</description>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.sonatype.plugins</groupId>
+                    <artifactId>jarjar-maven-plugin</artifactId>
+                    <version>1.8</version>
+                    <executions>
+                        <execution>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>jarjar</goal>
+                            </goals>
+                            <configuration>
+                                <includes>
+                                    <!-- groupId : artifactId -->
+                                    <include>javax.xml.bind:jaxb-api</include>
+                                    <include>de.jpaw:bonaparte-xml</include>
+                                </includes>
+                                <rules>
+                                    <rule>
+                                        <pattern>javax.xml.bind.**</pattern>
+                                        <result>de.jpaw.xml.bind.@1</result>
+                                    </rule>
+                                </rules>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+</project>

@@ -1,0 +1,34 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>de.jpaw</groupId>
+        <artifactId>bonaparte-repackage</artifactId>
+        <version>1.6.2-SNAPSHOT</version>
+        <relativePath>../bonaparte-repackage/pom.xml</relativePath>
+    </parent>
+
+    <artifactId>bonaparte-repackage-jaxb</artifactId>
+    <packaging>jar</packaging>
+
+    <name>repackaged version of jaxb-api</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>${jaxb.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>jarjar-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
