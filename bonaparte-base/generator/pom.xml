@@ -4,7 +4,7 @@
     <parent>
         <groupId>de.jpaw</groupId>
         <artifactId>bonaparte-base</artifactId>
-        <version>1.6.2-SNAPSHOT</version>
+        <version>1.6.3-SNAPSHOT</version>
         <relativePath>..</relativePath>
     </parent>
 
@@ -13,7 +13,7 @@
 
     <properties>
         <tycho-version>0.18.1</tycho-version>
-        <bonaparte-plugin-version>1.6.2-SNAPSHOT</bonaparte-plugin-version>
+        <bonaparte-plugin-version>1.6.3-SNAPSHOT</bonaparte-plugin-version>
     </properties>
 
     <build>

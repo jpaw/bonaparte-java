@@ -4,7 +4,7 @@
 
     <groupId>de.jpaw</groupId>
     <artifactId>bonaparte-base</artifactId>
-    <version>1.6.2-SNAPSHOT</version>
+    <version>1.6.3-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>BONAPARTE common configuration (parent pom)</name>
@@ -14,8 +14,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- define releases we want to use, to ensure consistency -->
-        <bonaparte.version>1.6.2-SNAPSHOT</bonaparte.version>
-        <bonaparte-plugin-version>1.6.2-SNAPSHOT</bonaparte-plugin-version>
+        <bonaparte.version>1.6.3-SNAPSHOT</bonaparte.version>
+        <bonaparte-plugin-version>1.6.3-SNAPSHOT</bonaparte-plugin-version>
         <xtend.version>2.4.3</xtend.version>
         <slf4j.version>1.7.5</slf4j.version>            <!-- http://www.slf4j.org/   UPTODATE 2013-07-14 -->
         <logback.version>1.0.13</logback.version>       <!-- http://logback.qos.ch/  UPTODATE 2013-07-14 -->
@@ -56,8 +56,8 @@
             <id>xtend.repository</id>
             <name>Xtend Repository</name>
             <url>http://build.eclipse.org/common/xtend/maven/</url>
-            <!--  Snapshots at <url>https://oss.sonatype.org/content/repositories/snapshots/</url>  -->
         </repository>
+<!--
         <repository>
             <id>xtend.snapshots</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
@@ -68,12 +68,14 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
+-->
     </repositories>
     <pluginRepositories>
         <pluginRepository>
             <id>xtend</id>
             <url>http://build.eclipse.org/common/xtend/maven/</url>
         </pluginRepository>
+<!--
         <pluginRepository>
             <id>xtend.snapshots</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
@@ -84,6 +86,7 @@
                 <enabled>true</enabled>
             </snapshots>
         </pluginRepository>
+-->
     </pluginRepositories>
 
     <distributionManagement>
