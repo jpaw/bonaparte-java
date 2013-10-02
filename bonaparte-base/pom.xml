@@ -165,6 +165,12 @@
                     <configuration>
                         <filesets>
                             <fileset>
+                                <directory>src/generated</directory>
+                                <includes>
+                                    <include>**</include>
+                                </includes>
+                            </fileset>
+                            <fileset>
                                 <directory>src/main/xtend-gen</directory>
                                 <includes>
                                     <include>**</include>
@@ -255,14 +261,14 @@
                     </executions>
                     <configuration>
                         <sourceRoots>
-                            <sourceRoot>src/main/bon</sourceRoot>
+                            <sourceRoot>${project.basedir}/src/main/bon</sourceRoot>
                         </sourceRoots>
                         <languages>
                             <language>
                                 <setup>de.jpaw.bonaparte.dsl.BonScriptStandaloneSetup</setup>
                                 <outputConfigurations>
                                     <outputConfiguration>
-                                        <outputDirectory>src/generated</outputDirectory>
+                                        <outputDirectory>${project.basedir}/src/generated</outputDirectory>
                                         <!--<javaSupport>false</javaSupport> -->
                                     </outputConfiguration>
                                 </outputConfigurations>
@@ -271,7 +277,7 @@
                                 <setup>de.jpaw.persistence.dsl.BDDLStandaloneSetup</setup>
                                 <outputConfigurations>
                                     <outputConfiguration>
-                                        <outputDirectory>src/generated</outputDirectory>
+                                        <outputDirectory>${project.basedir}/src/generated</outputDirectory>
                                         <!--<javaSupport>false</javaSupport> -->
                                     </outputConfiguration>
                                 </outputConfigurations>
@@ -337,7 +343,6 @@
     </reporting>
 
     <modules>
-        <module>generator/pom.xml</module>
         <module>../bonaparte-core/pom.xml</module>
         <module>../bonaparte-core-test/pom.xml</module>
         <module>../bonaparte-money/pom.xml</module>
