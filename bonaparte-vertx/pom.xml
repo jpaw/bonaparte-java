@@ -22,8 +22,13 @@
             <version>${bonaparte.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.vert-x</groupId>
+            <groupId>io.vertx</groupId>   <!-- org.vert-x was 1.x -->
             <artifactId>vertx-core</artifactId>
+            <version>${vertx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-platform</artifactId>
             <version>${vertx.version}</version>
         </dependency>
     </dependencies>

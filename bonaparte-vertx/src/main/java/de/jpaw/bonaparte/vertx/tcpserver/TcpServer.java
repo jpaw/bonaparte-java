@@ -1,15 +1,13 @@
 package de.jpaw.bonaparte.vertx.tcpserver;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.vertx.java.core.net.NetServer;
 import org.vertx.java.core.Vertx;
+import org.vertx.java.core.VertxFactory;
 
 public class TcpServer {
-    private static final Logger logger = LoggerFactory.getLogger(TcpServer.class);
 
     public static void main(String[] args) {
-        Vertx vertx = Vertx.newVertx();
+        Vertx vertx = VertxFactory.newVertx();
         NetServer server = vertx.createNetServer();
 
         server.connectHandler(new BonaparteConnectHandler());
@@ -30,7 +28,6 @@ public class TcpServer {
         try {
             Thread.sleep(180000);
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
