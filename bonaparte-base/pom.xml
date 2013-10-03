@@ -273,15 +273,17 @@
                                     </outputConfiguration>
                                 </outputConfigurations>
                             </language>
+                            <!-- BDDL not required in bonaparte-java
                             <language>
                                 <setup>de.jpaw.persistence.dsl.BDDLStandaloneSetup</setup>
                                 <outputConfigurations>
                                     <outputConfiguration>
                                         <outputDirectory>${project.basedir}/src/generated</outputDirectory>
-                                        <!--<javaSupport>false</javaSupport> -->
+                                        xxx<javaSupport>false</javaSupport>xxx
                                     </outputConfiguration>
                                 </outputConfigurations>
                             </language>
+                             -->
                         </languages>
                     </configuration>
                     <dependencies>
