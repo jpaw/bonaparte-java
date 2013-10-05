@@ -24,7 +24,7 @@
             15.0 UPTODATE 2013-09-26 -->
 
         <!-- Some more versions, used by specific dependent projects -->
-        <netty.version>4.0.8.Final</netty.version>      <!-- https://netty.io/news/ UPTODATE 2013-09-05 -->
+        <netty.version>4.0.10.Final</netty.version>     <!-- https://netty.io/news/ UPTODATE 2013-10-05 -->
         <poi.version>3.9</poi.version>                  <!-- http://poi.apache.org/ UPTODATE 2013-06-09 -->
         <mina.version>2.0.5</mina.version>              <!-- http://mina.apache.org/ 2.0.7 -->
         <camel.version>2.11.1</camel.version>           <!-- http://camel.apache.org/ UPTODATE 2013-06-09 -->
@@ -235,7 +235,7 @@
                     <version>${xtend.version}</version>
                     <executions>
                         <execution>
-                            <phase>compile</phase>
+                            <phase>generate-sources</phase>
                             <goals>
                                 <goal>compile</goal>
                                 <goal>testCompile</goal>
