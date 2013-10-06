@@ -18,6 +18,7 @@ package de.jpaw.bonaparte.core;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,11 +39,12 @@ public class BonaPortableFactory {
     static public final String BONAPARTE_DEFAULT_PACKAGE_PREFIX = "bonapartePrefix"; // "BONAPARTE_DEFAULT_PACKAGE_PREFIX";  // system property name which can be used as a source
     static public boolean publishDefaultPrefix = true;          // required in environments which instantiate multiple classloaders for isolation (vert.x)
     static private boolean bonaparteClassDefaultPackagePrefixShouldBeRetrieved = true;
-    
+    static private final AtomicInteger initializationCounter = new AtomicInteger();
 
     private static void registerClass(String name, Class<? extends BonaPortable> clatz) {
-        map.putIfAbsent(name, clatz);
-        logger.debug("Factory: registered class {}", name);
+        Class<? extends BonaPortable> oldClatz = map.putIfAbsent(name, clatz);
+        logger.debug("Factory: registered class {} {}", name,
+                (oldClatz == null ? "(was null before)" : oldClatz != clatz ? "(was different before!!!)" : "(same as before)"));
     }
 
     // prevent instance creation
@@ -147,10 +149,11 @@ public class BonaPortableFactory {
         BonaPortableFactory.bonaparteClassDefaultPackagePrefix = bonaparteClassDefaultPackagePrefix;
         bonaparteClassDefaultPackagePrefixShouldBeRetrieved = false;   // I got it from the application now
         if (publishDefaultPrefix) {
-            logger.info("publishing new default package prefix {}, my CL is {}, OCCL is {}",
+            logger.info("publishing new default package prefix {}, my CL is {}, OCCL is {}, cnt = {}",
                     bonaparteClassDefaultPackagePrefix,
                     A_WAY_TO_GET_MY_CLASSLOADER.getClass().getClassLoader().toString(),
-                    Thread.currentThread().getContextClassLoader().toString());
+                    Thread.currentThread().getContextClassLoader().toString(),
+                    initializationCounter.incrementAndGet());
             System.setProperty(BONAPARTE_DEFAULT_PACKAGE_PREFIX, bonaparteClassDefaultPackagePrefix);
         }
     }
