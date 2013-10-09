@@ -28,7 +28,7 @@
         <poi.version>3.9</poi.version>                  <!-- http://poi.apache.org/ UPTODATE 2013-06-09 -->
         <mina.version>2.0.5</mina.version>              <!-- http://mina.apache.org/ 2.0.7 -->
         <camel.version>2.11.1</camel.version>           <!-- http://camel.apache.org/ UPTODATE 2013-06-09 -->
-        <vertx.version>2.0.1-final</vertx.version>      <!-- http://vertx.io/ 1.3.1.final UPTODATE 2013-06-09, 2.0.1 UPTODATE 2013-09-10 -->
+        <vertx.version>2.0.2-final</vertx.version>      <!-- http://vertx.io/ 1.3.1.final UPTODATE 2013-06-09, 2.0.2 UPTODATE 2013-10-09 -->
         <hornetq.version>2.2.14.Final</hornetq.version> <!-- http://www.jboss.org/hornetq 2.3.0.Final -->
         <jaxb.version>2.2.9</jaxb.version>              <!-- http://repo1.maven.org/maven2/javax/xml/bind/jaxb-api/ -->
         <jackson.version>2.2.2</jackson.version>        <!-- matches what's used in vertx -->
