@@ -1,0 +1,16 @@
+package testRegexp {
+    type phoneNumber is Ascii(20) regexp "[-+()0123456789 /]*";
+    
+    class RegexpTest {
+        Ascii(20)           regexp "[+]?[0-9]+/[0-9]+[-]?[0-9]*" germanPhoneNumber;
+    }
+    class RegexpTest2 {
+        Ascii(20)           regexp "[-+()0123456789/]*"     germanPhoneNumber;
+    }
+    class RegexpTest3 {
+        Ascii(20)           regexp "[-+()0123456789 /]*"    germanPhoneNumber;
+    }
+    class RegexpTest4 {
+        phoneNumber         germanPhoneNumber;
+    }
+}
