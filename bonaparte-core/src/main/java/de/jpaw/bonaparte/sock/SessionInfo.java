@@ -1,4 +1,4 @@
-package de.jpaw.bonaparte.netty.util;
+package de.jpaw.bonaparte.sock;
 
 import java.security.cert.X509Certificate;
 

@@ -5,9 +5,9 @@ import java.util.UUID;
 import org.testng.annotations.Test;
 
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.netty.testClient.SimpleUnpooledClient;
 import de.jpaw.bonaparte.pojos.rqrs.Request;
 import de.jpaw.bonaparte.pojos.rqrs.Response;
+import de.jpaw.bonaparte.sock.SimpleTcpClient;
 
 public class SingleRequest {
     static final int MY_SERIAL = 23487234;
@@ -22,7 +22,7 @@ public class SingleRequest {
         myRequest.setSerialNo(MY_SERIAL);
         myRequest.setUniqueId(myUuid);
 
-        SimpleUnpooledClient myClient = new SimpleUnpooledClient("localhost", port, false);
+        SimpleTcpClient myClient = new SimpleTcpClient("localhost", port, false);
 
         BonaPortable someResponse = myClient.doIO(myRequest);
         assert someResponse != null : "Received null response";

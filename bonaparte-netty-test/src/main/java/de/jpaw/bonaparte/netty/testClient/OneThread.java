@@ -7,12 +7,13 @@ import java.util.UUID;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.rqrs.Request;
 import de.jpaw.bonaparte.pojos.rqrs.Response;
+import de.jpaw.bonaparte.sock.SimpleTcpClient;
 
 public class OneThread implements Runnable {
     private final int threadIndex;
     private final int delay;
     private final int callsPerThread;
-    private final SimpleUnpooledClient conn;
+    private final SimpleTcpClient conn;
 
     private Date start;
     private Date stop;
@@ -21,7 +22,7 @@ public class OneThread implements Runnable {
         this.delay = delay;
         this.callsPerThread = callsPerThread;
         this.threadIndex = threadIndex;
-        conn = new SimpleUnpooledClient(host, port, useSsl);
+        conn = new SimpleTcpClient(host, port, useSsl);
     }
 
     @Override
