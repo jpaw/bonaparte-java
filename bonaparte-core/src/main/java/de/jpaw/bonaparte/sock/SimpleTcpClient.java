@@ -21,7 +21,7 @@ public class SimpleTcpClient {
     private final InetAddress addr;
     private final Socket conn;
     private final ByteArrayComposer w;
-    private byte [] responseBuffer;
+    private final byte [] responseBuffer;
 
     private static void printSocketInfo(SSLSocket s) {
         logger.info("Socket class: " + s.getClass());
@@ -81,6 +81,11 @@ public class SimpleTcpClient {
             return null;
         ByteArrayParser p = new ByteArrayParser(responseBuffer, 0, haveBytes);
         return p.readRecord();
+    }
+    
+    // close the connection
+    public void close() throws IOException {
+        conn.close();
     }
 
 }
