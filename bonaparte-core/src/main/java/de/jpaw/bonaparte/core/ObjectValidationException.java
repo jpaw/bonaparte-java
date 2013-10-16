@@ -47,6 +47,9 @@ public class ObjectValidationException extends ApplicationException {
     static public final int TOO_SHORT             = OFFSET + 5;
     static public final int NOT_ENOUGH_ELEMENTS   = OFFSET + 6;
 
+    static public final int NOT_FREEZABLE         = OFFSET + 21;
+    static public final int OBJECT_IS_FROZEN      = OFFSET + 22;
+
     // Upload textual descriptions only once they're needed for this type of exception class.
     // The idea is that in working environments, we will never need them ;-).
     // There is a small chance of duplicate initialization, because the access to the flag textsInitialized is not
@@ -60,6 +63,10 @@ public class ObjectValidationException extends ApplicationException {
             codeToDescription.put(TOO_LONG             , "String is too long");
             codeToDescription.put(TOO_SHORT            , "String is too short");
             codeToDescription.put(NOT_ENOUGH_ELEMENTS  , "Array contains not enough elements");
+            
+            codeToDescription.put(NOT_FREEZABLE        , "This object cannot be turned into immutable state ");
+            codeToDescription.put(OBJECT_IS_FROZEN     , "Object instance is frozen and cannot be modified");
+
         }
     }
 

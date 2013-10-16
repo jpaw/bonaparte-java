@@ -135,5 +135,34 @@ public interface BonaPortable extends Serializable {
 
     /** Gets the Metadata of the BonaPortable (which is a BonaPortable itself). */
     public ClassDefinition get$MetaData();  // name, revision etc as a class object. Use $ to avoid conflict with other getters
+    
+
+    /** A BonaPortable can become immutable, by locking all setters.
+     * This mimics some "in place" builder, allows inheritance and avoids the duplicate object definition (by the builder).
+     * An object, once frozen, cannot be "unfrozen" (that would defeat the purpose), therefore immutability is granted.
+     * If mutable copies are desired, either shallow or deep copies can be created, which are created in unfrozen state.
+     * The freeze() method transitions an object into immutable state. The method is not thread-safe, i.e. the freeze should
+     * always be performed on a private copy. Once frozen, the object may be shared with other threads. Use get$frozenClone() to
+     * get an immutable copy if the previous object was shared with other threads or has other references in this thread.
+     */
+
+    void freeze();
+    
+    /** Returns information, if this object is frozen.
+     * If the object is not frozen, it could still have frozen components.
+     * If the object is frozen, all components are guaranteed to be frozen as well.
+     * 
+     * @return true if the object and all its components are frozen, false otherwise.
+     * 
+     */
+    boolean is$Frozen();
+    
+    /** Obtain a mutable clone of a frozen object. 
+     * If deepCopy is set, he object will be recursively mutable, otherwise just the initial layer. */
+    BonaPortable get$MutableClone(boolean deepCopy);    
+    
+    /** Obtain an immutable clone of a (possibly) mutable object. */
+    BonaPortable get$FrozenClone();    
+
 
 }
