@@ -49,6 +49,7 @@ public class ObjectValidationException extends ApplicationException {
 
     static public final int NOT_FREEZABLE         = OFFSET + 21;
     static public final int OBJECT_IS_FROZEN      = OFFSET + 22;
+    static public final int IS_IMMUTABLE          = OFFSET + 23;
 
     // Upload textual descriptions only once they're needed for this type of exception class.
     // The idea is that in working environments, we will never need them ;-).
@@ -64,9 +65,9 @@ public class ObjectValidationException extends ApplicationException {
             codeToDescription.put(TOO_SHORT            , "String is too short");
             codeToDescription.put(NOT_ENOUGH_ELEMENTS  , "Array contains not enough elements");
             
-            codeToDescription.put(NOT_FREEZABLE        , "This object cannot be turned into immutable state ");
+            codeToDescription.put(NOT_FREEZABLE        , "This object cannot be turned into immutable state");
             codeToDescription.put(OBJECT_IS_FROZEN     , "Object instance is frozen and cannot be modified");
-
+            codeToDescription.put(IS_IMMUTABLE         , "This object cannot be turned into mutable state");
         }
     }
 

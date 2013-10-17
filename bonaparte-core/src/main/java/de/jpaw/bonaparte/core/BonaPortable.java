@@ -146,7 +146,7 @@ public interface BonaPortable extends Serializable {
      * get an immutable copy if the previous object was shared with other threads or has other references in this thread.
      */
 
-    void freeze();
+    void freeze() throws ObjectValidationException;
     
     /** Returns information, if this object is frozen.
      * If the object is not frozen, it could still have frozen components.
@@ -157,12 +157,15 @@ public interface BonaPortable extends Serializable {
      */
     boolean is$Frozen();
     
+    /** Same as class$isFreezable(). */
+    boolean is$Freezable();
+    
     /** Obtain a mutable clone of a frozen object. 
      * If deepCopy is set, he object will be recursively mutable, otherwise just the initial layer. */
-    BonaPortable get$MutableClone(boolean deepCopy);    
+    BonaPortable get$MutableClone(boolean deepCopy, boolean unfreezeCollections) throws ObjectValidationException;    
     
     /** Obtain an immutable clone of a (possibly) mutable object. */
-    BonaPortable get$FrozenClone();    
+    BonaPortable get$FrozenClone() throws ObjectValidationException;    
 
 
 }
