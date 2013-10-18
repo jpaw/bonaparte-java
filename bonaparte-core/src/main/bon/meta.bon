@@ -12,15 +12,16 @@ package meta {
     
 	abstract immutable class FieldDefinition {
 	    enum Visibility         visibility;
-		boolean                 isRequired;     // if the fields allow null (if collections: the collection elements)
+		boolean                 isRequired;             // if the fields allow null (if collections: the collection elements)
 		required identifier     name;
 		enum Multiplicity       multiplicity;
 		int                     mapIndexType;
-        Integer                 minCount;       // minimum number of occurrences, if a collection or array
-		Integer                 maxCount;       // maximum number of occurrences, if a collection or array
-        enum DataCategory       dataCategory;   // gives high level information about the data 
-        ascii(20)               dataType;       // the Bonaparte data type
-        boolean                 isPrimitive;    // true if the field is a primitive data type in Java 
+        Integer                 minCount;               // minimum number of occurrences, if a collection or array
+		Integer                 maxCount;               // maximum number of occurrences, if a collection or array
+        enum DataCategory       dataCategory;           // gives high level information about the data 
+        ascii(20)               dataType;               // the Bonaparte data type
+        boolean                 isPrimitive;            // true if the field is a primitive data type in Java
+        required boolean        isAggregateRequired;    // field is an aggregate field (array, List, Set, Map) and the aggregate itself may not be null 
 	}
 	
 	class ObjectReference extends FieldDefinition {

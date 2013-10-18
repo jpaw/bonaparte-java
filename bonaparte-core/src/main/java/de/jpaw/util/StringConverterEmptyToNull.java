@@ -28,7 +28,7 @@ public class StringConverterEmptyToNull implements StringConverter {
             if (!meta.getIsRequired() || newString != null)     // only filter nulls if the target list has "required" fields
                 newList.add(newString);
         }
-        return (newList.isEmpty() && !meta.getIsRequired()) ? null : newList;  // only return null instead of an empty list if the List is required.
+        return (newList.isEmpty() && !meta.getIsAggregateRequired()) ? null : newList;  // only return null instead of an empty list if the List is required.
     }
 
     @Override
