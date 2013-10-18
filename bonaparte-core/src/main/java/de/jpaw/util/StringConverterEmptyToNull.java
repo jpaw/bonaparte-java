@@ -25,7 +25,7 @@ public class StringConverterEmptyToNull implements StringConverter {
         List<String> newList = new ArrayList<String>(oldList.size());
         for (String s : oldList) {
             String newString = convert(s, meta);
-            if (newString != null)
+            if (!meta.getIsRequired() || newString != null)     // only filter nulls if the target list has "required" fields
                 newList.add(newString);
         }
         return (newList.isEmpty() && !meta.getIsRequired()) ? null : newList;  // only return null instead of an empty list if the List is required.
