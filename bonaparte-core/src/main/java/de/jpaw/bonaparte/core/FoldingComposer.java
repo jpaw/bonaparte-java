@@ -30,12 +30,14 @@ public class FoldingComposer<E extends Exception> implements MessageComposer<E> 
     private final Map<Class<? extends BonaPortable>, List<String>> mapping;
     private final Map<Class<? extends BonaPortable>, List<ParsedFoldingComponent>> parsedMapping;
     private final FoldingStrategy errorStrategy;
+    private final List<String> bonaPortableMapping;
     
     public FoldingComposer(MessageComposer<E> delegateComposer, Map<Class<? extends BonaPortable>, List<String>> mapping, FoldingStrategy errorStrategy) {
         this.delegateComposer = delegateComposer;
         this.mapping = mapping;
         this.parsedMapping = new HashMap<Class<? extends BonaPortable>, List<ParsedFoldingComponent>>(20);
         this.errorStrategy = errorStrategy;
+        this.bonaPortableMapping = mapping.get(BonaPortable.class);  
     }
 
     @Override
@@ -192,8 +194,13 @@ public class FoldingComposer<E extends Exception> implements MessageComposer<E> 
     
     private List<ParsedFoldingComponent> createParsedFieldList(BonaPortable obj, Class <? extends BonaPortable> objClass) throws E {
         // get the original mapping...
-        List<String> fieldList = mapping.get(objClass);
+        
+        // if only one mapping entry has been provided, and that is for a BonaPortable in general, this is straightforward.
+        
+        List<String> fieldList = mapping.size() == 1 ? bonaPortableMapping : null;
         if (fieldList == null) {
+            fieldList = mapping.get(objClass);
+            if (fieldList == null) {
             switch (errorStrategy) {
             case SKIP_UNMAPPED:
                 return null;
@@ -218,6 +225,7 @@ public class FoldingComposer<E extends Exception> implements MessageComposer<E> 
                     }
                     
                 }
+            }
             }
         }
         // fieldList is not null now.
