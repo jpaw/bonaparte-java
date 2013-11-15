@@ -27,10 +27,12 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
+import de.jpaw.enums.TokenizableEnum;
 import de.jpaw.util.Base64;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.ByteBuilder;
@@ -457,5 +459,20 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
                 objectCache.put(obj, Integer.valueOf(numberOfObjectsSerialized++));
             }            
         }
+    }
+
+    // enum with numeric expansion: delegate to Null/Int
+    @Override
+    public void addEnum(EnumDataItem di, NumericElementaryDataItem ord, Enum<?> n) throws IOException {
+        if (n == null)
+            writeNull(ord);
+        else
+            addField(n.ordinal());
+    }
+
+    // enum with alphanumeric expansion: delegate to Null/String
+    @Override
+    public void addEnum(EnumDataItem di, AlphanumericElementaryDataItem token, TokenizableEnum n) throws IOException {
+        addField(token, n.getToken());
     }
 }

@@ -35,8 +35,8 @@ package meta {
 
     // EnumDataItem represents the special enum type
     class EnumDataItem extends ElementaryDataItem {
-        required identifier     enumName;  // HQON of enum
-        ascii(39) []            values;
+        required identifier     enumName;  // PQON of enum
+        required Unicode(40) [] values;     // the tokens, if it is alphanumeric enum, with "" for the empty / null token 
     }
 
     // TemporalElementaryDataItem represents day / timestamp types

@@ -15,4 +15,6 @@ public interface StaticMeta {
             Multiplicity.SCALAR, 0, 0, 0, DataCategory.MISC, "Object", false);
     public static final AlphanumericElementaryDataItem MAP_INDEX_META = new AlphanumericElementaryDataItem(Visibility.PRIVATE, false, "map$Index",
             Multiplicity.SCALAR, 0, 0, 0, DataCategory.STRING, "Unicode", false, true, false, false, false, 255, 0, null);
+    public static final AlphanumericElementaryDataItem ENUM_TOKEN = new AlphanumericElementaryDataItem(Visibility.PRIVATE, false, "enum$Token",
+            Multiplicity.SCALAR, 0, 0, 0, DataCategory.STRING, "Unicode", false, true, false, false, false, 40, 0, null);
 }

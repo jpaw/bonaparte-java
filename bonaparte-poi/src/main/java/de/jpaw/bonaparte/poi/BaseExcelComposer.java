@@ -15,6 +15,7 @@
  */
 package de.jpaw.bonaparte.poi;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Locale;
@@ -27,10 +28,12 @@ import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.MessageComposer;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
+import de.jpaw.enums.TokenizableEnum;
 import de.jpaw.util.Base64;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.ByteBuilder;
@@ -352,5 +355,19 @@ public class BaseExcelComposer implements MessageComposer<RuntimeException> {
             // do all fields (now includes terminator)
             obj.serializeSub(this);
         }
+    }
+    // enum with numeric expansion: delegate to Null/Int
+    @Override
+    public void addEnum(EnumDataItem di, NumericElementaryDataItem ord, Enum<?> n) {
+        if (n == null)
+            writeNull(ord);
+        else
+            addField(ord, n.ordinal());
+    }
+
+    // enum with alphanumeric expansion: delegate to Null/String
+    @Override
+    public void addEnum(EnumDataItem di, AlphanumericElementaryDataItem token, TokenizableEnum n) {
+        addField(token, n.getToken());
     }
 }
