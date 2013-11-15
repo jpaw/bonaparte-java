@@ -197,10 +197,8 @@ public class FoldingComposer<E extends Exception> implements MessageComposer<E> 
         
         // if only one mapping entry has been provided, and that is for a BonaPortable in general, this is straightforward.
         
-        List<String> fieldList = mapping.size() == 1 ? bonaPortableMapping : null;
+        List<String> fieldList = mapping.get(objClass);
         if (fieldList == null) {
-            fieldList = mapping.get(objClass);
-            if (fieldList == null) {
             switch (errorStrategy) {
             case SKIP_UNMAPPED:
                 return null;
@@ -209,6 +207,7 @@ public class FoldingComposer<E extends Exception> implements MessageComposer<E> 
                 obj.serializeSub(this); // this or delegateComposer?
                 return null;
             case TRY_SUPERCLASS:
+            case SUPERCLASS_OR_FULL:
                 Class <?> superclass;
                 while ((superclass = objClass.getSuperclass()) != null) {
                     if (BonaPortable.class.isAssignableFrom(superclass)) {
@@ -221,11 +220,17 @@ public class FoldingComposer<E extends Exception> implements MessageComposer<E> 
                             break;
                         }
                     } else {
-                        return null;  // skip, no mapping found even with recursion
+                        if (bonaPortableMapping == null) {
+                            if (errorStrategy == FoldingStrategy.SUPERCLASS_OR_FULL) {
+                                delegateComposer.startObject(obj);
+                                obj.serializeSub(this); // this or delegateComposer?
+                            }
+                            return null;  // skip, no mapping found even with recursion
+                        }
+                        fieldList = bonaPortableMapping;
+                        break;
                     }
-                    
                 }
-            }
             }
         }
         // fieldList is not null now.
