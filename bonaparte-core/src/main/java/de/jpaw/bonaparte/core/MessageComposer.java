@@ -23,10 +23,12 @@ import org.joda.time.LocalDateTime;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
+import de.jpaw.enums.TokenizableEnum;
 import de.jpaw.util.ByteArray;
 
 /**
@@ -77,4 +79,8 @@ public interface MessageComposer<E extends Exception> {
     void addField(TemporalElementaryDataItem di, Calendar t) throws E;
     void addField(TemporalElementaryDataItem di, LocalDate t) throws E;
     void addField(TemporalElementaryDataItem di, LocalDateTime t) throws E;
+    
+    // Enums
+    void addEnum(EnumDataItem di, NumericElementaryDataItem ord, Enum<?> n) throws E;
+    void addEnum(EnumDataItem di, AlphanumericElementaryDataItem token, TokenizableEnum n) throws E;
 }

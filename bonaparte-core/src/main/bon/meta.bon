@@ -8,7 +8,7 @@ package meta {
     enum Multiplicity { SCALAR, ARRAY, LIST, SET, MAP }
     // the DataCategory matches the enum of same name in the Bonaparte DSL generator project
     enum DataCategory { OBJECT, ENUM, NUMERIC, STRING, TEMPORAL, MISC, BINARY }  // misc is boolean, char, uuid, ...
-    enum FoldingStrategy { SKIP_UNMAPPED, TRY_SUPERCLASS, FULL_OUTPUT }  // what to do if no folding mapping is found
+    enum FoldingStrategy { SKIP_UNMAPPED, TRY_SUPERCLASS, FULL_OUTPUT, SUPERCLASS_OR_FULL }  // what to do if no folding mapping is found
     
 	abstract immutable class FieldDefinition {
 	    enum Visibility         visibility;
@@ -36,8 +36,8 @@ package meta {
 
     // EnumDataItem represents the special enum type
     class EnumDataItem extends ElementaryDataItem {
-        required identifier     enumName;  // HQON of enum
-        ascii(39) []            values;
+        required identifier     enumName;  // PQON of enum
+        required Unicode(40) [] values;     // the tokens, if it is alphanumeric enum, with "" for the empty / null token 
     }
 
     // TemporalElementaryDataItem represents day / timestamp types
