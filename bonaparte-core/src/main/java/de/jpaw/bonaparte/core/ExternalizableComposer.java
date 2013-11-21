@@ -391,7 +391,10 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
     // enum with alphanumeric expansion: delegate to Null/String
     @Override
     public void addEnum(EnumDataItem di, AlphanumericElementaryDataItem token, TokenizableEnum n) throws IOException {
-        addField(token, n.getToken());
+        if (n == null)
+            writeNull(token);
+        else
+            addField(token, n.getToken());
     }
 
 }

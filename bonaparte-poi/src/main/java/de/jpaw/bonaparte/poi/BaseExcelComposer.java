@@ -368,6 +368,9 @@ public class BaseExcelComposer implements MessageComposer<RuntimeException> {
     // enum with alphanumeric expansion: delegate to Null/String
     @Override
     public void addEnum(EnumDataItem di, AlphanumericElementaryDataItem token, TokenizableEnum n) {
-        addField(token, n.getToken());
+        if (n == null)
+            writeNull(token);
+        else
+            addField(token, n.getToken());
     }
 }
