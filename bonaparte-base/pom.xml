@@ -16,15 +16,15 @@
         <!-- define releases we want to use, to ensure consistency -->
         <bonaparte.version>1.6.4-SNAPSHOT</bonaparte.version>
         <bonaparte-plugin-version>1.6.4-SNAPSHOT</bonaparte-plugin-version>
-        <xtend.version>2.4.3</xtend.version>
-        <xtext.version>2.4.3-SNAPSHOT</xtext.version>
+        <xtend.version>2.4.3</xtend.version>            <!-- UPTODATE 2013-11-21 -->
+        <xtext.version>2.4.3</xtext.version>            <!-- UPTODATE 2013-11-21 -->
         <slf4j.version>1.7.5</slf4j.version>            <!-- http://www.slf4j.org/ UPTODATE 2013-07-14 -->
         <logback.version>1.0.13</logback.version>       <!-- http://logback.qos.ch/ UPTODATE 2013-07-14 -->
         <guava.version>15.0</guava.version>             <!-- http://code.google.com/p/guava-libraries/ 14.0.1 UPTODATE 2013-06-09, 
             15.0 UPTODATE 2013-09-26 -->
 
         <!-- Some more versions, used by specific dependent projects -->
-        <netty.version>4.0.10.Final</netty.version>     <!-- https://netty.io/news/ UPTODATE 2013-10-05 -->
+        <netty.version>4.0.12.Final</netty.version>     <!-- https://netty.io/news/ UPTODATE 2013-11-21 -->
         <poi.version>3.9</poi.version>                  <!-- http://poi.apache.org/ UPTODATE 2013-06-09 -->
         <mina.version>2.0.5</mina.version>              <!-- http://mina.apache.org/ 2.0.7 -->
         <camel.version>2.11.1</camel.version>           <!-- http://camel.apache.org/ UPTODATE 2013-06-09 -->
@@ -60,33 +60,46 @@
             <name>Xtend Repository</name>
             <url>http://build.eclipse.org/common/xtend/maven/</url>
         </repository>
-        <repository>
-            <id>xtend.snapshots</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>
             <id>xtend</id>
             <url>http://build.eclipse.org/common/xtend/maven/</url>
         </pluginRepository>
-        <pluginRepository>
-            <id>xtend.snapshots</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </pluginRepository>
     </pluginRepositories>
+
+    <profiles>
+        <profile>
+            <id>xtendsnapshots</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <repositories>
+                <repository>
+                    <id>xtend.snapshots</id>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+                    <releases>
+                        <enabled>false</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+            </repositories>
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>xtend.snapshots</id>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+                    <releases>
+                        <enabled>false</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </pluginRepository>
+            </pluginRepositories>
+        </profile>
+    </profiles>
 
     <distributionManagement>
         <snapshotRepository>
@@ -273,17 +286,11 @@
                                     </outputConfiguration>
                                 </outputConfigurations>
                             </language>
-                            <!-- BDDL not required in bonaparte-java
-                            <language>
-                                <setup>de.jpaw.persistence.dsl.BDDLStandaloneSetup</setup>
-                                <outputConfigurations>
-                                    <outputConfiguration>
-                                        <outputDirectory>${project.basedir}/src/generated</outputDirectory>
-                                        xxx<javaSupport>false</javaSupport>xxx
-                                    </outputConfiguration>
-                                </outputConfigurations>
-                            </language>
-                             -->
+                            <!-- BDDL not required in bonaparte-java <language> 
+                                <setup>de.jpaw.persistence.dsl.BDDLStandaloneSetup</setup> <outputConfigurations> 
+                                <outputConfiguration> <outputDirectory>${project.basedir}/src/generated</outputDirectory> 
+                                xxx<javaSupport>false</javaSupport>xxx </outputConfiguration> </outputConfigurations> 
+                                </language> -->
                         </languages>
                     </configuration>
                     <dependencies>
@@ -321,13 +328,9 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore/>
-                                        <!-- 
-                                        <execute>
-                                            <runOnIncremental>true</runOnIncremental>
-                                            <runOnConfiguration>true</runOnConfiguration>
-                                        </execute>
-                                         -->
+                                        <ignore />
+                                        <!-- <execute> <runOnIncremental>true</runOnIncremental> 
+                                            <runOnConfiguration>true</runOnConfiguration> </execute> -->
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -340,7 +343,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore/>
+                                        <ignore />
                                     </action>
                                 </pluginExecution>
                             </pluginExecutions>

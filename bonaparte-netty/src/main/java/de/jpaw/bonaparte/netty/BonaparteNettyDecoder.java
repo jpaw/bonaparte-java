@@ -56,7 +56,8 @@ public class BonaparteNettyDecoder extends ByteToMessageDecoder {
             logger.debug("Successfully parsed data of class {}", obj.getClass());
             out.add(obj);
         } catch (MessageParserException e) {
-            logger.error("Cannot parse {} bytes of data", array.length);
+            // http://co-de-generation.blogspot.de/2012/09/slf4j-doesnt-log-exception-stacktrace.html
+            logger.error("Cannot parse " + array.length + " bytes of data: Exception {}", e);
             logger.error("Message received is <{}>", array.length <= 200 ? new String(array) : new String(array).substring(0, 200));
             if (errorForwarder == null) {
                 throw e;
