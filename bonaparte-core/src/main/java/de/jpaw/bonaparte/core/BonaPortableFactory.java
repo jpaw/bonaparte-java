@@ -114,7 +114,7 @@ public class BonaPortableFactory {
             }
         }
         if (instance == null)
-            throw new MessageParserException(MessageParserException.CLASS_NOT_FOUND, FQON, 0, FQON);
+            throw new MessageParserException(MessageParserException.CLASS_NOT_FOUND, "class", 0, FQON);
         return instance;
     }
 
