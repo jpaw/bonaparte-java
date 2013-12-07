@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.text.TextUtils;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.NoOpComposer;
@@ -29,7 +30,7 @@ import de.jpaw.util.ByteArray;
  * Therefore object output itself is not supported. */
 
 public class LinearLayoutComposer extends NoOpComposer {
-    protected final LinearLayout rowWidget;
+    protected LinearLayout rowWidget;
     protected int column = 0;
     protected int rownum = -1;
     protected static final String [] BIGDECIMAL_FORMATS = {
@@ -54,9 +55,20 @@ public class LinearLayoutComposer extends NoOpComposer {
         "#0.##################"
     };
 
+    // creates a new composer, requires a subsequent newView() to set the rowWidget
+    public LinearLayoutComposer() {
+        this.rowWidget = null;
+        column = -1;
+    }
+    // creates a new composer with an initial rowWidget
     public LinearLayoutComposer(final LinearLayout rowWidget) {
         this.rowWidget = rowWidget;
-        column = 0;
+        column = -1;
+    }
+    
+    public void newView(final LinearLayout rowWidget) {
+        this.rowWidget = rowWidget;
+        column = -1;
     }
 
     /**************************************************************************************************
@@ -111,8 +123,11 @@ public class LinearLayoutComposer extends NoOpComposer {
         return rowWidget.getChildAt(column);
     }
     private void newTextView(String s) {
-        ++column;
-        ((TextView)rowWidget.getChildAt(column)).setText(s != null ? s : "");
+        TextView tv = (TextView)newView();
+        tv.setPadding(1,1,1,1);
+        tv.setSingleLine(true);
+        tv.setEllipsize(TextUtils.TruncateAt.END);
+        tv.setText(s != null ? s : "");
     }
 
     // field type specific output functions

@@ -10,6 +10,7 @@ import de.jpaw.bonaparte.core.FoldingComposer
 import de.jpaw.bonaparte.pojos.meta.FoldingStrategy
 import java.util.List
 import java.util.Map
+import de.jpaw.bonaparte.core.MessageComposer
 
 /**
  * Adapter for the ListView to create selected fields from an object via a FoldingComposer.
@@ -19,13 +20,17 @@ class BonaparteAdapter<T extends BonaPortable> extends BaseAdapter {
     val Context context
     val ViewProvider viewProvider
     val Map<Class<? extends BonaPortable>, List<String>> mapper
-
-    new(Context context, ViewProvider viewProvider, List<T> data, List<String> columnNames) {
+    val LinearLayoutComposer delegateComposer
+    val MessageComposer<RuntimeException> foldingComposer
+    
+    new(Context context, ViewProvider viewProvider, List<T> data, List<String> columnNames, LinearLayoutComposer composer) {
         this.data = data
         this.context = context
         this.viewProvider = viewProvider
         val Class<? extends BonaPortable> zz = BonaPortable
-        mapper = #{ zz -> columnNames}
+        this.mapper = #{ zz -> columnNames}
+        this.delegateComposer = composer
+        this.foldingComposer = new FoldingComposer(composer, mapper, FoldingStrategy.SUPERCLASS_OR_FULL)
     }
 
     override getCount() {
@@ -40,20 +45,10 @@ class BonaparteAdapter<T extends BonaPortable> extends BaseAdapter {
         return row as long
     }
 
-//    override getView(int row, View cv, ViewGroup root) {
-//        val view = cv as LinearLayout ?: viewProvider.newView
-//        val i = getItem(row)
-//        val linearLayoutComposer = new LinearLayoutComposer(view)
-//        val foldingComposer = new FoldingComposer(linearLayoutComposer, mapper, FoldingStrategy.SUPERCLASS_OR_FULL)
-//        foldingComposer.writeRecord(i)
-//        view
-//    }
-
-    // single liner: This is the beauty of xtend!
     override View getView(int row, View cv, ViewGroup root) {
-        (cv as LinearLayout ?: viewProvider.newView) => [
-            new FoldingComposer(new LinearLayoutComposer(it), mapper, FoldingStrategy.SUPERCLASS_OR_FULL).writeRecord(getItem(row))
-        ]
+        val view = (cv as LinearLayout ?: viewProvider.newView)
+        delegateComposer.newView(view)
+        foldingComposer.writeRecord(getItem(row))
+        return view
     }
-
 }
