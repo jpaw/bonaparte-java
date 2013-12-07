@@ -24,7 +24,7 @@
             15.0 UPTODATE 2013-09-26 -->
 
         <!-- Some more versions, used by specific dependent projects -->
-        <netty.version>4.0.12.Final</netty.version>     <!-- https://netty.io/news/ UPTODATE 2013-11-21 -->
+        <netty.version>4.0.13.Final</netty.version>     <!-- https://netty.io/news/ UPTODATE 2013-12-06 -->
         <poi.version>3.9</poi.version>                  <!-- http://poi.apache.org/ UPTODATE 2013-06-09 -->
         <mina.version>2.0.5</mina.version>              <!-- http://mina.apache.org/ 2.0.7 -->
         <camel.version>2.11.1</camel.version>           <!-- http://camel.apache.org/ UPTODATE 2013-06-09 -->
