@@ -1,0 +1,17 @@
+import meta.*
+
+package ui {
+    default private unsigned trim noControlChars;
+
+    enum Alignment    { DEFAULT="D", LEFT="L", CENTER="C", RIGHT="M" }  // default aligns by field type: boolean and images centered, numeric right, rest left (subject to change for locale specific refinement) 
+    enum LayoutHint   { TEXT="T", IMAGE="I", CHECKBOX="B" }
+    
+    /** Defines properties of a column displayed in some UI, to be used with the foldingComposer. */
+    class UIColumn {
+        required identifier         fieldName;          // field name in dotted notation (data.component.field[arrayIndex])
+        required int                width;              // specific width, if 0, then it is determined using the data type width
+        optional Enum Alignment     alignment;          // L/M/R 
+        optional Enum LayoutHint    layoutHint;         // type of view to display 
+    }
+    
+}

@@ -31,6 +31,7 @@ public class BonaPortableFactory {
     static {
         // mappings for bonaparte-core. Install a fresh map if you don't want these. Otherwise, add single mappings to them, or overwrite these
         packagePrefixMap.put("meta", bonaparteClassDefaultPackagePrefix + ".meta");         // bonaparte-core
+        packagePrefixMap.put("ui", bonaparteClassDefaultPackagePrefix + ".ui");             // bonaparte-core
         packagePrefixMap.put("money", bonaparteClassDefaultPackagePrefix + ".money");       // bonaparte-money
     }
     static private class HiddenClass {
