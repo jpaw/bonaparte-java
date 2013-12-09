@@ -3,6 +3,7 @@ package de.jpaw.bonaparte.android;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.Calendar;
+import java.util.Map;
 import java.util.UUID;
 
 import org.joda.time.LocalDate;
@@ -12,6 +13,9 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.ImageView;
+import android.graphics.BitmapFactory;
+import android.text.TextUtils;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.NoOpComposer;
@@ -29,9 +33,12 @@ import de.jpaw.util.ByteArray;
  * Therefore object output itself is not supported. */
 
 public class LinearLayoutComposer extends NoOpComposer {
-    protected final LinearLayout rowWidget;
+    protected LinearLayout rowWidget;
+    protected int initialChilds = 0;
+    protected Map<String,Integer> widths = null;
     protected int column = 0;
     protected int rownum = -1;
+    protected boolean binaryAsBitmap = false;
     protected static final String [] BIGDECIMAL_FORMATS = {
         "#0",
         "#0.#",
@@ -54,9 +61,35 @@ public class LinearLayoutComposer extends NoOpComposer {
         "#0.##################"
     };
 
+    // creates a new composer, requires a subsequent newView() to set the rowWidget
+    public LinearLayoutComposer() {
+        this.rowWidget = null;
+        column = -1;
+    }
+    
+    // creates a new composer, with support of widget auto-creation
+    public LinearLayoutComposer(Map<String,Integer> widths) {
+        this.rowWidget = null;
+        this.widths = widths;
+        column = -1;
+    }
+   
+    
+    // creates a new composer with an initial rowWidget
     public LinearLayoutComposer(final LinearLayout rowWidget) {
         this.rowWidget = rowWidget;
-        column = 0;
+        initialChilds = rowWidget.getChildCount();
+        column = -1;
+    }
+    
+    public void newView(final LinearLayout rowWidget) {
+        this.rowWidget = rowWidget;
+        initialChilds = rowWidget.getChildCount();
+        column = -1;
+    }
+    
+    public void setBinaryAsBitmap(boolean doIt) {
+        binaryAsBitmap = doIt;
     }
 
     /**************************************************************************************************
@@ -111,8 +144,11 @@ public class LinearLayoutComposer extends NoOpComposer {
         return rowWidget.getChildAt(column);
     }
     private void newTextView(String s) {
-        ++column;
-        ((TextView)rowWidget.getChildAt(column)).setText(s != null ? s : "");
+        TextView tv = (TextView)newView();
+        tv.setPadding(1,1,1,1);
+        tv.setSingleLine(true);
+        tv.setEllipsize(TextUtils.TruncateAt.END);
+        tv.setText(s != null ? s : "");
     }
 
     // field type specific output functions
@@ -207,10 +243,13 @@ public class LinearLayoutComposer extends NoOpComposer {
     @Override
     public void addField(BinaryElementaryDataItem di, ByteArray b) {
         if (b != null) {
-            newTextView("(Binary)");
-            //            ByteBuilder tmp = new ByteBuilder((b.length() * 2) + 4, null);
-            //            Base64.encodeToByte(tmp, b.getBytes(), 0, b.length());
-            //            newView().setViewValue(new String(tmp.getCurrentBuffer(), 0, tmp.length()));
+            if (binaryAsBitmap) {
+                ImageView v = (ImageView)newView();
+                byte [] rawData = b.getBytes();
+                v.setImageBitmap(BitmapFactory.decodeByteArray(rawData, 0, rawData.length));
+            } else {
+                newTextView("(Binary)");
+            }
         } else {
             writeNull();
         }
@@ -220,10 +259,12 @@ public class LinearLayoutComposer extends NoOpComposer {
     @Override
     public void addField(BinaryElementaryDataItem di, byte[] b) {
         if (b != null) {
-            newTextView("(Binary)");
-            //            ByteBuilder tmp = new ByteBuilder((b.length * 2) + 4, null);
-            //            Base64.encodeToByte(tmp, b, 0, b.length);
-            //            newView().setViewValue(new String(tmp.getCurrentBuffer(), 0, tmp.length()));
+            if (binaryAsBitmap) {
+                ImageView v = (ImageView)newView();
+                v.setImageBitmap(BitmapFactory.decodeByteArray(b, 0, b.length));
+            } else {
+                newTextView("(Binary)");
+            }
         } else {
             writeNull();
         }
