@@ -27,6 +27,7 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
@@ -70,13 +71,13 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
      * */
 
     @Override
-    public void addField(double d) throws IOException {
+    public void addField(BasicNumericElementaryDataItem di, double d) throws IOException {
         out.writeByte(BINARY_DOUBLE);
         out.writeDouble(d);
     }
 
     @Override
-    public void addField(float f) throws IOException {
+    public void addField(BasicNumericElementaryDataItem di, float f) throws IOException {
         out.writeByte(BINARY_FLOAT);
         out.writeFloat(f);
     }
@@ -122,7 +123,7 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
     }
 
     @Override
-    public void addField(char c) throws IOException {
+    public void addField(MiscElementaryDataItem di, char c) throws IOException {
         char [] tmp = new char[1];
         tmp[0] = c;
         String s = new String(tmp);
@@ -130,7 +131,7 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
         out.writeUTF(s);
     }
     @Override
-    public void addField(boolean b) throws IOException {
+    public void addField(MiscElementaryDataItem di, boolean b) throws IOException {
         out.writeByte(b ? INT_ONE : INT_ZERO);
     }
 
@@ -323,31 +324,31 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
     }
 
     @Override
-    public void addField(byte n) throws IOException {
+    public void addField(BasicNumericElementaryDataItem di, byte n) throws IOException {
         writeVarInt(n);
     }
 
     @Override
-    public void addField(short n) throws IOException {
+    public void addField(BasicNumericElementaryDataItem di, short n) throws IOException {
         writeVarInt(n);
     }
 
 
 
     @Override
-    public void addField(long n) throws IOException {
+    public void addField(BasicNumericElementaryDataItem di, long n) throws IOException {
         writeVarLong(n);
 
     }
 
     @Override
-    public void addField(int n) throws IOException {
+    public void addField(BasicNumericElementaryDataItem di, int n) throws IOException {
         writeVarInt(n);
 
     }
 
     @Override
-    public void addField(NumericElementaryDataItem di, Integer n) throws IOException {
+    public void addField(BasicNumericElementaryDataItem di, Integer n) throws IOException {
         if (n == null) {
             out.writeByte(NULL_FIELD);
         } else {
@@ -381,11 +382,11 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
 
     // enum with numeric expansion: delegate to Null/Int
     @Override
-    public void addEnum(EnumDataItem di, NumericElementaryDataItem ord, Enum<?> n) throws IOException {
+    public void addEnum(EnumDataItem di, BasicNumericElementaryDataItem ord, Enum<?> n) throws IOException {
         if (n == null)
             writeNull(ord);
         else
-            addField(n.ordinal());
+            addField(ord, n.ordinal());
     }
 
     // enum with alphanumeric expansion: delegate to Null/String

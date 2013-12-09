@@ -20,6 +20,7 @@ import android.text.TextUtils;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.NoOpComposer;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
@@ -155,7 +156,7 @@ public class LinearLayoutComposer extends NoOpComposer {
 
     // character
     @Override
-    public void addField(char c) {
+    public void addField(MiscElementaryDataItem di, char c) {
         newTextView(String.valueOf(c));
     }
     // ascii only (unicode uses different method)
@@ -181,23 +182,23 @@ public class LinearLayoutComposer extends NoOpComposer {
 
     // byte
     @Override
-    public void addField(byte n) {
+    public void addField(BasicNumericElementaryDataItem di, byte n) {
         newTextView(Byte.toString(n));
     }
     // short
     @Override
-    public void addField(short n) {
+    public void addField(BasicNumericElementaryDataItem di, short n) {
         newTextView(Short.toString(n));
     }
     // integer
     @Override
-    public void addField(int n) {
+    public void addField(BasicNumericElementaryDataItem di, int n) {
         newTextView(Integer.toString(n));
     }
 
     // int(n)
     @Override
-    public void addField(NumericElementaryDataItem di, Integer n) {
+    public void addField(BasicNumericElementaryDataItem di, Integer n) {
         if (n != null) {
             newTextView(Integer.toString(n));
         } else {
@@ -207,25 +208,25 @@ public class LinearLayoutComposer extends NoOpComposer {
 
     // long
     @Override
-    public void addField(long n) {
+    public void addField(BasicNumericElementaryDataItem di, long n) {
         newTextView(Long.toString(n));
     }
 
     // boolean
     @Override
-    public void addField(boolean b) {
+    public void addField(MiscElementaryDataItem di, boolean b) {
         ((CheckBox)(newView())).setChecked(b);
     }
 
     // float
     @Override
-    public void addField(float f) {
+    public void addField(BasicNumericElementaryDataItem di, float f) {
         newTextView(Float.toString(f));
     }
 
     // double
     @Override
-    public void addField(double d) {
+    public void addField(BasicNumericElementaryDataItem di, double d) {
         newTextView(Double.toString(d));
     }
 
@@ -328,7 +329,7 @@ public class LinearLayoutComposer extends NoOpComposer {
 
     // enum with numeric expansion: delegate to Null/Int
     @Override
-    public void addEnum(EnumDataItem di, NumericElementaryDataItem ord, Enum<?> n) {
+    public void addEnum(EnumDataItem di, BasicNumericElementaryDataItem ord, Enum<?> n) {
         if (n == null) {
             writeNull(ord);
         } else {

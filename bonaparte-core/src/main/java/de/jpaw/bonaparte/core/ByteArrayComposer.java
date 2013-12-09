@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
@@ -199,7 +200,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
 
     // character
     @Override
-    public void addField(char c) {
+    public void addField(MiscElementaryDataItem di, char c) {
         addCharSub(c);
         terminateField();
     }
@@ -238,26 +239,26 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
 
     // byte
     @Override
-    public void addField(byte n) {
+    public void addField(BasicNumericElementaryDataItem di, byte n) {
         work.appendAscii(Byte.toString(n));
         terminateField();
     }
     // short
     @Override
-    public void addField(short n) {
+    public void addField(BasicNumericElementaryDataItem di, short n) {
         work.appendAscii(Short.toString(n));
         terminateField();
     }
     // integer
     @Override
-    public void addField(int n) {
+    public void addField(BasicNumericElementaryDataItem di, int n) {
         work.appendAscii(Integer.toString(n));
         terminateField();
     }
 
     // int(n)
     @Override
-    public void addField(NumericElementaryDataItem di, Integer n) {
+    public void addField(BasicNumericElementaryDataItem di, Integer n) {
         if (n != null) {
             work.appendAscii(n.toString());
             terminateField();
@@ -268,14 +269,14 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
 
     // long
     @Override
-    public void addField(long n) {
+    public void addField(BasicNumericElementaryDataItem di, long n) {
         work.appendAscii(Long.toString(n));
         terminateField();
     }
 
     // boolean
     @Override
-    public void addField(boolean b) {
+    public void addField(MiscElementaryDataItem di, boolean b) {
         if (b) {
             work.append((byte) '1');
         } else {
@@ -298,14 +299,14 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
 
     // float
     @Override
-    public void addField(float f) {
+    public void addField(BasicNumericElementaryDataItem di, float f) {
         work.appendAscii(Float.toString(f));
         terminateField();
     }
 
     // double
     @Override
-    public void addField(double d) {
+    public void addField(BasicNumericElementaryDataItem di, double d) {
         work.appendAscii(Double.toString(d));
         terminateField();
     }
@@ -426,14 +427,14 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
     @Override
     public void startMap(int currentMembers, int indexID) {
         work.append(MAP_BEGIN);
-        addField(indexID);
-        addField(currentMembers);
+        addField(StaticMeta.INTERNAL_INTEGER, indexID);
+        addField(StaticMeta.INTERNAL_INTEGER, currentMembers);
     }
 
     @Override
     public void startArray(int currentMembers, int maxMembers, int sizeOfElement) {
         work.append(ARRAY_BEGIN);
-        addField(currentMembers);
+        addField(StaticMeta.INTERNAL_INTEGER, currentMembers);
     }
 
     @Override
@@ -464,7 +465,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
                 if (previousIndex != null) {
                     // reuse this instance
                     work.append(OBJECT_AGAIN);
-                    addField(previousIndex.intValue());
+                    addField(StaticMeta.INTERNAL_INTEGER, previousIndex.intValue());
                     ++numberOfObjectReuses;
                     return;
                 }
@@ -484,11 +485,11 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
 
     // enum with numeric expansion: delegate to Null/Int
     @Override
-    public void addEnum(EnumDataItem di, NumericElementaryDataItem ord, Enum<?> n) {
+    public void addEnum(EnumDataItem di, BasicNumericElementaryDataItem ord, Enum<?> n) {
         if (n == null)
             writeNull(ord);
         else
-            addField(n.ordinal());
+            addField(ord, n.ordinal());
     }
 
     // enum with alphanumeric expansion: delegate to Null/String

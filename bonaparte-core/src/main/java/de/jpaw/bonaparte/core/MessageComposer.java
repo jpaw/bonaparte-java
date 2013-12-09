@@ -22,6 +22,7 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
@@ -60,27 +61,27 @@ public interface MessageComposer<E extends Exception> {
     // serialization methods: field type specific
 
     // primitives
-    void addField(boolean b) throws E;
-    void addField(char c) throws E;
-    void addField(double d) throws E;
-    void addField(float f) throws E;
-    void addField(byte n) throws E;
-    void addField(short n) throws E;
-    void addField(int n) throws E;
-    void addField(long n) throws E;
+    void addField(MiscElementaryDataItem di, boolean b) throws E;
+    void addField(MiscElementaryDataItem di, char c) throws E;
+    void addField(BasicNumericElementaryDataItem di, double d) throws E;
+    void addField(BasicNumericElementaryDataItem di, float f) throws E;
+    void addField(BasicNumericElementaryDataItem di, byte n) throws E;
+    void addField(BasicNumericElementaryDataItem di, short n) throws E;
+    void addField(BasicNumericElementaryDataItem di, int n) throws E;
+    void addField(BasicNumericElementaryDataItem di, long n) throws E;
 
     void addField(AlphanumericElementaryDataItem di, String s) throws E;    // Ascii, Upper, Lower, Unicode
     void addField(BonaPortable obj) throws E;
     void addField(MiscElementaryDataItem di, UUID n) throws E;
     void addField(BinaryElementaryDataItem di, ByteArray b) throws E;
     void addField(BinaryElementaryDataItem di, byte [] b) throws E;
-    void addField(NumericElementaryDataItem di, Integer n) throws E;
+    void addField(BasicNumericElementaryDataItem di, Integer n) throws E;
     void addField(NumericElementaryDataItem di, BigDecimal n) throws E;
     void addField(TemporalElementaryDataItem di, Calendar t) throws E;
     void addField(TemporalElementaryDataItem di, LocalDate t) throws E;
     void addField(TemporalElementaryDataItem di, LocalDateTime t) throws E;
     
     // Enums
-    void addEnum(EnumDataItem di, NumericElementaryDataItem ord, Enum<?> n) throws E;
+    void addEnum(EnumDataItem di, BasicNumericElementaryDataItem ord, Enum<?> n) throws E;
     void addEnum(EnumDataItem di, AlphanumericElementaryDataItem token, TokenizableEnum n) throws E;
 }

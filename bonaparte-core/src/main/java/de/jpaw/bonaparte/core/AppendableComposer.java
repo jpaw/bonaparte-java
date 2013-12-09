@@ -26,6 +26,7 @@ import java.util.UUID;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
@@ -179,7 +180,7 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
 
     // character
     @Override
-    public void addField(char c) throws IOException {
+    public void addField(MiscElementaryDataItem di, char c) throws IOException {
         addCharSub(c);
         terminateField();
     }
@@ -213,26 +214,26 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
 
     // byte
     @Override
-    public void addField(byte n) throws IOException {
+    public void addField(BasicNumericElementaryDataItem di, byte n) throws IOException {
         work.append(Byte.toString(n));
         terminateField();
     }
     // short
     @Override
-    public void addField(short n) throws IOException {
+    public void addField(BasicNumericElementaryDataItem di, short n) throws IOException {
         work.append(Short.toString(n));
         terminateField();
     }
     // integer
     @Override
-    public void addField(int n) throws IOException {
+    public void addField(BasicNumericElementaryDataItem di, int n) throws IOException {
         work.append(Integer.toString(n));
         terminateField();
     }
 
     // int(n)
     @Override
-    public void addField(NumericElementaryDataItem di, Integer n) throws IOException {
+    public void addField(BasicNumericElementaryDataItem di, Integer n) throws IOException {
         if (n != null) {
             work.append(n.toString());
             terminateField();
@@ -243,14 +244,14 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
 
     // long
     @Override
-    public void addField(long n) throws IOException {
+    public void addField(BasicNumericElementaryDataItem di, long n) throws IOException {
         work.append(Long.toString(n));
         terminateField();
     }
 
     // boolean
     @Override
-    public void addField(boolean b) throws IOException {
+    public void addField(MiscElementaryDataItem di, boolean b) throws IOException {
         if (b) {
             work.append('1');
         } else {
@@ -261,14 +262,14 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
 
     // float
     @Override
-    public void addField(float f) throws IOException {
+    public void addField(BasicNumericElementaryDataItem di, float f) throws IOException {
         work.append(Float.toString(f));
         terminateField();
     }
 
     // double
     @Override
-    public void addField(double d) throws IOException {
+    public void addField(BasicNumericElementaryDataItem di, double d) throws IOException {
         work.append(Double.toString(d));
         terminateField();
     }
@@ -406,14 +407,14 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
     @Override
     public void startMap(int currentMembers, int indexID) throws IOException {
         work.append(MAP_BEGIN);
-        addField(indexID);
-        addField(currentMembers);
+        addField(StaticMeta.INTERNAL_INTEGER, indexID);
+        addField(StaticMeta.INTERNAL_INTEGER, currentMembers);
     }
 
     @Override
     public void startArray(int currentMembers, int maxMembers, int sizeOfElement) throws IOException {
         work.append(ARRAY_BEGIN);
-        addField(currentMembers);
+        addField(StaticMeta.INTERNAL_INTEGER, currentMembers);
     }
 
     @Override
@@ -444,7 +445,7 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
                 if (previousIndex != null) {
                     // reuse this instance
                     work.append(OBJECT_AGAIN);
-                    addField(previousIndex.intValue());
+                    addField(StaticMeta.INTERNAL_INTEGER, previousIndex.intValue());
                     ++numberOfObjectReuses;
                     return;
                 }
@@ -463,11 +464,11 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
 
     // enum with numeric expansion: delegate to Null/Int
     @Override
-    public void addEnum(EnumDataItem di, NumericElementaryDataItem ord, Enum<?> n) throws IOException {
+    public void addEnum(EnumDataItem di, BasicNumericElementaryDataItem ord, Enum<?> n) throws IOException {
         if (n == null)
             writeNull(ord);
         else
-            addField(n.ordinal());
+            addField(ord, n.ordinal());
     }
 
     // enum with alphanumeric expansion: delegate to Null/String

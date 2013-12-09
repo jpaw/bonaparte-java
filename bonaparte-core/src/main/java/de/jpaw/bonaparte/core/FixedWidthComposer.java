@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 /**
@@ -163,26 +164,26 @@ public class FixedWidthComposer extends CSVComposer {
     
     // long (UNSIGNED)
     @Override
-    public void addField(long n) throws IOException {
+    public void addField(BasicNumericElementaryDataItem di, long n) throws IOException {
         writeSeparator();
         String val = Long.toString(n);
-        numericPad(18 - val.length());
+        numericPad(di.getTotalDigits() - val.length());
         addRawData(val);
     }
     
     // int (SIGNED, LEADING SIGN)
     @Override
-    public void addField(int n) throws IOException {
+    public void addField(BasicNumericElementaryDataItem di, int n) throws IOException {
         writeSeparator();
         addRawData(n < 0 ? "-" : " ");
         String val = Integer.toString(n < 0 ? -n : n);
-        numericPad(9 - val.length());
+        numericPad(di.getTotalDigits() - val.length());
         addRawData(val);
     }
     
     // int(n) (SIGNED AND UNSIGNED; specific length, LEADING SIGN), null possible
     @Override
-    public void addField(NumericElementaryDataItem di, Integer n) throws IOException {
+    public void addField(BasicNumericElementaryDataItem di, Integer n) throws IOException {
         writeSeparator();
         if (n == null) {
             addRawData(SPACE_PADDINGS[di.getTotalDigits() + (di.getIsSigned() ? 1 : 0)]);

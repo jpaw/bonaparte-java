@@ -7,7 +7,7 @@ package meta {
     enum BundleStatus { UNUSED, RESOLVED, INSTALLED, STARTING, SHUTTING_DOWN, MAINTENANCE }  // borrow OSGi statuses
     enum Multiplicity { SCALAR, ARRAY, LIST, SET, MAP }
     // the DataCategory matches the enum of same name in the Bonaparte DSL generator project
-    enum DataCategory { OBJECT, ENUM, NUMERIC, STRING, TEMPORAL, MISC, BINARY }  // misc is boolean, char, uuid, ...
+    enum DataCategory { OBJECT, ENUM, NUMERIC, STRING, TEMPORAL, MISC, BINARY, BASICNUMERIC }  // misc is boolean, char, uuid, ...
     enum FoldingStrategy { SKIP_UNMAPPED, TRY_SUPERCLASS, FULL_OUTPUT, SUPERCLASS_OR_FULL }  // what to do if no folding mapping is found
     
 	abstract immutable class FieldDefinition {
@@ -55,11 +55,15 @@ package meta {
     class MiscElementaryDataItem extends ElementaryDataItem {
     }
 
-    // NumericElementaryDataItem represents all numeric items (float and double and other primitives only fill the isSigned) 
-    class NumericElementaryDataItem extends ElementaryDataItem {
+    // BasicNumericElementaryDataItem represents all integral numeric items, plus float and double (and their wrappers)
+    class BasicNumericElementaryDataItem extends ElementaryDataItem {
         boolean                 isSigned;
         int                     totalDigits;
         int                     decimalDigits;      // number of digits (max) behind the decimal point
+    }
+    
+    // NumericElementaryDataItem represents decimal
+    class NumericElementaryDataItem extends BasicNumericElementaryDataItem {
         boolean                 rounding;           // if true, parsing numbers with more decimals will result in rounding, if false, an error will be raised
         boolean                 ^autoScale;         // if true, any input will be scaled to the required number of decimal digits
     }

@@ -1,6 +1,7 @@
 package de.jpaw.bonaparte.core;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 import de.jpaw.enums.TokenizableEnum;
@@ -13,7 +14,7 @@ public class EnumAsTokenComposerFilter<E extends Exception> extends DelegatingBa
 
     // enums replaced by the internal token
     @Override
-    public void addEnum(EnumDataItem di, NumericElementaryDataItem ord, Enum<?> n) throws E {
+    public void addEnum(EnumDataItem di, BasicNumericElementaryDataItem ord, Enum<?> n) throws E {
         delegateComposer.addField(StaticMeta.ENUM_TOKEN, n == null ? null : n.toString());
     }
 

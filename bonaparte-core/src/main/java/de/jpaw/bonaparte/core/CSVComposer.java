@@ -27,6 +27,7 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormatter;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
@@ -121,7 +122,7 @@ public class CSVComposer extends AppendableComposer {
 
     // character
     @Override
-    public void addField(char c) throws IOException {
+    public void addField(MiscElementaryDataItem di, char c) throws IOException {
         writeSeparator();
         addCharSub(c);
     }
@@ -157,47 +158,47 @@ public class CSVComposer extends AppendableComposer {
 
     // byte
     @Override
-    public void addField(byte n) throws IOException {
+    public void addField(BasicNumericElementaryDataItem di, byte n) throws IOException {
         writeSeparator();
-        super.addField(n);
+        super.addField(di, n);
     }
     // short
     @Override
-    public void addField(short n) throws IOException {
+    public void addField(BasicNumericElementaryDataItem di, short n) throws IOException {
         writeSeparator();
-        super.addField(n);
+        super.addField(di, n);
     }
     // integer
     @Override
-    public void addField(int n) throws IOException {
+    public void addField(BasicNumericElementaryDataItem di, int n) throws IOException {
         writeSeparator();
-        super.addField(n);
+        super.addField(di, n);
     }
 
     // int(n)
     @Override
-    public void addField(NumericElementaryDataItem di, Integer n) throws IOException {
+    public void addField(BasicNumericElementaryDataItem di, Integer n) throws IOException {
         writeSeparator();
         super.addField(di, n);
     }
 
     // long
     @Override
-    public void addField(long n) throws IOException {
+    public void addField(BasicNumericElementaryDataItem di, long n) throws IOException {
         writeSeparator();
-        super.addField(n);
+        super.addField(di, n);
     }
 
     // boolean
     @Override
-    public void addField(boolean b) throws IOException {
+    public void addField(MiscElementaryDataItem di, boolean b) throws IOException {
         writeSeparator();
         super.addRawData(b ? cfg.booleanTrue : cfg.booleanFalse);
     }
 
     // float
     @Override
-    public void addField(float f) throws IOException {
+    public void addField(BasicNumericElementaryDataItem di, float f) throws IOException {
         writeSeparator();
         addRawData(numberFormat.format(f));            // format using the locale's approach
         /*
@@ -211,7 +212,7 @@ public class CSVComposer extends AppendableComposer {
 
     // double
     @Override
-    public void addField(double d) throws IOException {
+    public void addField(BasicNumericElementaryDataItem di, double d) throws IOException {
         writeSeparator();
         addRawData(numberFormat.format(d));            // format using the locale's approach
         /*

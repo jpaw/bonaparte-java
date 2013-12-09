@@ -27,6 +27,7 @@ import org.joda.time.LocalDateTime;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.MessageComposer;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
@@ -198,7 +199,7 @@ public class BaseExcelComposer implements MessageComposer<RuntimeException> {
 
     // character
     @Override
-    public void addField(char c) {
+    public void addField(MiscElementaryDataItem di, char c) {
         newCell().setCellValue(String.valueOf(c));
     }
     // ascii only (unicode uses different method)
@@ -219,23 +220,23 @@ public class BaseExcelComposer implements MessageComposer<RuntimeException> {
 
     // byte
     @Override
-    public void addField(byte n) {
+    public void addField(BasicNumericElementaryDataItem di, byte n) {
         newCell().setCellValue((double)n);
     }
     // short
     @Override
-    public void addField(short n) {
+    public void addField(BasicNumericElementaryDataItem di, short n) {
         newCell().setCellValue((double)n);
     }
     // integer
     @Override
-    public void addField(int n) {
+    public void addField(BasicNumericElementaryDataItem di, int n) {
         newCell().setCellValue((double)n);
     }
 
     // int(n)
     @Override
-    public void addField(NumericElementaryDataItem di, Integer n) {
+    public void addField(BasicNumericElementaryDataItem di, Integer n) {
         if (n != null) {
             newCell().setCellValue(n.doubleValue());
         } else {
@@ -245,25 +246,25 @@ public class BaseExcelComposer implements MessageComposer<RuntimeException> {
 
     // long
     @Override
-    public void addField(long n) {
+    public void addField(BasicNumericElementaryDataItem di, long n) {
         newCell(csLong).setCellValue((double)n);
     }
 
     // boolean
     @Override
-    public void addField(boolean b) {
+    public void addField(MiscElementaryDataItem di, boolean b) {
         newCell().setCellValue(b);
     }
 
     // float
     @Override
-    public void addField(float f) {
+    public void addField(BasicNumericElementaryDataItem di, float f) {
         newCell().setCellValue((double)f);
     }
 
     // double
     @Override
-    public void addField(double d) {
+    public void addField(BasicNumericElementaryDataItem di, double d) {
         newCell().setCellValue(d);
     }
 
@@ -358,7 +359,7 @@ public class BaseExcelComposer implements MessageComposer<RuntimeException> {
     }
     // enum with numeric expansion: delegate to Null/Int
     @Override
-    public void addEnum(EnumDataItem di, NumericElementaryDataItem ord, Enum<?> n) {
+    public void addEnum(EnumDataItem di, BasicNumericElementaryDataItem ord, Enum<?> n) {
         if (n == null)
             writeNull(ord);
         else

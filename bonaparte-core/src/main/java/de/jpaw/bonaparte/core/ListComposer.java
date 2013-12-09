@@ -10,6 +10,7 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
@@ -64,48 +65,48 @@ public class ListComposer extends NoOpComposer implements MessageComposer<Runtim
     }
 
     @Override
-    public void addField(boolean b) {
+    public void addField(MiscElementaryDataItem di, boolean b) {
         storage.add(Boolean.valueOf(b));
     }
 
     @Override
-    public void addField(char c) {
+    public void addField(MiscElementaryDataItem di, char c) {
         storage.add(Character.valueOf(c));
     }
 
     @Override
-    public void addField(double d) {
+    public void addField(BasicNumericElementaryDataItem di, double d) {
         storage.add(Double.valueOf(d));
     }
 
     @Override
-    public void addField(float f) {
+    public void addField(BasicNumericElementaryDataItem di, float f) {
         storage.add(Float.valueOf(f));
     }
 
     @Override
-    public void addField(byte n) {
+    public void addField(BasicNumericElementaryDataItem di, byte n) {
         storage.add(Byte.valueOf(n));
     }
 
     @Override
-    public void addField(short n) {
+    public void addField(BasicNumericElementaryDataItem di, short n) {
         storage.add(Short.valueOf(n));
     }
 
     @Override
-    public void addField(int n) {
+    public void addField(BasicNumericElementaryDataItem di, int n) {
         storage.add(Integer.valueOf(n));
     }
 
     @Override
-    public void addField(long n) {
+    public void addField(BasicNumericElementaryDataItem di, long n) {
         storage.add(Long.valueOf(n));
     }
 
     @Override
-    public void addField(NumericElementaryDataItem di, Integer n) {
-        storage.add(Long.valueOf(n));
+    public void addField(BasicNumericElementaryDataItem di, Integer n) {
+        storage.add(n);
     }
 
     @Override

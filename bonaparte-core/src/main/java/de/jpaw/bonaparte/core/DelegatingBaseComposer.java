@@ -8,6 +8,7 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
@@ -92,47 +93,47 @@ public class DelegatingBaseComposer<E extends Exception> implements MessageCompo
     }
 
     @Override
-    public void addField(boolean b) throws E {
-        delegateComposer.addField(b);
+    public void addField(MiscElementaryDataItem di, boolean b) throws E {
+        delegateComposer.addField(di, b);
     }
 
     @Override
-    public void addField(char c) throws E {
-        delegateComposer.addField(c);
+    public void addField(MiscElementaryDataItem di, char c) throws E {
+        delegateComposer.addField(di, c);
     }
 
     @Override
-    public void addField(double d) throws E {
-        delegateComposer.addField(d);
+    public void addField(BasicNumericElementaryDataItem di, double d) throws E {
+        delegateComposer.addField(di, d);
     }
 
     @Override
-    public void addField(float f) throws E {
-        delegateComposer.addField(f);
+    public void addField(BasicNumericElementaryDataItem di, float f) throws E {
+        delegateComposer.addField(di, f);
     }
 
     @Override
-    public void addField(byte n) throws E {
-        delegateComposer.addField(n);
+    public void addField(BasicNumericElementaryDataItem di, byte n) throws E {
+        delegateComposer.addField(di, n);
     }
 
     @Override
-    public void addField(short n) throws E {
-        delegateComposer.addField(n);
+    public void addField(BasicNumericElementaryDataItem di, short n) throws E {
+        delegateComposer.addField(di, n);
     }
 
     @Override
-    public void addField(int n) throws E {
-        delegateComposer.addField(n);
+    public void addField(BasicNumericElementaryDataItem di, int n) throws E {
+        delegateComposer.addField(di, n);
     }
 
     @Override
-    public void addField(long n) throws E {
-        delegateComposer.addField(n);
+    public void addField(BasicNumericElementaryDataItem di, long n) throws E {
+        delegateComposer.addField(di, n);
     }
 
     @Override
-    public void addField(NumericElementaryDataItem di, Integer n) throws E {
+    public void addField(BasicNumericElementaryDataItem di, Integer n) throws E {
         delegateComposer.addField(di, n);
     }
 
@@ -183,7 +184,7 @@ public class DelegatingBaseComposer<E extends Exception> implements MessageCompo
 
     // enum with numeric expansion: delegate to Null/Int
     @Override
-    public void addEnum(EnumDataItem di, NumericElementaryDataItem ord, Enum<?> n) throws E {
+    public void addEnum(EnumDataItem di, BasicNumericElementaryDataItem ord, Enum<?> n) throws E {
         delegateComposer.addEnum(di, ord, n);
     }
 
