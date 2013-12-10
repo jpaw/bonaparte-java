@@ -35,6 +35,7 @@ import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.enums.TokenizableEnum;
 import de.jpaw.util.Base64;
@@ -181,7 +182,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
     @Override
     public void writeRecord(BonaPortable o) {
         startRecord();
-        addField(o);
+        addField(StaticMeta.OUTER_BONAPORTABLE, o);
         terminateRecord();
     }
 
@@ -448,7 +449,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
     }
     
     @Override
-    public void startObject(BonaPortable obj) {
+    public void startObject(ObjectReference di, BonaPortable obj) {
         work.append(OBJECT_BEGIN);
         addField(OBJECT_CLASS, obj.get$PQON());
         addField(REVISION_META, obj.get$Revision());
@@ -456,7 +457,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
     
 
     @Override
-    public void addField(BonaPortable obj) {
+    public void addField(ObjectReference di, BonaPortable obj) {
         if (obj == null) {
             writeNull();
         } else {
@@ -472,7 +473,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
                 // fall through
             }
             // start a new object
-            startObject(obj);
+            startObject(di, obj);
 
             // do all fields (now includes terminator)
             obj.serializeSub(this);

@@ -32,6 +32,7 @@ import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.enums.TokenizableEnum;
 import de.jpaw.util.Base64;
@@ -163,7 +164,7 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
     @Override
     public void writeRecord(BonaPortable o) throws IOException {
         startRecord();
-        addField(o);
+        addField(StaticMeta.OUTER_BONAPORTABLE, o);
         terminateRecord();
     }
 
@@ -429,14 +430,14 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
 
 
     @Override
-    public void startObject(BonaPortable obj) throws IOException {
+    public void startObject(ObjectReference di, BonaPortable obj) throws IOException {
         work.append(OBJECT_BEGIN);
         addField(OBJECT_CLASS, obj.get$PQON());
         addField(REVISION_META, obj.get$Revision());
     }
     
     @Override
-    public void addField(BonaPortable obj) throws IOException {
+    public void addField(ObjectReference di, BonaPortable obj) throws IOException {
         if (obj == null) {
             writeNull();
         } else {
@@ -452,7 +453,7 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
                 // fall through
             }
             // start a new object
-            startObject(obj);
+            startObject(di, obj);
             // do all fields (now includes terminator)
             obj.serializeSub(this);
             if (useCache) {

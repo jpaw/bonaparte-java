@@ -33,6 +33,7 @@ import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.enums.TokenizableEnum;
 import de.jpaw.util.ByteArray;
@@ -319,7 +320,7 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
     @Override
     public void writeRecord(BonaPortable o) throws IOException {
         startRecord();
-        addField(o);
+        addField(StaticMeta.OUTER_BONAPORTABLE, o);
         terminateRecord();
     }
 
@@ -357,17 +358,17 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
     }
 
     @Override
-    public void startObject(BonaPortable obj) throws IOException {
+    public void startObject(ObjectReference di, BonaPortable obj) throws IOException {
     }
 
     @Override
-    public void addField(BonaPortable obj) throws IOException {
+    public void addField(ObjectReference di, BonaPortable obj) throws IOException {
         if (obj == null) {
             out.writeByte(NULL_FIELD);
         } else {
             // do not rely on Java logic, we know the object is BonaPortable and call the externalizer interface directly
             // do we really? (At the moment it's optional)
-            startObject(obj);
+            startObject(di, obj);
             out.writeByte(OBJECT_BEGIN);  // this logically belongs to the lines below, do not split here!
             if (nestedObjectsInternally) {
                 out.writeUTF(obj.get$PQON());

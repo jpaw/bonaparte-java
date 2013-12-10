@@ -15,6 +15,7 @@ import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.util.ByteArray;
 
@@ -56,7 +57,7 @@ public class ListComposer extends NoOpComposer implements MessageComposer<Runtim
     @Override
     public void writeRecord(BonaPortable o) {
         startRecord();  // noop in the base implementation
-        addField(o);
+        addField(StaticMeta.OUTER_BONAPORTABLE, o);
     }
 
     @Override
@@ -149,11 +150,11 @@ public class ListComposer extends NoOpComposer implements MessageComposer<Runtim
     }
 
     @Override
-    public void addField(BonaPortable obj) {
+    public void addField(ObjectReference di, BonaPortable obj) {
         if (obj == null) {
             writeNull(null);
         } else {
-            startObject(obj);
+            startObject(di, obj);
             obj.serializeSub(this);
         }
     }

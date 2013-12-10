@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.jpaw.bonaparte.pojos.meta.FoldingStrategy;
+import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.ParsedFoldingComponent;
 
 /** Delegates most output to the delegateComposer, but uses a permutation/selection of fields for the object output. */ 
@@ -34,12 +35,12 @@ public class FoldingComposer<E extends Exception> extends DelegatingBaseComposer
     @Override
     public void writeRecord(BonaPortable o) throws E {
         startRecord();
-        addField(o);
+        addField(StaticMeta.OUTER_BONAPORTABLE, o);
         terminateRecord();
     }
 
     
-    private List<ParsedFoldingComponent> createParsedFieldList(BonaPortable obj, Class <? extends BonaPortable> objClass) throws E {
+    private List<ParsedFoldingComponent> createParsedFieldList(ObjectReference di, BonaPortable obj, Class <? extends BonaPortable> objClass) throws E {
         // get the original mapping...
         
         // if only one mapping entry has been provided, and that is for a BonaPortable in general, this is straightforward.
@@ -50,7 +51,7 @@ public class FoldingComposer<E extends Exception> extends DelegatingBaseComposer
             case SKIP_UNMAPPED:
                 return null;
             case FULL_OUTPUT:
-                delegateComposer.startObject(obj);
+                delegateComposer.startObject(di, obj);
                 obj.serializeSub(this); // this or delegateComposer?
                 return null;
             case TRY_SUPERCLASS:
@@ -69,7 +70,7 @@ public class FoldingComposer<E extends Exception> extends DelegatingBaseComposer
                     } else {
                         if (bonaPortableMapping == null) {
                             if (errorStrategy == FoldingStrategy.SUPERCLASS_OR_FULL) {
-                                delegateComposer.startObject(obj);
+                                delegateComposer.startObject(di, obj);
                                 obj.serializeSub(this); // this or delegateComposer?
                             }
                             return null;  // skip, no mapping found even with recursion
@@ -130,7 +131,7 @@ public class FoldingComposer<E extends Exception> extends DelegatingBaseComposer
     }
     
     @Override
-    public void addField(BonaPortable obj) throws E {
+    public void addField(ObjectReference di, BonaPortable obj) throws E {
         if (obj == null) {
             writeNull(null);
         } else {
@@ -139,13 +140,13 @@ public class FoldingComposer<E extends Exception> extends DelegatingBaseComposer
             Class <? extends BonaPortable> objClass = obj.getClass();
             List<ParsedFoldingComponent> parsedFieldList = parsedMapping.get(objClass);
             if (parsedFieldList == null) {
-                parsedFieldList = createParsedFieldList(obj, objClass);
+                parsedFieldList = createParsedFieldList(di, obj, objClass);
                 if (parsedFieldList == null)
                     return;
             }
             // some fieldList has been found if we end up here
             // now perform the output, used the parsed list
-            startObject(obj);
+            startObject(di, obj);
             for (ParsedFoldingComponent pfc: parsedFieldList)
                 obj.foldedOutput(this, pfc);
             delegateComposer.writeSuperclassSeparator();

@@ -32,6 +32,7 @@ import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.util.ByteArray;
 /**
@@ -339,7 +340,7 @@ public class CSVComposer extends AppendableComposer {
     }
 
     @Override
-    public void startObject(BonaPortable obj) throws IOException {
+    public void startObject(ObjectReference di, BonaPortable obj) throws IOException {
         if (cfg.objectStart != null && cfg.objectStart.length() > 0) {
             super.addRawData(cfg.objectStart);
             recordStart = true;
@@ -347,9 +348,9 @@ public class CSVComposer extends AppendableComposer {
     }
   
     @Override
-    public void addField(BonaPortable obj) throws IOException {
+    public void addField(ObjectReference di, BonaPortable obj) throws IOException {
         if (obj != null) {
-            startObject(obj);
+            startObject(di, obj);
             // do all fields (now includes terminator)
             obj.serializeSub(this);
             if (cfg.objectEnd != null && cfg.objectEnd.length() > 0) {

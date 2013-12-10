@@ -2,6 +2,7 @@ package de.jpaw.bonaparte.sak;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.ByteArrayComposer;
+import de.jpaw.bonaparte.core.StaticMeta;
 import de.jpaw.bonaparte.pojos.meta.PropertyDefinition;
 import de.jpaw.util.Base64;
 import de.jpaw.util.ByteBuilder;
@@ -16,7 +17,7 @@ public class EncodeBase64Bon {
     
     private static void encode(BonaPortable obj, String what) {
         ByteArrayComposer bac = new ByteArrayComposer();
-        bac.addField(obj);
+        bac.addField(StaticMeta.OUTER_BONAPORTABLE, obj);
         output(bac, "OBJ(" + what + ")");
         bac.reset();
         bac.writeRecord(obj);

@@ -26,6 +26,7 @@ import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
+import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
@@ -48,7 +49,7 @@ public interface MessageComposer<E extends Exception> {
     public void writeNullCollection(FieldDefinition di) throws E;   // the whole collection is null
     public void startTransmission() throws E;
     public void startRecord() throws E;
-    public void startObject(BonaPortable o) throws E;  // write the name and the revision
+    public void startObject(ObjectReference di, BonaPortable o) throws E;  // write the name and the revision
     public void startArray(int currentMembers, int maxMembers, int sizeOfElement) throws E;
     public void startMap  (int currentMembers, int indexID) throws E;
     public void writeSuperclassSeparator() throws E;  // this is bad. It should be transparent to the classes if the message format contains separators or not.
@@ -71,7 +72,7 @@ public interface MessageComposer<E extends Exception> {
     void addField(BasicNumericElementaryDataItem di, long n) throws E;
 
     void addField(AlphanumericElementaryDataItem di, String s) throws E;    // Ascii, Upper, Lower, Unicode
-    void addField(BonaPortable obj) throws E;
+    void addField(ObjectReference di, BonaPortable obj) throws E;
     void addField(MiscElementaryDataItem di, UUID n) throws E;
     void addField(BinaryElementaryDataItem di, ByteArray b) throws E;
     void addField(BinaryElementaryDataItem di, byte [] b) throws E;

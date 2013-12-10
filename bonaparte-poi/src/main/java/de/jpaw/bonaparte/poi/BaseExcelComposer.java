@@ -26,6 +26,7 @@ import org.joda.time.LocalDateTime;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.MessageComposer;
+import de.jpaw.bonaparte.core.StaticMeta;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
@@ -33,6 +34,7 @@ import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.enums.TokenizableEnum;
 import de.jpaw.util.Base64;
@@ -172,7 +174,7 @@ public class BaseExcelComposer implements MessageComposer<RuntimeException> {
     @Override
     public void writeRecord(BonaPortable o) {
         startRecord();
-        addField(o);
+        addField(StaticMeta.OUTER_BONAPORTABLE, o);
         terminateRecord();
     }
 
@@ -346,12 +348,12 @@ public class BaseExcelComposer implements MessageComposer<RuntimeException> {
     }
 
     @Override
-    public void startObject(BonaPortable obj) {
+    public void startObject(ObjectReference di, BonaPortable obj) {
     }
 
     /** Adding objects will lead to column misalignment if the objects itself are null. */
     @Override
-    public void addField(BonaPortable obj) {
+    public void addField(ObjectReference di, BonaPortable obj) {
         if (obj != null) {
             // do all fields (now includes terminator)
             obj.serializeSub(this);

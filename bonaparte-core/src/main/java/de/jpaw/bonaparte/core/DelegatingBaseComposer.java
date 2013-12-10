@@ -14,6 +14,7 @@ import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.enums.TokenizableEnum;
 import de.jpaw.util.ByteArray;
@@ -173,13 +174,13 @@ public class DelegatingBaseComposer<E extends Exception> implements MessageCompo
     }
     
     @Override
-    public void startObject(BonaPortable obj) throws E {
-        delegateComposer.startObject(obj);
+    public void startObject(ObjectReference di, BonaPortable obj) throws E {
+        delegateComposer.startObject(di, obj);
     }
     
     @Override
-    public void addField(BonaPortable obj) throws E {
-        delegateComposer.addField(obj);
+    public void addField(ObjectReference di, BonaPortable obj) throws E {
+        delegateComposer.addField(di, obj);
     }
 
     // enum with numeric expansion: delegate to Null/Int
