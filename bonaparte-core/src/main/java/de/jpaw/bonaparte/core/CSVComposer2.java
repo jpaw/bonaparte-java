@@ -60,7 +60,11 @@ public class CSVComposer2 extends CSVComposer {
     @Override
     public void addField(BasicNumericElementaryDataItem di, Integer n) throws IOException {
         writeSeparator();
-        addRawData(numberFormat.format(n));
+        if (n != null) {
+            addRawData(numberFormat.format(n));
+        } else {
+            writeNull();
+        }
     }
 
     // long
