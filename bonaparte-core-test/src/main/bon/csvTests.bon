@@ -1,5 +1,9 @@
 package csvTests {
 
+    enum Color {
+        RED="#ff000", GREEN="#00FF00", BLUE="#0000FF"
+    }
+    
     class Test1 {
         Ascii(10)               string1;
         int                     int1;
@@ -14,6 +18,11 @@ package csvTests {
     class Test2 extends Test1 {
         (Test1...)              test1;
         (Test1...) List<>       tests1;
+    }
+    
+    class Test3 {
+        Ascii(10)               string1;
+        enum Color              color;        
     }
 }
 

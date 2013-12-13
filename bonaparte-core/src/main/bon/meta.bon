@@ -2,7 +2,7 @@ package meta {
 	default private unsigned trim noControlChars;
 
     type identifier is Ascii(255);
-    
+  
     enum Visibility { DEFAULT, PRIVATE, PROTECTED, PUBLIC }
     enum BundleStatus { UNUSED, RESOLVED, INSTALLED, STARTING, SHUTTING_DOWN, MAINTENANCE }  // borrow OSGi statuses
     enum Multiplicity { SCALAR, ARRAY, LIST, SET, MAP }

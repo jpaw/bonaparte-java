@@ -3,7 +3,6 @@ package de.jpaw.bonaparte.core;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
-import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 import de.jpaw.enums.TokenizableEnum;
 
 public class EnumAsTokenComposerFilter<E extends Exception> extends DelegatingBaseComposer<E> {

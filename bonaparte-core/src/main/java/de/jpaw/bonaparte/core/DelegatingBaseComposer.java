@@ -83,9 +83,12 @@ public class DelegatingBaseComposer<E extends Exception> implements MessageCompo
         delegateComposer.terminateTransmission();
     }
 
+    // cannot delegate this, as it would give away control
     @Override
     public void writeRecord(BonaPortable o) throws E {
-        delegateComposer.writeRecord(o);
+        startRecord();
+        addField(StaticMeta.OUTER_BONAPORTABLE, o);
+        terminateRecord();
     }
 
     @Override
@@ -178,18 +181,24 @@ public class DelegatingBaseComposer<E extends Exception> implements MessageCompo
         delegateComposer.startObject(di, obj);
     }
     
+    // cannot delegate this, as it would give away control
     @Override
     public void addField(ObjectReference di, BonaPortable obj) throws E {
-        delegateComposer.addField(di, obj);
+        if (obj == null) {
+            writeNull(di);
+        } else {
+            // start a new object
+            startObject(di, obj);
+            // do all fields (now includes terminator)
+            obj.serializeSub(this);
+        }
     }
 
-    // enum with numeric expansion: delegate to Null/Int
     @Override
     public void addEnum(EnumDataItem di, BasicNumericElementaryDataItem ord, Enum<?> n) throws E {
         delegateComposer.addEnum(di, ord, n);
     }
 
-    // enum with alphanumeric expansion: delegate to Null/String
     @Override
     public void addEnum(EnumDataItem di, AlphanumericElementaryDataItem token, TokenizableEnum n) throws E {
         delegateComposer.addEnum(di, token, n);

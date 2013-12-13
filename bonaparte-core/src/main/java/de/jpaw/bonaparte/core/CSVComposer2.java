@@ -18,7 +18,6 @@ package de.jpaw.bonaparte.core;
 import java.io.IOException;
 
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
-import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 /**
  * The CSVComposer class.
  *

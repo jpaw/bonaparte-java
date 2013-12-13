@@ -32,13 +32,6 @@ public class FoldingComposer<E extends Exception> extends DelegatingBaseComposer
         // delegateComposer.writeSuperclassSeparator();   // the folded structure is flat
     }
 
-    @Override
-    public void writeRecord(BonaPortable o) throws E {
-        startRecord();
-        addField(StaticMeta.OUTER_BONAPORTABLE, o);
-        terminateRecord();
-    }
-
     
     private List<ParsedFoldingComponent> createParsedFieldList(ObjectReference di, BonaPortable obj, Class <? extends BonaPortable> objClass) throws E {
         // get the original mapping...
@@ -133,7 +126,7 @@ public class FoldingComposer<E extends Exception> extends DelegatingBaseComposer
     @Override
     public void addField(ObjectReference di, BonaPortable obj) throws E {
         if (obj == null) {
-            writeNull(null);
+            writeNull(di);
         } else {
             // only write the fields selectively
             // first, optionally create a cached mapping
