@@ -3,7 +3,6 @@ package de.jpaw.bonaparte.android;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.Calendar;
-import java.util.Map;
 import java.util.UUID;
 
 import org.joda.time.LocalDate;
@@ -11,18 +10,17 @@ import org.joda.time.LocalDateTime;
 
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ImageView;
 import android.graphics.BitmapFactory;
-import android.text.TextUtils;
 
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.core.NoOpComposer;
+import de.jpaw.bonaparte.core.MessageComposer;
 import de.jpaw.bonaparte.core.StaticMeta;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.ElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
@@ -35,11 +33,7 @@ import de.jpaw.util.ByteArray;
 /** Composer which is designed to work as a delegate for a foldingComposer.
  * Therefore object output itself is not supported. */
 
-public class LinearLayoutComposer extends NoOpComposer {
-    protected LinearLayout rowWidget;
-    protected int initialChilds = 0;
-    protected Map<String,Integer> widths = null;
-    protected int column = 0;
+abstract public class LinearLayoutComposer  implements MessageComposer<RuntimeException>, AndroidViewComposer {
     protected int rownum = -1;
     protected boolean binaryAsBitmap = false;
     protected static final String [] BIGDECIMAL_FORMATS = {
@@ -63,33 +57,17 @@ public class LinearLayoutComposer extends NoOpComposer {
         "#0.#################",
         "#0.##################"
     };
+    
+    // methods required in superclass
+    abstract CheckBox needCheckBox(FieldDefinition di);
+    abstract TextView needTextView(FieldDefinition di);
+    abstract ImageView needImageView(FieldDefinition di);
+    abstract View needAny(FieldDefinition di);
 
     // creates a new composer, requires a subsequent newView() to set the rowWidget
     public LinearLayoutComposer() {
-        this.rowWidget = null;
-        column = -1;
     }
     
-    // creates a new composer, with support of widget auto-creation
-    public LinearLayoutComposer(Map<String,Integer> widths) {
-        this.rowWidget = null;
-        this.widths = widths;
-        column = -1;
-    }
-   
-    
-    // creates a new composer with an initial rowWidget
-    public LinearLayoutComposer(final LinearLayout rowWidget) {
-        this.rowWidget = rowWidget;
-        initialChilds = rowWidget.getChildCount();
-        column = -1;
-    }
-    
-    public void newView(final LinearLayout rowWidget) {
-        this.rowWidget = rowWidget;
-        initialChilds = rowWidget.getChildCount();
-        column = -1;
-    }
     
     public void setBinaryAsBitmap(boolean doIt) {
         binaryAsBitmap = doIt;
@@ -99,18 +77,14 @@ public class LinearLayoutComposer extends NoOpComposer {
      * Serialization goes here
      **************************************************************************************************/
 
-    protected void writeNull() {
-        newTextView(null);
-    }
 
     @Override
     public void writeNull(FieldDefinition di) {
-        newTextView(null);
+        needAny(di);
     }
 
     @Override
     public void writeNullCollection(FieldDefinition di) {
-        ++column;   // no output for empty Views, but ensure that everything goes nicely into the correct column
     }
 
     @Override
@@ -132,7 +106,6 @@ public class LinearLayoutComposer extends NoOpComposer {
     @Override
     public void startRecord() {
         ++rownum;
-        column = -1;
     }
 
     @Override
@@ -141,16 +114,8 @@ public class LinearLayoutComposer extends NoOpComposer {
         addField(StaticMeta.OUTER_BONAPORTABLE, o);
         terminateRecord();
     }
-
-    private View newView() {
-        ++column;
-        return rowWidget.getChildAt(column);
-    }
-    private void newTextView(String s) {
-        TextView tv = (TextView)newView();
-        tv.setPadding(1,1,1,1);
-        tv.setSingleLine(true);
-        tv.setEllipsize(TextUtils.TruncateAt.END);
+    private void newTextView(ElementaryDataItem di, String s) {
+        TextView tv = needTextView(di);
         tv.setText(s != null ? s : "");
     }
 
@@ -159,12 +124,12 @@ public class LinearLayoutComposer extends NoOpComposer {
     // character
     @Override
     public void addField(MiscElementaryDataItem di, char c) {
-        newTextView(String.valueOf(c));
+        newTextView(di, String.valueOf(c));
     }
     // ascii only (unicode uses different method)
     @Override
     public void addField(AlphanumericElementaryDataItem di, String s) {
-        newTextView(s);
+        newTextView(di, s);
     }
 
     // decimal
@@ -176,69 +141,69 @@ public class LinearLayoutComposer extends NoOpComposer {
             df.setMaximumFractionDigits(digs);
             df.setMinimumFractionDigits(digs);
             df.setGroupingUsed(true);
-            newTextView(df.format(n));
+            newTextView(di, df.format(n));
         } else {
-            writeNull();
+            writeNull(di);
         }
     }
 
     // byte
     @Override
     public void addField(BasicNumericElementaryDataItem di, byte n) {
-        newTextView(Byte.toString(n));
+        newTextView(di, Byte.toString(n));
     }
     // short
     @Override
     public void addField(BasicNumericElementaryDataItem di, short n) {
-        newTextView(Short.toString(n));
+        newTextView(di, Short.toString(n));
     }
     // integer
     @Override
     public void addField(BasicNumericElementaryDataItem di, int n) {
-        newTextView(Integer.toString(n));
+        newTextView(di, Integer.toString(n));
     }
 
     // int(n)
     @Override
     public void addField(BasicNumericElementaryDataItem di, Integer n) {
         if (n != null) {
-            newTextView(Integer.toString(n));
+            newTextView(di, Integer.toString(n));
         } else {
-            writeNull();
+            writeNull(di);
         }
     }
 
     // long
     @Override
     public void addField(BasicNumericElementaryDataItem di, long n) {
-        newTextView(Long.toString(n));
+        newTextView(di, Long.toString(n));
     }
 
     // boolean
     @Override
     public void addField(MiscElementaryDataItem di, boolean b) {
-        ((CheckBox)(newView())).setChecked(b);
+        needCheckBox(di).setChecked(b);
     }
 
     // float
     @Override
     public void addField(BasicNumericElementaryDataItem di, float f) {
-        newTextView(Float.toString(f));
+        newTextView(di, Float.toString(f));
     }
 
     // double
     @Override
     public void addField(BasicNumericElementaryDataItem di, double d) {
-        newTextView(Double.toString(d));
+        newTextView(di, Double.toString(d));
     }
 
     // UUID
     @Override
     public void addField(MiscElementaryDataItem di, UUID n) {
         if (n != null) {
-            newTextView(n.toString());
+            newTextView(di, n.toString());
         } else {
-            writeNull();
+            writeNull(di);
         }
     }
 
@@ -247,14 +212,13 @@ public class LinearLayoutComposer extends NoOpComposer {
     public void addField(BinaryElementaryDataItem di, ByteArray b) {
         if (b != null) {
             if (binaryAsBitmap) {
-                ImageView v = (ImageView)newView();
                 byte [] rawData = b.getBytes();
-                v.setImageBitmap(BitmapFactory.decodeByteArray(rawData, 0, rawData.length));
+                needImageView(di).setImageBitmap(BitmapFactory.decodeByteArray(rawData, 0, rawData.length));
             } else {
-                newTextView("(Binary)");
+                newTextView(di, "(Binary)");
             }
         } else {
-            writeNull();
+            writeNull(di);
         }
     }
 
@@ -263,13 +227,12 @@ public class LinearLayoutComposer extends NoOpComposer {
     public void addField(BinaryElementaryDataItem di, byte[] b) {
         if (b != null) {
             if (binaryAsBitmap) {
-                ImageView v = (ImageView)newView();
-                v.setImageBitmap(BitmapFactory.decodeByteArray(b, 0, b.length));
+                needImageView(di).setImageBitmap(BitmapFactory.decodeByteArray(b, 0, b.length));
             } else {
-                newTextView("(Binary)");
+                newTextView(di, "(Binary)");
             }
         } else {
-            writeNull();
+            writeNull(di);
         }
     }
 
@@ -277,26 +240,26 @@ public class LinearLayoutComposer extends NoOpComposer {
     @Override
     public void addField(TemporalElementaryDataItem di, Calendar t) {
         if (t != null) {
-            newTextView(t.toString());
+            newTextView(di, t.toString());
         } else {
-            writeNull();
+            writeNull(di);
         }
     }
     @Override
     public void addField(TemporalElementaryDataItem di, LocalDate t) {
         if (t != null) {
-            newTextView(t.toString());
+            newTextView(di, t.toString());
         } else {
-            writeNull();
+            writeNull(di);
         }
     }
 
     @Override
     public void addField(TemporalElementaryDataItem di, LocalDateTime t) {
         if (t != null) {
-            newTextView(t.toString());
+            newTextView(di, t.toString());
         } else {
-            writeNull();
+            writeNull(di);
         }
     }
 
