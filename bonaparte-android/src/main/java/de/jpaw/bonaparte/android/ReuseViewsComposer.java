@@ -2,6 +2,7 @@ package de.jpaw.bonaparte.android;
 
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -11,7 +12,6 @@ public class ReuseViewsComposer extends LinearLayoutComposer {
 
     protected LinearLayout rowWidget;
     protected int initialChilds = 0;
-    protected int column = 0;
 
     public ReuseViewsComposer() {
         this.rowWidget = null;
@@ -20,8 +20,9 @@ public class ReuseViewsComposer extends LinearLayoutComposer {
    
     // creates a new composer, with support of widget auto-creation
     
-    public void newView(final LinearLayout rowWidget) {
+    public void newView(final LinearLayout rowWidget, int row) {
         this.rowWidget = rowWidget;
+        this.rownum = row;
         initialChilds = rowWidget.getChildCount();
         column = -1;
     }
@@ -44,6 +45,11 @@ public class ReuseViewsComposer extends LinearLayoutComposer {
         return (ImageView)rowWidget.getChildAt(++column);
     }
 
+
+    @Override
+    Button needButton(FieldDefinition di) {
+        return (Button)rowWidget.getChildAt(++column);
+    }
 
     @Override
     View needAny(FieldDefinition di) {

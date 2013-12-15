@@ -49,6 +49,7 @@ public class FoldingComposer<E extends Exception> extends DelegatingBaseComposer
                 return null;
             case TRY_SUPERCLASS:
             case SUPERCLASS_OR_FULL:
+            case FORWARD_OBJECTS:
                 Class <?> superclass;
                 while ((superclass = objClass.getSuperclass()) != null) {
                     if (BonaPortable.class.isAssignableFrom(superclass)) {
@@ -62,7 +63,8 @@ public class FoldingComposer<E extends Exception> extends DelegatingBaseComposer
                         }
                     } else {
                         if (bonaPortableMapping == null) {
-                            if (errorStrategy == FoldingStrategy.SUPERCLASS_OR_FULL) {
+                            if (errorStrategy != FoldingStrategy.TRY_SUPERCLASS) {
+                                // all others default to "full output"
                                 delegateComposer.startObject(di, obj);
                                 obj.serializeSub(this); // this or delegateComposer?
                             }
@@ -128,6 +130,11 @@ public class FoldingComposer<E extends Exception> extends DelegatingBaseComposer
         if (obj == null) {
             writeNull(di);
         } else {
+            if (errorStrategy == FoldingStrategy.FORWARD_OBJECTS && di != StaticMeta.OUTER_BONAPORTABLE) {
+                // purpose is to output objects as they are
+                delegateComposer.addField(di, obj);
+                return;
+            }
             // only write the fields selectively
             // first, optionally create a cached mapping
             Class <? extends BonaPortable> objClass = obj.getClass();

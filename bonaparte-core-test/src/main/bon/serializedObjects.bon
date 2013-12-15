@@ -1,0 +1,8 @@
+package sertest {
+    properties serialized;
+    
+    class Demo1 {
+        Ascii(10)       text;
+        Object          testObj properties serialized;
+    }
+}

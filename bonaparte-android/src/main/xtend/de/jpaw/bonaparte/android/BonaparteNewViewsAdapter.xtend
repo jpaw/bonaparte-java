@@ -28,7 +28,7 @@ class BonaparteNewViewsAdapter<T extends BonaPortable> extends BaseAdapter {
         val Class<? extends BonaPortable> zz = BonaPortable
         this.mapper = #{ zz -> columnNames}
         this.delegateComposer = composer
-        this.foldingComposer = new FoldingComposer(composer, mapper, FoldingStrategy.SUPERCLASS_OR_FULL)
+        this.foldingComposer = new FoldingComposer(composer, mapper, FoldingStrategy.FORWARD_OBJECTS)
     }
 
     override getCount() {
@@ -48,7 +48,7 @@ class BonaparteNewViewsAdapter<T extends BonaPortable> extends BaseAdapter {
             orientation = LinearLayout.HORIZONTAL
             showDividers = LinearLayout.SHOW_DIVIDER_MIDDLE
         ]
-        delegateComposer.newView(view)
+        delegateComposer.newView(view, row)
         foldingComposer.writeRecord(getItem(row))
         return view
     }

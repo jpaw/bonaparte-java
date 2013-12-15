@@ -3,12 +3,17 @@ package de.jpaw.bonaparte.android;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.ImageView;
@@ -33,8 +38,15 @@ import de.jpaw.util.ByteArray;
 /** Composer which is designed to work as a delegate for a foldingComposer.
  * Therefore object output itself is not supported. */
 
-abstract public class LinearLayoutComposer  implements MessageComposer<RuntimeException>, AndroidViewComposer {
+abstract public class LinearLayoutComposer  implements MessageComposer<RuntimeException>, AndroidViewComposer, View.OnClickListener {
+    static private final Logger LOG = LoggerFactory.getLogger(LinearLayoutComposer.class);
     protected int rownum = -1;
+    protected int column = 0;
+    protected AndroidObjectClickListener onClickListener;
+    protected Map<Integer,BonaPortable> buttonPayload;  // this stores the object for an ID
+    protected boolean expandObjects = true;             // set to false if we sit behind a folding composer
+    
+    static protected final int ROW_FACTOR = 10000;  // for the ID calculation, take the column + ROW_FACTOR * row
     protected boolean binaryAsBitmap = false;
     protected static final String [] BIGDECIMAL_FORMATS = {
         "#0",
@@ -62,17 +74,42 @@ abstract public class LinearLayoutComposer  implements MessageComposer<RuntimeEx
     abstract CheckBox needCheckBox(FieldDefinition di);
     abstract TextView needTextView(FieldDefinition di);
     abstract ImageView needImageView(FieldDefinition di);
+    abstract Button needButton(FieldDefinition di);
     abstract View needAny(FieldDefinition di);
 
     // creates a new composer, requires a subsequent newView() to set the rowWidget
     public LinearLayoutComposer() {
     }
     
-    
+    public void setExpandObjects(boolean doIt) {
+        expandObjects = doIt;
+    }
     public void setBinaryAsBitmap(boolean doIt) {
         binaryAsBitmap = doIt;
     }
-
+    public int getId() {
+        return column + ROW_FACTOR * rownum;
+    }
+    public int getIdFromRowAndColumn(int row, int column) {
+        return column + ROW_FACTOR * row;
+    }
+    public void setOnClickListener(AndroidObjectClickListener onClickListener) {
+        this.onClickListener = onClickListener;
+        if (onClickListener == null) {
+            buttonPayload = null;
+        } else {
+            buttonPayload = new HashMap<Integer,BonaPortable>();
+        }
+    }
+    // called if a button (to show an object) has been clicked.
+    public void onClick(View v) {
+        if (onClickListener != null && buttonPayload != null) {
+            int id = v.getId();
+            BonaPortable obj = buttonPayload.get(id);
+            onClickListener.onClick(v, obj, id / ROW_FACTOR, id % ROW_FACTOR);
+        }
+    }
+    
     /**************************************************************************************************
      * Serialization goes here
      **************************************************************************************************/
@@ -116,6 +153,7 @@ abstract public class LinearLayoutComposer  implements MessageComposer<RuntimeEx
     }
     private void newTextView(ElementaryDataItem di, String s) {
         TextView tv = needTextView(di);
+        tv.setId(getId());
         tv.setText(s != null ? s : "");
     }
 
@@ -286,9 +324,25 @@ abstract public class LinearLayoutComposer  implements MessageComposer<RuntimeEx
     /** Adding objects will lead to column misalignment if the objects itself are null. */
     @Override
     public void addField(ObjectReference di, BonaPortable obj) {
-        if (obj != null) {
-            // do all fields (now includes terminator)
-            obj.serializeSub(this);
+        LOG.info("adding OBJECT in row {}, expand = {}", rownum, expandObjects);
+        if (expandObjects) {
+            if (obj != null) {
+                // do all fields (now includes terminator)
+                obj.serializeSub(this);
+            } 
+        } else {
+            // this is a single column. Display as a button, with onClickListener to set a callback
+            Button b = needButton(di);
+            if (buttonPayload != null)
+                buttonPayload.put(b.getId(), obj);
+            LOG.info("   button id = {}, object is {}", b.getId(), obj == null ? "(null)" : obj.get$PQON());
+            if (obj == null) {
+                b.setText("null");
+                b.setEnabled(false);
+            } else {
+                b.setText("...");
+                b.setEnabled(true);
+            }
         }
     }
 
