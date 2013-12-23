@@ -24,13 +24,30 @@ import java.nio.charset.Charset;
  *
  */
 public abstract class Settings implements StaticMeta {
-    // Java 7 required:
-    // static private boolean defaultCRs = System.lineSeparator().length() == 2; // on Unix: false, on Windows: true
-    static private boolean defaultCRs = System.getProperty("line.separator").length() == 2; // on Unix: false, on Windows: true
-    static private Charset defaultCharset = Charset.forName("UTF-8");            // always use UTF-8 unless explicitly requested differently
+    // static private boolean defaultCRs = System.lineSeparator().length() == 2; // on Unix: false, on Windows: true (this check requires Java 7 which we do not have here)
+    static private boolean defaultCRs = System.getProperty("line.separator").length() == 2;     // on Unix: false, on Windows: true
+    static private Charset defaultCharset = Charset.forName("UTF-8");                           // always use UTF-8 unless explicitly requested differently
+    static private ParseSkipNonNulls defaultSkipNonNullsBehavior = ParseSkipNonNulls.WARN;     // allow improved downwards compatibility
+    
+    private boolean writeCRs = defaultCRs;          // determines the record terminator sequence. Attempts to mimic text file line breaks of the OS
+    private Charset charset = defaultCharset;       // usually UTF-8, can be explicitly set to some other encoding, if desired (usually some single-byte fixed width character set)
+    private ParseSkipNonNulls skipNonNullsBehavior = defaultSkipNonNullsBehavior;
+    
+    public static ParseSkipNonNulls getDefaultSkipNonNullsBehavior() {
+        return defaultSkipNonNullsBehavior;
+    }
 
-    private boolean writeCRs;   // determines the record terminator sequence. Attempts to mimic text file line breaks of the OS
-    private Charset charset; // usually UTF-8, can be explicitly set to some other encoding, if desired (usually some single-byte fixed width character set)
+    public static void setDefaultSkipNonNullsBehavior(ParseSkipNonNulls defaultSkipNonNullsBehavior) {
+        Settings.defaultSkipNonNullsBehavior = defaultSkipNonNullsBehavior;
+    }
+
+    public ParseSkipNonNulls getSkipNonNullsBehavior() {
+        return skipNonNullsBehavior;
+    }
+
+    public void setSkipNonNullsBehavior(ParseSkipNonNulls skipNonNullsBehavior) {
+        this.skipNonNullsBehavior = skipNonNullsBehavior;
+    }
 
     /** Returns information about how an end-of-record is encoded. Only relevant for serializers, not for deserializers.
      * @return true - if the current serializer writes a "carriage return / linefeed" end-of-record sequence (MS-WIN style), false if just a linefeed (UNIX / LINUX style). */
@@ -39,7 +56,7 @@ public abstract class Settings implements StaticMeta {
     }
 
     /** Changes the end-of-record character sequence for the current serializer. Not relevant for deserializers.
-     *  The initial behaviour is set via a static class variable, which can be set via {@link setDefaultWriteCRs}.
+     *  The initial behavior is set via a static class variable, which can be set via {@link setDefaultWriteCRs}.
      *
      * @param writeCRs - true means write a "carriage return / linefeed" sequence, false means write just a linefeed. */
     public void setWriteCRs(boolean writeCRs) {
@@ -64,11 +81,11 @@ public abstract class Settings implements StaticMeta {
         this.charset = charset;
     }
 
-    /** Creates a new settings instance. Will only be called from superclasses. */
-    protected Settings() {
-        writeCRs = defaultCRs;
-        charset = defaultCharset;
-    }
+//    /** Creates a new settings instance. Will only be called from superclasses. */
+//    protected Settings() {
+//        writeCRs = defaultCRs;
+//        charset = defaultCharset;
+//    }
 
 
     /** Returns information about how an end-of-record will be encoded for new instances of this class constructed in the future.
@@ -78,7 +95,7 @@ public abstract class Settings implements StaticMeta {
     }
 
     /** Changes the end-of-record character sequence for instances of this class constructed in the future.
-     *  The initial behaviour is operating system dependent, it is "CR/LF" for MS-Windows and "LF" for Unix/Linux.
+     *  The initial behavior is operating system dependent, it is "CR/LF" for MS-Windows and "LF" for Unix/Linux.
      *
      * @param writeCRs - true means write a "carriage return / linefeed" sequence, false means write just a linefeed. */
     public static void setDefaultWriteCRs(boolean writeCRs) {

@@ -25,6 +25,8 @@ import java.util.UUID;
 
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.jpaw.util.Base64;
 import de.jpaw.util.ByteArray;
@@ -40,6 +42,7 @@ import de.jpaw.util.EnumException;
  */
 
 public class ByteArrayParser extends ByteArrayConstants implements MessageParser<MessageParserException> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ByteArrayParser.class);
     private int parseIndex;
     private int messageLength;
     private byte [] inputdata;
@@ -736,8 +739,22 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
     @Override
     public void eatParentSeparator() throws MessageParserException {
         skipNulls();  // upwards compatibility: skip extra fields if they are blank.
-        // TODO: also skip them if not blank, but corresponding flag is set
-        needByte(PARENT_SEPARATOR);
+        byte z = needByte();
+        if (z == PARENT_SEPARATOR)
+            return;   // all good
+        // we have extra data and it is not null. Now the behavior depends on a parser setting
+        ParseSkipNonNulls mySetting = getSkipNonNullsBehavior();
+        switch (mySetting) {
+        case ERROR:
+            throw new MessageParserException(MessageParserException.EXTRA_FIELDS, String.format("(found byte 0x%02x)", z), parseIndex, currentClass);  
+        case WARN:
+            LOGGER.warn("{} at index {} parsing class {}", MessageParserException.codeToString(MessageParserException.EXTRA_FIELDS), parseIndex, currentClass);
+            // fall through
+        case IGNORE:
+            // skip bytes until we are at end of record (bad!) (thrown by needByte()) or find the terminator
+            while (needByte() != PARENT_SEPARATOR)
+                ;
+        }
     }
 
     @Override
