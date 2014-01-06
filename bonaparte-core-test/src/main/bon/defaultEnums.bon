@@ -1,0 +1,39 @@
+package enumWithDefaults {
+    default enum;                                           // set a default for all classes in this package
+    
+    enum Color { RED, GREEN, BLUE }                         // for enums, the first token is the default value, same as in Eclipse Xtext
+    enum Color2 { RED="R", GREEN="G", BLUE="B" }            // same, for enums with tokens
+    
+    class ClassWithEnumDefaultsDueToPackageDefaults {
+        optional Enum Color thisShouldBeRed;                // field initialized due to package level default setting
+        optional Enum Color2 thisShouldAlsoBeRed;           // field initialized due to package level default setting
+    }
+    
+    class ClassWithoutDefaults {
+        default noenum;                                     // class level default setting overrides package level default
+        
+        optional Enum Color thisShouldBeNull; 
+        optional Enum Color2 thisShouldAlsoBeNull; 
+        optional Enum Color default thisShouldBeRed;        // keyword "default" before field name activates the default for a specific field 
+        optional Enum Color2 default thisShouldAlsoBeRed;   // keyword "default" before field name activates the default for a specific field 
+    }
+}
+
+package enumWithDefaults2 {
+   
+    enum Color { RED, GREEN, BLUE }                         // for enums, the first token is the default value, same as in Eclipse Xtext
+    enum Color2 { RED="R", GREEN="G", BLUE="B" }            // same, for enums with tokens
+    
+    class ClassWithEnumDefaultsDueToClassDefaults {
+        default enum;
+        optional Enum Color thisShouldBeRed;                // field initialized due to package level default setting
+        optional Enum Color2 thisShouldAlsoBeRed;           // field initialized due to package level default setting
+    }
+    
+    class ClassWithoutDefaults {
+        optional Enum Color thisShouldBeNull; 
+        optional Enum Color2 thisShouldAlsoBeNull; 
+        optional Enum Color default thisShouldBeRed;        // keyword "default" before field name activates the default for a specific field 
+        optional Enum Color2 default thisShouldAlsoBeRed;   // keyword "default" before field name activates the default for a specific field 
+    }
+}
