@@ -27,6 +27,7 @@ package meta {
 	class ObjectReference extends FieldDefinition {
         boolean                 allowSubclasses;    
 		required identifier     objectName;		
+        optional (ClassDefinition...) lowerBound;       // if the object must inherit another object, specify it here. null for generic BonaPortables
 	}
 	
 	// ElementaryDataItem is used for some as well as for types which don't need a parameter
@@ -99,6 +100,7 @@ package meta {
         optional (PropertyDefinition) [] ^properties;
         boolean                 propertiesInherited;
 		optional Timestamp(3)   whenLoaded;
+		optional (ClassDefinition...) parentMeta;     // the meta object for the parent object (if this is an inherited one, else null)
 	}
 	
 	class BundleInformation {

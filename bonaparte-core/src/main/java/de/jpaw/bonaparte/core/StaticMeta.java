@@ -15,7 +15,7 @@ public interface StaticMeta {
     public static final AlphanumericElementaryDataItem REVISION_META = new AlphanumericElementaryDataItem(Visibility.PRIVATE, false, "objectRevision",
             Multiplicity.SCALAR, 0, 0, 0, DataCategory.STRING, "Ascii", false, false, false, false, false, true, 16, 0, null);
     public static final ObjectReference OUTER_BONAPORTABLE = new ObjectReference(Visibility.PRIVATE, false, "record",
-            Multiplicity.SCALAR, 0, 0, 0, DataCategory.OBJECT, "BonaPortable", false, false, true, "BonaPortable");
+            Multiplicity.SCALAR, 0, 0, 0, DataCategory.OBJECT, "BonaPortable", false, false, true, "BonaPortable", null);
 
     public static final AlphanumericElementaryDataItem MAP_INDEX_META_STRING = new AlphanumericElementaryDataItem(Visibility.PRIVATE, false, "map$Index",
             Multiplicity.SCALAR, 0, 0, 0, DataCategory.STRING, "Unicode", false, true, false, false, false, false, 255, 0, null);
