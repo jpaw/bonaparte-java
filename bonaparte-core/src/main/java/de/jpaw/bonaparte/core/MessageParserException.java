@@ -85,6 +85,7 @@ public class MessageParserException extends ApplicationException {
     static public final int TOO_MANY_DECIMALS            = OFFSET + 41;
     static public final int INVALID_BACKREFERENCE        = OFFSET + 42;
     static public final int UNSUPPORTED_DATA_TYPE        = OFFSET + 43;
+    static public final int EXTRA_FIELDS                 = OFFSET + 44;
     
 
     /**
@@ -141,6 +142,7 @@ public class MessageParserException extends ApplicationException {
             codeToDescription.put(TOO_MANY_DECIMALS            , "number contains more decimal places than allowed");
             codeToDescription.put(INVALID_BACKREFERENCE        , "The serialized message contains an invalid backreference");
             codeToDescription.put(UNSUPPORTED_DATA_TYPE        , "The request field type or operation is not supported for this cpomposer or parser");
+            codeToDescription.put(EXTRA_FIELDS                 , "Extra (non-null) fields have been encountered while expecting a class terminator. Most likely your client JAR is not up to date.");
         }
     }
 
