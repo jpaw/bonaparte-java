@@ -13,6 +13,11 @@ package p1 {
         int                 aa;    
     }
     
+    class Base1 <DATA extends OverAllSuperClass> {
+        int                 b;
+        (MyDATAtest...)     aaRef;
+    }
+    
     class Base <DATA extends OverAllSuperClass> {
         int                 b;
         (!DATA...)          someDataReference;
