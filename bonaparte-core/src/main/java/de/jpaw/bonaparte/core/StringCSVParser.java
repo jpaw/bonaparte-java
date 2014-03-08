@@ -94,23 +94,30 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
     private String getField(String fieldname, boolean allowNull, int length) throws MessageParserException {
         String result = null;
         if (fixedLength) {
-            if (parseIndex + length <= messageLength) {
+            if (parseIndex == messageLength) {
+            	// implicit null at field boundary: fall through
+            } else if (parseIndex + length <= messageLength) {
                 // have sufficient length
                 result = work.substring(parseIndex, parseIndex+length);
                 parseIndex += length;
-                // implicitly strip trailing spaces
-                while (length > 0 && result.charAt(length - 1) == ' ') {
-                    --length;
-                }
-                result = length == 0 ? null : result.substring(0, length);
             } else {
+            	// record ends within a field!
                 // insufficient length: throw an exception if incomplete field, or maybe allow an implicit null
-                if (parseIndex != messageLength)
-                    throw new MessageParserException(MessageParserException.PREMATURE_END,
-                        String.format("(remaining length %d, expected %d)", messageLength - parseIndex, length), parseIndex, currentClass);
-                // ending here, implicit end
-                // fall through with null
+            	// commented out, allow for that and fill with blanks
+//                throw new MessageParserException(MessageParserException.PREMATURE_END,
+//                    String.format("(remaining length %d, expected %d)", messageLength - parseIndex, length), parseIndex, currentClass);
+            	// adjust length instead
+            	length = messageLength - parseIndex;
+                result = work.substring(parseIndex, messageLength);
+            	parseIndex = messageLength;
+            }            	
+            // implicitly strip trailing spaces
+            while (length > 0 && result.charAt(length - 1) == ' ') {
+                --length;
             }
+            result = length == 0 ? null : result.substring(0, length);
+            // ending here, implicit end
+            // fall through with null
         } else {
             int index = work.indexOf(cfg.separator, parseIndex);
             if (index < 0) {

@@ -41,9 +41,9 @@ is ideal to work in cross-language environments.
 
 
 \section{A first example}
-Before digging into too much detail, let's start with a small example.  You need an Eclipse IDE (release 4.2.2 Juno SR2) and
-special plugins (available at \url{https://www.jpaw.de/eclipse/master/site.xml} for stable releases or
-\url{https://www.jpaw.de/eclipse/develop/site.xml} for development milestones) to follow the examples.
+Before digging into too much detail, let's start with a small example.  You need an Eclipse IDE (release 4.3 Kepler SR1) with
+Xtext and Xtend version 2.5.0 or better and special plugins (available at \url{https://www.jpaw.de/eclipse/master} for stable
+releases or \url{https://www.jpaw.de/eclipse/develop} for development milestones) to follow the examples.
 
 Create a new Java project, create a new source folder (for example {\ttfamily src/main/bon}), and create a new file with extension {\ttfamily .bon},
 for example {\ttfamily tutorial1.bon}. If everything is set up correctly, Eclipse will ask ``Do you want to assign the XText
@@ -85,8 +85,8 @@ primitives and their boxed equivalents of Java (which, for the Java code generat
     (code points 0x20 to 0x7f), therefore you know characters in these fields can be represented in any encoding, and they occupy a single byte only in the
      UTF-8 encoding. They represent the most portable subset of characters. They have a special type, because they are often used as the allowed subset for
       alphanumeric IDs. {\ttfamily Lowercase} and {\ttfamily Uppercase} are subsets of {\ttfamily Ascii}, which allow the characters {\ttfamily 'a'..'z'},
-      respectively {\ttfamily 'A'..'Z'} only. These types are useful for ISO codes such as ISO 4217 currency codes or ISO3166 country codes, or ISO 639
-       language codes.  The {\ttfamily Unicode} finally allows all know character codes, including multi-byte codes such as Japanese Kanji.
+      respectively {\ttfamily 'A'..'Z'} only. These types are useful for ISO codes such as ISO 4217 currency codes or ISO 3166
+      country codes, or ISO 639 language codes.  The {\ttfamily Unicode} finally allows all know character codes, including multi-byte codes such as Japanese Kanji.
   \item Numeric types: {\ttfamily Int}, {\ttfamily Number}, {\ttfamily Decimal}.  {\ttfamily Int} is no special type, just a synonym for {\ttfamily Integer},
       provided to ensure that a capitalized keyword for any primitive data type represents it's boxed equivalent, which in Java is unfortunately a bit inconsistent.
       {\ttfamily Number} is a subset of {\ttfamily Int} which requires the specification of the maximum allowed number of digits. {\ttfamily Number(3)}
@@ -225,6 +225,8 @@ You also want all fields to be publicly accessible:
 at field level. For this purpose, for every directive, there is a corresponding negated directive.
 The following default directives are supported:
 \begin{itemize}
+   \item {\ttfamily enum}, {\ttfamily noenum} (apply to all enum fields): Specifies whether new class instances should
+   initialize enums with the token defined first.
   \item {\ttfamily public}, {\ttfamily private}, {\ttfamily protected}, {\ttfamily default} (applies to all fields): Specifies the visibility. The keyword
    {\ttfamily default} is required to restore default visibility when a different one has been set before.
    \item {\ttfamily signed}, {\ttfamily unsigned} (apply to all numeric fields): Specifies whether negative numbers are accepted or rejected.
