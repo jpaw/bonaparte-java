@@ -20,7 +20,7 @@
         <xtext.version>2.5.0</xtext.version>            <!-- UPTODATE 2013-12-21 -->
         <slf4j.version>1.7.5</slf4j.version>            <!-- http://www.slf4j.org/ UPTODATE 2013-07-14 -->
         <logback.version>1.0.13</logback.version>       <!-- http://logback.qos.ch/ UPTODATE 2013-07-14 -->
-        <guava.version>15.0</guava.version>             <!-- http://code.google.com/p/guava-libraries/ 14.0.1 UPTODATE 2013-06-09, 
+        <guava.version>16.0.1</guava.version>             <!-- http://code.google.com/p/guava-libraries/ 14.0.1 UPTODATE 2013-06-09, 
             15.0 UPTODATE 2013-09-26 -->
 
         <!-- Some more versions, used by specific dependent projects -->
@@ -402,6 +402,7 @@
         <module>../bonaparte-demorqrs/pom.xml</module>
         <module>../bonaparte-netty/pom.xml</module>
         <module>../bonaparte-netty-test/pom.xml</module>
+        <module>../bonaparte-batch/pom.xml</module>
         <module>../bonaparte-akka/pom.xml</module>
         <module>../bonaparte-camel/pom.xml</module>
         <module>../bonaparte-mina-test/pom.xml</module>
