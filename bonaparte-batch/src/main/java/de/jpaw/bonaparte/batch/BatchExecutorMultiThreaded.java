@@ -4,7 +4,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,16 +20,21 @@ public class BatchExecutorMultiThreaded<E,F> implements BatchExecutor<E,F> {
     private int outQueueSize = 100;
     private long timeout = 300;
 	private int numRecords = 0;			// number of records read (added to input queue)
+	private int numExceptions = 0;		// number of records which could not be scheduled
 
 	private BlockingQueue<DataWithOrdinal<E>> inputQueue = null; 
 	private BlockingQueue<DataWithOrdinal<F>> outputQueue = null;
 	private BatchExecutorMTResultCollector<F> collector = null;
 	private Thread collectorThread = null;
 	private Thread [] workerThreads = null;
-	
+
+//	protected AtomicInteger numError = new AtomicInteger(0);
+//	protected AtomicInteger numProcessed = new AtomicInteger(0);  // number of records processed (good and error records)
+//	protected AtomicInteger numExceptions = new AtomicInteger(0);  // number of records which resulted in an exception (severe problem)
+
 	// if worker threads are desired, create
 	@Override
-	public void open(BatchProcessorFactory<E,F> processorFactory, BatchWriter<F> writer) {
+	public void open(BatchProcessorFactory<E,F> processorFactory, BatchWriter<F> writer) throws Exception {
 		inputQueue = new ArrayBlockingQueue<DataWithOrdinal<E>>(inQueueSize);
 		outputQueue = new ArrayBlockingQueue<DataWithOrdinal<F>>(outQueueSize);
 
@@ -78,10 +82,14 @@ public class BatchExecutorMultiThreaded<E,F> implements BatchExecutor<E,F> {
 	
 	// BatchMainCallback
 	@Override
-	public void scheduleForProcessing(E record) throws Exception {
+	public void scheduleForProcessing(E record) {
 		++numRecords;
-		DataWithOrdinal<E> newRecord = new DataWithOrdinal<E>(numRecords, record);
-		storeToInputQueueWithTimeout(newRecord);		// let the worker threads pick up the work
+		try {
+			DataWithOrdinal<E> newRecord = new DataWithOrdinal<E>(numRecords, record);
+			storeToInputQueueWithTimeout(newRecord);		// let the worker threads pick up the work
+		} catch (Exception e) {
+			++numExceptions;
+		}
 	}
 
 	@Override
@@ -105,7 +113,11 @@ public class BatchExecutorMultiThreaded<E,F> implements BatchExecutor<E,F> {
 	}
 
 	@Override
-	public int getNumberOfRecordsRead() {
+	public int getNumberOfRecordsTotal() {
 		return numRecords;
+	}
+	@Override
+	public int getNumberOfRecordsException() {
+		return numExceptions;
 	}
 }

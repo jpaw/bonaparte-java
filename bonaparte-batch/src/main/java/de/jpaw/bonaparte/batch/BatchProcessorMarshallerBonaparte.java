@@ -1,5 +1,7 @@
 package de.jpaw.bonaparte.batch;
 
+import java.io.OutputStream;
+
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.ByteArrayComposer;
 import de.jpaw.bonaparte.core.ByteArrayParser;
@@ -18,6 +20,13 @@ public class BatchProcessorMarshallerBonaparte implements BatchProcessorMarshall
 		bac.writeRecord(request);
 		return bac.getBytes();
 	}
+	@Override
+	public void marshal(BonaPortable request, OutputStream w) throws Exception {
+		ByteArrayComposer bac = new ByteArrayComposer();
+		bac.writeRecord(request);
+		w.write(bac.getBuffer(), 0, bac.getLength());		// this one avoids a byte [] copy 
+	}
+	
 
 	@Override
 	public BonaPortable unmarshal(byte[] response, int length) throws Exception {

@@ -14,7 +14,7 @@ public class BatchReaderRepeater<E> implements BatchReader<E> {
 	private int numRepeats = 1;
 	private int delayInMillis = 0;
 	
-	BatchReaderRepeater(E objectToRepeat) {
+	public BatchReaderRepeater(E objectToRepeat) {
 		this.objectToRepeat = objectToRepeat;
 	}
 	

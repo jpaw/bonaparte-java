@@ -4,5 +4,5 @@ package de.jpaw.bonaparte.batch;
  * 
  */
 public interface BatchMainCallback<E> {
-	void scheduleForProcessing(E record) throws Exception;
+	void scheduleForProcessing(E record);
 }

@@ -12,13 +12,13 @@ import com.martiansoftware.jsap.FlaggedOption;
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPResult;
 
-public class BatchProcessorFactoryRestAbstract<X> implements BatchProcessorFactory<X,X> {
-    private static final Logger LOG = LoggerFactory.getLogger(BatchProcessorFactoryRestAbstract.class);
+public class BatchProcessorFactoryRest<X> implements BatchProcessorFactory<X,X> {
+    private static final Logger LOG = LoggerFactory.getLogger(BatchProcessorFactoryRest.class);
     private final BatchProcessorMarshaller<X> marshaller;
     private int bufferSize = 1024 * 1024;
 	private URL url = null;
 	
-	public BatchProcessorFactoryRestAbstract(BatchProcessorMarshaller<X> marshaller) {
+	public BatchProcessorFactoryRest(BatchProcessorMarshaller<X> marshaller) {
 		this.marshaller = marshaller;
 	}
 	
@@ -78,6 +78,8 @@ public class BatchProcessorFactoryRestAbstract<X> implements BatchProcessorFacto
 
 	        DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
 	        wr.write(payload);
+	        // marshaller.marshal(data, connection.getOutputStream());
+
 	        wr.flush();
 
 	        // 4.) retrieve the response as required

@@ -4,6 +4,7 @@ public class BatchExecutorUnthreaded<E,F> extends ContributorNoop implements Bat
 	private BatchProcessor<E,F> localProcessor = null;
 	private BatchWriter<F> localWriter = null; 
 	private int numRecords = 0;			// number of records read (added to input queue)
+	private int numExceptions = 0;		// number of records which resulted in an exception
 	
 	@Override
 	public void open(BatchProcessorFactory<E, F> processorFactory, BatchWriter<F> writer) throws Exception {
@@ -17,16 +18,24 @@ public class BatchExecutorUnthreaded<E,F> extends ContributorNoop implements Bat
 	}
 	
 	@Override
-	public void scheduleForProcessing(E record) throws Exception {  // called by the reader
+	public void scheduleForProcessing(E record) {  // called by the reader
 		++numRecords;
-		// process it immediately
-		F result = localProcessor.process(numRecords, record);
-		// and write the output to the writer
-		localWriter.storeResult(numRecords, result);
+		try {
+			// process it immediately
+			F result = localProcessor.process(numRecords, record);
+			// and write the output to the writer
+			localWriter.storeResult(numRecords, result);
+		} catch (Exception e) {
+			++numExceptions;
+		}
 	}
 
 	@Override
-	public int getNumberOfRecordsRead() {
+	public int getNumberOfRecordsTotal() {
 		return numRecords;
+	}
+	@Override
+	public int getNumberOfRecordsException() {
+		return numExceptions;
 	}
 }

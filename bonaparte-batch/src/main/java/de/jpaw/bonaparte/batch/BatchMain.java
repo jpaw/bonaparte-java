@@ -1,7 +1,5 @@
 package de.jpaw.bonaparte.batch;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,9 +25,10 @@ public class BatchMain<E, F> {
 	protected LocalDateTime programEnd;
 	protected LocalDateTime parsingStart;
 	protected LocalDateTime parsingEnd;
-	protected AtomicInteger numError = new AtomicInteger(0);
-	protected AtomicInteger numProcessed = new AtomicInteger(0);  // number of records processed (good and error records)
-	protected AtomicInteger numExceptions = new AtomicInteger(0);  // number of records which resulted in an exception (severe problem)
+	
+	private static double recPerSec(int timeInMillis, int numRecords) {
+		return timeInMillis == 0 ? 0.0 : 1000.0 * (double)numRecords / (double)timeInMillis;
+	}
 	
 	public void run(String [] args,
 			BatchReader<E> reader,
@@ -71,9 +70,10 @@ public class BatchMain<E, F> {
 		
 		parsingEnd = LocalDateTime.now();
 		int timediffInMillis = DayTime.LocalDateTimeDifference(parsingStart, parsingEnd);
-		int numRecords = executor.getNumberOfRecordsRead();
-		LOG.info("{}, Bonaparte batch: read {} records, total time = {}, {} records per second",
-				parsingEnd, numRecords, timediffInMillis, timediffInMillis == 0 ? 0.0 : (double)numRecords / (double)timediffInMillis);
+		int numRecords = executor.getNumberOfRecordsTotal();
+		int numExceptions = executor.getNumberOfRecordsException();
+		LOG.info("{}, Bonaparte batch: read {} records, total time = {} ms, {} records per second",
+				parsingEnd, numRecords, timediffInMillis, recPerSec(timediffInMillis, numRecords));
 		
 		executor.close();
         
@@ -84,10 +84,8 @@ public class BatchMain<E, F> {
 		
 		programEnd = LocalDateTime.now();
 		timediffInMillis = DayTime.LocalDateTimeDifference(programStart, programEnd);
-		LOG.info("{}, Bonaparte batch: processed {} records, total time = {}, {} records per second, {} errors, {} exceptions",
-				programEnd, numProcessed.get(), timediffInMillis,
-				timediffInMillis == 0 ? 0.0 : (double)numProcessed.get() / (double)timediffInMillis,
-						numError.get(), numExceptions.get());
+		LOG.info("{}, Bonaparte batch: processed {} records, total time = {} ms, {} records per second, {} exceptions",
+				programEnd,numRecords, timediffInMillis, recPerSec(timediffInMillis, numRecords), numExceptions);
 	}
 	
 	// shorthand to save an arg
