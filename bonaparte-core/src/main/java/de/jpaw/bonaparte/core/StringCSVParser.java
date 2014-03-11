@@ -96,6 +96,7 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
         if (fixedLength) {
             if (parseIndex == messageLength) {
             	// implicit null at field boundary: fall through
+            	length = 0;
             } else if (parseIndex + length <= messageLength) {
                 // have sufficient length
                 result = work.substring(parseIndex, parseIndex+length);
