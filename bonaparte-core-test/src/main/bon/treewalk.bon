@@ -1,0 +1,11 @@
+package treewalk {
+	type myId is Ascii(8) trim;
+	
+	class DataToFix {
+		myId              myId1;
+		Ascii(8) truncate myId2;
+		Ascii(8)          myIdEmpty;
+		Ascii(8)          myIdEmptyAfterTrunc;
+	}
+	
+}
