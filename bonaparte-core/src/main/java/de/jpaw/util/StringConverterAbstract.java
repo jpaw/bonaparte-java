@@ -1,0 +1,59 @@
+package de.jpaw.util;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import de.jpaw.bonaparte.core.StringConverter;
+import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+
+/** Base implementation of StringConverter interface which offers array and nested object support */
+
+public abstract class StringConverterAbstract implements StringConverter {
+
+    @Override
+    public List<String> convertList(List<String> oldList, final AlphanumericElementaryDataItem meta) {
+        if (oldList == null)
+            return null;
+        List<String> newList = new ArrayList<String>(oldList.size());
+        for (String s : oldList) {
+            String newString = convert(s, meta);
+            if (!meta.getIsRequired() || newString != null)     // only filter nulls if the target list has "required" fields
+                newList.add(newString);
+        }
+        return (newList.isEmpty() && !meta.getIsAggregateRequired()) ? null : newList;  // only return null instead of an empty list if the List is required.
+    }
+
+    @Override
+    public String[] convertArray(String[] oldArray, final AlphanumericElementaryDataItem meta) {
+        if (oldArray == null)
+            return null;
+        for (int i = 0; i < oldArray.length; ++i)
+            oldArray[i] = convert(oldArray[i], meta);
+        return oldArray;  // no conversion of the array itself done here
+    }
+
+    @Override
+    public <K> Map<K, String> convertMap(Map<K, String> oldMap, AlphanumericElementaryDataItem meta) {
+        if (oldMap == null)
+            return null;
+        for (Map.Entry<K, String> i : oldMap.entrySet()) {
+            oldMap.put(i.getKey(), convert(i.getValue(), meta));
+        }
+        return oldMap;
+    }
+
+    @Override
+    public Set<String> convertSet(Set<String> oldSet, AlphanumericElementaryDataItem meta) {
+        if (oldSet == null)
+            return null;
+        Set<String> newSet = new HashSet<String>(oldSet.size());
+        for (String i : oldSet) {
+            newSet.add(convert(i, meta));
+        }
+        return newSet;
+    }
+
+}
