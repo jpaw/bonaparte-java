@@ -16,8 +16,8 @@
         <!-- define releases we want to use, to ensure consistency -->
         <bonaparte.version>1.7.4-SNAPSHOT</bonaparte.version>
         <bonaparte-plugin-version>1.7.4-SNAPSHOT</bonaparte-plugin-version>
-        <xtend.version>2.5.0</xtend.version>            <!-- UPTODATE 2013-12-21 -->
-        <xtext.version>2.5.0</xtext.version>            <!-- UPTODATE 2013-12-21 -->
+        <xtend.version>2.5.1</xtend.version>            <!-- UPTODATE 2013-12-21 -->
+        <xtext.version>2.5.1</xtext.version>            <!-- UPTODATE 2013-12-21 -->
         <slf4j.version>1.7.6</slf4j.version>            <!-- http://www.slf4j.org/ UPTODATE 2014-04-01 -->
         <logback.version>1.1.2</logback.version>        <!-- http://logback.qos.ch/ UPTODATE 2014-04-02 -->
         <guava.version>16.0.1</guava.version>           <!-- http://code.google.com/p/guava-libraries/ 14.0.1 UPTODATE 2013-06-09, 
