@@ -29,6 +29,7 @@ package meta {
 		required identifier     objectName;		
         optional (ClassDefinition...) lowerBound;       // if the object must inherit another object, specify it here. null for generic BonaPortables
         optional (ClassDefinition...) secondaryLowerBound; // if a secondary object has been provided, the lower bound of that one
+        optional Boolean              secondaryAllowSubclasses;    // if the secondary object type allows subclasses
 	}
 	
 	// ElementaryDataItem is used for some as well as for types which don't need a parameter
