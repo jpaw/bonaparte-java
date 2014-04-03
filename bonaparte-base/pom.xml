@@ -18,16 +18,17 @@
         <bonaparte-plugin-version>1.7.4-SNAPSHOT</bonaparte-plugin-version>
         <xtend.version>2.5.0</xtend.version>            <!-- UPTODATE 2013-12-21 -->
         <xtext.version>2.5.0</xtext.version>            <!-- UPTODATE 2013-12-21 -->
-        <slf4j.version>1.7.5</slf4j.version>            <!-- http://www.slf4j.org/ UPTODATE 2013-07-14 -->
-        <logback.version>1.0.13</logback.version>       <!-- http://logback.qos.ch/ UPTODATE 2013-07-14 -->
-        <guava.version>16.0.1</guava.version>             <!-- http://code.google.com/p/guava-libraries/ 14.0.1 UPTODATE 2013-06-09, 
+        <slf4j.version>1.7.6</slf4j.version>            <!-- http://www.slf4j.org/ UPTODATE 2014-04-01 -->
+        <logback.version>1.1.2</logback.version>        <!-- http://logback.qos.ch/ UPTODATE 2014-04-02 -->
+        <guava.version>16.0.1</guava.version>           <!-- http://code.google.com/p/guava-libraries/ 14.0.1 UPTODATE 2013-06-09, 
             15.0 UPTODATE 2013-09-26 -->
+        <jodatime.version>2.3</jodatime.version>        <!-- UPTODATE 2014-04-01 -->
 
         <!-- Some more versions, used by specific dependent projects -->
-        <netty.version>4.0.13.Final</netty.version>     <!-- https://netty.io/news/ UPTODATE 2013-12-06 -->
-        <poi.version>3.9</poi.version>                  <!-- http://poi.apache.org/ UPTODATE 2013-06-09 -->
+        <netty.version>4.0.18.Final</netty.version>     <!-- https://netty.io/news/ UPTODATE 2014-04-01 -->
+        <poi.version>3.10-FINAL</poi.version>           <!-- http://poi.apache.org/ UPTODATE 2013-06-09 -->
         <mina.version>2.0.5</mina.version>              <!-- http://mina.apache.org/ 2.0.7 -->
-        <camel.version>2.12.2</camel.version>           <!-- http://camel.apache.org/ UPTODATE 2013-12-21 -->
+        <camel.version>2.12.3</camel.version>           <!-- http://camel.apache.org/ UPTODATE 2014-02-26 -->
         <vertx.version>2.0.2-final</vertx.version>      <!-- http://vertx.io/ UPTODATE 2013-10-09 -->
         <hornetq.version>2.2.14.Final</hornetq.version> <!-- http://www.jboss.org/hornetq 2.3.0.Final -->
         <jaxb.version>2.2.9</jaxb.version>              <!-- http://repo1.maven.org/maven2/javax/xml/bind/jaxb-api/ -->
