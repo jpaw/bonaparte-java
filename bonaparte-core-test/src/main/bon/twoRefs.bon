@@ -3,6 +3,9 @@ package twoRefs {
 	class Ref {
 		Long ref;
 	}
+	class SomethingElse {
+		Long ref;
+	}
 	
 	class MyRef extends Ref {}
 	
@@ -14,8 +17,23 @@ package twoRefs {
 		required Unicode(80) name;	
 	}
 
-
+	// simple case, MyDTO is a subclass of MyRef
 	class WithTwoRefs {
 		(MyRef..., MyDTO)	mySpecialRef;
+	}
+	
+	// not working, SomethingElse is not a subclass of MyRef
+//	class WithTwoRefs2 {
+//		(MyRef..., SomethingElse)	mySpecialRef;
+//	}
+	
+	// using generics and lower bounds...	
+	class WithTwoRefs3<X extends MyKey> {
+		(MyRef..., !X)	mySpecialRef;
 	}	
+	
+	// not working, X extends SomethingElse, but not MyRef
+//	class WithTwoRefs4<X extends SomethingElse> {
+//		(MyRef..., !X)	mySpecialRef;
+//	}	
 }
