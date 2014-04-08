@@ -5,7 +5,7 @@ package tests1 {
     enum VariableLength { ONE="1", NULL="", LONG = "This is a long text" }
     enum VariableLengthUnicode { UMLAUT="Jäh!", EURO="€" }
      
-    class Primitives {
+    class Primitives orderedBy (int1, char1, boolean1) {
         byte byte1;
         short short1;
         int int1;
@@ -30,7 +30,7 @@ package tests1 {
         char char1;
         character char2;
     }
-    class BoxedTypes {
+    class BoxedTypes orderedBy (byte1, char1) {
         Byte byte1;
         Short short1;
         Int int1;
@@ -79,7 +79,7 @@ package tests1 {
         Char [] char1;
         Character [] char2;
     }
-    class OtherTypes BeanVal {
+    class OtherTypes BeanVal orderedBy (color1, unicode1, day1, myUuid, timestamp3a, decimal1) {
         raw(1000000) raw1;
         binary(1000000) binary1;
         day day1;
@@ -103,7 +103,7 @@ package tests1 {
         calendar(0) hhmmss timestamp3a;
         calendar(3) hhmmss timestamp4a;
     }
-    class References {
+    class References orderedBy (country, classOrDerivedObject) {
         object someGenericRecord;
         Object someOtherGenericRecord;
         countryCode country;
