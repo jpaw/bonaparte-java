@@ -1,0 +1,14 @@
+package io {
+	class Ref {
+		optional Long		objectRef;
+	}
+	class Key extends 		Ref {
+		required Ascii(8) 	id;
+	}
+	
+	class MyObject extends Ref {
+		required (Ref...)	ref;
+		required Unicode(20)	name;
+	}
+}
+
