@@ -47,9 +47,9 @@ public abstract class AbstractXEnumBase<E extends AbstractXEnumBase<E>> implemen
 
 	@Override
 	public int compareTo(E o) {
-		if (_factory.getBaseClass() != o._factory.getBaseClass())
-			throw new ClassCastException("Comparing XEnum of base class " + _factory.getBaseClass().getSimpleName() + " with " + o._factory.getBaseClass().getSimpleName());
-		return Integer.valueOf(_ordinal).compareTo(o._ordinal);
+		if (_factory.getBaseClass() != o.getFactory().getBaseClass())
+			throw new ClassCastException("Comparing XEnum of base class " + _factory.getBaseClass().getSimpleName() + " with " + o.getFactory().getBaseClass().getSimpleName());
+		return Integer.valueOf(_ordinal).compareTo(o.ordinal());
 	}
 
 	@Override
