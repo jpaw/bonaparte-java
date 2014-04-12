@@ -111,7 +111,7 @@ package meta {
 	class EnumDefinition extends AbstractObjectParent {
 		required enumIdType required List<> ids;
 		required enumTokenType List<> 		tokens;
-		required int						maxTokenLength;
+		required signed int	   			    maxTokenLength;   // signed because we store -1 for enums which do not have tokens at all
 	}
 	class XEnumDefinition extends AbstractObjectParent {
 		required (EnumDefinition) 			baseEnum;
