@@ -2,6 +2,7 @@ package meta {
 	default private unsigned trim noControlChars;
 
     type identifier is Ascii(255);
+    type enumTokenType          is Unicode(63);
   
     enum Visibility { DEFAULT, PRIVATE, PROTECTED, PUBLIC }
     enum BundleStatus { UNUSED, RESOLVED, INSTALLED, STARTING, SHUTTING_DOWN, MAINTENANCE }  // borrow OSGi statuses
@@ -40,7 +41,7 @@ package meta {
     // EnumDataItem represents the special enum type
     class EnumDataItem extends ElementaryDataItem {
         required identifier     enumName;  // PQON of enum
-        required Unicode(40) [] values;     // the tokens, if it is alphanumeric enum, with "" for the empty / null token 
+        required enumTokenType [] values;     // the tokens, if it is alphanumeric enum, with "" for the empty / null token 
     }
 
     // TemporalElementaryDataItem represents day / timestamp types

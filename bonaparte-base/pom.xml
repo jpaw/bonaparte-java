@@ -23,7 +23,9 @@
         <guava.version>16.0.1</guava.version>           <!-- http://code.google.com/p/guava-libraries/ 14.0.1 UPTODATE 2013-06-09, 
             15.0 UPTODATE 2013-09-26 -->
         <jodatime.version>2.3</jodatime.version>        <!-- UPTODATE 2014-04-01 -->
-
+        <testng.version>5.12.1</testng.version>    <!-- 5.14.9 or 6.7 use waaay more dependencies -->
+        <junit.version>4.11</junit.version>
+        
         <!-- Some more versions, used by specific dependent projects -->
         <netty.version>4.0.18.Final</netty.version>     <!-- https://netty.io/news/ UPTODATE 2014-04-01 -->
         <poi.version>3.10-FINAL</poi.version>           <!-- http://poi.apache.org/ UPTODATE 2013-06-09 -->
@@ -33,6 +35,7 @@
         <hornetq.version>2.2.14.Final</hornetq.version> <!-- http://www.jboss.org/hornetq 2.3.0.Final -->
         <jaxb.version>2.2.9</jaxb.version>              <!-- http://repo1.maven.org/maven2/javax/xml/bind/jaxb-api/ -->
         <jackson.version>2.2.2</jackson.version>        <!-- matches what's used in vertx -->
+        <jsap.version>2.1</jsap.version>
     </properties>
 
     <licenses>

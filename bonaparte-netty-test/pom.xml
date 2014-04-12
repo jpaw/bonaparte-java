@@ -33,13 +33,13 @@
         <dependency>
             <groupId>com.martiansoftware</groupId>
             <artifactId>jsap</artifactId>
-            <version>2.1</version>
+            <version>${jsap.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <version>5.12.1</version>   <!-- 5.14.9 or 6.7 use waaay more dependencies -->
+            <version>${testng.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
