@@ -18,6 +18,7 @@ package de.jpaw.bonaparte.core;
 import java.math.BigDecimal;
 import java.util.UUID;
 import java.util.Calendar;
+
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
@@ -30,7 +31,9 @@ import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.enums.TokenizableEnum;
+import de.jpaw.enums.XEnum;
 import de.jpaw.util.ByteArray;
 
 /**
@@ -85,4 +88,5 @@ public interface MessageComposer<E extends Exception> {
     // Enums
     void addEnum(EnumDataItem di, BasicNumericElementaryDataItem ord, Enum<?> n) throws E;
     void addEnum(EnumDataItem di, AlphanumericElementaryDataItem token, TokenizableEnum n) throws E;
+    void addEnum(XEnumDataItem di, AlphanumericElementaryDataItem token, XEnum<?> n) throws E;
 }

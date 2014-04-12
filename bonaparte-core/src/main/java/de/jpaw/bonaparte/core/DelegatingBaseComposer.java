@@ -16,7 +16,9 @@ import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.enums.TokenizableEnum;
+import de.jpaw.enums.XEnum;
 import de.jpaw.util.ByteArray;
 
 /** Delegates output to the delegateComposer. This class is intended as a superclass for Composers which want to modify only certain aspects of a composer.
@@ -203,5 +205,11 @@ public class DelegatingBaseComposer<E extends Exception> implements MessageCompo
     public void addEnum(EnumDataItem di, AlphanumericElementaryDataItem token, TokenizableEnum n) throws E {
         delegateComposer.addEnum(di, token, n);
     }
+
+    // xenum with alphanumeric expansion: delegate to Null/String
+	@Override
+	public void addEnum(XEnumDataItem di, AlphanumericElementaryDataItem token, XEnum<?> n) throws E {
+        delegateComposer.addEnum(di, token, n);
+	}
 
 }

@@ -36,7 +36,9 @@ import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.enums.TokenizableEnum;
+import de.jpaw.enums.XEnum;
 import de.jpaw.util.Base64;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.ByteBuilder;
@@ -500,5 +502,14 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
         else
             addField(token, n.getToken());
     }
+
+    // xenum with alphanumeric expansion: delegate to Null/String
+	@Override
+	public void addEnum(XEnumDataItem di, AlphanumericElementaryDataItem token, XEnum<?> n) {
+        if (n == null)
+            writeNull(token);
+        else
+            addField(token, n.token());
+	}
 
 }

@@ -16,7 +16,9 @@ import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.enums.TokenizableEnum;
+import de.jpaw.enums.XEnum;
 import de.jpaw.util.ByteArray;
 
 /** Represents some stub methods. */
@@ -156,5 +158,9 @@ public class NoOpComposer implements MessageComposer<RuntimeException> {
     @Override
     public void addEnum(EnumDataItem di, AlphanumericElementaryDataItem token, TokenizableEnum n) throws RuntimeException {
     }
+
+	@Override
+	public void addEnum(XEnumDataItem di, AlphanumericElementaryDataItem token, XEnum<?> n) throws RuntimeException {
+	}
 
 }

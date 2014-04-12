@@ -12,11 +12,15 @@ import org.joda.time.LocalDateTime;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
+import de.jpaw.enums.TokenizableEnum;
+import de.jpaw.enums.XEnum;
 import de.jpaw.util.ByteArray;
 
 /** Represents composer which does not serialize, but instead appends all objects into a list.
@@ -158,4 +162,19 @@ public class ListComposer extends NoOpComposer implements MessageComposer<Runtim
             obj.serializeSub(this);
         }
     }
+    
+    @Override
+    public void addEnum(EnumDataItem di, BasicNumericElementaryDataItem ord, Enum<?> n) {
+        storage.add(n);
+    }
+
+    @Override
+    public void addEnum(EnumDataItem di, AlphanumericElementaryDataItem token, TokenizableEnum n) {
+        storage.add(n);
+    }
+
+	@Override
+	public void addEnum(XEnumDataItem di, AlphanumericElementaryDataItem token, XEnum<?> n) {
+        storage.add(n);
+	}
 }
