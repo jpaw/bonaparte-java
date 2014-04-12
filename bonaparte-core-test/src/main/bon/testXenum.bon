@@ -1,0 +1,14 @@
+package testXenum {
+	
+	enum Color {
+		RED="R", GREEN="G", BLUE="B"
+	}
+	enum BW {
+		BLACK="BL", WHITE="W"
+	}
+	
+	xenum XColor is Color : 2
+	
+	
+	xenum MoreColors is BW extends XColor
+}
