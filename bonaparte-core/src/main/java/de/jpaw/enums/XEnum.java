@@ -23,6 +23,5 @@ public interface XEnum<E extends AbstractXEnumBase<E>> extends Comparable<E> {
     Enum<?> baseEnum();		// get the underlying base enum instance
 	XEnumFactory<E> getFactory();				// get the factory class which created the instance
 	Class<? extends E> getDeclaringClass();		// get the root XEnum class
-	String getPqon();		// get the partially qualified class name as a string
 
 }

@@ -4,19 +4,21 @@ import java.io.IOException;
 
 import org.joda.time.LocalDateTime;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+
 import de.jpaw.bonaparte.poi.ExcelXComposer;
 import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
+import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 
 public class TestPoiXMeta {
 
     public static void main(String[] args) throws IOException {
-        ClassDefinition cd = new ClassDefinition(true, false, "myName", "Rev", null, null,  87264821612983L, 42,
-                null, null, true, LocalDateTime.now(), null);
+        ClassDefinition cd = new ClassDefinition(true, false, "myName", null, "bundle",  LocalDateTime.now(), null,
+        		"Rev", 87264821612983L, 0, ImmutableList.<FieldDefinition>of(), ImmutableMap.<String,String>of(), false);
 
         ExcelXComposer ec = new ExcelXComposer();
         ec.newSheet("Tabelle Nummer 1");
-        ec.writeRecord(cd);
-        cd.setBundle("I'm a bundle now");
         ec.writeRecord(cd);
         ec.closeSheet();
 

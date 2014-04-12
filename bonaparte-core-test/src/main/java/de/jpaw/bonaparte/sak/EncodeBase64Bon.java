@@ -3,7 +3,7 @@ package de.jpaw.bonaparte.sak;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.ByteArrayComposer;
 import de.jpaw.bonaparte.core.StaticMeta;
-import de.jpaw.bonaparte.pojos.meta.PropertyDefinition;
+import de.jpaw.bonaparte.pojos.sakTest.PropertyDefinition;
 import de.jpaw.util.Base64;
 import de.jpaw.util.ByteBuilder;
 

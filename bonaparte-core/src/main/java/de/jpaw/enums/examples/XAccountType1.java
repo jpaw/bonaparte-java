@@ -18,10 +18,6 @@ public class XAccountType1 extends XAccountType0 {
 		}
 		myFactory.register(PQON);
 	}
-	@Override
-	public String getPqon() {
-		return PQON;
-	}
 	
 	// constructor may not be accessible from the outside
 	protected XAccountType1(Enum<?> enumVal, int ordinal, String name, String token, XEnumFactory<XAccountType0> myFactory) {

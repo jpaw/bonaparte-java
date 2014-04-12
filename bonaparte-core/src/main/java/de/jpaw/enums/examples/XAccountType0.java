@@ -1,7 +1,6 @@
 package de.jpaw.enums.examples;
 
 import de.jpaw.enums.AbstractXEnumBase;
-import de.jpaw.enums.XEnum;
 import de.jpaw.enums.XEnumFactory;
 
 /** Extendable enum instance type. This class has immutable instances. Also, after static initialization, no additional members can be created. */ 
@@ -21,10 +20,6 @@ public class XAccountType0 extends AbstractXEnumBase<XAccountType0> {
 			myFactory.publishInstance(new XAccountType0(e, i, e.name(), e.getToken(), myFactory));
 		}
 		myFactory.register(PQON);
-	}
-	@Override
-	public String getPqon() {
-		return PQON;
 	}
 	
 	// constructor may not be accessible from the outside

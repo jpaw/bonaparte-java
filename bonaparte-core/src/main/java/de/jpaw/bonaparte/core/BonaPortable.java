@@ -15,8 +15,7 @@
   */
 package de.jpaw.bonaparte.core;
 
-import java.io.Serializable;
-import java.util.concurrent.ConcurrentMap;
+import java.util.Map;
 
 import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
 import de.jpaw.bonaparte.pojos.meta.ParsedFoldingComponent;
@@ -28,45 +27,28 @@ import de.jpaw.bonaparte.pojos.meta.ParsedFoldingComponent;
  * @author Michael Bischoff
  *
  **/
-public interface BonaPortable extends Serializable {
+public interface BonaPortable extends BonaMeta {
+	
     /** Gets some optional RTTI (runtime type information). If no rtti has been supplied, the rtti of a parent class is returned.
      * 
      * @return some numeric value defined in the DSL.
      */
 	public int get$rtti();
-    /** Gets the partially qualified object name (the fully qualified name minus some constant package prefix).
-     * This is a constant string (static final), but defined as a member function in order to be able to declare it in the interface.
-     * 
-     * @return the partially qualified object name as a not-null Java String.
-     */
-    public String get$PQON();
+    
     /** Gets the object revision (version number) as defined in the DSL.
      * This is a constant string (static final), but defined as a member function in order to be able to declare it in the interface.
      * The expression <code>getClass().getCanonicalName()</code> consists of some package prefix concatenated with the return value of this function. 
      * @return the revision as Java String, or null if it has not been defined (which usually corresponds to the initial revision of an object).
      */
     public String get$Revision();
-    /** Gets the partially qualified object name of this object's parent, or null if the object does not extend another object.
-     * This is a constant string (static final), but defined as a member function in order to be able to declare it in the interface.
-     * The expression <code>getClass().getCanonicalName()</code> applied to the object's parent consists of some package prefix concatenated with the return value of this function. 
-     *  
-     * @return the partially qualified object name of the parent class as a Java String, or null if the object has no explicit superclass.
-     */
-    public String get$Parent();
-    /** Gets the bundle information as defined in the DSL, or null. Bundles do not yet have any functional effect, they are reserved to allow the grouping into OSGi bundles in the future. 
-     * Therefore, do not yet use this feature.
-     * This is a constant string (static final), but defined as a member function in order to be able to declare it in the interface.
-     *  
-     * @return the bundle as defined in the DSL as a Java String, or null, if no bundle has been defined for objects of this class.
-     */
-    public String get$Bundle();
+    
     /** Gets the Java serialization serial number. 
      * Shortcut to access the data for an instance of the class.
      *  
      * @return the serial UID, which is a static private class variable.
      */
     public long get$Serial();
-    
+	
     /** Retrieves a single property from the current map.
      * 
      * @param id the key of the property.
@@ -74,13 +56,11 @@ public interface BonaPortable extends Serializable {
      */    
     public String get$Property(String id);
     
-    /** Gets the map of current properties of this class. Normally all properties are defines by the DSL, but it is explicitly allowed 
-     * to add or modify properties during runtime (for example loading some from a database setup or properties file). For this reason,
-     * the concurrent implementation of the map has been selected.
+    /** Gets the map of current properties of this class. All properties are defines by the DSL, the returned map will be immutable.
      * 
      * @return the current map of properties, which is never null, but may be empty.
      */
-    public ConcurrentMap<String,String> get$PropertyMap();
+    public Map<String,String> get$PropertyMap();
     
     /** Gets the defined class of a "return type" if it has been defined for this object or one of its superclasses. Returns null if none has defined a return type. */
     public Class<? extends BonaPortable> get$returns();
@@ -95,6 +75,7 @@ public interface BonaPortable extends Serializable {
      * @throws E is usually either {@link RuntimeException}, for serializers writing to in-memory buffers, where no checked exceptions are thrown, or {@link java.io.IOException}, for serializers writing to streams. 
      */
     public <E extends Exception> void serializeSub(MessageComposer<E> w) throws E;
+    
     /** Parses data from a stream or in-memory buffer into a preallocated object.
      * The reference to the IO stream or memory sits in the {@link MessageParser} parameter.
      * Parsers for different serialization formats have been implemented, corresponding to the serializer implementations.
@@ -103,12 +84,14 @@ public interface BonaPortable extends Serializable {
      * @throws E
      */
     public <E extends Exception> void deserialize(MessageParser<E> p) throws E;
+    
     /** An implementation of <code>equals</code>, which receives an object of the BonaPortable type as a parameter.
      *  
      * @param that the object to compare.
      * @return true, if the objects have the same content, false otherwise.
      */
     public boolean hasSameContentsAs(BonaPortable that);
+    
     /** Will provide an explicit implementation of object validation, similar to JSR 303 Bean Validation. This is still work in progress, please use the reflection based validation for now.
      * 
      * @throws ObjectValidationException
@@ -145,7 +128,6 @@ public interface BonaPortable extends Serializable {
      * always be performed on a private copy. Once frozen, the object may be shared with other threads. Use get$frozenClone() to
      * get an immutable copy if the previous object was shared with other threads or has other references in this thread.
      */
-
     void freeze() throws ObjectValidationException;
     
     /** Returns information, if this object is frozen.
@@ -165,7 +147,5 @@ public interface BonaPortable extends Serializable {
     BonaPortable get$MutableClone(boolean deepCopy, boolean unfreezeCollections) throws ObjectValidationException;    
     
     /** Obtain an immutable clone of a (possibly) mutable object. */
-    BonaPortable get$FrozenClone() throws ObjectValidationException;    
-
-
+    BonaPortable get$FrozenClone() throws ObjectValidationException;
 }
