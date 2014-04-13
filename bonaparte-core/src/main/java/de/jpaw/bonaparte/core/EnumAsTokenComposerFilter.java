@@ -23,7 +23,7 @@ public class EnumAsTokenComposerFilter<E extends Exception> extends DelegatingBa
     // use the existing token meta here, because the name is better, depsite the length may be too short
     @Override
     public void addEnum(EnumDataItem di, AlphanumericElementaryDataItem token, TokenizableEnum n) throws E {
-        delegateComposer.addField(token, n == null ? null : n.toString());  // toString == name for this one
+        delegateComposer.addField(token, n == null ? null : n.name());  // toString == name for this one
     }
 
     // xenum with alphanumeric expansion: delegate to Null/String

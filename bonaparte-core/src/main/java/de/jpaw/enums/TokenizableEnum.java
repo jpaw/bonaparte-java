@@ -4,4 +4,8 @@ package de.jpaw.enums;
 public interface TokenizableEnum {
     // list a few required standard Java methods and the getToken() one
     String getToken();
+    
+    // standard Java enum methods:
+    String name();
+    int ordinal();
 }

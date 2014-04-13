@@ -15,12 +15,9 @@ package de.jpaw.enums;
  * The ordinal() values of an extended type start at the ordinal values of the base type.
  *
  */
-public interface XEnum<E extends AbstractXEnumBase<E>> extends Comparable<E> {
+public interface XEnum<E extends AbstractXEnumBase<E>> extends TokenizableEnum, Comparable<E> {
 	
-	int ordinal();			// returns the ordinal of an XEnum instance
-	String name();			// get the symbolic name of the instance
-    String token();			// get the token of the instance
-    Enum<?> baseEnum();		// get the underlying base enum instance
+    Enum<?> getBaseEnum();						// get the underlying base enum instance
 	XEnumFactory<E> getFactory();				// get the factory class which created the instance
 	Class<? extends E> getDeclaringClass();		// get the root XEnum class
 

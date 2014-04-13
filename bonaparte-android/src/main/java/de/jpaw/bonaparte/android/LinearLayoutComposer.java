@@ -373,7 +373,7 @@ abstract public class LinearLayoutComposer  implements MessageComposer<RuntimeEx
         if (n == null) {
             writeNull(token);
         } else {
-            addField(token, n.token());
+            addField(token, n.getToken());
         }
 	}
 }

@@ -509,7 +509,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
         if (n == null)
             writeNull(token);
         else
-            addField(token, n.token());
+            addField(token, n.getToken());
 	}
 
 }

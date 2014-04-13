@@ -26,12 +26,17 @@ public abstract class AbstractXEnumBase<E extends AbstractXEnumBase<E>> implemen
 		return _name;
 	}
 	@Override
-	public final String token() {
+	public final String getToken() {
 		return _token;
 	}
 	@Override
-	public Enum<?> baseEnum() {
+	public Enum<?> getBaseEnum() {
 		return _enum;
+	}
+	@Override
+	public final String toString() {
+		// delegate method to underlying enum and use that method (and any possible override there)
+		return _enum.toString();
 	}
 	@Override
 	public final Class<? extends E> getDeclaringClass() {

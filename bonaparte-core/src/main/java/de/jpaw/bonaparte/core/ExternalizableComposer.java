@@ -407,7 +407,7 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
         if (n == null)
             writeNull(token);
         else
-            addField(token, n.token());
+            addField(token, n.getToken());
 	}
 
 }

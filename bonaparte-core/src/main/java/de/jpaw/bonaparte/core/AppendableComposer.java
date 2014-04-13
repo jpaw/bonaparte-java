@@ -490,6 +490,6 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
         if (n == null)
             writeNull(token);
         else
-            addField(token, n.token());
+            addField(token, n.getToken());
 	}
 }

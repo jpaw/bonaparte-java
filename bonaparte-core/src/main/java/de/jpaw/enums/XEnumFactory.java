@@ -30,11 +30,11 @@ public class XEnumFactory<E extends AbstractXEnumBase<E>> {
 		return registry.get(pqon);
 	}
 	public void publishInstance(E e) {
-		if (tokenToXEnum.put(e.token(), e) != null)
-			throw new IllegalArgumentException(e.getClass().getSimpleName() + ": duplicate token " + e.token() + " for base XEnum " + pqon);
+		if (tokenToXEnum.put(e.getToken(), e) != null)
+			throw new IllegalArgumentException(e.getClass().getSimpleName() + ": duplicate token " + e.getToken() + " for base XEnum " + pqon);
 		if (nameToXEnum.put(e.name(), e) != null)
 			throw new IllegalArgumentException(e.getClass().getSimpleName() + ": duplicate name " + e.name() + " for base XEnum " + pqon);
-		baseEnumToXEnum.put(e.baseEnum(), e);
+		baseEnumToXEnum.put(e.getBaseEnum(), e);
 	}
 	public void register(String thisPqon) {
 		registry.put(thisPqon, this);

@@ -15,7 +15,6 @@
  */
 package de.jpaw.bonaparte.poi;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Locale;
@@ -385,6 +384,6 @@ public class BaseExcelComposer implements MessageComposer<RuntimeException> {
         if (n == null)
             writeNull(token);
         else
-            addField(token, n.token());
+            addField(token, n.getToken());
 	}
 }
