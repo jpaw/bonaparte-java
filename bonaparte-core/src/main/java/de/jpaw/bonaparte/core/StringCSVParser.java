@@ -28,6 +28,10 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormatter;
 
+import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
+import de.jpaw.bonaparte.pojos.meta.XEnumDefinition;
+import de.jpaw.enums.AbstractXEnumBase;
+import de.jpaw.enums.XEnumFactory;
 import de.jpaw.util.Base64;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.CharTestsASCII;
@@ -436,5 +440,18 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
     public void setClassName(String newClassName) {
         currentClass = newClassName;
     }
+
+	@Override
+	public <T extends AbstractXEnumBase<T>> T readXEnum(XEnumDataItem di, XEnumFactory<T> factory) throws MessageParserException {
+		XEnumDefinition spec = di.getBaseXEnum();
+		String scannedToken = readString(di.getName(), !di.getIsRequired() || spec.getHasNullToken(), spec.getMaxTokenLength(), true, false, false, true);
+		if (scannedToken == null)
+			return null;  // TODO: if required: return NullToken!
+		T value = factory.getByToken(scannedToken);
+		if (value == null) {
+			throw new MessageParserException(MessageParserException.INVALID_ENUM_TOKEN, scannedToken, parseIndex, currentClass + "." + di.getName());
+		}
+		return value;
+	}
 }
 

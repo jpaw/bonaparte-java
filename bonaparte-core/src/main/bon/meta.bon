@@ -90,17 +90,17 @@ package meta {
     }
 	
 	// common superclass for class, enum and xenum
-	abstract immutable class AbstractObjectParent {
+	abstract immutable class AbstractObjectParent<E extends AbstractObjectParent<!E>> {
 		boolean                 		isAbstract;
 		boolean                 		isFinal;
 		required identifier     		name;
 		identifier              		parent;
         identifier              		^bundle;            // OSGi bundle / module
 		optional Timestamp(3)   		whenLoaded;
-		optional (AbstractObjectParent...) parentMeta;     // the meta object for the parent object (if this is an inherited one, else null)
+		optional (!E...) 				parentMeta;     // the meta object for the parent object (if this is an inherited one, else null)
 	}
 	// holds all meta information for a class
-	class ClassDefinition extends AbstractObjectParent {
+	class ClassDefinition extends AbstractObjectParent<ClassDefinition> {
 		optional Ascii(20)            		^revision;
         required signed long          		serialUID;          // Java serializable serialVersionUID
 		required int                  		numberOfFields;
@@ -108,14 +108,16 @@ package meta {
         required Unicode(512) required Map<String> ^properties;
         required boolean              		propertiesInherited;
 	}
-	class EnumDefinition extends AbstractObjectParent {
+	class EnumDefinition extends AbstractObjectParent<EnumDefinition> {
+		required signed int	   			    maxTokenLength;   	// signed because we store -1 for enums which do not have tokens at all
+		required boolean                    hasNullToken;		// has a token "" (which is converted to null)
 		required enumIdType required List<> ids;
 		required enumTokenType List<> 		tokens;
-		required signed int	   			    maxTokenLength;   // signed because we store -1 for enums which do not have tokens at all
 	}
-	class XEnumDefinition extends AbstractObjectParent {
+	class XEnumDefinition extends AbstractObjectParent<XEnumDefinition> {
+		required signed int	   			    maxTokenLength;   	// signed for symmetry with EnumDefinition
+		required boolean                    hasNullToken;		// has a token "" (which is converted to null)
 		required (EnumDefinition) 			baseEnum;
-		required int						maxTokenLength;
 	}
 	
 	class BundleInformation {

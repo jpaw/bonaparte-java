@@ -16,7 +16,10 @@ public class XAccountType1 extends XAccountType0 {
 			AccountType1 e = values[i];
 			myFactory.publishInstance(new XAccountType1(e, i + XAccountType0.NUM_VALUES_TOTAL, e.name(), e.getToken(), myFactory));
 		}
-		myFactory.register(PQON);
+		myFactory.register(PQON, XAccountType1.class);
+	}
+	public static XAccountType0 valueOf(AccountType1 enumVal) {
+		return myFactory.getByEnum(enumVal);
 	}
 	
 	// constructor may not be accessible from the outside

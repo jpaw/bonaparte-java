@@ -19,8 +19,13 @@ import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
+
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
+
+import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
+import de.jpaw.enums.AbstractXEnumBase;
+import de.jpaw.enums.XEnumFactory;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.EnumException;
 
@@ -66,6 +71,7 @@ public interface MessageParser<E extends Exception> {
     public void setClassName(String newClassName); // returns the previously active class name
     public void eatParentSeparator() throws E;  // restores the previous class name
     public E enumExceptionConverter(EnumException e);  // convert e to an exception of appropriate type. Also enrich it with current parser status
+    public <T extends AbstractXEnumBase<T>> T readXEnum(XEnumDataItem di, XEnumFactory<T> factory) throws E;
     // upload of current class to be parsed: now all done locally within the parser
     // public String setCurrentClass(String classname);
 

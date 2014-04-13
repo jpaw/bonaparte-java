@@ -19,7 +19,13 @@ public class XAccountType0 extends AbstractXEnumBase<XAccountType0> {
 			AccountType0 e = values[i];
 			myFactory.publishInstance(new XAccountType0(e, i, e.name(), e.getToken(), myFactory));
 		}
-		myFactory.register(PQON);
+		myFactory.register(PQON, XAccountType0.class);
+	}
+	public static final XEnumFactory<XAccountType0> class$Factory() {
+		return myFactory;
+	}
+	public static XAccountType0 valueOf(AccountType0 enumVal) {
+		return myFactory.getByEnum(enumVal);
 	}
 	
 	// constructor may not be accessible from the outside

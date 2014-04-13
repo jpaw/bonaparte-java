@@ -28,6 +28,10 @@ import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
+import de.jpaw.bonaparte.pojos.meta.XEnumDefinition;
+import de.jpaw.enums.AbstractXEnumBase;
+import de.jpaw.enums.XEnumFactory;
 import de.jpaw.util.Base64;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.ByteTestsASCII;
@@ -872,4 +876,18 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
     public void setClassName(String newClassName) {
         currentClass = newClassName;
     }
+
+
+	@Override
+	public <T extends AbstractXEnumBase<T>> T readXEnum(XEnumDataItem di, XEnumFactory<T> factory) throws MessageParserException {
+		XEnumDefinition spec = di.getBaseXEnum();
+		String scannedToken = readString(di.getName(), !di.getIsRequired() || spec.getHasNullToken(), spec.getMaxTokenLength(), true, false, false, true);
+		if (scannedToken == null)
+			return null;  // TODO: if required: return NullToken!
+		T value = factory.getByToken(scannedToken);
+		if (value == null) {
+			throw new MessageParserException(MessageParserException.INVALID_ENUM_TOKEN, scannedToken, parseIndex, currentClass);
+		}
+		return value;
+	}
 }

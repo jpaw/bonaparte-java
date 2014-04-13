@@ -8,7 +8,12 @@ package testXenum {
 	}
 	
 	xenum XColor is Color : 2
-	
-	
 	xenum MoreColors is BW extends XColor
+	
+	class SampleUsingXEnums {
+		Ascii(8)            id;
+		enum Color			myColor;
+		xenum XColor		myXColor;
+		xenum MoreColors	myMoreColors;  // not yet working, typecast issue!
+	}
 }

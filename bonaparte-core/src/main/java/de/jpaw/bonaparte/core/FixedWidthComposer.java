@@ -18,6 +18,8 @@ package de.jpaw.bonaparte.core;
 import java.io.IOException;
 import java.math.BigDecimal;
 
+import javax.naming.OperationNotSupportedException;
+
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
@@ -110,7 +112,9 @@ public class FixedWidthComposer extends CSVComposer {
                 addRawData(" ");
                 return;
             }
-                
+            break;
+        default:
+        	throw new RuntimeException("writeNull() for category " + di.getDataCategory() + " should be converted by specific methods such as addENum() etc.");
         }
     }
 

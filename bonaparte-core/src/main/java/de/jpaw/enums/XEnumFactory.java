@@ -1,6 +1,10 @@
 package de.jpaw.enums;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /** Factory class which returns an XEnum instance for a given token or name.
@@ -14,6 +18,8 @@ public class XEnumFactory<E extends AbstractXEnumBase<E>> {
 	private final Map<String,E> nameToXEnum = new ConcurrentHashMap<String,E>();
 	private final Map<Enum<?>,E> baseEnumToXEnum = new ConcurrentHashMap<Enum<?>,E>();
 	private static final Map<String, XEnumFactory<?>> registry = new ConcurrentHashMap<String, XEnumFactory<?>>(200);
+	private static final Map<Class<? extends AbstractXEnumBase<?>>, XEnumFactory<?>> classRegistry = new ConcurrentHashMap<Class<? extends AbstractXEnumBase<?>>, XEnumFactory<?>>(200);
+	// private final List<Class<? extends E>> listOfSubclasses = new ArrayList<E>(10);   // remembers all XEnum classes which use this factory 
 	
 	// TODO: should only be invoked from XEnum classes. How to verify this? (C++ "friend" needed here...)
 	public XEnumFactory(int maxTokenLength, Class<E> baseClass, String pqon) {
@@ -26,8 +32,14 @@ public class XEnumFactory<E extends AbstractXEnumBase<E>> {
 //		};
 		// we do it later instead...
 	}
-	public static final XEnumFactory<?> getByPQON(String pqon) {
+	public static final XEnumFactory<?> getFactoryByPQON(String pqon) {
 		return registry.get(pqon);
+	}
+	public static final XEnumFactory<?> getFactoryByClass(Class<? extends AbstractXEnumBase<?>> xenumClass) {
+		XEnumFactory<?> result = classRegistry.get(xenumClass);
+		if (result == null)
+			throw new IllegalArgumentException("No XEnumFactory registered for class " + xenumClass.getCanonicalName());
+		return result;
 	}
 	public void publishInstance(E e) {
 		if (tokenToXEnum.put(e.getToken(), e) != null)
@@ -36,8 +48,9 @@ public class XEnumFactory<E extends AbstractXEnumBase<E>> {
 			throw new IllegalArgumentException(e.getClass().getSimpleName() + ": duplicate name " + e.name() + " for base XEnum " + pqon);
 		baseEnumToXEnum.put(e.getBaseEnum(), e);
 	}
-	public void register(String thisPqon) {
+	public void register(String thisPqon, Class<? extends AbstractXEnumBase<E>> xenumClass) {
 		registry.put(thisPqon, this);
+		classRegistry.put(xenumClass, this);
 	}
 	
 	public Class<E> getBaseClass() {
@@ -57,5 +70,43 @@ public class XEnumFactory<E extends AbstractXEnumBase<E>> {
 	}
 	public String getPqon() {
 		return pqon;
+	}
+	// same as getByEnum, but throw an exception if the instance isn't known
+	public E of(Enum<?> enumVal) {
+		if (enumVal == null)
+			return null;
+		E myEnum = baseEnumToXEnum.get(enumVal);
+		if (myEnum == null)
+			throw new IllegalArgumentException(enumVal.getClass().getSimpleName() + "." + enumVal.name() + " is not a valid instance for " + baseClass.getSimpleName());
+		return myEnum;
+	}
+	
+	// array conversion
+	public E [] of(Enum<?> [] arrayOfEnums) {
+		if (arrayOfEnums == null)
+			return null;
+		// the following line does not compile. Why not? B the bound, the lower object type should be known!
+		//E [] result = new E [arrayOfEnums.length];
+		// the following line does compile, but has a warning of course
+		E [] result = (E[]) new AbstractXEnumBase [arrayOfEnums.length];
+		for (int i = 0; i < arrayOfEnums.length; ++i)
+			result[i] = of(arrayOfEnums[i]);
+		return result;
+	}
+	public List<E> of(List<Enum<?>> listOfEnums) {
+		if (listOfEnums == null)
+			return null;
+		List<E> result = new ArrayList<E>(listOfEnums.size());
+		for (Enum<?> i : listOfEnums)
+			result.add(of(i));
+		return result;
+	}
+	public Set<E> of(Set<Enum<?>> setOfEnums) {
+		if (setOfEnums == null)
+			return null;
+		Set<E> result = new HashSet<E>(setOfEnums.size());
+		for (Enum<?> i : setOfEnums)
+			result.add(of(i));
+		return result;
 	}
 }

@@ -28,6 +28,10 @@ import java.util.UUID;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
+import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
+import de.jpaw.bonaparte.pojos.meta.XEnumDefinition;
+import de.jpaw.enums.AbstractXEnumBase;
+import de.jpaw.enums.XEnumFactory;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.EnumException;
 /**
@@ -622,5 +626,18 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
     public void setClassName(String newClassName) {
         currentClass = newClassName;
     }
+
+	@Override
+	public <T extends AbstractXEnumBase<T>> T readXEnum(XEnumDataItem di, XEnumFactory<T> factory) throws IOException {
+		XEnumDefinition spec = di.getBaseXEnum();
+		String scannedToken = readString(di.getName(), !di.getIsRequired() || spec.getHasNullToken(), spec.getMaxTokenLength(), true, false, false, true);
+		if (scannedToken == null)
+			return null;  // TODO: if required: return NullToken!
+		T value = factory.getByToken(scannedToken);
+		if (value == null) {
+			throw new IOException(String.format("Invalid enum token %s for field %s.%s", scannedToken, currentClass, di.getName()));
+		}
+		return value;
+	}
 }
 
