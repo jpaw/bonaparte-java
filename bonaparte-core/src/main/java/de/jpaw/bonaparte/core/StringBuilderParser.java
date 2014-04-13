@@ -782,7 +782,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
 		XEnumDefinition spec = di.getBaseXEnum();
 		String scannedToken = readString(di.getName(), !di.getIsRequired() || spec.getHasNullToken(), spec.getMaxTokenLength(), true, false, false, true);
 		if (scannedToken == null)
-			return null;  // TODO: if required: return NullToken!
+			return factory.getNullToken();
 		T value = factory.getByToken(scannedToken);
 		if (value == null) {
 			throw new MessageParserException(MessageParserException.INVALID_ENUM_TOKEN, scannedToken, parseIndex, currentClass);

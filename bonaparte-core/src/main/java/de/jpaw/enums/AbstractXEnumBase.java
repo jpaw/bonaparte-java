@@ -17,6 +17,10 @@ public abstract class AbstractXEnumBase<E extends AbstractXEnumBase<E>> implemen
 		this._factory = factory;
 	}
 	
+	// just a hook for class loading / initialization
+	public void init() {
+	}
+	
 	@Override
 	public final int ordinal() {
 		return _ordinal;

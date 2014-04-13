@@ -20,6 +20,7 @@ public class XEnumFactory<E extends AbstractXEnumBase<E>> {
 	private static final Map<String, XEnumFactory<?>> registry = new ConcurrentHashMap<String, XEnumFactory<?>>(200);
 	private static final Map<Class<? extends AbstractXEnumBase<?>>, XEnumFactory<?>> classRegistry = new ConcurrentHashMap<Class<? extends AbstractXEnumBase<?>>, XEnumFactory<?>>(200);
 	// private final List<Class<? extends E>> listOfSubclasses = new ArrayList<E>(10);   // remembers all XEnum classes which use this factory 
+	private E nullToken = null;		// stores an instance which has the empty token
 	
 	// TODO: should only be invoked from XEnum classes. How to verify this? (C++ "friend" needed here...)
 	public XEnumFactory(int maxTokenLength, Class<E> baseClass, String pqon) {
@@ -47,6 +48,9 @@ public class XEnumFactory<E extends AbstractXEnumBase<E>> {
 		if (nameToXEnum.put(e.name(), e) != null)
 			throw new IllegalArgumentException(e.getClass().getSimpleName() + ": duplicate name " + e.name() + " for base XEnum " + pqon);
 		baseEnumToXEnum.put(e.getBaseEnum(), e);
+		// possibly store it as the null token
+		if (e.getToken().length() == 0)
+			nullToken = e;
 	}
 	public void register(String thisPqon, Class<? extends AbstractXEnumBase<E>> xenumClass) {
 		registry.put(thisPqon, this);
@@ -64,6 +68,10 @@ public class XEnumFactory<E extends AbstractXEnumBase<E>> {
 	}
 	public E getByEnum(Enum<?> enumVal) {
 		return baseEnumToXEnum.get(enumVal);
+	}
+	// return an instance which has the token "", or null if no such exists
+	public E getNullToken() {
+		return nullToken;
 	}
 	public int getMaxTokenLength() {
 		return maxTokenLength;
