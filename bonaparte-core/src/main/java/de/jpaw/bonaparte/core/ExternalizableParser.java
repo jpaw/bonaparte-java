@@ -33,7 +33,6 @@ import de.jpaw.bonaparte.pojos.meta.XEnumDefinition;
 import de.jpaw.enums.AbstractXEnumBase;
 import de.jpaw.enums.XEnumFactory;
 import de.jpaw.util.ByteArray;
-import de.jpaw.util.EnumException;
 /**
  * The StringBuilderParser class.
  *
@@ -618,7 +617,7 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
     }
 
     @Override
-    public IOException enumExceptionConverter(EnumException e) {
+    public IOException enumExceptionConverter(IllegalArgumentException e) {
         return new IOException(e);
     }
 

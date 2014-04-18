@@ -35,7 +35,6 @@ import de.jpaw.enums.XEnumFactory;
 import de.jpaw.util.Base64;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.CharTestsASCII;
-import de.jpaw.util.EnumException;
 /**
  * The StringCSVParser class.
  * 
@@ -432,8 +431,8 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
     }
 
     @Override
-    public MessageParserException enumExceptionConverter(EnumException e) {
-        return new MessageParserException(MessageParserException.INVALID_ENUM_TOKEN, e.toString(), parseIndex, currentClass);
+    public MessageParserException enumExceptionConverter(IllegalArgumentException e) {
+        return new MessageParserException(MessageParserException.INVALID_ENUM_TOKEN, e.getMessage(), parseIndex, currentClass);
     }
 
     @Override

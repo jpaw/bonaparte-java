@@ -35,7 +35,6 @@ import de.jpaw.enums.XEnumFactory;
 import de.jpaw.util.Base64;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.CharTestsASCII;
-import de.jpaw.util.EnumException;
 // according to http://stackoverflow.com/questions/469695/decode-base64-data-in-java , xml.bind is included in Java 6 SE
 //import javax.xml.bind.DatatypeConverter;
 /**
@@ -768,8 +767,8 @@ public final class StringBuilderParser extends StringBuilderConstants implements
     }
 
     @Override
-    public MessageParserException enumExceptionConverter(EnumException e) {
-        return new MessageParserException(MessageParserException.INVALID_ENUM_TOKEN, e.toString(), parseIndex, currentClass);
+    public MessageParserException enumExceptionConverter(IllegalArgumentException e) {
+        return new MessageParserException(MessageParserException.INVALID_ENUM_TOKEN, e.getMessage(), parseIndex, currentClass);
     }
 
     @Override
