@@ -79,6 +79,9 @@ public class XEnumFactory<E extends AbstractXEnumBase<E>> {
 	public String getPqon() {
 		return pqon;
 	}
+	public E getByTokenWithNull(String token) {
+		return token == null ? nullToken : tokenToXEnum.get(token);
+	}
 	// same as getByEnum, but throw an exception if the instance isn't known
 	public E of(Enum<?> enumVal) {
 		if (enumVal == null)
