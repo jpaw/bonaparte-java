@@ -303,11 +303,11 @@ abstract public class LinearLayoutComposer  implements MessageComposer<RuntimeEx
     }
 
     @Override
-    public void startMap(int currentMembers, int indexID) {
+    public void startMap(FieldDefinition di, int currentMembers) {
     }
 
     @Override
-    public void startArray(int currentMembers, int maxMembers, int sizeOfElement) {
+    public void startArray(FieldDefinition di, int currentMembers, int sizeOfElement) {
     }
 
     @Override

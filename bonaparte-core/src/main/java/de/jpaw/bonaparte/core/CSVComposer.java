@@ -308,7 +308,7 @@ public class CSVComposer extends AppendableComposer {
     }
 
     @Override
-    public void startMap(int currentMembers, int indexID) throws IOException {
+    public void startMap(FieldDefinition di, int currentMembers) throws IOException {
         if (cfg.mapStart != null && cfg.mapStart.length() > 0) {
             super.addRawData(cfg.mapStart);
             recordStart = true;
@@ -316,7 +316,7 @@ public class CSVComposer extends AppendableComposer {
     }
 
     @Override
-    public void startArray(int currentMembers, int maxMembers, int sizeOfElement) throws IOException {
+    public void startArray(FieldDefinition di, int currentMembers, int sizeOfElement) throws IOException {
         if (cfg.arrayStart != null && cfg.arrayStart.length() > 0) {
             super.addRawData(cfg.arrayStart);
             recordStart = true;

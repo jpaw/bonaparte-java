@@ -4,7 +4,7 @@
 
     <groupId>de.jpaw</groupId>
     <artifactId>bonaparte-base</artifactId>
-    <version>1.7.6-SNAPSHOT</version>
+    <version>1.7.7-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>BONAPARTE common configuration (parent pom)</name>
@@ -14,8 +14,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- define releases we want to use, to ensure consistency -->
-        <bonaparte.version>1.7.6-SNAPSHOT</bonaparte.version>
-        <bonaparte-plugin-version>1.7.6-SNAPSHOT</bonaparte-plugin-version>
+        <bonaparte.version>1.7.7-SNAPSHOT</bonaparte.version>
+        <bonaparte-plugin-version>1.7.7-SNAPSHOT</bonaparte-plugin-version>
         <xtend.version>2.5.1</xtend.version>            <!-- UPTODATE 2013-12-21 -->
         <xtext.version>2.5.1</xtext.version>            <!-- UPTODATE 2013-12-21 -->
         <slf4j.version>1.7.7</slf4j.version>            <!-- http://www.slf4j.org/ UPTODATE 2014-04-04 -->
@@ -31,7 +31,7 @@
         <poi.version>3.10-FINAL</poi.version>           <!-- http://poi.apache.org/ UPTODATE 2013-06-09 -->
         <mina.version>2.0.5</mina.version>              <!-- http://mina.apache.org/ 2.0.7 -->
         <camel.version>2.12.3</camel.version>           <!-- http://camel.apache.org/ UPTODATE 2014-02-26 -->
-        <vertx.version>2.0.2-final</vertx.version>      <!-- http://vertx.io/ UPTODATE 2013-10-09 -->
+        <vertx.version>2.1RC3</vertx.version>      		<!-- http://vertx.io/ UPTODATE 2014-04-02 -->
         <hornetq.version>2.2.14.Final</hornetq.version> <!-- http://www.jboss.org/hornetq 2.3.0.Final -->
         <jaxb.version>2.2.9</jaxb.version>              <!-- http://repo1.maven.org/maven2/javax/xml/bind/jaxb-api/ -->
         <jackson.version>2.2.2</jackson.version>        <!-- matches what's used in vertx -->
@@ -412,6 +412,7 @@
         <module>../bonaparte-mina-test/pom.xml</module>
         <module>../bonaparte-hornetq-test/pom.xml</module>
         <module>../bonaparte-vertx/pom.xml</module>
+        <module>../bonaparte-vertx-test/pom.xml</module>
         <module>../bonaparte-i18n/pom.xml</module>
         <module>../bonaparte-repackage/pom.xml</module>
     </modules>

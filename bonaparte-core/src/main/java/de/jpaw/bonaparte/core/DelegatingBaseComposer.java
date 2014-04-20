@@ -51,13 +51,13 @@ public class DelegatingBaseComposer<E extends Exception> implements MessageCompo
     }
 
     @Override
-    public void startArray(int currentMembers, int maxMembers, int sizeOfElement) throws E {
-        delegateComposer.startArray(currentMembers, maxMembers, sizeOfElement);
+    public void startArray(FieldDefinition di, int currentMembers, int sizeOfElement) throws E {
+        delegateComposer.startArray(di, currentMembers, sizeOfElement);
     }
 
     @Override
-    public void startMap(int currentMembers, int indexID) throws E {
-        delegateComposer.startMap(currentMembers, indexID);
+    public void startMap(FieldDefinition di, int currentMembers) throws E {
+        delegateComposer.startMap(di, currentMembers);
     }
 
     @Override

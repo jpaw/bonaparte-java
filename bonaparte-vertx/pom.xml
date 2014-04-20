@@ -5,7 +5,7 @@
     <parent>
         <groupId>de.jpaw</groupId>
         <artifactId>bonaparte-base</artifactId>
-        <version>1.7.6-SNAPSHOT</version>
+        <version>1.7.7-SNAPSHOT</version>
         <relativePath>../bonaparte-base/pom.xml</relativePath>
     </parent>
 
@@ -24,11 +24,6 @@
         <dependency>
             <groupId>io.vertx</groupId>   <!-- org.vert-x was 1.x -->
             <artifactId>vertx-core</artifactId>
-            <version>${vertx.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.vertx</groupId>
-            <artifactId>vertx-platform</artifactId>
             <version>${vertx.version}</version>
         </dependency>
     </dependencies>
