@@ -9,7 +9,6 @@ import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 import org.vertx.java.core.json.JsonArray;
-import org.vertx.java.core.json.JsonElement;
 import org.vertx.java.core.json.JsonObject;
 
 import de.jpaw.bonaparte.core.BonaPortable;
@@ -138,9 +137,23 @@ public class JsonObjectComposer implements MessageComposer<RuntimeException> {
 	@Override
 	public void writeRecord(BonaPortable o) {
         startRecord();
-        addField(StaticMeta.OUTER_BONAPORTABLE, o);
+        // addField(StaticMeta.OUTER_BONAPORTABLE, o);
+        // start a new object
+        startObject(StaticMeta.OUTER_BONAPORTABLE, o);
+        o.serializeSub(this);
         terminateRecord();
 	}
+
+	@Override
+	public void addField(ObjectReference di, BonaPortable o) {
+		if (inArray)
+			arr.addObject(toJsonObject(o, writeNulls));
+		else if (o != null) {
+			obj.putObject(di.getName(), toJsonObject(o, writeNulls));
+        } else {
+        	obj.putObject(di.getName(), null);
+        }
+    }
 
 	@Override
 	public void addField(MiscElementaryDataItem di, boolean b) {
@@ -214,19 +227,6 @@ public class JsonObjectComposer implements MessageComposer<RuntimeException> {
 			if (s != null || writeNulls)
 				obj.putString(di.getName(), s);
 	}
-
-	@Override
-	public void addField(ObjectReference di, BonaPortable o) {
-		if (inArray)
-			arr.addObject(toJsonObject(o, writeNulls));
-		else if (o != null) {
-            // start a new object
-            startObject(di, o);
-            o.serializeSub(this);
-        } else {
-        	obj.putObject(di.getName(), null);
-        }
-    }
 
 	@Override
 	public void addField(MiscElementaryDataItem di, UUID n)	{

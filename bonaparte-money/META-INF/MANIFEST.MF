@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-ManifestVersion: 2
+Bundle-Name: bonaparte money libraries
+Bundle-SymbolicName: bonaparte.money
+Bundle-Version: 1.7.7.qualifier
+Bundle-Vendor: Michael Bischoff
+Require-Bundle: bonaparte.core
+Export-Package: de.jpaw.bonaparte.pojos.money;de.jpaw.algebra;de.jpaw.money;de.jpaw.xtend.sions
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6 

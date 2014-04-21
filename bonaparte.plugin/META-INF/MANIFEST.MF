@@ -1,0 +1,34 @@
+Manifest-Version: 1.0
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-ManifestVersion: 2
+Bundle-Name: bonaparte core libraries plugin
+Bundle-SymbolicName: bonaparte.plugin
+Bundle-Version: 1.7.7.qualifier
+Bundle-Vendor: Michael Bischoff
+Require-Bundle: org.eclipse.xtext;visibility:=reexport,
+ org.eclipse.xtext.xbase;resolution:=optional;visibility:=reexport,
+ org.eclipse.xtext.generator;resolution:=optional,
+ org.eclipse.xtext.xbase.lib,
+ org.eclipse.xtext.common.types,
+ com.google.guava;visibility:=reexport
+Export-Package: de.jpaw.bonaparte.core,
+ de.jpaw.bonaparte.core.annotation,
+ de.jpaw.bonaparte.core.extensions,
+ de.jpaw.bonaparte.core.enums,
+ de.jpaw.util;de.jpaw.bonaparte.sock,
+ de.jpaw.bonaparte.pojojs.meta,
+ de.jpaw.bonaparte.pojos.ui,
+ org.slf4j,
+ org.slf4j.api,
+ org.slf4j.spi,
+ javax.xml.bind,
+ javax.xml.bind.annotation,
+ org.joda.time,
+ org.joda.time.base,
+ org.joda.time.chrono,
+ org.joda.time.convert,
+ org.joda.time.field,
+ org.joda.time.format,
+ org.joda.time.tz
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

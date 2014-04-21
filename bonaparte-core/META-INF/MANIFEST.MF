@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-ManifestVersion: 2
+Bundle-Name: bonaparte core libraries
+Bundle-SymbolicName: bonaparte.core
+Bundle-Version: 1.7.7.qualifier
+Bundle-Vendor: Michael Bischoff
+Require-Bundle: slf4j.api,
+ joda-time;bundle-version="2.3";visibility:=reexport,
+ com.google.guava;bundle-version="16.0.1";visibility:=reexport
+Export-Package: de.jpaw.bonaparte.core;de.jpaw.bonaparte.core.annotation;de.jpaw.bonaparte.core.extensions;
+ de.jpaw.bonaparte.core.enums;de.jpaw.util;de.jpaw.bonaparte.sock;de.jpaw.bonaparte.pojojs.meta;de.jpaw.bonaparte.pojos.ui
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6 
