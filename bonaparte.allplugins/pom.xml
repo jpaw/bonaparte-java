@@ -7,6 +7,7 @@
 	<version>1.7.7-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<modules>
+		<module>../bonaparte.plugin</module>
 		<module>../bonaparte.sdk</module>
 		<module>../bonaparte.updatesite</module>
 	</modules>
