@@ -1,0 +1,136 @@
+[INFO] Scanning for projects...
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building bonaparte-test 1.7.7-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:2.5:clean (default-clean) @ bonaparte-test ---
+[INFO] Deleting /home/cobol/gitbonaparte-dsl/254/bonaparte-test/target
+[INFO] Deleting /home/cobol/gitbonaparte-dsl/254/bonaparte-test/src/generated (includes = [**], excludes = [])
+[INFO] 
+[INFO] --- xtext-maven-plugin:2.5.4:generate (default) @ bonaparte-test ---
+0    [main] INFO  onaparte.dsl.BonScriptRuntimeModule  - BON Runtime module constructed
+2    [main] INFO  onaparte.dsl.BonScriptRuntimeModule  - BON Value converter bound
+[INFO] Encoding: UTF-8
+[INFO] Compiler source level: 1.5
+[INFO] Compiler target level: 1.5
+[INFO] Using common types.
+[INFO] Collecting source models.
+[WARNING] Failed to resolve a resource by URI: 'file:/home/cobol/gitbonaparte-dsl/254/bonaparte-test/src/main/bon/subdir/file.bon'; Using similar URI instead: 'file:/home/cobol/gitbonaparte-dsl/254/bonaparte-test/src/main/bon/file.bon'.
+[INFO] Installing type provider.
+[WARNING] Failed to resolve a resource by URI: 'file:/home/cobol/gitbonaparte-dsl/254/bonaparte-test/src/main/bon/subdir/file.bon'; Using similar URI instead: 'file:/home/cobol/gitbonaparte-dsl/254/bonaparte-test/src/main/bon/file.bon'.
+[INFO] Generating stubs into /home/cobol/gitbonaparte-dsl/254/bonaparte-test/target/xtext-temp/stubs
+[INFO] Compiling stubs located in /home/cobol/gitbonaparte-dsl/254/bonaparte-test/target/xtext-temp/stubs
+[INFO] Nothing to compile. Stubs compilation was skipped.
+[INFO] Installing type provider for stubs.
+[WARNING] WARNING:class is not freezable due to mutable fields (file:/home/cobol/gitbonaparte-dsl/254/bonaparte-test/src/main/bon/file.bon line : 3)
+[WARNING] WARNING:The type "Raw" is mapped to the mutable Java class byte []. Use of "Binary" is preferred. (file:/home/cobol/gitbonaparte-dsl/254/bonaparte-test/src/main/bon/file.bon line : 5)
+[WARNING] WARNING:class is not freezable due to mutable fields (file:/home/cobol/gitbonaparte-dsl/254/bonaparte-test/src/main/bon/file.bon line : 3)
+[WARNING] WARNING:The type "Raw" is mapped to the mutable Java class byte []. Use of "Binary" is preferred. (file:/home/cobol/gitbonaparte-dsl/254/bonaparte-test/src/main/bon/file.bon line : 5)
+[INFO] Starting generator for input: 'file.bon'
+1156 [main] INFO  te.dsl.generator.BonScriptGenerator  - BonScriptGenerator constructed. @1: 
+1159 [main] INFO  te.dsl.generator.BonScriptGenerator  - @1: start code output: Debug dump for file:/home/cobol/gitbonaparte-dsl/254/bonaparte-test/src/main/bon/file.bon
+1165 [main] INFO  te.dsl.generator.BonScriptGenerator  - @1: start code output: Java output for file:/home/cobol/gitbonaparte-dsl/254/bonaparte-test/src/main/bon/file.bon
+1192 [main] INFO  te.dsl.generator.BonScriptGenerator  - @1: start cleanup
+[INFO] Starting generator for input: 'file.bon'
+1192 [main] INFO  te.dsl.generator.BonScriptGenerator  - BonScriptGenerator constructed. @2: 
+1192 [main] INFO  te.dsl.generator.BonScriptGenerator  - @2: start code output: Debug dump for file:/home/cobol/gitbonaparte-dsl/254/bonaparte-test/src/main/bon/file.bon
+1193 [main] INFO  te.dsl.generator.BonScriptGenerator  - @2: start code output: Java output for file:/home/cobol/gitbonaparte-dsl/254/bonaparte-test/src/main/bon/file.bon
+1199 [main] INFO  te.dsl.generator.BonScriptGenerator  - @2: start cleanup
+[INFO] 
+[INFO] --- build-helper-maven-plugin:1.7:add-source (add-source) @ bonaparte-test ---
+[INFO] Source directory: /home/cobol/gitbonaparte-dsl/254/bonaparte-test/src/main/xtend added.
+[INFO] Source directory: /home/cobol/gitbonaparte-dsl/254/bonaparte-test/src/main/xtend-gen added.
+[INFO] Source directory: /home/cobol/gitbonaparte-dsl/254/bonaparte-test/src/generated/java added.
+[INFO] 
+[INFO] --- maven-resources-plugin:2.5:resources (default-resources) @ bonaparte-test ---
+[debug] execute contextualize
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 1 resource
+[INFO] 
+[INFO] --- maven-compiler-plugin:2.5.1:compile (default-compile) @ bonaparte-test ---
+[INFO] Compiling 2 source files to /home/cobol/gitbonaparte-dsl/254/bonaparte-test/target/classes
+[INFO] 
+[INFO] --- build-helper-maven-plugin:1.7:add-test-source (add-test-source) @ bonaparte-test ---
+[INFO] Test Source directory: /home/cobol/gitbonaparte-dsl/254/bonaparte-test/src/test/xtend added.
+[INFO] Test Source directory: /home/cobol/gitbonaparte-dsl/254/bonaparte-test/src/test/xtend-gen added.
+[INFO] Test Source directory: /home/cobol/gitbonaparte-dsl/254/bonaparte-test/src/generated/test/java added.
+[INFO] 
+[INFO] --- maven-resources-plugin:2.5:testResources (default-testResources) @ bonaparte-test ---
+[debug] execute contextualize
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 1 resource
+[INFO] 
+[INFO] --- maven-compiler-plugin:2.5.1:testCompile (default-testCompile) @ bonaparte-test ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.10:test (default-test) @ bonaparte-test ---
+[INFO] Surefire report directory: /home/cobol/gitbonaparte-dsl/254/bonaparte-test/target/surefire-reports
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+
+Results :
+
+Tests run: 0, Failures: 0, Errors: 0, Skipped: 0
+
+[INFO] 
+[INFO] --- maven-jar-plugin:2.3.2:jar (default-jar) @ bonaparte-test ---
+[INFO] Building jar: /home/cobol/gitbonaparte-dsl/254/bonaparte-test/target/bonaparte-test-1.7.7-SNAPSHOT.jar
+[INFO] 
+[INFO] --- maven-enforcer-plugin:1.2:enforce (enforce-no-snapshots) @ bonaparte-test ---
+[INFO] 
+[INFO] >>> maven-source-plugin:2.2.1:jar (default) @ bonaparte-test >>>
+[INFO] 
+[INFO] --- xtext-maven-plugin:2.5.4:generate (default) @ bonaparte-test ---
+2475 [main] INFO  onaparte.dsl.BonScriptRuntimeModule  - BON Runtime module constructed
+2476 [main] INFO  onaparte.dsl.BonScriptRuntimeModule  - BON Value converter bound
+[INFO] Encoding: UTF-8
+[INFO] Compiler source level: 1.5
+[INFO] Compiler target level: 1.5
+[INFO] Using common types.
+[INFO] Collecting source models.
+[WARNING] Failed to resolve a resource by URI: 'file:/home/cobol/gitbonaparte-dsl/254/bonaparte-test/src/main/bon/subdir/file.bon'; Using similar URI instead: 'file:/home/cobol/gitbonaparte-dsl/254/bonaparte-test/src/main/bon/file.bon'.
+[INFO] Installing type provider.
+[WARNING] Failed to resolve a resource by URI: 'file:/home/cobol/gitbonaparte-dsl/254/bonaparte-test/src/main/bon/subdir/file.bon'; Using similar URI instead: 'file:/home/cobol/gitbonaparte-dsl/254/bonaparte-test/src/main/bon/file.bon'.
+[INFO] Generating stubs into /home/cobol/gitbonaparte-dsl/254/bonaparte-test/target/xtext-temp/stubs
+[INFO] Compiling stubs located in /home/cobol/gitbonaparte-dsl/254/bonaparte-test/target/xtext-temp/stubs
+[INFO] Nothing to compile. Stubs compilation was skipped.
+[INFO] Installing type provider for stubs.
+[WARNING] WARNING:class is not freezable due to mutable fields (file:/home/cobol/gitbonaparte-dsl/254/bonaparte-test/src/main/bon/file.bon line : 3)
+[WARNING] WARNING:The type "Raw" is mapped to the mutable Java class byte []. Use of "Binary" is preferred. (file:/home/cobol/gitbonaparte-dsl/254/bonaparte-test/src/main/bon/file.bon line : 5)
+[WARNING] WARNING:class is not freezable due to mutable fields (file:/home/cobol/gitbonaparte-dsl/254/bonaparte-test/src/main/bon/file.bon line : 3)
+[WARNING] WARNING:The type "Raw" is mapped to the mutable Java class byte []. Use of "Binary" is preferred. (file:/home/cobol/gitbonaparte-dsl/254/bonaparte-test/src/main/bon/file.bon line : 5)
+[INFO] Starting generator for input: 'file.bon'
+3194 [main] INFO  te.dsl.generator.BonScriptGenerator  - BonScriptGenerator constructed. @3: 
+3195 [main] INFO  te.dsl.generator.BonScriptGenerator  - @3: start code output: Debug dump for file:/home/cobol/gitbonaparte-dsl/254/bonaparte-test/src/main/bon/file.bon
+3196 [main] INFO  te.dsl.generator.BonScriptGenerator  - @3: start code output: Java output for file:/home/cobol/gitbonaparte-dsl/254/bonaparte-test/src/main/bon/file.bon
+3199 [main] INFO  te.dsl.generator.BonScriptGenerator  - @3: start cleanup
+[INFO] Starting generator for input: 'file.bon'
+3199 [main] INFO  te.dsl.generator.BonScriptGenerator  - BonScriptGenerator constructed. @4: 
+3200 [main] INFO  te.dsl.generator.BonScriptGenerator  - @4: start code output: Debug dump for file:/home/cobol/gitbonaparte-dsl/254/bonaparte-test/src/main/bon/file.bon
+3200 [main] INFO  te.dsl.generator.BonScriptGenerator  - @4: start code output: Java output for file:/home/cobol/gitbonaparte-dsl/254/bonaparte-test/src/main/bon/file.bon
+3203 [main] INFO  te.dsl.generator.BonScriptGenerator  - @4: start cleanup
+[INFO] 
+[INFO] --- build-helper-maven-plugin:1.7:add-source (add-source) @ bonaparte-test ---
+[INFO] Source directory: /home/cobol/gitbonaparte-dsl/254/bonaparte-test/src/main/xtend added.
+[INFO] Source directory: /home/cobol/gitbonaparte-dsl/254/bonaparte-test/src/main/xtend-gen added.
+[INFO] Source directory: /home/cobol/gitbonaparte-dsl/254/bonaparte-test/src/generated/java added.
+[INFO] 
+[INFO] <<< maven-source-plugin:2.2.1:jar (default) @ bonaparte-test <<<
+[INFO] 
+[INFO] --- maven-source-plugin:2.2.1:jar (default) @ bonaparte-test ---
+[INFO] Building jar: /home/cobol/gitbonaparte-dsl/254/bonaparte-test/target/bonaparte-test-1.7.7-SNAPSHOT-sources.jar
+[INFO] 
+[INFO] --- maven-install-plugin:2.3.1:install (default-install) @ bonaparte-test ---
+[INFO] Installing /home/cobol/gitbonaparte-dsl/254/bonaparte-test/target/bonaparte-test-1.7.7-SNAPSHOT.jar to /home/cobol/.m2/repository/de/jpaw/bonaparte-test/1.7.7-SNAPSHOT/bonaparte-test-1.7.7-SNAPSHOT.jar
+[INFO] Installing /home/cobol/gitbonaparte-dsl/254/bonaparte-test/pom.xml to /home/cobol/.m2/repository/de/jpaw/bonaparte-test/1.7.7-SNAPSHOT/bonaparte-test-1.7.7-SNAPSHOT.pom
+[INFO] Installing /home/cobol/gitbonaparte-dsl/254/bonaparte-test/target/bonaparte-test-1.7.7-SNAPSHOT-sources.jar to /home/cobol/.m2/repository/de/jpaw/bonaparte-test/1.7.7-SNAPSHOT/bonaparte-test-1.7.7-SNAPSHOT-sources.jar
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 5.514s
+[INFO] Finished at: Sat Apr 26 10:58:18 CEST 2014
+[INFO] Final Memory: 23M/490M
+[INFO] ------------------------------------------------------------------------
