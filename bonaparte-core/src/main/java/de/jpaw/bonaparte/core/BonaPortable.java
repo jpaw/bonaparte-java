@@ -116,6 +116,9 @@ public interface BonaPortable extends BonaMeta {
     /** Can be invoked to apply a String converter to all String typed fields in the object, parent objects, and included child objects. */
     public void treeWalkString(StringConverter _cvt);
 
+    /** Can be invoked to apply a BigDecimal converter to all BigDecimal typed fields in the object, parent objects, and included child objects. */
+    public void treeWalkBigDecimal(BigDecimalConverter _cvt);
+
     /** Gets the Metadata of the BonaPortable (which is a BonaPortable itself). */
     public ClassDefinition get$MetaData();  // name, revision etc as a class object. Use $ to avoid conflict with other getters
     
