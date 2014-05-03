@@ -15,6 +15,7 @@ import de.jpaw.bonaparte.core.FoldingComposer;
 import de.jpaw.bonaparte.pojos.csvTests.UnixPasswd;
 import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
 import de.jpaw.bonaparte.pojos.meta.FoldingStrategy;
+import de.jpaw.util.FieldGetter;
 
 public class TestFolding {
 
@@ -62,5 +63,16 @@ public class TestFolding {
         Map<Class<? extends BonaPortable>, List<String>> map = new HashMap<> (10);
         map.put(ClassDefinition.class, fields);
         runTest(unixPasswdCfg, UnixPasswd.class$MetaData(), "csvTests.UnixPasswd:uid:7\n",  map);
+    }
+    
+    @Test
+    public void testSingleFieldAccess() throws Exception {
+        UnixPasswd pwEntry = new UnixPasswd("root", "x", 0, 0,"System superuser", "/root", "/bin/sh");
+    	assert("root".equals(FieldGetter.getField(pwEntry, "name")));
+    }
+    @Test
+    public void testSingleFieldAccess2() throws Exception {
+        UnixPasswd pwEntry = new UnixPasswd("root", "x", 0, 0,"System superuser", "/root", "/bin/sh");
+    	assert("/bin/sh".equals(FieldGetter.getField(pwEntry, "shell")));
     }
 }
