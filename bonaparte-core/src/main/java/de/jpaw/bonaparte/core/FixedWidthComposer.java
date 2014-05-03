@@ -18,8 +18,6 @@ package de.jpaw.bonaparte.core;
 import java.io.IOException;
 import java.math.BigDecimal;
 
-import javax.naming.OperationNotSupportedException;
-
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
