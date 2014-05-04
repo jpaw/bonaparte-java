@@ -15,9 +15,14 @@
   */
 package de.jpaw.bonaparte.core;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
+import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
+import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
+import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.ParsedFoldingComponent;
 
 /** 
@@ -114,11 +119,21 @@ public interface BonaPortable extends BonaMeta {
     public <E extends Exception> void foldedOutput(MessageComposer<E> w, ParsedFoldingComponent pfc) throws E;
     
     /** Can be invoked to apply a String converter to all String typed fields in the object, parent objects, and included child objects. */
-    public void treeWalkString(StringConverter _cvt);
+    public void treeWalkString(DataConverter<String, AlphanumericElementaryDataItem> _cvt, boolean descend);
 
     /** Can be invoked to apply a BigDecimal converter to all BigDecimal typed fields in the object, parent objects, and included child objects. */
-    public void treeWalkBigDecimal(BigDecimalConverter _cvt);
+    public void treeWalkBigDecimal(DataConverter<BigDecimal, NumericElementaryDataItem> _cvt, boolean descend);
 
+    /** Can be invoked to apply an Object converter to all fields in the object, and potentially also included child objects. */
+    public void treeWalkObject(DataConverter<Object, FieldDefinition> _cvt, boolean descend);
+
+    /** Can be invoked to apply an Object converter to all fields in the object, and potentially also included child objects. */
+    public void treeWalkBonaPortable(DataConverter<BonaPortable,ObjectReference> _cvt, boolean descend);
+
+    /** Can be invoked to apply a String converter to all String typed fields in the object, parent objects, and included child objects. */
+    @Deprecated  // compatibility method, use treeWalkString(_cvt, true) instead!
+    public void treeWalkString(DataConverter<String, AlphanumericElementaryDataItem> _cvt);
+    
     /** Gets the Metadata of the BonaPortable (which is a BonaPortable itself). */
     public ClassDefinition get$MetaData();  // name, revision etc as a class object. Use $ to avoid conflict with other getters
     

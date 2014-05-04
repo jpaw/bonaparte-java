@@ -1,5 +1,6 @@
-package de.jpaw.bonaparte.core;
+package de.jpaw.bonaparte.converter;
 
+import de.jpaw.bonaparte.core.DataConverter;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 
 /**
@@ -9,5 +10,6 @@ import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
  * @version $Revision$
  *
  */
+@Deprecated // use the generic form only
 public interface StringConverter extends DataConverter<String,AlphanumericElementaryDataItem> {
 }

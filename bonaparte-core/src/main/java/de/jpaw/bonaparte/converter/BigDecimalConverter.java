@@ -1,7 +1,8 @@
-package de.jpaw.bonaparte.core;
+package de.jpaw.bonaparte.converter;
 
 import java.math.BigDecimal;
 
+import de.jpaw.bonaparte.core.DataConverter;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 
 /**
@@ -11,5 +12,6 @@ import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
  * @version $Revision$
  *
  */
+@Deprecated // use the generic form only
 public interface BigDecimalConverter extends DataConverter<BigDecimal,NumericElementaryDataItem> {
 }
