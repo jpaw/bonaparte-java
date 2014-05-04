@@ -27,6 +27,11 @@ import de.jpaw.enums.XEnum;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.JsonEscaper;
 
+/** This class natively generates JSON output. It aims for compatibility with the extensions used by the json-io library (@Type class information).
+ * 
+ * @author cobol
+ *
+ */
 public class JsonComposer implements MessageComposer<IOException> {
 	protected static final DateTimeFormatter LOCAL_DATE_ISO = DateTimeFormat.forPattern("yyyy-MM-dd"); // ISODateTimeFormat.basicDate();
 	protected static final DateTimeFormatter LOCAL_DATETIME_ISO = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss"); // ISODateTimeFormat.basicDateTime();
@@ -138,16 +143,22 @@ public class JsonComposer implements MessageComposer<IOException> {
 	public void startRecord() throws IOException {
 	}
 
+	// called for not-null elements only
 	@Override
 	public void startObject(ObjectReference di, BonaPortable o) throws IOException {
-		// TODO Auto-generated method stub
-		
+		out.append('{');
+		// create the class canonical name as a special field , to be compatible to json-io
+		writeStringUnescaped("@Type");
+		out.append(':');
+		writeStringUnescaped(o.getClass().getCanonicalName());
+		needFieldSeparator = true;
 	}
 
+	// called for not-null elements only
 	@Override
 	public void startArray(FieldDefinition di, int currentMembers, int sizeOfElement) throws IOException {
-		// TODO Auto-generated method stub
-		
+		writeFieldName(di);
+		out.append('[');
 	}
 
 	@Override
@@ -253,8 +264,20 @@ public class JsonComposer implements MessageComposer<IOException> {
 
 	@Override
 	public void addField(ObjectReference di, BonaPortable obj) throws IOException {
-		// TODO Auto-generated method stub
-		
+		if (di.getMultiplicity() != Multiplicity.SCALAR) {
+			// must write a null without a name
+			writeSeparator();
+			if (obj == null)
+				out.append("null");
+			else
+				startObject(di, obj);
+		} else if (obj != null) {
+			writeFieldName(di);
+			startObject(di, obj);
+		} else if (writeNulls) {
+			writeFieldName(di);
+			out.append("null");
+		} // else don't write at all
 	}
 
 	@Override
