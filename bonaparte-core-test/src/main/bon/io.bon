@@ -1,4 +1,4 @@
-package io {
+package io Ext {
 	class Ref {
 		optional Long		objectRef;
 	}

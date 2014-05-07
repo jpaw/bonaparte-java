@@ -1,4 +1,4 @@
-package de.jpaw.util;
+package de.jpaw.bonaparte.converter;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 

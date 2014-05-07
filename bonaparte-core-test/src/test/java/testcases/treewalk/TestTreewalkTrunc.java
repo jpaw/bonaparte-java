@@ -2,9 +2,10 @@ package testcases.treewalk;
 
 import org.testng.annotations.Test;
 
-import de.jpaw.bonaparte.core.StringConverter;
 import de.jpaw.bonaparte.pojos.treewalk.DataToFix;
-import de.jpaw.util.StringConverterFixer;
+import de.jpaw.bonaparte.core.DataConverter;
+import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.bonaparte.converter.StringConverterFixer;
 
 // test the Truncate option in conjunction with Trim
 public class TestTreewalkTrunc {
@@ -12,12 +13,12 @@ public class TestTreewalkTrunc {
 		return new DataToFix("  ID1toolong  ", "  ID2alsotoolong  ", null, null);
 	}
 	
-	private void checkTestCase(StringConverter converter, DataToFix expectedOutcome) {
+	private void checkTestCase(DataConverter<String,AlphanumericElementaryDataItem> converter, DataToFix expectedOutcome) {
 		DataToFix data = getData();
 		// check that data is NOT what we want before the conversion
 		assert(!data.equals(expectedOutcome));
 		// check that the converted data IS what we want after the conversion
-		data.treeWalkString(converter);
+		data.treeWalkString(converter, true);
 		assert(data.equals(expectedOutcome));
 	}
 	

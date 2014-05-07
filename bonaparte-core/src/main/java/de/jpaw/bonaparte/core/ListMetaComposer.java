@@ -28,24 +28,26 @@ import de.jpaw.util.ByteArray;
  * Only the clear() and add() methods of the List interface are used by this implementation.
  * This implementation is not ideal, since it may unbox/rebox objects of the BonaPortables.
  * To improve it, the BonaPortable interface would need to be changed. */
-public class ListComposer extends NoOpComposer implements MessageComposer<RuntimeException> {
-    final List<Object> storage;
+public class ListMetaComposer extends NoOpComposer implements MessageComposer<RuntimeException> {
+    final List<DataAndMeta<Object,FieldDefinition>> storage;
     final boolean doDeepCopies;
     
-    /** Creates a new ListComposer for a given preallocated external storage. */
-    public ListComposer(final List<Object> storage, boolean doDeepCopies) {
+    /** Creates a new ListMetaComposer for a given preallocated external storage. */
+    public ListMetaComposer(final List<DataAndMeta<Object,FieldDefinition>> storage, boolean doDeepCopies) {
         this.storage = storage;
         this.doDeepCopies = doDeepCopies;
     }
-    
-    /** Creates a new ListComposer, creating an own internal storage. */
-    public ListComposer(boolean doDeepCopies) {
-        this.storage = new ArrayList<Object>();
+    /** Creates a new ListMetaComposer, creating an own internal storage. */
+    public ListMetaComposer(boolean doDeepCopies) {
+        this.storage = new ArrayList<DataAndMeta<Object,FieldDefinition>>();
         this.doDeepCopies = doDeepCopies;
     }
     
+    protected void add(FieldDefinition di, Object o) {
+    	storage.add(new DataAndMeta<Object,FieldDefinition>(di, o));
+    }
     
-    public List<Object> getStorage() {
+    public List<DataAndMeta<Object,FieldDefinition>> getStorage() {
         return storage;
     }
     public boolean getDoDeepCopies() {
@@ -58,12 +60,12 @@ public class ListComposer extends NoOpComposer implements MessageComposer<Runtim
 
     @Override
     public void writeNull(FieldDefinition di) {
-        storage.add(null);
+        add(di,null);
     }
 
     @Override
     public void writeNullCollection(FieldDefinition di) {
-        storage.add(null);
+        add(di,null);
     }
 
 
@@ -75,91 +77,91 @@ public class ListComposer extends NoOpComposer implements MessageComposer<Runtim
 
     @Override
     public void addField(AlphanumericElementaryDataItem di, String s) {
-        storage.add(s);
+        add(di, s);
     }
 
     @Override
     public void addField(MiscElementaryDataItem di, boolean b) {
-        storage.add(Boolean.valueOf(b));
+        add(di, Boolean.valueOf(b));
     }
 
     @Override
     public void addField(MiscElementaryDataItem di, char c) {
-        storage.add(Character.valueOf(c));
+        add(di, Character.valueOf(c));
     }
 
     @Override
     public void addField(BasicNumericElementaryDataItem di, double d) {
-        storage.add(Double.valueOf(d));
+        add(di, Double.valueOf(d));
     }
 
     @Override
     public void addField(BasicNumericElementaryDataItem di, float f) {
-        storage.add(Float.valueOf(f));
+        add(di, Float.valueOf(f));
     }
 
     @Override
     public void addField(BasicNumericElementaryDataItem di, byte n) {
-        storage.add(Byte.valueOf(n));
+        add(di, Byte.valueOf(n));
     }
 
     @Override
     public void addField(BasicNumericElementaryDataItem di, short n) {
-        storage.add(Short.valueOf(n));
+        add(di, Short.valueOf(n));
     }
 
     @Override
     public void addField(BasicNumericElementaryDataItem di, int n) {
-        storage.add(Integer.valueOf(n));
+        add(di, Integer.valueOf(n));
     }
 
     @Override
     public void addField(BasicNumericElementaryDataItem di, long n) {
-        storage.add(Long.valueOf(n));
+        add(di, Long.valueOf(n));
     }
 
     @Override
     public void addField(BasicNumericElementaryDataItem di, Integer n) {
-        storage.add(n);
+        add(di, n);
     }
 
     @Override
     public void addField(NumericElementaryDataItem di, BigDecimal n) {
-        storage.add(n);
+        add(di, n);
     }
 
     @Override
     public void addField(MiscElementaryDataItem di, UUID n) {
-        storage.add(n);
+        add(di, n);
     }
 
     @Override
     public void addField(BinaryElementaryDataItem di, ByteArray b) {
-        storage.add(b);
+        add(di, b);
     }
 
     @Override
     public void addField(BinaryElementaryDataItem di, byte[] b) {
         if (b == null)
             writeNull(di);
-        storage.add(doDeepCopies ? Arrays.copyOf(b, b.length) : b);
+        add(di, doDeepCopies ? Arrays.copyOf(b, b.length) : b);
     }
 
     @Override
     public void addField(TemporalElementaryDataItem di, Calendar t) {
         if (t == null)
             writeNull(di);
-        storage.add(doDeepCopies ? (Calendar)t.clone() : t);
+        add(di, doDeepCopies ? (Calendar)t.clone() : t);
     }
 
     @Override
     public void addField(TemporalElementaryDataItem di, LocalDate t) {
-        storage.add(t);
+        add(di, t);
     }
 
     @Override
     public void addField(TemporalElementaryDataItem di, LocalDateTime t) {
-        storage.add(t);
+        add(di, t);
     }
 
     @Override
@@ -174,16 +176,16 @@ public class ListComposer extends NoOpComposer implements MessageComposer<Runtim
     
     @Override
     public void addEnum(EnumDataItem di, BasicNumericElementaryDataItem ord, Enum<?> n) {
-        storage.add(n);
+        add(di, n);
     }
 
     @Override
     public void addEnum(EnumDataItem di, AlphanumericElementaryDataItem token, TokenizableEnum n) {
-        storage.add(n);
+        add(di, n);
     }
 
 	@Override
 	public void addEnum(XEnumDataItem di, AlphanumericElementaryDataItem token, XEnum<?> n) {
-        storage.add(n);
+        add(di, n);
 	}
 }

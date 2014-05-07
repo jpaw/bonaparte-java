@@ -81,14 +81,14 @@ public class FoldingComposer<E extends Exception> extends DelegatingBaseComposer
         List<ParsedFoldingComponent> pl = new ArrayList<ParsedFoldingComponent>(fieldList.size());
         for (String f: fieldList) {
             // create an entry in pl
-            pl.add(createRecursiveFoldingComponent(obj.getClass(), f));
+            pl.add(createRecursiveFoldingComponent(f));
         }
         parsedMapping.put(obj.getClass(), pl);
         LOGGER.debug("Created parsed mapping for class {}", obj.getClass().getCanonicalName());
         return pl;
     }
     
-    private ParsedFoldingComponent createRecursiveFoldingComponent(Class <? extends BonaPortable> objClass, String f) {
+    public static ParsedFoldingComponent createRecursiveFoldingComponent(String f) {
         ParsedFoldingComponent pfc = new ParsedFoldingComponent();
         int dotIndex = f.indexOf('.');
         if (dotIndex < 0) {
@@ -96,7 +96,7 @@ public class FoldingComposer<E extends Exception> extends DelegatingBaseComposer
             pfc.setComponent(null);
         } else {
             pfc.setFieldname(f.substring(0, dotIndex));
-            pfc.setComponent(createRecursiveFoldingComponent(null, f.substring(dotIndex+1)));
+            pfc.setComponent(createRecursiveFoldingComponent(f.substring(dotIndex+1)));
         }
         // parse possible indexes, numeric or alphanumeric
         pfc.setIndex(-1);  // default: all nont-existing
@@ -106,7 +106,7 @@ public class FoldingComposer<E extends Exception> extends DelegatingBaseComposer
             pfc.setFieldname(pfc.getFieldname().substring(0, dotIndex));
             dotIndex = indexStr.indexOf(']');
             if (dotIndex != indexStr.length()-1) {
-                LOGGER.error("Unparseable index for field {}: [{}, ignored", pfc.getFieldname(), indexStr);
+                LOGGER.error("Unparseable index for field {}: [{}], ignored", pfc.getFieldname(), indexStr);
                 return pfc;
             }
             indexStr = indexStr.substring(0, dotIndex);

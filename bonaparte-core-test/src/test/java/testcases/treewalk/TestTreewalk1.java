@@ -2,11 +2,12 @@ package testcases.treewalk;
 
 import org.testng.annotations.Test;
 
-import de.jpaw.bonaparte.core.StringConverter;
+import de.jpaw.bonaparte.core.DataConverter;
+import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.treewalk.DataToFix;
-import de.jpaw.util.StringConverterEmptyToNull;
-import de.jpaw.util.StringConverterFixer;
-import de.jpaw.util.StringConverterTrim;
+import de.jpaw.bonaparte.converter.StringConverterEmptyToNull;
+import de.jpaw.bonaparte.converter.StringConverterFixer;
+import de.jpaw.bonaparte.converter.StringConverterTrim;
 
 // test the Trim and empty to null
 public class TestTreewalk1 {
@@ -14,12 +15,12 @@ public class TestTreewalk1 {
 		return new DataToFix("  ID1  ", "  ID2  ", "", "  ");
 	}
 	
-	private void checkTestCase(StringConverter converter, DataToFix expectedOutcome) {
+	private void checkTestCase(DataConverter<String,AlphanumericElementaryDataItem> converter, DataToFix expectedOutcome) {
 		DataToFix data = getData();
 		// check that data is NOT what we want before the conversion
 		assert(!data.equals(expectedOutcome));
 		// check that the converted data IS what we want after the conversion
-		data.treeWalkString(converter);
+		data.treeWalkString(converter, true);
 		assert(data.equals(expectedOutcome));
 	}
 	
