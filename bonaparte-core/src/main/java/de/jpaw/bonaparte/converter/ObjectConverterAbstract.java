@@ -1,7 +1,6 @@
 package de.jpaw.bonaparte.converter;
 
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
-import de.jpaw.util.DataConverterAbstract;
 
 /** Base implementation of ObjectConverter interface which offers array and nested object support */
 

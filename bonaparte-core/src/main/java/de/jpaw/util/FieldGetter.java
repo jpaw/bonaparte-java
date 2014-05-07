@@ -6,9 +6,13 @@ import java.util.List;
 import java.util.Map;
 
 import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.core.DataAndMeta;
 import de.jpaw.bonaparte.core.FoldingComposer;
 import de.jpaw.bonaparte.core.ListComposer;
+import de.jpaw.bonaparte.core.ListMetaComposer;
+import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.FoldingStrategy;
+import de.jpaw.bonaparte.pojos.meta.ParsedFoldingComponent;
 
 /** Utility method to get a fields from BonaPortables via pathname. */
 public class FieldGetter {
@@ -27,8 +31,28 @@ public class FieldGetter {
 		return target;
 	}
 	
+	/** Get a single field, reusing the get multiple implementation. */
 	public static Object getField(BonaPortable obj, String fieldname) {
 		List<Object> target = getFields(obj, Collections.singletonList(fieldname));		// the list with the result
+		return (target.size() == 0) ? null : target.get(0);
+	}
+
+	
+	/** Get a single field, alternate implementation, going directly to ListComposer (should be faster, less object allocations). */
+	public static Object getSingleField(BonaPortable obj, String fieldname) {
+		ParsedFoldingComponent pfc = FoldingComposer.createRecursiveFoldingComponent(fieldname);
+		List<Object> target = new ArrayList<Object>(1);
+		ListComposer delegate = new ListComposer(target, false);
+		obj.foldedOutput(delegate, pfc);
+		return (target.size() == 0) ? null : target.get(0);
+	}
+
+	/** Get a single field, alternate implementation, going directly to ListComposer (should be faster, less object allocations). */
+	public static DataAndMeta<Object,FieldDefinition> getSingleFieldWithMeta(BonaPortable obj, String fieldname) {
+		ParsedFoldingComponent pfc = FoldingComposer.createRecursiveFoldingComponent(fieldname);
+		List<DataAndMeta<Object,FieldDefinition>> target = new ArrayList<DataAndMeta<Object,FieldDefinition>>(1);
+		ListMetaComposer delegate = new ListMetaComposer(target, false);
+		obj.foldedOutput(delegate, pfc);
 		return (target.size() == 0) ? null : target.get(0);
 	}
 

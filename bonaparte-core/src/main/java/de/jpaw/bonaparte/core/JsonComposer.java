@@ -2,14 +2,15 @@ package de.jpaw.bonaparte.core;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.DateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.UUID;
 
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-// import org.joda.time.format.ISODateTimeFormat;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
@@ -24,12 +25,15 @@ import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.enums.TokenizableEnum;
 import de.jpaw.enums.XEnum;
+import de.jpaw.util.Base64;
 import de.jpaw.util.ByteArray;
+import de.jpaw.util.ByteBuilder;
+import de.jpaw.util.DefaultJsonEscaperForAppendables;
 import de.jpaw.util.JsonEscaper;
 
 /** This class natively generates JSON output. It aims for compatibility with the extensions used by the json-io library (@Type class information).
  * 
- * @author cobol
+ * @author Michael Bischoff (jpaw.de)
  *
  */
 public class JsonComposer implements MessageComposer<IOException> {
@@ -37,12 +41,24 @@ public class JsonComposer implements MessageComposer<IOException> {
 	protected static final DateTimeFormatter LOCAL_DATETIME_ISO = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss"); // ISODateTimeFormat.basicDateTime();
 	protected final Appendable out;
 	protected final boolean writeNulls;
+	protected final JsonEscaper jsonEscaper;
 	
 	protected boolean needFieldSeparator = false;
 	
+	public JsonComposer(Appendable out) {
+		this.out = out;
+		this.writeNulls = false;
+		this.jsonEscaper = new DefaultJsonEscaperForAppendables(out);
+	}
 	public JsonComposer(Appendable out, boolean writeNulls) {
 		this.out = out;
 		this.writeNulls = writeNulls;
+		this.jsonEscaper = new DefaultJsonEscaperForAppendables(out);
+	}
+	public JsonComposer(Appendable out, boolean writeNulls, JsonEscaper jsonEscaper) {
+		this.out = out;
+		this.writeNulls = writeNulls;
+		this.jsonEscaper = jsonEscaper;
 	}
 
 	/** Checks if a field separator (',') must be written, and does so if required. Sets the separator to required for the next field. */
@@ -53,17 +69,10 @@ public class JsonComposer implements MessageComposer<IOException> {
 			needFieldSeparator = true;
 	}
 
-	/** Writes a quoted string. We know that we don't need escaping. */
-	protected void writeStringUnescaped(String s) throws IOException {
-		out.append('"');
-		out.append(s);
-		out.append('"');
-	}
-
 	/** Writes a quoted fieldname. We assume that no escaping is required, because all valid identifier characters in Java don't need escaping. */
 	protected void writeFieldName(FieldDefinition di) throws IOException {
 		writeSeparator();
-		writeStringUnescaped(di.getName());
+		jsonEscaper.outputUnicodeNoControls(di.getName());
 		out.append(':');
 	}
 
@@ -84,7 +93,7 @@ public class JsonComposer implements MessageComposer<IOException> {
 //		out.append(encoded);
 //	}
 	
-	protected void writeOptionalString(FieldDefinition di, String s) throws IOException {
+	protected void writeOptionalUnquotedString(FieldDefinition di, String s) throws IOException {
 		if (di.getMultiplicity() != Multiplicity.SCALAR) {
 			// must write a null without a name
 			writeSeparator();
@@ -98,17 +107,34 @@ public class JsonComposer implements MessageComposer<IOException> {
 		}
 	}
 	
-	protected void writeOptionalQuotedString(FieldDefinition di, String s) throws IOException {
+	protected void writeOptionalQuotedAscii(FieldDefinition di, String s) throws IOException {
 		if (di.getMultiplicity() != Multiplicity.SCALAR) {
 			// must write a null without a name
 			writeSeparator();
 			if (s == null)
 				out.append("null");
 			else
-				writeStringUnescaped(s);
+				jsonEscaper.outputAscii(s);
 		} else if (s != null) {
 			writeFieldName(di);
-			writeStringUnescaped(s);
+			jsonEscaper.outputAscii(s);
+		} else if (writeNulls) {
+			writeFieldName(di);
+			out.append("null");
+		}
+	}
+	
+	protected void writeOptionalQuotedUnicodeNoControls(FieldDefinition di, String s) throws IOException {
+		if (di.getMultiplicity() != Multiplicity.SCALAR) {
+			// must write a null without a name
+			writeSeparator();
+			if (s == null)
+				out.append("null");
+			else
+				jsonEscaper.outputUnicodeNoControls(s);
+		} else if (s != null) {
+			writeFieldName(di);
+			jsonEscaper.outputUnicodeNoControls(s);
 		} else if (writeNulls) {
 			writeFieldName(di);
 			out.append("null");
@@ -145,12 +171,16 @@ public class JsonComposer implements MessageComposer<IOException> {
 
 	// called for not-null elements only
 	@Override
-	public void startObject(ObjectReference di, BonaPortable o) throws IOException {
+	public void startObject(ObjectReference di, BonaPortable obj) throws IOException {
 		out.append('{');
 		// create the class canonical name as a special field , to be compatible to json-io
-		writeStringUnescaped("@Type");
+		jsonEscaper.outputAscii("@type");
 		out.append(':');
-		writeStringUnescaped(o.getClass().getCanonicalName());
+		jsonEscaper.outputUnicodeNoControls(obj.getClass().getCanonicalName());
+		needFieldSeparator = true;
+		obj.serializeSub(this);
+		// terminateObject(); does not exist here
+		out.append('}');
 		needFieldSeparator = true;
 	}
 
@@ -185,6 +215,8 @@ public class JsonComposer implements MessageComposer<IOException> {
 
 	@Override
 	public void terminateRecord() throws IOException {
+		out.append('\r');		// clarify if we want this
+		out.append('\n');
 	}
 
 	@Override
@@ -193,7 +225,9 @@ public class JsonComposer implements MessageComposer<IOException> {
 
 	@Override
 	public void writeRecord(BonaPortable o) throws IOException {
+		startRecord();
         addField(StaticMeta.OUTER_BONAPORTABLE, o);
+        terminateRecord();
 	}
 
 	@Override
@@ -205,7 +239,7 @@ public class JsonComposer implements MessageComposer<IOException> {
 	@Override
 	public void addField(MiscElementaryDataItem di, char c) throws IOException {
 		writeOptionalFieldName(di);
-		JsonEscaper.outputEscapedString(out, String.valueOf(c));
+		jsonEscaper.outputUnicodeWithControls(String.valueOf(c));
 	}
 
 	@Override
@@ -252,10 +286,10 @@ public class JsonComposer implements MessageComposer<IOException> {
 			if (s == null)
 				out.append("null");
 			else
-				JsonEscaper.outputEscapedString(out, s);
+				jsonEscaper.outputUnicodeWithControls(s);
 		} else if (s != null) {
 			writeFieldName(di);
-			JsonEscaper.outputEscapedString(out, s);
+			jsonEscaper.outputUnicodeWithControls(s);
 		} else if (writeNulls) {
 			writeFieldName(di);
 			out.append("null");
@@ -282,59 +316,75 @@ public class JsonComposer implements MessageComposer<IOException> {
 
 	@Override
 	public void addField(MiscElementaryDataItem di, UUID n) throws IOException {
-		writeOptionalQuotedString(di, n == null ? null : n.toString());
+		writeOptionalQuotedAscii(di, n == null ? null : n.toString());
 	}
 
 	@Override
 	public void addField(BinaryElementaryDataItem di, ByteArray b) throws IOException {
-		// TODO Auto-generated method stub
-		
+		if (b == null) {
+			writeNull(di);
+		} else {
+			ByteBuilder tmp = new ByteBuilder((b.length() * 2) + 4, null);
+			Base64.encodeToByte(tmp, b.getBytes(), 0, b.length());
+			jsonEscaper.outputAscii(new String(tmp.getCurrentBuffer(), 0, tmp.length()));
+		}
 	}
 
 	@Override
 	public void addField(BinaryElementaryDataItem di, byte[] b) throws IOException {
-		// TODO Auto-generated method stub
-		
+		if (b == null) {
+			writeNull(di);
+		} else {
+            ByteBuilder tmp = new ByteBuilder((b.length * 2) + 4, null);
+            Base64.encodeToByte(tmp, b, 0, b.length);
+            jsonEscaper.outputAscii(new String(tmp.getCurrentBuffer(), 0, tmp.length()));
+		}
 	}
 
 	@Override
 	public void addField(BasicNumericElementaryDataItem di, Integer n) throws IOException {
-		writeOptionalQuotedString(di, n == null ? null : n.toString());
+		writeOptionalUnquotedString(di, n == null ? null : n.toString());
 	}
 
 	@Override
 	public void addField(NumericElementaryDataItem di, BigDecimal n) throws IOException {
-		writeOptionalQuotedString(di, n == null ? null : n.toString());
+		writeOptionalUnquotedString(di, n == null ? null : n.toString());
 	}
 
+	// t is not null here
+	protected String oldJavaCalendarFormat(Calendar t) {
+		// old Java's formatter is not thread safe, we have to construct a separate one
+		DateFormat fmt = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.ROOT);
+		return fmt.format(t.getTime());
+	}
+	
 	@Override
 	public void addField(TemporalElementaryDataItem di, Calendar t) throws IOException {
-		// TODO Auto-generated method stub
-		
+		writeOptionalQuotedAscii(di, t == null ? null : oldJavaCalendarFormat(t));
 	}
 
 	@Override
 	public void addField(TemporalElementaryDataItem di, LocalDate t) throws IOException {
-		writeOptionalQuotedString(di, t == null ? null : LOCAL_DATE_ISO.print(t));
+		writeOptionalQuotedAscii(di, t == null ? null : LOCAL_DATE_ISO.print(t));
 	}
 
 	@Override
 	public void addField(TemporalElementaryDataItem di, LocalDateTime t) throws IOException {
-		writeOptionalQuotedString(di, t == null ? null : LOCAL_DATETIME_ISO.print(t));
+		writeOptionalQuotedAscii(di, t == null ? null : LOCAL_DATETIME_ISO.print(t));
 	}
 
 	@Override
 	public void addEnum(EnumDataItem di, BasicNumericElementaryDataItem ord, Enum<?> n) throws IOException {
-		writeOptionalQuotedString(di, n == null ? null : n.toString());
+		writeOptionalQuotedUnicodeNoControls(di, n == null ? null : n.toString());
 	}
 
 	@Override
 	public void addEnum(EnumDataItem di, AlphanumericElementaryDataItem token, TokenizableEnum n) throws IOException {
-		writeOptionalQuotedString(di, n == null ? null : n.getToken());
+		writeOptionalQuotedUnicodeNoControls(di, n == null ? null : n.getToken());
 	}
 
 	@Override
 	public void addEnum(XEnumDataItem di, AlphanumericElementaryDataItem token, XEnum<?> n) throws IOException {
-		writeOptionalQuotedString(di, n == null ? null : n.getToken());
+		writeOptionalQuotedUnicodeNoControls(di, n == null ? null : n.getToken());
 	}
 }
