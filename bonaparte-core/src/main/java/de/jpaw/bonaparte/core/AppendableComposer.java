@@ -440,6 +440,11 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
     }
     
     @Override
+    public void terminateObject(ObjectReference di, BonaPortable obj) throws IOException {
+        work.append(OBJECT_TERMINATOR);
+    }
+    
+    @Override
     public void addField(ObjectReference di, BonaPortable obj) throws IOException {
         if (obj == null) {
             writeNull();
@@ -461,6 +466,8 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
             startObject(di, obj);
             // do all fields (now includes terminator)
             obj.serializeSub(this);
+            // terminate the object
+            terminateObject(di, obj);
         }
     }
 

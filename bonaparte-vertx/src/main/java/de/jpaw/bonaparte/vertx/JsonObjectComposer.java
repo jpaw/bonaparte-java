@@ -95,6 +95,10 @@ public class JsonObjectComposer implements MessageComposer<RuntimeException> {
 	}
 
 	@Override
+	public void terminateObject(ObjectReference di, BonaPortable o)	{
+	}
+	
+	@Override
 	public void startArray(FieldDefinition di, int currentMembers, int sizeOfElement) {
 		if (inArray)
 			throw new IllegalArgumentException("Nested arrays are not supported");
@@ -141,6 +145,7 @@ public class JsonObjectComposer implements MessageComposer<RuntimeException> {
         // start a new object
         startObject(StaticMeta.OUTER_BONAPORTABLE, o);
         o.serializeSub(this);
+        terminateObject(StaticMeta.OUTER_BONAPORTABLE, o);
         terminateRecord();
 	}
 

@@ -19,6 +19,8 @@ public class TestExternalizable {
 		org.writeExternal(oos);
 		oos.flush();
 		byte [] serializedData = os.toByteArray();
+		@SuppressWarnings("unused")
+		String dataForDebugging = new String(serializedData);
 		
 		// deserialize
 		Externalizable inst = type.newInstance();

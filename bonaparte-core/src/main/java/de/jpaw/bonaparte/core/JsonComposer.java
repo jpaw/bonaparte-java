@@ -178,11 +178,14 @@ public class JsonComposer implements MessageComposer<IOException> {
 		out.append(':');
 		jsonEscaper.outputUnicodeNoControls(obj.getClass().getCanonicalName());
 		needFieldSeparator = true;
-		obj.serializeSub(this);
-		// terminateObject(); does not exist here
+	}
+	
+    @Override
+    public void terminateObject(ObjectReference di, BonaPortable obj) throws IOException {
 		out.append('}');
 		needFieldSeparator = true;
-	}
+    }
+    
 
 	// called for not-null elements only
 	@Override
@@ -301,13 +304,18 @@ public class JsonComposer implements MessageComposer<IOException> {
 		if (di.getMultiplicity() != Multiplicity.SCALAR) {
 			// must write a null without a name
 			writeSeparator();
-			if (obj == null)
+			if (obj == null) {
 				out.append("null");
-			else
+			} else {
 				startObject(di, obj);
+				obj.serializeSub(this);
+				terminateObject(di, obj);
+			}
 		} else if (obj != null) {
 			writeFieldName(di);
 			startObject(di, obj);
+			obj.serializeSub(this);
+			terminateObject(di, obj);
 		} else if (writeNulls) {
 			writeFieldName(di);
 			out.append("null");

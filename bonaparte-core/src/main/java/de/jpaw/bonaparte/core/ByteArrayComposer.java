@@ -456,6 +456,11 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
         addField(REVISION_META, obj.get$Revision());
     }
     
+    @Override
+    public void terminateObject(ObjectReference di, BonaPortable obj) {
+        work.append(OBJECT_TERMINATOR);
+    }
+    
 
     @Override
     public void addField(ObjectReference di, BonaPortable obj) {
@@ -480,6 +485,9 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
 
             // do all fields (now includes terminator)
             obj.serializeSub(this);
+            
+            // terminate the new object
+            terminateObject(di, obj);
         }
     }
 

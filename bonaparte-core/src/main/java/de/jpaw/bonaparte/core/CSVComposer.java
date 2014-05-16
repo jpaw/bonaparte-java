@@ -348,15 +348,20 @@ public class CSVComposer extends AppendableComposer {
     }
   
     @Override
+    public void terminateObject(ObjectReference di, BonaPortable obj) throws IOException {
+        if (cfg.objectEnd != null && cfg.objectEnd.length() > 0) {
+            super.addRawData(cfg.objectEnd);
+            recordStart = true;
+        }
+    }
+  
+    @Override
     public void addField(ObjectReference di, BonaPortable obj) throws IOException {
         if (obj != null) {
             startObject(di, obj);
-            // do all fields (now includes terminator)
+            // do all fields
             obj.serializeSub(this);
-            if (cfg.objectEnd != null && cfg.objectEnd.length() > 0) {
-                super.addRawData(cfg.objectEnd);
-                recordStart = true;
-            }
+            terminateObject(di, obj);
         }
     }
 }

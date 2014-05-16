@@ -280,10 +280,10 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
         writeNull(null);    // blank version number
     }
 
-    public void startObject(String name, String version) throws IOException {
-        // TODO Auto-generated method stub
-
-    }
+//    public void startObject(String name, String version) throws IOException {
+//        // TODO Auto-generated method stub
+//
+//    }
 
     @Override
     public void writeSuperclassSeparator() throws IOException {
@@ -304,7 +304,6 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
     @Override
     public void terminateRecord() throws IOException {
         out.write(RECORD_TERMINATOR);
-
     }
 
     @Override
@@ -362,6 +361,11 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
     @Override
     public void startObject(ObjectReference di, BonaPortable obj) throws IOException {
     }
+    @Override
+    public void terminateObject(ObjectReference di, BonaPortable obj) throws IOException {
+        out.writeByte(OBJECT_TERMINATOR);
+    }
+    
 
     @Override
     public void addField(ObjectReference di, BonaPortable obj) throws IOException {
@@ -379,6 +383,7 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
             } else {
                 out.writeObject(obj);   // so fall back to normal behaviour!
             }
+            terminateObject(di, obj);
         }
 
     }

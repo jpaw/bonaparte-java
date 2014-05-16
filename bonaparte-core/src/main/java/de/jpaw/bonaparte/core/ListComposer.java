@@ -71,6 +71,7 @@ public class ListComposer extends NoOpComposer implements MessageComposer<Runtim
     public void writeRecord(BonaPortable o) {
         startRecord();  // noop in the base implementation
         addField(StaticMeta.OUTER_BONAPORTABLE, o);
+        terminateRecord();
     }
 
     @Override
@@ -169,6 +170,7 @@ public class ListComposer extends NoOpComposer implements MessageComposer<Runtim
         } else {
             startObject(di, obj);
             obj.serializeSub(this);
+            terminateObject(di, obj);
         }
     }
     
