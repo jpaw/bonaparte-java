@@ -716,11 +716,12 @@ public final class StringBuilderParser extends StringBuilderConstants implements
                 }
             }
             // all good here. Parse the contents
+            // if we use the cache, make the object known even before the contents has been parsed, because it may be referenced if the structure is cyclic
+            if (useCache)
+                objects.add(newObject);
             currentClass = classname;
             newObject.deserialize(this);
             currentClass = previousClass;
-            if (useCache)
-                objects.add(newObject);
             return newObject;
         }
     }

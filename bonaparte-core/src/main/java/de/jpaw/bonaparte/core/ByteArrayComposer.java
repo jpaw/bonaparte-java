@@ -471,6 +471,8 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
                     ++numberOfObjectReuses;
                     return;
                 }
+                // add the new object to the cache of known objects
+                objectCache.put(obj, Integer.valueOf(numberOfObjectsSerialized++));
                 // fall through
             }
             // start a new object
@@ -478,10 +480,6 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
 
             // do all fields (now includes terminator)
             obj.serializeSub(this);
-            if (useCache) {
-                // add the new object to the cache of known objects
-                objectCache.put(obj, Integer.valueOf(numberOfObjectsSerialized++));
-            }            
         }
     }
 

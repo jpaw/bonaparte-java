@@ -453,16 +453,14 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
                     ++numberOfObjectReuses;
                     return;
                 }
+                // add the new object to the cache of known objects. This is done despite we are not yet done with the object!
+                objectCache.put(obj, Integer.valueOf(numberOfObjectsSerialized++));
                 // fall through
             }
             // start a new object
             startObject(di, obj);
             // do all fields (now includes terminator)
             obj.serializeSub(this);
-            if (useCache) {
-                // add the new object to the cache of known objects
-                objectCache.put(obj, Integer.valueOf(numberOfObjectsSerialized++));
-            }            
         }
     }
 
