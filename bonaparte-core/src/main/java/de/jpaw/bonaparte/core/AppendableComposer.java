@@ -454,7 +454,7 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
                 if (previousIndex != null) {
                     // reuse this instance
                     work.append(OBJECT_AGAIN);
-                    addField(StaticMeta.INTERNAL_INTEGER, previousIndex.intValue());
+                    addField(StaticMeta.INTERNAL_INTEGER, numberOfObjectsSerialized - previousIndex.intValue() - 1);  // 0 is same object as previous, 1 = the one before etc...
                     ++numberOfObjectReuses;
                     return;
                 }

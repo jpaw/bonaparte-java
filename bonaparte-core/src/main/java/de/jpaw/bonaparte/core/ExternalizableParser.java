@@ -55,6 +55,12 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         this.in = in;
     }
 
+    // entry called from generated objects:
+    public static void deserialize(BonaPortable obj, ObjectInput _in) throws IOException, ClassNotFoundException {
+    	MessageParser<IOException> _p = new ExternalizableParser(_in);
+    	obj.deserialize(_p);
+    }
+
     /**************************************************************************************************
      * Deserialization goes here
      * @throws IOException
@@ -528,12 +534,6 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         byte z = needToken();
         if (z == which)
             return;   // all good
-        
-        // temporarily provide compatibility to 1.7.9 and back...
-        if (z == PARENT_SEPARATOR) {
-        	// implies we have been looking for OBJECT_TERMINATOR...
-        	return;
-        }
         
         // we have extra data and it is not null. Now the behavior depends on a parser setting
         ParseSkipNonNulls mySetting = getSkipNonNullsBehavior();
