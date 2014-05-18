@@ -811,7 +811,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
                 throw new MessageParserException(MessageParserException.INVALID_BACKREFERENCE, String.format(
                         "at %s: requested object %d of only %d available", fieldname, objectIndex, objects.size()),
                         parseIndex, currentClass);
-            BonaPortable newObject = objects.get(objectIndex);
+            BonaPortable newObject = objects.get(objects.size() - 1 - objectIndex);  // 0 is the last one put in, 1 the one before last etc...
             // check if the object is of expected type
             if (newObject.getClass() != type) {
                 // check if it is a superclass
