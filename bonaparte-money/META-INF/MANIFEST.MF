@@ -3,7 +3,7 @@ Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-ManifestVersion: 2
 Bundle-Name: bonaparte money libraries
 Bundle-SymbolicName: bonaparte.money
-Bundle-Version: 1.7.11.qualifier
+Bundle-Version: 1.7.12.qualifier
 Bundle-Vendor: Michael Bischoff
 Require-Bundle: bonaparte.core
 Export-Package: de.jpaw.bonaparte.pojos.money;de.jpaw.algebra;de.jpaw.money;de.jpaw.xtend.sions
