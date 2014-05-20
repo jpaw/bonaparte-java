@@ -73,6 +73,7 @@ public class ListMetaComposer extends NoOpComposer implements MessageComposer<Ru
     public void writeRecord(BonaPortable o) {
         startRecord();  // noop in the base implementation
         addField(StaticMeta.OUTER_BONAPORTABLE, o);
+        terminateRecord();  // noop in the base implementation
     }
 
     @Override
@@ -171,6 +172,7 @@ public class ListMetaComposer extends NoOpComposer implements MessageComposer<Ru
         } else {
             startObject(di, obj);
             obj.serializeSub(this);
+            terminateObject(di, obj);
         }
     }
     

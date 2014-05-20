@@ -69,14 +69,14 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
      * but reads from the byte[] directly
      **************************************************************************************************/
 
-    private byte needByte() throws MessageParserException {
+    private byte needToken() throws MessageParserException {
         if (parseIndex >= messageLength) {
             throw new MessageParserException(MessageParserException.PREMATURE_END, null, parseIndex, currentClass);
         }
         return inputdata[parseIndex++];
     }
 
-    private void needByte(byte c) throws MessageParserException {
+    private void needToken(byte c) throws MessageParserException {
         if (parseIndex >= messageLength) {
             throw new MessageParserException(MessageParserException.PREMATURE_END,
                     String.format("(expected 0x%02x)", (int)c), parseIndex, currentClass);
@@ -97,7 +97,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
 
     // check for Null called for field members inside a class
     private boolean checkForNull(String fieldname, boolean allowNull) throws MessageParserException {
-        byte c = needByte();
+        byte c = needToken();
         if (c == NULL_FIELD) {
             if (allowNull) {
                 return true;
@@ -105,7 +105,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
                 throw new MessageParserException(MessageParserException.ILLEGAL_EXPLICIT_NULL, fieldname, parseIndex, currentClass);
             }
         }
-        if ((c == PARENT_SEPARATOR) || (c == ARRAY_TERMINATOR)) {
+        if ((c == PARENT_SEPARATOR) || (c == ARRAY_TERMINATOR) || (c == OBJECT_TERMINATOR)) {
             if (allowNull) {
                 // uneat it
                 --parseIndex;
@@ -375,7 +375,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
         if (checkForNull(fieldname, allowNull)) {
             return null;
         }
-        byte c = needByte();
+        byte c = needToken();
         if (c == '0') {
             result = false;
         } else if (c == '1') {
@@ -384,7 +384,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
             throw new MessageParserException(MessageParserException.ILLEGAL_BOOLEAN,
                     String.format("(found 0x%02x for %s)", (int)c, fieldname), parseIndex, currentClass);
         }
-        needByte(FIELD_TERMINATOR);
+        needToken(FIELD_TERMINATOR);
         return result;
     }
 
@@ -644,7 +644,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
                 throw new MessageParserException(MessageParserException.NULL_MAP_NOT_ALLOWED_HERE, fieldname, parseIndex, currentClass);
             return -1;
         }
-        needByte(MAP_BEGIN);
+        needToken(MAP_BEGIN);
         int foundIndexType = readInteger(fieldname, false, false);
         if (foundIndexType != indexID) {
             throw new MessageParserException(MessageParserException.WRONG_MAP_INDEX_TYPE,
@@ -665,7 +665,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
                 throw new MessageParserException(MessageParserException.NULL_COLLECTION_NOT_ALLOWED, fieldname, parseIndex, currentClass);
             return -1;
         }
-        needByte(ARRAY_BEGIN);
+        needToken(ARRAY_BEGIN);
         int n = readInteger(fieldname, false, false);
         if ((n < 0) || (n > 1000000000)) {
             throw new MessageParserException(MessageParserException.ARRAY_SIZE_OUT_OF_BOUNDS,
@@ -676,18 +676,29 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
 
     @Override
     public void parseArrayEnd() throws MessageParserException {
-        needByte(ARRAY_TERMINATOR);
+        needToken(ARRAY_TERMINATOR);
 
     }
 
+    protected void skipOptionalBom() throws MessageParserException {
+        if (parseIndex + 3 <= messageLength) {
+            if (inputdata[parseIndex] == BOM1 
+             && inputdata[parseIndex+1] == BOM2
+             && inputdata[parseIndex+2] == BOM3) {
+                parseIndex += 3;
+            }
+        }
+    }
+    
     @Override
     public BonaPortable readRecord() throws MessageParserException {
         BonaPortable result;
-        needByte(RECORD_BEGIN);
-        needByte(NULL_FIELD); // version no
+        skipOptionalBom();
+        needToken(RECORD_BEGIN);
+        needToken(NULL_FIELD); // version no
         result = readObject(GENERIC_RECORD, BonaPortable.class, false, true);
         skipByte(RECORD_OPT_TERMINATOR);
-        needByte(RECORD_TERMINATOR);
+        needToken(RECORD_TERMINATOR);
         return result;
     }
 
@@ -741,10 +752,25 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
 
     @Override
     public void eatParentSeparator() throws MessageParserException {
+    	eatObjectOrParentSeparator(PARENT_SEPARATOR);
+    }    	
+    	
+    public void eatObjectTerminator() throws MessageParserException {
+    	eatObjectOrParentSeparator(OBJECT_TERMINATOR);
+    }
+    
+   	protected void eatObjectOrParentSeparator(byte which) throws MessageParserException {
         skipNulls();  // upwards compatibility: skip extra fields if they are blank.
-        byte z = needByte();
-        if (z == PARENT_SEPARATOR)
+        byte z = needToken();
+        if (z == which)
             return;   // all good
+        
+        // temporarily provide compatibility to 1.7.9 and back...
+        if (z == PARENT_SEPARATOR) {
+        	// implies we have been looking for OBJECT_TERMINATOR...
+        	return;
+        }
+        
         // we have extra data and it is not null. Now the behavior depends on a parser setting
         ParseSkipNonNulls mySetting = getSkipNonNullsBehavior();
         switch (mySetting) {
@@ -754,11 +780,20 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
             LOGGER.warn("{} at index {} parsing class {}", MessageParserException.codeToString(MessageParserException.EXTRA_FIELDS), parseIndex, currentClass);
             // fall through
         case IGNORE:
-            // skip bytes until we are at end of record (bad!) (thrown by needByte()) or find the terminator
-            while (needByte() != PARENT_SEPARATOR)
-                ;
+            // skip bytes until we are at end of record (bad!) (thrown by needToken()) or find the terminator
+        	skipUntilNext(which);
         }
     }
+   	
+   	protected void skipUntilNext(byte which) throws MessageParserException {
+   		byte c;
+   		while ((c = needToken()) != which) {
+   			if (c == OBJECT_BEGIN) {
+   				// skip nested object!
+   				skipUntilNext(OBJECT_TERMINATOR);
+   			}
+   		}
+   	}
 
     @Override
     public Integer readNumber(String fieldname, boolean allowNull, int length, boolean isSigned)
@@ -787,7 +822,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
                 throw new MessageParserException(MessageParserException.INVALID_BACKREFERENCE, String.format(
                         "at %s: requested object %d of only %d available", fieldname, objectIndex, objects.size()),
                         parseIndex, currentClass);
-            BonaPortable newObject = objects.get(objectIndex);
+            BonaPortable newObject = objects.get(objects.size() - 1 - objectIndex);  // 0 is the last one put in, 1 the one before last etc...
             // check if the object is of expected type
             if (newObject.getClass() != type) {
                 // check if it is a superclass
@@ -799,10 +834,10 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
             return newObject;
         } else {
             String previousClass = currentClass;
-            needByte(OBJECT_BEGIN); // version not yet allowed
+            needToken(OBJECT_BEGIN); // version not yet allowed
             String classname = readString(fieldname, false, 0, false, false, false, false);
             // String revision = readAscii(true, 0, false, false);
-            needByte(NULL_FIELD); // version not yet allowed
+            needToken(NULL_FIELD); // version not yet allowed
             BonaPortable newObject = BonaPortableFactory.createObject(classname);
             // System.out.println("Creating new obj " + classname + " gave me " + newObject);
             // check if the object is of expected type
@@ -814,11 +849,14 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
                 }
             }
             // all good here. Parse the contents
-            currentClass = classname;
-            newObject.deserialize(this);
-            currentClass = previousClass;
+            // if we use the cache, make the object known even before the contents has been parsed, because it may be referenced if the structure is cyclic
             if (useCache)
                 objects.add(newObject);
+            
+            currentClass = classname;
+            newObject.deserialize(this);
+            eatObjectTerminator();
+            currentClass = previousClass;
             return newObject;
         }
     }
@@ -826,11 +864,11 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
     @Override
     public List<BonaPortable> readTransmission() throws MessageParserException {
         List<BonaPortable> results = new ArrayList<BonaPortable>();
-        byte c = needByte();
+        byte c = needToken();
         if (c == TRANSMISSION_BEGIN) {
-            needByte(NULL_FIELD);  // version
+            needToken(NULL_FIELD);  // version
             // TODO: parse extensions here
-            while ((c = needByte()) != TRANSMISSION_TERMINATOR) {
+            while ((c = needToken()) != TRANSMISSION_TERMINATOR) {
                 // System.out.println("transmission loop: char is " + c);
                 --parseIndex; // push back object def
                 results.add(readRecord());

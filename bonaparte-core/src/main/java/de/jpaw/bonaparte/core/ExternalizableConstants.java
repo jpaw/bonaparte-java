@@ -1,6 +1,6 @@
 package de.jpaw.bonaparte.core;
 
-public class ExternalizableConstants implements StaticMeta {
+public class ExternalizableConstants extends Settings implements StaticMeta {
     protected static boolean nestedObjectsInternally = true; // false = run through serializable, true = as on ASCII format
     protected static final long powersOfTen[] = {
         1L,
@@ -35,6 +35,7 @@ public class ExternalizableConstants implements StaticMeta {
     protected static final byte RECORD_TERMINATOR = '\012';         // ctrl-J
     protected static final byte PARENT_SEPARATOR = '\020';          // ctrl-P
     protected static final byte OBJECT_BEGIN = '\023';              // ctrl-S
+    protected static final byte OBJECT_TERMINATOR = '\017';         // ctrl-O
     protected static final byte ESCAPE_CHAR = '\005';               // ctrl-E
     protected static final byte NULL_FIELD = '\016';                // ctrl-N
     protected static final byte MAP_BEGIN = '\036';                 //

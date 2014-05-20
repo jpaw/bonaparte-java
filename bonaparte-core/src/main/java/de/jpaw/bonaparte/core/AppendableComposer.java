@@ -440,6 +440,11 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
     }
     
     @Override
+    public void terminateObject(ObjectReference di, BonaPortable obj) throws IOException {
+        work.append(OBJECT_TERMINATOR);
+    }
+    
+    @Override
     public void addField(ObjectReference di, BonaPortable obj) throws IOException {
         if (obj == null) {
             writeNull();
@@ -449,20 +454,20 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
                 if (previousIndex != null) {
                     // reuse this instance
                     work.append(OBJECT_AGAIN);
-                    addField(StaticMeta.INTERNAL_INTEGER, previousIndex.intValue());
+                    addField(StaticMeta.INTERNAL_INTEGER, numberOfObjectsSerialized - previousIndex.intValue() - 1);  // 0 is same object as previous, 1 = the one before etc...
                     ++numberOfObjectReuses;
                     return;
                 }
+                // add the new object to the cache of known objects. This is done despite we are not yet done with the object!
+                objectCache.put(obj, Integer.valueOf(numberOfObjectsSerialized++));
                 // fall through
             }
             // start a new object
             startObject(di, obj);
             // do all fields (now includes terminator)
             obj.serializeSub(this);
-            if (useCache) {
-                // add the new object to the cache of known objects
-                objectCache.put(obj, Integer.valueOf(numberOfObjectsSerialized++));
-            }            
+            // terminate the object
+            terminateObject(di, obj);
         }
     }
 

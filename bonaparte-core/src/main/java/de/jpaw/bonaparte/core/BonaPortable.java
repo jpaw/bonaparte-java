@@ -34,6 +34,12 @@ import de.jpaw.bonaparte.pojos.meta.ParsedFoldingComponent;
  **/
 public interface BonaPortable extends BonaMeta {
 	
+	/** Return the metadata provider. (replaces all class$ f
+	 * 
+	 * @return
+	 */
+	public BonaPortableClass<? extends BonaPortable> get$BonaPortableClass();
+	
     /** Gets some optional RTTI (runtime type information). If no rtti has been supplied, the rtti of a parent class is returned.
      * 
      * @return some numeric value defined in the DSL.
@@ -52,6 +58,7 @@ public interface BonaPortable extends BonaMeta {
      *  
      * @return the serial UID, which is a static private class variable.
      */
+	@Deprecated
     public long get$Serial();
 	
     /** Retrieves a single property from the current map.
@@ -59,18 +66,22 @@ public interface BonaPortable extends BonaMeta {
      * @param id the key of the property.
      * @return the property for the given parameter, or null if it does not exist.
      */    
+	@Deprecated
     public String get$Property(String id);
     
     /** Gets the map of current properties of this class. All properties are defines by the DSL, the returned map will be immutable.
      * 
      * @return the current map of properties, which is never null, but may be empty.
      */
+	@Deprecated
     public Map<String,String> get$PropertyMap();
     
     /** Gets the defined class of a "return type" if it has been defined for this object or one of its superclasses. Returns null if none has defined a return type. */
+	@Deprecated
     public Class<? extends BonaPortable> get$returns();
     
     /** Gets the defined class of a "pk type" if it has been defined for this object or one of its superclasses. Returns null if none has defined a pk type. */
+	@Deprecated
     public Class<? extends BonaPortable> get$pk();
     
     /** Serializes this object into the format implemented by the MessageComposer parameter. The method will invoke methods of the MessageComposer interface for every member field, and also for some metadata. Class headers itself are assumed to have been serialized before.
@@ -131,10 +142,11 @@ public interface BonaPortable extends BonaMeta {
     public void treeWalkBonaPortable(DataConverter<BonaPortable,ObjectReference> _cvt, boolean descend);
 
     /** Can be invoked to apply a String converter to all String typed fields in the object, parent objects, and included child objects. */
-    @Deprecated  // compatibility method, use treeWalkString(_cvt, true) instead!
-    public void treeWalkString(DataConverter<String, AlphanumericElementaryDataItem> _cvt);
+//    @Deprecated  // compatibility method, use treeWalkString(_cvt, true) instead!
+//    public void treeWalkString(DataConverter<String, AlphanumericElementaryDataItem> _cvt);
     
     /** Gets the Metadata of the BonaPortable (which is a BonaPortable itself). */
+	@Deprecated
     public ClassDefinition get$MetaData();  // name, revision etc as a class object. Use $ to avoid conflict with other getters
     
 
@@ -158,6 +170,7 @@ public interface BonaPortable extends BonaMeta {
     boolean is$Frozen();
     
     /** Same as class$isFreezable(). */
+	@Deprecated
     boolean is$Freezable();
     
     /** Obtain a mutable clone of a frozen object. 

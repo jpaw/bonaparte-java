@@ -52,7 +52,6 @@ public interface MessageComposer<E extends Exception> {
     public void writeNullCollection(FieldDefinition di) throws E;   // the whole collection is null
     public void startTransmission() throws E;
     public void startRecord() throws E;
-    public void startObject(ObjectReference di, BonaPortable o) throws E;  // write the name and the revision
     public void startArray(FieldDefinition di, int currentMembers, int sizeOfElement) throws E;
     public void startMap  (FieldDefinition di, int currentMembers) throws E;
     public void writeSuperclassSeparator() throws E;  // this is bad. It should be transparent to the classes if the message format contains separators or not.
@@ -61,6 +60,10 @@ public interface MessageComposer<E extends Exception> {
     public void terminateRecord() throws E;
     public void terminateTransmission() throws E;
     public void writeRecord(BonaPortable o) throws E;
+
+    // the following methods are not required by the bonaportables directly, but for delegating composer operation
+    public void startObject(ObjectReference di, BonaPortable o) throws E;  // write the name and the revision  (only used internally in composers)
+    public void terminateObject(ObjectReference di, BonaPortable o) throws E;  // write the name and the revision  (only used internally in composers)
 
     // serialization methods: field type specific
 

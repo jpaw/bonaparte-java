@@ -456,6 +456,11 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
         addField(REVISION_META, obj.get$Revision());
     }
     
+    @Override
+    public void terminateObject(ObjectReference di, BonaPortable obj) {
+        work.append(OBJECT_TERMINATOR);
+    }
+    
 
     @Override
     public void addField(ObjectReference di, BonaPortable obj) {
@@ -467,10 +472,12 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
                 if (previousIndex != null) {
                     // reuse this instance
                     work.append(OBJECT_AGAIN);
-                    addField(StaticMeta.INTERNAL_INTEGER, previousIndex.intValue());
+                    addField(StaticMeta.INTERNAL_INTEGER, numberOfObjectsSerialized - previousIndex.intValue() - 1);  // 0 is same object as previous, 1 = the one before etc...
                     ++numberOfObjectReuses;
                     return;
                 }
+                // add the new object to the cache of known objects
+                objectCache.put(obj, Integer.valueOf(numberOfObjectsSerialized++));
                 // fall through
             }
             // start a new object
@@ -478,10 +485,9 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
 
             // do all fields (now includes terminator)
             obj.serializeSub(this);
-            if (useCache) {
-                // add the new object to the cache of known objects
-                objectCache.put(obj, Integer.valueOf(numberOfObjectsSerialized++));
-            }            
+            
+            // terminate the new object
+            terminateObject(di, obj);
         }
     }
 

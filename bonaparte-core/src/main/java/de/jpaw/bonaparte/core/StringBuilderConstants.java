@@ -37,9 +37,12 @@ public abstract class StringBuilderConstants extends Settings {
     protected static final char RECORD_OPT_TERMINATOR = '\015'; // ctrl-M
     protected static final char RECORD_TERMINATOR = '\012'; // ctrl-J
     protected static final char PARENT_SEPARATOR = '\020'; // ctrl-P
-    protected static final char OBJECT_BEGIN = '\023'; // ctrl-S                NEW
+    protected static final char OBJECT_BEGIN = '\023'; // ctrl-S
+    protected static final char OBJECT_TERMINATOR = '\017'; 		// ctrl-O
     protected static final char OBJECT_AGAIN = '\007';              // ctrl-G
     protected static final char ESCAPE_CHAR = '\005'; // ctrl-E
-    protected static final char NULL_FIELD = '\016'; // ctrl-N                  NEW
+    protected static final char NULL_FIELD = '\016'; // ctrl-N
     protected static final char MAP_BEGIN = '\036';                 //
+    
+    protected static final char BOM = 0xfeff;                 // possibly encountered at the beginning of a record
 }

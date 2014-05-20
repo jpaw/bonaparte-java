@@ -183,16 +183,24 @@ public class DelegatingBaseComposer<E extends Exception> implements MessageCompo
         delegateComposer.startObject(di, obj);
     }
     
+    @Override
+    public void terminateObject(ObjectReference di, BonaPortable obj) throws E {
+    	delegateComposer.terminateObject(di, obj);
+    }
+    
+    
     // cannot delegate this, as it would give away control
     @Override
     public void addField(ObjectReference di, BonaPortable obj) throws E {
         if (obj == null) {
-            writeNull(di);
+            writeNull(di);  // delegates...
         } else {
             // start a new object
             startObject(di, obj);
-            // do all fields (now includes terminator)
+            // do all fields
             obj.serializeSub(this);
+            // start a new object
+            terminateObject(di, obj);
         }
     }
 

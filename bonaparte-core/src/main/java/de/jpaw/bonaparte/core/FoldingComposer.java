@@ -46,6 +46,7 @@ public class FoldingComposer<E extends Exception> extends DelegatingBaseComposer
             case FULL_OUTPUT:
                 delegateComposer.startObject(di, obj);
                 obj.serializeSub(this); // this or delegateComposer?
+                delegateComposer.terminateObject(di, obj);
                 return null;
             case TRY_SUPERCLASS:
             case SUPERCLASS_OR_FULL:
@@ -67,6 +68,7 @@ public class FoldingComposer<E extends Exception> extends DelegatingBaseComposer
                                 // all others default to "full output"
                                 delegateComposer.startObject(di, obj);
                                 obj.serializeSub(this); // this or delegateComposer?
+                                delegateComposer.terminateObject(di, obj);
                             }
                             return null;  // skip, no mapping found even with recursion
                         }
@@ -149,7 +151,7 @@ public class FoldingComposer<E extends Exception> extends DelegatingBaseComposer
             startObject(di, obj);
             for (ParsedFoldingComponent pfc: parsedFieldList)
                 obj.foldedOutput(this, pfc);
-            delegateComposer.writeSuperclassSeparator();
+            terminateObject(di, obj);
         }
     }
 }

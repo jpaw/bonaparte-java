@@ -66,7 +66,7 @@ public class NoOpComposer implements MessageComposer<RuntimeException> {
     @Override
     public void terminateRecord() {
     }
-
+    
     @Override
     public void terminateTransmission() {
     }
@@ -150,6 +150,11 @@ public class NoOpComposer implements MessageComposer<RuntimeException> {
     @Override
     public void startObject(ObjectReference di, BonaPortable obj) {
     }
+
+    @Override
+    public void terminateObject(ObjectReference di, BonaPortable obj) {
+    }
+
 
     @Override
     public void addEnum(EnumDataItem di, BasicNumericElementaryDataItem ord, Enum<?> n) throws RuntimeException {

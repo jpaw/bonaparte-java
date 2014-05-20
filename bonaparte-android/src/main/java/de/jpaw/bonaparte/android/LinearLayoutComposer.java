@@ -322,13 +322,16 @@ abstract public class LinearLayoutComposer  implements MessageComposer<RuntimeEx
     public void startObject(ObjectReference di, BonaPortable obj) {
     }
 
+    @Override
+    public void terminateObject(ObjectReference di, BonaPortable obj) {
+    }
+
     /** Adding objects will lead to column misalignment if the objects itself are null. */
     @Override
     public void addField(ObjectReference di, BonaPortable obj) {
         LOG.info("adding OBJECT in row {}, expand = {}", rownum, expandObjects);
         if (expandObjects) {
             if (obj != null) {
-                // do all fields (now includes terminator)
                 obj.serializeSub(this);
             } 
         } else {

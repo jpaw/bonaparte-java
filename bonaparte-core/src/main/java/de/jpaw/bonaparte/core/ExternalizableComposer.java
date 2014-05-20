@@ -58,6 +58,14 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
     public ExternalizableComposer(ObjectOutput out) {
         this.out = out;
     }
+    
+    // entry called from generated objects:
+    public static void serialize(BonaPortable obj, ObjectOutput _out) throws IOException {
+    	// TODO: this isn't symmetrical (terminateObject without startObject, must be some bug... 
+    	MessageComposer<IOException> _w = new ExternalizableComposer(_out);
+    	obj.serializeSub(_w);
+    	_w.terminateObject(StaticMeta.OUTER_BONAPORTABLE, obj);
+    }
 
     @Override
     public void writeNull(FieldDefinition di) throws IOException {
@@ -127,11 +135,8 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
 
     @Override
     public void addField(MiscElementaryDataItem di, char c) throws IOException {
-        char [] tmp = new char[1];
-        tmp[0] = c;
-        String s = new String(tmp);
         out.writeByte(TEXT);
-        out.writeUTF(s);
+        out.writeUTF(String.valueOf(c));
     }
     @Override
     public void addField(MiscElementaryDataItem di, boolean b) throws IOException {
@@ -280,10 +285,10 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
         writeNull(null);    // blank version number
     }
 
-    public void startObject(String name, String version) throws IOException {
-        // TODO Auto-generated method stub
-
-    }
+//    public void startObject(String name, String version) throws IOException {
+//        // TODO Auto-generated method stub
+//
+//    }
 
     @Override
     public void writeSuperclassSeparator() throws IOException {
@@ -304,7 +309,6 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
     @Override
     public void terminateRecord() throws IOException {
         out.write(RECORD_TERMINATOR);
-
     }
 
     @Override
@@ -362,6 +366,11 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
     @Override
     public void startObject(ObjectReference di, BonaPortable obj) throws IOException {
     }
+    @Override
+    public void terminateObject(ObjectReference di, BonaPortable obj) throws IOException {
+        out.writeByte(OBJECT_TERMINATOR);
+    }
+    
 
     @Override
     public void addField(ObjectReference di, BonaPortable obj) throws IOException {
@@ -379,6 +388,7 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
             } else {
                 out.writeObject(obj);   // so fall back to normal behaviour!
             }
+            terminateObject(di, obj);
         }
 
     }

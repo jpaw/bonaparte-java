@@ -27,6 +27,8 @@ import java.util.UUID;
 
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDefinition;
@@ -43,6 +45,7 @@ import de.jpaw.util.ByteArray;
  */
 
 public final class ExternalizableParser extends ExternalizableConstants implements MessageParser<IOException> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExternalizableParser.class);
     private final ObjectInput in;
     private String currentClass = "N/A";
     private boolean hasByte = false;
@@ -50,6 +53,12 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
 
     public ExternalizableParser(ObjectInput in) {
         this.in = in;
+    }
+
+    // entry called from generated objects:
+    public static void deserialize(BonaPortable obj, ObjectInput _in) throws IOException, ClassNotFoundException {
+    	MessageParser<IOException> _p = new ExternalizableParser(_in);
+    	obj.deserialize(_p);
     }
 
     /**************************************************************************************************
@@ -65,6 +74,10 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         return in.readByte();
     }
 
+    private byte needToken() throws IOException {
+    	return nextByte();	// just a synonym
+    }
+    
     private void pushBack(byte b) {
         if (hasByte) {
             throw new RuntimeException("Duplicate pushback");
@@ -73,7 +86,7 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         pushedBackByte = b;
     }
 
-    private void needByte(byte c) throws IOException {
+    private void needToken(byte c) throws IOException {
         byte d = nextByte();
         if (c != d) {
             throw new IOException(String.format("Unexpected byte: expected 0x%02x, got 0x%02x in class %s",
@@ -88,16 +101,16 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
             if (allowNull) {
                 return true;
             } else {
-                throw new IOException("ILLEGAL EXPLICIT NULL in " + currentClass + "." + fieldname);
+                throw new IOException("Illegal explicit NULL in " + currentClass + "." + fieldname);
             }
         }
-        if ((c == PARENT_SEPARATOR) || (c == ARRAY_TERMINATOR)) {
+        if ((c == PARENT_SEPARATOR) || (c == ARRAY_TERMINATOR) || (c == OBJECT_TERMINATOR)) {
             if (allowNull) {
                 // uneat it
                 pushBack(c);
                 return true;
             } else {
-                throw new IOException("ILLEGAL IMPLICIT NULL in " + currentClass + "." + fieldname);
+                throw new IOException("Illegal implicit NULL in " + currentClass + "." + fieldname);
             }
         }
         pushBack(c);
@@ -161,7 +174,7 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         if (checkForNull(fieldname, allowNull)) {
             return null;
         }
-        needByte(TEXT);
+        needToken(TEXT);
         String s = in.readUTF();
         if (doTrim) {
             // skip leading spaces
@@ -198,7 +211,7 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         if (checkForNull(fieldname, allowNull)) {
             return null;
         }
-        needByte(BINARY);
+        needToken(BINARY);
         assert !hasByte; // readInt() does not respect pushed back byte
         return ByteArray.read(in);
     }
@@ -208,7 +221,7 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         if (checkForNull(fieldname, allowNull)) {
             return null;
         }
-        needByte(BINARY);
+        needToken(BINARY);
         assert !hasByte; // readInt() does not respect pushed back byte
         byte [] tmp = ByteArray.readBytes(in);
         if ((length > 0) && (tmp.length > length)) {
@@ -442,7 +455,7 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
                 throw new IOException("ILLEGAL NULL Map in " + currentClass + "." + fieldname);
             return -1;
         }
-        needByte(MAP_BEGIN);
+        needToken(MAP_BEGIN);
         int foundIndexType = readVarInt(fieldname, 32);
         if (foundIndexType != indexID) {
             throw new IOException(String.format("WRONG_MAP_INDEX_TYPE: got %d, expected for %s.%s",
@@ -463,7 +476,7 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
                 throw new IOException("ILLEGAL NULL List, Set or Array in " + currentClass + "." + fieldname);
             return -1;
         }
-        needByte(ARRAY_BEGIN);
+        needToken(ARRAY_BEGIN);
         int n = readVarInt(fieldname, 32);
         if ((n < 0) || (n > 1000000000)) {
             throw new IOException(String.format("ARRAY_SIZE_OUT_OF_BOUNDS: got %d entries (0x%x) for %s.%s",
@@ -474,17 +487,17 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
 
     @Override
     public void parseArrayEnd() throws IOException {
-        needByte(ARRAY_TERMINATOR);
+        needToken(ARRAY_TERMINATOR);
 
     }
 
     @Override
     public BonaPortable readRecord() throws IOException {
         BonaPortable result;
-        needByte(RECORD_BEGIN);
-        needByte(NULL_FIELD); // version no
+        needToken(RECORD_BEGIN);
+        needToken(NULL_FIELD); // version no
         result = readObject(GENERIC_RECORD, BonaPortable.class, false, true);
-        needByte(RECORD_TERMINATOR);
+        needToken(RECORD_TERMINATOR);
         return result;
     }
 
@@ -494,7 +507,7 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
             return null;
         }
         // TODO: accept other numeric types as well & perform conversion
-        needByte(BINARY_FLOAT);
+        needToken(BINARY_FLOAT);
         return in.readFloat();
     }
 
@@ -503,16 +516,48 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         if (checkForNull(fieldname, allowNull)) {
             return null;
         }
-        needByte(BINARY_DOUBLE);
+        needToken(BINARY_DOUBLE);
         return in.readDouble();
     }
 
     @Override
     public void eatParentSeparator() throws IOException {
-        skipNulls();  // upwards compatibility: skip extra fields if they are blank.
-        // TODO: also skip them if not blank, but corresponding flag is set
-        needByte(PARENT_SEPARATOR);
+    	eatObjectOrParentSeparator(PARENT_SEPARATOR);
+    }    	
+    	
+    public void eatObjectTerminator() throws IOException {
+    	eatObjectOrParentSeparator(OBJECT_TERMINATOR);
     }
+    
+   	protected void eatObjectOrParentSeparator(byte which) throws IOException {
+        skipNulls();  // upwards compatibility: skip extra fields if they are blank.
+        byte z = needToken();
+        if (z == which)
+            return;   // all good
+        
+        // we have extra data and it is not null. Now the behavior depends on a parser setting
+        ParseSkipNonNulls mySetting = getSkipNonNullsBehavior();
+        switch (mySetting) {
+        case ERROR:
+            throw new IOException("Extra fields found after object end. Outdated parser? " + currentClass);  
+        case WARN:
+            LOGGER.warn("Extra fields found after object end, parsing class {}. Parser outdated?", currentClass);
+            // fall through
+        case IGNORE:
+            // skip bytes until we are at end of record (bad!) (thrown by needToken()) or find the terminator
+        	skipUntilNext(which);
+        }
+    }
+   	
+   	protected void skipUntilNext(byte which) throws IOException {
+   		byte c;
+   		while ((c = needToken()) != which) {
+   			if (c == OBJECT_BEGIN) {
+   				// skip nested object!
+   				skipUntilNext(OBJECT_TERMINATOR);
+   			}
+   		}
+   	}
 
     @Override
     public Integer readNumber(String fieldname, boolean allowNull, int length, boolean isSigned) throws IOException {
@@ -528,13 +573,13 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
             return null;
         }
         String previousClass = currentClass;
-        needByte(OBJECT_BEGIN);  // version not yet allowed
+        needToken(OBJECT_BEGIN);  // version not yet allowed
         BonaPortable newObject;
         if (nestedObjectsInternally) {
             String classname = in.readUTF();
             // String revision = readAscii(true, 0, false, false);
             // long serialUID = in.readLong();  // version not yet allowed
-            needByte(NULL_FIELD);  // version not yet allowed
+            needToken(NULL_FIELD);  // version not yet allowed
 
             try {
                 newObject = BonaPortableFactory.createObject(classname);
@@ -554,6 +599,7 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
             // all good here. Parse the contents
             currentClass = classname;
             newObject.deserialize(this);
+            eatObjectTerminator();
         } else {
             try {
                 newObject = (BonaPortable)in.readObject();
@@ -579,7 +625,7 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         List<BonaPortable> results = new ArrayList<BonaPortable>();
         byte c = nextByte();
         if (c == TRANSMISSION_BEGIN) {
-            needByte(NULL_FIELD);  // version
+            needToken(NULL_FIELD);  // version
             // TODO: parse extensions here
             while ((c = nextByte()) != TRANSMISSION_TERMINATOR) {
                 // System.out.println("transmission loop: char is " + c);

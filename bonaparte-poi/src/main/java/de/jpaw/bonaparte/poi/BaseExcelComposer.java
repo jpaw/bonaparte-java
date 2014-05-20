@@ -353,12 +353,15 @@ public class BaseExcelComposer implements MessageComposer<RuntimeException> {
     public void startObject(ObjectReference di, BonaPortable obj) {
     }
 
+    @Override
+    public void terminateObject(ObjectReference di, BonaPortable obj) {
+    }
+
     /** Adding objects will lead to column misalignment if the objects itself are null. */
     @Override
     public void addField(ObjectReference di, BonaPortable obj) {
         if (obj != null) {
-            // do all fields (now includes terminator)
-            obj.serializeSub(this);
+            obj.serializeSub(this);  // no start and stop for now...
         }
     }
     // enum with numeric expansion: delegate to Null/Int
