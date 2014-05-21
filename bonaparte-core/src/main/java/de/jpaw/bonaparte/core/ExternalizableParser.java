@@ -104,7 +104,7 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
                 throw new IOException("Illegal explicit NULL in " + currentClass + "." + fieldname);
             }
         }
-        if ((c == PARENT_SEPARATOR) || (c == ARRAY_TERMINATOR)) {
+        if ((c == PARENT_SEPARATOR) || (c == ARRAY_TERMINATOR) || (c == OBJECT_TERMINATOR)) {
             if (allowNull) {
                 // uneat it
                 pushBack(c);

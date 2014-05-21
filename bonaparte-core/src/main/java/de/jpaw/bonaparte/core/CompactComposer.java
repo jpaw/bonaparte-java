@@ -44,21 +44,22 @@ public class CompactComposer extends CompactConstants implements MessageComposer
     private int numberOfObjectReuses;
     // variables set by constructor
     protected final DataOutput out;
+    protected final boolean recommendIdentifiable;
 
     // entry called from generated objects:
-    public static void serialize(BonaPortable obj, DataOutput _out) throws IOException {
-        new CompactComposer(_out).writeRecord(obj);
+    public static void serialize(BonaPortable obj, DataOutput _out, boolean recommendIdentifiable) throws IOException {
+        new CompactComposer(_out, recommendIdentifiable).writeRecord(obj);
     }
 
-    public CompactComposer(DataOutput out) {
-        this(out, ObjectReuseStrategy.defaultStrategy);
+    public CompactComposer(DataOutput out, boolean recommendIdentifiable) {
+        this(out, ObjectReuseStrategy.defaultStrategy, recommendIdentifiable);
     }
 
     /**
      * Creates a new ByteArrayComposer, using this classes static default
      * Charset
      **/
-    public CompactComposer(DataOutput out, ObjectReuseStrategy reuseStrategy) {
+    public CompactComposer(DataOutput out, ObjectReuseStrategy reuseStrategy, boolean recommendIdentifiable) {
         switch (reuseStrategy) {
         case BY_CONTENTS:
             this.objectCache = new HashMap<BonaPortable, Integer>(250);
@@ -74,6 +75,7 @@ public class CompactComposer extends CompactConstants implements MessageComposer
             break;
         }
         this.out = out;
+        this.recommendIdentifiable = recommendIdentifiable;
         numberOfObjectsSerialized = 0;
         numberOfObjectReuses = 0;
     }
@@ -470,9 +472,16 @@ public class CompactComposer extends CompactConstants implements MessageComposer
 
     @Override
     public void startObject(ObjectReference di, BonaPortable obj) throws IOException {
-        out.writeByte(OBJECT_BEGIN_PQON);
-        stringOutNoOpt(obj.get$PQON());
-        addField(REVISION_META, obj.get$Revision());
+    	BonaPortableClass<?> meta = obj.get$BonaPortableClass();
+    	if (recommendIdentifiable) {
+    		out.writeByte(OBJECT_BEGIN_ID);
+    		intOut(meta.getFactoryId());
+    		intOut(meta.getId());
+    	} else {
+    		out.writeByte(OBJECT_BEGIN_PQON);
+    		stringOutNoOpt(meta.getPqon());
+    		addField(REVISION_META, meta.getRevision());
+    	}
     }
 
     @Override

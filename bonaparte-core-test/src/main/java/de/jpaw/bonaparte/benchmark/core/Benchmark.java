@@ -24,7 +24,7 @@ public class Benchmark {
             method = Integer.valueOf(args[0]);
         } else {
             System.out.println("Usage: Benchmark (method-id) [(threads) [(Mio calls / thread) [(object)]]]");
-            System.out.println("Methods: 0: BonaparteChar, 10: BonaparteByte, 20: Externalizer, 100: gson");
+            System.out.println("Methods: 0: BonaparteChar, 10: BonaparteByte, 20: Externalizer, 30: Compact, 100: gson");
             System.out.println("         +0: serialize, +1: serialize + retrieve bytes, +2: deserialize from bytes");
             System.out.println("Objects: 0: primitives, 1: boxed primitives, 2: other types, 3: other types with huge raw data, 4: Arrays, Lists");
             System.exit(1);

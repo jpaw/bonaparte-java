@@ -2,6 +2,7 @@ package de.jpaw.bonaparte.benchmark.core;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -13,6 +14,7 @@ import com.google.gson.Gson;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.ByteArrayComposer;
 import de.jpaw.bonaparte.core.ByteArrayParser;
+import de.jpaw.bonaparte.core.CompactComposer;
 import de.jpaw.bonaparte.core.MessageParser;
 import de.jpaw.bonaparte.core.MessageParserException;
 import de.jpaw.bonaparte.core.StringBuilderComposer;
@@ -30,6 +32,7 @@ public class OneThread implements Runnable {
     private BonaPortable src;
     private byte [] srcdata;
     private byte [] srcExternalized;
+    private byte [] srcCompact;
     private String gsondata;
     private Class<? extends BonaPortable> srcClass;  // this is required by Gson
 
@@ -45,12 +48,24 @@ public class OneThread implements Runnable {
         StringBuilderComposer sbc = new StringBuilderComposer(new StringBuilder(initialBufferSize));
         sbc.writeRecord(src);
         srcdata = sbc.getBytes();
+        
         // create serialized object
         ByteArrayOutputStream fos = new ByteArrayOutputStream(1000);
         ObjectOutputStream o = new ObjectOutputStream(fos);
         o.writeObject(src);
+        o.flush();
         o.close();
         srcExternalized = fos.toByteArray();
+        
+        // create serialized object (compact)
+        fos = new ByteArrayOutputStream(1000);
+        DataOutputStream o2 = new DataOutputStream(fos);
+        CompactComposer cc = new CompactComposer(o2, false);
+        cc.writeRecord(src);
+        o2.flush();
+        o2.close();
+        srcCompact = fos.toByteArray();
+        
         // create serialized JSON object for Gson
         Gson gson = new Gson();
         gsondata = gson.toJson(src);
@@ -92,6 +107,24 @@ public class OneThread implements Runnable {
                 @SuppressWarnings("unused")
                 byte [] bacResult = bac.getBytes();
             }
+        }
+    }
+
+    // ByteArray
+    private void coc(boolean retrieveBytes) throws IOException {
+        methodName = "Bonaparte Compact Composer" + (retrieveBytes ? " with byte[] retrieval" : "");
+        ByteArrayOutputStream fos = new ByteArrayOutputStream(1000);
+        DataOutputStream o2 = new DataOutputStream(fos);
+        CompactComposer cc = new CompactComposer(o2, false);
+        for (int i = 0; i < callsPerThread; ++i) {
+            cc.reset();
+            cc.writeRecord(src);
+            o2.flush();
+            if (retrieveBytes) {
+                @SuppressWarnings("unused")
+                byte [] bacResult = fos.toByteArray();
+            }
+            fos.reset();
         }
     }
 
@@ -188,9 +221,19 @@ public class OneThread implements Runnable {
                 extc(true);
                 break;
             case 22:
-                extp();
-                break;
-            // 100 .. 102 Gson (String)
+				extp();
+				break;
+			// 30..32 Bonaparte compact
+			case 30:
+				coc(false);
+				break;
+			case 31:
+				coc(true);
+				break;
+			case 32:
+				// cop();
+				break;
+			// 100 .. 102 Gson (String)
             case 100:
                 toGson(false);
                 break;

@@ -105,7 +105,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
                 throw new MessageParserException(MessageParserException.ILLEGAL_EXPLICIT_NULL, fieldname, parseIndex, currentClass);
             }
         }
-        if ((c == PARENT_SEPARATOR) || (c == ARRAY_TERMINATOR)) {
+        if ((c == PARENT_SEPARATOR) || (c == ARRAY_TERMINATOR) || (c == OBJECT_TERMINATOR)) {
             if (allowNull) {
                 // uneat it
                 --parseIndex;
@@ -680,9 +680,20 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
 
     }
 
+    protected void skipOptionalBom() throws MessageParserException {
+        if (parseIndex + 3 <= messageLength) {
+            if (inputdata[parseIndex] == BOM1 
+             && inputdata[parseIndex+1] == BOM2
+             && inputdata[parseIndex+2] == BOM3) {
+                parseIndex += 3;
+            }
+        }
+    }
+    
     @Override
     public BonaPortable readRecord() throws MessageParserException {
         BonaPortable result;
+        skipOptionalBom();
         needToken(RECORD_BEGIN);
         needToken(NULL_FIELD); // version no
         result = readObject(GENERIC_RECORD, BonaPortable.class, false, true);

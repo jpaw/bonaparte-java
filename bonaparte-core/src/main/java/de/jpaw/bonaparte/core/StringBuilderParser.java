@@ -105,7 +105,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
                 throw new MessageParserException(MessageParserException.ILLEGAL_EXPLICIT_NULL, fieldname, parseIndex, currentClass);
             }
         }
-        if ((c == PARENT_SEPARATOR) || (c == ARRAY_TERMINATOR)) {
+        if ((c == PARENT_SEPARATOR) || (c == ARRAY_TERMINATOR) || (c == OBJECT_TERMINATOR)) {
             if (allowNull) {
                 // uneat it
                 --parseIndex;
@@ -581,9 +581,16 @@ public final class StringBuilderParser extends StringBuilderConstants implements
 
     }
 
+    protected void skipOptionalBom() throws MessageParserException {
+        if (needToken() != BOM) {
+            --parseIndex;  // uneat it
+        } // else: skip it and expect RECORD_BEGIN
+    }
+    
     @Override
     public BonaPortable readRecord() throws MessageParserException {
         BonaPortable result;
+        skipOptionalBom();
         needToken(RECORD_BEGIN);
         needToken(NULL_FIELD); // version no
         result = readObject(GENERIC_RECORD, BonaPortable.class, false, true);
