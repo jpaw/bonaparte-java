@@ -105,7 +105,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
                 throw new MessageParserException(MessageParserException.ILLEGAL_EXPLICIT_NULL, fieldname, parseIndex, currentClass);
             }
         }
-        if ((c == PARENT_SEPARATOR) || (c == ARRAY_TERMINATOR)) {
+        if ((c == PARENT_SEPARATOR) || (c == ARRAY_TERMINATOR) || (c == OBJECT_TERMINATOR)) {
             if (allowNull) {
                 // uneat it
                 --parseIndex;
@@ -680,9 +680,20 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
 
     }
 
+    protected void skipOptionalBom() throws MessageParserException {
+        if (parseIndex + 3 <= messageLength) {
+            if (inputdata[parseIndex] == BOM1 
+             && inputdata[parseIndex+1] == BOM2
+             && inputdata[parseIndex+2] == BOM3) {
+                parseIndex += 3;
+            }
+        }
+    }
+    
     @Override
     public BonaPortable readRecord() throws MessageParserException {
         BonaPortable result;
+        skipOptionalBom();
         needToken(RECORD_BEGIN);
         needToken(NULL_FIELD); // version no
         result = readObject(GENERIC_RECORD, BonaPortable.class, false, true);
@@ -811,7 +822,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
                 throw new MessageParserException(MessageParserException.INVALID_BACKREFERENCE, String.format(
                         "at %s: requested object %d of only %d available", fieldname, objectIndex, objects.size()),
                         parseIndex, currentClass);
-            BonaPortable newObject = objects.get(objectIndex);
+            BonaPortable newObject = objects.get(objects.size() - 1 - objectIndex);  // 0 is the last one put in, 1 the one before last etc...
             // check if the object is of expected type
             if (newObject.getClass() != type) {
                 // check if it is a superclass

@@ -19,6 +19,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.io.DataOutput;
 
 
 /**
@@ -243,6 +244,11 @@ public final class ByteArray implements Externalizable, Cloneable {
             if (buffer[offset + i] != that.buffer[that.offset + i])
                 return false;
         return true;
+    }
+    
+    // support function to allow dumping contents to DataOutput without the need to expose our internal buffer
+    public void writeToDataOutput(DataOutput out) throws IOException {
+        out.write(buffer, offset, length);
     }
 
     @Override

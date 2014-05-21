@@ -55,6 +55,12 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         this.in = in;
     }
 
+    // entry called from generated objects:
+    public static void deserialize(BonaPortable obj, ObjectInput _in) throws IOException, ClassNotFoundException {
+    	MessageParser<IOException> _p = new ExternalizableParser(_in);
+    	obj.deserialize(_p);
+    }
+
     /**************************************************************************************************
      * Deserialization goes here
      * @throws IOException
@@ -98,7 +104,7 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
                 throw new IOException("Illegal explicit NULL in " + currentClass + "." + fieldname);
             }
         }
-        if ((c == PARENT_SEPARATOR) || (c == ARRAY_TERMINATOR)) {
+        if ((c == PARENT_SEPARATOR) || (c == ARRAY_TERMINATOR) || (c == OBJECT_TERMINATOR)) {
             if (allowNull) {
                 // uneat it
                 pushBack(c);
