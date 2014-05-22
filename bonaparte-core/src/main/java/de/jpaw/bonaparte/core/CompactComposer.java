@@ -2,6 +2,7 @@ package de.jpaw.bonaparte.core;
 
 import java.io.DataOutput;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Calendar;
@@ -37,6 +38,16 @@ import de.jpaw.util.ByteArray;
  *
  */
 public class CompactComposer extends CompactConstants implements MessageComposer<IOException> {
+	private static Field unsafeString = calculateUnsafe();
+	static private Field calculateUnsafe() {
+		try {
+			Field f = String.class.getDeclaredField("value");
+			f.setAccessible(true);
+			return f;
+		} catch (Exception e) {
+			return null;
+		}
+	}
 
     private final boolean useCache;
     private final Map<BonaPortable, Integer> objectCache;
@@ -46,9 +57,11 @@ public class CompactComposer extends CompactConstants implements MessageComposer
     protected final DataOutput out;
     protected final boolean recommendIdentifiable;
 
-    // entry called from generated objects:
+    // entry called from generated objects: (Object header has been written already by internal methods (and unfortunately in some different fashion...))
     public static void serialize(BonaPortable obj, DataOutput _out, boolean recommendIdentifiable) throws IOException {
-        new CompactComposer(_out, recommendIdentifiable).writeRecord(obj);
+    	MessageComposer<IOException> _w = new CompactComposer(_out, recommendIdentifiable);
+    	obj.serializeSub(_w);
+    	_w.terminateObject(StaticMeta.OUTER_BONAPORTABLE, obj);
     }
 
     public CompactComposer(DataOutput out, boolean recommendIdentifiable) {
@@ -151,44 +164,139 @@ public class CompactComposer extends CompactConstants implements MessageComposer
         terminateRecord();
     }
 
-    // field type specific output functions
-    // write a string. It is known that the string is not null or empty.
-    protected void stringOutNoOpt(String s) throws IOException {
-        int l = s.length();
-        if (l <= 16) {
-        // check if all chars are ASCII (need UTF8 encoding else)
-
-            // check for special displayable 1 char string
-            if (l == 1) {
-                int c = (int)s.charAt(0);
-                if (c >= 0x20 && c <= 0x7f) {
-                    // 1:1 mapping! write it as a byte!
-                    out.writeByte((int)c);
-                } else {
-                    out.writeByte(UNICODE_CHAR);
-                    out.writeShort(c);
-                }
-                return;
-            }
-            
-            for (int i = 1; i < l; ++i) {
-                if ((((int)s.charAt(i)) & ~0x7f) != 0) {
-                    out.writeByte(UNICODE_STRING);
-                    out.writeUTF(s);
-                    return;
-                }
-            }
-            // is an all ASCII string
-            out.writeByte(SHORT_ASCII_STRING + l - 1);
-            for (int i = 1; i < l; ++i) {
-                out.writeByte(s.charAt(i));
-            }
-            return;
-        }
-        out.writeByte(UNICODE_STRING);
-        out.writeUTF(s);
+    // write a non-empty string (using charAt())
+    protected void writeLongString(String s) throws IOException {
+    	int maxCode = 0;
+    	int len = s.length();
+    	for (int i = 0; i < len; ++ i) {
+    		int c = (int)s.charAt(i);
+    		if (c > maxCode)
+    			maxCode = c;
+    	}
+    	if (maxCode <= 127) {
+    		// pure ASCII String
+    		if (len <= 16) {
+                out.writeByte(SHORT_ASCII_STRING + len - 1);
+    		} else {
+    			out.writeByte(ASCII_STRING);
+    			intOut(len);
+    		}
+    		for (int i = 0; i < len; ++i)
+                out.writeByte((int)s.charAt(i));
+    	} else if (maxCode < 2048) {
+    		// UTF-8 out, with max. 2 byte sequences...
+            out.writeByte(UTF8_STRING);
+    		intOut(len);
+    		for (int i = 0; i < len; ++i) {
+    			int c = (int)s.charAt(i);
+    			if (c < 128) {
+    				out.writeByte(c);
+    			} else {
+    				out.writeByte(0xC0 | (c >> 6));
+    				out.writeByte(0x80 | (c & 0x3F));
+    			}
+    		}
+    	} else {
+    		// UTF-16, due to possible 3 byte sequences
+            out.writeByte(UTF16_STRING);
+    		intOut(len);
+    		for (int i = 0; i < len; ++i)
+                out.writeChar((int)s.charAt(i));
+    	}
     }
-
+    
+    // write a non-empty string (using char[])
+    protected void writeLongStringArray(String s) throws IOException {
+    	int maxCode = 0;
+    	int len = s.length();
+    	char buff [] = s.toCharArray();
+    	for (int i = 0; i < len; ++ i) {
+    		if (buff[i] > maxCode)
+    			maxCode = buff[i];
+    	}
+    	if (maxCode <= 127) {
+    		// pure ASCII String
+    		if (len <= 16) {
+                out.writeByte(SHORT_ASCII_STRING + len - 1);
+    		} else {
+    			out.writeByte(ASCII_STRING);
+    			intOut(len);
+    		}
+    		for (int i = 0; i < len; ++i)
+                out.writeByte(buff[i]);
+    	} else if (maxCode < 2048) {
+    		// UTF-8 out, with max. 2 byte sequences...
+            out.writeByte(UTF8_STRING);
+    		intOut(len);
+    		for (int i = 0; i < len; ++i) {
+    			int c = (int)buff[i];
+    			if (c < 128) {
+    				out.writeByte(c);
+    			} else {
+    				out.writeByte(0xC0 | (c >> 6));
+    				out.writeByte(0x80 | (c & 0x3F));
+    			}
+    		}
+    	} else {
+    		// UTF-16, due to possible 3 byte sequences
+            out.writeByte(UTF16_STRING);
+    		intOut(len);
+    		for (int i = 0; i < len; ++i)
+                out.writeChar(buff[i]);
+    	}
+    }
+    
+    // write a non-empty string (using char[])
+    protected void writeLongStringStealArray(String s) throws IOException {
+    	if (unsafeString == null) {
+    		writeLongStringArray(s);
+    		return;
+    	}
+    	char buff[];
+		try {
+			buff = (char []) unsafeString.get(s);
+		} catch (Exception e) {
+    		writeLongStringArray(s);
+    		return;
+		}
+    	int maxCode = 0;
+    	int len = buff.length;
+    	for (int i = 0; i < len; ++ i) {
+    		if (buff[i] > maxCode)
+    			maxCode = buff[i];
+    	}
+    	if (maxCode <= 127) {
+    		// pure ASCII String
+    		if (len <= 16) {
+                out.writeByte(SHORT_ASCII_STRING + len - 1);
+    		} else {
+    			out.writeByte(ASCII_STRING);
+    			intOut(len);
+    		}
+    		for (int i = 0; i < len; ++i)
+                out.writeByte(buff[i]);
+    	} else if (maxCode < 2048) {
+    		// UTF-8 out, with max. 2 byte sequences...
+            out.writeByte(UTF8_STRING);
+    		intOut(len);
+    		for (int i = 0; i < len; ++i) {
+    			int c = (int)buff[i];
+    			if (c < 128) {
+    				out.writeByte(c);
+    			} else {
+    				out.writeByte(0xC0 | (c >> 6));
+    				out.writeByte(0x80 | (c & 0x3F));
+    			}
+    		}
+    	} else {
+    		// UTF-16, due to possible 3 byte sequences
+            out.writeByte(UTF16_STRING);
+    		intOut(len);
+    		for (int i = 0; i < len; ++i)
+                out.writeChar(buff[i]);
+    	}
+    }
+    
     // output an integral value
     protected void intOut(int n) throws IOException {
         if (n >= 0) {
@@ -198,7 +306,7 @@ public class CompactComposer extends CompactConstants implements MessageComposer
                 if (n < 32)
                     out.writeByte(n);
                 else
-                    out.writeByte(0x80 + n);
+                    out.writeByte(0x80 - 32 + n);
             } else if (n <= 0x7fff) {
                 if (n < 4096) {
                     // 2 byte integer
@@ -236,9 +344,7 @@ public class CompactComposer extends CompactConstants implements MessageComposer
         }
     }
     
-    // character
-    @Override
-    public void addField(MiscElementaryDataItem di, char c) throws IOException {
+    protected void charOut(char c) throws IOException {
         // if it is a displayable ASCII character, there is a short form
         if (((int)c & ~0x7f) == 0 && (int)c >= 0x20) {
             // 1:1 mapping! write it as a byte!
@@ -249,8 +355,14 @@ public class CompactComposer extends CompactConstants implements MessageComposer
             out.writeShort(c);
         }
     }
+    
+    // character
+    @Override
+    public void addField(MiscElementaryDataItem di, char c) throws IOException {
+    	charOut(c);
+    }
 
-    // ascii only (unicode uses different method)
+    // ASCII only (unicode uses different method)
     @Override
     public void addField(AlphanumericElementaryDataItem di, String s) throws IOException {
         if (s == null) {
@@ -258,8 +370,12 @@ public class CompactComposer extends CompactConstants implements MessageComposer
         } else {
             if (s.length() == 0) {
                 writeEmpty();
+            } else if (s.length() == 1) {
+            	charOut(s.charAt(0));
+            } else if (s.length() > 8) {
+            	writeLongStringStealArray(s);
             } else {
-                stringOutNoOpt(s);
+            	writeLongString(s);
             }
         }
     }
@@ -479,7 +595,7 @@ public class CompactComposer extends CompactConstants implements MessageComposer
     		intOut(meta.getId());
     	} else {
     		out.writeByte(OBJECT_BEGIN_PQON);
-    		stringOutNoOpt(meta.getPqon());
+    		writeLongStringStealArray(meta.getPqon());
     		addField(REVISION_META, meta.getRevision());
     	}
     }

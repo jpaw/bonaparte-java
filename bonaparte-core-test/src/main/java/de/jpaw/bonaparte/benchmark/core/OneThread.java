@@ -128,6 +128,24 @@ public class OneThread implements Runnable {
         }
     }
 
+    // ByteArray
+    private void cocId(boolean retrieveBytes) throws IOException {
+        methodName = "Bonaparte Compact Composer" + (retrieveBytes ? " with byte[] retrieval" : "");
+        ByteArrayOutputStream fos = new ByteArrayOutputStream(1000);
+        DataOutputStream o2 = new DataOutputStream(fos);
+        CompactComposer cc = new CompactComposer(o2, true);
+        for (int i = 0; i < callsPerThread; ++i) {
+            cc.reset();
+            cc.writeRecord(src);
+            o2.flush();
+            if (retrieveBytes) {
+                @SuppressWarnings("unused")
+                byte [] bacResult = fos.toByteArray();
+            }
+            fos.reset();
+        }
+    }
+
     private void bap() throws MessageParserException {
         methodName = "Bonaparte ByteArray Parser";
         for (int i = 0; i < callsPerThread; ++i) {
@@ -233,10 +251,20 @@ public class OneThread implements Runnable {
 			case 32:
 				// cop();
 				break;
+			// 40..42 Bonaparte compact with Ids instead of class names
+			case 40:
+				cocId(false);
+				break;
+			case 41:
+				cocId(true);
+				break;
+			case 42:
+				// cop();
+				break;
 			// 100 .. 102 Gson (String)
-            case 100:
-                toGson(false);
-                break;
+			case 100:
+				toGson(false);
+				break;
             case 101:
                 toGson(true);
                 break;

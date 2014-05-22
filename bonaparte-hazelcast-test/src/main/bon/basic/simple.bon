@@ -1,0 +1,19 @@
+package hazeltest hazelcastId 12 {
+	default public;
+	
+	class DSTest DataSer {
+		Unicode(40)		hello;
+		int				num;
+		Ascii(8)		short1; 
+		Ascii(8)		short2;
+		Unicode(80)		hello2;
+	}
+	
+	class IDSTest IdDataSer hazelcastId 17 {
+		Unicode(40)		hello;
+		int				num;
+		Ascii(8)		short1; 
+		Ascii(8)		short2; 
+		Unicode(80)		hello2;
+	}
+}

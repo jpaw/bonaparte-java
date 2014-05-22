@@ -2,7 +2,6 @@ package de.jpaw.bonaparte.coretests.initializers;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.GregorianCalendar;
 import java.util.UUID;
 
 import org.joda.time.LocalDate;
@@ -14,7 +13,6 @@ import de.jpaw.bonaparte.pojos.tests1.AlphaColor;
 import de.jpaw.bonaparte.pojos.tests1.VariableLength;
 import de.jpaw.bonaparte.pojos.tests1.VariableLengthUnicode;
 import de.jpaw.util.ByteArray;
-import de.jpaw.util.DayTime;
 
 public class FillOtherTypes {
     static byte [] shortraw = new byte [] { 1, 2, 13, 0, 127, -8, -33, 99, 42 };
