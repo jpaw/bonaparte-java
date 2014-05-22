@@ -10,6 +10,7 @@ import de.jpaw.bonaparte.core.DataAndMeta;
 import de.jpaw.bonaparte.core.FoldingComposer;
 import de.jpaw.bonaparte.core.ListComposer;
 import de.jpaw.bonaparte.core.ListMetaComposer;
+import de.jpaw.bonaparte.core.ListObjComposer;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.FoldingStrategy;
 import de.jpaw.bonaparte.pojos.meta.ParsedFoldingComponent;
@@ -34,6 +35,27 @@ public class FieldGetter {
 	/** Get a single field, reusing the get multiple implementation. */
 	public static Object getField(BonaPortable obj, String fieldname) {
 		List<Object> target = getFields(obj, Collections.singletonList(fieldname));		// the list with the result
+		return (target.size() == 0) ? null : target.get(0);
+	}
+
+	public static List<Object> getFieldsOrObjects(BonaPortable obj, List<String> fieldnames) {
+		if (obj == null || fieldnames == null)
+			return null;
+		
+		// step 1: construct the output buffer
+		List<Object> target = new ArrayList<Object>(fieldnames.size());		// the list to write the field into
+		
+		// step 2: create and chain the message composers
+		ListComposer writer = new ListObjComposer(target, false);
+		Map<Class<? extends BonaPortable>, List<String>> mapping = Collections.<Class<? extends BonaPortable>, List<String>>singletonMap(BonaPortable.class, fieldnames); 
+		new FoldingComposer<RuntimeException>(writer, mapping, FoldingStrategy.FORWARD_OBJECTS).writeRecord(obj);
+
+		return target;
+	}
+	
+	/** Get a single field, reusing the get multiple implementation. */
+	public static Object getFieldOrObj(BonaPortable obj, String fieldname) {
+		List<Object> target = getFieldsOrObjects(obj, Collections.singletonList(fieldname));		// the list with the result
 		return (target.size() == 0) ? null : target.get(0);
 	}
 
