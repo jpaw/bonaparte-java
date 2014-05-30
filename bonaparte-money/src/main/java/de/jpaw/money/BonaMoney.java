@@ -7,6 +7,8 @@ import java.math.RoundingMode;
 import com.google.common.collect.ImmutableList;
 
 import de.jpaw.algebra.AbelianGroup;
+import de.jpaw.util.MoneyGetter;
+import de.jpaw.util.MoneySetter;
 
 /**
  * The BonaMoney class provides a series of functionality useful for working with monetary amounts.

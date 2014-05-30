@@ -1,4 +1,4 @@
-package de.jpaw.money;
+package de.jpaw.util;
 
 import java.math.BigDecimal;
 import java.util.List;
