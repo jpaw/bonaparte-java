@@ -15,6 +15,8 @@
  */
 package de.jpaw.bonaparte.core;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -25,6 +27,8 @@ import org.slf4j.LoggerFactory;
 
 public class BonaPortableFactory {
     private static final Logger logger = LoggerFactory.getLogger(BonaPortableFactory.class);
+    static private ConcurrentMap<String, BonaPortableClass<BonaPortable>> newMap = new ConcurrentHashMap<String, BonaPortableClass<BonaPortable>>();
+    
     static private ConcurrentMap<String, Class<? extends BonaPortable>> map = new ConcurrentHashMap<String, Class<? extends BonaPortable>>();
     static private String bonaparteClassDefaultPackagePrefix = "de.jpaw.bonaparte.pojos";
     static private Map<String, String> packagePrefixMap = new ConcurrentHashMap<String,String>(10);
@@ -77,6 +81,45 @@ public class BonaPortableFactory {
     // Package to bundle mapping is contained in the static class data, however we cannot known that
     // before actually loading the class. Therefore, bundle information must be fed in separately
     // and can only be consistency-checked afterwards.
+    public static BonaPortable createObjectOLD(String name) throws MessageParserException {
+    	
+    	BonaPortableClass<BonaPortable> bclass = newMap.get(name);
+    	if (bclass != null)
+    		return bclass.newInstance();  // shortcut!
+    	
+        String FQON = null;
+        int lastDot = name.lastIndexOf('.');
+        if ((lastDot == 0) || (lastDot >= (name.length() - 1))) {
+            throw new MessageParserException(MessageParserException.BAD_OBJECT_NAME, null, -1, name);
+        }
+        if (packagePrefixMap != null && lastDot > 0) {
+            FQON = mapPackage(name);
+        }
+        
+        if (FQON == null) {
+            // prefix by fixed package
+            FQON = getBonaparteClassDefaultPackagePrefix() + "." + name;
+        }
+
+        Class<? extends BonaPortable> f = map.get(FQON);
+        if (f == null) {
+            try {
+                logger.debug("Factory: loading class {}", FQON);
+                f = Class.forName(FQON, true, Thread.currentThread().getContextClassLoader()).asSubclass(BonaPortable.class);
+                Method m = f.getDeclaredMethod("get$BonaPortableClass");
+                BonaPortableClass<BonaPortable> x = (BonaPortableClass<BonaPortable>)m.invoke(null);
+                newMap.put(name, x);
+                return x.newInstance();
+            } catch (Exception e) {
+                logger.error("exception {} for {}, my CL = {}, OCCL = {}", e.getMessage(),
+                        FQON, A_WAY_TO_GET_MY_CLASSLOADER.getClass().getClassLoader().toString(),
+                        Thread.currentThread().getContextClassLoader().toString());
+            }
+        }
+        throw new MessageParserException(MessageParserException.CLASS_NOT_FOUND, "class", 0, FQON);
+    }
+
+    // new method, caches the BClass, to avoid reflection to create a new instance
     public static BonaPortable createObject(String name) throws MessageParserException {
         String FQON = null;
         BonaPortable instance = null;
@@ -118,7 +161,6 @@ public class BonaPortableFactory {
             throw new MessageParserException(MessageParserException.CLASS_NOT_FOUND, "class", 0, FQON);
         return instance;
     }
-
 
     // auto getters and setters only following
     public static Map<String, String> getPackagePrefixMap() {
