@@ -187,18 +187,27 @@
                                 <includes>
                                     <include>**</include>
                                 </includes>
+                                <excludes>
+                                    <exclude>**/.git*</exclude>
+                                </excludes>
                             </fileset>
                             <fileset>
                                 <directory>src/main/xtend-gen</directory>
                                 <includes>
                                     <include>**</include>
                                 </includes>
+                                <excludes>
+                                    <exclude>**/.git*</exclude>
+                                </excludes>
                             </fileset>
                             <fileset>
                                 <directory>src/test/xtend-gen</directory>
                                 <includes>
                                     <include>**</include>
                                 </includes>
+                                <excludes>
+                                    <exclude>**/.git*</exclude>
+                                </excludes>
                             </fileset>
                             <fileset>
                                 <directory>test-output</directory>

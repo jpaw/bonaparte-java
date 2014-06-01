@@ -15,10 +15,15 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 
+// java -jar target/bonaparte-benchmarks.jar -i 5 -f 3 -wf 1 -wi 3 ".*JavaAndGuava.*"
+//# Run complete. Total time: 00:03:18
+//
 //Benchmark                                       Mode   Samples         Mean   Mean error    Units
-//d.j.b.b.m.JavaAndGuava.guavaCacheGet           thrpt        40    92899.585     1513.430   ops/ms
-//d.j.b.b.m.JavaAndGuava.javaConcurrentMapGet    thrpt        40   251024.900     2197.855   ops/ms
-//d.j.b.b.m.JavaAndGuava.javaHashMapGet          thrpt        40   230614.641     4681.200   ops/ms
+//d.j.b.b.m.JavaAndGuava.guavaCacheGetNoTO       thrpt        15   101375.623     2887.443   ops/ms
+//d.j.b.b.m.JavaAndGuava.guavaCacheGetRdTO       thrpt        15    94850.825     1850.815   ops/ms
+//d.j.b.b.m.JavaAndGuava.guavaCacheGetWrTO       thrpt        15    95846.105      393.490   ops/ms
+//d.j.b.b.m.JavaAndGuava.javaConcurrentMapGet    thrpt        15   253087.129      532.157   ops/ms
+//d.j.b.b.m.JavaAndGuava.javaHashMapGet          thrpt        15   230574.391      903.749   ops/ms
 
 @State(value = Scope.Thread)
 @OperationsPerInvocation(JavaAndGuava.OPERATIONS_PER_INVOCATION)
@@ -46,10 +51,10 @@ public class JavaAndGuava {
 	}
 
 	@GenerateMicroBenchmark
-	public void guavaCacheGet(BlackHole bh) {
+	public void guavaCacheGetNoTO(BlackHole bh) {
 		final Cache<Long,String> map = CacheBuilder
 				.newBuilder()
-				.expireAfterWrite(60, TimeUnit.SECONDS).build( 
+				.build( 
  					new CacheLoader<Long, String>() {
  						public String load(Long key) {
  							return DATA;
@@ -60,5 +65,39 @@ public class JavaAndGuava {
 	        bh.consume(map.getIfPresent(KEY));
 		}
 	}
+
+    @GenerateMicroBenchmark
+    public void guavaCacheGetWrTO(BlackHole bh) {
+        final Cache<Long,String> map = CacheBuilder
+                .newBuilder()
+                .expireAfterWrite(60, TimeUnit.SECONDS)
+                .build( 
+                    new CacheLoader<Long, String>() {
+                        public String load(Long key) {
+                            return DATA;
+                        }
+                    });
+        map.getIfPresent(KEY);  // get is put... (triggers loader)
+        for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
+            bh.consume(map.getIfPresent(KEY));
+        }
+    }
+
+    @GenerateMicroBenchmark
+    public void guavaCacheGetRdTO(BlackHole bh) {
+        final Cache<Long,String> map = CacheBuilder
+                .newBuilder()
+                .expireAfterAccess(60, TimeUnit.SECONDS)
+                .build( 
+                    new CacheLoader<Long, String>() {
+                        public String load(Long key) {
+                            return DATA;
+                        }
+                    });
+        map.getIfPresent(KEY);  // get is put... (triggers loader)
+        for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
+            bh.consume(map.getIfPresent(KEY));
+        }
+    }
 
 }
