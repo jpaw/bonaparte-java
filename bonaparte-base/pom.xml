@@ -59,20 +59,6 @@
         </developer>
     </developers>
 
-    <repositories>
-        <repository>
-            <id>xtend.repository</id>
-            <name>Xtend Repository</name>
-            <url>http://build.eclipse.org/common/xtend/maven/</url>
-        </repository>
-    </repositories>
-    <pluginRepositories>
-        <pluginRepository>
-            <id>xtend</id>
-            <url>http://build.eclipse.org/common/xtend/maven/</url>
-        </pluginRepository>
-    </pluginRepositories>
-
     <profiles>
         <profile>
             <id>xtendsnapshots</id>
@@ -127,8 +113,8 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.1</version>
                     <configuration>
-                        <source>1.8</source>
-                        <target>1.8</target>
+                        <source>1.7</source>
+                        <target>1.7</target>
                         <encoding>${project.build.sourceEncoding}</encoding>
                     </configuration>
                 </plugin>
@@ -265,7 +251,9 @@
                             <phase>generate-sources</phase>
                             <goals>
                                 <goal>compile</goal>
+                                <goal>xtend-install-debug-info</goal>
                                 <goal>testCompile</goal>
+                                <goal>xtend-test-install-debug-info</goal>
                             </goals>
                             <configuration>
                                 <outputDirectory>${project.basedir}/src/main/xtend-gen</outputDirectory>

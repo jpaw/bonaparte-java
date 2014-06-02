@@ -36,7 +36,6 @@ import com.google.common.cache.CacheBuilder;
 // Result:
 // for GET, Map is about 4-8 times faster than Cache, depending on if timeouts are set.
 // for PUT, Map is about 4-6 times faster, depending on if timeouts are set.
-// java 8 time is about 5 times slower than joda to get the current timestamp
 
 @State(value = Scope.Thread)
 @OperationsPerInvocation(GuavaCache.OPERATIONS_PER_INVOCATION)
@@ -81,12 +80,13 @@ public class GuavaCache {
         }
     }
 
-    @GenerateMicroBenchmark
-    public void javaNow(BlackHole bh) {
-        for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
-            bh.consume(java.time.LocalDateTime.now());
-        }
-    }
+    // requires Java 8 support
+//    @GenerateMicroBenchmark
+//    public void javaNow(BlackHole bh) {
+//        for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
+//            bh.consume(java.time.LocalDateTime.now());
+//        }
+//    }
 
     @GenerateMicroBenchmark
     public void jodaNew(BlackHole bh) {

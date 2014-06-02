@@ -10,6 +10,8 @@ import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.nio.ObjectDataOutput;
 import com.hazelcast.nio.serialization.Data;
+import com.hazelcast.nio.serialization.DataSerializableFactory;
+import com.hazelcast.nio.serialization.IdentifiedDataSerializable;
 import com.hazelcast.nio.serialization.SerializationService;
 import com.hazelcast.nio.serialization.SerializationServiceBuilder;
 
@@ -23,7 +25,16 @@ public class SerializationTestIDS {
         
         Config cfg = new Config();
         
-        cfg.getSerializationConfig().addDataSerializableFactory (12, (int id) -> (id == 17) ? new IDSTest() : null);
+        // Java 1.8
+        // cfg.getSerializationConfig().addDataSerializableFactory (12, (int id) -> (id == 17) ? new IDSTest() : null);
+        // Java 1.7
+        cfg.getSerializationConfig().addDataSerializableFactory (12, new DataSerializableFactory() {
+            @Override
+            public IdentifiedDataSerializable create(int id) {
+                return (id == 17) ? new IDSTest() : null;
+            }
+        });
+        
         
         HazelcastInstance instance = Hazelcast.newHazelcastInstance(cfg);
         Map<Integer, IDSTest> testMap = instance.getMap("dstest");
