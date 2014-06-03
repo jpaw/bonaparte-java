@@ -400,9 +400,9 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
             if (di.getHhmmss()) {
                 int tmpValue = millis / 60000; // minutes and hours
                 tmpValue = (100 * (tmpValue / 60)) + (tmpValue % 60);
-                lpad(Integer.toString((tmpValue * 100) + ((millis % 60000) / 1000)), 6, (byte)'0');
+                work.appendAscii(Integer.toString((tmpValue * 100) + ((millis % 60000) / 1000)));
             } else {
-                lpad(Integer.toString(millis / 1000), 6, (byte)'0');
+                work.appendAscii(Integer.toString(millis / 1000));
             }
             if (length > 0 && (millis % 1000) != 0) {
                 // add milliseconds

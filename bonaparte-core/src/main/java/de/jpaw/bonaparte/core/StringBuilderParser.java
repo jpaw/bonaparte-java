@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
@@ -509,7 +510,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
                     MessageParserException.ILLEGAL_TIME,
                     String.format("(found %d for %s)", (hour * 10000) + (minute * 100) + second, fieldname), parseIndex, currentClass);
         }
-        return new LocalTime((long)(1000 * seconds + millis));
+        return new LocalTime((long)(1000 * seconds + millis), DateTimeZone.UTC);
     }
     
     @Override

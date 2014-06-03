@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
@@ -407,26 +408,19 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         int hour, minute, second;
         if (hhmmss) {
             hour = fractional / 10000000;
-            minute = (fractional %= 10000000) / 100000;
-            second = (fractional %= 100000) / 1000;
+            minute = (fractional % 10000000) / 100000;
+            second = (fractional % 100000) / 1000;
+            fractional = (fractional % 1000) + 1000 * second + 60000 * minute + 3600000 * hour;
         } else {
             hour = fractional / 3600000;
-            minute = (fractional %= 3600000) / 60000;
-            second = (fractional %= 60000) / 1000;
+            minute = (fractional % 3600000) / 60000;
+            second = (fractional % 60000) / 1000;
         }
-        fractional %= 1000;
         // first checks
         if ((hour > 23) || (minute > 59) || (second > 59)) {
             throw new IOException(String.format("ILLEGAL TIME: found %d:%d:%d in %s.%s", hour, minute, second, currentClass, fieldname));
         }
-        try {
-            // TODO! default is lenient mode, therefore will not check. Solution
-            // is to read the data again and compare the values of day, month
-            // and year
-            return new LocalTime(hour, minute, second, fractional);
-        } catch (Exception e) {
-            throw new IOException(String.format("exception creating LocalDateTime in %s.%s", currentClass, fieldname));
-        }
+        return new LocalTime(fractional, DateTimeZone.UTC);
     }
 
     @Override
