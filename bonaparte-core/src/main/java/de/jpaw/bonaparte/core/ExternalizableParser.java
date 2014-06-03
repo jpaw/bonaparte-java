@@ -20,13 +20,12 @@ import java.io.ObjectInput;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.UUID;
 
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
+import org.joda.time.LocalTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -290,70 +289,6 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
     }
 
     @Override
-    public Calendar readCalendar(String fieldname, boolean allowNull, boolean hhmmss, int fractionalDigits) throws IOException {
-        if (checkForNull(fieldname, allowNull)) {
-            return null;
-        }
-        int fractional = 0;
-        byte c = nextByte();
-        if ((c > FRAC_SCALE_0) && (c <= FRAC_SCALE_18)) {
-            // read fractional part
-            long fraction = readLongNoNull(fieldname);
-            int scale = c-FRAC_SCALE_0;
-            if (scale > 9) {
-                fraction /= powersOfTen[scale - 9];
-            } else if (scale < 9) {
-                fraction *= powersOfTen[9 - scale];
-            }
-            fractional = (int)fraction;
-        } else {
-            pushBack(c);
-        }
-        int date = readVarInt(fieldname, 32);
-        if ((date < 0) || (fractional < 0)) {
-            throw new IOException(String.format("negative numbers found for date field: %d.%d in %s.%s",
-                    date, fractional, currentClass, fieldname));
-        }
-        // set the date and time
-        int day, month, year, hour, minute, second;
-        year = date / 10000;
-        month = (date %= 10000) / 100;
-        day = date %= 100;
-        if (hhmmss) {
-            hour = fractional / 10000000;
-            minute = (fractional %= 10000000) / 100000;
-            second = (fractional %= 100000) / 1000;
-        } else {
-            hour = fractional / 3600000;
-            minute = (fractional %= 3600000) / 60000;
-            second = (fractional %= 60000) / 1000;
-        }
-        fractional %= 1000;
-        // first checks
-        if ((year < 1601) || (year > 2399) || (month == 0) || (month > 12) || (day == 0)
-                || (day > 31)) {
-            throw new IOException(String.format("ILLEGAL DAY: found %d-%d-%d in %s.%s",
-                    year, month, day, currentClass, fieldname));
-        }
-        if ((hour > 23) || (minute > 59) || (second > 59)) {
-            throw new IOException(String.format("ILLEGAL TIME: found %d:%d:%d in %s.%s", hour, minute, second, currentClass, fieldname));
-        }
-        // now set the return value
-        GregorianCalendar result;
-        try {
-            // TODO! default is lenient mode, therefore will not check. Solution
-            // is to read the data again and compare the values of day, month
-            // and year
-            result = new GregorianCalendar(year, month - 1, day, hour, minute,
-                    second);
-        } catch (Exception e) {
-            throw new IOException(String.format("exception creating GregorianCalendar for %d-%d-%d in %s.%s", year, month, day, currentClass, fieldname));
-        }
-        result.set(Calendar.MILLISECOND, fractional);
-        return result;
-    }
-
-    @Override
     public LocalDateTime readDayTime(String fieldname, boolean allowNull, boolean hhmmss, int fractionalDigits) throws IOException {
         if (checkForNull(fieldname, allowNull)) {
             return null;
@@ -446,6 +381,52 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
             throw new IOException(String.format("exception creating LocalDate for %d-%d-%d in %s.%s", year, month, day, currentClass, fieldname));
         }
         return result;
+    }
+
+    @Override
+    public LocalTime readTime(String fieldname, boolean allowNull, boolean hhmmss, int fractionalDigits) throws IOException {
+        if (checkForNull(fieldname, allowNull)) {
+            return null;
+        }
+        int fractional = 0;
+        byte c = nextByte();
+        if ((c > FRAC_SCALE_0) && (c <= FRAC_SCALE_18)) {
+            // read fractional part
+            long fraction = readLongNoNull(fieldname);
+            int scale = c-FRAC_SCALE_0;
+            if (scale > 9) {
+                fraction /= powersOfTen[scale - 9];
+            } else if (scale < 9) {
+                fraction *= powersOfTen[9 - scale];
+            }
+            fractional = (int)fraction;
+        } else {
+            pushBack(c);
+        }
+        // set the date and time
+        int hour, minute, second;
+        if (hhmmss) {
+            hour = fractional / 10000000;
+            minute = (fractional %= 10000000) / 100000;
+            second = (fractional %= 100000) / 1000;
+        } else {
+            hour = fractional / 3600000;
+            minute = (fractional %= 3600000) / 60000;
+            second = (fractional %= 60000) / 1000;
+        }
+        fractional %= 1000;
+        // first checks
+        if ((hour > 23) || (minute > 59) || (second > 59)) {
+            throw new IOException(String.format("ILLEGAL TIME: found %d:%d:%d in %s.%s", hour, minute, second, currentClass, fieldname));
+        }
+        try {
+            // TODO! default is lenient mode, therefore will not check. Solution
+            // is to read the data again and compare the values of day, month
+            // and year
+            return new LocalTime(hour, minute, second, fractional);
+        } catch (Exception e) {
+            throw new IOException(String.format("exception creating LocalDateTime in %s.%s", currentClass, fieldname));
+        }
     }
 
     @Override

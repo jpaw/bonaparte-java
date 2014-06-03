@@ -1,7 +1,5 @@
 package de.jpaw.bonaparte.core;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import org.joda.time.format.DateTimeFormat;
@@ -14,9 +12,10 @@ public class CSVConfiguration {
     
     public final static String EMPTY_STRING = "";                           // used instead of null Strings
     public final static String DEFAULT_DAY_FORMAT = "yyyyMMdd";             // default pattern for LocalDate (bonaparte Day) outputs
+    public final static String DEFAULT_TIME_FORMAT = "HHmmss";              // default pattern for LocalTime (bonaparte Time(0)) outputs
+    public final static String DEFAULT_TIME_WITH_MS_FORMAT = "HHmmssSSS";   // default pattern for LocalTime (bonaparte Time(3)) outputs
     public final static String DEFAULT_TIMESTAMP_FORMAT = "yyyyMMddHHmmss"; // default pattern for LocalDatetime (bonaparte Timestamp(0)) outputs
     public final static String DEFAULT_TS_WITH_MS_FORMAT = "yyyyMMddHHmmssSSS"; // default pattern for LocalDatetime (bonaparte Timestamp(3)) outputs
-    public final static String DEFAULT_CALENDAR_FORMAT = "yyyyMMddHHmmss";  // default pattern for Calendar (bonaparte Calendar) outputs
 
     public final String separator;          // delimiter between fields, if null or empty, then a special composer will generate fixed-width formats (for example SAP IDOC)
     public final Character quote;           // quote character for strings, null means no quotes used
@@ -38,21 +37,25 @@ public class CSVConfiguration {
     public final CSVStyle dateStyle;        // verbosity for day output
     public final CSVStyle timeStyle;        // verbosity for time output
     public final String customDayFormat;             // set to override locale specific LocalDate formatter
+    public final String customTimeFormat;            // set to override locale specific LocalTime formatter
+    public final String customTimeWithMsFormat;      // set to override locale specific LocalTime formatter if milliseconds should be printed
     public final String customTimestampFormat;       // set to override locale specific LocalDateTime formatter
     public final String customTimestampWithMsFormat; // set to override locale specific LocalDateTime formatter if milliseconds should be printed
-    public final String customCalendarFormat;        // set to override locale specific Calendar formatter
 
     public final static CSVConfiguration CSV_DEFAULT_CONFIGURATION = new CSVConfiguration(
             ";", '\"', "\"\"", "?", false, false, null, null, null, null, null, null, "1", "0", Locale.ROOT, CSVStyle.SHORT, CSVStyle.SHORT,
-            DEFAULT_DAY_FORMAT, DEFAULT_TIMESTAMP_FORMAT, DEFAULT_TS_WITH_MS_FORMAT, DEFAULT_CALENDAR_FORMAT, false, false);
+            DEFAULT_DAY_FORMAT, DEFAULT_TIME_FORMAT, DEFAULT_TIME_WITH_MS_FORMAT, DEFAULT_TIMESTAMP_FORMAT, DEFAULT_TS_WITH_MS_FORMAT, false, false);
 
     public static final String nvl(String s) {
         return s != null ? s : EMPTY_STRING;
     }
     public CSVConfiguration(String separator, Character quote, String quoteReplacement, String ctrlReplacement, boolean datesQuoted, boolean removePoint4BD,
             String mapStart, String mapEnd, String arrayStart, String arrayEnd, String objectStart, String objectEnd, String booleanTrue, String booleanFalse,
-            Locale locale, CSVStyle dateStyle, CSVStyle timeStyle, String customDayFormat, String customTimestampFormat, String customTimestampWithMsFormat,
-            String customCalendarFormat, boolean zeroPadNumbers, boolean rightPadNumbers) {
+            Locale locale, CSVStyle dateStyle, CSVStyle timeStyle,
+            String customDayFormat,
+            String customTimeFormat, String customTimeWithMsFormat,
+            String customTimestampFormat, String customTimestampWithMsFormat,
+            boolean zeroPadNumbers, boolean rightPadNumbers) {
         this.separator = nvl(separator);
         this.quote = quote;
         this.quoteReplacement = nvl(quoteReplacement);
@@ -73,9 +76,10 @@ public class CSVConfiguration {
         this.dateStyle = dateStyle;
         this.timeStyle = timeStyle;
         this.customDayFormat = customDayFormat;
+        this.customTimeFormat = customTimeFormat;
+        this.customTimeWithMsFormat = customTimeWithMsFormat;
         this.customTimestampFormat = customTimestampFormat;
         this.customTimestampWithMsFormat = customTimestampWithMsFormat;
-        this.customCalendarFormat = customCalendarFormat;
     }
 
     /** Creates a new CSVConfiguration.Builder based on the current object. */
@@ -105,9 +109,10 @@ public class CSVConfiguration {
         protected CSVStyle dateStyle;         // verbosity for day output
         protected CSVStyle timeStyle;         // verbosity for time output
         protected String customDayFormat;             // set to override locale specific LocalDate formatter
+        protected String customTimeFormat;            // set to override locale specific LocalTime formatter
+        protected String customTimeWithMsFormat;      // set to override locale specific LocalTime formatter if milliseconds should be printed
         protected String customTimestampFormat;       // set to override locale specific LocalDateTime formatter
         protected String customTimestampWithMsFormat; // set to override locale specific LocalDateTime formatter if milliseconds should be printed
-        protected String customCalendarFormat;        // set to override locale specific Calendar formatter
 
         /** Transfers the parameter as passed by the argument into this builder.
          * Must be final because called from a constructor.
@@ -134,9 +139,10 @@ public class CSVConfiguration {
             this.dateStyle = cfg.dateStyle;
             this.timeStyle = cfg.timeStyle;
             this.customDayFormat = cfg.customDayFormat;
+            this.customTimeFormat = cfg.customTimeFormat;
+            this.customTimeWithMsFormat = cfg.customTimeWithMsFormat;
             this.customTimestampFormat = cfg.customTimestampFormat;
             this.customTimestampWithMsFormat = cfg.customTimestampWithMsFormat;
-            this.customCalendarFormat = cfg.customCalendarFormat;
         }
         /** Creates a new CSVConfiguration.Builder with default settings. */
         public Builder() {
@@ -157,7 +163,8 @@ public class CSVConfiguration {
         public CSVConfiguration build() {
             return new CSVConfiguration(separator, quote, quoteReplacement, ctrlReplacement, datesQuoted, removePoint4BD,
                     mapStart, mapEnd, arrayStart, arrayEnd, objectStart, objectEnd, booleanTrue, booleanFalse,
-                    locale, dateStyle, timeStyle, customDayFormat, customTimestampFormat, customTimestampWithMsFormat, customCalendarFormat,
+                    locale, dateStyle, timeStyle,
+                    customDayFormat, customTimeFormat, customTimeWithMsFormat, customTimestampFormat, customTimestampWithMsFormat,
                     zeroPadNumbers, rightPadNumbers);
         }
 
@@ -224,29 +231,44 @@ public class CSVConfiguration {
             return this;
         }
         /** Custom format setting. See http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html for format description. */
-        public Builder setCustomDayTimeFormats(String customDayFormat, String customTimestampFormat, String customTimestampWithMsFormat) {
+        public Builder setCustomDayFormat(String customDayFormat) {
             this.customDayFormat = customDayFormat;
+            return this;
+        }
+        /** Custom format setting. See http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html for format description. */
+        public Builder setCustomTimeFormats(String customTimeFormat, String customTimeWithMsFormat) {
+            this.customTimeFormat = customTimeFormat;
+            this.customTimeWithMsFormat = customTimeWithMsFormat;
+            return this;
+        }
+        /** Custom format setting. See http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html for format description. */
+        public Builder setCustomDayTimeFormats(String customTimestampFormat, String customTimestampWithMsFormat) {
             this.customTimestampFormat = customTimestampFormat;
             this.customTimestampWithMsFormat = customTimestampWithMsFormat;
             return this;
         }
-        /** Custom format setting. See http://docs.oracle.com/javase/tutorial/i18n/format/simpleDateFormat.html for format description. */
-        public Builder setCustomCalendarFormat(String customCalendarFormat) {
-            this.customCalendarFormat = customCalendarFormat;
+        /** Custom format setting. See http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html for format description. */
+        public Builder setCustomDayTimeFormats(String customDayFormat,
+                String customTimeFormat, String customTimeWithMsFormat,
+                String customTimestampFormat, String customTimestampWithMsFormat) {
+            this.customDayFormat = customDayFormat;
+            this.customTimeFormat = customTimeFormat;
+            this.customTimeWithMsFormat = customTimeWithMsFormat;
+            this.customTimestampFormat = customTimestampFormat;
+            this.customTimestampWithMsFormat = customTimestampWithMsFormat;
+            return this;
+        }
+        public Builder resetCustomDayTimeFormats() {
+            this.customDayFormat = null;
+            this.customTimeFormat = null;
+            this.customTimeWithMsFormat = null;
+            this.customTimestampFormat = null;
+            this.customTimestampWithMsFormat = null;
             return this;
         }
     }
     
     // certain utility methods used by CSV parser / composers
-    public DateFormat determineCalendarFormat() {
-        try {
-            return customCalendarFormat == null ? DateFormat.getDateInstance(DateFormat.MEDIUM, locale) : new SimpleDateFormat(customCalendarFormat, locale);
-        } catch (IllegalArgumentException e) {
-            // could occur if the user provided format is invalid
-            LOGGER.error("Provided format is not valid: " + customCalendarFormat, e);
-            return new SimpleDateFormat(DEFAULT_CALENDAR_FORMAT);// use default locale now, format must be corrected anyway
-        }
-    }
 
     public DateTimeFormatter determineDayFormatter() {
         try {
@@ -257,6 +279,30 @@ public class CSVConfiguration {
             // could occur if the user provided format is invalid
             LOGGER.error("Provided format is not valid: " + customDayFormat, e);
             return DateTimeFormat.forPattern(DEFAULT_DAY_FORMAT);
+        }
+    }
+
+    public DateTimeFormatter determineTimeFormatter() {
+        try {
+            return customTimeFormat == null
+                    ? DateTimeFormat.forStyle(timeStyle.getToken())
+                    : DateTimeFormat.forPattern(customTimeFormat);
+        } catch (IllegalArgumentException e) {
+            // could occur if the user provided format is invalid
+            LOGGER.error("Provided format is not valid: " + customTimeFormat, e);
+            return DateTimeFormat.forPattern(DEFAULT_TIME_FORMAT);
+        }
+    }
+
+    public DateTimeFormatter determineTime3Formatter() {
+        try {
+            return customTimeWithMsFormat == null
+                    ? DateTimeFormat.forStyle(timeStyle.getToken())
+                    : DateTimeFormat.forPattern(customTimeWithMsFormat);
+        } catch (IllegalArgumentException e) {
+            // could occur if the user provided format is invalid
+            LOGGER.error("Provided format is not valid: " + customTimeWithMsFormat, e);
+            return DateTimeFormat.forPattern(DEFAULT_TIME_WITH_MS_FORMAT);
         }
     }
 
@@ -283,5 +329,4 @@ public class CSVConfiguration {
             return DateTimeFormat.forPattern(DEFAULT_TS_WITH_MS_FORMAT);
         }
     }
-
 }

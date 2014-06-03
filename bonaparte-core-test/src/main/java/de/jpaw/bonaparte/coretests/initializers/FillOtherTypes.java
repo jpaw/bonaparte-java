@@ -28,8 +28,6 @@ public class FillOtherTypes {
         x.setBinary1(new ByteArray(shortraw));
         x.setTimestamp1(new LocalDateTime(2012, 8, 5, 11, 55, 03));
         x.setTimestamp2(new LocalDateTime());
-//        x.setTimestamp3(new GregorianCalendar(2012, 8, 5, 11, 55, 03));
-//        x.setTimestamp4(DayTime.getCurrentTimestamp());
         x.setUnicode1("Hällo Wörld!\r\n");
         x.setColor2(AlphaColor.GREEN);
         x.setVarEnum1(VariableLength.LONG);
@@ -39,8 +37,6 @@ public class FillOtherTypes {
         x.setLanguageCode("en_US");
         x.setTimestamp1a(new LocalDateTime(2012, 8, 5, 11, 55, 03));
         x.setTimestamp2a(new LocalDateTime());
-//        x.setTimestamp3a(new GregorianCalendar(2012, 8, 5, 11, 55, 03));
-//        x.setTimestamp4a(DayTime.getCurrentTimestamp());
         return x;
     }
 

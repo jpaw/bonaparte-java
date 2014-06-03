@@ -4,19 +4,19 @@ import java.util.Locale;
 
 import com.ibm.icu.util.ULocale;
 
-import de.jpaw.bonaparte.core.CSVConfiguration.Builder;
-
 public class ICUCSVConfiguration extends CSVConfiguration {
 
     public final ULocale ulocale; // the ICU locale replacement (597 instead of 159 available Locales)
 
     public ICUCSVConfiguration(String separator, Character quote, String quoteReplacement, String ctrlReplacement, boolean datesQuoted, boolean removePoint4BD,
             String mapStart, String mapEnd, String arrayStart, String arrayEnd, String objectStart, String objectEnd, String booleanTrue, String booleanFalse,
-            Locale locale, CSVStyle dateStyle, CSVStyle timeStyle, String customDayFormat, String customTimestampFormat, String customTimestampWithMsFormat,
-            String customCalendarFormat, ULocale ulocale) {
+            Locale locale, CSVStyle dateStyle, CSVStyle timeStyle,
+            String customDayFormat, String customTimeFormat, String customTimeWithMsFormat, String customTimestampFormat, String customTimestampWithMsFormat,
+            ULocale ulocale) {
         super(separator, quote, quoteReplacement, ctrlReplacement, datesQuoted, removePoint4BD, mapStart, mapEnd, arrayStart, arrayEnd, objectStart, objectEnd,
-                booleanTrue, booleanFalse, locale, dateStyle, timeStyle, customDayFormat, customTimestampFormat, customTimestampWithMsFormat,
-                customCalendarFormat, false, false);
+                booleanTrue, booleanFalse, locale, dateStyle, timeStyle,
+                customDayFormat, customTimeFormat, customTimeWithMsFormat, customTimestampFormat, customTimestampWithMsFormat,
+                false, false);
         this.ulocale = ulocale;
     }
 
@@ -53,8 +53,8 @@ public class ICUCSVConfiguration extends CSVConfiguration {
         /** Constructs the CSVConfiguration from the data collected so far */
         public ICUCSVConfiguration build() {
             return new ICUCSVConfiguration(separator, quote, quoteReplacement, ctrlReplacement, datesQuoted, removePoint4BD, mapStart, mapEnd, arrayStart,
-                    arrayEnd, objectStart, objectEnd, booleanTrue, booleanFalse, locale, dateStyle, timeStyle, customDayFormat, customTimestampFormat,
-                    customTimestampWithMsFormat, customCalendarFormat, ulocale);
+                    arrayEnd, objectStart, objectEnd, booleanTrue, booleanFalse, locale, dateStyle, timeStyle,
+                    customDayFormat, customTimeFormat, customTimeWithMsFormat, customTimestampFormat, customTimestampWithMsFormat, ulocale);
         }
 
         // now the individual builder setters follow

@@ -5,13 +5,12 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.UUID;
 
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
+import org.joda.time.LocalTime;
 
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDefinition;
@@ -169,12 +168,6 @@ public class CompactParser extends CompactConstants implements MessageParser<IOE
     }
 
     @Override
-    public Calendar readCalendar(String fieldname, boolean allowNull, boolean hhmmss, int fractionalDigits) throws IOException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public LocalDate readDay(String fieldname, boolean allowNull) throws IOException {
         // TODO Auto-generated method stub
         return null;
@@ -182,6 +175,12 @@ public class CompactParser extends CompactConstants implements MessageParser<IOE
 
     @Override
     public LocalDateTime readDayTime(String fieldname, boolean allowNull, boolean hhmmss, int length) throws IOException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public LocalTime readTime(String fieldname, boolean allowNull, boolean hhmmss, int length) throws IOException {
         // TODO Auto-generated method stub
         return null;
     }
@@ -585,77 +584,6 @@ public class CompactParser extends CompactConstants implements MessageParser<IOE
 //        throw new IOException(IOException.MISSING_TERMINATOR, fieldname, parseIndex, currentClass);
 //    }
 //
-//    @Override
-//    public Calendar readCalendar(String fieldname, boolean allowNull, boolean hhmmss, int fractionalDigits) throws IOException {
-//        if (checkForNull(fieldname, allowNull)) {
-//            return null;
-//        }
-//        String tmp = nextIndexParseAscii(fieldname, false, fractionalDigits >= 0, false);  // parse an unsigned numeric string without exponent
-//        int date;
-//        int fractional = 0;
-//        if (fractionalDigits < 0) {
-//            // day only and we know there is no decimal point
-//            date = Integer.parseInt(tmp);
-//            fractional = 0;
-//        } else {
-//            int dpoint;
-//            if ((dpoint = tmp.indexOf('.')) < 0) {
-//                // day only despite allowed time
-//                date = Integer.parseInt(tmp);
-//            } else {
-//                // day and time
-//                date = Integer.parseInt(tmp.substring(0, dpoint));
-//                fractional = Integer.parseInt(tmp.substring(dpoint+1));
-//                switch (tmp.length() - dpoint - 1) {  // i.e. number of fractional digits
-//                case 6:  fractional *= 1000; break;   // precisely seconds resolution (timestamp(0))
-//                case 7:  fractional *= 100; break;
-//                case 8:  fractional *= 10; break;
-//                case 9:  break;  // maximum resolution (milliseconds)
-//                default:  // something weird
-//                    throw new IOException(IOException.BAD_TIMESTAMP_FRACTIONALS,
-//                            String.format("(found %d for %s)", tmp.length() - dpoint - 1, fieldname), parseIndex, currentClass);
-//                }
-//            }
-//        }
-//        // set the date and time
-//        int day, month, year, hour, minute, second;
-//        year = date / 10000;
-//        month = (date %= 10000) / 100;
-//        day = date %= 100;
-//        if (hhmmss) {
-//            hour = fractional / 10000000;
-//            minute = (fractional %= 10000000) / 100000;
-//            second = (fractional %= 100000) / 1000;
-//        } else {
-//            hour = fractional / 3600000;
-//            minute = (fractional %= 3600000) / 60000;
-//            second = (fractional %= 60000) / 1000;
-//        }
-//        fractional %= 1000;
-//        // first checks
-//        if ((year < 1601) || (year > 2399) || (month == 0) || (month > 12) || (day == 0)
-//                || (day > 31)) {
-//            throw new IOException(
-//                    IOException.ILLEGAL_DAY, String.format("(found %d for %s)", date, fieldname), parseIndex, currentClass);
-//        }
-//        if ((hour > 23) || (minute > 59) || (second > 59)) {
-//            throw new IOException(
-//                    IOException.ILLEGAL_TIME,
-//                    String.format("(found %d for %s)", (hour * 10000) + (minute * 100) + second, fieldname), parseIndex, currentClass);
-//        }
-//        // now set the return value
-//        GregorianCalendar result;
-//        try {
-//            // TODO! default is lenient mode, therefore will not check. Solution
-//            // is to read the data again and compare the values of day, month
-//            // and year
-//            result = new GregorianCalendar(year, month - 1, day, hour, minute, second);
-//        } catch (Exception e) {
-//            throw new IOException(IOException.ILLEGAL_CALENDAR_VALUE, fieldname, parseIndex, currentClass);
-//        }
-//        result.set(Calendar.MILLISECOND, fractional);
-//        return result;
-//    }
 //    @Override
 //    public LocalDateTime readDayTime(String fieldname, boolean allowNull, boolean hhmmss, int fractionalDigits) throws IOException {
 //        if (checkForNull(fieldname, allowNull)) {

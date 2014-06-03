@@ -20,11 +20,11 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectOutput;
 import java.math.BigDecimal;
-import java.util.Calendar;
 import java.util.UUID;
 
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
+import org.joda.time.LocalTime;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
@@ -218,25 +218,20 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
         }
     }
     @Override
-    public void addField(TemporalElementaryDataItem di, Calendar t) throws IOException {
+    public void addField(TemporalElementaryDataItem di, LocalTime t) throws IOException {
         if (t == null) {
             out.writeByte(NULL_FIELD);
         } else {
-            int tmpValue;
+            int millis = t.getMillisOfDay();
+            out.writeByte(FRAC_SCALE_0 + 9);
             if (di.getHhmmss()) {
-                tmpValue = (((10000 * t.get(Calendar.HOUR_OF_DAY)) + (100
-                    * t.get(Calendar.MINUTE)) + t.get(Calendar.SECOND)) * 1000) + t.get(Calendar.MILLISECOND);
+                // convert milliseconds to hhmmssfff format
+                int tmp = millis / 60000; // number of minutes
+                tmp = ((tmp / 60) * 100) + (tmp % 60);
+                writeVarInt((tmp * 100000) + (millis % 60000));
             } else {
-                tmpValue = (((3600 * t.get(Calendar.HOUR_OF_DAY)) + (60
-                        * t.get(Calendar.MINUTE)) + t.get(Calendar.SECOND)) * 1000) + t.get(Calendar.MILLISECOND);
+                writeVarInt(millis);
             }
-            if (tmpValue != 0) {
-                out.writeByte(FRAC_SCALE_0 + 9);
-                writeVarInt(tmpValue);
-            }
-            // then integral part
-            writeVarInt((10000 * t.get(Calendar.YEAR)) + (100
-                    * (t.get(Calendar.MONTH) + 1)) + t.get(Calendar.DAY_OF_MONTH));
         }
     }
 

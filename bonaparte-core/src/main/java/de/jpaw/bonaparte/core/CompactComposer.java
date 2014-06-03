@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -13,6 +12,7 @@ import java.util.UUID;
 
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
+import org.joda.time.LocalTime;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
@@ -530,11 +530,6 @@ public class CompactComposer extends CompactConstants implements MessageComposer
 
     // converters for DAY und TIMESTAMP
     @Override
-    public void addField(TemporalElementaryDataItem di, Calendar t) {
-        throw new RuntimeException("Calendar will be scrapped soon");
-    }
-
-    @Override
     public void addField(TemporalElementaryDataItem di, LocalDate t) throws IOException {
         if (t != null) {
             out.writeByte(COMPACT_DATE);
@@ -550,15 +545,31 @@ public class CompactComposer extends CompactConstants implements MessageComposer
     public void addField(TemporalElementaryDataItem di, LocalDateTime t) throws IOException {
         if (t != null) {
             int millis = t.getMillisOfSecond();
-            out.writeByte(millis == 0 ? COMPACT_DATETIME : COMPACT_DATETIME_MILLIS);
+            boolean fractional = millis != 0;
+            out.writeByte(!fractional ? COMPACT_DATETIME : COMPACT_DATETIME_MILLIS);
             intOut(t.getYear());
             intOut(t.getMonthOfYear());
             intOut(t.getDayOfMonth());
-            intOut(t.getHourOfDay());
-            intOut(t.getMinuteOfHour());
-            intOut(t.getSecondOfMinute());
-            if (millis != 0)
-                intOut(millis);
+            if (fractional)
+                intOut(t.getMillisOfDay());
+            else
+                intOut(t.getMillisOfDay() / 1000);
+        } else {
+            writeNull();
+        }
+    }
+
+    @Override
+    public void addField(TemporalElementaryDataItem di, LocalTime t) throws IOException {
+        if (t != null) {
+            int millis = t.getMillisOfSecond();
+            if (millis != 0) {
+                out.writeByte(COMPACT_TIME_MILLIS);
+                intOut(t.getMillisOfDay());
+            } else {
+                out.writeByte(COMPACT_TIME);
+                intOut(t.getMillisOfDay() / 1000);
+            }
         } else {
             writeNull();
         }

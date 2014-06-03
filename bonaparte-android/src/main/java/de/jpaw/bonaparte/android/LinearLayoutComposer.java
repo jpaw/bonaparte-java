@@ -2,13 +2,13 @@ package de.jpaw.bonaparte.android;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
+import org.joda.time.LocalTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -277,14 +277,6 @@ abstract public class LinearLayoutComposer  implements MessageComposer<RuntimeEx
 
     // converters for DAY und TIMESTAMP
     @Override
-    public void addField(TemporalElementaryDataItem di, Calendar t) {
-        if (t != null) {
-            newTextView(di, t.toString());
-        } else {
-            writeNull(di);
-        }
-    }
-    @Override
     public void addField(TemporalElementaryDataItem di, LocalDate t) {
         if (t != null) {
             newTextView(di, t.toString());
@@ -295,6 +287,15 @@ abstract public class LinearLayoutComposer  implements MessageComposer<RuntimeEx
 
     @Override
     public void addField(TemporalElementaryDataItem di, LocalDateTime t) {
+        if (t != null) {
+            newTextView(di, t.toString());
+        } else {
+            writeNull(di);
+        }
+    }
+
+    @Override
+    public void addField(TemporalElementaryDataItem di, LocalTime t) {
         if (t != null) {
             newTextView(di, t.toString());
         } else {

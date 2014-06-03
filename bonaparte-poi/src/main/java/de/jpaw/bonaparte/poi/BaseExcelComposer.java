@@ -16,12 +16,12 @@
 package de.jpaw.bonaparte.poi;
 
 import java.math.BigDecimal;
-import java.util.Calendar;
 import java.util.Locale;
 import java.util.UUID;
 
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
+import org.joda.time.LocalTime;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.MessageComposer;
@@ -41,6 +41,7 @@ import de.jpaw.enums.XEnum;
 import de.jpaw.util.Base64;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.ByteBuilder;
+import de.jpaw.util.DayTime;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -69,6 +70,7 @@ public class BaseExcelComposer implements MessageComposer<RuntimeException> {
     protected final CellStyle csLong;
     protected final CellStyle [] csBigDecimal;  // one per number of decimals, cache
     protected final CellStyle csDay;
+    protected final CellStyle csTime;
     protected final CellStyle csTimestamp;
     private final String [] BIGDECIMAL_FORMATS = {
             "#0",
@@ -105,7 +107,9 @@ public class BaseExcelComposer implements MessageComposer<RuntimeException> {
         csLong.setDataFormat(xlsDataFormat.getFormat("#,###,###,###,###,###,###,###,###,##0"));
         csBigDecimal = new CellStyle[1 + MAX_DECIMALS];
         csDay = xls.createCellStyle();
-        csDay.setDataFormat(xlsDataFormat.getFormat(DateFormatConverter.convert(Locale.JAPANESE, "yyyy mm dd")));
+        csDay.setDataFormat(xlsDataFormat.getFormat("yyyy-mm-dd"));
+        csTime = xls.createCellStyle();
+        csTime.setDataFormat(xlsDataFormat.getFormat("hh:mm:ss"));
         csTimestamp = xls.createCellStyle();
         csTimestamp.setDataFormat(xlsDataFormat.getFormat("yyyy-mm-dd hh:mm:ss"));
     }
@@ -308,14 +312,6 @@ public class BaseExcelComposer implements MessageComposer<RuntimeException> {
 
     // converters for DAY und TIMESTAMP
     @Override
-    public void addField(TemporalElementaryDataItem di, Calendar t) {
-        if (t != null) {
-            newCell(csTimestamp).setCellValue(t);
-        } else {
-            writeNull();
-        }
-    }
-    @Override
     public void addField(TemporalElementaryDataItem di, LocalDate t) {
         if (t != null) {
             newCell(csDay).setCellValue(t.toDate());
@@ -328,6 +324,15 @@ public class BaseExcelComposer implements MessageComposer<RuntimeException> {
     public void addField(TemporalElementaryDataItem di, LocalDateTime t) {
         if (t != null) {
             newCell(csTimestamp).setCellValue(t.toDate());
+        } else {
+            writeNull();
+        }
+    }
+
+    @Override
+    public void addField(TemporalElementaryDataItem di, LocalTime t) {
+        if (t != null) {
+            newCell(csTime).setCellValue(DayTime.toDate(t));
         } else {
             writeNull();
         }

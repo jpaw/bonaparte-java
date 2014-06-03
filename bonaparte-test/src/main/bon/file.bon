@@ -1,7 +1,0 @@
-package a {
-	
-	class A {
-		int 			a;
-		Raw(10)			fieldIsHereToIssueWarning;
-	}
-}

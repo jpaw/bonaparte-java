@@ -12,7 +12,6 @@ import de.jpaw.bonaparte.core.CSVComposer2;
 import de.jpaw.bonaparte.core.CSVConfiguration;
 import de.jpaw.bonaparte.core.CSVStyle;
 import de.jpaw.bonaparte.pojos.csvTests.Test1;
-import de.jpaw.util.DayTime;
 
 public class CSVDemo {
     private static Test1 t = new Test1("Hello, world", 42, new BigDecimal("3.14"), LocalDateTime.now(), LocalDate.now(), true,
@@ -40,8 +39,7 @@ public class CSVDemo {
         .forLocale(Locale.forLanguageTag(tag))
         .dateTimeStyle(CSVStyle.MEDIUM, CSVStyle.MEDIUM)
         .usingSeparator("; ")
-        .setCustomCalendarFormat(null)
-        .setCustomDayTimeFormats(null, null, null)
+        .setCustomDayTimeFormats(null, null, null, null, null)
         .build(), name);
 
     }
@@ -58,8 +56,7 @@ public class CSVDemo {
                 .dateTimeStyle(CSVStyle.MEDIUM, CSVStyle.MEDIUM)
                 .usingSeparator("; ")
                 .booleanTokens("WAHR", "FALSCH")  // as used by Excel
-                .setCustomCalendarFormat(null)
-                .setCustomDayTimeFormats(null, null, null)
+                .resetCustomDayTimeFormats()
                 .build(), "DE extended");
         testTag("th_TH_TH", "thai");                            // latin numbers
         testTag("th-TH-u-nu-thai", "thai (with BCP47 code)");   // Thai numbers!

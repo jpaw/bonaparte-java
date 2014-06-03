@@ -2,13 +2,11 @@ package de.jpaw.bonaparte.core;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.util.Calendar;
-import java.util.Locale;
 import java.util.UUID;
 
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
+import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -39,6 +37,7 @@ import de.jpaw.util.JsonEscaper;
 public class JsonComposer implements MessageComposer<IOException> {
 	protected static final DateTimeFormatter LOCAL_DATE_ISO = DateTimeFormat.forPattern("yyyy-MM-dd"); // ISODateTimeFormat.basicDate();
 	protected static final DateTimeFormatter LOCAL_DATETIME_ISO = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss"); // ISODateTimeFormat.basicDateTime();
+    protected static final DateTimeFormatter LOCAL_TIME_ISO = DateTimeFormat.forPattern("HH:mm:ss"); // ISODateTimeFormat.basicTime();
 	protected final Appendable out;
 	protected final boolean writeNulls;
 	protected final JsonEscaper jsonEscaper;
@@ -359,18 +358,6 @@ public class JsonComposer implements MessageComposer<IOException> {
 		writeOptionalUnquotedString(di, n == null ? null : n.toString());
 	}
 
-	// t is not null here
-	protected String oldJavaCalendarFormat(Calendar t) {
-		// old Java's formatter is not thread safe, we have to construct a separate one
-		DateFormat fmt = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.ROOT);
-		return fmt.format(t.getTime());
-	}
-	
-	@Override
-	public void addField(TemporalElementaryDataItem di, Calendar t) throws IOException {
-		writeOptionalQuotedAscii(di, t == null ? null : oldJavaCalendarFormat(t));
-	}
-
 	@Override
 	public void addField(TemporalElementaryDataItem di, LocalDate t) throws IOException {
 		writeOptionalQuotedAscii(di, t == null ? null : LOCAL_DATE_ISO.print(t));
@@ -380,6 +367,11 @@ public class JsonComposer implements MessageComposer<IOException> {
 	public void addField(TemporalElementaryDataItem di, LocalDateTime t) throws IOException {
 		writeOptionalQuotedAscii(di, t == null ? null : LOCAL_DATETIME_ISO.print(t));
 	}
+
+    @Override
+    public void addField(TemporalElementaryDataItem di, LocalTime t) throws IOException {
+        writeOptionalQuotedAscii(di, t == null ? null : LOCAL_TIME_ISO.print(t));
+    }
 
 	@Override
 	public void addEnum(EnumDataItem di, BasicNumericElementaryDataItem ord, Enum<?> n) throws IOException {

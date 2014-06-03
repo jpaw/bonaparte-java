@@ -17,10 +17,10 @@ package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
 import java.util.UUID;
-import java.util.Calendar;
 
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
+import org.joda.time.LocalTime;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
@@ -84,8 +84,8 @@ public interface MessageComposer<E extends Exception> {
     void addField(BinaryElementaryDataItem di, byte [] b) throws E;
     void addField(BasicNumericElementaryDataItem di, Integer n) throws E;
     void addField(NumericElementaryDataItem di, BigDecimal n) throws E;
-    void addField(TemporalElementaryDataItem di, Calendar t) throws E;
     void addField(TemporalElementaryDataItem di, LocalDate t) throws E;
+    void addField(TemporalElementaryDataItem di, LocalTime t) throws E;
     void addField(TemporalElementaryDataItem di, LocalDateTime t) throws E;
     
     // Enums

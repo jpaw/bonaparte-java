@@ -20,9 +20,11 @@ import java.util.GregorianCalendar;
 
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
+import org.joda.time.LocalTime;
 
 /**
  * Some convenience functions for days and timestamps.
+ * The conversion methods toCalendar and toDate are accessed from generated code.
  *
  * @author Michael Bischoff
  *
@@ -37,7 +39,7 @@ public class DayTime {
     }
 
     /** Provides functionality to convert a Joda timestamp to a GregorianCalendar. */
-    static public GregorianCalendar toGregorianCalendar(LocalDateTime when) {
+    static public GregorianCalendar toCalendar(LocalDateTime when) {
         if (when == null) {
             return null;
         }
@@ -47,13 +49,48 @@ public class DayTime {
     }
 
     /** Provides functionality to convert a Joda date to a GregorianCalendar. */
-    static public GregorianCalendar toGregorianCalendar(LocalDate when) {
+    static public GregorianCalendar toCalendar(LocalDate when) {
         if (when == null) {
             return null;
         }
         GregorianCalendar then = new GregorianCalendar();
         then.setTime(when.toDate());
         return then;  // TODO: set timezone to UTC as well?
+    }
+
+    /** Provides functionality to convert a Joda date to a GregorianCalendar. */
+    static public GregorianCalendar toCalendar(LocalTime when) {
+        if (when == null) {
+            return null;
+        }
+        long millis = (long)when.getMillisOfDay(); 
+        GregorianCalendar then = new GregorianCalendar();
+        then.setTimeInMillis(millis);
+        return then;  // TODO: set timezone to UTC as well?
+    }
+
+    /** Provides functionality to convert a Joda timestamp to a java Date. */
+    static public Date toDate(LocalDateTime when) {
+        if (when == null) {
+            return null;
+        }
+        return when.toDate();
+    }
+
+    /** Provides functionality to convert a Joda date to a java Date. */
+    static public Date toDate(LocalDate when) {
+        if (when == null) {
+            return null;
+        }
+        return when.toDate();
+    }
+
+    /** Provides functionality to convert a Joda date to a java Date. */
+    static public Date toDate(LocalTime when) {
+        if (when == null) {
+            return null;
+        }
+        return new Date((long)when.getMillisOfDay());
     }
 
     /** Computes the difference between two LocalDateTime instances with millisecond precision.

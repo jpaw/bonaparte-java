@@ -17,7 +17,6 @@ package de.jpaw.bonaparte.core;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -25,6 +24,7 @@ import java.util.UUID;
 
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
+import org.joda.time.LocalTime;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
@@ -43,7 +43,7 @@ import de.jpaw.util.ByteArray;
 import de.jpaw.util.ByteBuilder;
 import de.jpaw.util.CharTestsASCII;
 // according to http://stackoverflow.com/questions/469695/decode-base64-data-in-java , xml.bind is included in Java 6 SE
-//import javax.xml.bind.DatatypeConverter;
+//import javax.xml.bind.DatatypeConverter;  // but not in Android, so don't use it!
 /**
  * The StringBuilderComposer class.
  *
@@ -329,39 +329,6 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
 
     // converters for DAY und TIMESTAMP
     @Override
-    public void addField(TemporalElementaryDataItem di, Calendar t) throws IOException {  // TODO: length is not needed for this one
-        if (t != null) {
-            int tmpValue = (10000 * t.get(Calendar.YEAR)) + (100
-                    * (t.get(Calendar.MONTH) + 1)) + t.get(Calendar.DAY_OF_MONTH);
-            work.append(Integer.toString(tmpValue));
-            int length = di.getFractionalSeconds();
-            if (length >= 0) {
-                // not only day, but also time
-                if (di.getHhmmss()) {
-                    tmpValue = (10000 * t.get(Calendar.HOUR_OF_DAY)) + (100
-                            * t.get(Calendar.MINUTE)) + t.get(Calendar.SECOND);
-                } else {
-                    tmpValue = (3600 * t.get(Calendar.HOUR_OF_DAY)) + (60
-                            * t.get(Calendar.MINUTE)) + t.get(Calendar.SECOND);
-                }
-                if ((tmpValue != 0) || ((length > 0) && (t.get(Calendar.MILLISECOND) != 0))) {
-                    work.append('.');
-                    lpad(Integer.toString(tmpValue), 6, '0');
-                    if (length > 0) {
-                        // add milliseconds
-                        tmpValue = t.get(Calendar.MILLISECOND);
-                        if (tmpValue != 0) {
-                            lpad(Integer.toString(tmpValue), 3, '0');
-                        }
-                    }
-                }
-            }
-            terminateField();
-        } else {
-            writeNull();
-        }
-    }
-    @Override
     public void addField(TemporalElementaryDataItem di, LocalDate t) throws IOException {
         if (t != null) {
             int [] values = t.getValues();   // 3 values: year, month, day
@@ -401,6 +368,30 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
                         }
                     }
                 }
+            }
+            terminateField();
+        } else {
+            writeNull();
+        }
+    }
+
+    @Override
+    public void addField(TemporalElementaryDataItem di, LocalTime t) throws IOException {
+        if (t != null) {
+            int length = di.getFractionalSeconds();
+            int millis = t.getMillisOfDay();
+            if (di.getHhmmss()) {
+                int tmpValue = millis / 60000; // minutes and hours
+                tmpValue = (100 * (tmpValue / 60)) + (tmpValue % 60);
+                lpad(Integer.toString((tmpValue * 100) + ((millis % 60000) / 1000)), 6, '0');
+            } else {
+                lpad(Integer.toString(millis / 1000), 6, '0');
+            }
+            if (length > 0 && (millis % 1000) != 0) {
+                // add milliseconds
+                work.append('.');
+                int milliSeconds = millis % 1000;
+                lpad(Integer.toString(milliSeconds), 3, '0');
             }
             terminateField();
         } else {

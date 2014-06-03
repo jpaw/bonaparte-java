@@ -16,12 +16,12 @@
 package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
-import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
+import org.joda.time.LocalTime;
 
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.enums.AbstractXEnumBase;
@@ -56,8 +56,8 @@ public interface MessageParser<E extends Exception> {
     public String  readString       (String fieldname, boolean allowNull, int length, boolean doTrim, boolean doTruncate, boolean allowCtrls, boolean allowUnicode) throws E;
     public ByteArray readByteArray  (String fieldname, boolean allowNull, int length) throws E;
     public byte []   readRaw        (String fieldname, boolean allowNull, int length) throws E;
-    public Calendar  readCalendar   (String fieldname, boolean allowNull, boolean hhmmss, int fractionalDigits) throws E;
     public LocalDate readDay        (String fieldname, boolean allowNull) throws E;
+    public LocalTime readTime       (String fieldname, boolean allowNull, boolean hhmmss, int length) throws E;
     public LocalDateTime readDayTime(String fieldname, boolean allowNull, boolean hhmmss, int length) throws E;
     public BonaPortable readObject  (String fieldname, Class<? extends BonaPortable> type, boolean allowNull, boolean allowSubtypes) throws E; // parser factory
     // composite methods

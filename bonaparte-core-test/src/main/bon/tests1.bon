@@ -85,6 +85,8 @@ package tests1 {
         day day1;
         timestamp(0) timestamp1;
         timestamp(3) timestamp2;
+        time(0) time1;
+        time(3) time2;
         ascii(30) ascii1;
         unicode(30) unicode1;
         number(4) number1;
@@ -98,6 +100,8 @@ package tests1 {
         Ascii(2..5) regexp "[a-z][a-z](_[A-Z][A-Z])?" languageCode;
         timestamp(0) hhmmss timestamp1a;
         timestamp(3) hhmmss timestamp2a;
+        time(0) hhmmss time1a;
+        time(3) hhmmss time2a;
     }
     class References orderedBy (country, classOrDerivedObject) {
         object someGenericRecord;

@@ -3,12 +3,12 @@ package de.jpaw.bonaparte.core;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
+import org.joda.time.LocalTime;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
@@ -147,19 +147,17 @@ public class ListComposer extends NoOpComposer implements MessageComposer<Runtim
     }
 
     @Override
-    public void addField(TemporalElementaryDataItem di, Calendar t) {
-        if (t == null)
-            writeNull(di);
-        storage.add(doDeepCopies ? (Calendar)t.clone() : t);
-    }
-
-    @Override
     public void addField(TemporalElementaryDataItem di, LocalDate t) {
         storage.add(t);
     }
 
     @Override
     public void addField(TemporalElementaryDataItem di, LocalDateTime t) {
+        storage.add(t);
+    }
+
+    @Override
+    public void addField(TemporalElementaryDataItem di, LocalTime t) {
         storage.add(t);
     }
 

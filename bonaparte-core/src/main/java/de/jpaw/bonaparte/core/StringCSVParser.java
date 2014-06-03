@@ -17,15 +17,12 @@ package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.UUID;
 
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
+import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormatter;
 
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
@@ -54,13 +51,15 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
     private int messageLength;  // for parser
     private String currentClass;
     protected final DateTimeFormatter dayFormat;            // day without time (Joda)
+    protected final DateTimeFormatter timeFormat;           // time on second precision (Joda)
+    protected final DateTimeFormatter time3Format;          // time on millisecond precision (Joda)
     protected final DateTimeFormatter timestampFormat;      // day and time on second precision (Joda)
     protected final DateTimeFormatter timestamp3Format;     // day and time on millisecond precision (Joda)
-    protected final DateFormat calendarFormat;              // Java's mutable Calendar. Use with caution (or better, don't use at all)
     protected final int dayFormatLength;            // day without time (Joda)
+    protected final int timeFormatLength;           // time on second precision (Joda)
+    protected final int time3FormatLength;          // time on millisecond precision (Joda)
     protected final int timestampFormatLength;      // day and time on second precision (Joda)
     protected final int timestamp3FormatLength;     // day and time on millisecond precision (Joda)
-    protected final int calendarFormatLength;              // Java's mutable Calendar. Use with caution (or better, don't use at all)
 
 
     public StringCSVParser(CSVConfiguration cfg, String work) {
@@ -76,14 +75,15 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
         this.work = work;
         this.lengthOfBoolean = cfg.booleanFalse.length() > cfg.booleanTrue.length() ? cfg.booleanFalse.length() : cfg.booleanTrue.length();
         this.dayFormat = cfg.determineDayFormatter().withLocale(cfg.locale).withZoneUTC();
+        this.timeFormat = cfg.determineTimeFormatter().withLocale(cfg.locale).withZoneUTC();
+        this.time3Format = cfg.determineTime3Formatter().withLocale(cfg.locale).withZoneUTC();
         this.timestampFormat = cfg.determineTimestampFormatter().withLocale(cfg.locale).withZoneUTC();
         this.timestamp3Format = cfg.determineTimestamp3Formatter().withLocale(cfg.locale).withZoneUTC();
-        this.calendarFormat = cfg.determineCalendarFormat();
-        this.calendarFormat.setCalendar(Calendar.getInstance(cfg.locale));
         this.dayFormatLength = cfg.customDayFormat == null ? 8 : cfg.customDayFormat.length();
+        this.timeFormatLength = cfg.customTimeFormat == null ? 6 : cfg.customTimeFormat.length();
+        this.time3FormatLength = cfg.customTimeWithMsFormat == null ? 9 : cfg.customTimeWithMsFormat.length();
         this.timestampFormatLength = cfg.customTimestampFormat == null ? 14 : cfg.customTimestampFormat.length();
         this.timestamp3FormatLength = cfg.customTimestampWithMsFormat == null ? 17 : cfg.customTimestampWithMsFormat.length();
-        this.calendarFormatLength = cfg.customCalendarFormat == null ? 14 : cfg.customCalendarFormat.length();
         fixedLength = cfg.separator.length() == 0;
         parseIndex = 0;  // for parser
         currentClass = "N/A";
@@ -254,22 +254,7 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
         }
         // return DatatypeConverter.parseHexBinary(tmp);
     }
-
-    @Override
-    public Calendar readCalendar(String fieldname, boolean allowNull, boolean hhmmss, int fractionalDigits) throws MessageParserException {
-        String token = getField(fieldname, allowNull, calendarFormatLength);  // will not work with fixed format!
-        if (token == null)
-            return null;
-        GregorianCalendar result = new GregorianCalendar(cfg.locale);
-        try {
-            result.setTime(calendarFormat.parse(token));
-        } catch (ParseException e) {
-            throw new MessageParserException(
-                    MessageParserException.ILLEGAL_CALENDAR_VALUE, fieldname,
-                    parseIndex, currentClass);
-        }
-        return result;
-    }
+    
     @Override
     public LocalDateTime readDayTime(String fieldname, boolean allowNull, boolean hhmmss, int fractionalDigits) throws MessageParserException {
         String token = getField(fieldname, allowNull, fractionalDigits > 0 ? timestamp3FormatLength : timestampFormatLength);
@@ -281,9 +266,7 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
             else
                 return timestampFormat.parseLocalDateTime(token);
         } catch (Exception e) {
-            throw new MessageParserException(
-                    MessageParserException.ILLEGAL_CALENDAR_VALUE, fieldname,
-                    parseIndex, currentClass);
+            throw new MessageParserException(MessageParserException.ILLEGAL_CALENDAR_VALUE, fieldname, parseIndex, currentClass);
         }
     }
     @Override
@@ -294,9 +277,21 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
         try {
             return dayFormat.parseLocalDate(token);
         } catch (Exception e) {
-            throw new MessageParserException(
-                    MessageParserException.ILLEGAL_CALENDAR_VALUE, fieldname,
-                    parseIndex, currentClass);
+            throw new MessageParserException(MessageParserException.ILLEGAL_CALENDAR_VALUE, fieldname, parseIndex, currentClass);
+        }
+    }
+    @Override
+    public LocalTime readTime(String fieldname, boolean allowNull, boolean hhmmss, int fractionalDigits) throws MessageParserException {
+        String token = getField(fieldname, allowNull, fractionalDigits > 0 ? timestamp3FormatLength : timestampFormatLength);
+        if (token == null)
+            return null;
+        try {
+            if (fractionalDigits > 0)
+                return time3Format.parseLocalTime(token);
+            else
+                return timeFormat.parseLocalTime(token);
+        } catch (Exception e) {
+            throw new MessageParserException(MessageParserException.ILLEGAL_CALENDAR_VALUE, fieldname, parseIndex, currentClass);
         }
     }
     

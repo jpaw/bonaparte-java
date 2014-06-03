@@ -53,10 +53,10 @@ package de.jpaw.bonaparte.core;
  *          d7   UUID (next 8 bytes define the value)
  *          
  *          d8   date (day): 4 bytes following:  YYYY,MM,DD (YYYY in ex (nn) format, see below)
- *          d9   time (HH MM SS)  (1 + 3 byte)
- *          da   time with millisecond precision (HH MM SS) (millis)  (1 + 3 + 2 byte)
- *          db   datetime (day + time HH MM SS) (1 + 4 + 3 byte)
- *          dc   datetime with millis (day + time HH MM SS) (millis) (1 + 4 + 3 + 2 byte = 10 byte for sensible years)
+ *          d9   time (int seconds of day)
+ *          da   time with millisecond precision (int millis of day)
+ *          db   datetime (day + time as seconds of day) (1 + 4 + x byte)
+ *          dc   datetime with millis (day + time in millis of day) (1 + 4 + x byte for sensible years)
  *          
  *          dd object backreference (next is positive int says how much back)
  *          de  identifiable object: next is factoryId, then objectId (suggestion: keep object IDs <= 4095) 

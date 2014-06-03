@@ -34,6 +34,7 @@ public interface BonaPortableClass<T extends BonaPortable> {
 	 * @return
 	 */
 	T newInstance();
+    Class<T> getBonaPortableClass();
 
 	int getFactoryId();
 	int getId();

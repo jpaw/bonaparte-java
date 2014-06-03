@@ -42,7 +42,12 @@ public class TestFixedWidth {
 
         runTest(fixedWidthCfg,  t1, "Hello      000000012000000000003.10 20130401235500200111121000001234567890123\n");
         
-        CSVConfiguration fixedWidthCfg2 = CSVConfiguration.Builder.from(fixedWidthCfg).booleanTokens("J", "N").setCustomDayTimeFormats("dd.MM.YYYY", "YYYY-MM-dd HH:mm:ss", "YYYY-MM-DD HH:mm:ss SSS").usingZeroPadding(false).build();
+        CSVConfiguration fixedWidthCfg2 = CSVConfiguration.Builder.from(fixedWidthCfg)
+                .booleanTokens("J", "N")
+                .setCustomDayFormat("dd.MM.YYYY")
+                .setCustomTimeFormats("HH:mm:ss", "HH:mm:ss.SSS")
+                .setCustomDayTimeFormats("YYYY-MM-dd HH:mm:ss", "YYYY-MM-DD HH:mm:ss.SSS")
+                .usingZeroPadding(false).build();
         runTest(fixedWidthCfg2, t1, "Hello             12           3.10 2013-04-01 23:55:0012.11.2001J     1234567890123\n");
     }
 }

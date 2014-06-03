@@ -17,15 +17,15 @@ package de.jpaw.bonaparte.core;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.text.DateFormat;
 import java.text.Format;
 import java.text.NumberFormat;
-import java.util.Calendar;
 import java.util.UUID;
 
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
+import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormatter;
+
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
@@ -53,9 +53,10 @@ public class CSVComposer extends AppendableComposer {
     protected final String stringQuote;       // quote character for strings, as a string
     //protected final boolean usesDefaultDecimalPoint;   // just for speedup, to avoid frequent String equals()
     protected final DateTimeFormatter dayFormat;            // day without time (Joda)
+    protected final DateTimeFormatter timeFormat;           // time on second precision (Joda)
+    protected final DateTimeFormatter time3Format;          // time on millisecond precision (Joda)
     protected final DateTimeFormatter timestampFormat;      // day and time on second precision (Joda)
     protected final DateTimeFormatter timestamp3Format;     // day and time on millisecond precision (Joda)
-    protected final DateFormat calendarFormat;              // Java's mutable Calendar. Use with caution (or better, don't use at all)
     protected Format numberFormat;              // locale's default format for formatting float and double, covers decimal point and sign
     protected final NumberFormat bigDecimalFormat;          // locale's default format for formatting BigDecimal, covers decimal point and sign
 
@@ -67,10 +68,10 @@ public class CSVComposer extends AppendableComposer {
         //this.usesDefaultDecimalPoint = cfg.decimalPoint.equals(".");
         //this.shouldWarnWhenUsingFloat = cfg.decimalPoint.length() == 0;     // removing decimal points from float or double is a bad idea, because no scale is defined
         this.dayFormat = cfg.determineDayFormatter().withLocale(cfg.locale).withZoneUTC();
+        this.timeFormat = cfg.determineTimeFormatter().withLocale(cfg.locale).withZoneUTC();
+        this.time3Format = cfg.determineTime3Formatter().withLocale(cfg.locale).withZoneUTC();
         this.timestampFormat = cfg.determineTimestampFormatter().withLocale(cfg.locale).withZoneUTC();
         this.timestamp3Format = cfg.determineTimestamp3Formatter().withLocale(cfg.locale).withZoneUTC();
-        this.calendarFormat = cfg.determineCalendarFormat();
-        this.calendarFormat.setCalendar(Calendar.getInstance(cfg.locale));
         NumberFormat myNumberFormat = NumberFormat.getInstance(cfg.locale);
         myNumberFormat.setGroupingUsed(false);                           // this is for interfaces, don't do pretty-printing
         this.numberFormat = myNumberFormat;
@@ -264,25 +265,29 @@ public class CSVComposer extends AppendableComposer {
 
     // converters for DAY und TIMESTAMP
     @Override
-    public void addField(TemporalElementaryDataItem di, Calendar t) throws IOException {
-        writeSeparator();
-        if (t != null) {
-            if (cfg.datesQuoted)
-                addRawData(stringQuote);
-            addRawData(calendarFormat.format(t.getTime()));
-            if (cfg.datesQuoted)
-                addRawData(stringQuote);
-        } else {
-            writeNull(di);
-        }
-    }
-    @Override
     public void addField(TemporalElementaryDataItem di, LocalDate t) throws IOException {
         writeSeparator();
         if (t != null) {
             if (cfg.datesQuoted)
                 addRawData(stringQuote);
             addRawData(dayFormat.print(t));
+            if (cfg.datesQuoted)
+                addRawData(stringQuote);
+        } else {
+            writeNull(di);
+        }
+    }
+
+    @Override
+    public void addField(TemporalElementaryDataItem di, LocalTime t) throws IOException {
+        writeSeparator();
+        if (t != null) {
+            if (cfg.datesQuoted)
+                addRawData(stringQuote);
+            if (di.getFractionalSeconds() <= 0)
+                addRawData(timeFormat.print(t));   // second precision
+            else
+                addRawData(time3Format.print(t));  // millisecond precision
             if (cfg.datesQuoted)
                 addRawData(stringQuote);
         } else {

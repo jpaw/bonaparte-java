@@ -16,7 +16,6 @@
 package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -24,6 +23,7 @@ import java.util.UUID;
 
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
+import org.joda.time.LocalTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -346,40 +346,6 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
 
     // converters for DAY und TIMESTAMP
     @Override
-    public void addField(TemporalElementaryDataItem di, Calendar t) {  // TODO: length is not needed for this one
-        if (t != null) {
-            int tmpValue = (10000 * t.get(Calendar.YEAR)) + (100
-                    * (t.get(Calendar.MONTH) + 1)) + t.get(Calendar.DAY_OF_MONTH);
-            work.appendAscii(Integer.toString(tmpValue));
-            int length = di.getFractionalSeconds();
-            if (length >= 0) {
-                // not only day, but also time
-                if (di.getHhmmss()) {
-                    tmpValue = (10000 * t.get(Calendar.HOUR_OF_DAY)) + (100
-                            * t.get(Calendar.MINUTE)) + t.get(Calendar.SECOND);
-                } else {
-                    tmpValue = (3600 * t.get(Calendar.HOUR_OF_DAY)) + (60
-                            * t.get(Calendar.MINUTE)) + t.get(Calendar.SECOND);
-                }
-                if ((tmpValue != 0) || ((length > 0) && (t.get(Calendar.MILLISECOND) != 0))) {
-                    work.append((byte) '.');
-                    lpad(Integer.toString(tmpValue), 6, (byte) '0');
-                    if (length > 0) {
-                        // add milliseconds
-                        tmpValue = t.get(Calendar.MILLISECOND);
-                        if (tmpValue != 0) {
-                            lpad(Integer.toString(tmpValue), 3, (byte) '0');
-                        }
-                    }
-                }
-            }
-            terminateField();
-        } else {
-            writeNull();
-        }
-    }
-
-    @Override
     public void addField(TemporalElementaryDataItem di, LocalDate t) {
         if (t != null) {
             int [] values = t.getValues();   // 3 values: year, month, day
@@ -419,6 +385,30 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
                         }
                     }
                 }
+            }
+            terminateField();
+        } else {
+            writeNull();
+        }
+    }
+    
+    @Override
+    public void addField(TemporalElementaryDataItem di, LocalTime t) {
+        if (t != null) {
+            int length = di.getFractionalSeconds();
+            int millis = t.getMillisOfDay();
+            if (di.getHhmmss()) {
+                int tmpValue = millis / 60000; // minutes and hours
+                tmpValue = (100 * (tmpValue / 60)) + (tmpValue % 60);
+                lpad(Integer.toString((tmpValue * 100) + ((millis % 60000) / 1000)), 6, (byte)'0');
+            } else {
+                lpad(Integer.toString(millis / 1000), 6, (byte)'0');
+            }
+            if (length > 0 && (millis % 1000) != 0) {
+                // add milliseconds
+                work.append((byte)'.');
+                int milliSeconds = millis % 1000;
+                lpad(Integer.toString(milliSeconds), 3, (byte)'0');
             }
             terminateField();
         } else {

@@ -1,11 +1,11 @@
 package de.jpaw.bonaparte.vertx;
 
 import java.math.BigDecimal;
-import java.util.Calendar;
 import java.util.UUID;
 
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
+import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 import org.vertx.java.core.json.JsonArray;
@@ -32,6 +32,7 @@ import de.jpaw.util.ByteArray;
 public class JsonObjectComposer implements MessageComposer<RuntimeException> {
 	protected static final DateTimeFormatter LOCAL_DATE_ISO = ISODateTimeFormat.basicDate();
 	protected static final DateTimeFormatter LOCAL_DATETIME_ISO = ISODateTimeFormat.basicDateTime();
+    protected static final DateTimeFormatter LOCAL_TIME_ISO = ISODateTimeFormat.basicTime();
 	
 	protected JsonObject obj = null;
 	protected JsonArray arr = null;
@@ -284,11 +285,6 @@ public class JsonObjectComposer implements MessageComposer<RuntimeException> {
 	}
 
 	@Override
-	public void addField(TemporalElementaryDataItem di, Calendar t)	{
-		throw new IllegalArgumentException(di.getName() + ": Calendar not supported for Json conversion. Use JodaTime LocalDateTime!");
-	}
-
-	@Override
 	public void addField(TemporalElementaryDataItem di, LocalDate t) {
 		if (inArray)
 			arr.addString(t == null ? null : LOCAL_DATE_ISO.print(t));
@@ -307,6 +303,16 @@ public class JsonObjectComposer implements MessageComposer<RuntimeException> {
 		else
 			writeNull(di);
 	}
+
+    @Override
+    public void addField(TemporalElementaryDataItem di, LocalTime t) {
+        if (inArray)
+            arr.addString(t == null ? null : LOCAL_TIME_ISO.print(t));
+        else if (t != null)
+            obj.putString(di.getName(), LOCAL_TIME_ISO.print(t));
+        else
+            writeNull(di);
+    }
 
 	@Override
 	public void addEnum(EnumDataItem di, BasicNumericElementaryDataItem ord, Enum<?> n) {

@@ -5,7 +5,6 @@ package de.jpaw.xml.jaxb.demo.joda;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
@@ -22,7 +21,6 @@ import org.joda.time.LocalTime;
 public class JodaTimeMappers {
     
     private DateTime dateTime;
-    private DateMidnight dateMidnight;
     private LocalDate localDate;
     private LocalTime localTime;
     private LocalDateTime localDateTime;
@@ -33,14 +31,6 @@ public class JodaTimeMappers {
  
     public void setDateTime(DateTime dateTime) {
         this.dateTime = dateTime;
-    }
- 
-    public DateMidnight getDateMidnight() {
-        return dateMidnight;
-    }
- 
-    public void setDateMidnight(DateMidnight dateMidnight) {
-        this.dateMidnight = dateMidnight;
     }
  
     public LocalDate getLocalDate() {
