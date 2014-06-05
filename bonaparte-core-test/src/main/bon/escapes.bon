@@ -1,0 +1,9 @@
+package ^day {
+	class ^Timestamp {
+		
+	}
+	
+	class Gaga extends  ^Timestamp {
+		
+	}
+}
