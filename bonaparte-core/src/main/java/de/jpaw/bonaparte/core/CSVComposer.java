@@ -21,6 +21,7 @@ import java.text.Format;
 import java.text.NumberFormat;
 import java.util.UUID;
 
+import org.joda.time.Instant;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
@@ -307,6 +308,16 @@ public class CSVComposer extends AppendableComposer {
                 addRawData(timestamp3Format.print(t));  // millisecond precision
             if (cfg.datesQuoted)
                 addRawData(stringQuote);
+        } else {
+            writeNull(di);
+        }
+    }
+
+    @Override
+    public void addField(TemporalElementaryDataItem di, Instant t) throws IOException {
+        writeSeparator();
+        if (t != null) {
+            addRawData(Long.toString(t.getMillis()));
         } else {
             writeNull(di);
         }

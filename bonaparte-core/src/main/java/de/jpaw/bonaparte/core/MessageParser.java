@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
+import org.joda.time.Instant;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
@@ -59,6 +60,7 @@ public interface MessageParser<E extends Exception> {
     public LocalDate readDay        (String fieldname, boolean allowNull) throws E;
     public LocalTime readTime       (String fieldname, boolean allowNull, boolean hhmmss, int length) throws E;
     public LocalDateTime readDayTime(String fieldname, boolean allowNull, boolean hhmmss, int length) throws E;
+    public Instant  readInstant(String fieldname, boolean allowNull, boolean hhmmss, int length) throws E;
     public BonaPortable readObject  (String fieldname, Class<? extends BonaPortable> type, boolean allowNull, boolean allowSubtypes) throws E; // parser factory
     // composite methods
     public int parseMapStart        (String fieldname, boolean allowNull, int indexID) throws E;

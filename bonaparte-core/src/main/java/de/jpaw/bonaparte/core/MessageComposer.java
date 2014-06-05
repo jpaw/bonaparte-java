@@ -18,6 +18,7 @@ package de.jpaw.bonaparte.core;
 import java.math.BigDecimal;
 import java.util.UUID;
 
+import org.joda.time.Instant;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
@@ -84,6 +85,7 @@ public interface MessageComposer<E extends Exception> {
     void addField(BinaryElementaryDataItem di, byte [] b) throws E;
     void addField(BasicNumericElementaryDataItem di, Integer n) throws E;
     void addField(NumericElementaryDataItem di, BigDecimal n) throws E;
+    void addField(TemporalElementaryDataItem di, Instant t) throws E;
     void addField(TemporalElementaryDataItem di, LocalDate t) throws E;
     void addField(TemporalElementaryDataItem di, LocalTime t) throws E;
     void addField(TemporalElementaryDataItem di, LocalDateTime t) throws E;

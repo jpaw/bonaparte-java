@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.joda.time.Instant;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
@@ -241,6 +242,12 @@ public class CompactParser extends CompactConstants implements MessageParser<IOE
 
     @Override
     public <T extends AbstractXEnumBase<T>> T readXEnum(XEnumDataItem di, XEnumFactory<T> factory) throws IOException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Instant readInstant(String fieldname, boolean allowNull, boolean hhmmss, int length) throws IOException {
         // TODO Auto-generated method stub
         return null;
     }

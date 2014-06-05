@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import org.joda.time.Instant;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
@@ -160,6 +161,11 @@ public class ListMetaComposer extends NoOpComposer implements MessageComposer<Ru
 
     @Override
     public void addField(TemporalElementaryDataItem di, LocalTime t) {
+        add(di, t);
+    }
+
+    @Override
+    public void addField(TemporalElementaryDataItem di, Instant t) {
         add(di, t);
     }
 

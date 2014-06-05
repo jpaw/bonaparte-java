@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.joda.time.DateTimeZone;
+import org.joda.time.Instant;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
@@ -616,6 +617,41 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
                     String.format("(found %d for %s)", (hour * 10000) + (minute * 100) + second, fieldname), parseIndex, currentClass);
         }
         return new LocalTime((long)(1000 * seconds + millis), DateTimeZone.UTC);
+    }
+
+
+    @Override
+    public Instant readInstant(String fieldname, boolean allowNull, boolean hhmmss, int fractionalDigits) throws MessageParserException {
+        if (checkForNull(fieldname, allowNull)) {
+            return null;
+        }
+        String tmp = nextIndexParseAscii(fieldname, false, fractionalDigits > 0, false);  // parse an unsigned numeric string without exponent
+        int millis = 0;
+        long seconds = 0;
+        int dpoint;
+        if ((dpoint = tmp.indexOf('.')) < 0) {
+            seconds = Long.parseLong(tmp);  // only seconds
+        } else {
+            // seconds and millis seconds
+            seconds = Long.parseLong(tmp.substring(0, dpoint));
+            millis = Integer.parseInt(tmp.substring(dpoint + 1));
+            switch (tmp.length() - dpoint - 1) { // i.e. number of fractional digits
+            case 2:
+                millis *= 10;
+                break;
+            case 1:
+                millis *= 100;
+                break;
+            case 3:
+                break; // maximum resolution (milliseconds)
+            default: // something weird
+                throw new MessageParserException(
+                        MessageParserException.BAD_TIMESTAMP_FRACTIONALS,
+                        String.format("(found %d for %s)", tmp.length() - dpoint - 1, fieldname),
+                        parseIndex, currentClass);
+            }
+        }
+        return new Instant(1000L * seconds + (long)millis);
     }
 
     @Override

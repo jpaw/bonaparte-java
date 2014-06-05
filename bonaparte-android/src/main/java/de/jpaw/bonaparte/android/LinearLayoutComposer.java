@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.joda.time.Instant;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
@@ -296,6 +297,15 @@ abstract public class LinearLayoutComposer  implements MessageComposer<RuntimeEx
 
     @Override
     public void addField(TemporalElementaryDataItem di, LocalTime t) {
+        if (t != null) {
+            newTextView(di, t.toString());
+        } else {
+            writeNull(di);
+        }
+    }
+
+    @Override
+    public void addField(TemporalElementaryDataItem di, Instant t) {
         if (t != null) {
             newTextView(di, t.toString());
         } else {

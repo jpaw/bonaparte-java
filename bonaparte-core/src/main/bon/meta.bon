@@ -96,7 +96,7 @@ package meta {
 		required identifier     		name;
 		identifier              		parent;
         identifier              		^bundle;            // OSGi bundle / module
-		optional Timestamp(3)   		whenLoaded;
+		optional Instant(3)   	 		whenLoaded;
 		optional (!E...) 				parentMeta;     // the meta object for the parent object (if this is an inherited one, else null)
 	}
 	// holds all meta information for a class
@@ -125,7 +125,7 @@ package meta {
         required identifier required List<> packages;
 	    required unicode(2048)           	classPath;
         required enum BundleStatus       	bundleStatus;
-	    optional Timestamp(3)   			whenStatusChanged; 
+	    optional Instant(3)	 	  			whenStatusChanged; 
 	}
 	
 	/** Hold a parsed structure of name[index].subcomponentName[index] */

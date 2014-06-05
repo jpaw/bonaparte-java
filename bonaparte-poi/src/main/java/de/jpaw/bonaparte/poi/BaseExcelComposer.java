@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.util.Locale;
 import java.util.UUID;
 
+import org.joda.time.Instant;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
@@ -333,6 +334,15 @@ public class BaseExcelComposer implements MessageComposer<RuntimeException> {
     public void addField(TemporalElementaryDataItem di, LocalTime t) {
         if (t != null) {
             newCell(csTime).setCellValue(DayTime.toDate(t));
+        } else {
+            writeNull();
+        }
+    }
+
+    @Override
+    public void addField(TemporalElementaryDataItem di, Instant t) {
+        if (t != null) {
+            newCell(csTimestamp).setCellValue(t.toDate());
         } else {
             writeNull();
         }

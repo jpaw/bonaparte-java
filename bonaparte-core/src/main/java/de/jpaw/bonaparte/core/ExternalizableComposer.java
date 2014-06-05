@@ -22,6 +22,7 @@ import java.io.ObjectOutput;
 import java.math.BigDecimal;
 import java.util.UUID;
 
+import org.joda.time.Instant;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
@@ -232,6 +233,15 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
             } else {
                 writeVarInt(millis);
             }
+        }
+    }
+    @Override
+    public void addField(TemporalElementaryDataItem di, Instant t) throws IOException {
+        if (t == null) {
+            out.writeByte(NULL_FIELD);
+        } else {
+            long millis = t.getMillis();
+            writeVarLong(millis);
         }
     }
 

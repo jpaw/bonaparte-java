@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.UUID;
 
+import org.joda.time.Instant;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
@@ -371,6 +372,11 @@ public class JsonComposer implements MessageComposer<IOException> {
     @Override
     public void addField(TemporalElementaryDataItem di, LocalTime t) throws IOException {
         writeOptionalQuotedAscii(di, t == null ? null : LOCAL_TIME_ISO.print(t));
+    }
+
+    @Override
+    public void addField(TemporalElementaryDataItem di, Instant t) throws IOException {
+        writeOptionalQuotedAscii(di, t == null ? null : LOCAL_DATETIME_ISO.print(t));
     }
 
 	@Override

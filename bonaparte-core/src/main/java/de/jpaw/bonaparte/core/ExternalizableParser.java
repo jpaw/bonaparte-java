@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.joda.time.DateTimeZone;
+import org.joda.time.Instant;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
@@ -422,7 +423,15 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         }
         return new LocalTime(fractional, DateTimeZone.UTC);
     }
-
+    
+    @Override
+    public Instant readInstant(String fieldname, boolean allowNull, boolean hhmmss, int fractionalDigits) throws IOException {
+        if (checkForNull(fieldname, allowNull)) {
+            return null;
+        }
+        return new Instant(readLongNoNull(fieldname));
+    }
+    
     @Override
     public int parseMapStart(String fieldname, boolean allowNull, int indexID) throws IOException {
         if (checkForNull(fieldname, true)) {  // check it separately in order to give a distinct error message

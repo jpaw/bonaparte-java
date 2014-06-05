@@ -3,6 +3,7 @@ package de.jpaw.bonaparte.vertx;
 import java.math.BigDecimal;
 import java.util.UUID;
 
+import org.joda.time.Instant;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
@@ -310,6 +311,16 @@ public class JsonObjectComposer implements MessageComposer<RuntimeException> {
             arr.addString(t == null ? null : LOCAL_TIME_ISO.print(t));
         else if (t != null)
             obj.putString(di.getName(), LOCAL_TIME_ISO.print(t));
+        else
+            writeNull(di);
+    }
+
+    @Override
+    public void addField(TemporalElementaryDataItem di, Instant t) {
+        if (inArray)
+            arr.addString(t == null ? null : LOCAL_DATETIME_ISO.print(t));
+        else if (t != null)
+            obj.putString(di.getName(), LOCAL_DATETIME_ISO.print(t));
         else
             writeNull(di);
     }

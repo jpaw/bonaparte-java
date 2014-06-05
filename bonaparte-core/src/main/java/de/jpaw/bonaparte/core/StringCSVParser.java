@@ -20,6 +20,7 @@ import java.math.RoundingMode;
 import java.util.List;
 import java.util.UUID;
 
+import org.joda.time.Instant;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
@@ -294,6 +295,40 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
             throw new MessageParserException(MessageParserException.ILLEGAL_CALENDAR_VALUE, fieldname, parseIndex, currentClass);
         }
     }
+
+    @Override
+    public Instant readInstant(String fieldname, boolean allowNull, boolean hhmmss, int fractionalDigits) throws MessageParserException {
+        String tmp = getField(fieldname, allowNull, 19);
+        if (tmp == null)
+            return null;
+        int millis = 0;
+        long seconds = 0;
+        int dpoint;
+        if ((dpoint = tmp.indexOf('.')) < 0) {
+            seconds = Long.parseLong(tmp);  // only seconds
+        } else {
+            // seconds and millis seconds
+            seconds = Long.parseLong(tmp.substring(0, dpoint));
+            millis = Integer.parseInt(tmp.substring(dpoint + 1));
+            switch (tmp.length() - dpoint - 1) { // i.e. number of fractional digits
+            case 2:
+                millis *= 10;
+                break;
+            case 1:
+                millis *= 100;
+                break;
+            case 3:
+                break; // maximum resolution (milliseconds)
+            default: // something weird
+                throw new MessageParserException(
+                        MessageParserException.BAD_TIMESTAMP_FRACTIONALS,
+                        String.format("(found %d for %s)", tmp.length() - dpoint - 1, fieldname),
+                        parseIndex, currentClass);
+            }
+        }
+        return new Instant(1000L * seconds + (long)millis);
+    }
+
     
     @Override
     public int parseMapStart(String fieldname, boolean allowNull, int indexID) throws MessageParserException {

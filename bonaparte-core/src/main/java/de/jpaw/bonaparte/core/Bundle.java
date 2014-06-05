@@ -21,7 +21,7 @@ import java.net.URLClassLoader;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.joda.time.LocalDateTime;
+import org.joda.time.Instant;
 
 import de.jpaw.bonaparte.pojos.meta.BundleInformation;
 import de.jpaw.bonaparte.pojos.meta.BundleStatus;
@@ -60,7 +60,7 @@ public class Bundle {
         staticBundleData = new BundleInformation();
         staticBundleData.setName(bundleName);
         staticBundleData.setBundleStatus(BundleStatus.UNUSED);
-        staticBundleData.setWhenStatusChanged(new LocalDateTime());
+        staticBundleData.setWhenStatusChanged(Instant.now());
     }
 
     static Bundle getBundleByPackageName(String packageName) {

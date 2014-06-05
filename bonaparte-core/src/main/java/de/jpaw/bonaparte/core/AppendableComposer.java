@@ -22,6 +22,7 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.joda.time.Instant;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
@@ -392,6 +393,23 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
                 work.append('.');
                 int milliSeconds = millis % 1000;
                 lpad(Integer.toString(milliSeconds), 3, '0');
+            }
+            terminateField();
+        } else {
+            writeNull();
+        }
+    }
+
+    @Override
+    public void addField(TemporalElementaryDataItem di, Instant t) throws IOException {
+        if (t != null) {
+            long millis = t.getMillis();
+            work.append(Long.toString(millis / 1000L));
+            int length = di.getFractionalSeconds();
+            int millisecs = (int)(millis % 1000L);
+            if (length >= 0 && millisecs != 9) {
+                work.append('.');
+                lpad(Integer.toString(millisecs), 3, '0');
             }
             terminateField();
         } else {

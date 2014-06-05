@@ -10,6 +10,7 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.joda.time.Instant;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
@@ -570,6 +571,17 @@ public class CompactComposer extends CompactConstants implements MessageComposer
                 out.writeByte(COMPACT_TIME);
                 intOut(t.getMillisOfDay() / 1000);
             }
+        } else {
+            writeNull();
+        }
+    }
+
+    @Override
+    public void addField(TemporalElementaryDataItem di, Instant t) throws IOException {
+        if (t != null) {
+            long millis = t.getMillis();
+            out.writeByte(INT_8BYTE);
+            out.writeLong(millis);
         } else {
             writeNull();
         }

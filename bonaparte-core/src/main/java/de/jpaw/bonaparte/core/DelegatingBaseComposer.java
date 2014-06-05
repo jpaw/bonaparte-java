@@ -3,6 +3,7 @@ package de.jpaw.bonaparte.core;
 import java.math.BigDecimal;
 import java.util.UUID;
 
+import org.joda.time.Instant;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
@@ -175,6 +176,11 @@ public class DelegatingBaseComposer<E extends Exception> implements MessageCompo
     
     @Override
     public void addField(TemporalElementaryDataItem di, LocalTime t) throws E {
+        delegateComposer.addField(di, t);
+    }
+    
+    @Override
+    public void addField(TemporalElementaryDataItem di, Instant t) throws E {
         delegateComposer.addField(di, t);
     }
     

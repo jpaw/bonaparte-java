@@ -15,12 +15,14 @@
  */
 package de.jpaw.bonaparte.core;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.joda.time.Instant;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
@@ -385,6 +387,23 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
                         }
                     }
                 }
+            }
+            terminateField();
+        } else {
+            writeNull();
+        }
+    }
+
+    @Override
+    public void addField(TemporalElementaryDataItem di, Instant t) {
+        if (t != null) {
+            long millis = t.getMillis();
+            work.appendAscii(Long.toString(millis / 1000L));
+            int length = di.getFractionalSeconds();
+            int millisecs = (int)(millis % 1000L);
+            if (length >= 0 && millisecs != 9) {
+                work.append((byte)'.');
+                lpad(Integer.toString(millisecs), 3, (byte)'0');
             }
             terminateField();
         } else {
