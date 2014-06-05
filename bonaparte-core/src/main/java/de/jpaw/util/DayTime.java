@@ -17,7 +17,9 @@ package de.jpaw.util;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
+import org.joda.time.Instant;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
@@ -35,7 +37,7 @@ public class DayTime {
     static public GregorianCalendar getCurrentTimestamp() {
         GregorianCalendar now = new GregorianCalendar();
         now.setTime(new Date());
-        return now;  // TODO: set timezone to UTC as well?
+        return now;
     }
 
     /** Provides functionality to convert a Joda timestamp to a GregorianCalendar. */
@@ -45,7 +47,7 @@ public class DayTime {
         }
         GregorianCalendar then = new GregorianCalendar();
         then.setTime(when.toDate());
-        return then;  // TODO: set timezone to UTC as well?
+        return then;
     }
 
     /** Provides functionality to convert a Joda date to a GregorianCalendar. */
@@ -55,7 +57,7 @@ public class DayTime {
         }
         GregorianCalendar then = new GregorianCalendar();
         then.setTime(when.toDate());
-        return then;  // TODO: set timezone to UTC as well?
+        return then;
     }
 
     /** Provides functionality to convert a Joda date to a GregorianCalendar. */
@@ -66,7 +68,19 @@ public class DayTime {
         long millis = (long)when.getMillisOfDay(); 
         GregorianCalendar then = new GregorianCalendar();
         then.setTimeInMillis(millis);
-        return then;  // TODO: set timezone to UTC as well?
+        return then;
+    }
+
+
+    /** Provides functionality to convert a Joda instant to a GregorianCalendar. */
+    static public GregorianCalendar toCalendar(Instant when) {
+        if (when == null) {
+            return null;
+        }
+        long millis = (long)when.getMillis(); 
+        GregorianCalendar then = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
+        then.setTimeInMillis(millis);
+        return then;
     }
 
     /** Provides functionality to convert a Joda timestamp to a java Date. */
@@ -91,6 +105,14 @@ public class DayTime {
             return null;
         }
         return new Date((long)when.getMillisOfDay());
+    }
+
+    /** Provides functionality to convert a Joda instant to a java Date. */
+    static public Date toDate(Instant when) {
+        if (when == null) {
+            return null;
+        }
+        return new Date(when.getMillis());
     }
 
     /** Computes the difference between two LocalDateTime instances with millisecond precision.
