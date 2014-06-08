@@ -29,14 +29,17 @@
         <!-- Some more versions, used by specific dependent projects -->
         <netty.version>4.0.19.Final</netty.version>     <!-- https://netty.io/news/ UPTODATE 2014-05-01 -->
         <poi.version>3.10-FINAL</poi.version>           <!-- http://poi.apache.org/ UPTODATE 2013-06-09 -->
-        <mina.version>2.0.5</mina.version>              <!-- http://mina.apache.org/ 2.0.7 -->
+        <mina.version>2.0.7</mina.version>              <!-- http://mina.apache.org/ 2.0.7 -->
         <camel.version>2.12.3</camel.version>           <!-- http://camel.apache.org/ UPTODATE 2014-02-26 -->
-        <vertx.version>2.1RC3</vertx.version>      		<!-- http://vertx.io/ UPTODATE 2014-04-02 -->
+        <vertx.version>2.1</vertx.version>      		<!-- http://vertx.io/ UPTODATE 2014-04-02 -->
         <hazelcast.version>3.2.1</hazelcast.version>
         <hornetq.version>2.2.14.Final</hornetq.version> <!-- http://www.jboss.org/hornetq 2.3.0.Final -->
         <jaxb.version>2.2.9</jaxb.version>              <!-- http://repo1.maven.org/maven2/javax/xml/bind/jaxb-api/ -->
         <jackson.version>2.2.2</jackson.version>        <!-- matches what's used in vertx -->
         <jsap.version>2.1</jsap.version>
+        
+        <!--  benchmarking -->
+        <jmh.version>0.7.3</jmh.version>
     </properties>
 
     <licenses>

@@ -15,7 +15,6 @@
  */
 package de.jpaw.bonaparte.core;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
@@ -87,6 +86,10 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
         this.work = new ByteBuilder(0, getDefaultCharset());
         numberOfObjectsSerialized = 0;
         numberOfObjectReuses = 0;
+    }
+    
+    protected int getNumberOfObjectsSerialized() {
+        return numberOfObjectsSerialized;
     }
     
     /** Sets the current length to 0, allowing reuse of the allocated output buffer for a new message. */
@@ -470,6 +473,10 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
         work.append(OBJECT_TERMINATOR);
     }
     
+    // hook for inherited classes 
+    protected void notifyReuse(int referencedIndex) {
+    }
+    
 
     @Override
     public void addField(ObjectReference di, BonaPortable obj) {
@@ -483,6 +490,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
                     work.append(OBJECT_AGAIN);
                     addField(StaticMeta.INTERNAL_INTEGER, numberOfObjectsSerialized - previousIndex.intValue() - 1);  // 0 is same object as previous, 1 = the one before etc...
                     ++numberOfObjectReuses;
+                    notifyReuse(previousIndex);
                     return;
                 }
                 // add the new object to the cache of known objects

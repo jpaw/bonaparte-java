@@ -1,102 +1,107 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>de.jpaw</groupId>
-		<artifactId>bonaparte-base</artifactId>
-		<version>2.2.1-SNAPSHOT</version>
-		<relativePath>../bonaparte-base/pom.xml</relativePath>
-	</parent>
+    <parent>
+        <groupId>de.jpaw</groupId>
+        <artifactId>bonaparte-base</artifactId>
+        <version>2.2.1-SNAPSHOT</version>
+        <relativePath>../bonaparte-base/pom.xml</relativePath>
+    </parent>
 
-	<artifactId>bonaparte-benchmarks-ext</artifactId>
-	<packaging>jar</packaging>
+    <artifactId>bonaparte-benchmarks-ext</artifactId>
+    <packaging>jar</packaging>
 
-	<name>BONAPARTE core library extended unit tests</name>
+    <properties>
+        <mapdb.version>1.0.2</mapdb.version>
+    </properties>
 
-	<dependencies>
-		<dependency>
-			<groupId>de.jpaw</groupId>
-			<artifactId>bonaparte-core</artifactId>
-			<version>${bonaparte.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.hazelcast</groupId>
-			<artifactId>hazelcast</artifactId>
-			<version>${hazelcast.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.openjdk.jmh</groupId>
-			<artifactId>jmh-core</artifactId>
-			<version>0.7.3</version>
-		</dependency>
-		<dependency>
-			<groupId>org.testng</groupId>
-			<artifactId>testng</artifactId>
-			<version>${testng.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-simple</artifactId>
-			<version>${slf4j.version}</version>
-			<scope>runtime</scope>
-		</dependency>
+    <dependencies>
+        <dependency>
+            <groupId>de.jpaw</groupId>
+            <artifactId>bonaparte-core</artifactId>
+            <version>${bonaparte.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.hazelcast</groupId>
+            <artifactId>hazelcast</artifactId>
+            <version>${hazelcast.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mapdb</groupId>
+            <artifactId>mapdb</artifactId>
+            <version>${mapdb.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-core</artifactId>
+            <version>${jmh.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>${testng.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>runtime</scope>
+        </dependency>
         <dependency>
             <groupId>org.openjdk.jmh</groupId>
             <artifactId>jmh-generator-annprocess</artifactId>
-            <version>0.7.3</version>
+            <version>${jmh.version}</version>
             <scope>provided</scope>
         </dependency>
-	</dependencies>
+    </dependencies>
 
 
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-clean-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.eclipse.xtext</groupId>
-				<artifactId>xtext-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-shade-plugin</artifactId>
-				<version>2.0</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>shade</goal>
-						</goals>
-						<configuration>
-							<finalName>bonaparte-benchmarks</finalName>
-							<transformers>
-								<transformer
-									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-									<mainClass>org.openjdk.jmh.Main</mainClass>
-								</transformer>
-							</transformers>
-							<filters>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.eclipse.xtext</groupId>
+                <artifactId>xtext-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <finalName>bonaparte-benchmarks</finalName>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>org.openjdk.jmh.Main</mainClass>
+                                </transformer>
+                            </transformers>
+                            <filters>
 								<!-- Remove annotation processor files -->
-								<filter>
-									<artifact>*:*</artifact>
-									<excludes>
-										<exclude>META-INF/services/javax.annotation.processing.Processor</exclude>
-									</excludes>
-								</filter>
-							</filters>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/services/javax.annotation.processing.Processor</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
 
-	</build>
+    </build>
 
 </project>

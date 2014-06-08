@@ -86,6 +86,10 @@ public class BigDecimalTools {
             return numValue.setScale(Integer.valueOf(props));
         // last resort: assume it is another pathname, retrieve that value
         Object precision = FieldGetter.getField(root, props);
+        if (precision == null) {
+            LOG.warn("Did not find referenced precision field for root object {} and path {}", root.get$PQON(), path);
+            return numValue;  // this should not happen, but fall back instead of throwing an NPE
+        }        
         if (precision instanceof Integer)
             return numValue.setScale((Integer)precision, RoundingMode.HALF_EVEN);
         // it's not an integer, assume it is a String
