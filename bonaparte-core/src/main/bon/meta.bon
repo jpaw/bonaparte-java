@@ -90,7 +90,7 @@ package meta {
     }
 	
 	// common superclass for class, enum and xenum
-	abstract immutable class AbstractObjectParent<E extends AbstractObjectParent<!E>> {
+	abstract immutable class AbstractObjectParent<E extends AbstractObjectParent<!E>> cacheHash {
 		boolean                 		isAbstract;
 		boolean                 		isFinal;
 		required identifier     		name;

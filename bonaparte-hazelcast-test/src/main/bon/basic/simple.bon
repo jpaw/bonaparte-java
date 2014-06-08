@@ -1,4 +1,4 @@
-package hazeltest hazelcastId 12 {
+package hazeltest factoryId 12 {
 	default public;
 	
 	class DSTest DataSer {
@@ -9,7 +9,7 @@ package hazeltest hazelcastId 12 {
 		Unicode(80)		hello2;
 	}
 	
-	class IDSTest IdDataSer hazelcastId 17 {
+	class IDSTest IdDataSer classId 17 {
 		Unicode(40)		hello;
 		int				num;
 		Ascii(8)		short1; 

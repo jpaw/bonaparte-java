@@ -15,6 +15,7 @@ import org.openjdk.jmh.logic.BlackHole;
 //d.j.b.b.d.TimeTest.javaNow           thrpt         9     4597.654       77.281   ops/ms
 //d.j.b.b.d.TimeTest.javaNowInstant    thrpt         9    24120.503      296.265   ops/ms
 //d.j.b.b.d.TimeTest.javaNowUTC        thrpt         9     9657.600      217.563   ops/ms
+//d.j.b.b.d.TimeTest.javaSystem        thrpt         9    31357.708       97.409   ops/ms
 //d.j.b.b.d.TimeTest.jodaNew           thrpt         9    23697.521      301.957   ops/ms
 //d.j.b.b.d.TimeTest.jodaNow           thrpt         9    23539.440      166.600   ops/ms
 //d.j.b.b.d.TimeTest.jodaNowInstant    thrpt         9    28859.156      334.488   ops/ms
@@ -32,6 +33,13 @@ public class TimeTest {
 //  Benchmarks to measure the overhead to get a timestamp, for Joda and Java8 time 
 //    
     
+    @GenerateMicroBenchmark
+    public void javaSystem(BlackHole bh) {
+        for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
+            bh.consume(System.currentTimeMillis());
+        }
+    }
+
     @GenerateMicroBenchmark
     public void jodaNow(BlackHole bh) {
         for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
