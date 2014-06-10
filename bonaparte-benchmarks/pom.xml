@@ -13,6 +13,7 @@
 
     <properties>
         <lz4.version>1.2.0</lz4.version>
+        <kryo.version>2.24.0</kryo.version>
     </properties>
 
     <dependencies>
@@ -20,6 +21,11 @@
             <groupId>de.jpaw</groupId>
             <artifactId>bonaparte-core</artifactId>
             <version>${bonaparte.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.esotericsoftware.kryo</groupId>
+            <artifactId>kryo</artifactId>
+            <version>${kryo.version}</version>
         </dependency>
         <dependency>
             <groupId>org.testng</groupId>

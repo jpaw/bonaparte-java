@@ -53,7 +53,7 @@ public class ByteBuilder {
         this.charset = charset == null ? DEFAULT_CHARSET : charset;
     }
 
-    // extend the buffer because we ran out of space
+    /** Extend the buffer because we ran out of space. */
     private void createMoreSpace(int minimumRequired) {
         // allocate the space
         int newAllocSize = 2 * currentAllocSize;
@@ -68,22 +68,76 @@ public class ByteBuilder {
         buffer = newBuffer;
         currentAllocSize = newAllocSize;
     }
-    // StringBuilder compatibility function
+    /** StringBuilder compatibility function: ensure that the total space is at least as requested. */
     public void ensureCapacity(int minimumCapacity) {
         if (minimumCapacity > currentAllocSize)
             createMoreSpace(minimumCapacity - currentLength);
     }
-    // set the length of the contents, assuming contents has been added externally
-    // external class must have obtained buffer through getCurrentBuffer() after calling ensureCapacity and getLength()
+    /** Ensure that at least delta bytes are left in the buffer, extending the buffer if required. */
+    public void require(int delta) {
+        if (currentLength + delta > currentAllocSize)
+            createMoreSpace(currentLength + delta - currentLength);
+    }
+    
+    /** Sets the length of the contents, assuming contents has been added externally.
+     * External class must have obtained buffer through getCurrentBuffer() after calling ensureCapacity and getLength(). 
+     * @param newLength
+     */
     public void setLength(int newLength) {
         if (newLength > currentAllocSize)
             throw new IndexOutOfBoundsException();
         currentLength = newLength;
     }
+    /** Advances the current position by some positive integer, assuming contents has been added externally.
+     * External class must have obtained buffer through getCurrentBuffer() after calling ensureCapacity and getLength(). 
+     * @param delta
+     */
+    public void advanceBy(int delta) {
+        if (delta < 0 || currentLength + delta > currentAllocSize)
+            throw new IndexOutOfBoundsException();
+        currentLength += delta;
+    }
+    /** Compatibility method. */
+    public void writeByte(int data) {
+        append((byte)data);
+    }
+    /** Append a byte to the buffer. */
     public void append(byte b) {
         if (currentLength >= currentAllocSize)
             createMoreSpace(1);
         buffer[currentLength++] = b;
+    }
+    /** Append a short to the buffer. High endian. */
+    public void append(short n) {
+        if (currentLength + 2 > currentAllocSize)
+            createMoreSpace(2);
+        buffer[currentLength++] = (byte) (n >>> 8);
+        buffer[currentLength++] = (byte) n;
+    }
+    /** Append an int to the buffer. High endian. */
+    public void append(int n) {
+        if (currentLength + 4 > currentAllocSize)
+            createMoreSpace(4);
+        buffer[currentLength] = (byte) (n >>> 24);
+        buffer[currentLength+1] = (byte) (n >>> 16);
+        buffer[currentLength+2] = (byte) (n >>> 8);
+        buffer[currentLength+3] = (byte) n;
+        currentLength += 4;
+    }
+    /** Append a long to the buffer. High endian. */
+    public void append(long n) {
+        if (currentLength + 8 > currentAllocSize)
+            createMoreSpace(8);
+        int nn = (int)(n >> 32);
+        buffer[currentLength] = (byte) (nn >>> 24);
+        buffer[currentLength+1] = (byte) (nn >>> 16);
+        buffer[currentLength+2] = (byte) (nn >>> 8);
+        buffer[currentLength+3] = (byte) nn;
+        buffer[currentLength+4] = (byte) (n >>> 24);
+        buffer[currentLength+5] = (byte) (n >>> 16);
+        buffer[currentLength+6] = (byte) (n >>> 8);
+        buffer[currentLength+7] = (byte) n;
+        currentLength += 8;
     }
     // append another byte array
     public void append(byte [] array) {

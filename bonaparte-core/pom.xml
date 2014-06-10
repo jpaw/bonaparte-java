@@ -16,6 +16,11 @@
     <description>Definition and implementation of BONAPARTE serializers and deserializers</description>
     <url>http://www.jpaw.de/projects/bonaparte/core/index.html</url>
 
+    <properties>
+        <lz4.version>1.2.0</lz4.version>
+        <kryo.version>2.24.0</kryo.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -42,6 +47,12 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <version>${slf4j.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.esotericsoftware.kryo</groupId>
+            <artifactId>kryo</artifactId>
+            <version>${kryo.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

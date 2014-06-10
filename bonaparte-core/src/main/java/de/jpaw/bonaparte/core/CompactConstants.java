@@ -143,4 +143,8 @@ public abstract class CompactConstants extends Settings {
     protected static final int ASCII_STRING = 0xe1;
     protected static final int UTF16_STRING = 0xfd;
     protected static final int UTF8_STRING = 0xff;
+    
+    protected static final String CHARSET_ASCII = "ISO-8859-1"; // US-ASCII
+    protected static final String CHARSET_UTF8 = "UTF-8";
+    protected static final String CHARSET_UTF16 = "UTF-16BE";
 }

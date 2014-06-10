@@ -322,7 +322,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
     @Override
     public void addField(BinaryElementaryDataItem di, ByteArray b) {
         if (b != null) {
-            b.appendBase64(work);
+            b.appendToBase64(work);
             terminateField();
         } else {
             writeNull();

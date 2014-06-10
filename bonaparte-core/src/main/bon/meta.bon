@@ -1,4 +1,7 @@
-package meta {
+/** Bonaparte metadata.
+ * Assigned to factoryId 29, classIds 1-25
+ */
+package meta factoryId 29 {
 	default private unsigned trim noControlChars;
 
     type identifier 			is Ascii(255);
@@ -26,7 +29,7 @@ package meta {
         required boolean        		isAggregateRequired;    // field is an aggregate field (array, List, Set, Map) and the aggregate itself may not be null 
 	}
 	
-	class ObjectReference extends FieldDefinition {
+	class ObjectReference classId 1 extends FieldDefinition {
         boolean                 		allowSubclasses;    
 		required identifier     		objectName;		
         optional (ClassDefinition...) 	lowerBound;       // if the object must inherit another object, specify it here. null for generic BonaPortables
@@ -36,50 +39,50 @@ package meta {
 	
 	// ElementaryDataItem is used for some as well as for types which don't need a parameter
 	// day, char, boolean
-    class ElementaryDataItem extends FieldDefinition {
+    class ElementaryDataItem classId 2 extends FieldDefinition {
     }
 
     // EnumDataItem represents the special enum type
-    class EnumDataItem extends ElementaryDataItem {
+    class EnumDataItem classId 3 extends ElementaryDataItem {
 		required (EnumDefinition) 		baseEnum;
     }
 
     // XEnumDataItem represents the special xenum type
-    class XEnumDataItem extends ElementaryDataItem {
+    class XEnumDataItem classId 4 extends ElementaryDataItem {
 		required (XEnumDefinition) 		baseXEnum;
     }
 
     // TemporalElementaryDataItem represents day / timestamp types
-    class TemporalElementaryDataItem extends ElementaryDataItem {
+    class TemporalElementaryDataItem classId 5 extends ElementaryDataItem {
         int                     		fractionalSeconds;      // decimals fraction of the second (-1 for day)
         boolean                 		^hhmmss;
     }
     
     // BinaryElementaryDataItem represents raw and binary
-    class BinaryElementaryDataItem extends ElementaryDataItem {
+    class BinaryElementaryDataItem classId 6 extends ElementaryDataItem {
         int                     		length;
     }
 
     // MiscElementaryDataItem represents some miscellaneous types without attributes (UUID, boolean, Object)
-    class MiscElementaryDataItem extends ElementaryDataItem {
+    class MiscElementaryDataItem classId 7 extends ElementaryDataItem {
     }
 
     // BasicNumericElementaryDataItem represents all integral numeric items, plus float and double (and their wrappers)
-    class BasicNumericElementaryDataItem extends ElementaryDataItem {
+    class BasicNumericElementaryDataItem classId 8 extends ElementaryDataItem {
         boolean                 		isSigned;
         int                     		totalDigits;
         int                     		decimalDigits;      // number of digits (max) behind the decimal point
     }
     
     // NumericElementaryDataItem represents decimal
-    class NumericElementaryDataItem extends BasicNumericElementaryDataItem {
+    class NumericElementaryDataItem classId 9 extends BasicNumericElementaryDataItem {
         boolean                 		rounding;           // if true, parsing numbers with more decimals will result in rounding, if false, an error will be raised
         boolean                 		^autoScale;         // if true, any input will be scaled to the required number of decimal digits
     }
 
     // AlphanumericElementaryDataItem represents all text based fields
     // ascii, unicode, uppercase, lowercase 
-    class AlphanumericElementaryDataItem extends ElementaryDataItem {
+    class AlphanumericElementaryDataItem classId 10 extends ElementaryDataItem {
         boolean                 		doTrim;
         boolean                 		doTruncate;
         boolean                 		allowControlCharacters;
@@ -100,7 +103,7 @@ package meta {
 		optional (!E...) 				parentMeta;     // the meta object for the parent object (if this is an inherited one, else null)
 	}
 	// holds all meta information for a class
-	class ClassDefinition extends AbstractObjectParent<ClassDefinition> {
+	class ClassDefinition classId 11 extends AbstractObjectParent<ClassDefinition> {
 		optional Ascii(20)            		^revision;
         required signed long          		serialUID;          // Java serializable serialVersionUID
 		required int                  		numberOfFields;
@@ -108,19 +111,19 @@ package meta {
         required Unicode(512) required Map<String> ^properties;
         required boolean              		propertiesInherited;
 	}
-	class EnumDefinition extends AbstractObjectParent<EnumDefinition> {
+	class EnumDefinition classId 12 extends AbstractObjectParent<EnumDefinition> {
 		required signed int	   			    maxTokenLength;   	// signed because we store -1 for enums which do not have tokens at all
 		required boolean                    hasNullToken;		// has a token "" (which is converted to null)
 		required enumIdType required List<> ids;
 		required enumTokenType List<> 		tokens;
 	}
-	class XEnumDefinition extends AbstractObjectParent<XEnumDefinition> {
+	class XEnumDefinition classId 14 extends AbstractObjectParent<XEnumDefinition> {
 		required signed int	   			    maxTokenLength;   	// signed for symmetry with EnumDefinition
 		required boolean                    hasNullToken;		// has a token "" (which is converted to null)
 		required (EnumDefinition) 			baseEnum;
 	}
 	
-	class BundleInformation {
+	class BundleInformation classId 15 {
 	    required identifier     			name;
         required identifier required List<> packages;
 	    required unicode(2048)           	classPath;
@@ -129,7 +132,7 @@ package meta {
 	}
 	
 	/** Hold a parsed structure of name[index].subcomponentName[index] */
-	class ParsedFoldingComponent {
+	class ParsedFoldingComponent classId 16 {
 	    default public;
 	    required identifier     			fieldname;      // name without any subcomponents
 	    // required int           			numDescends;    // >= 0 if known, -1 for unknown (allows fast-forward to superclasses)

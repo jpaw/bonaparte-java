@@ -85,7 +85,7 @@ public final class ByteArray implements Externalizable, Cloneable {
         if (source == null || offset < 0 || length < 0 || offset + length > source.length)
             throw new IllegalArgumentException();
         buffer = new byte[length];
-        System.arraycopy(source, 0, buffer, 0, length);
+        System.arraycopy(source, offset, buffer, 0, length);
         this.offset = 0;
         this.length = length;
     }
@@ -329,8 +329,11 @@ public final class ByteArray implements Externalizable, Cloneable {
         return new ByteArray(tmp, true);
     }
 
-    public void appendBase64(ByteBuilder b) {
+    public void appendToBase64(ByteBuilder b) {
         Base64.encodeToByte(b, buffer, offset, length);
+    }
+    public void appendToRaw(ByteBuilder b) {
+        b.append(buffer, offset, length);
     }
 
     // returns the String representation of the visible bytes portion

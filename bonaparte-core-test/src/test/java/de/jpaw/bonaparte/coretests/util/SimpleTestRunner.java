@@ -28,6 +28,8 @@ import java.util.Arrays;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.ByteArrayComposer;
 import de.jpaw.bonaparte.core.ByteArrayParser;
+import de.jpaw.bonaparte.core.CompactByteArrayComposer;
+import de.jpaw.bonaparte.core.CompactByteArrayParser;
 import de.jpaw.bonaparte.core.MessageParser;
 import de.jpaw.bonaparte.core.MessageParserException;
 import de.jpaw.bonaparte.core.StringBuilderComposer;
@@ -187,6 +189,36 @@ public class SimpleTestRunner {
         assert src.equals(dst3) : "returned obj is not equal to original one (deexternalizer) (with equals())";
         // verify the hashCodes
         assert dst3.hashCode() == srcHash : "hash code differs for dst3";
+
+        /************************************************************************************
+        *
+        * Part IIIa: Java compact: serialize
+        *
+        ***********************************************************************************/
+
+       System.out.println("compact");
+       CompactByteArrayComposer cbac = new CompactByteArrayComposer(10000, false);
+       cbac.writeRecord(src);
+       byte[] result3 = cbac.getBuilder().getBytes();
+       if (doDumpToFile)
+           dumpToFile("/tmp/" + src.get$PQON() + "-dump-compact.bin", result3);
+       System.out.println("compact: Length of buffer is " + result3.length);
+
+       /************************************************************************************
+        *
+        * Part IIIb: Java compact: deserialize
+        *
+        ***********************************************************************************/
+
+       System.out.println("decompacter");
+       CompactByteArrayParser cbap = new CompactByteArrayParser(result3, 0, -1);
+       BonaPortable dst33 = cbap.readRecord();
+       assert dst33.getClass() == src.getClass() : "returned obj is of wrong type (decompacter)"; // assuming we have one class loader only
+       assert src.hasSameContentsAs(dst33) : "returned obj is not equal to original one (decompacter)";
+       // the inherited equals() normally does not return true
+       assert src.equals(dst33) : "returned obj is not equal to original one (decompacter) (with equals())";
+       // verify the hashCodes
+       assert dst33.hashCode() == srcHash : "hash code differs for dst3";
 
     }
 }

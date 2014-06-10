@@ -694,7 +694,6 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
     @Override
     public void parseArrayEnd() throws MessageParserException {
         needToken(ARRAY_TERMINATOR);
-
     }
 
     protected void skipOptionalBom() throws MessageParserException {
