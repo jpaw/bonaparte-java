@@ -118,7 +118,7 @@ public abstract class CompactConstants extends Settings {
     protected static final int NULL_FIELD = 0xa0;
     protected static final int EMPTY_FIELD = 0xaf;
     protected static final int MAP_BEGIN = 0xfa;
-    protected static final int COLLECTIONS_TERMINATOR = 0xfd;  // array / set / list / map terminator
+    protected static final int COLLECTIONS_TERMINATOR = 0xfb;  // array / set / list / map terminator
     protected static final int ARRAY_BEGIN = 0xfc;
 
     protected static final int INT_2BYTE = 0xe2;
