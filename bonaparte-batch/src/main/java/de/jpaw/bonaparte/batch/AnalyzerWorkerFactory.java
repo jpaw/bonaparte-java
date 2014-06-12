@@ -212,16 +212,19 @@ public class AnalyzerWorkerFactory extends ContributorNoop implements BatchProce
                     if (!s.nonDigit) {
                         if (s.minusses.maxVal <= 1 && s.dots.maxVal <= 1 && s.slashes.maxVal == 0 && s.colons.maxVal == 0) {
                             // is a number
-                            if (s.dots.maxVal > 0)
+                            if (s.dots.maxVal > 0) {
                                 type = String.format("%sDecimal(%d,%d)", s.minusses.maxVal > 0 ? "signed " : "",
                                         //s.maxDigitsBeforeDot + s.maxDigitsAfterDot,
                                         getLen(fld, s.maxDigitsBeforeDot + s.maxDigitsAfterDot + 1 + s.minusses.maxVal) - 1 - s.minusses.maxVal,  // max possible digits minus decimal minus minus 
                                         s.maxDigitsAfterDot);
-                            else
-                                type = String.format("%sNumber(%d)", s.minusses.maxVal > 0 ? "signed " : "",
-                                        // s.maxDigitsBeforeDot
-                                        getLen(fld, s.maxDigitsBeforeDot + s.minusses.maxVal) - s.minusses.maxVal  // max possible digits minus minus 
+                            } else {
+                                // int digits = s.maxDigitsBeforeDot;
+                                int digits = getLen(fld, s.maxDigitsBeforeDot + s.minusses.maxVal) - s.minusses.maxVal;  // max possible digits minus minus
+                                type = String.format("%s%s(%d)", s.minusses.maxVal > 0 ? "signed " : "",
+                                        digits > 9 ? "Decimal" : "Number",  // use an int if possible, else a (Big)Decimal
+                                        digits 
                                         );
+                            }
                         } else if (s.len.maxVal <= 10) {
                             if (s.minusses.maxVal == 2 && s.minusses.minVal == 2 && s.dots.maxVal == 0 && s.slashes.maxVal == 0 && s.colons.maxVal == 0) {
                                 type = "Day";
@@ -238,13 +241,13 @@ public class AnalyzerWorkerFactory extends ContributorNoop implements BatchProce
                         }
                     } // else fall through (ASCII)
                 } else if (!s.nonUpper) {
-                    type = String.format("Upper(%d)", defLen);
+                    type = String.format("Uppercase(%d)", defLen);
                     comment = optionalLengthComment(s.len);
                 } else if (!s.nonLower) {
-                    type = String.format("Lower(%d)", defLen);
+                    type = String.format("Lowercase(%d)", defLen);
                     comment = optionalLengthComment(s.len);
                 } else if (!s.nonDigit) {
-                    type = String.format("Number(%d)", defLen);
+                    type = String.format("%s(%d)", defLen > 9 ? "Decimal" : "Number", defLen);
                     comment = "unsigned";
                 }
                 if (type == null) {
