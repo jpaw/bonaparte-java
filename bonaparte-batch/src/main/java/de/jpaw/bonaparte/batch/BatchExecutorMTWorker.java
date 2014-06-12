@@ -53,6 +53,12 @@ public class BatchExecutorMTWorker<E,F> implements Runnable {
     			++numExceptions;
     		}
     	}
+    	// we have received an EOF message. Output statistics, then close the processor.
     	LOG.info("Thread {} processed {} records ({} error, {} exceptions)", threadIndex, numProcessed, numError, numExceptions);
+    	try {
+            processor.close();
+        } catch (Exception e) {
+            LOG.error("Thread {} could not close: {}", threadIndex, e.getMessage());
+        }
     }
 }
