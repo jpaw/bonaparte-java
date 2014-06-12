@@ -48,7 +48,7 @@ package de.jpaw.bonaparte.core;
  *          d2   double (IEEE 754, 64 bit): next 8 bytes define the value
  *          d3   long double (IEEE 754, 128 bit): next 16 bytes define the value
  *          d4   extended double (non-IEEE, 80 bit), reserved for non-Java languages, 10 bytes follow
- *          d5   GZIPped element. Next is length, then bytes. The element is not null. The contained element can be a string, byte [] or object.
+ *          d5   compressed element. Next is format, then uncompressed length, then compressed length, then bytes. The element is not null. The contained element can be a string, byte [] or object.
  *          d6   char (2 bytes follow)
  *          d7   UUID (next 8 bytes define the value)
  *          
@@ -98,18 +98,7 @@ package de.jpaw.bonaparte.core;
 public abstract class CompactConstants extends Settings {
     protected static final String EMPTY_STRING = new String("");
 
-//    protected static final byte PARENT_SEPARATOR = (byte)0xce;
-//    protected static final byte OBJECT_BEGIN_ID = (byte)0xde;
-//    protected static final byte OBJECT_BEGIN_PQON = (byte)0xdf;
-//    protected static final byte OBJECT_TERMINATOR = (byte)0xcf;
-//    protected static final byte OBJECT_AGAIN = (byte)0xdd;
-//    
-//    protected static final byte NULL_FIELD = (byte)0xc0;
-//    protected static final byte EMPTY_FIELD = (byte)0xcd;
-//    protected static final byte MAP_BEGIN = (byte)0xfa;
-//    protected static final byte COLLECTIONS_TERMINATOR = (byte)0xfd;  // array / set / list / map terminator
-//    protected static final byte ARRAY_BEGIN = (byte)0xfc;
-    protected static final int PARENT_SEPARATOR = 0xce;
+    protected static final int PARENT_SEPARATOR = 0xae;
     protected static final int OBJECT_BEGIN_ID = 0xde;
     protected static final int OBJECT_BEGIN_PQON = 0xdf;
     protected static final int OBJECT_TERMINATOR = 0xad;
@@ -147,4 +136,8 @@ public abstract class CompactConstants extends Settings {
     protected static final String CHARSET_ASCII = "ISO-8859-1"; // US-ASCII
     protected static final String CHARSET_UTF8 = "UTF-8";
     protected static final String CHARSET_UTF16 = "UTF-16BE";
+
+    protected static final int COMPRESSED = 0xd5;
+    protected static final int COMPRESSED_LZ4 = 0;  // first type
+
 }

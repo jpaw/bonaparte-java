@@ -167,13 +167,16 @@ public class CompactComposer extends CompactConstants implements MessageComposer
 
     // write a non-empty string (using charAt())
     protected void writeLongString(String s) throws IOException {
-    	int maxCode = 0;
-    	int len = s.length();
-    	for (int i = 0; i < len; ++ i) {
-    		int c = (int)s.charAt(i);
-    		if (c > maxCode)
-    			maxCode = c;
-    	}
+        char maxCode = 0;
+        int numWith2Byte = 0;
+        int len = s.length();
+        for (int i = 0; i < len; ++ i) {
+            char c = s.charAt(i);
+            if (c > maxCode)
+                maxCode = c;
+            if (c > 127)
+                ++numWith2Byte;
+        }
     	if (maxCode <= 127) {
     		// pure ASCII String
     		if (len <= 16) {
@@ -200,7 +203,7 @@ public class CompactComposer extends CompactConstants implements MessageComposer
     	} else {
     		// UTF-16, due to possible 3 byte sequences
             out.writeByte(UTF16_STRING);
-    		intOut(len);
+    		intOut(len + numWith2Byte);
     		for (int i = 0; i < len; ++i)
                 out.writeChar((int)s.charAt(i));
     	}
@@ -208,13 +211,17 @@ public class CompactComposer extends CompactConstants implements MessageComposer
     
     // write a non-empty string (using char[])
     protected void writeLongStringArray(String s) throws IOException {
-    	int maxCode = 0;
-    	int len = s.length();
-    	char buff [] = s.toCharArray();
-    	for (int i = 0; i < len; ++ i) {
-    		if (buff[i] > maxCode)
-    			maxCode = buff[i];
-    	}
+        char maxCode = 0;
+        int numWith2Byte = 0;
+        int len = s.length();
+        char buff [] = s.toCharArray();
+        for (int i = 0; i < len; ++ i) {
+            char c = buff[i];
+            if (c > maxCode)
+                maxCode = c;
+            if (c > 127)
+                ++numWith2Byte;
+        }
     	if (maxCode <= 127) {
     		// pure ASCII String
     		if (len <= 16) {
@@ -228,7 +235,7 @@ public class CompactComposer extends CompactConstants implements MessageComposer
     	} else if (maxCode < 2048) {
     		// UTF-8 out, with max. 2 byte sequences...
             out.writeByte(UTF8_STRING);
-    		intOut(len);
+    		intOut(len + numWith2Byte);
     		for (int i = 0; i < len; ++i) {
     			int c = (int)buff[i];
     			if (c < 128) {
@@ -260,12 +267,16 @@ public class CompactComposer extends CompactConstants implements MessageComposer
     		writeLongStringArray(s);
     		return;
 		}
-    	int maxCode = 0;
-    	int len = buff.length;
-    	for (int i = 0; i < len; ++ i) {
-    		if (buff[i] > maxCode)
-    			maxCode = buff[i];
-    	}
+        char maxCode = 0;
+        int numWith2Byte = 0;
+        int len = buff.length;
+        for (int i = 0; i < len; ++ i) {
+            char c = buff[i];
+            if (c > maxCode)
+                maxCode = c;
+            if (c > 127)
+                ++numWith2Byte;
+        }
     	if (maxCode <= 127) {
     		// pure ASCII String
     		if (len <= 16) {
@@ -279,7 +290,7 @@ public class CompactComposer extends CompactConstants implements MessageComposer
     	} else if (maxCode < 2048) {
     		// UTF-8 out, with max. 2 byte sequences...
             out.writeByte(UTF8_STRING);
-    		intOut(len);
+    		intOut(len + numWith2Byte);
     		for (int i = 0; i < len; ++i) {
     			int c = (int)buff[i];
     			if (c < 128) {
@@ -387,7 +398,7 @@ public class CompactComposer extends CompactConstants implements MessageComposer
         // see if we fit into an int
         if (l <= 31) {
             // yes, then store as an int
-            intOut(n.intValueExact());
+            intOut(n.intValue());  // intValueExact is Java 1.8 only
         } else {
             out.writeByte(COMPACT_BIGINTEGER);
             byte [] tmp = n.toByteArray();      // TODO: do some dirty trick to avoid temporary array construction!

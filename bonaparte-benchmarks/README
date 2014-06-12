@@ -1,0 +1,10 @@
+Creation of the benchmark jar is done via:
+
+mvn clean package
+
+This runs the annotation processor.
+
+Invocation is done via
+
+java -jar target/bonaparte-benchmarks.jar -i 3 -f 3 -wf 1 -wi 3
+(settings may vary)
