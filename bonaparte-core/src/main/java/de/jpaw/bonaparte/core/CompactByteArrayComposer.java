@@ -97,7 +97,7 @@ public class CompactByteArrayComposer extends CompactConstants implements Messag
         numberOfObjectReuses = 0;
         if (useCache)
             objectCache.clear();
-
+        out.setLength(0);
     }
 
     // for statistics

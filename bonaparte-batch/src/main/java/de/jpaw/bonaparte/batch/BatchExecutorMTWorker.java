@@ -42,7 +42,7 @@ public class BatchExecutorMTWorker<E,F> implements Runnable {
     			// interrupt means end of processing, we are done!
     			break;
     		}
-    		if (newRecord.recordno.equals(BatchExecutorMultiThreaded.EOF))  // record number -1 means EOF 
+    		if (newRecord.recordno == BatchExecutorMultiThreaded.EOF)  // record number -1 means EOF 
     			break;
     		// we got a record
     		++numProcessed;

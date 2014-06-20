@@ -43,13 +43,15 @@ import de.jpaw.util.CharTestsASCII;
  *          Right now, only limited subsets are implemented. Especially date / time parsing is very limited.
  */
 
+
+// TODO: should we convert "work" from String to CharSequence to make it more general?
 public final class StringCSVParser extends StringBuilderConstants implements MessageParser<MessageParserException> {
     protected final CSVConfiguration cfg;
     private final boolean fixedLength;
-    private final String work;
     private final int lengthOfBoolean;
-    private int parseIndex;  // for parser
-    private int messageLength;  // for parser
+    private String work;                    // for parser. No longer final, as reusing the parser object makes sense due to the high number of datetime formatters constructed
+    private int parseIndex;                 // for parser
+    private int messageLength;              // for parser
     private String currentClass;
     protected final DateTimeFormatter dayFormat;            // day without time (Joda)
     protected final DateTimeFormatter timeFormat;           // time on second precision (Joda)
@@ -62,18 +64,28 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
     protected final int timestampFormatLength;      // day and time on second precision (Joda)
     protected final int timestamp3FormatLength;     // day and time on millisecond precision (Joda)
 
-
-    public StringCSVParser(CSVConfiguration cfg, String work) {
-        // strip CR/LF from input, if existing
-        messageLength = work.length();
+    public final void setSource(String src, int offset, int length) {
+        work = src;
+        parseIndex = offset;
+        messageLength = length;
+    }
+    public final void setSource(String src) {
+        work = src;
+        parseIndex = 0;
+        messageLength = src.length();
+        // auto-truncate CR/LF, if it exists
         if (messageLength > 0 && work.charAt(messageLength-1) == '\n') {
-            work = work.substring(0, --messageLength);
+            --messageLength;
         }
         if (messageLength > 0 && work.charAt(messageLength-1) == '\r') {
-            work = work.substring(0, --messageLength);
+            --messageLength;
         }
+    }
+    
+    public StringCSVParser(CSVConfiguration cfg, String work) {
+        // strip CR/LF from input, if existing
+        setSource(work);
         this.cfg = cfg;
-        this.work = work;
         this.lengthOfBoolean = cfg.booleanFalse.length() > cfg.booleanTrue.length() ? cfg.booleanFalse.length() : cfg.booleanTrue.length();
         this.dayFormat = cfg.determineDayFormatter().withLocale(cfg.locale).withZoneUTC();
         this.timeFormat = cfg.determineTimeFormatter().withLocale(cfg.locale).withZoneUTC();
@@ -86,7 +98,6 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
         this.timestampFormatLength = cfg.customTimestampFormat == null ? 14 : cfg.customTimestampFormat.length();
         this.timestamp3FormatLength = cfg.customTimestampWithMsFormat == null ? 17 : cfg.customTimestampWithMsFormat.length();
         fixedLength = cfg.separator.length() == 0;
-        parseIndex = 0;  // for parser
         currentClass = "N/A";
     }
 

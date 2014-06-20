@@ -103,4 +103,12 @@ public class BatchMain<E, F> {
 			BatchProcessorFactory<E,F> processorFactory) throws Exception {
 		run(args, reader, writer, processorFactory, new BatchExecutorMultiThreaded<E, F>());
 	}
+	
+    // shorthand to save an arg
+    public void run3T(String [] args,
+            BatchReader<E> reader,
+            BatchWriter<F> writer,
+            BatchProcessorFactory<E,F> processorFactory) throws Exception {
+        run(args, reader, writer, processorFactory, new BatchExecutor3Threads<E, F>());
+    }
 }

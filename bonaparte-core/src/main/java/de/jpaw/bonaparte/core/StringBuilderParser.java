@@ -49,18 +49,25 @@ import de.jpaw.util.CharTestsASCII;
 
 public final class StringBuilderParser extends StringBuilderConstants implements MessageParser<MessageParserException> {
     private static final Logger LOGGER = LoggerFactory.getLogger(StringBuilderParser.class);
-    private final StringBuilder work;
-    private int parseIndex;  // for parser
-    private int messageLength;  // for parser
+    private CharSequence work;          // for parser
+    private int parseIndex;             // for parser
+    private int messageLength;          // for parser
     private String currentClass;
     private final boolean useCache = true;
     private List<BonaPortable> objects;
 
-
-    public StringBuilderParser(StringBuilder work, int offset, int length) {
-        this.work = work;
-        parseIndex = offset;  // for parser
-        messageLength = length < 0 ? work.length() : length; // -1 means full array size
+    public final void setSource(CharSequence src, int offset, int length) {
+        work = src;
+        parseIndex = offset;
+        messageLength = length;
+    }
+    public final void setSource(CharSequence src) {
+        work = src;
+        parseIndex = 0;
+        messageLength = src.length();
+    }
+    public StringBuilderParser(CharSequence work, int offset, int length) {
+        setSource(work, offset, length < 0 ? work.length() : length); // -1 means full array size
         currentClass = "N/A";
         if (useCache)
             objects = new ArrayList<BonaPortable>(60);
@@ -341,7 +348,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
         if (i == messageLength) {
             throw new MessageParserException(MessageParserException.MISSING_TERMINATOR, fieldname, parseIndex, currentClass);
         }
-        String tmp = work.substring(parseIndex, i);
+        String tmp = work.subSequence(parseIndex, i).toString();  // FIXME: too many temporary objects created
         parseIndex = i+1;
         try {
             byte [] btmp = tmp.getBytes();

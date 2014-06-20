@@ -13,7 +13,7 @@ import com.martiansoftware.jsap.JSAPResult;
 
 public class BatchExecutorMultiThreaded<E,F> implements BatchExecutor<E,F> {
     private static final Logger LOG = LoggerFactory.getLogger(BatchExecutorMultiThreaded.class);
-    public static Integer EOF = Integer.valueOf(-1);
+    public static int EOF = -1;
     
     private int numberOfThreads = 1;
     private int inQueueSize = 100;
