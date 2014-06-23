@@ -1,14 +1,18 @@
 package testcases;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.Arrays;
+
 import org.testng.annotations.Test;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.ByteArrayComposer;
 import de.jpaw.bonaparte.core.ByteArrayParser;
+import de.jpaw.bonaparte.core.CompactComposer;
 import de.jpaw.bonaparte.core.MessageComposer;
 import de.jpaw.bonaparte.core.MessageParser;
 import de.jpaw.bonaparte.core.MessageParserException;
@@ -44,6 +48,14 @@ public class SerializationTest {
     @Test
     public void testObj1StringBuilder() throws Exception {
         ClassDefinition obj1 = ClassDefinition.class$MetaData();
+
+        System.out.println("Test starting: composer Compact");
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(4000);
+        DataOutputStream dataOut = new DataOutputStream(baos);
+        CompactComposer cc = new CompactComposer(dataOut, false);
+        cc.reset();
+        cc.writeRecord(obj1);
+        System.out.println("Length with CompactComposer is " + dataOut.size());
 
         System.out.println("Test starting: composer StringBuilder");
         StringBuilderComposer sbc = new StringBuilderComposer(new StringBuilder());

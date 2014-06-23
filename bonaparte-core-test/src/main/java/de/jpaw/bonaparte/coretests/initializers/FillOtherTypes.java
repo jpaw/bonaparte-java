@@ -2,7 +2,6 @@ package de.jpaw.bonaparte.coretests.initializers;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.GregorianCalendar;
 import java.util.UUID;
 
 import org.joda.time.LocalDate;
@@ -14,7 +13,6 @@ import de.jpaw.bonaparte.pojos.tests1.AlphaColor;
 import de.jpaw.bonaparte.pojos.tests1.VariableLength;
 import de.jpaw.bonaparte.pojos.tests1.VariableLengthUnicode;
 import de.jpaw.util.ByteArray;
-import de.jpaw.util.DayTime;
 
 public class FillOtherTypes {
     static byte [] shortraw = new byte [] { 1, 2, 13, 0, 127, -8, -33, 99, 42 };
@@ -30,8 +28,8 @@ public class FillOtherTypes {
         x.setBinary1(new ByteArray(shortraw));
         x.setTimestamp1(new LocalDateTime(2012, 8, 5, 11, 55, 03));
         x.setTimestamp2(new LocalDateTime());
-        x.setTimestamp3(new GregorianCalendar(2012, 8, 5, 11, 55, 03));
-        x.setTimestamp4(DayTime.getCurrentTimestamp());
+//        x.setTimestamp3(new GregorianCalendar(2012, 8, 5, 11, 55, 03));
+//        x.setTimestamp4(DayTime.getCurrentTimestamp());
         x.setUnicode1("Hällo Wörld!\r\n");
         x.setColor2(AlphaColor.GREEN);
         x.setVarEnum1(VariableLength.LONG);
@@ -41,8 +39,8 @@ public class FillOtherTypes {
         x.setLanguageCode("en_US");
         x.setTimestamp1a(new LocalDateTime(2012, 8, 5, 11, 55, 03));
         x.setTimestamp2a(new LocalDateTime());
-        x.setTimestamp3a(new GregorianCalendar(2012, 8, 5, 11, 55, 03));
-        x.setTimestamp4a(DayTime.getCurrentTimestamp());
+//        x.setTimestamp3a(new GregorianCalendar(2012, 8, 5, 11, 55, 03));
+//        x.setTimestamp4a(DayTime.getCurrentTimestamp());
         return x;
     }
 

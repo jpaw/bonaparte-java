@@ -59,9 +59,8 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
         this.out = out;
     }
     
-    // entry called from generated objects:
+    // entry called from generated objects: (Object header has been written already by internal methods (and unfortunately in some different fashion...))
     public static void serialize(BonaPortable obj, ObjectOutput _out) throws IOException {
-    	// TODO: this isn't symmetrical (terminateObject without startObject, must be some bug... 
     	MessageComposer<IOException> _w = new ExternalizableComposer(_out);
     	obj.serializeSub(_w);
     	_w.terminateObject(StaticMeta.OUTER_BONAPORTABLE, obj);

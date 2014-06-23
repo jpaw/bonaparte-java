@@ -6,6 +6,6 @@ member : null | atomicfield | array | object ; \par
 revision : 'N' | (revisionstring 'F') ; \par
 }
 \rail@i{2}{ versionedmemberlist : revision (member*) ; }
-\rail@i{3}{ object : 'S' objectname 'F' versionedmemberlist (('P' versionedmemberlist) *) 'P' ; }
+\rail@i{3}{ object : 'S' objectname 'F' versionedmemberlist (('P' versionedmemberlist) *) 'O' ; }
 \rail@i{4}{ record : 'R' revision (('C' comment) | (object)) ('M')? 'J' ; }
 \rail@i{5}{ transmission : 'T' revision (('X' extension 'Y')+) ( record *) ('Z')? ('Q')? ; }

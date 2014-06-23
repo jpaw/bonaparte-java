@@ -79,14 +79,12 @@ package tests1 {
         Char [] char1;
         Character [] char2;
     }
-    class OtherTypes BeanVal orderedBy (color1, unicode1, day1, myUuid, timestamp3a, decimal1) {
+    class OtherTypes BeanVal orderedBy (color1, unicode1, day1, myUuid, decimal1) {
         raw(1000000) raw1;
         binary(1000000) binary1;
         day day1;
         timestamp(0) timestamp1;
         timestamp(3) timestamp2;
-        calendar(0) timestamp3;
-        calendar(3) timestamp4;
         ascii(30) ascii1;
         unicode(30) unicode1;
         number(4) number1;
@@ -100,8 +98,6 @@ package tests1 {
         Ascii(2..5) regexp "[a-z][a-z](_[A-Z][A-Z])?" languageCode;
         timestamp(0) hhmmss timestamp1a;
         timestamp(3) hhmmss timestamp2a;
-        calendar(0) hhmmss timestamp3a;
-        calendar(3) hhmmss timestamp4a;
     }
     class References orderedBy (country, classOrDerivedObject) {
         object someGenericRecord;

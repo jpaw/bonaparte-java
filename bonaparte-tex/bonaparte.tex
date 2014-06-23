@@ -262,9 +262,9 @@ immediately followed by \textasciicircum J \\
 This token is not followed by a field terminator. Allows distinguishing between
 an empty string (zero characters) and a null string.\\
 0F & \textasciicircum O &
-former object terminator & was sent after the last field of an object has been serialized, now replaced by \textasciicircum P \\
+object terminator & sent after the last field of an object has been serialized\\
 10 & \textasciicircum P & parent separator   & separates fields of parent object
-from next derived object in order to allow extensions of objects at every level. Now also sent at the end of an object.\\
+from next derived object in order to allow extensions of objects at every level.\\
 11 & \textasciicircum Q & quit      & close the connection (optional, after
 transmission end)
 \\
@@ -347,7 +347,7 @@ versionedmemberlist :
 object :
     'S' objectname 'F' versionedmemberlist
           (('P' versionedmemberlist) *)
-    'P'
+    'O'
     ;
 \end{rail}
         
@@ -425,12 +425,12 @@ priority:
 The core Bonaparte project focusses on POJO serialization only, but a number of implementations are provided as separate add-on projects, which offer seamless support for different transport libraries:
 
 \subsubsection{Netty4}
-Bonaparte integrates well with Netty4 (currently available as alpha release only, but works very well).
+Bonaparte integrates well with Netty4.
 The bonaparte-netty project offers an API to transmit objects via Netty4.
-This has been tested with Netty 4.0.0.CR1
+This has been tested with Netty 4.0.18
 
 \subsubsection{vert.x}
-This has been tested with vert.x 1.3.0
+This has been tested with vert.x 2.0.1.Final
 
 \subsubsection{HornetQ (JMS API)}
 This has been tested with HornetQ 2.2.21 GA.
@@ -439,7 +439,7 @@ This has been tested with HornetQ 2.2.21 GA.
 This has been tested only with an external Apollo server.
 
 \subsubsection{Apache Camel}
-This has been tested with Camel 2.10. There is an unexplained performance issue that Camel using the Bonaparte serialization is slower than Camel with GSON or Jackson,
+This has been tested with Camel 2.12. There is an unexplained performance issue that Camel using the Bonaparte serialization is slower than Camel with GSON or Jackson,
  despite the serializer / deserializer of Bonaparte standalone is 2 to 5 times faster than GSON or Jackson. (It looks like the integration is not yet optimal.)
 
 \subsubsection{Akka}

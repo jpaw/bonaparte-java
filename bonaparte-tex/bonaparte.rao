@@ -60,7 +60,7 @@ revision : 'N' | (revisionstring 'F') ; \par
 \rail@endbar
 \rail@end
 }
-\rail@i {3}{ object : 'S' objectname 'F' versionedmemberlist (('P' versionedmemberlist) *) 'P' ; }
+\rail@i {3}{ object : 'S' objectname 'F' versionedmemberlist (('P' versionedmemberlist) *) 'O' ; }
 \rail@o {3}{
 \rail@begin{3}{object}
 \rail@term{S}[]
@@ -75,7 +75,7 @@ revision : 'N' | (revisionstring 'F') ; \par
 \rail@nextplus{2}
 \rail@endplus
 \rail@endbar
-\rail@term{P}[]
+\rail@term{O}[]
 \rail@end
 }
 \rail@i {4}{ record : 'R' revision (('C' comment) | (object)) ('M')? 'J' ; }
