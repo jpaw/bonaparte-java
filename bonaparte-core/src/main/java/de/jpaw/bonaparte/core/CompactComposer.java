@@ -386,7 +386,7 @@ public class CompactComposer extends CompactConstants implements MessageComposer
         // see if we fit into an int
         if (l <= 31) {
             // yes, then store as an int
-            intOut(n.intValueExact());
+            intOut(n.intValue());   // intValueExact is Java 1.8
         } else {
             out.writeByte(COMPACT_BIGINTEGER);
             byte [] tmp = n.toByteArray();      // TODO: do some dirty trick to avoid temporary array construction!
