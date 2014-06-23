@@ -329,7 +329,7 @@ public final class ByteArray implements Externalizable, Cloneable {
         return new ByteArray(tmp, true);
     }
 
-    public void appendToBase64(ByteBuilder b) {
+    public void appendBase64(ByteBuilder b) {
         Base64.encodeToByte(b, buffer, offset, length);
     }
     public void appendToRaw(ByteBuilder b) {
