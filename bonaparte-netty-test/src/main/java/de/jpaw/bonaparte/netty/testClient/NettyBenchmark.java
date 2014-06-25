@@ -16,6 +16,7 @@ public class NettyBenchmark {
         int delay = 0;
         int port = 8077;
         boolean useSsl = false;
+        boolean doRaw = false;
         Thread threads[];
         Date start;
         Date stop;
@@ -27,6 +28,7 @@ public class NettyBenchmark {
                 new FlaggedOption("calls", JSAP.INTEGER_PARSER, "1", JSAP.NOT_REQUIRED, 'n', "calls", "number of calls per thread"),
                 new FlaggedOption("host", JSAP.STRING_PARSER, "localhost", JSAP.NOT_REQUIRED, 'h', "host", "remote host name or IP address"),
                 new FlaggedOption("port", JSAP.INTEGER_PARSER, "8077", JSAP.NOT_REQUIRED, 'p', "port", "remote listener port"),
+                new Switch("raw", 'r', "raw", "send prebaked requests, so not parse responses"),
                 new Switch("ssl", 's', "ssl", "enforces SSL connection") });
         JSAPResult cmd = commandLineOptions.parse(args);
         if (commandLineOptions.messagePrinted()) {
@@ -40,6 +42,7 @@ public class NettyBenchmark {
         hostname = cmd.getString("host");
         port = cmd.getInt("port");
         useSsl = cmd.getBoolean("ssl");
+        doRaw = cmd.getBoolean("raw");
 
         System.out.println("Starting " + (useSsl ? "SSL" : "plain") + " benchmark with delay " + delay + " ms with " + numberOfThreads + " threads and "
                 + callsPerThread
@@ -50,7 +53,7 @@ public class NettyBenchmark {
 
         // start all the threads...
         for (int i = 0; i < numberOfThreads; ++i) {
-            Runnable worker = new OneThread(delay, callsPerThread, i, hostname, port, useSsl);
+            Runnable worker = new OneThread(delay, callsPerThread, i, hostname, port, useSsl, doRaw);
             threads[i] = new Thread(worker);
             threads[i].start();
         }

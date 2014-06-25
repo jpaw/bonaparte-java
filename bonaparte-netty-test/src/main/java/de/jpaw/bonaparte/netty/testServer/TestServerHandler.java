@@ -71,7 +71,7 @@ public class TestServerHandler extends SimpleChannelInboundHandler<BonaPortable>
         } else {
             cipher = " (unencrypted)";
         }
-        logger.info("Received an object of type " + request.getClass().getCanonicalName() + cipher);
+        // logger.info("Received an object of type " + request.getClass().getCanonicalName() + cipher);
         Request myRequest = (Request) request;
         Response myResponse = new Response();
 

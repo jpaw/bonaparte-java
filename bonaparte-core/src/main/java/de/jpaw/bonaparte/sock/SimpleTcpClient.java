@@ -83,6 +83,28 @@ public class SimpleTcpClient {
         return p.readRecord();
     }
     
+    public byte [] doRawIO(byte [] request) throws Exception {
+        boolean foundDelimiter = false;
+        conn.getOutputStream().write(request, 0, request.length);
+        int haveBytes = 0;
+        do {
+            int numBytes = conn.getInputStream().read(responseBuffer, haveBytes, responseBuffer.length - haveBytes);
+            if (numBytes <= 0)
+                break;
+            for (int i = 0; i < numBytes; ++i) {
+                if (responseBuffer[haveBytes+i] == (byte)0x0a) {
+                    foundDelimiter = true;
+                    break;
+                    // fast track: return new ByteArrayParser(responseBuffer, 0, haveBytes+i+1).readRecord();
+                }
+            }
+            haveBytes += numBytes;
+        } while (!foundDelimiter);
+        if (haveBytes <= 0)
+            return null;
+        return responseBuffer;
+    }
+    
     // close the connection
     public void close() throws IOException {
         conn.close();
