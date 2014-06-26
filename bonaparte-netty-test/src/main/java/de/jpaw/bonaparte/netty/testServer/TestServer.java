@@ -41,23 +41,26 @@ public class TestServer {
 
     public void run() throws Exception {
         // Configure the server.
-        ServerBootstrap b = new ServerBootstrap();
-        EventLoopGroup bossGroup = new NioEventLoopGroup();
-        EventLoopGroup workerGroup = new NioEventLoopGroup();
+        EventLoopGroup bossGroup = new NioEventLoopGroup(3);
+        EventLoopGroup workerGroup = new NioEventLoopGroup(6);
         try {
+            ServerBootstrap b = new ServerBootstrap();
             b.group(bossGroup, workerGroup)
             .channel(NioServerSocketChannel.class)
             .option(ChannelOption.SO_BACKLOG, 100)
             .localAddress(new InetSocketAddress(port))
             .childOption(ChannelOption.TCP_NODELAY, true)
+            .childOption(ChannelOption.SO_KEEPALIVE, true)
             .handler(new LoggingHandler(LogLevel.INFO))
-            .childHandler(new BonaparteNettyPipelineFactory(1000, new TestServerHandler(), null));
+            .childHandler(new BonaparteNettyPipelineFactory(1000, new TestServerHandler(), null, 1));
 
             // Start the server.
             ChannelFuture f = b.bind().sync();
 
             // Wait until the server socket is closed.
             f.channel().closeFuture().sync();
+        } catch (Exception e) {
+            System.out.println("Exception " + e + " occured");
         } finally {
             // Shut down all event loops to terminate all threads.
             bossGroup.shutdownGracefully();

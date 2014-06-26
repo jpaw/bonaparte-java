@@ -53,11 +53,13 @@ public class TestServerHandler extends SimpleChannelInboundHandler<BonaPortable>
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         logger.info("New incoming channel requested for thread {}", thisThreadId);
         // sslHandler not yet valid here, handshake only starts now!
+        super.channelActive(ctx);
     }
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         logger.info("Channel for thread {} closed after {} requests", thisThreadId, counterInThread.get());
         // number of requests is cumulative, as this instance is reused for future new connections
+        super.channelInactive(ctx);
     }
 
     @Override
@@ -78,7 +80,7 @@ public class TestServerHandler extends SimpleChannelInboundHandler<BonaPortable>
         myResponse.setSerialNo(myRequest.getSerialNo());
         myResponse.setUniqueId(myRequest.getUniqueId());
         myResponse.setThreadNo(thisThreadId);
-        myResponse.setSerialInThread(counterInThread.incrementAndGet());
+        myResponse.setSerialInThread(0); // counterInThread.incrementAndGet());  => locking issue!
         myResponse.setWhenReceiced(new LocalDateTime());
 
         if (myRequest.getDuration() > 0) {
