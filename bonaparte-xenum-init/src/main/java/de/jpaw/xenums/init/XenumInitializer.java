@@ -13,7 +13,7 @@ public class XenumInitializer {
 		int ctr = 0;
 		for (Class<? extends AbstractXEnumBase> cls : new Reflections(packageName).getSubTypesOf(AbstractXEnumBase.class)) {
 			try {
-				cls.getMethod("get$PQON").invoke(null);
+				cls.getMethod("xenum$MetaData").invoke(null);
 				++ctr;
 			} catch (Exception e) {
 				LOGGER.warn("Cannot initialize xenum {}: {}", cls.getCanonicalName(), e.getMessage());
