@@ -3,7 +3,6 @@ package de.jpaw.bonaparte.core;
 import java.io.DataInput;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -14,12 +13,9 @@ import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
 
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
-import de.jpaw.bonaparte.pojos.meta.XEnumDefinition;
 import de.jpaw.enums.AbstractXEnumBase;
 import de.jpaw.enums.XEnumFactory;
-import de.jpaw.util.Base64;
 import de.jpaw.util.ByteArray;
-import de.jpaw.util.ByteTestsASCII;
 
 public class CompactParser extends CompactConstants implements MessageParser<IOException> {
     
