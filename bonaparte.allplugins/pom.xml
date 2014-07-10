@@ -43,17 +43,14 @@
         <jodatime.version>2.3</jodatime.version>        <!-- UPTODATE 2014-04-01 -->
         <jaxb.version>2.2.9</jaxb.version>              <!-- http://repo1.maven.org/maven2/javax/xml/bind/jaxb-api/ -->
 		<tycho.version>0.19.0</tycho.version>
-
-		<kepler-repo.url>http://download.eclipse.org/releases/kepler</kepler-repo.url>
 	</properties>
 
 	<repositories>
-		<repository>
-			<id>kepler</id>
-			<url>${kepler-repo.url}</url>
-			<layout>p2</layout>
-		</repository>
-
+        <repository>
+            <id>p2-luna</id>
+            <layout>p2</layout>
+            <url>http://download.eclipse.org/releases/luna</url>
+        </repository>
 	</repositories>
 
     <build>
