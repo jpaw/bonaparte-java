@@ -225,88 +225,88 @@ terminated by a field termination character.
 
 \subsection{Special characters}
 
-\begin{tabular}{|c|c|c|p{8cm}|}
+\begin{tabular}{|c|c|c|c|p{8cm}|}
 \hline
-Hex & Char & Meaning & Comments \\
+Hex & Char & ISO & Meaning & Comments \\
 \hline
-00 & \textasciicircum {@} & N/A & Does not appear, because it is used as a
+00 & \textasciicircum {@} & NUL & N/A & Does not appear, because it is used as a
 string terminator character in some languages \\
-01 & \textasciicircum A & array terminator  & is inserted after the last array
+01 & \textasciicircum A & SOH & array terminator  & is inserted after the last array
 entry. Is not followed by an additional field terminator \\
-02 & \textasciicircum B & array start       & Immediately followed by the number
+02 & \textasciicircum B & STX & array start       & Immediately followed by the number
 of entries (0 .. n), then field terminator, then the entries itself. Used for array, List and Set data types. \\
-03 & \textasciicircum C & comment record    & everything until the next
+03 & \textasciicircum C & ETX & comment record    & everything until the next
 record terminator is a comment. Escaping of special characters does apply within
 comments.
 \\
-04 & \textasciicircum D & unused            & allows creation of input files
+04 & \textasciicircum D & EOT & unused            & allows creation of input files
 via Unix console \\
-05 & \textasciicircum E & escape char       & allows the transmission of control
+05 & \textasciicircum E & ENQ & escape char       & allows the transmission of control
 characters in String fields. Is followed by the control character, offset by 0x40 ({@}) \\
-06 & \textasciicircum F & field terminator  & is sent after every atomic field
+06 & \textasciicircum F & ACK & field terminator  & is sent after every atomic field
 \\
-07 & \textasciicircum G &       -            & \\
-08 & \textasciicircum H & unused             & reserved for backspace while
+07 & \textasciicircum G & BEL &       -            & \\
+08 & \textasciicircum H & BS & unused             & reserved for backspace while
 typing \\
-09 & \textasciicircum I &       tab          & if escape characters are
+09 & \textasciicircum I & HT &      tab          & if escape characters are
 allowed, a tab is represented via the normal tab character inside unicode
 fields \\
-0A & \textasciicircum J & record terminator & terminates a record (in files,
+0A & \textasciicircum J & LF & record terminator & terminates a record (in files,
 matches the newline character) \\
-0B & \textasciicircum K &       -            & \\
-0C & \textasciicircum L &       -            & \\
-0D & \textasciicircum M & ignored           & is used immediately ahead of the record
+0B & \textasciicircum K & VT &       -            & \\
+0C & \textasciicircum L & FF &       -            & \\
+0D & \textasciicircum M & CR & ignored           & is used immediately ahead of the record
 terminator character in some operating systems, will cause an error if not
 immediately followed by \textasciicircum J \\
-0E & \textasciicircum N & NULL & used to serialise a field with null contents.
+0E & \textasciicircum N & SO & NULL & used to serialise a field with null contents.
 This token is not followed by a field terminator. Allows distinguishing between
 an empty string (zero characters) and a null string.\\
-0F & \textasciicircum O &
+0F & \textasciicircum O & SI &
 object terminator & sent after the last field of an object has been serialized\\
-10 & \textasciicircum P & parent separator   & separates fields of parent object
+10 & \textasciicircum P & DLE & parent separator   & separates fields of parent object
 from next derived object in order to allow extensions of objects at every level.\\
-11 & \textasciicircum Q & quit      & close the connection (optional, after
+11 & \textasciicircum Q & DC1 & quit      & close the connection (optional, after
 transmission end)
 \\
-12 & \textasciicircum R & record start       & starts every record, is
+12 & \textasciicircum R & DC2 & record start       & starts every record, is
 followed by a version number (or blank) and a field terminator, to indicate
 the format version (currently always 0 / blank) \\
 \hline
 \end{tabular}
 
-\begin{tabular}{|c|c|c|p{8cm}|}
+\begin{tabular}{|c|c|c|c|p{8cm}|}
 \hline
-Hex & Char & Meaning & Comments \\
+Hex & Char & ISO & Meaning & Comments \\
 \hline
-13 & \textasciicircum S & start object       & start a new (sub-) object. Is
+13 & \textasciicircum S & DC3 & start object       & start a new (sub-) object. Is
 followed by the object name (with optional package prefix in Java-style dot notation (minus a
 configurable start package prefix)), then a field terminator, then the object's
 version number (empty if default / 0), and another field terminator, then the
 object's fields \\
-14 & \textasciicircum T & transmission start & starts a multi-record block, is
+14 & \textasciicircum T & DC4 & transmission start & starts a multi-record block, is
 followed by a version number (or blank) and a field terminator, to indicate
 the format version (currently always 0 / blank) \\
-15 & \textasciicircum U & transmission end   & follows the last record of a
+15 & \textasciicircum U & NAK & transmission end   & follows the last record of a
 transmission. Optionally followed by a ctrl-Z character \\
-16 & \textasciicircum V &       -            & \\
-17 & \textasciicircum W &       -            & \\
-18 & \textasciicircum X & extension start   & provides optional extension information,
+16 & \textasciicircum V & SYN &       -            & \\
+17 & \textasciicircum W & ETB &      -            & \\
+18 & \textasciicircum X & CAN & extension start   & provides optional extension information,
 usually sent once at the start of a transmission. Is followed by one character
 defining the type of the extension, then extension specific data. Currently,
 only E is defined (charset encoding), followed by a Euro sign, which defines
 either UTF-8 or ISO-8859-15 or we1252-? (standard character set converters will
 convert this character as well, allowing an auto-detection of the char set)\\
-19 & \textasciicircum Y & end of extension  & is sent after extension information ends.
+19 & \textasciicircum Y & EM & end of extension  & is sent after extension information ends.
 Allows parsers to skip all (unknown) extensions. \\
-1A & \textasciicircum Z & - & optionally send after the end of data
+1A & \textasciicircum Z & SUB & - & optionally send after the end of data
 transmission character. closes connection (for example for sockets). \\
-1B & \textasciicircum [ &       -            & \\
-1C & \textasciicircum \textbackslash &                   & \\
-1D & \textasciicircum ] & -& \\
-1E & \textasciicircum \textasciicircum & begin Map data & Starts a block immediately followed by an index type identifier
+1B & \textasciicircum [ & ESC &     -            & \\
+1C & \textasciicircum \textbackslash & FS &                  & \\
+1D & \textasciicircum ] & GS & -& \\
+1E & \textasciicircum \textasciicircum & RS & begin Map data & Starts a block immediately followed by an index type identifier
 (Integer / Long / String), the number of entries (0 .. n), then field terminator, then the with key / value pairs (serialized
 form of Java maps)\\
-1F & \textasciicircum \_ &  unused         & \\
+1F & \textasciicircum \_ &  US & unused         & \\
 \hline
 \end{tabular}
 
