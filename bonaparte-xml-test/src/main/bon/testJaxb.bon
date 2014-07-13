@@ -1,0 +1,8 @@
+package test.jaxb {
+	class TestXml XML FIELD {
+		default public;
+		
+		int			test;
+		Ascii(10)	data;
+	}
+}

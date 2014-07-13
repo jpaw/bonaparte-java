@@ -110,6 +110,8 @@ package meta factoryId 29 {
 		required (FieldDefinition...) required List<> fields;
         required Unicode(512) required Map<String> ^properties;
         required boolean              		propertiesInherited;
+        required boolean              		isImmutable;		// true if this class has no setters and only final fields
+        required boolean              		isFreezable;		// true if this class and all components are either immutable or can be explicitly frozen
 	}
 	class EnumDefinition classId 12 extends AbstractObjectParent<EnumDefinition> {
 		required signed int	   			    maxTokenLength;   	// signed because we store -1 for enums which do not have tokens at all

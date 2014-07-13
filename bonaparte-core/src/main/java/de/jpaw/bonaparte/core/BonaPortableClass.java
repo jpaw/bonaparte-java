@@ -41,6 +41,7 @@ public interface BonaPortableClass<T extends BonaPortable> {
 	int getRtti();
 	String getPqon();
 	boolean isFreezable();
+    boolean isImmutable();
 	String getBundle();
 	String getRevision();
 	long getSerial();
