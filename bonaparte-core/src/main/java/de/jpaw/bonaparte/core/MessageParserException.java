@@ -38,9 +38,9 @@ public class MessageParserException extends ApplicationException {
     private static final int OFFSET3 = (PARAMETER_ERROR * CLASSIFICATION_FACTOR) + 17000; // offset for all codes in this class
     private static boolean textsInitialized = false;
 
-    private int characterIndex; // the byte count of the message at which the error occured
-    private String fieldName;   // if known, the name of the field where the error occured
-    private String className;   // if known, the name of the class which contained the field
+    private final int characterIndex; // the byte count of the message at which the error occured
+    private final String fieldName;   // if known, the name of the field where the error occured
+    private final String className;   // if known, the name of the class which contained the field
 
     static public final int MISSING_FIELD_TERMINATOR     = OFFSET + 1;
     static public final int MISSING_RECORD_TERMINATOR    = OFFSET + 2;
@@ -86,7 +86,8 @@ public class MessageParserException extends ApplicationException {
     static public final int INVALID_BACKREFERENCE        = OFFSET + 42;
     static public final int UNSUPPORTED_DATA_TYPE        = OFFSET + 43;
     static public final int EXTRA_FIELDS                 = OFFSET + 44;
-    
+    static public final int TOO_MANY_DIGITS              = OFFSET + 45;
+
 
     /**
      * Method lazyInitialization.
@@ -143,6 +144,7 @@ public class MessageParserException extends ApplicationException {
             codeToDescription.put(INVALID_BACKREFERENCE        , "The serialized message contains an invalid backreference");
             codeToDescription.put(UNSUPPORTED_DATA_TYPE        , "The request field type or operation is not supported for this cpomposer or parser");
             codeToDescription.put(EXTRA_FIELDS                 , "Extra (non-null) fields have been encountered while expecting a class terminator. Most likely your client JAR is not up to date.");
+            codeToDescription.put(TOO_MANY_DIGITS              , "Number too big");
         }
     }
 
@@ -150,7 +152,8 @@ public class MessageParserException extends ApplicationException {
         return (className == null ? "?" : className) + "." + (fieldName == null ? "?" : fieldName) + " at position " + characterIndex;
     }
 
-    private final void constructorSubroutine(int characterIndex, String className, String fieldName) {
+    public MessageParserException(int errorCode, String fieldName, int characterIndex, String className) {
+        super(errorCode, fieldName);
         this.characterIndex = characterIndex;
         this.fieldName = fieldName;
         this.className = className;
@@ -161,14 +164,8 @@ public class MessageParserException extends ApplicationException {
         logger.error("Error " + getErrorCode() + " (" + getStandardDescription() + ") for " + getSpecificDescription());
     }
 
-    public MessageParserException(int errorCode, String message, int characterIndex, String className) {
-        super(errorCode, message);
-        constructorSubroutine(characterIndex, className, message);
-    }
-
     public MessageParserException(int errorCode) {
-        super(errorCode, null);
-        constructorSubroutine(-1, null, null);
+        this(errorCode, null, -1, null);
     }
 
     @Override

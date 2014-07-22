@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.DataAndMeta;
+import de.jpaw.bonaparte.core.MessageParserException;
+import de.jpaw.bonaparte.core.ObjectValidationException;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 
@@ -44,6 +46,40 @@ public class BigDecimalTools {
         if (a == null || b == null)
             return false;  // exactly one of them if null, the other not
         return scale(a, aDecimals).compareTo(scale(b, bDecimals)) == 0;
+    }
+    
+    /** Check a parsed BigDecimal for allowed digits, and perform (if desired) scaling. */
+    static public BigDecimal checkAndScale(BigDecimal r, int length, int decimals, boolean isSigned, boolean rounding, boolean autoScale,
+            String fieldname, int parseIndex, String currentClass) throws MessageParserException {
+        try {
+            if (r.scale() > decimals)
+                r = r.setScale(decimals, rounding ? RoundingMode.HALF_EVEN : RoundingMode.UNNECESSARY);
+            if (autoScale && r.scale() < decimals)  // round for smaller as well!
+                r = r.setScale(decimals, RoundingMode.UNNECESSARY);
+        } catch (ArithmeticException a) {
+            throw new MessageParserException(MessageParserException.TOO_MANY_DECIMALS, fieldname, parseIndex, currentClass);
+        }
+        if (!isSigned && r.signum() < 0)
+            throw new MessageParserException(MessageParserException.SUPERFLUOUS_SIGN, fieldname, parseIndex, currentClass);
+        // check for overflow
+        if (length - decimals < r.precision() - r.scale())
+            throw new MessageParserException(MessageParserException.TOO_MANY_DIGITS, fieldname, parseIndex, currentClass);
+        return r;
+    }
+    
+    /** Check a BigDecimal for compliance of the spec. */
+    static public void validate(BigDecimal r, NumericElementaryDataItem meta, String classname) throws ObjectValidationException {
+        try {
+            if (r.scale() > meta.getDecimalDigits())
+                r = r.setScale(meta.getDecimalDigits(), meta.getRounding() ? RoundingMode.HALF_EVEN : RoundingMode.UNNECESSARY);
+        } catch (ArithmeticException a) {
+            throw new ObjectValidationException(ObjectValidationException.TOO_MANY_FRACTIONAL_DIGITS, meta.getName(), classname);
+        }
+        if (!meta.getIsSigned() && r.signum() < 0)
+            throw new ObjectValidationException(ObjectValidationException.NO_NEGATIVE_ALLOWED, meta.getName(), classname);
+        // check for overflow
+        if (meta.getTotalDigits() - meta.getDecimalDigits() < r.precision() - r.scale())
+            throw new ObjectValidationException(ObjectValidationException.TOO_MANY_DIGITS, meta.getName(), classname);
     }
     
     /** Given an object tree and a pathname within this tree (which should point to some BigDecimal number),

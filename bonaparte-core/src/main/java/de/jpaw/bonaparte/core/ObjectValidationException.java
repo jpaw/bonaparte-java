@@ -37,8 +37,8 @@ public class ObjectValidationException extends ApplicationException {
     private static final int OFFSET = VALIDATION_ERROR * CLASSIFICATION_FACTOR + 17000;  // offset for all codes in this class
     private static boolean textsInitialized = false;
 
-    private String fieldName;   // if known, the name of the field where the error occured
-    private String className;   // if known, the name of the class which contained the field
+    private final String fieldName;   // if known, the name of the field where the error occurred
+    private final String className;   // if known, the name of the class which contained the field
 
     static public final int MAY_NOT_BE_BLANK      = OFFSET + 1;
     static public final int NO_PATTERN_MATCH      = OFFSET + 2;
@@ -46,6 +46,11 @@ public class ObjectValidationException extends ApplicationException {
     static public final int TOO_LONG              = OFFSET + 4;
     static public final int TOO_SHORT             = OFFSET + 5;
     static public final int NOT_ENOUGH_ELEMENTS   = OFFSET + 6;
+    static public final int NO_NEGATIVE_ALLOWED   = OFFSET + 7;
+    
+    // BigDecimal checks
+    static public final int TOO_MANY_FRACTIONAL_DIGITS   = OFFSET + 10;
+    static public final int TOO_MANY_DIGITS              = OFFSET + 11;
 
     static public final int NOT_FREEZABLE         = OFFSET + 21;
     static public final int OBJECT_IS_FROZEN      = OFFSET + 22;
@@ -64,6 +69,10 @@ public class ObjectValidationException extends ApplicationException {
             codeToDescription.put(TOO_LONG             , "String is too long");
             codeToDescription.put(TOO_SHORT            , "String is too short");
             codeToDescription.put(NOT_ENOUGH_ELEMENTS  , "Array contains not enough elements");
+            codeToDescription.put(NO_NEGATIVE_ALLOWED  , "Number may not be negative");
+            
+            codeToDescription.put(TOO_MANY_FRACTIONAL_DIGITS, "Too many significant decimal digits");
+            codeToDescription.put(TOO_MANY_DIGITS      , "Number too big");
             
             codeToDescription.put(NOT_FREEZABLE        , "This object cannot be turned into immutable state");
             codeToDescription.put(OBJECT_IS_FROZEN     , "Object instance is frozen and cannot be modified");
@@ -76,7 +85,8 @@ public class ObjectValidationException extends ApplicationException {
              + (fieldName == null ? "?" : fieldName);
     }
 
-    private final void constructorSubroutine(String className, String fieldName) {
+    public ObjectValidationException(int errorCode, String fieldName, String className) {
+        super(errorCode, null);
         this.fieldName = fieldName;
         this.className = className;
         if (!textsInitialized)
@@ -85,14 +95,8 @@ public class ObjectValidationException extends ApplicationException {
         logger.error("Error " + getErrorCode() + " (" + getStandardDescription() + ") for " + getSpecificDescription());
     }
 
-    public ObjectValidationException(int errorCode, String fieldName, String className) {
-        super(errorCode, null);
-        constructorSubroutine(className, fieldName);
-    }
-
     public ObjectValidationException(int errorCode) {
-        super(errorCode, null);
-        constructorSubroutine(null, null);
+        this(errorCode, null, null);
     }
 
     @Override

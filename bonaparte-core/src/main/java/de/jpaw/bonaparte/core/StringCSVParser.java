@@ -31,6 +31,7 @@ import de.jpaw.bonaparte.pojos.meta.XEnumDefinition;
 import de.jpaw.enums.AbstractXEnumBase;
 import de.jpaw.enums.XEnumFactory;
 import de.jpaw.util.Base64;
+import de.jpaw.util.BigDecimalTools;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.CharTestsASCII;
 /**
@@ -218,18 +219,7 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
         if (token == null)
             return null;
         BigDecimal r = new BigDecimal(token.trim());
-        if (!isSigned && r.signum() < 0) {
-            throw new MessageParserException(MessageParserException.SUPERFLUOUS_SIGN, fieldname, parseIndex, currentClass);
-        }
-        try {
-            if (r.scale() > decimals)
-                r = r.setScale(decimals, rounding ? RoundingMode.HALF_EVEN : RoundingMode.UNNECESSARY);
-            if (autoScale && r.scale() < decimals)  // round for smaller as well!
-                r = r.setScale(decimals, RoundingMode.UNNECESSARY);
-        } catch (ArithmeticException a) {
-            throw new MessageParserException(MessageParserException.TOO_MANY_DECIMALS, fieldname, parseIndex, currentClass);
-        }
-        return r;
+        return BigDecimalTools.checkAndScale(r, length, decimals, isSigned, rounding, autoScale, fieldname, parseIndex, currentClass);
     }
 
     @Override

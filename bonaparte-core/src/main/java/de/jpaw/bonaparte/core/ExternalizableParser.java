@@ -35,6 +35,7 @@ import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDefinition;
 import de.jpaw.enums.AbstractXEnumBase;
 import de.jpaw.enums.XEnumFactory;
+import de.jpaw.util.BigDecimalTools;
 import de.jpaw.util.ByteArray;
 /**
  * The StringBuilderParser class.
@@ -147,14 +148,10 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         }
         // now check precision, if required, convert!
         try {
-            if (r.scale() > decimals)
-                r = r.setScale(decimals, rounding ? RoundingMode.HALF_EVEN : RoundingMode.UNNECESSARY);
-            if (autoScale && r.scale() < decimals)  // round for smaller as well!
-                r = r.setScale(decimals, RoundingMode.UNNECESSARY);
-        } catch (ArithmeticException a) {
-            throw new IOException("Too many decimals, would need to round for " + currentClass + "." + fieldname);
+            return BigDecimalTools.checkAndScale(r, length, decimals, isSigned, rounding, autoScale, fieldname, -1, currentClass);
+        } catch (MessageParserException a) {
+            throw new IOException("Decimal number does not comply with specs: " + a.getStandardDescription() + " for " + currentClass + "." + fieldname);
         }
-        return r;
     }
 
     @Override

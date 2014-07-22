@@ -32,10 +32,12 @@ import org.joda.time.LocalTime;
 
 
 
+
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDefinition;
 import de.jpaw.enums.AbstractXEnumBase;
 import de.jpaw.enums.XEnumFactory;
+import de.jpaw.util.BigDecimalTools;
 import de.jpaw.util.ByteArray;
 /**
  * The CompactByteArrayParser class.
@@ -276,6 +278,7 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
             }
         }
         // now read mantissa. Either length  + digits, or an integer
+        BigDecimal r;
         c = needToken();
         if (c == COMPACT_BIGINTEGER) {
             // length and mantissa
@@ -284,11 +287,12 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
             byte [] mantissa = new byte [len];
             System.arraycopy(inputdata, parseIndex, mantissa, 0, len);
             parseIndex += len;
-            return new BigDecimal(new BigInteger(mantissa), scale);
+            r = new BigDecimal(new BigInteger(mantissa), scale);
         } else {
             c = readInt(c, fieldname);
-            return BigDecimal.valueOf((long)c, scale);
+            r = BigDecimal.valueOf((long)c, scale);
         }
+        return BigDecimalTools.checkAndScale(r, length, decimals, isSigned, rounding, autoScale, fieldname, parseIndex, currentClass);
     }
 
 

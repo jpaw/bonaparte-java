@@ -34,6 +34,7 @@ import de.jpaw.bonaparte.pojos.meta.XEnumDefinition;
 import de.jpaw.enums.AbstractXEnumBase;
 import de.jpaw.enums.XEnumFactory;
 import de.jpaw.util.Base64;
+import de.jpaw.util.BigDecimalTools;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.ByteTestsASCII;
 /**
@@ -206,15 +207,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
             return null;
         }
         BigDecimal r = new BigDecimal(nextIndexParseAscii(fieldname, isSigned, true, false));
-        try {
-            if (r.scale() > decimals)
-                r = r.setScale(decimals, rounding ? RoundingMode.HALF_EVEN : RoundingMode.UNNECESSARY);
-            if (autoScale && r.scale() < decimals)  // round for smaller as well!
-                r = r.setScale(decimals, RoundingMode.UNNECESSARY);
-        } catch (ArithmeticException a) {
-            throw new MessageParserException(MessageParserException.TOO_MANY_DECIMALS, fieldname, parseIndex, currentClass);
-        }
-        return r;
+        return BigDecimalTools.checkAndScale(r, length, decimals, isSigned, rounding, autoScale, fieldname, parseIndex, currentClass);
     }
 
     @Override
