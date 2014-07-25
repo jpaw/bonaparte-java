@@ -16,7 +16,6 @@
 package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
 import java.util.UUID;
 
@@ -113,6 +112,7 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
             if (parseIndex == messageLength) {
             	// implicit null at field boundary: fall through
             	length = 0;
+            	result = "";  // not required, but avoid warnings below...
             } else if (parseIndex + length <= messageLength) {
                 // have sufficient length
                 result = work.substring(parseIndex, parseIndex+length);
@@ -185,7 +185,7 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
                 // checks for Unicode characters
                 if (c < ' ') {
                     if (allowCtrls && (c == '\t')) {
-                        ; // special case: unescaped TAB character allowed
+                        // special case: unescaped TAB character allowed
                     } else {
                         throw new MessageParserException(MessageParserException.ILLEGAL_CHAR_CTRL, fieldname, parseIndex, currentClass);
                     }
@@ -327,7 +327,7 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
                         parseIndex, currentClass);
             }
         }
-        return new Instant(1000L * seconds + (long)millis);
+        return new Instant(1000L * seconds + millis);
     }
 
     

@@ -1,6 +1,5 @@
 package de.jpaw.bonaparte.core;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -117,7 +116,6 @@ public class CompactByteArrayComposer extends CompactConstants implements Messag
      * allows to add raw data to the produced byte array. Use this for protocol
      * support at beginning or end of a message
      * 
-     * @throws IOException
      */
 
     protected void writeNull() {
@@ -187,13 +185,13 @@ public class CompactByteArrayComposer extends CompactConstants implements Messag
                 intOut(len);
             }
             for (int i = 0; i < len; ++i)
-                out.writeByte((int)s.charAt(i));
+                out.writeByte(s.charAt(i));
         } else if (maxCode < 2048) {
             // UTF-8 out, with max. 2 byte sequences...
             out.writeByte(UTF8_STRING);
             intOut(len + numWith2Byte);
             for (int i = 0; i < len; ++i) {
-                int c = (int)s.charAt(i);
+                int c = s.charAt(i);
                 if (c < 128) {
                     out.writeByte(c);
                 } else {
@@ -238,7 +236,7 @@ public class CompactByteArrayComposer extends CompactConstants implements Messag
             out.writeByte(UTF8_STRING);
             intOut(len + numWith2Byte);
             for (int i = 0; i < len; ++i) {
-                int c = (int)buff[i];
+                int c = buff[i];
                 if (c < 128) {
                     out.writeByte(c);
                 } else {
@@ -293,7 +291,7 @@ public class CompactByteArrayComposer extends CompactConstants implements Messag
             out.writeByte(UTF8_STRING);
             intOut(len + numWith2Byte);
             for (int i = 0; i < len; ++i) {
-                int c = (int)buff[i];
+                int c = buff[i];
                 if (c < 128) {
                     out.writeByte(c);
                 } else {
@@ -359,9 +357,9 @@ public class CompactByteArrayComposer extends CompactConstants implements Messag
     
     protected void charOut(char c) {
         // if it is a displayable ASCII character, there is a short form
-        if (((int)c & ~0x7f) == 0 && (int)c >= 0x20) {
+        if ((c & ~0x7f) == 0 && c >= 0x20) {
             // 1:1 mapping! write it as a byte!
-            out.writeByte((int)c);
+            out.writeByte(c);
         } else {
             // something else. Write a single char
             out.writeByte(UNICODE_CHAR);
@@ -468,7 +466,7 @@ public class CompactByteArrayComposer extends CompactConstants implements Messag
     @Override
     public void addField(BasicNumericElementaryDataItem di, long n) {
         int nn = (int)n;
-        if ((long)nn == n)
+        if (nn == n)
             intOut((int)n);
         else {
             out.writeByte(INT_8BYTE);  // TODO: optimize for 5, 6, 7 digits here!

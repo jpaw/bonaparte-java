@@ -29,7 +29,7 @@ public class SockJSJsonEscaperForAppendables extends DefaultJsonEscaperForAppend
 		int len = s.length();
 		for (int i = 0; i < len; ++i) {
 			char c = s.charAt(i);
-			if ((((int) c) & 0x7f) != 0) {   // TODO: check if this works correctly for Unicodes characters of the upper plane
+			if (((c) & 0x7f) != 0) {   // TODO: check if this works correctly for Unicodes characters of the upper plane
 				writeUnicodeEscape(c);
 			} else if (jsonEscapes[c] == null) {
 				appendable.append(c);

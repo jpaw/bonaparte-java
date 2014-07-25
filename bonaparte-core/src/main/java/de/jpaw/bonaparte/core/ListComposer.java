@@ -144,7 +144,8 @@ public class ListComposer extends NoOpComposer implements MessageComposer<Runtim
     public void addField(BinaryElementaryDataItem di, byte[] b) {
         if (b == null)
             writeNull(di);
-        storage.add(doDeepCopies ? Arrays.copyOf(b, b.length) : b);
+        else
+            storage.add(doDeepCopies ? Arrays.copyOf(b, b.length) : b);
     }
 
     @Override

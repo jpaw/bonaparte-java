@@ -16,7 +16,6 @@
 package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -402,9 +401,9 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
                 return result;
             }
             if ((b >= '0') && (b <= 'z')) {
-                ; // OK
+                // OK
             } else if ((b == '+') || (b == '/') || (b == '=')) {
-                ; // OK
+                // OK
             } else {
                 throw new MessageParserException(MessageParserException.ILLEGAL_CHAR_BASE64,
                         String.format("(found 0x%02x for %s)", (int)b, fieldname), parseIndex, currentClass);
@@ -440,9 +439,9 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
                 return result;
             }
             if ((b >= '0') && (b <= 'z')) {
-                ; // OK
+                // OK
             } else if ((b == '+') || (b == '/') || (b == '=')) {
-                ; // OK
+                // OK
             } else {
                 throw new MessageParserException(MessageParserException.ILLEGAL_CHAR_BASE64,
                         String.format("(found 0x%02x for %s)", (int)b, fieldname), parseIndex, currentClass);
@@ -609,7 +608,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
                     MessageParserException.ILLEGAL_TIME,
                     String.format("(found %d for %s)", (hour * 10000) + (minute * 100) + second, fieldname), parseIndex, currentClass);
         }
-        return new LocalTime((long)(1000 * seconds + millis), DateTimeZone.UTC);
+        return new LocalTime(1000 * seconds + millis, DateTimeZone.UTC);
     }
 
 
@@ -644,7 +643,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
                         parseIndex, currentClass);
             }
         }
-        return new Instant(1000L * seconds + (long)millis);
+        return new Instant(1000L * seconds + millis);
     }
 
     @Override

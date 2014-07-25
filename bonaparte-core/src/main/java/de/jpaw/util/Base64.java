@@ -92,10 +92,9 @@ public final class Base64 {
 
     /** Encodes a raw byte array into a BASE64 <code>byte[]</code> representation i accordance with RFC 2045.
      * @param sArr The bytes to convert. If <code>null</code> or length 0 an empty array will be returned.
-     * @param lineSep Optional "\r\n" after 76 characters, unless end of file.<br>
      * No line separator will be in breach of RFC 2045 which specifies max 76 per line but will be a
      * little faster.
-     * @return A BASE64 encoded array. Never <code>null</code>.
+     * @returns A BASE64 encoded array. Never <code>null</code>.
      */
     public final static void encodeToByte(ByteBuilder target, byte[] sArr, int offset, int length) {
         // Check special case
@@ -185,7 +184,7 @@ public final class Base64 {
 
 
     /** Decodes a BASE64 encoded byte array that is known to be resonably well formatted. The method is about twice as
-     * fast as {@link #decode(byte[])}. The preconditions are:<br>
+     * fast as {@link #decode(byte[], int, int)}. The preconditions are:<br>
      * + The array must have a line length of 76 chars OR no line separators at all (one line).<br>
      * + Line separator must be "\r\n", as specified in RFC 2045
      * + The array must not contain illegal characters within the encoded string<br>

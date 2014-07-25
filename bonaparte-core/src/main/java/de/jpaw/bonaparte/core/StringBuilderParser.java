@@ -16,7 +16,6 @@
 package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -250,7 +249,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
                 // checks for Unicode characters
                 if (c < ' ') {
                     if (allowCtrls && (c == '\t')) {
-                        ; // special case: unescaped TAB character allowed
+                        // special case: unescaped TAB character allowed
                     } else if (allowCtrls && (c == ESCAPE_CHAR)) {
                         c = needToken();
                         if ((c < 0x40) || (c >= 0x60)) {
@@ -511,7 +510,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
                     MessageParserException.ILLEGAL_TIME,
                     String.format("(found %d for %s)", (hour * 10000) + (minute * 100) + second, fieldname), parseIndex, currentClass);
         }
-        return new LocalTime((long)(1000 * seconds + millis), DateTimeZone.UTC);
+        return new LocalTime(1000 * seconds + millis, DateTimeZone.UTC);
     }
 
     @Override
@@ -545,7 +544,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
                         parseIndex, currentClass);
             }
         }
-        return new Instant(1000L * seconds + (long)millis);
+        return new Instant(1000L * seconds + millis);
     }
 
     

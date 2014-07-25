@@ -54,7 +54,7 @@ public class DefaultJsonEscaperForAppendables implements JsonEscaper {
 		int len = s.length();
 		for (int i = 0; i < len; ++i) {
 			char c = s.charAt(i);
-			int codePoint = (int)c;  // this does not work correctly for Unicodes characters of the upper plane
+			int codePoint = c;  // this does not work correctly for Unicodes characters of the upper plane
 			if ((codePoint & 0x7f) != 0 || jsonEscapes[codePoint] == null)
 				appendable.append(c);
 			else

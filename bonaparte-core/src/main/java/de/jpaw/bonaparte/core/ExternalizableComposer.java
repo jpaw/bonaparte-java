@@ -177,6 +177,7 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
         }
     }
     // the following method will be used for byte, short, int
+    @SuppressWarnings("cast")
     private void writeVarLong(long l) throws IOException {
         if ((long)(int)l == l) {
             writeVarInt((int)l);

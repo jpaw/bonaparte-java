@@ -18,7 +18,6 @@ package de.jpaw.bonaparte.core;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -284,7 +283,7 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
             return in.readLong();
         }
         pushBack(c);
-        return (long)readVarInt(fieldname, 64);
+        return readVarInt(fieldname, 64);
     }
 
     @Override

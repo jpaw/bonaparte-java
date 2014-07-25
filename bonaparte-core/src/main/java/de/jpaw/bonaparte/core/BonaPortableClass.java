@@ -31,7 +31,6 @@ import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
 public interface BonaPortableClass<T extends BonaPortable> {
 	/** factory method, creates a new instance of the embedding class (no args constructor).
 	 * 
-	 * @return
 	 */
 	T newInstance();
     Class<T> getBonaPortableClass();

@@ -44,12 +44,27 @@ public class ByteUtil {
      * @param a          the byte array to dump
      * @param maxlength  the maximum number of bytes to output to the logger (to avoid megabytes of data)
      */
-	public static String dump(byte[] a, int maxlength) {
+    public static String dump(byte[] a, int maxlength) {
+        return dump(a, 0, maxlength);
+    }
+    
+    /**
+     * <code>dump()</code> dumps the contents of a byte array in a readable 2-column format (hex as well as masked ASCII)
+     * to the logger at <code>trace</code> logging level.
+     * @param a          the byte array to dump
+     * @param startAt    the first byte to be included in the dump (the actual start can be up to 15 bytes earlier, this implementation will always align at 16 byte boundaries)
+     * @param maxlength  the maximum number of bytes to output to the logger (to avoid megabytes of data)
+     */
+	public static String dump(byte[] a, int startAt, int maxlength) {
+	    startAt = startAt < 0 ? 0 : (startAt & ~0x0f);
+	    int endAt = maxlength > 0 && maxlength < a.length ? maxlength : a.length;
+	    if (endAt < startAt)
+	        endAt = startAt;
         StringBuilder w = new StringBuilder(20);
-		StringBuilder buff = new StringBuilder(a.length * 5 + 80);
+		StringBuilder buff = new StringBuilder((endAt - startAt) * 5 + 80);
 		// output only multiples of 16...
 		int i;
-		for (i = 0; i < (a.length & ~0x0f); i += 16) {
+		for (i = (startAt & ~0x0f); i < (a.length & ~0x0f); i += 16) {
 			if (maxlength > 0 && i > maxlength) {
 				buff.append("...");
 				return buff.toString();

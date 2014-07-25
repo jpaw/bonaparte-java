@@ -186,13 +186,13 @@ public class CompactComposer extends CompactConstants implements MessageComposer
     			intOut(len);
     		}
     		for (int i = 0; i < len; ++i)
-                out.writeByte((int)s.charAt(i));
+                out.writeByte(s.charAt(i));
     	} else if (maxCode < 2048) {
     		// UTF-8 out, with max. 2 byte sequences...
             out.writeByte(UTF8_STRING);
     		intOut(len);
     		for (int i = 0; i < len; ++i) {
-    			int c = (int)s.charAt(i);
+    			int c = s.charAt(i);
     			if (c < 128) {
     				out.writeByte(c);
     			} else {
@@ -205,7 +205,7 @@ public class CompactComposer extends CompactConstants implements MessageComposer
             out.writeByte(UTF16_STRING);
     		intOut(len + numWith2Byte);
     		for (int i = 0; i < len; ++i)
-                out.writeChar((int)s.charAt(i));
+                out.writeChar(s.charAt(i));
     	}
     }
     
@@ -237,7 +237,7 @@ public class CompactComposer extends CompactConstants implements MessageComposer
             out.writeByte(UTF8_STRING);
     		intOut(len + numWith2Byte);
     		for (int i = 0; i < len; ++i) {
-    			int c = (int)buff[i];
+    			int c = buff[i];
     			if (c < 128) {
     				out.writeByte(c);
     			} else {
@@ -292,7 +292,7 @@ public class CompactComposer extends CompactConstants implements MessageComposer
             out.writeByte(UTF8_STRING);
     		intOut(len + numWith2Byte);
     		for (int i = 0; i < len; ++i) {
-    			int c = (int)buff[i];
+    			int c = buff[i];
     			if (c < 128) {
     				out.writeByte(c);
     			} else {
@@ -358,9 +358,9 @@ public class CompactComposer extends CompactConstants implements MessageComposer
     
     protected void charOut(char c) throws IOException {
         // if it is a displayable ASCII character, there is a short form
-        if (((int)c & ~0x7f) == 0 && (int)c >= 0x20) {
+        if ((c & ~0x7f) == 0 && c >= 0x20) {
             // 1:1 mapping! write it as a byte!
-            out.writeByte((int)c);
+            out.writeByte(c);
         } else {
             // something else. Write a single char
             out.writeByte(UNICODE_CHAR);
@@ -467,7 +467,7 @@ public class CompactComposer extends CompactConstants implements MessageComposer
     @Override
     public void addField(BasicNumericElementaryDataItem di, long n) throws IOException {
         int nn = (int)n;
-        if ((long)nn == n)
+        if (nn == n)
             intOut((int)n);
         else {
             out.writeByte(INT_8BYTE);  // TODO: optimize for 5, 6, 7 digits here!

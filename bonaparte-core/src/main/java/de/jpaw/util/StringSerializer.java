@@ -43,10 +43,6 @@ public class StringSerializer extends StringBuilderConstants {
 
     /**
      * Converts a bonaPortable provided with a simple String representation to Stringbuilder.
-     * 
-     * @param builder
-     *            A Stringbuilder that containes a bonaportable
-     * @return the converted bonaportable
      */
     public static StringBuilder fromString(String string) {
         StringBuilder result = new StringBuilder();

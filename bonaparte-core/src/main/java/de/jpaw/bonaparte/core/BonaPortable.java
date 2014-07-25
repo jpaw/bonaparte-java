@@ -34,9 +34,9 @@ import de.jpaw.bonaparte.pojos.meta.ParsedFoldingComponent;
  **/
 public interface BonaPortable extends BonaMeta {
 	
-	/** Return the metadata provider. (replaces all class$ f
+	/** Return the metadata provider. (replacement for all class$xx methods)
 	 * 
-	 * @return
+	 * @returns
 	 */
 	public BonaPortableClass<? extends BonaPortable> get$BonaPortableClass();
 	
@@ -141,10 +141,6 @@ public interface BonaPortable extends BonaMeta {
     /** Can be invoked to apply an Object converter to all fields in the object, and potentially also included child objects. */
     public void treeWalkBonaPortable(DataConverter<BonaPortable,ObjectReference> _cvt, boolean descend);
 
-    /** Can be invoked to apply a String converter to all String typed fields in the object, parent objects, and included child objects. */
-//    @Deprecated  // compatibility method, use treeWalkString(_cvt, true) instead!
-//    public void treeWalkString(DataConverter<String, AlphanumericElementaryDataItem> _cvt);
-    
     /** Gets the Metadata of the BonaPortable (which is a BonaPortable itself). */
 	@Deprecated
     public ClassDefinition get$MetaData();  // name, revision etc as a class object. Use $ to avoid conflict with other getters

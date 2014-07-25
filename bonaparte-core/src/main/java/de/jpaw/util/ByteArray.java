@@ -123,6 +123,7 @@ public final class ByteArray implements Externalizable, Cloneable {
         return new ByteArray(this, offset, length);
     }
 
+    @Override
     public ByteArray clone() {
         return new ByteArray(this);
     }
@@ -223,7 +224,7 @@ public final class ByteArray implements Externalizable, Cloneable {
     public int hashCode() {
         int hash = 997;
         for (int i = 0; i < length; ++i)
-            hash = 29 * hash + (int)buffer[offset + i];
+            hash = 29 * hash + buffer[offset + i];
         return hash;
     }
 

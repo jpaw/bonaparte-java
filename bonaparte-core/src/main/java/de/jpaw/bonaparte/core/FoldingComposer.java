@@ -78,6 +78,9 @@ public class FoldingComposer<E extends Exception> extends DelegatingBaseComposer
                 }
             }
         }
+        // if fieldList is still null, then we must have reached the top class (superclass == null)
+        if (fieldList == null)
+            fieldList = bonaPortableMapping;   // fallback tpo avoid NPE below...
         // fieldList is not null now.
         // parse it
         List<ParsedFoldingComponent> pl = new ArrayList<ParsedFoldingComponent>(fieldList.size());

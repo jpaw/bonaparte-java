@@ -92,7 +92,7 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
     private void needToken(int c) throws MessageParserException {
         if (parseIndex >= messageLength) {
             throw new MessageParserException(MessageParserException.PREMATURE_END,
-                    String.format("(expected 0x%02x)", (int)c), parseIndex, currentClass);
+                    String.format("(expected 0x%02x)", c), parseIndex, currentClass);
         }
         int d = inputdata[parseIndex++] & 0xff;
         if (c != d) {
@@ -170,12 +170,12 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
         case 0xe2:
             short n = (short)(needToken() << 8);
             n += needToken();
-            return (int)n;
+            return n;
         case 0xe3:
             require(3);
-            int nn = (int)(inputdata[parseIndex++] & 0xff) << 16;
-            nn += (int)(inputdata[parseIndex++] & 0xff) << 8;
-            nn += (int)(inputdata[parseIndex++] & 0xff);
+            int nn = (inputdata[parseIndex++] & 0xff) << 16;
+            nn += (inputdata[parseIndex++] & 0xff) << 8;
+            nn += inputdata[parseIndex++] & 0xff;
             if ((nn & 0x800000) != 0)
                 nn |= 0xff << 24;   // sign-extend
             return nn;
@@ -188,28 +188,28 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
 
     private int readFixed4ByteInt() throws MessageParserException {
         require(4);
-        int nn = (int)(inputdata[parseIndex++] & 0xff) << 24;
-        nn += (int)(inputdata[parseIndex++] & 0xff) << 16;
-        nn += (int)(inputdata[parseIndex++] & 0xff) << 8;
-        nn += (int)(inputdata[parseIndex++] & 0xff);
+        int nn = (inputdata[parseIndex++] & 0xff) << 24;
+        nn += (inputdata[parseIndex++] & 0xff) << 16;
+        nn += (inputdata[parseIndex++] & 0xff) << 8;
+        nn += inputdata[parseIndex++] & 0xff;
         return nn;
     }
     
     private long readFixed8ByteLong() throws MessageParserException {
         require(8);
-        int nn1 = (int)(inputdata[parseIndex++] & 0xff) << 24;
-        nn1 += (int)(inputdata[parseIndex++] & 0xff) << 16;
-        nn1 += (int)(inputdata[parseIndex++] & 0xff) << 8;
-        nn1 += (int)(inputdata[parseIndex++] & 0xff);
-        int nn2 = (int)(inputdata[parseIndex++] & 0xff) << 24;
-        nn2 += (int)(inputdata[parseIndex++] & 0xff) << 16;
-        nn2 += (int)(inputdata[parseIndex++] & 0xff) << 8;
-        nn2 += (int)(inputdata[parseIndex++] & 0xff);
-        return ((long)nn1 << 32) | ((long)nn2 & 0xffffffffL);
+        int nn1 = (inputdata[parseIndex++] & 0xff) << 24;
+        nn1 += (inputdata[parseIndex++] & 0xff) << 16;
+        nn1 += (inputdata[parseIndex++] & 0xff) << 8;
+        nn1 += inputdata[parseIndex++] & 0xff;
+        int nn2 = (inputdata[parseIndex++] & 0xff) << 24;
+        nn2 += (inputdata[parseIndex++] & 0xff) << 16;
+        nn2 += (inputdata[parseIndex++] & 0xff) << 8;
+        nn2 += inputdata[parseIndex++] & 0xff;
+        return ((long)nn1 << 32) | (nn2 & 0xffffffffL);
     }
     private long readLong(int firstByte, String fieldname) throws MessageParserException {
         if (firstByte != 0xe8)
-            return (long)readInt(firstByte, fieldname);
+            return readInt(firstByte, fieldname);
         return readFixed8ByteLong();
     }
     
@@ -290,7 +290,7 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
             r = new BigDecimal(new BigInteger(mantissa), scale);
         } else {
             c = readInt(c, fieldname);
-            r = BigDecimal.valueOf((long)c, scale);
+            r = BigDecimal.valueOf(c, scale);
         }
         return BigDecimalTools.checkAndScale(r, length, decimals, isSigned, rounding, autoScale, fieldname, parseIndex, currentClass);
     }
@@ -499,9 +499,9 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
         int c = needToken();
         switch (c) {
         case COMPACT_TIME_MILLIS:
-            return new LocalTime((long)readInt(needToken(), fieldname), DateTimeZone.UTC);
+            return new LocalTime(readInt(needToken(), fieldname), DateTimeZone.UTC);
         case COMPACT_TIME:
-            return new LocalTime((long)readInt(needToken(), fieldname) * 1000L, DateTimeZone.UTC);
+            return new LocalTime(readInt(needToken(), fieldname) * 1000L, DateTimeZone.UTC);
         default:
             throw new MessageParserException(MessageParserException.UNEXPECTED_CHARACTER,
                     String.format("(expected COMPACT_TIME_*, got 0x%02x)", c), parseIndex, currentClass);

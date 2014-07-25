@@ -56,7 +56,7 @@ public abstract class Settings implements StaticMeta {
     }
 
     /** Changes the end-of-record character sequence for the current serializer. Not relevant for deserializers.
-     *  The initial behavior is set via a static class variable, which can be set via {@link setDefaultWriteCRs}.
+     *  The initial behavior is set via a static class variable, which can be set via {@link #setDefaultWriteCRs(boolean)}.
      *
      * @param writeCRs - true means write a "carriage return / linefeed" sequence, false means write just a linefeed. */
     public void setWriteCRs(boolean writeCRs) {
@@ -65,7 +65,7 @@ public abstract class Settings implements StaticMeta {
 
     /** Retrieves the current setting, in which encoding conversions between Strings and byte arrays are done for Unicode characters.
      *
-     * @return the current {@link java.nio.Charset} setting.
+     * @return the current {@link java.nio.charset.Charset} setting.
      */
     public Charset getCharset() {
         return charset;
@@ -103,7 +103,7 @@ public abstract class Settings implements StaticMeta {
     }
 
     /** Returns information about which character encoding will be used for new instances of this class constructed in the future.
-     * @return the current default {@link java.nio.Charset} setting. */
+     * @return the current default {@link java.nio.charset.Charset} setting. */
     public static Charset getDefaultCharset() {
         return defaultCharset;
     }

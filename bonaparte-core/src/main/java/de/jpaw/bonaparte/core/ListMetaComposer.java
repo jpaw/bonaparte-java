@@ -146,7 +146,8 @@ public class ListMetaComposer extends NoOpComposer implements MessageComposer<Ru
     public void addField(BinaryElementaryDataItem di, byte[] b) {
         if (b == null)
             writeNull(di);
-        add(di, doDeepCopies ? Arrays.copyOf(b, b.length) : b);
+        else
+            add(di, doDeepCopies ? Arrays.copyOf(b, b.length) : b);
     }
 
     @Override

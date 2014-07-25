@@ -95,7 +95,7 @@ public class BigDecimalTools {
      * 
      * @param root
      * @param path
-     * @return
+     * @returns the scaled number
      */
     static public BigDecimal retrieveScaled(BonaPortable root, String path) {
         DataAndMeta<Object,FieldDefinition> value = FieldGetter.getSingleFieldWithMeta(root, path);

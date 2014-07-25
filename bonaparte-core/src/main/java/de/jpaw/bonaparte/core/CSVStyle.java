@@ -18,6 +18,7 @@ public enum CSVStyle implements TokenizableEnum {
     }
 
     // token retrieval
+    @Override
     public String getToken() {
         return _token;
     }

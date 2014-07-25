@@ -65,7 +65,7 @@ public class DayTime {
         if (when == null) {
             return null;
         }
-        long millis = (long)when.getMillisOfDay(); 
+        long millis = when.getMillisOfDay(); 
         GregorianCalendar then = new GregorianCalendar();
         then.setTimeInMillis(millis);
         return then;
@@ -77,7 +77,7 @@ public class DayTime {
         if (when == null) {
             return null;
         }
-        long millis = (long)when.getMillis(); 
+        long millis = when.getMillis(); 
         GregorianCalendar then = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
         then.setTimeInMillis(millis);
         return then;
@@ -104,7 +104,7 @@ public class DayTime {
         if (when == null) {
             return null;
         }
-        return new Date((long)when.getMillisOfDay());
+        return new Date(when.getMillisOfDay());
     }
 
     /** Provides functionality to convert a Joda instant to a java Date. */
