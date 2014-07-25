@@ -95,6 +95,11 @@ public class ApplicationException extends Exception {
         return returnCode >= 0 && returnCode < CLASSIFICATION_FACTOR;
     }
     
+    /** returns a text representation of an error code, independent of an existing exception */
+    public static String codeToString(int code) {
+        String msg = codeToDescription.get(code);
+        return msg != null ? msg : "unknown code";
+    }
     
     /** Returns a textual description of the error code.
      *  The method is declared as final as long as it's used from the constructors of superclasses.
@@ -102,11 +107,7 @@ public class ApplicationException extends Exception {
      * @return the textual description.
      */
     public final String getStandardDescription() {
-        String msg;
-        synchronized(codeToDescription) {
-            msg = codeToDescription.get(errorCode);
-        }
-        return msg != null ? msg : "unknown error code";
+        return codeToString(errorCode);
     }
 
     /** Returns a textual description of the exception.
@@ -129,14 +130,5 @@ public class ApplicationException extends Exception {
      */
     public String getLocalizedStandardDescription() {
         return getStandardDescription();
-    }
-
-    /** returns a text representation of an error code, independent of an existing exception */
-    public static String codeToString(int code) {
-        String msg = null;
-        synchronized(codeToDescription) {
-            msg = codeToDescription.get(code);
-        }
-        return msg != null ? msg : "unknown code";
     }
 }
