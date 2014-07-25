@@ -760,14 +760,14 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
 
     @Override
     public void eatParentSeparator() throws MessageParserException {
-    	eatObjectOrParentSeparator(PARENT_SEPARATOR);
-    }    	
-    	
+        eatObjectOrParentSeparator(PARENT_SEPARATOR);
+    }       
+        
     public void eatObjectTerminator() throws MessageParserException {
-    	eatObjectOrParentSeparator(OBJECT_TERMINATOR);
+        eatObjectOrParentSeparator(OBJECT_TERMINATOR);
     }
     
-   	protected void eatObjectOrParentSeparator(byte which) throws MessageParserException {
+    protected void eatObjectOrParentSeparator(byte which) throws MessageParserException {
         skipNulls();  // upwards compatibility: skip extra fields if they are blank.
         byte z = needToken();
         if (z == which)
@@ -775,8 +775,8 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
         
         // temporarily provide compatibility to 1.7.9 and back...
         if (z == PARENT_SEPARATOR) {
-        	// implies we have been looking for OBJECT_TERMINATOR...
-        	return;
+            // implies we have been looking for OBJECT_TERMINATOR...
+            return;
         }
         
         // we have extra data and it is not null. Now the behavior depends on a parser setting
@@ -789,19 +789,19 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
             // fall through
         case IGNORE:
             // skip bytes until we are at end of record (bad!) (thrown by needToken()) or find the terminator
-        	skipUntilNext(which);
+            skipUntilNext(which);
         }
     }
-   	
-   	protected void skipUntilNext(byte which) throws MessageParserException {
-   		byte c;
-   		while ((c = needToken()) != which) {
-   			if (c == OBJECT_BEGIN) {
-   				// skip nested object!
-   				skipUntilNext(OBJECT_TERMINATOR);
-   			}
-   		}
-   	}
+    
+    protected void skipUntilNext(byte which) throws MessageParserException {
+        byte c;
+        while ((c = needToken()) != which) {
+            if (c == OBJECT_BEGIN) {
+                // skip nested object!
+                skipUntilNext(OBJECT_TERMINATOR);
+            }
+        }
+    }
 
     @Override
     public Integer readNumber(String fieldname, boolean allowNull, int length, boolean isSigned)
@@ -923,16 +923,16 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
     }
 
 
-	@Override
-	public <T extends AbstractXEnumBase<T>> T readXEnum(XEnumDataItem di, XEnumFactory<T> factory) throws MessageParserException {
-		XEnumDefinition spec = di.getBaseXEnum();
-		String scannedToken = readString(di.getName(), !di.getIsRequired() || spec.getHasNullToken(), spec.getMaxTokenLength(), true, false, false, true);
-		if (scannedToken == null)
-			return factory.getNullToken();
-		T value = factory.getByToken(scannedToken);
-		if (value == null) {
-			throw new MessageParserException(MessageParserException.INVALID_ENUM_TOKEN, scannedToken, parseIndex, currentClass);
-		}
-		return value;
-	}
+    @Override
+    public <T extends AbstractXEnumBase<T>> T readXEnum(XEnumDataItem di, XEnumFactory<T> factory) throws MessageParserException {
+        XEnumDefinition spec = di.getBaseXEnum();
+        String scannedToken = readString(di.getName(), !di.getIsRequired() || spec.getHasNullToken(), spec.getMaxTokenLength(), true, false, false, true);
+        if (scannedToken == null)
+            return factory.getNullToken();
+        T value = factory.getByToken(scannedToken);
+        if (value == null) {
+            throw new MessageParserException(MessageParserException.INVALID_ENUM_TOKEN, scannedToken, parseIndex, currentClass);
+        }
+        return value;
+    }
 }

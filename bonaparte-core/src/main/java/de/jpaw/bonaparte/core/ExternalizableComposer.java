@@ -62,9 +62,9 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
     
     // entry called from generated objects: (Object header has been written already by internal methods (and unfortunately in some different fashion...))
     public static void serialize(BonaPortable obj, ObjectOutput _out) throws IOException {
-    	MessageComposer<IOException> _w = new ExternalizableComposer(_out);
-    	obj.serializeSub(_w);
-    	_w.terminateObject(StaticMeta.OUTER_BONAPORTABLE, obj);
+        MessageComposer<IOException> _w = new ExternalizableComposer(_out);
+        obj.serializeSub(_w);
+        _w.terminateObject(StaticMeta.OUTER_BONAPORTABLE, obj);
     }
 
     @Override
@@ -364,7 +364,7 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
         if (n == null) {
             out.writeByte(NULL_FIELD);
         } else {
-        	writeVarInt(n);
+            writeVarInt(n);
         }
     }
 
@@ -417,12 +417,12 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
     }
 
     // xenum with alphanumeric expansion: delegate to Null/String
-	@Override
-	public void addEnum(XEnumDataItem di, AlphanumericElementaryDataItem token, XEnum<?> n) throws IOException {
+    @Override
+    public void addEnum(XEnumDataItem di, AlphanumericElementaryDataItem token, XEnum<?> n) throws IOException {
         if (n == null)
             writeNull(token);
         else
             addField(token, n.getToken());
-	}
+    }
 
 }

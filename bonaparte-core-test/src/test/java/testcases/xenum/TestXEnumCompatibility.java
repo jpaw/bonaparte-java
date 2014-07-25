@@ -37,25 +37,25 @@ public class TestXEnumCompatibility {
 
     @Test
     public void testEqualsAndHash() throws Exception {
-    	@SuppressWarnings("unused")
-		Class<?> loadIt = MoreColors.class;  // ensure the inherited xenum class is loaded
-    	
-    	SimpleSampleUsingEnum s1 = new SimpleSampleUsingEnum();
-    	SimpleSampleUsingXEnum s2 = new SimpleSampleUsingXEnum();
-    	SimpleSampleUsingInheritedXEnum s3 = new SimpleSampleUsingInheritedXEnum();
-    	
-    	// assignments
-    	s1.setMyColor(Color.GREEN);
-    	s2.setMyColor(Color.GREEN);
-    	s3.setMyColor(Color.GREEN);
-    	
-    	// check hash code
-    	assert(s1.getMyColor().hashCode() == s2.getMyColor().hashCode());
-    	assert(s1.getMyColor().hashCode() == s3.getMyColor().hashCode());
-    	// check equals
-    	assert(!s1.getMyColor().equals(s2.getMyColor()));	// cannot compare downwards as equals is final for Enum :-(. This breaks the symmetry requirement for equals
-    	assert(s2.getMyColor().equals(s1.getMyColor()));	// same way other way around
-    	assert(!s1.getMyColor().equals(s3.getMyColor()));	// cannot compare downwards as equals is final for Enum :-(
-    	assert(s3.getMyColor().equals(s1.getMyColor()));	// same way other way around
+        @SuppressWarnings("unused")
+        Class<?> loadIt = MoreColors.class;  // ensure the inherited xenum class is loaded
+        
+        SimpleSampleUsingEnum s1 = new SimpleSampleUsingEnum();
+        SimpleSampleUsingXEnum s2 = new SimpleSampleUsingXEnum();
+        SimpleSampleUsingInheritedXEnum s3 = new SimpleSampleUsingInheritedXEnum();
+        
+        // assignments
+        s1.setMyColor(Color.GREEN);
+        s2.setMyColor(Color.GREEN);
+        s3.setMyColor(Color.GREEN);
+        
+        // check hash code
+        assert(s1.getMyColor().hashCode() == s2.getMyColor().hashCode());
+        assert(s1.getMyColor().hashCode() == s3.getMyColor().hashCode());
+        // check equals
+        assert(!s1.getMyColor().equals(s2.getMyColor()));   // cannot compare downwards as equals is final for Enum :-(. This breaks the symmetry requirement for equals
+        assert(s2.getMyColor().equals(s1.getMyColor()));    // same way other way around
+        assert(!s1.getMyColor().equals(s3.getMyColor()));   // cannot compare downwards as equals is final for Enum :-(
+        assert(s3.getMyColor().equals(s1.getMyColor()));    // same way other way around
     }
 }

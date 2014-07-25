@@ -22,40 +22,40 @@ public class BatchExecutorMTWorker<E,F> implements Runnable {
     private int numError = 0;
     
     public BatchExecutorMTWorker(int threadIndex,
-    		BlockingQueue<DataWithOrdinal<E>> inQueue,
-    		BlockingQueue<DataWithOrdinal<F>> outQueue,
-    		BatchProcessor<E,F> processor) {
-    	this.threadIndex = threadIndex;
-    	this.inQueue = inQueue;
-    	this.outQueue = outQueue;
-    	this.processor = processor;
+            BlockingQueue<DataWithOrdinal<E>> inQueue,
+            BlockingQueue<DataWithOrdinal<F>> outQueue,
+            BatchProcessor<E,F> processor) {
+        this.threadIndex = threadIndex;
+        this.inQueue = inQueue;
+        this.outQueue = outQueue;
+        this.processor = processor;
     }
     
     @Override
     public void run() {
-    	
-    	while (true) {
-    		DataWithOrdinal<E> newRecord = null;
-    		try {
-    			newRecord = inQueue.take();
-    		} catch (InterruptedException e) {
-    			// interrupt means end of processing, we are done!
-    			break;
-    		}
-    		if (newRecord.recordno == BatchExecutorMultiThreaded.EOF)  // record number -1 means EOF 
-    			break;
-    		// we got a record
-    		++numProcessed;
-    		try {
-    			F result = processor.process(newRecord.recordno, newRecord.data);
-    			outQueue.put(new DataWithOrdinal<F>(newRecord.recordno, result));
-    		} catch (Exception e) {
-    			++numExceptions;
-    		}
-    	}
-    	// we have received an EOF message. Output statistics, then close the processor.
-    	LOG.info("Thread {} processed {} records ({} error, {} exceptions)", threadIndex, numProcessed, numError, numExceptions);
-    	try {
+        
+        while (true) {
+            DataWithOrdinal<E> newRecord = null;
+            try {
+                newRecord = inQueue.take();
+            } catch (InterruptedException e) {
+                // interrupt means end of processing, we are done!
+                break;
+            }
+            if (newRecord.recordno == BatchExecutorMultiThreaded.EOF)  // record number -1 means EOF 
+                break;
+            // we got a record
+            ++numProcessed;
+            try {
+                F result = processor.process(newRecord.recordno, newRecord.data);
+                outQueue.put(new DataWithOrdinal<F>(newRecord.recordno, result));
+            } catch (Exception e) {
+                ++numExceptions;
+            }
+        }
+        // we have received an EOF message. Output statistics, then close the processor.
+        LOG.info("Thread {} processed {} records ({} error, {} exceptions)", threadIndex, numProcessed, numError, numExceptions);
+        try {
             processor.close();
         } catch (Exception e) {
             LOG.error("Thread {} could not close: {}", threadIndex, e.getMessage());

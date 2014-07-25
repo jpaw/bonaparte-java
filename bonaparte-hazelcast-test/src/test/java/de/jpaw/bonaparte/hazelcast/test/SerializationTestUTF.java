@@ -17,7 +17,7 @@ import de.jpaw.util.ByteUtil;
 
 @Test
 public class SerializationTestUTF {
-	private void dotstUTF(String obj) throws IOException {
+    private void dotstUTF(String obj) throws IOException {
         System.out.println("SUB UTF");
         
         Config cfg = new Config();
@@ -40,9 +40,9 @@ public class SerializationTestUTF {
         System.out.println("Size 1 is " + bytes1.length + ", size 2 is " + bytes2.length);
         System.out.println("buff 2 is\n" + ByteUtil.dump(bytes2, 0));
     }
-	public void testUTF() throws Exception {
+    public void testUTF() throws Exception {
         System.out.println("Test UTF");
-		dotstUTF("Hello, world!");
-	}
+        dotstUTF("Hello, world!");
+    }
 
 }

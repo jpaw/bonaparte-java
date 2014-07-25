@@ -10,16 +10,16 @@ public class ListObjComposer extends ListComposer {
 
     /** Creates a new ListComposer for a given preallocated external storage. */
     public ListObjComposer(final List<Object> storage, boolean doDeepCopies) {
-    	super(storage, doDeepCopies);
+        super(storage, doDeepCopies);
     }
     
     /** Creates a new ListComposer, creating an own internal storage. */
     public ListObjComposer(boolean doDeepCopies) {
-    	super(doDeepCopies);
+        super(doDeepCopies);
     }
     
     @Override
     public void addField(ObjectReference di, BonaPortable obj) {
-    	storage.add(obj);
+        storage.add(obj);
     }
 }

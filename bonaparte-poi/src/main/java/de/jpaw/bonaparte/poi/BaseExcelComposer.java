@@ -397,11 +397,11 @@ public class BaseExcelComposer implements MessageComposer<RuntimeException> {
             addField(token, n.getToken());
     }
 
-	@Override
-	public void addEnum(XEnumDataItem di, AlphanumericElementaryDataItem token, XEnum<?> n) {
+    @Override
+    public void addEnum(XEnumDataItem di, AlphanumericElementaryDataItem token, XEnum<?> n) {
         if (n == null)
             writeNull(token);
         else
             addField(token, n.getToken());
-	}
+    }
 }

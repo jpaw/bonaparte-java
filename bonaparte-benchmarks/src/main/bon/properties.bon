@@ -1,10 +1,10 @@
 package proptest {
-	properties myClassProp, myFieldProp;
-	
-	class ClassWithProperties {
-		properties myClassProp="Hello, class";
-		
-		public int myField properties myFieldProp="Hello, field"; 
-	}
-	
+    properties myClassProp, myFieldProp;
+    
+    class ClassWithProperties {
+        properties myClassProp="Hello, class";
+        
+        public int myField properties myFieldProp="Hello, field"; 
+    }
+    
 }

@@ -499,11 +499,11 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
     }
 
     // xenum with alphanumeric expansion: delegate to Null/String
-	@Override
-	public void addEnum(XEnumDataItem di, AlphanumericElementaryDataItem token, XEnum<?> n) throws IOException {
+    @Override
+    public void addEnum(XEnumDataItem di, AlphanumericElementaryDataItem token, XEnum<?> n) throws IOException {
         if (n == null)
             writeNull(token);
         else
             addField(token, n.getToken());
-	}
+    }
 }

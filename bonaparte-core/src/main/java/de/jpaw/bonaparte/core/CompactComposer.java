@@ -39,16 +39,16 @@ import de.jpaw.util.ByteArray;
  *
  */
 public class CompactComposer extends CompactConstants implements MessageComposer<IOException> {
-	private static Field unsafeString = calculateUnsafe();
-	static private Field calculateUnsafe() {
-		try {
-			Field f = String.class.getDeclaredField("value");
-			f.setAccessible(true);
-			return f;
-		} catch (Exception e) {
-			return null;
-		}
-	}
+    private static Field unsafeString = calculateUnsafe();
+    static private Field calculateUnsafe() {
+        try {
+            Field f = String.class.getDeclaredField("value");
+            f.setAccessible(true);
+            return f;
+        } catch (Exception e) {
+            return null;
+        }
+    }
 
     private final boolean useCache;
     private final Map<BonaPortable, Integer> objectCache;
@@ -60,9 +60,9 @@ public class CompactComposer extends CompactConstants implements MessageComposer
 
     // entry called from generated objects: (Object header has been written already by internal methods (and unfortunately in some different fashion...))
     public static void serialize(BonaPortable obj, DataOutput _out, boolean recommendIdentifiable) throws IOException {
-    	MessageComposer<IOException> _w = new CompactComposer(_out, recommendIdentifiable);
-    	obj.serializeSub(_w);
-    	_w.terminateObject(StaticMeta.OUTER_BONAPORTABLE, obj);
+        MessageComposer<IOException> _w = new CompactComposer(_out, recommendIdentifiable);
+        obj.serializeSub(_w);
+        _w.terminateObject(StaticMeta.OUTER_BONAPORTABLE, obj);
     }
 
     public CompactComposer(DataOutput out, boolean recommendIdentifiable) {
@@ -177,36 +177,36 @@ public class CompactComposer extends CompactConstants implements MessageComposer
             if (c > 127)
                 ++numWith2Byte;
         }
-    	if (maxCode <= 127) {
-    		// pure ASCII String
-    		if (len <= 16) {
+        if (maxCode <= 127) {
+            // pure ASCII String
+            if (len <= 16) {
                 out.writeByte(SHORT_ASCII_STRING + len - 1);
-    		} else {
-    			out.writeByte(ASCII_STRING);
-    			intOut(len);
-    		}
-    		for (int i = 0; i < len; ++i)
+            } else {
+                out.writeByte(ASCII_STRING);
+                intOut(len);
+            }
+            for (int i = 0; i < len; ++i)
                 out.writeByte(s.charAt(i));
-    	} else if (maxCode < 2048) {
-    		// UTF-8 out, with max. 2 byte sequences...
+        } else if (maxCode < 2048) {
+            // UTF-8 out, with max. 2 byte sequences...
             out.writeByte(UTF8_STRING);
-    		intOut(len);
-    		for (int i = 0; i < len; ++i) {
-    			int c = s.charAt(i);
-    			if (c < 128) {
-    				out.writeByte(c);
-    			} else {
-    				out.writeByte(0xC0 | (c >> 6));
-    				out.writeByte(0x80 | (c & 0x3F));
-    			}
-    		}
-    	} else {
-    		// UTF-16, due to possible 3 byte sequences
+            intOut(len);
+            for (int i = 0; i < len; ++i) {
+                int c = s.charAt(i);
+                if (c < 128) {
+                    out.writeByte(c);
+                } else {
+                    out.writeByte(0xC0 | (c >> 6));
+                    out.writeByte(0x80 | (c & 0x3F));
+                }
+            }
+        } else {
+            // UTF-16, due to possible 3 byte sequences
             out.writeByte(UTF16_STRING);
-    		intOut(len + numWith2Byte);
-    		for (int i = 0; i < len; ++i)
+            intOut(len + numWith2Byte);
+            for (int i = 0; i < len; ++i)
                 out.writeChar(s.charAt(i));
-    	}
+        }
     }
     
     // write a non-empty string (using char[])
@@ -222,51 +222,51 @@ public class CompactComposer extends CompactConstants implements MessageComposer
             if (c > 127)
                 ++numWith2Byte;
         }
-    	if (maxCode <= 127) {
-    		// pure ASCII String
-    		if (len <= 16) {
+        if (maxCode <= 127) {
+            // pure ASCII String
+            if (len <= 16) {
                 out.writeByte(SHORT_ASCII_STRING + len - 1);
-    		} else {
-    			out.writeByte(ASCII_STRING);
-    			intOut(len);
-    		}
-    		for (int i = 0; i < len; ++i)
+            } else {
+                out.writeByte(ASCII_STRING);
+                intOut(len);
+            }
+            for (int i = 0; i < len; ++i)
                 out.writeByte(buff[i]);
-    	} else if (maxCode < 2048) {
-    		// UTF-8 out, with max. 2 byte sequences...
+        } else if (maxCode < 2048) {
+            // UTF-8 out, with max. 2 byte sequences...
             out.writeByte(UTF8_STRING);
-    		intOut(len + numWith2Byte);
-    		for (int i = 0; i < len; ++i) {
-    			int c = buff[i];
-    			if (c < 128) {
-    				out.writeByte(c);
-    			} else {
-    				out.writeByte(0xC0 | (c >> 6));
-    				out.writeByte(0x80 | (c & 0x3F));
-    			}
-    		}
-    	} else {
-    		// UTF-16, due to possible 3 byte sequences
+            intOut(len + numWith2Byte);
+            for (int i = 0; i < len; ++i) {
+                int c = buff[i];
+                if (c < 128) {
+                    out.writeByte(c);
+                } else {
+                    out.writeByte(0xC0 | (c >> 6));
+                    out.writeByte(0x80 | (c & 0x3F));
+                }
+            }
+        } else {
+            // UTF-16, due to possible 3 byte sequences
             out.writeByte(UTF16_STRING);
-    		intOut(len);
-    		for (int i = 0; i < len; ++i)
+            intOut(len);
+            for (int i = 0; i < len; ++i)
                 out.writeChar(buff[i]);
-    	}
+        }
     }
     
     // write a non-empty string (using char[])
     protected void writeLongStringStealArray(String s) throws IOException {
-    	if (unsafeString == null) {
-    		writeLongStringArray(s);
-    		return;
-    	}
-    	char buff[];
-		try {
-			buff = (char []) unsafeString.get(s);
-		} catch (Exception e) {
-    		writeLongStringArray(s);
-    		return;
-		}
+        if (unsafeString == null) {
+            writeLongStringArray(s);
+            return;
+        }
+        char buff[];
+        try {
+            buff = (char []) unsafeString.get(s);
+        } catch (Exception e) {
+            writeLongStringArray(s);
+            return;
+        }
         char maxCode = 0;
         int numWith2Byte = 0;
         int len = buff.length;
@@ -277,36 +277,36 @@ public class CompactComposer extends CompactConstants implements MessageComposer
             if (c > 127)
                 ++numWith2Byte;
         }
-    	if (maxCode <= 127) {
-    		// pure ASCII String
-    		if (len <= 16) {
+        if (maxCode <= 127) {
+            // pure ASCII String
+            if (len <= 16) {
                 out.writeByte(SHORT_ASCII_STRING + len - 1);
-    		} else {
-    			out.writeByte(ASCII_STRING);
-    			intOut(len);
-    		}
-    		for (int i = 0; i < len; ++i)
+            } else {
+                out.writeByte(ASCII_STRING);
+                intOut(len);
+            }
+            for (int i = 0; i < len; ++i)
                 out.writeByte(buff[i]);
-    	} else if (maxCode < 2048) {
-    		// UTF-8 out, with max. 2 byte sequences...
+        } else if (maxCode < 2048) {
+            // UTF-8 out, with max. 2 byte sequences...
             out.writeByte(UTF8_STRING);
-    		intOut(len + numWith2Byte);
-    		for (int i = 0; i < len; ++i) {
-    			int c = buff[i];
-    			if (c < 128) {
-    				out.writeByte(c);
-    			} else {
-    				out.writeByte(0xC0 | (c >> 6));
-    				out.writeByte(0x80 | (c & 0x3F));
-    			}
-    		}
-    	} else {
-    		// UTF-16, due to possible 3 byte sequences
+            intOut(len + numWith2Byte);
+            for (int i = 0; i < len; ++i) {
+                int c = buff[i];
+                if (c < 128) {
+                    out.writeByte(c);
+                } else {
+                    out.writeByte(0xC0 | (c >> 6));
+                    out.writeByte(0x80 | (c & 0x3F));
+                }
+            }
+        } else {
+            // UTF-16, due to possible 3 byte sequences
             out.writeByte(UTF16_STRING);
-    		intOut(len);
-    		for (int i = 0; i < len; ++i)
+            intOut(len);
+            for (int i = 0; i < len; ++i)
                 out.writeChar(buff[i]);
-    	}
+        }
     }
     
     // output an integral value
@@ -371,7 +371,7 @@ public class CompactComposer extends CompactConstants implements MessageComposer
     // character
     @Override
     public void addField(MiscElementaryDataItem di, char c) throws IOException {
-    	charOut(c);
+        charOut(c);
     }
 
     // ASCII only (unicode uses different method)
@@ -383,11 +383,11 @@ public class CompactComposer extends CompactConstants implements MessageComposer
             if (s.length() == 0) {
                 writeEmpty();
             } else if (s.length() == 1) {
-            	charOut(s.charAt(0));
+                charOut(s.charAt(0));
             } else if (s.length() > 8) {
-            	writeLongStringStealArray(s);
+                writeLongStringStealArray(s);
             } else {
-            	writeLongString(s);
+                writeLongString(s);
             }
         }
     }
@@ -622,16 +622,16 @@ public class CompactComposer extends CompactConstants implements MessageComposer
 
     @Override
     public void startObject(ObjectReference di, BonaPortable obj) throws IOException {
-    	BonaPortableClass<?> meta = obj.get$BonaPortableClass();
-    	if (recommendIdentifiable) {
-    		out.writeByte(OBJECT_BEGIN_ID);
-    		intOut(meta.getFactoryId());
-    		intOut(meta.getId());
-    	} else {
-    		out.writeByte(OBJECT_BEGIN_PQON);
-    		writeLongStringStealArray(meta.getPqon());
-    		addField(REVISION_META, meta.getRevision());
-    	}
+        BonaPortableClass<?> meta = obj.get$BonaPortableClass();
+        if (recommendIdentifiable) {
+            out.writeByte(OBJECT_BEGIN_ID);
+            intOut(meta.getFactoryId());
+            intOut(meta.getId());
+        } else {
+            out.writeByte(OBJECT_BEGIN_PQON);
+            writeLongStringStealArray(meta.getPqon());
+            addField(REVISION_META, meta.getRevision());
+        }
     }
 
     @Override

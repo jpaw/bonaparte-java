@@ -189,8 +189,8 @@ public class ListComposer extends NoOpComposer implements MessageComposer<Runtim
         storage.add(n);
     }
 
-	@Override
-	public void addEnum(XEnumDataItem di, AlphanumericElementaryDataItem token, XEnum<?> n) {
+    @Override
+    public void addEnum(XEnumDataItem di, AlphanumericElementaryDataItem token, XEnum<?> n) {
         storage.add(n);
-	}
+    }
 }

@@ -5,8 +5,8 @@ import de.jpaw.bonaparte.batch.BatchWriterTextFileAbstract;
 
 public class BatchWriterTextFile extends BatchWriterTextFileAbstract implements BatchWriter<String> {
 
-	@Override
-	public void storeResult(int no, String response) throws Exception {
-		super.write(response);
-	}
+    @Override
+    public void storeResult(int no, String response) throws Exception {
+        super.write(response);
+    }
 }

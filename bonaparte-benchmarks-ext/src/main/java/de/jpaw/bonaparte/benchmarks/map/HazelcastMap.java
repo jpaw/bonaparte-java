@@ -21,9 +21,9 @@ import com.hazelcast.config.MapConfig;
 @State(value = Scope.Thread)
 @OperationsPerInvocation(HazelcastMap.OPERATIONS_PER_INVOCATION)
 public class HazelcastMap {
-	static public final int OPERATIONS_PER_INVOCATION = 1000000;
-	static public final String DATA = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet";
-	static public final Long KEY = 437L;
+    static public final int OPERATIONS_PER_INVOCATION = 1000000;
+    static public final String DATA = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet";
+    static public final Long KEY = 437L;
 
     private HazelcastInstance hz;
     private IMap<Long, String> map;
@@ -50,11 +50,11 @@ public class HazelcastMap {
         Hazelcast.shutdownAll();
     }
 
-	@GenerateMicroBenchmark
-	public void hazelcastMapGet(BlackHole bh) {
-		map.put(KEY, DATA);
-		for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
-	        bh.consume(map.get(KEY));
-		}
-	}
+    @GenerateMicroBenchmark
+    public void hazelcastMapGet(BlackHole bh) {
+        map.put(KEY, DATA);
+        for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
+            bh.consume(map.get(KEY));
+        }
+    }
 }

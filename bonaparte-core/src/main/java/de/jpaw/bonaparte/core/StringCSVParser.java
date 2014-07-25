@@ -110,24 +110,24 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
         String result = null;
         if (fixedLength) {
             if (parseIndex == messageLength) {
-            	// implicit null at field boundary: fall through
-            	length = 0;
-            	result = "";  // not required, but avoid warnings below...
+                // implicit null at field boundary: fall through
+                length = 0;
+                result = "";  // not required, but avoid warnings below...
             } else if (parseIndex + length <= messageLength) {
                 // have sufficient length
                 result = work.substring(parseIndex, parseIndex+length);
                 parseIndex += length;
             } else {
-            	// record ends within a field!
+                // record ends within a field!
                 // insufficient length: throw an exception if incomplete field, or maybe allow an implicit null
-            	// commented out, allow for that and fill with blanks
+                // commented out, allow for that and fill with blanks
 //                throw new MessageParserException(MessageParserException.PREMATURE_END,
 //                    String.format("(remaining length %d, expected %d)", messageLength - parseIndex, length), parseIndex, currentClass);
-            	// adjust length instead
-            	length = messageLength - parseIndex;
+                // adjust length instead
+                length = messageLength - parseIndex;
                 result = work.substring(parseIndex, messageLength);
-            	parseIndex = messageLength;
-            }            	
+                parseIndex = messageLength;
+            }               
             // implicitly strip trailing spaces
             while (length > 0 && result.charAt(length - 1) == ' ') {
                 --length;
@@ -471,17 +471,17 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
         currentClass = newClassName;
     }
 
-	@Override
-	public <T extends AbstractXEnumBase<T>> T readXEnum(XEnumDataItem di, XEnumFactory<T> factory) throws MessageParserException {
-		XEnumDefinition spec = di.getBaseXEnum();
-		String scannedToken = readString(di.getName(), !di.getIsRequired() || spec.getHasNullToken(), spec.getMaxTokenLength(), true, false, false, true);
-		if (scannedToken == null)
-			return factory.getNullToken();
-		T value = factory.getByToken(scannedToken);
-		if (value == null) {
-			throw new MessageParserException(MessageParserException.INVALID_ENUM_TOKEN, scannedToken, parseIndex, currentClass + "." + di.getName());
-		}
-		return value;
-	}
+    @Override
+    public <T extends AbstractXEnumBase<T>> T readXEnum(XEnumDataItem di, XEnumFactory<T> factory) throws MessageParserException {
+        XEnumDefinition spec = di.getBaseXEnum();
+        String scannedToken = readString(di.getName(), !di.getIsRequired() || spec.getHasNullToken(), spec.getMaxTokenLength(), true, false, false, true);
+        if (scannedToken == null)
+            return factory.getNullToken();
+        T value = factory.getByToken(scannedToken);
+        if (value == null) {
+            throw new MessageParserException(MessageParserException.INVALID_ENUM_TOKEN, scannedToken, parseIndex, currentClass + "." + di.getName());
+        }
+        return value;
+    }
 }
 

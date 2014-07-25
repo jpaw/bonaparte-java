@@ -16,9 +16,9 @@ package de.jpaw.enums;
  *
  */
 public interface XEnum<E extends AbstractXEnumBase<E>> extends TokenizableEnum, Comparable<E> {
-	
-    Enum<?> getBaseEnum();						// get the underlying base enum instance
-	XEnumFactory<E> getFactory();				// get the factory class which created the instance
-	Class<? extends E> getDeclaringClass();		// get the root XEnum class
+    
+    Enum<?> getBaseEnum();                      // get the underlying base enum instance
+    XEnumFactory<E> getFactory();               // get the factory class which created the instance
+    Class<? extends E> getDeclaringClass();     // get the root XEnum class
 
 }

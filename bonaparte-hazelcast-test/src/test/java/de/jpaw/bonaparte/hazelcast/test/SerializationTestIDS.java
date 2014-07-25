@@ -20,7 +20,7 @@ import de.jpaw.util.ByteUtil;
 
 @Test
 public class SerializationTestIDS {
-	private void dotstIDs(IDSTest obj) throws IOException {
+    private void dotstIDs(IDSTest obj) throws IOException {
         System.out.println("SUB IDS");
         
         Config cfg = new Config();
@@ -54,17 +54,17 @@ public class SerializationTestIDS {
         System.out.println("Size 1 is " + bytes1.length + ", size 2 is " + bytes2.length);
         System.out.println("buff 2 is\n" + ByteUtil.dump(bytes2, 0));
     }
-	public void testIdentifiedDataSerializable() throws Exception {
+    public void testIdentifiedDataSerializable() throws Exception {
         System.out.println("Test IDS");
         
-		IDSTest tmp = new IDSTest();
-		tmp.hello = "Hello, world";
-		tmp.num = 18;
-		tmp.short1 = "0";
-		tmp.short2 = "A";
-		tmp.hello2 = "alallalallalong... alallalallalong... ding dong!";
-		
-		dotstIDs(tmp);
-	}
+        IDSTest tmp = new IDSTest();
+        tmp.hello = "Hello, world";
+        tmp.num = 18;
+        tmp.short1 = "0";
+        tmp.short2 = "A";
+        tmp.hello2 = "alallalallalong... alallalallalong... ding dong!";
+        
+        dotstIDs(tmp);
+    }
 
 }

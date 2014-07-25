@@ -169,8 +169,8 @@ public class NoOpComposer implements MessageComposer<RuntimeException> {
     public void addEnum(EnumDataItem di, AlphanumericElementaryDataItem token, TokenizableEnum n) throws RuntimeException {
     }
 
-	@Override
-	public void addEnum(XEnumDataItem di, AlphanumericElementaryDataItem token, XEnum<?> n) throws RuntimeException {
-	}
+    @Override
+    public void addEnum(XEnumDataItem di, AlphanumericElementaryDataItem token, XEnum<?> n) throws RuntimeException {
+    }
 
 }

@@ -6,13 +6,13 @@ package enumWithDefaults {
     enum Color2 { RED="R", GREEN="G", BLUE="B" }            // same, for enums with tokens
     
     class ClassWithEnumDefaultsDueToPackageDefaults {
-    	Long key;
+        Long key;
         optional Enum Color thisShouldBeRed;                // field initialized due to package level default setting
         optional Enum Color2 thisShouldAlsoBeRed;           // field initialized due to package level default setting
-        required Enum Color required List<> listOfEnums;	// not initialized due to array
-        required Enum Color required List<> unrolledLstOfEnums properties unroll;		// not initialized due to array in BON, but in JPA entity
-        required Enum Color required List<> alsoListOfEnums;							// not initialized due to array
-        required Enum Color required List<> alsoUnrolledLstOfEnums properties unroll;	// not initialized due to array in BON, but in JPA entity
+        required Enum Color required List<> listOfEnums;    // not initialized due to array
+        required Enum Color required List<> unrolledLstOfEnums properties unroll;       // not initialized due to array in BON, but in JPA entity
+        required Enum Color required List<> alsoListOfEnums;                            // not initialized due to array
+        required Enum Color required List<> alsoUnrolledLstOfEnums properties unroll;   // not initialized due to array in BON, but in JPA entity
     }
     
     class ClassWithoutDefaults {

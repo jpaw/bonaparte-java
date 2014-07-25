@@ -29,28 +29,28 @@ import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
  *
  **/
 public interface BonaPortableClass<T extends BonaPortable> {
-	/** factory method, creates a new instance of the embedding class (no args constructor).
-	 * 
-	 */
-	T newInstance();
+    /** factory method, creates a new instance of the embedding class (no args constructor).
+     * 
+     */
+    T newInstance();
     Class<T> getBonaPortableClass();
 
-	int getFactoryId();
-	int getId();
-	int getRtti();
-	String getPqon();
-	boolean isFreezable();
+    int getFactoryId();
+    int getId();
+    int getRtti();
+    String getPqon();
+    boolean isFreezable();
     boolean isImmutable();
-	String getBundle();
-	String getRevision();
-	long getSerial();
-	ClassDefinition getMetaData();
-	BonaPortableClass<? extends BonaPortable> getParent();
-	BonaPortableClass<? extends BonaPortable> getReturns();
-	BonaPortableClass<? extends BonaPortable> getPrimaryKey();
-	ImmutableMap<String,String> getPropertyMap();
-	String getClassProperty(String property);
-	String getFieldProperty(String fieldname, String propertyname);
-	boolean hasClassProperty(String property);
-	boolean hasFieldProperty(String fieldname, String propertyname);
+    String getBundle();
+    String getRevision();
+    long getSerial();
+    ClassDefinition getMetaData();
+    BonaPortableClass<? extends BonaPortable> getParent();
+    BonaPortableClass<? extends BonaPortable> getReturns();
+    BonaPortableClass<? extends BonaPortable> getPrimaryKey();
+    ImmutableMap<String,String> getPropertyMap();
+    String getClassProperty(String property);
+    String getFieldProperty(String fieldname, String propertyname);
+    boolean hasClassProperty(String property);
+    boolean hasFieldProperty(String fieldname, String propertyname);
 }

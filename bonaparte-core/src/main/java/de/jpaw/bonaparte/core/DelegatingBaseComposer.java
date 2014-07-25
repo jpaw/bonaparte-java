@@ -191,7 +191,7 @@ public class DelegatingBaseComposer<E extends Exception> implements MessageCompo
     
     @Override
     public void terminateObject(ObjectReference di, BonaPortable obj) throws E {
-    	delegateComposer.terminateObject(di, obj);
+        delegateComposer.terminateObject(di, obj);
     }
     
     
@@ -221,9 +221,9 @@ public class DelegatingBaseComposer<E extends Exception> implements MessageCompo
     }
 
     // xenum with alphanumeric expansion: delegate to Null/String
-	@Override
-	public void addEnum(XEnumDataItem di, AlphanumericElementaryDataItem token, XEnum<?> n) throws E {
+    @Override
+    public void addEnum(XEnumDataItem di, AlphanumericElementaryDataItem token, XEnum<?> n) throws E {
         delegateComposer.addEnum(di, token, n);
-	}
+    }
 
 }

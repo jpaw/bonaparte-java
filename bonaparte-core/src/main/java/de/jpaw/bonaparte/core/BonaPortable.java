@@ -33,18 +33,18 @@ import de.jpaw.bonaparte.pojos.meta.ParsedFoldingComponent;
  *
  **/
 public interface BonaPortable extends BonaMeta {
-	
-	/** Return the metadata provider. (replacement for all class$xx methods)
-	 * 
-	 * @returns
-	 */
-	public BonaPortableClass<? extends BonaPortable> get$BonaPortableClass();
-	
+    
+    /** Return the metadata provider. (replacement for all class$xx methods)
+     * 
+     * @returns
+     */
+    public BonaPortableClass<? extends BonaPortable> get$BonaPortableClass();
+    
     /** Gets some optional RTTI (runtime type information). If no rtti has been supplied, the rtti of a parent class is returned.
      * 
      * @return some numeric value defined in the DSL.
      */
-	public int get$rtti();
+    public int get$rtti();
     
     /** Gets the object revision (version number) as defined in the DSL.
      * This is a constant string (static final), but defined as a member function in order to be able to declare it in the interface.
@@ -58,30 +58,30 @@ public interface BonaPortable extends BonaMeta {
      *  
      * @return the serial UID, which is a static private class variable.
      */
-	@Deprecated
+    @Deprecated
     public long get$Serial();
-	
+    
     /** Retrieves a single property from the current map.
      * 
      * @param id the key of the property.
      * @return the property for the given parameter, or null if it does not exist.
      */    
-	@Deprecated
+    @Deprecated
     public String get$Property(String id);
     
     /** Gets the map of current properties of this class. All properties are defines by the DSL, the returned map will be immutable.
      * 
      * @return the current map of properties, which is never null, but may be empty.
      */
-	@Deprecated
+    @Deprecated
     public Map<String,String> get$PropertyMap();
     
     /** Gets the defined class of a "return type" if it has been defined for this object or one of its superclasses. Returns null if none has defined a return type. */
-	@Deprecated
+    @Deprecated
     public Class<? extends BonaPortable> get$returns();
     
     /** Gets the defined class of a "pk type" if it has been defined for this object or one of its superclasses. Returns null if none has defined a pk type. */
-	@Deprecated
+    @Deprecated
     public Class<? extends BonaPortable> get$pk();
     
     /** Serializes this object into the format implemented by the MessageComposer parameter. The method will invoke methods of the MessageComposer interface for every member field, and also for some metadata. Class headers itself are assumed to have been serialized before.
@@ -142,7 +142,7 @@ public interface BonaPortable extends BonaMeta {
     public void treeWalkBonaPortable(DataConverter<BonaPortable,ObjectReference> _cvt, boolean descend);
 
     /** Gets the Metadata of the BonaPortable (which is a BonaPortable itself). */
-	@Deprecated
+    @Deprecated
     public ClassDefinition get$MetaData();  // name, revision etc as a class object. Use $ to avoid conflict with other getters
     
 
@@ -166,7 +166,7 @@ public interface BonaPortable extends BonaMeta {
     boolean is$Frozen();
     
     /** Same as class$isFreezable(). */
-	@Deprecated
+    @Deprecated
     boolean is$Freezable();
     
     /** Obtain a mutable clone of a frozen object. 

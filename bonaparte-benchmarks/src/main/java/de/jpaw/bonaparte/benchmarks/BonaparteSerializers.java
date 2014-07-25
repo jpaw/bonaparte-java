@@ -30,7 +30,7 @@ import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
 @State(value = Scope.Thread)
 @OperationsPerInvocation(BonaparteSerializers.OPERATIONS_PER_INVOCATION)
 public class BonaparteSerializers {
-	static public final int OPERATIONS_PER_INVOCATION = 10000;
+    static public final int OPERATIONS_PER_INVOCATION = 10000;
 
     @GenerateMicroBenchmark
     public void serKryoDefault() throws IOException {
@@ -44,17 +44,17 @@ public class BonaparteSerializers {
         }
     }
     
-	@GenerateMicroBenchmark
-	public void serCompactId() throws IOException {
+    @GenerateMicroBenchmark
+    public void serCompactId() throws IOException {
         ClassDefinition obj1 = ClassDefinition.class$MetaData();
         ByteArrayOutputStream baos = new ByteArrayOutputStream(4000);
         DataOutputStream dataOut = new DataOutputStream(baos);
         CompactComposer cc = new CompactComposer(dataOut, true);
-		for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
-	        cc.reset();
-	        cc.writeRecord(obj1);
-		}
-	}
+        for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
+            cc.reset();
+            cc.writeRecord(obj1);
+        }
+    }
 
     @GenerateMicroBenchmark
     public void serCompactPqon() throws IOException {
@@ -90,24 +90,24 @@ public class BonaparteSerializers {
 
 
 
-	@GenerateMicroBenchmark
-	public void serByteArray() throws IOException {
+    @GenerateMicroBenchmark
+    public void serByteArray() throws IOException {
         ClassDefinition obj1 = ClassDefinition.class$MetaData();
         ByteArrayComposer bac = new ByteArrayComposer();
-		for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
-	        bac.reset();
-	        bac.writeRecord(obj1);
-		}
-	}
+        for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
+            bac.reset();
+            bac.writeRecord(obj1);
+        }
+    }
 
 
-	@GenerateMicroBenchmark
-	public void serStringBuilder() throws IOException {
+    @GenerateMicroBenchmark
+    public void serStringBuilder() throws IOException {
         ClassDefinition obj1 = ClassDefinition.class$MetaData();
         StringBuilderComposer sbc = new StringBuilderComposer(new StringBuilder());
-		for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
-	        sbc.reset();
-	        sbc.writeRecord(obj1);
-		}
-	}
+        for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
+            sbc.reset();
+            sbc.writeRecord(obj1);
+        }
+    }
 }

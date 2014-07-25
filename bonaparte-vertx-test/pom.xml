@@ -37,7 +37,7 @@
             <version>${vertx.version}</version>
         </dependency>
 
-		<!-- test dependencies -->
+        <!-- test dependencies -->
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>

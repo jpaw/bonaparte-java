@@ -58,8 +58,8 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
 
     // entry called from generated objects:
     public static void deserialize(BonaPortable obj, ObjectInput _in) throws IOException, ClassNotFoundException {
-    	MessageParser<IOException> _p = new ExternalizableParser(_in);
-    	obj.deserialize(_p);
+        MessageParser<IOException> _p = new ExternalizableParser(_in);
+        obj.deserialize(_p);
     }
 
     /**************************************************************************************************
@@ -76,7 +76,7 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
     }
 
     private byte needToken() throws IOException {
-    	return nextByte();	// just a synonym
+        return nextByte();  // just a synonym
     }
     
     private void pushBack(byte b) {
@@ -502,14 +502,14 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
 
     @Override
     public void eatParentSeparator() throws IOException {
-    	eatObjectOrParentSeparator(PARENT_SEPARATOR);
-    }    	
-    	
+        eatObjectOrParentSeparator(PARENT_SEPARATOR);
+    }       
+        
     public void eatObjectTerminator() throws IOException {
-    	eatObjectOrParentSeparator(OBJECT_TERMINATOR);
+        eatObjectOrParentSeparator(OBJECT_TERMINATOR);
     }
     
-   	protected void eatObjectOrParentSeparator(byte which) throws IOException {
+    protected void eatObjectOrParentSeparator(byte which) throws IOException {
         skipNulls();  // upwards compatibility: skip extra fields if they are blank.
         byte z = needToken();
         if (z == which)
@@ -525,19 +525,19 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
             // fall through
         case IGNORE:
             // skip bytes until we are at end of record (bad!) (thrown by needToken()) or find the terminator
-        	skipUntilNext(which);
+            skipUntilNext(which);
         }
     }
-   	
-   	protected void skipUntilNext(byte which) throws IOException {
-   		byte c;
-   		while ((c = needToken()) != which) {
-   			if (c == OBJECT_BEGIN) {
-   				// skip nested object!
-   				skipUntilNext(OBJECT_TERMINATOR);
-   			}
-   		}
-   	}
+    
+    protected void skipUntilNext(byte which) throws IOException {
+        byte c;
+        while ((c = needToken()) != which) {
+            if (c == OBJECT_BEGIN) {
+                // skip nested object!
+                skipUntilNext(OBJECT_TERMINATOR);
+            }
+        }
+    }
 
     @Override
     public Integer readNumber(String fieldname, boolean allowNull, int length, boolean isSigned) throws IOException {
@@ -652,17 +652,17 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         currentClass = newClassName;
     }
 
-	@Override
-	public <T extends AbstractXEnumBase<T>> T readXEnum(XEnumDataItem di, XEnumFactory<T> factory) throws IOException {
-		XEnumDefinition spec = di.getBaseXEnum();
-		String scannedToken = readString(di.getName(), !di.getIsRequired() || spec.getHasNullToken(), spec.getMaxTokenLength(), true, false, false, true);
-		if (scannedToken == null)
-			return factory.getNullToken();
-		T value = factory.getByToken(scannedToken);
-		if (value == null) {
-			throw new IOException(String.format("Invalid enum token %s for field %s.%s", scannedToken, currentClass, di.getName()));
-		}
-		return value;
-	}
+    @Override
+    public <T extends AbstractXEnumBase<T>> T readXEnum(XEnumDataItem di, XEnumFactory<T> factory) throws IOException {
+        XEnumDefinition spec = di.getBaseXEnum();
+        String scannedToken = readString(di.getName(), !di.getIsRequired() || spec.getHasNullToken(), spec.getMaxTokenLength(), true, false, false, true);
+        if (scannedToken == null)
+            return factory.getNullToken();
+        T value = factory.getByToken(scannedToken);
+        if (value == null) {
+            throw new IOException(String.format("Invalid enum token %s for field %s.%s", scannedToken, currentClass, di.getName()));
+        }
+        return value;
+    }
 }
 

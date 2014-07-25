@@ -1,74 +1,74 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>de.jpaw</groupId>
-		<artifactId>bonaparte-base</artifactId>
-		<version>2.2.2-SNAPSHOT</version>
+    <parent>
+        <groupId>de.jpaw</groupId>
+        <artifactId>bonaparte-base</artifactId>
+        <version>2.2.2-SNAPSHOT</version>
         <relativePath>../bonaparte-base/pom.xml</relativePath>
-	</parent>
+    </parent>
 
-	<artifactId>bonaparte-mina-test</artifactId>
-	<packaging>jar</packaging>
+    <artifactId>bonaparte-mina-test</artifactId>
+    <packaging>jar</packaging>
 
-	<name>BONAPARTE mina integration tests</name>
+    <name>BONAPARTE mina integration tests</name>
 
-	<dependencies>
-		<dependency>
-			<groupId>de.jpaw</groupId>
-			<artifactId>bonaparte-core</artifactId>
-			<version>${bonaparte.version}</version>
-		</dependency>
+    <dependencies>
+        <dependency>
+            <groupId>de.jpaw</groupId>
+            <artifactId>bonaparte-core</artifactId>
+            <version>${bonaparte.version}</version>
+        </dependency>
         <dependency>
             <groupId>de.jpaw</groupId>
             <artifactId>bonaparte-demorqrs</artifactId>
             <version>${bonaparte.version}</version>
         </dependency>
 
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-simple</artifactId>
-			<version>${slf4j.version}</version>
-			<scope>runtime</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>runtime</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>org.apache.mina</groupId>
-			<artifactId>mina-core</artifactId>
-			<version>${mina.version}</version>
-		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>org.apache.mina</groupId>
+            <artifactId>mina-core</artifactId>
+            <version>${mina.version}</version>
+        </dependency>
+    </dependencies>
     
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-clean-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-			</plugin>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+            </plugin>
 
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<configuration>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
-				</configuration>
-				<executions>
-					<execution>
-						<id>make-assembly</id> <!-- this is used for inheritance merges -->
-						<phase>packaging</phase> <!-- append to the packaging phase. -->
-						<goals>
-							<goal>attached</goal> <!-- goals == mojos -->
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id> <!-- this is used for inheritance merges -->
+                        <phase>packaging</phase> <!-- append to the packaging phase. -->
+                        <goals>
+                            <goal>attached</goal> <!-- goals == mojos -->
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
-		</plugins>
-	</build>
+        </plugins>
+    </build>
 
 </project>

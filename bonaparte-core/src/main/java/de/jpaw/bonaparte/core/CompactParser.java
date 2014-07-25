@@ -25,9 +25,9 @@ public class CompactParser extends CompactConstants implements MessageParser<IOE
     private String currentClass;
     private int pushedBack = -1;
     
-	public static void deserialize(BonaPortable obj, DataInput _in) throws IOException {
-		obj.deserialize(new CompactParser(_in));
-	}
+    public static void deserialize(BonaPortable obj, DataInput _in) throws IOException {
+        obj.deserialize(new CompactParser(_in));
+    }
 
     public CompactParser(DataInput in) {
         this.in = in;

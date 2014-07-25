@@ -1,121 +1,121 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>de.jpaw</groupId>
-		<artifactId>bonaparte.allplugins</artifactId>
-		<version>2.2.2-SNAPSHOT</version>
-		<relativePath>../bonaparte.allplugins/pom.xml</relativePath>
-	</parent>
+    <parent>
+        <groupId>de.jpaw</groupId>
+        <artifactId>bonaparte.allplugins</artifactId>
+        <version>2.2.2-SNAPSHOT</version>
+        <relativePath>../bonaparte.allplugins/pom.xml</relativePath>
+    </parent>
 
-	<artifactId>bonaparte.plugin</artifactId>
-	<packaging>eclipse-plugin</packaging>
+    <artifactId>bonaparte.plugin</artifactId>
+    <packaging>eclipse-plugin</packaging>
 
-	<name>BONAPARTE Eclipse plugin</name>
+    <name>BONAPARTE Eclipse plugin</name>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-shade-plugin</artifactId>
-				<version>2.2</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>shade</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<artifactSet>
-						<excludes>
-							<exclude>com.google.guava:*</exclude>
-							<exclude>org.eclipse.xtend:*</exclude>
-							<exclude>org.eclipse.xtext:*</exclude>
-						</excludes>
-					</artifactSet>
-				</configuration>
-			</plugin>
-<!-- 			
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.5.1</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-					<encoding>${project.build.sourceEncoding}</encoding>
-				</configuration>
-			</plugin>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.2</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <artifactSet>
+                        <excludes>
+                            <exclude>com.google.guava:*</exclude>
+                            <exclude>org.eclipse.xtend:*</exclude>
+                            <exclude>org.eclipse.xtext:*</exclude>
+                        </excludes>
+                    </artifactSet>
+                </configuration>
+            </plugin>
+<!--            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.5.1</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
 
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<version>2.3.7</version>
-				<extensions>true</extensions>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>2.3.7</version>
+                <extensions>true</extensions>
 
-				<executions>
-					<execution>
-						<id>wrap-my-dependency</id>
-						<goals>
-							<goal>wrap</goal>
-						</goals>
-						<configuration>
-							<wrapImportPackage>;</wrapImportPackage>
-						</configuration>
-					</execution>
-				</executions>
+                <executions>
+                    <execution>
+                        <id>wrap-my-dependency</id>
+                        <goals>
+                            <goal>wrap</goal>
+                        </goals>
+                        <configuration>
+                            <wrapImportPackage>;</wrapImportPackage>
+                        </configuration>
+                    </execution>
+                </executions>
 
-				<configuration>
-					<Embed-Dependency>*;scope=compile</Embed-Dependency>
-					<instructions>
-						<Bundle-SymbolicName>bonaparte.plugin</Bundle-SymbolicName>
-						<Bundle-Name>${project.artifactId}</Bundle-Name>
-						<Bundle-Version>${project.version}</Bundle-Version>
-						<Import-Package>
-							de.jpaw.bonaparte.core,
-							de.jpaw.bonaparte.core.annotation,
-							de.jpaw.bonaparte.core.extensions,
-							de.jpaw.bonaparte.core.enums,
-							de.jpaw.util,
-							de.jpaw.bonaparte.sock,
-							de.jpaw.bonaparte.pojojs.meta,
-							de.jpaw.bonaparte.pojos.ui
-						</Import-Package>
-						<Export-Service>de.jpaw.bonaparte.core.MessageComposer</Export-Service>
-						<Export-Package>
-							de.jpaw.*
-						</Export-Package>
-					</instructions>
-				</configuration>
-			</plugin>
+                <configuration>
+                    <Embed-Dependency>*;scope=compile</Embed-Dependency>
+                    <instructions>
+                        <Bundle-SymbolicName>bonaparte.plugin</Bundle-SymbolicName>
+                        <Bundle-Name>${project.artifactId}</Bundle-Name>
+                        <Bundle-Version>${project.version}</Bundle-Version>
+                        <Import-Package>
+                            de.jpaw.bonaparte.core,
+                            de.jpaw.bonaparte.core.annotation,
+                            de.jpaw.bonaparte.core.extensions,
+                            de.jpaw.bonaparte.core.enums,
+                            de.jpaw.util,
+                            de.jpaw.bonaparte.sock,
+                            de.jpaw.bonaparte.pojojs.meta,
+                            de.jpaw.bonaparte.pojos.ui
+                        </Import-Package>
+                        <Export-Service>de.jpaw.bonaparte.core.MessageComposer</Export-Service>
+                        <Export-Package>
+                            de.jpaw.*
+                        </Export-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
  -->
- 		</plugins>
-	</build>
+        </plugins>
+    </build>
 
-	<dependencies>
-		<dependency>
-			<groupId>de.jpaw</groupId>
-			<artifactId>bonaparte-core</artifactId>
-			<version>${bonaparte.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>de.jpaw</groupId>
-			<artifactId>bonaparte-xml</artifactId>
-			<version>${bonaparte.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>de.jpaw</groupId>
-			<artifactId>bonaparte-money</artifactId>
-			<version>${bonaparte.version}</version>
-		</dependency>
+    <dependencies>
+        <dependency>
+            <groupId>de.jpaw</groupId>
+            <artifactId>bonaparte-core</artifactId>
+            <version>${bonaparte.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.jpaw</groupId>
+            <artifactId>bonaparte-xml</artifactId>
+            <version>${bonaparte.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.jpaw</groupId>
+            <artifactId>bonaparte-money</artifactId>
+            <version>${bonaparte.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <version>${slf4j.version}</version>
             <scope>runtime</scope>
         </dependency>
-	</dependencies>
+    </dependencies>
 </project>

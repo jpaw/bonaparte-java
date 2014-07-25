@@ -112,7 +112,7 @@ public class FixedWidthComposer extends CSVComposer {
             }
             break;
         default:
-        	throw new RuntimeException("writeNull() for category " + di.getDataCategory() + " should be converted by specific methods such as addENum() etc.");
+            throw new RuntimeException("writeNull() for category " + di.getDataCategory() + " should be converted by specific methods such as addENum() etc.");
         }
     }
 

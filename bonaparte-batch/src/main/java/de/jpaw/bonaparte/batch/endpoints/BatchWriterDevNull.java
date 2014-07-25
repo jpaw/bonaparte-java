@@ -5,7 +5,7 @@ import de.jpaw.bonaparte.batch.ContributorNoop;
 
 public class BatchWriterDevNull<E> extends ContributorNoop implements BatchWriter<E> {
 
-	@Override
-	public void storeResult(int no, E response) {
-	}
+    @Override
+    public void storeResult(int no, E response) {
+    }
 }

@@ -19,7 +19,7 @@ import de.jpaw.util.ByteUtil;
 @Test
 public class SerializationTest {
 
-	private void dotstDs(DSTest obj) throws IOException {
+    private void dotstDs(DSTest obj) throws IOException {
         System.out.println("SUB DS");
         
         Config cfg = new Config();
@@ -41,18 +41,18 @@ public class SerializationTest {
         System.out.println("Size 1 is " + bytes1.length + ", size 2 is " + bytes2.length);
         System.out.println("buff 2 is\n" + ByteUtil.dump(bytes2, 0));
     }
-	
-	public void testDataSerializable() throws Exception {
+    
+    public void testDataSerializable() throws Exception {
         System.out.println("Test DS");
         
-		DSTest tmp = new DSTest();
-		tmp.hello = "Hello, world";
-		tmp.num = 18;
-		tmp.short1 = "0";
-		tmp.short2 = "A";
-		tmp.hello2 = "alallalallalong... alallalallalong... ding dong!";
-		
-		dotstDs(tmp);
-	}
+        DSTest tmp = new DSTest();
+        tmp.hello = "Hello, world";
+        tmp.num = 18;
+        tmp.short1 = "0";
+        tmp.short2 = "A";
+        tmp.hello2 = "alallalallalong... alallalallalong... ding dong!";
+        
+        dotstDs(tmp);
+    }
 
 }

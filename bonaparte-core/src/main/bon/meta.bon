@@ -2,9 +2,9 @@
  * Assigned to factoryId 29, classIds 1-25
  */
 package meta factoryId 29 {
-	default private unsigned trim noControlChars;
+    default private unsigned trim noControlChars;
 
-    type identifier 			is Ascii(255);
+    type identifier             is Ascii(255);
     type enumIdType             is Ascii(63);
     type enumTokenType          is Unicode(63);
   
@@ -15,52 +15,52 @@ package meta factoryId 29 {
     enum DataCategory { OBJECT, ENUM, NUMERIC, STRING, TEMPORAL, MISC, BINARY, BASICNUMERIC, XENUM }  // misc is boolean, char, uuid, ...
     enum FoldingStrategy { SKIP_UNMAPPED, TRY_SUPERCLASS, FULL_OUTPUT, SUPERCLASS_OR_FULL, FORWARD_OBJECTS }  // what to do if no folding mapping is found
     
-	abstract immutable class FieldDefinition {
-	    enum Visibility         		visibility;
-		boolean                 		isRequired;             // if the fields allow null (if collections: the collection elements)
-		required identifier     		name;
-		enum Multiplicity       		multiplicity;
-		int                     		mapIndexType;
-        Integer                 		minCount;               // minimum number of occurrences, if a collection or array
-		Integer                 		maxCount;               // maximum number of occurrences, if a collection or array
-        enum DataCategory       		dataCategory;           // gives high level information about the data 
-        ascii(20)               		dataType;               // the Bonaparte data type
-        boolean                 		isPrimitive;            // true if the field is a primitive data type in Java
-        required boolean        		isAggregateRequired;    // field is an aggregate field (array, List, Set, Map) and the aggregate itself may not be null 
-	}
-	
-	class ObjectReference classId 1 extends FieldDefinition {
-        boolean                 		allowSubclasses;    
-		required identifier     		objectName;		
-        optional (ClassDefinition...) 	lowerBound;       // if the object must inherit another object, specify it here. null for generic BonaPortables
-        optional (ClassDefinition...) 	secondaryLowerBound; // if a secondary object has been provided, the lower bound of that one
-        optional Boolean              	secondaryAllowSubclasses;    // if the secondary object type allows subclasses
-	}
-	
-	// ElementaryDataItem is used for some as well as for types which don't need a parameter
-	// day, char, boolean
+    abstract immutable class FieldDefinition {
+        enum Visibility                 visibility;
+        boolean                         isRequired;             // if the fields allow null (if collections: the collection elements)
+        required identifier             name;
+        enum Multiplicity               multiplicity;
+        int                             mapIndexType;
+        Integer                         minCount;               // minimum number of occurrences, if a collection or array
+        Integer                         maxCount;               // maximum number of occurrences, if a collection or array
+        enum DataCategory               dataCategory;           // gives high level information about the data 
+        ascii(20)                       dataType;               // the Bonaparte data type
+        boolean                         isPrimitive;            // true if the field is a primitive data type in Java
+        required boolean                isAggregateRequired;    // field is an aggregate field (array, List, Set, Map) and the aggregate itself may not be null 
+    }
+    
+    class ObjectReference classId 1 extends FieldDefinition {
+        boolean                         allowSubclasses;    
+        required identifier             objectName;     
+        optional (ClassDefinition...)   lowerBound;       // if the object must inherit another object, specify it here. null for generic BonaPortables
+        optional (ClassDefinition...)   secondaryLowerBound; // if a secondary object has been provided, the lower bound of that one
+        optional Boolean                secondaryAllowSubclasses;    // if the secondary object type allows subclasses
+    }
+    
+    // ElementaryDataItem is used for some as well as for types which don't need a parameter
+    // day, char, boolean
     class ElementaryDataItem classId 2 extends FieldDefinition {
     }
 
     // EnumDataItem represents the special enum type
     class EnumDataItem classId 3 extends ElementaryDataItem {
-		required (EnumDefinition) 		baseEnum;
+        required (EnumDefinition)       baseEnum;
     }
 
     // XEnumDataItem represents the special xenum type
     class XEnumDataItem classId 4 extends ElementaryDataItem {
-		required (XEnumDefinition) 		baseXEnum;
+        required (XEnumDefinition)      baseXEnum;
     }
 
     // TemporalElementaryDataItem represents day / timestamp types
     class TemporalElementaryDataItem classId 5 extends ElementaryDataItem {
-        int                     		fractionalSeconds;      // decimals fraction of the second (-1 for day)
-        boolean                 		^hhmmss;
+        int                             fractionalSeconds;      // decimals fraction of the second (-1 for day)
+        boolean                         ^hhmmss;
     }
     
     // BinaryElementaryDataItem represents raw and binary
     class BinaryElementaryDataItem classId 6 extends ElementaryDataItem {
-        int                     		length;
+        int                             length;
     }
 
     // MiscElementaryDataItem represents some miscellaneous types without attributes (UUID, boolean, Object)
@@ -69,78 +69,78 @@ package meta factoryId 29 {
 
     // BasicNumericElementaryDataItem represents all integral numeric items, plus float and double (and their wrappers)
     class BasicNumericElementaryDataItem classId 8 extends ElementaryDataItem {
-        boolean                 		isSigned;
-        int                     		totalDigits;
-        int                     		decimalDigits;      // number of digits (max) behind the decimal point
+        boolean                         isSigned;
+        int                             totalDigits;
+        int                             decimalDigits;      // number of digits (max) behind the decimal point
     }
     
     // NumericElementaryDataItem represents decimal
     class NumericElementaryDataItem classId 9 extends BasicNumericElementaryDataItem {
-        boolean                 		rounding;           // if true, parsing numbers with more decimals will result in rounding, if false, an error will be raised
-        boolean                 		^autoScale;         // if true, any input will be scaled to the required number of decimal digits
+        boolean                         rounding;           // if true, parsing numbers with more decimals will result in rounding, if false, an error will be raised
+        boolean                         ^autoScale;         // if true, any input will be scaled to the required number of decimal digits
     }
 
     // AlphanumericElementaryDataItem represents all text based fields
     // ascii, unicode, uppercase, lowercase 
     class AlphanumericElementaryDataItem classId 10 extends ElementaryDataItem {
-        boolean                 		doTrim;
-        boolean                 		doTruncate;
-        boolean                 		allowControlCharacters;
-        boolean                 		restrictToAscii;
-        int                     		length;
-        int                     		minLength;
-        optional Ascii(500)     		^regexp;
+        boolean                         doTrim;
+        boolean                         doTruncate;
+        boolean                         allowControlCharacters;
+        boolean                         restrictToAscii;
+        int                             length;
+        int                             minLength;
+        optional Ascii(500)             ^regexp;
     }
-	
-	// common superclass for class, enum and xenum
-	abstract immutable class AbstractObjectParent<E extends AbstractObjectParent<!E>> cacheHash {
-		boolean                 		isAbstract;
-		boolean                 		isFinal;
-		required identifier     		name;
-		identifier              		parent;
-        identifier              		^bundle;            // OSGi bundle / module
-		optional Instant(3)   	 		whenLoaded;
-		optional (!E...) 				parentMeta;     // the meta object for the parent object (if this is an inherited one, else null)
-	}
-	// holds all meta information for a class
-	class ClassDefinition classId 11 extends AbstractObjectParent<ClassDefinition> {
-		optional Ascii(20)            		^revision;
-        required signed long          		serialUID;          // Java serializable serialVersionUID
-		required int                  		numberOfFields;
-		required (FieldDefinition...) required List<> fields;
+    
+    // common superclass for class, enum and xenum
+    abstract immutable class AbstractObjectParent<E extends AbstractObjectParent<!E>> cacheHash {
+        boolean                         isAbstract;
+        boolean                         isFinal;
+        required identifier             name;
+        identifier                      parent;
+        identifier                      ^bundle;            // OSGi bundle / module
+        optional Instant(3)             whenLoaded;
+        optional (!E...)                parentMeta;     // the meta object for the parent object (if this is an inherited one, else null)
+    }
+    // holds all meta information for a class
+    class ClassDefinition classId 11 extends AbstractObjectParent<ClassDefinition> {
+        optional Ascii(20)                  ^revision;
+        required signed long                serialUID;          // Java serializable serialVersionUID
+        required int                        numberOfFields;
+        required (FieldDefinition...) required List<> fields;
         required Unicode(512) required Map<String> ^properties;
-        required boolean              		propertiesInherited;
-        required boolean              		isImmutable;		// true if this class has no setters and only final fields
-        required boolean              		isFreezable;		// true if this class and all components are either immutable or can be explicitly frozen
-	}
-	class EnumDefinition classId 12 extends AbstractObjectParent<EnumDefinition> {
-		required signed int	   			    maxTokenLength;   	// signed because we store -1 for enums which do not have tokens at all
-		required boolean                    hasNullToken;		// has a token "" (which is converted to null)
-		required enumIdType required List<> ids;
-		required enumTokenType List<> 		tokens;
-	}
-	class XEnumDefinition classId 14 extends AbstractObjectParent<XEnumDefinition> {
-		required signed int	   			    maxTokenLength;   	// signed for symmetry with EnumDefinition
-		required boolean                    hasNullToken;		// has a token "" (which is converted to null)
-		required (EnumDefinition) 			baseEnum;
-	}
-	
-	class BundleInformation classId 15 {
-	    required identifier     			name;
+        required boolean                    propertiesInherited;
+        required boolean                    isImmutable;        // true if this class has no setters and only final fields
+        required boolean                    isFreezable;        // true if this class and all components are either immutable or can be explicitly frozen
+    }
+    class EnumDefinition classId 12 extends AbstractObjectParent<EnumDefinition> {
+        required signed int                 maxTokenLength;     // signed because we store -1 for enums which do not have tokens at all
+        required boolean                    hasNullToken;       // has a token "" (which is converted to null)
+        required enumIdType required List<> ids;
+        required enumTokenType List<>       tokens;
+    }
+    class XEnumDefinition classId 14 extends AbstractObjectParent<XEnumDefinition> {
+        required signed int                 maxTokenLength;     // signed for symmetry with EnumDefinition
+        required boolean                    hasNullToken;       // has a token "" (which is converted to null)
+        required (EnumDefinition)           baseEnum;
+    }
+    
+    class BundleInformation classId 15 {
+        required identifier                 name;
         required identifier required List<> packages;
-	    required unicode(2048)           	classPath;
-        required enum BundleStatus       	bundleStatus;
-	    optional Instant(3)	 	  			whenStatusChanged; 
-	}
-	
-	/** Hold a parsed structure of name[index].subcomponentName[index] */
-	class ParsedFoldingComponent classId 16 {
-	    default public;
-	    required identifier     			fieldname;      // name without any subcomponents
-	    // required int           			numDescends;    // >= 0 if known, -1 for unknown (allows fast-forward to superclasses)
-	    required int            			index;          // numeric index, -1 f all elements, 0..n-1 else
-	    optional Unicode(255)   			alphaIndex;     // alphanumeric index, or null if none exists
-	    optional (ParsedFoldingComponent)   component;      // optional specification of the substructure
-	}
-	
+        required unicode(2048)              classPath;
+        required enum BundleStatus          bundleStatus;
+        optional Instant(3)                 whenStatusChanged; 
+    }
+    
+    /** Hold a parsed structure of name[index].subcomponentName[index] */
+    class ParsedFoldingComponent classId 16 {
+        default public;
+        required identifier                 fieldname;      // name without any subcomponents
+        // required int                     numDescends;    // >= 0 if known, -1 for unknown (allows fast-forward to superclasses)
+        required int                        index;          // numeric index, -1 f all elements, 0..n-1 else
+        optional Unicode(255)               alphaIndex;     // alphanumeric index, or null if none exists
+        optional (ParsedFoldingComponent)   component;      // optional specification of the substructure
+    }
+    
 }

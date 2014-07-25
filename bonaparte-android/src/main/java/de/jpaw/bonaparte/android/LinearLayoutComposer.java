@@ -382,12 +382,12 @@ abstract public class LinearLayoutComposer  implements MessageComposer<RuntimeEx
     }
 
     // xenum with alphanumeric expansion: delegate to Null/String
-	@Override
-	public void addEnum(XEnumDataItem di, AlphanumericElementaryDataItem token, XEnum<?> n) {
+    @Override
+    public void addEnum(XEnumDataItem di, AlphanumericElementaryDataItem token, XEnum<?> n) {
         if (n == null) {
             writeNull(token);
         } else {
             addField(token, n.getToken());
         }
-	}
+    }
 }

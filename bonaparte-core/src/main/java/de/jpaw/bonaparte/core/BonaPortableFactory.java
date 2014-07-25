@@ -81,11 +81,11 @@ public class BonaPortableFactory {
     // before actually loading the class. Therefore, bundle information must be fed in separately
     // and can only be consistency-checked afterwards.
     public static BonaPortable createObjectOLD(String name) throws MessageParserException {
-    	
-    	BonaPortableClass<BonaPortable> bclass = newMap.get(name);
-    	if (bclass != null)
-    		return bclass.newInstance();  // shortcut!
-    	
+        
+        BonaPortableClass<BonaPortable> bclass = newMap.get(name);
+        if (bclass != null)
+            return bclass.newInstance();  // shortcut!
+        
         String FQON = null;
         int lastDot = name.lastIndexOf('.');
         if ((lastDot == 0) || (lastDot >= (name.length() - 1))) {

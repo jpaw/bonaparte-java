@@ -8,7 +8,7 @@ import com.martiansoftware.jsap.JSAPResult;
  *
  */
 public interface Contributor {
-	public void addCommandlineParameters(JSAP params) throws Exception;
-	public void evalCommandlineParameters(JSAPResult params) throws Exception;
-	public void close() throws Exception;   // ends any processing (can be used to close files or connections)
+    public void addCommandlineParameters(JSAP params) throws Exception;
+    public void evalCommandlineParameters(JSAPResult params) throws Exception;
+    public void close() throws Exception;   // ends any processing (can be used to close files or connections)
 }

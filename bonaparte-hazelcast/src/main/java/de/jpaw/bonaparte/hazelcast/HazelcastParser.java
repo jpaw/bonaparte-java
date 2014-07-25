@@ -12,14 +12,14 @@ import de.jpaw.bonaparte.core.CompactParser;
 
 public class HazelcastParser extends CompactParser {
 
-	// entry called from generated objects:
+    // entry called from generated objects:
     public static void deserialize(BonaPortable obj, ObjectDataInput _in) throws IOException {
-    	CompactParser.deserialize(obj, _in);
+        CompactParser.deserialize(obj, _in);
     }
 
-	public HazelcastParser(ObjectDataInput in) {
-		super(in);
-		// TODO Auto-generated constructor stub
-	}
+    public HazelcastParser(ObjectDataInput in) {
+        super(in);
+        // TODO Auto-generated constructor stub
+    }
 
 }

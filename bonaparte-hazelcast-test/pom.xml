@@ -1,25 +1,25 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>de.jpaw</groupId>
-		<artifactId>bonaparte-base</artifactId>
-		<version>2.2.2-SNAPSHOT</version>
-		<relativePath>../bonaparte-base/pom.xml</relativePath>
-	</parent>
+    <parent>
+        <groupId>de.jpaw</groupId>
+        <artifactId>bonaparte-base</artifactId>
+        <version>2.2.2-SNAPSHOT</version>
+        <relativePath>../bonaparte-base/pom.xml</relativePath>
+    </parent>
 
-	<artifactId>bonaparte-hazelcast-test</artifactId>
-	<packaging>jar</packaging>
+    <artifactId>bonaparte-hazelcast-test</artifactId>
+    <packaging>jar</packaging>
 
-	<name>BONAPARTE Hazelcast serializer / deserializer tests</name>
+    <name>BONAPARTE Hazelcast serializer / deserializer tests</name>
 
-	<dependencies>
-		<dependency>
-			<groupId>de.jpaw</groupId>
-			<artifactId>bonaparte-hazelcast</artifactId>
-			<version>${bonaparte.version}</version>
-		</dependency>
+    <dependencies>
+        <dependency>
+            <groupId>de.jpaw</groupId>
+            <artifactId>bonaparte-hazelcast</artifactId>
+            <version>${bonaparte.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
@@ -32,8 +32,8 @@
             <version>${slf4j.version}</version>
             <scope>runtime</scope>
         </dependency>
-   	</dependencies>
-   	
+    </dependencies>
+    
     <build>
         <plugins>
             <plugin>
@@ -49,5 +49,5 @@
             </plugin>
         </plugins>
     </build>
-   	
+    
 </project>

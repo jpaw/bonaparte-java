@@ -68,11 +68,11 @@ public class TestFolding {
     @Test
     public void testSingleFieldAccess() throws Exception {
         UnixPasswd pwEntry = new UnixPasswd("root", "x", 0, 0,"System superuser", "/root", "/bin/sh");
-    	assert("root".equals(FieldGetter.getField(pwEntry, "name")));
+        assert("root".equals(FieldGetter.getField(pwEntry, "name")));
     }
     @Test
     public void testSingleFieldAccess2() throws Exception {
         UnixPasswd pwEntry = new UnixPasswd("root", "x", 0, 0,"System superuser", "/root", "/bin/sh");
-    	assert("/bin/sh".equals(FieldGetter.getField(pwEntry, "shell")));
+        assert("/bin/sh".equals(FieldGetter.getField(pwEntry, "shell")));
     }
 }

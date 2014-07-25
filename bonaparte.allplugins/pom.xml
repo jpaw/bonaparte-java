@@ -1,38 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>de.jpaw</groupId>
-	<artifactId>bonaparte.allplugins</artifactId>
-	<version>2.2.2-SNAPSHOT</version>
-	<packaging>pom</packaging>
-	<modules>
-		<module>../bonaparte.plugin</module>
-		<module>../bonaparte.sdk</module>
-		<module>../bonaparte.updatesite</module>
-	</modules>
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>de.jpaw</groupId>
+    <artifactId>bonaparte.allplugins</artifactId>
+    <version>2.2.2-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <modules>
+        <module>../bonaparte.plugin</module>
+        <module>../bonaparte.sdk</module>
+        <module>../bonaparte.updatesite</module>
+    </modules>
 
-	<licenses>
-		<license>
-			<name>The Apache Software License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-		</license>
-	</licenses>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
 
-	<organization>
-		<name>Michael Bischoff</name>
-		<url>http://www.jpaw.de</url>
-	</organization>
-	<developers>
-		<developer>
-			<id>mbi</id>
-			<name>Michael Bischoff</name>
-			<email>jpaw@online.de</email>
-			<url>http://www.jpaw.de</url>
-		</developer>
-	</developers>
+    <organization>
+        <name>Michael Bischoff</name>
+        <url>http://www.jpaw.de</url>
+    </organization>
+    <developers>
+        <developer>
+            <id>mbi</id>
+            <name>Michael Bischoff</name>
+            <email>jpaw@online.de</email>
+            <url>http://www.jpaw.de</url>
+        </developer>
+    </developers>
 
-	<properties>
+    <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- define releases we want to use, to ensure consistency -->
         <bonaparte.version>2.2.2-SNAPSHOT</bonaparte.version>
@@ -42,16 +42,16 @@
             15.0 UPTODATE 2013-09-26 -->
         <jodatime.version>2.3</jodatime.version>        <!-- UPTODATE 2014-04-01 -->
         <jaxb.version>2.2.9</jaxb.version>              <!-- http://repo1.maven.org/maven2/javax/xml/bind/jaxb-api/ -->
-		<tycho.version>0.19.0</tycho.version>
-	</properties>
+        <tycho.version>0.19.0</tycho.version>
+    </properties>
 
-	<repositories>
+    <repositories>
         <repository>
             <id>p2-luna</id>
             <layout>p2</layout>
             <url>http://download.eclipse.org/releases/luna</url>
         </repository>
-	</repositories>
+    </repositories>
 
     <build>
         <pluginManagement>
@@ -75,39 +75,39 @@
             </plugins>
         </pluginManagement>
             
-		<plugins>
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-maven-plugin</artifactId>
-				<extensions>true</extensions>
-			</plugin>
+        <plugins>
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>tycho-maven-plugin</artifactId>
+                <extensions>true</extensions>
+            </plugin>
 
-<!-- 			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>target-platform-configuration</artifactId>
-				<configuration>
-					<environments>
-						<environment>
-							<os>linux</os>
-							<ws>gtk</ws>
-							<arch>x86_64</arch>
-						</environment>
-						<environment>
-							<os>win32</os>
-							<ws>win32</ws>
-							<arch>x86_64</arch>
-						</environment>
-						<environment>
-							<os>macosx</os>
-							<ws>cocoa</ws>
-							<arch>x86_64</arch>
-						</environment>
-					</environments>
-				</configuration>
-			</plugin>
+<!--            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>target-platform-configuration</artifactId>
+                <configuration>
+                    <environments>
+                        <environment>
+                            <os>linux</os>
+                            <ws>gtk</ws>
+                            <arch>x86_64</arch>
+                        </environment>
+                        <environment>
+                            <os>win32</os>
+                            <ws>win32</ws>
+                            <arch>x86_64</arch>
+                        </environment>
+                        <environment>
+                            <os>macosx</os>
+                            <ws>cocoa</ws>
+                            <arch>x86_64</arch>
+                        </environment>
+                    </environments>
+                </configuration>
+            </plugin>
 
- -->		</plugins>
+ -->        </plugins>
 
-	</build>
+    </build>
 
 </project> 

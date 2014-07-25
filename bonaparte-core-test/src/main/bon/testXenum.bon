@@ -1,29 +1,29 @@
 package testXenum {
-	
-	enum Color {
-		RED="R", GREEN="G", BLUE="B"
-	}
-	enum BW {
-		BLACK="BL", WHITE="W"
-	}
-	
-	xenum XColor is Color : 2
-	xenum MoreColors is BW extends XColor
-	
-	class SimpleSampleUsingEnum {
-		enum Color			myColor;
-	}
-	class SimpleSampleUsingXEnum {
-		xenum XColor		myColor;
-	}
-	class SimpleSampleUsingInheritedXEnum {
-		xenum MoreColors	myColor;
-	}
-	
-	class SampleUsingMultipleXEnums {
-		Ascii(8)            id;
-		enum Color			myColor;
-		xenum XColor		myXColor;
-		xenum MoreColors	myMoreColors;  // not yet working, typecast issue!
-	}
+    
+    enum Color {
+        RED="R", GREEN="G", BLUE="B"
+    }
+    enum BW {
+        BLACK="BL", WHITE="W"
+    }
+    
+    xenum XColor is Color : 2
+    xenum MoreColors is BW extends XColor
+    
+    class SimpleSampleUsingEnum {
+        enum Color          myColor;
+    }
+    class SimpleSampleUsingXEnum {
+        xenum XColor        myColor;
+    }
+    class SimpleSampleUsingInheritedXEnum {
+        xenum MoreColors    myColor;
+    }
+    
+    class SampleUsingMultipleXEnums {
+        Ascii(8)            id;
+        enum Color          myColor;
+        xenum XColor        myXColor;
+        xenum MoreColors    myMoreColors;  // not yet working, typecast issue!
+    }
 }

@@ -9,5 +9,5 @@ package de.jpaw.bonaparte.batch;
  */
 
 public interface BatchWriter<F> extends Contributor {
-	public void storeResult(int recordno, F response) throws Exception;
+    public void storeResult(int recordno, F response) throws Exception;
 }

@@ -239,32 +239,32 @@ public class OneThread implements Runnable {
                 extc(true);
                 break;
             case 22:
-				extp();
-				break;
-			// 30..32 Bonaparte compact
-			case 30:
-				coc(false);
-				break;
-			case 31:
-				coc(true);
-				break;
-			case 32:
-				// cop();
-				break;
-			// 40..42 Bonaparte compact with Ids instead of class names
-			case 40:
-				cocId(false);
-				break;
-			case 41:
-				cocId(true);
-				break;
-			case 42:
-				// cop();
-				break;
-			// 100 .. 102 Gson (String)
-			case 100:
-				toGson(false);
-				break;
+                extp();
+                break;
+            // 30..32 Bonaparte compact
+            case 30:
+                coc(false);
+                break;
+            case 31:
+                coc(true);
+                break;
+            case 32:
+                // cop();
+                break;
+            // 40..42 Bonaparte compact with Ids instead of class names
+            case 40:
+                cocId(false);
+                break;
+            case 41:
+                cocId(true);
+                break;
+            case 42:
+                // cop();
+                break;
+            // 100 .. 102 Gson (String)
+            case 100:
+                toGson(false);
+                break;
             case 101:
                 toGson(true);
                 break;

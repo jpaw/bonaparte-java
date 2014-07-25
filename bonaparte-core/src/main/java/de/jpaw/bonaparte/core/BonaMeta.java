@@ -10,7 +10,7 @@ import java.io.Serializable;
  *
  **/
 public interface BonaMeta extends Serializable {
-	
+    
     /** Gets the partially qualified object name (the fully qualified name minus some constant package prefix).
      * This is a constant string (static final), but defined as a member function in order to be able to declare it in the interface.
      * 

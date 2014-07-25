@@ -114,7 +114,7 @@
                                 </transformer>
                             </transformers>
                             <filters>
-								<!-- Remove annotation processor files -->
+                                <!-- Remove annotation processor files -->
                                 <filter>
                                     <artifact>*:*</artifact>
                                     <excludes>

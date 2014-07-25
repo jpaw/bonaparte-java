@@ -45,7 +45,7 @@ public class ListMetaComposer extends NoOpComposer implements MessageComposer<Ru
     }
     
     protected void add(FieldDefinition di, Object o) {
-    	storage.add(new DataAndMeta<Object,FieldDefinition>(di, o));
+        storage.add(new DataAndMeta<Object,FieldDefinition>(di, o));
     }
     
     public List<DataAndMeta<Object,FieldDefinition>> getStorage() {
@@ -191,8 +191,8 @@ public class ListMetaComposer extends NoOpComposer implements MessageComposer<Ru
         add(di, n);
     }
 
-	@Override
-	public void addEnum(XEnumDataItem di, AlphanumericElementaryDataItem token, XEnum<?> n) {
+    @Override
+    public void addEnum(XEnumDataItem di, AlphanumericElementaryDataItem token, XEnum<?> n) {
         add(di, n);
-	}
+    }
 }

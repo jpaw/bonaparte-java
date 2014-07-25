@@ -38,48 +38,48 @@ import de.jpaw.bonaparte.pojos.ui.UIColumn;
 @State(value = Scope.Thread)
 @OperationsPerInvocation(BonaparteSerializers.OPERATIONS_PER_INVOCATION)
 public class BonaparteDeserializers {
-	static public final int OPERATIONS_PER_INVOCATION = 10000;
+    static public final int OPERATIONS_PER_INVOCATION = 10000;
 
-//	@GenerateMicroBenchmark
-//	public void deserCompact() throws IOException {
+//  @GenerateMicroBenchmark
+//  public void deserCompact() throws IOException {
 //        ClassDefinition obj1 = ClassDefinition.class$MetaData();
 //        ByteArrayOutputStream baos = new ByteArrayOutputStream(4000);
 //        DataOutputStream dataOut = new DataOutputStream(baos);
 //        CompactComposer cc = new CompactComposer(dataOut, false);
-//		for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
-//	        cc.reset();
-//	        cc.writeRecord(obj1);
-//		}
-//	}
+//      for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
+//          cc.reset();
+//          cc.writeRecord(obj1);
+//      }
+//  }
 //
 
-	@GenerateMicroBenchmark
-	public void deserByteArray(BlackHole bh) throws IOException, MessageParserException {
-		UIColumn obj1 = new UIColumn();
-		obj1.setFieldName("Hello");
-		obj1.setAlignment(Alignment.CENTER);
-		obj1.setLayoutHint(LayoutHint.TEXT);
-		obj1.setWidth(42);
-		
+    @GenerateMicroBenchmark
+    public void deserByteArray(BlackHole bh) throws IOException, MessageParserException {
+        UIColumn obj1 = new UIColumn();
+        obj1.setFieldName("Hello");
+        obj1.setAlignment(Alignment.CENTER);
+        obj1.setLayoutHint(LayoutHint.TEXT);
+        obj1.setWidth(42);
+        
         ByteArrayComposer bac = new ByteArrayComposer();
         bac.writeRecord(obj1);
         byte [] data = bac.getBytes();
         
-		for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
-			ByteArrayParser dst = new ByteArrayParser(data, 0, -1);
-	        bh.consume(dst.readRecord());
-		}
-	}
+        for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
+            ByteArrayParser dst = new ByteArrayParser(data, 0, -1);
+            bh.consume(dst.readRecord());
+        }
+    }
 
 
-//	@GenerateMicroBenchmark
-//	public void deserStringBuilder() throws IOException {
+//  @GenerateMicroBenchmark
+//  public void deserStringBuilder() throws IOException {
 //        ClassDefinition obj1 = ClassDefinition.class$MetaData();
 //        StringBuilderComposer sbc = new StringBuilderComposer(new StringBuilder());
-//		for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
-//	        sbc.reset();
-//	        sbc.writeRecord(obj1);
-//		}
-//	}
+//      for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
+//          sbc.reset();
+//          sbc.writeRecord(obj1);
+//      }
+//  }
 
 }

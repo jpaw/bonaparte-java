@@ -27,8 +27,8 @@ public class EnumAsTokenComposerFilter<E extends Exception> extends DelegatingBa
     }
 
     // xenum with alphanumeric expansion: delegate to Null/String
-	@Override
-	public void addEnum(XEnumDataItem di, AlphanumericElementaryDataItem token, XEnum<?> n) throws E {
+    @Override
+    public void addEnum(XEnumDataItem di, AlphanumericElementaryDataItem token, XEnum<?> n) throws E {
         delegateComposer.addField(token, n == null ? null : n.name());
-	}
+    }
 }

@@ -2,13 +2,13 @@ package selfRefs {
     default public;
     
     class ElementWithRef {
-        Unicode(40)					text;
-    	(AnotherElementWithRef)		ref;
+        Unicode(40)                 text;
+        (AnotherElementWithRef)     ref;
     }
     
     class AnotherElementWithRef {
-        Unicode(40)					text;
-    	(ElementWithRef)			ref1;
+        Unicode(40)                 text;
+        (ElementWithRef)            ref1;
         (AnotherElementWithRef...)  ref2;
     }
 }

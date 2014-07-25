@@ -28,43 +28,43 @@ import com.google.common.cache.CacheLoader;
 @State(value = Scope.Thread)
 @OperationsPerInvocation(JavaAndGuava.OPERATIONS_PER_INVOCATION)
 public class JavaAndGuava {
-	static public final int OPERATIONS_PER_INVOCATION = 1000000;
-	static public final String DATA = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet";
-	static public final Long KEY = 437L;
-	
-	@GenerateMicroBenchmark
-	public void javaHashMapGet(BlackHole bh) {
-		final Map<Long,String> map = new HashMap<Long,String>(100);
-		map.put(KEY, DATA);
-		for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
-	        bh.consume(map.get(KEY));
-		}
-	}
+    static public final int OPERATIONS_PER_INVOCATION = 1000000;
+    static public final String DATA = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet";
+    static public final Long KEY = 437L;
+    
+    @GenerateMicroBenchmark
+    public void javaHashMapGet(BlackHole bh) {
+        final Map<Long,String> map = new HashMap<Long,String>(100);
+        map.put(KEY, DATA);
+        for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
+            bh.consume(map.get(KEY));
+        }
+    }
 
-	@GenerateMicroBenchmark
-	public void javaConcurrentMapGet(BlackHole bh) {
-		final Map<Long,String> map = new ConcurrentHashMap<Long,String>(100);
-		map.put(KEY, DATA);
-		for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
-	        bh.consume(map.get(KEY));
-		}
-	}
+    @GenerateMicroBenchmark
+    public void javaConcurrentMapGet(BlackHole bh) {
+        final Map<Long,String> map = new ConcurrentHashMap<Long,String>(100);
+        map.put(KEY, DATA);
+        for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
+            bh.consume(map.get(KEY));
+        }
+    }
 
-	@GenerateMicroBenchmark
-	public void guavaCacheGetNoTO(BlackHole bh) {
-		final Cache<Long,String> map = CacheBuilder
-				.newBuilder()
-				.build( 
- 					new CacheLoader<Long, String>() {
- 						public String load(Long key) {
- 							return DATA;
- 						}
- 					});
-		map.getIfPresent(KEY);  // get is put... (triggers loader)
-		for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
-	        bh.consume(map.getIfPresent(KEY));
-		}
-	}
+    @GenerateMicroBenchmark
+    public void guavaCacheGetNoTO(BlackHole bh) {
+        final Cache<Long,String> map = CacheBuilder
+                .newBuilder()
+                .build( 
+                    new CacheLoader<Long, String>() {
+                        public String load(Long key) {
+                            return DATA;
+                        }
+                    });
+        map.getIfPresent(KEY);  // get is put... (triggers loader)
+        for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
+            bh.consume(map.getIfPresent(KEY));
+        }
+    }
 
     @GenerateMicroBenchmark
     public void guavaCacheGetWrTO(BlackHole bh) {

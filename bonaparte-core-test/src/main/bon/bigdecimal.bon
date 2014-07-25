@@ -21,8 +21,8 @@ package bigdecimal {
     }
     
     class BDTestCollections {
-        Decimal(18,6) Map<String> 	amount1;    
-        Decimal(18,6) Set<> 		amount2;    
-        Decimal(18,6) List<> 		amount3;    
+        Decimal(18,6) Map<String>   amount1;    
+        Decimal(18,6) Set<>         amount2;    
+        Decimal(18,6) List<>        amount3;    
     }
 }
