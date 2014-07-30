@@ -1,0 +1,11 @@
+package xenumJaxb XML FIELD {
+    
+    enum TestEnum { RED="R", GREEN="G", BLUE="B" } 
+    
+    xenum TestXmlXenumWithAdapter XML FIELD is TestEnum
+    
+    class XEnumUse XML PROPERTY {
+        xenum TestXmlXenumWithAdapter    daddel;
+    }
+    
+}
