@@ -9,6 +9,7 @@ public enum AccountType1 implements TokenizableEnum {
     AccountType1(String token) {
         this.token = token;
     }
+    @Override
     public String getToken() {
         return token;
     }

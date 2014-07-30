@@ -47,10 +47,12 @@ public abstract class AbstractXEnumBase<E extends AbstractXEnumBase<E>> implemen
         return _factory.getBaseClass();  // same as rootclass?
     }
     
+    @Override
     protected Object clone() throws CloneNotSupportedException {
         throw new CloneNotSupportedException();
     }
     
+    @Override
     protected final void finalize() {
     }
 
