@@ -4,7 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import org.openjdk.jmh.annotations.GenerateMicroBenchmark;
+import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.OperationsPerInvocation;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
@@ -32,7 +32,7 @@ import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
 public class BonaparteSerializers {
     static public final int OPERATIONS_PER_INVOCATION = 10000;
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public void serKryoDefault() throws IOException {
         Kryo kryo = new Kryo();
         ClassDefinition obj1 = ClassDefinition.class$MetaData();
@@ -44,7 +44,7 @@ public class BonaparteSerializers {
         }
     }
     
-    @GenerateMicroBenchmark
+    @Benchmark
     public void serCompactId() throws IOException {
         ClassDefinition obj1 = ClassDefinition.class$MetaData();
         ByteArrayOutputStream baos = new ByteArrayOutputStream(4000);
@@ -56,7 +56,7 @@ public class BonaparteSerializers {
         }
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public void serCompactPqon() throws IOException {
         ClassDefinition obj1 = ClassDefinition.class$MetaData();
         ByteArrayOutputStream baos = new ByteArrayOutputStream(4000);
@@ -68,7 +68,7 @@ public class BonaparteSerializers {
         }
     }
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public void serByteArrayCompactId() {
         ClassDefinition obj1 = ClassDefinition.class$MetaData();
         CompactByteArrayComposer cbac = new CompactByteArrayComposer(4000, true);
@@ -78,7 +78,7 @@ public class BonaparteSerializers {
         }
     }
     
-    @GenerateMicroBenchmark
+    @Benchmark
     public void serByteArrayCompactPqon() {
         ClassDefinition obj1 = ClassDefinition.class$MetaData();
         CompactByteArrayComposer cbac = new CompactByteArrayComposer(4000, false);
@@ -90,7 +90,7 @@ public class BonaparteSerializers {
 
 
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public void serByteArray() throws IOException {
         ClassDefinition obj1 = ClassDefinition.class$MetaData();
         ByteArrayComposer bac = new ByteArrayComposer();
@@ -101,7 +101,7 @@ public class BonaparteSerializers {
     }
 
 
-    @GenerateMicroBenchmark
+    @Benchmark
     public void serStringBuilder() throws IOException {
         ClassDefinition obj1 = ClassDefinition.class$MetaData();
         StringBuilderComposer sbc = new StringBuilderComposer(new StringBuilder());

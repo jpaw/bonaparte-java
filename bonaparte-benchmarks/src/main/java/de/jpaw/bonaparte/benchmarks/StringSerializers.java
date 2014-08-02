@@ -2,11 +2,11 @@ package de.jpaw.bonaparte.benchmarks;
 
 import java.lang.reflect.Field;
 
-import org.openjdk.jmh.annotations.GenerateMicroBenchmark;
+import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.OperationsPerInvocation;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
-import org.openjdk.jmh.logic.BlackHole;
+import org.openjdk.jmh.infra.Blackhole;
 
 // results:
 
@@ -37,26 +37,26 @@ public class StringSerializers {
         }
     }
     
-    @GenerateMicroBenchmark
+    @Benchmark
     public void empty() {
     }
 
-    @GenerateMicroBenchmark
-    public void getPrivateCharAddress(BlackHole bh)
+    @Benchmark
+    public void getPrivateCharAddress(Blackhole bh)
             throws IllegalArgumentException, IllegalAccessException {
         for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i)
             bh.consume(unsafeString.get(subject));
     }
 
-    @GenerateMicroBenchmark
-    public void copyNewArray(BlackHole bh) throws IllegalArgumentException,
+    @Benchmark
+    public void copyNewArray(Blackhole bh) throws IllegalArgumentException,
             IllegalAccessException {
         for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i)
             bh.consume(subject.toCharArray());
     }
 
-    @GenerateMicroBenchmark
-    public void copyToExistingArray(BlackHole bh)
+    @Benchmark
+    public void copyToExistingArray(Blackhole bh)
             throws IllegalArgumentException, IllegalAccessException {
         char[] tmp = new char[100];
         for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
@@ -65,8 +65,8 @@ public class StringSerializers {
         }
     }
 
-    @GenerateMicroBenchmark
-    public void getMaxCodeWithCharAt(BlackHole bh) {
+    @Benchmark
+    public void getMaxCodeWithCharAt(Blackhole bh) {
         for (int k = 0; k < OPERATIONS_PER_INVOCATION; ++k) {
             int maxCode = 0;
             int len = subject.length();
@@ -79,8 +79,8 @@ public class StringSerializers {
         }
     }
 
-    @GenerateMicroBenchmark
-    public void getMaxCodeWithReflection(BlackHole bh)
+    @Benchmark
+    public void getMaxCodeWithReflection(Blackhole bh)
             throws IllegalArgumentException, IllegalAccessException {
         for (int k = 0; k < OPERATIONS_PER_INVOCATION; ++k) {
             char buff[] = (char[]) unsafeString.get(subject);

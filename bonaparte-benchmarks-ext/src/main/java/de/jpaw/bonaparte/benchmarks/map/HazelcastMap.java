@@ -1,12 +1,12 @@
 package de.jpaw.bonaparte.benchmarks.map;
 
-import org.openjdk.jmh.annotations.GenerateMicroBenchmark;
+import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.OperationsPerInvocation;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
-import org.openjdk.jmh.logic.BlackHole;
+import org.openjdk.jmh.infra.Blackhole;
 
 import com.hazelcast.config.Config;
 import com.hazelcast.core.Hazelcast;
@@ -50,8 +50,8 @@ public class HazelcastMap {
         Hazelcast.shutdownAll();
     }
 
-    @GenerateMicroBenchmark
-    public void hazelcastMapGet(BlackHole bh) {
+    @Benchmark
+    public void hazelcastMapGet(Blackhole bh) {
         map.put(KEY, DATA);
         for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
             bh.consume(map.get(KEY));

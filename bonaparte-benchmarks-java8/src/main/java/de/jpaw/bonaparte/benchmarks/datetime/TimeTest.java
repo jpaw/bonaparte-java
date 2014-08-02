@@ -1,10 +1,10 @@
 package de.jpaw.bonaparte.benchmarks.datetime;
 
-import org.openjdk.jmh.annotations.GenerateMicroBenchmark;
+import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.OperationsPerInvocation;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
-import org.openjdk.jmh.logic.BlackHole;
+import org.openjdk.jmh.infra.Blackhole;
 
 // Benchmarks to investigate how much performance of getting the current time
 
@@ -33,29 +33,29 @@ public class TimeTest {
 //  Benchmarks to measure the overhead to get a timestamp, for Joda and Java8 time 
 //    
     
-    @GenerateMicroBenchmark
-    public void javaSystem(BlackHole bh) {
+    @Benchmark
+    public void javaSystem(Blackhole bh) {
         for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
             bh.consume(System.currentTimeMillis());
         }
     }
 
-    @GenerateMicroBenchmark
-    public void jodaNow(BlackHole bh) {
+    @Benchmark
+    public void jodaNow(Blackhole bh) {
         for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
             bh.consume(org.joda.time.LocalDateTime.now());
         }
     }
 
-    @GenerateMicroBenchmark
-    public void jodaNowUTC(BlackHole bh) {
+    @Benchmark
+    public void jodaNowUTC(Blackhole bh) {
         for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
             bh.consume(org.joda.time.LocalDateTime.now(org.joda.time.DateTimeZone.UTC));
         }
     }
 
-    @GenerateMicroBenchmark
-    public void jodaNowInstant(BlackHole bh) {
+    @Benchmark
+    public void jodaNowInstant(Blackhole bh) {
         for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
             bh.consume(org.joda.time.Instant.now());
         }
@@ -65,24 +65,24 @@ public class TimeTest {
     
     
     // requires Java 8 support
-    @GenerateMicroBenchmark
-    public void javaNow(BlackHole bh) {
+    @Benchmark
+    public void javaNow(Blackhole bh) {
         for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
             bh.consume(java.time.LocalDateTime.now());
         }
     }
     
     // requires Java 8 support
-    @GenerateMicroBenchmark
-    public void javaNowUTC(BlackHole bh) {
+    @Benchmark
+    public void javaNowUTC(Blackhole bh) {
         for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
             bh.consume(java.time.LocalDateTime.now(java.time.ZoneId.of("Z")));
         }
     }
     
     // requires Java 8 support
-    @GenerateMicroBenchmark
-    public void javaNowInstant(BlackHole bh) {
+    @Benchmark
+    public void javaNowInstant(Blackhole bh) {
         for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
             bh.consume(java.time.Instant.now());
         }
@@ -92,16 +92,16 @@ public class TimeTest {
     
     
 
-    @GenerateMicroBenchmark
-    public void jodaNew(BlackHole bh) {
+    @Benchmark
+    public void jodaNew(Blackhole bh) {
         for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
             bh.consume(new org.joda.time.LocalDateTime());
         }
     }
 
     // does not exist
-//    @GenerateMicroBenchmark
-//    public void javaNew(BlackHole bh) {
+//    @Benchmark
+//    public void javaNew(Blackhole bh) {
 //        for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
 //            bh.consume(new java.time.LocalDateTime());
 //        }

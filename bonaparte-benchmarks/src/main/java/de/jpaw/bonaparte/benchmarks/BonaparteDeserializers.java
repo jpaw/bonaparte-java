@@ -5,11 +5,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import org.openjdk.jmh.annotations.GenerateMicroBenchmark;
+import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.OperationsPerInvocation;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
-import org.openjdk.jmh.logic.BlackHole;
+import org.openjdk.jmh.infra.Blackhole;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.ByteArrayComposer;
@@ -40,7 +40,7 @@ import de.jpaw.bonaparte.pojos.ui.UIColumn;
 public class BonaparteDeserializers {
     static public final int OPERATIONS_PER_INVOCATION = 10000;
 
-//  @GenerateMicroBenchmark
+//  @Benchmark
 //  public void deserCompact() throws IOException {
 //        ClassDefinition obj1 = ClassDefinition.class$MetaData();
 //        ByteArrayOutputStream baos = new ByteArrayOutputStream(4000);
@@ -53,8 +53,8 @@ public class BonaparteDeserializers {
 //  }
 //
 
-    @GenerateMicroBenchmark
-    public void deserByteArray(BlackHole bh) throws IOException, MessageParserException {
+    @Benchmark
+    public void deserByteArray(Blackhole bh) throws IOException, MessageParserException {
         UIColumn obj1 = new UIColumn();
         obj1.setFieldName("Hello");
         obj1.setAlignment(Alignment.CENTER);
@@ -72,7 +72,7 @@ public class BonaparteDeserializers {
     }
 
 
-//  @GenerateMicroBenchmark
+//  @Benchmark
 //  public void deserStringBuilder() throws IOException {
 //        ClassDefinition obj1 = ClassDefinition.class$MetaData();
 //        StringBuilderComposer sbc = new StringBuilderComposer(new StringBuilder());

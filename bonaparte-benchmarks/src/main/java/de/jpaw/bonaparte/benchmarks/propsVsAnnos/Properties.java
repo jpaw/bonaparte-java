@@ -2,11 +2,11 @@ package de.jpaw.bonaparte.benchmarks.propsVsAnnos;
 
 import java.lang.reflect.Field;
 
-import org.openjdk.jmh.annotations.GenerateMicroBenchmark;
+import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.OperationsPerInvocation;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
-import org.openjdk.jmh.logic.BlackHole;
+import org.openjdk.jmh.infra.Blackhole;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.proptest.ClassWithProperties;
@@ -42,8 +42,8 @@ public class Properties {
         return anno == null ? null : anno.value();
     }
     
-    @GenerateMicroBenchmark
-    public void getClassAnnotationValue(BlackHole bh) throws Exception {
+    @Benchmark
+    public void getClassAnnotationValue(Blackhole bh) throws Exception {
         Object obj = new ClassWithAnnotations();
         
         assert("Hello, class".equals(getClassAnnotation(obj)));
@@ -62,8 +62,8 @@ public class Properties {
         return anno == null ? null : anno.value();
     }
     
-    @GenerateMicroBenchmark
-    public void getFieldAnnotationValue(BlackHole bh) throws Exception {
+    @Benchmark
+    public void getFieldAnnotationValue(Blackhole bh) throws Exception {
         Object obj = new ClassWithAnnotations();
         
         assert("Hello, field".equals(getFieldAnnotation(obj)));
@@ -84,8 +84,8 @@ public class Properties {
         return obj.get$BonaPortableClass().getClassProperty("myClassProp");
     }
     
-    @GenerateMicroBenchmark
-    public void getClassPropertyValue(BlackHole bh) throws Exception {
+    @Benchmark
+    public void getClassPropertyValue(Blackhole bh) throws Exception {
         BonaPortable obj = new ClassWithProperties();
         
         assert("Hello, class".equals(getClassProperty(obj)));
@@ -100,8 +100,8 @@ public class Properties {
         return obj.get$BonaPortableClass().getFieldProperty("myField", "myFieldProp");
     }
     
-    @GenerateMicroBenchmark
-    public void getFieldPropertyValue(BlackHole bh) throws Exception {
+    @Benchmark
+    public void getFieldPropertyValue(Blackhole bh) throws Exception {
         BonaPortable obj = new ClassWithProperties();
         
         assert("Hello, field".equals(getFieldProperty(obj)));

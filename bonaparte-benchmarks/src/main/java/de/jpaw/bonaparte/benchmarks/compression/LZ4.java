@@ -7,13 +7,13 @@ import net.jpountz.lz4.LZ4Factory;
 import net.jpountz.lz4.LZ4FastDecompressor;
 import net.jpountz.lz4.LZ4SafeDecompressor;
 
-import org.openjdk.jmh.annotations.GenerateMicroBenchmark;
+import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.OperationsPerInvocation;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
-import org.openjdk.jmh.logic.BlackHole;
+import org.openjdk.jmh.infra.Blackhole;
 
 import de.jpaw.bonaparte.core.ByteArrayComposer;
 import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
@@ -87,7 +87,7 @@ public class LZ4 {
     public void tearDown() {
     }
 
-    private void runCompressCase(Testcase tc, BlackHole bh) {
+    private void runCompressCase(Testcase tc, Blackhole bh) {
         for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
             final int maxCompressedLength = compressor.maxCompressedLength(tc.decompressedLength);
             tc.compressedForm = new byte[maxCompressedLength];
@@ -97,18 +97,18 @@ public class LZ4 {
         
     }
     
-    @GenerateMicroBenchmark
-    public void compressString(BlackHole bh) {
+    @Benchmark
+    public void compressString(Blackhole bh) {
         runCompressCase(sd, bh);
     }
 
-    @GenerateMicroBenchmark
-    public void compressClass(BlackHole bh) {
+    @Benchmark
+    public void compressClass(Blackhole bh) {
         runCompressCase(cd, bh);
     }
 
     
-    private void runUncompressCase(Testcase tc, BlackHole bh) {
+    private void runUncompressCase(Testcase tc, Blackhole bh) {
         byte [] target = new byte[tc.uncompressedForm.length];
         for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
             int compressedLength2 = fastDecompressor.decompress(tc.compressedForm, 0, target, 0, tc.decompressedLength);
@@ -116,18 +116,18 @@ public class LZ4 {
         }
     }
 
-    @GenerateMicroBenchmark
-    public void uncompressString(BlackHole bh) {
+    @Benchmark
+    public void uncompressString(Blackhole bh) {
         runUncompressCase(sd, bh);
     }
 
-    @GenerateMicroBenchmark
-    public void uncompressClass(BlackHole bh) {
+    @Benchmark
+    public void uncompressClass(Blackhole bh) {
         runUncompressCase(cd, bh);
     }
     
     
-    private void runUncompressKnownSize(Testcase tc, BlackHole bh) {
+    private void runUncompressKnownSize(Testcase tc, Blackhole bh) {
         byte [] target = new byte[tc.uncompressedForm.length];
         for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
             int compressedLength2 = safeDecompressor.decompress(tc.compressedForm, 0, tc.compressedLength, target, 0);
@@ -135,13 +135,13 @@ public class LZ4 {
         }
     }
 
-    @GenerateMicroBenchmark
-    public void uncompressKnownSizeString(BlackHole bh) {
+    @Benchmark
+    public void uncompressKnownSizeString(Blackhole bh) {
         runUncompressKnownSize(sd, bh);
     }
     
-    @GenerateMicroBenchmark
-    public void uncompressKnownSizeClass(BlackHole bh) {
+    @Benchmark
+    public void uncompressKnownSizeClass(Blackhole bh) {
         runUncompressKnownSize(cd, bh);
     }
 }

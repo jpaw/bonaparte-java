@@ -5,11 +5,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
-import org.openjdk.jmh.annotations.GenerateMicroBenchmark;
+import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.OperationsPerInvocation;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
-import org.openjdk.jmh.logic.BlackHole;
+import org.openjdk.jmh.infra.Blackhole;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -32,8 +32,8 @@ public class JavaAndGuava {
     static public final String DATA = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet";
     static public final Long KEY = 437L;
     
-    @GenerateMicroBenchmark
-    public void javaHashMapGet(BlackHole bh) {
+    @Benchmark
+    public void javaHashMapGet(Blackhole bh) {
         final Map<Long,String> map = new HashMap<Long,String>(100);
         map.put(KEY, DATA);
         for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
@@ -41,8 +41,8 @@ public class JavaAndGuava {
         }
     }
 
-    @GenerateMicroBenchmark
-    public void javaConcurrentMapGet(BlackHole bh) {
+    @Benchmark
+    public void javaConcurrentMapGet(Blackhole bh) {
         final Map<Long,String> map = new ConcurrentHashMap<Long,String>(100);
         map.put(KEY, DATA);
         for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
@@ -50,8 +50,8 @@ public class JavaAndGuava {
         }
     }
 
-    @GenerateMicroBenchmark
-    public void guavaCacheGetNoTO(BlackHole bh) {
+    @Benchmark
+    public void guavaCacheGetNoTO(Blackhole bh) {
         final Cache<Long,String> map = CacheBuilder
                 .newBuilder()
                 .build( 
@@ -66,8 +66,8 @@ public class JavaAndGuava {
         }
     }
 
-    @GenerateMicroBenchmark
-    public void guavaCacheGetWrTO(BlackHole bh) {
+    @Benchmark
+    public void guavaCacheGetWrTO(Blackhole bh) {
         final Cache<Long,String> map = CacheBuilder
                 .newBuilder()
                 .expireAfterWrite(60, TimeUnit.SECONDS)
@@ -83,8 +83,8 @@ public class JavaAndGuava {
         }
     }
 
-    @GenerateMicroBenchmark
-    public void guavaCacheGetRdTO(BlackHole bh) {
+    @Benchmark
+    public void guavaCacheGetRdTO(Blackhole bh) {
         final Cache<Long,String> map = CacheBuilder
                 .newBuilder()
                 .expireAfterAccess(60, TimeUnit.SECONDS)

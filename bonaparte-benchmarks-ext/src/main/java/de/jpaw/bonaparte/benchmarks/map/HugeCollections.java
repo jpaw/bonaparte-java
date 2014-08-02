@@ -5,13 +5,13 @@ import java.util.Random;
 import net.openhft.collections.HugeConfig;
 import net.openhft.collections.HugeHashMap;
 
-import org.openjdk.jmh.annotations.GenerateMicroBenchmark;
+import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.OperationsPerInvocation;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
-import org.openjdk.jmh.logic.BlackHole;
+import org.openjdk.jmh.infra.Blackhole;
 
 // Benchmarks to investigate openHft HugeCollections performance
 
@@ -53,19 +53,19 @@ public class HugeCollections {
             map.put(numbers[i], i);
     }
     
-    private void readCache(BlackHole bh) {
+    private void readCache(Blackhole bh) {
         for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i)
             bh.consume(map.get(numbers[i]));
     }
 
 
-    @GenerateMicroBenchmark
-    public void write(BlackHole bh) {
+    @Benchmark
+    public void write(Blackhole bh) {
         fillCache();
     }
     
-    @GenerateMicroBenchmark
-    public void writeReadRead(BlackHole bh) {
+    @Benchmark
+    public void writeReadRead(Blackhole bh) {
         fillCache();
         readCache(bh);
         readCache(bh);

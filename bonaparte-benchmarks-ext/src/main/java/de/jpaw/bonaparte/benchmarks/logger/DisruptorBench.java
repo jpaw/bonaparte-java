@@ -6,13 +6,13 @@ import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.openjdk.jmh.annotations.GenerateMicroBenchmark;
+import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.OperationsPerInvocation;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
-import org.openjdk.jmh.logic.BlackHole;
+import org.openjdk.jmh.infra.Blackhole;
 
 import com.lmax.disruptor.EventFactory;
 import com.lmax.disruptor.EventHandler;
@@ -77,8 +77,8 @@ public class DisruptorBench {
         exec.shutdown();
     }
     
-    @GenerateMicroBenchmark
-    public void processEvents(BlackHole bh) {
+    @Benchmark
+    public void processEvents(Blackhole bh) {
         for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
             String myData = DATA; // UUID.randomUUID().toString();
             long seq = ringBuffer.next();

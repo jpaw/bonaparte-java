@@ -12,7 +12,7 @@
     <packaging>jar</packaging>
 
     <properties>
-        <mapdb.version>1.0.2</mapdb.version>
+        <mapdb.version>1.0.5</mapdb.version>
         <chronicle.version>3.1.1</chronicle.version>
         <collections.version>3.1.0</collections.version>
         <disruptor.version>3.2.1</disruptor.version>

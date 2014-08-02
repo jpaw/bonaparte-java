@@ -6,11 +6,11 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-import org.openjdk.jmh.annotations.GenerateMicroBenchmark;
+import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.OperationsPerInvocation;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
-import org.openjdk.jmh.logic.BlackHole;
+import org.openjdk.jmh.infra.Blackhole;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -54,7 +54,7 @@ public class GuavaCache {
             cache.put(numbers[i], i);
     }
     
-    private void readCache(Cache<Integer,Integer> cache, BlackHole bh) {
+    private void readCache(Cache<Integer,Integer> cache, Blackhole bh) {
         for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i)
             bh.consume(cache.getIfPresent(numbers[i]));
     }
@@ -64,7 +64,7 @@ public class GuavaCache {
             cache.put(numbers[i], i);
     }
     
-    private void readMap(Map<Integer,Integer> cache, BlackHole bh) {
+    private void readMap(Map<Integer,Integer> cache, Blackhole bh) {
         for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i)
             bh.consume(cache.get(numbers[i]));
     }
@@ -73,65 +73,65 @@ public class GuavaCache {
 //  Benchmarks to measure the overhead to get a timestamp, for Joda and Java8 time 
 //    
     
-    @GenerateMicroBenchmark
-    public void jodaNow(BlackHole bh) {
+    @Benchmark
+    public void jodaNow(Blackhole bh) {
         for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
             bh.consume(org.joda.time.LocalDateTime.now());
         }
     }
 
     // requires Java 8 support
-//    @GenerateMicroBenchmark
-//    public void javaNow(BlackHole bh) {
+//    @Benchmark
+//    public void javaNow(Blackhole bh) {
 //        for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
 //            bh.consume(java.time.LocalDateTime.now());
 //        }
 //    }
 
-    @GenerateMicroBenchmark
-    public void jodaNew(BlackHole bh) {
+    @Benchmark
+    public void jodaNew(Blackhole bh) {
         for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
             bh.consume(new org.joda.time.LocalDateTime());
         }
     }
 
     // does not exist
-//    @GenerateMicroBenchmark
-//    public void javaNew(BlackHole bh) {
+//    @Benchmark
+//    public void javaNew(Blackhole bh) {
 //        for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
 //            bh.consume(new java.time.LocalDateTime());
 //        }
 //    }
 
-    @GenerateMicroBenchmark
-    public void guavaPutNoTO(BlackHole bh) {
+    @Benchmark
+    public void guavaPutNoTO(Blackhole bh) {
         final Cache<Integer,Integer> cache = CacheBuilder
                 .newBuilder()
                 .build();
         fillCache(cache);
     }
-    @GenerateMicroBenchmark
-    public void guavaPutWrTO(BlackHole bh) {
+    @Benchmark
+    public void guavaPutWrTO(Blackhole bh) {
         final Cache<Integer,Integer> cache = CacheBuilder
                 .newBuilder()
                 .expireAfterWrite(60, TimeUnit.SECONDS).build();
         fillCache(cache);
     }
-    @GenerateMicroBenchmark
-    public void guavaPutRdTO(BlackHole bh) {
+    @Benchmark
+    public void guavaPutRdTO(Blackhole bh) {
         final Cache<Integer,Integer> cache = CacheBuilder
                 .newBuilder()
                 .expireAfterAccess(60, TimeUnit.SECONDS).build();
         fillCache(cache);
     }
-    @GenerateMicroBenchmark
-    public void mapPut(BlackHole bh) {
+    @Benchmark
+    public void mapPut(Blackhole bh) {
         final Map<Integer,Integer> cache = new ConcurrentHashMap<Integer,Integer>(2 * OPERATIONS_PER_INVOCATION);
         fillMap(cache);
     }
 
-    @GenerateMicroBenchmark
-    public void guavaGetNoTO(BlackHole bh) {
+    @Benchmark
+    public void guavaGetNoTO(Blackhole bh) {
         final Cache<Integer,Integer> cache = CacheBuilder
                 .newBuilder()
                 .build();
@@ -141,8 +141,8 @@ public class GuavaCache {
         readCache(cache, bh);
         readCache(cache, bh);
     }
-    @GenerateMicroBenchmark
-    public void guavaGetWrTO(BlackHole bh) {
+    @Benchmark
+    public void guavaGetWrTO(Blackhole bh) {
         final Cache<Integer,Integer> cache = CacheBuilder
                 .newBuilder()
                 .expireAfterWrite(60, TimeUnit.SECONDS).build();
@@ -152,8 +152,8 @@ public class GuavaCache {
         readCache(cache, bh);
         readCache(cache, bh);
     }
-    @GenerateMicroBenchmark
-    public void guavaGetRdTO(BlackHole bh) {
+    @Benchmark
+    public void guavaGetRdTO(Blackhole bh) {
         final Cache<Integer,Integer> cache = CacheBuilder
                 .newBuilder()
                 .expireAfterAccess(60, TimeUnit.SECONDS).build();
@@ -163,8 +163,8 @@ public class GuavaCache {
         readCache(cache, bh);
         readCache(cache, bh);
     }
-    @GenerateMicroBenchmark
-    public void mapGet(BlackHole bh) {
+    @Benchmark
+    public void mapGet(Blackhole bh) {
         final Map<Integer,Integer> cache = new ConcurrentHashMap<Integer,Integer>(2 * OPERATIONS_PER_INVOCATION);
         fillMap(cache);
         readMap(cache, bh);

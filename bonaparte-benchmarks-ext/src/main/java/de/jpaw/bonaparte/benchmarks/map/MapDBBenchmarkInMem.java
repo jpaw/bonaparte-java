@@ -4,13 +4,13 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentNavigableMap;
 
 import org.mapdb.*;
-import org.openjdk.jmh.annotations.GenerateMicroBenchmark;
+import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.OperationsPerInvocation;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
-import org.openjdk.jmh.logic.BlackHole;
+import org.openjdk.jmh.infra.Blackhole;
 
 @State(value = Scope.Thread)
 @OperationsPerInvocation(MapDBBenchmarkInMem.OPERATIONS_PER_INVOCATION)
@@ -34,7 +34,7 @@ public class MapDBBenchmarkInMem {
             map.put(numbers[i], i);
     }
     
-    private void readCache(BlackHole bh) {
+    private void readCache(Blackhole bh) {
         for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i)
             bh.consume(map.get(numbers[i]));
     }
@@ -57,29 +57,29 @@ public class MapDBBenchmarkInMem {
         db.close();
     }
 
-    @GenerateMicroBenchmark
-    public void writeNoCommit(BlackHole bh) {
+    @Benchmark
+    public void writeNoCommit(Blackhole bh) {
         fillCache();
     }
     
-    @GenerateMicroBenchmark
-    public void writeWithCommit(BlackHole bh) {
-        fillCache();
-        db.commit();
-    }
-    
-    @GenerateMicroBenchmark
-    public void writeAnd4Reads(BlackHole bh) {
+    @Benchmark
+    public void writeWithCommit(Blackhole bh) {
         fillCache();
         db.commit();
+    }
+    
+    @Benchmark
+    public void writeAnd4Reads(Blackhole bh) {
+        fillCache();
+        db.commit();
         readCache(bh);
         readCache(bh);
         readCache(bh);
         readCache(bh);
     }
     
-    @GenerateMicroBenchmark
-    public void readOnly(BlackHole bh) {
+    @Benchmark
+    public void readOnly(Blackhole bh) {
         readCache(bh);
     }
 }
