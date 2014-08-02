@@ -14,13 +14,32 @@ import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.infra.Blackhole;
 
 //java -jar target/bonaparte-benchmarks.jar -i 3 -f 3 -wf 1 -wi 3 ".*MapDBBenchmark.*"
+
+//times measured with mapDB 1.0.2, JMH 0.7.3
 //# Run complete. Total time: 00:02:05
 //
-//Benchmark                                    Mode   Samples         Mean   Mean error    Units
-//d.j.b.b.m.MapDBBenchmark.writeAnd4Reads     thrpt         9       11.726        0.361   ops/ms
-//d.j.b.b.m.MapDBBenchmark.writeNoCommit      thrpt         9       56.192        0.747   ops/ms
-//d.j.b.b.m.MapDBBenchmark.writeWithCommit    thrpt         9       12.155        1.001   ops/ms
-//d.j.b.b.m.MapDBBenchmark.readOnly           thrpt         9     1117.955       40.204   ops/ms
+//Benchmark                                         Mode   Samples         Mean   Mean error    Units
+//d.j.b.b.m.MapDBBenchmark.writeAnd4Reads          thrpt         9       11.726        0.361   ops/ms
+//d.j.b.b.m.MapDBBenchmark.writeNoCommit           thrpt         9       56.192        0.747   ops/ms
+//d.j.b.b.m.MapDBBenchmark.writeWithCommit         thrpt         9       12.155        1.001   ops/ms
+//d.j.b.b.m.MapDBBenchmark.readOnly                thrpt         9     1117.955       40.204   ops/ms
+//d.j.b.b.m.MapDBBenchmarkInMem.readOnly           thrpt         9    35438.079     1133.119   ops/ms
+//d.j.b.b.m.MapDBBenchmarkInMem.writeAnd4Reads     thrpt         9      605.763       14.571   ops/ms
+//d.j.b.b.m.MapDBBenchmarkInMem.writeNoCommit      thrpt         9     1299.891       88.656   ops/ms
+//d.j.b.b.m.MapDBBenchmarkInMem.writeWithCommit    thrpt         9     1259.141       12.151   ops/ms
+
+// times measured with mapDB 1.0.5, JMH 0.9.5
+//# Run complete. Total time: 00:04:37
+//
+//Benchmark                                         Mode  Samples         Score  Score error  Units
+//d.j.b.b.m.MapDBBenchmark.readOnly                thrpt        9   1095522.398    57786.307  ops/s
+//d.j.b.b.m.MapDBBenchmark.writeAnd4Reads          thrpt        9     11868.852      489.263  ops/s
+//d.j.b.b.m.MapDBBenchmark.writeNoCommit           thrpt        9     55638.444     2506.094  ops/s
+//d.j.b.b.m.MapDBBenchmark.writeWithCommit         thrpt        9     12596.647      778.475  ops/s
+//d.j.b.b.m.MapDBBenchmarkInMem.readOnly           thrpt        9  34887747.574  1465959.791  ops/s
+//d.j.b.b.m.MapDBBenchmarkInMem.writeAnd4Reads     thrpt        9    608804.703    12155.537  ops/s
+//d.j.b.b.m.MapDBBenchmarkInMem.writeNoCommit      thrpt        9   1319239.961    19852.000  ops/s
+//d.j.b.b.m.MapDBBenchmarkInMem.writeWithCommit    thrpt        9   1241955.221    35134.413  ops/s
 
 @State(value = Scope.Thread)
 @OperationsPerInvocation(MapDBBenchmark.OPERATIONS_PER_INVOCATION)

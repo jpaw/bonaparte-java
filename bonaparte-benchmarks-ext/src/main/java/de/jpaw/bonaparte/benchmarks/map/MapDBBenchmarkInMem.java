@@ -12,6 +12,8 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.infra.Blackhole;
 
+
+// results see MapDBBenchmark class
 @State(value = Scope.Thread)
 @OperationsPerInvocation(MapDBBenchmarkInMem.OPERATIONS_PER_INVOCATION)
 public class MapDBBenchmarkInMem {

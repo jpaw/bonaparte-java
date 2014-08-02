@@ -12,22 +12,28 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.infra.Blackhole;
 
-//java -jar target/bonaparte-benchmarks.jar -i 3 -f 3 -wf 1 -wi 3 ".*MapDB.*"
+//java -jar target/bonaparte-benchmarks.jar -i 3 -f 3 -wf 1 -wi 3 ".*MapDBOffHeap.*"
 //
+
+//times measured with mapDB 1.0.2, JMH 0.7.3
 //Benchmark                                         Mode   Samples         Mean   Mean error    Units
 //d.j.b.b.m.MapDBBenchmark.readOnly                thrpt         9     1148.512       22.353   ops/ms
 //d.j.b.b.m.MapDBBenchmark.writeAnd4Reads          thrpt         9       11.684        0.584   ops/ms
 //d.j.b.b.m.MapDBBenchmark.writeNoCommit           thrpt         9       56.063        2.127   ops/ms
 //d.j.b.b.m.MapDBBenchmark.writeWithCommit         thrpt         9       12.387        0.545   ops/ms
-//d.j.b.b.m.MapDBBenchmarkInMem.readOnly           thrpt         9    35438.079     1133.119   ops/ms
-//d.j.b.b.m.MapDBBenchmarkInMem.writeAnd4Reads     thrpt         9      605.763       14.571   ops/ms
-//d.j.b.b.m.MapDBBenchmarkInMem.writeNoCommit      thrpt         9     1299.891       88.656   ops/ms
-//d.j.b.b.m.MapDBBenchmarkInMem.writeWithCommit    thrpt         9     1259.141       12.151   ops/ms
 //d.j.b.b.m.MapDBOffHeap.readOnly                  thrpt         9    35916.096      113.816   ops/ms
 //d.j.b.b.m.MapDBOffHeap.writeAnd4Reads            thrpt         9      238.946        4.599   ops/ms
 //d.j.b.b.m.MapDBOffHeap.writeNoCommit             thrpt         9      306.996       23.258   ops/ms
 //d.j.b.b.m.MapDBOffHeap.writeWithCommit           thrpt         9      291.446        7.240   ops/ms
 
+//times measured with mapDB 1.0.5, JMH 0.9.5
+//# Run complete. Total time: 00:02:00
+//
+//Benchmark                                  Mode  Samples         Score  Score error  Units
+//d.j.b.b.m.MapDBOffHeap.readOnly           thrpt        9  34946145.045  1173835.610  ops/s
+//d.j.b.b.m.MapDBOffHeap.writeAnd4Reads     thrpt        9    238302.451     6590.540  ops/s
+//d.j.b.b.m.MapDBOffHeap.writeNoCommit      thrpt        9    303739.030    10808.909  ops/s
+//d.j.b.b.m.MapDBOffHeap.writeWithCommit    thrpt        9    296991.361     8876.687  ops/s
 
 @State(value = Scope.Thread)
 @OperationsPerInvocation(MapDBOffHeap.OPERATIONS_PER_INVOCATION)
