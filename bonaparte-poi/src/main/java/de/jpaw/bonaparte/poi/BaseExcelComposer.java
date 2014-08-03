@@ -17,7 +17,6 @@ package de.jpaw.bonaparte.poi;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Locale;
 import java.util.UUID;
 
 import org.joda.time.Instant;
@@ -44,6 +43,7 @@ import de.jpaw.util.Base64;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.ByteBuilder;
 import de.jpaw.util.DayTime;
+import de.jpaw.util.IntegralLimits;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -51,7 +51,6 @@ import org.apache.poi.ss.usermodel.DataFormat;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.util.DateFormatConverter;
 
 // according to http://stackoverflow.com/questions/469695/decode-base64-data-in-java , xml.bind is included in Java 6 SE
 //import javax.xml.bind.DatatypeConverter;
@@ -227,21 +226,30 @@ public class BaseExcelComposer implements MessageComposer<RuntimeException> {
             writeNull();
         }
     }
+    
+    // output a non-null number which was stored with possibly implicit fixed point
+    private void addScaledNumber(BasicNumericElementaryDataItem di, double n) {
+        int fractionalDigits = di.getDecimalDigits();
+        if (fractionalDigits > 0)
+            newCell(getCachedCellStyle(fractionalDigits)).setCellValue(n * IntegralLimits.IMPLICIT_SCALES[fractionalDigits]);
+        else
+            newCell(csLong).setCellValue(n);
+    }
 
     // byte
     @Override
     public void addField(BasicNumericElementaryDataItem di, byte n) {
-        newCell().setCellValue((double)n);
+        addScaledNumber(di, n);
     }
     // short
     @Override
     public void addField(BasicNumericElementaryDataItem di, short n) {
-        newCell().setCellValue((double)n);
+        addScaledNumber(di, n);
     }
     // integer
     @Override
     public void addField(BasicNumericElementaryDataItem di, int n) {
-        newCell().setCellValue((double)n);
+        addScaledNumber(di, n);
     }
 
     // int(n)
@@ -257,7 +265,7 @@ public class BaseExcelComposer implements MessageComposer<RuntimeException> {
     // long
     @Override
     public void addField(BasicNumericElementaryDataItem di, long n) {
-        newCell(csLong).setCellValue((double)n);
+        addScaledNumber(di, n);
     }
 
     // boolean
@@ -269,7 +277,7 @@ public class BaseExcelComposer implements MessageComposer<RuntimeException> {
     // float
     @Override
     public void addField(BasicNumericElementaryDataItem di, float f) {
-        newCell().setCellValue((double)f);
+        newCell().setCellValue(f);
     }
 
     // double

@@ -57,4 +57,31 @@ public class IntegralLimitsTest {
             assert(IntegralLimits.LONG_MIN_VALUES[i] == -IntegralLimits.LONG_MAX_VALUES[i]);
         }
     }
+
+    @Test
+    public void testExponents() throws Exception {
+        double n = 1.0;
+        for (int i = 0; i <= 18; ++i) {
+            assert(IntegralLimits.EXPONENTS[i] == n);
+            n *= 10.0;
+        }
+    }
+
+    @Test
+    public void testFractions() throws Exception {
+        double n = 1.0;
+        double minDev = 1.0;
+        double maxDev = 1.0;
+        for (int i = 0; i <= 18; ++i) {
+            double rel = IntegralLimits.IMPLICIT_SCALES[i] / n; // this does not match perfectly due to rounding, we check the relative error
+            if (rel < minDev)
+                minDev = rel;
+            if (rel > maxDev)
+                maxDev = rel;
+            n *= 0.1;
+        }
+        System.out.println("Min deviation = " + minDev + ", max = " + maxDev);
+        assert(maxDev == 1.0);
+        assert(minDev >= 0.999999999999999);
+    }
 }

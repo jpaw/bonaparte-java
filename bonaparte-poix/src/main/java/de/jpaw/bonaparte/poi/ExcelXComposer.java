@@ -35,14 +35,15 @@ public class ExcelXComposer extends BaseExcelComposer implements ExcelWriter {
     }
 
     /** Write the current state of the Workbook onto a stream. */
+    @Override
     public void write(OutputStream os) throws IOException {
         xls.write(os);
     }
 
+    @Override
     public void writeToFile(String filename) throws IOException {
-        FileOutputStream out = new FileOutputStream(filename);
-        write(out);
-        out.close();
+        try (FileOutputStream out = new FileOutputStream(filename)) {
+            write(out);
+        }
     }
-
 }

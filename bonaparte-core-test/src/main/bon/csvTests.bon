@@ -23,5 +23,12 @@ package csvTests {
         Ascii(10)               string1;
         enum Color              color;        
     }
+    
+    class ScaledInts {
+        unsigned int (8,3)      millis;
+        unsigned Long (18,6)    micros;
+        signed int (8,3)        signedMillis;
+        signed Long (18,6)      signedMicros;
+    }
 }
 

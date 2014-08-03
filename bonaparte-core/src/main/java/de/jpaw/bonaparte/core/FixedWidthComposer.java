@@ -165,23 +165,78 @@ public class FixedWidthComposer extends CSVComposer {
         }
     }
     
-    // long (UNSIGNED)
+    // generic method for all integral types, also supports a fixed decimal point.
+    // The point consumes another byte of space, unless it is at position zero.
+    private void paddedFixedWidthString(BasicNumericElementaryDataItem di, String s) throws IOException {
+        if (di.getDecimalDigits() == 0 || cfg.removePoint4BD) {
+            // no decimal point at all
+            numericPad(di.getTotalDigits() - s.length());
+            addRawData(s);
+        } else {
+            if (s.length() >= di.getDecimalDigits()) {
+                // padding without interruption
+                numericPad(di.getTotalDigits() - s.length());
+                if (s.length() == di.getDecimalDigits()) {
+                    addRawData(".");
+                    addRawData(s);
+                } else {
+                    // 2 real substrings
+                    addRawData(s.substring(0, s.length() - di.getTotalDigits()));
+                    addRawData(".");
+                    addRawData(s.substring(s.length() - di.getTotalDigits()));
+                }
+            } else {
+                // decimal point is somewhere within the padding: split it to make sure second part is definitely zeros!
+                numericPad(di.getTotalDigits() - di.getDecimalDigits());
+                addRawData(".");
+                addRawData(ZERO_PADDINGS[di.getDecimalDigits() - s.length()]);
+                addRawData(s);
+            }
+        }
+    }
+    
+    // long (SIGNED, LEADING SIGN)
     @Override
     public void addField(BasicNumericElementaryDataItem di, long n) throws IOException {
         writeSeparator();
-        String val = Long.toString(n);
-        numericPad(di.getTotalDigits() - val.length());
-        addRawData(val);
+        if (di.getIsSigned()) {
+            addRawData(n < 0 ? "-" : " ");
+            if (n < 0)
+                n = -n;     // FIXME: MINVAL => ERROR
+        }
+        paddedFixedWidthString(di, Long.toString(n));
     }
     
     // int (SIGNED, LEADING SIGN)
     @Override
     public void addField(BasicNumericElementaryDataItem di, int n) throws IOException {
         writeSeparator();
-        addRawData(n < 0 ? "-" : " ");
-        String val = Integer.toString(n < 0 ? -n : n);
-        numericPad(di.getTotalDigits() - val.length());
-        addRawData(val);
+        if (di.getIsSigned()) {
+            addRawData(n < 0 ? "-" : " ");
+            if (n < 0)
+                n = -n;     // FIXME: MINVAL => ERROR
+        }
+        paddedFixedWidthString(di, Integer.toString(n));
+    }
+    
+    // int (SIGNED, LEADING SIGN)
+    @Override
+    public void addField(BasicNumericElementaryDataItem di, short n) throws IOException {
+        writeSeparator();
+        if (di.getIsSigned()) {
+            addRawData(n < 0 ? "-" : " ");
+        }
+        paddedFixedWidthString(di, Integer.toString(n < 0 ? -(int)n : n));
+    }
+    
+    // int (SIGNED, LEADING SIGN)
+    @Override
+    public void addField(BasicNumericElementaryDataItem di, byte n) throws IOException {
+        writeSeparator();
+        if (di.getIsSigned()) {
+            addRawData(n < 0 ? "-" : " ");
+        }
+        paddedFixedWidthString(di, Integer.toString(n < 0 ? -(int)n : n));
     }
     
     // int(n) (SIGNED AND UNSIGNED; specific length, LEADING SIGN), null possible

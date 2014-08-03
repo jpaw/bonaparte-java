@@ -197,7 +197,7 @@ public class CSVConfiguration {
             this.separator = separator;
             return this;
         }
-        public Builder usingDecimalPoint(boolean removePoint4BD) {
+        public Builder removeDecimalPoint(boolean removePoint4BD) {
             this.removePoint4BD = removePoint4BD;
             return this;
         }

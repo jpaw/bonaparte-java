@@ -40,16 +40,18 @@ public class GenericExcelComposer extends BaseExcelComposer implements ExcelWrit
 
 
     /** Write the current state of the Workbook onto a stream. */
+    @Override
     public void write(OutputStream os) throws IOException {
         xls.write(os);
     }
 
+    @Override
     public void writeToFile(String filename) throws IOException {
-        FileOutputStream out = new FileOutputStream(filename);
-        write(out);
-        out.close();
-        if (fmt == ExcelFormat.XLSX_STREAMING)
-            ((SXSSFWorkbook)xls).dispose();
+        try (FileOutputStream out = new FileOutputStream(filename)) {
+            write(out);
+        } finally {
+            if (fmt == ExcelFormat.XLSX_STREAMING)
+                ((SXSSFWorkbook)xls).dispose();
+        }
     }
-
 }

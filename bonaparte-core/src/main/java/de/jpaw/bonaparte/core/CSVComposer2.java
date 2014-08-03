@@ -16,6 +16,7 @@
 package de.jpaw.bonaparte.core;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
@@ -41,22 +42,52 @@ public class CSVComposer2 extends CSVComposer {
     @Override
     public void addField(BasicNumericElementaryDataItem di, byte n) throws IOException {
         writeSeparator();
-        addRawData(numberFormat.format(n));
+        if (di.getDecimalDigits() == 0 || cfg.removePoint4BD) {
+            addRawData(numberFormat.format(n));
+        } else {
+            outputFixedPointScaledInt(di, n);
+        }
     }
     // short
     @Override
     public void addField(BasicNumericElementaryDataItem di, short n) throws IOException {
         writeSeparator();
-        addRawData(numberFormat.format(n));
+        if (di.getDecimalDigits() == 0 || cfg.removePoint4BD) {
+            addRawData(numberFormat.format(n));
+        } else {
+            outputFixedPointScaledInt(di, n);
+        }
     }
     // integer
     @Override
     public void addField(BasicNumericElementaryDataItem di, int n) throws IOException {
         writeSeparator();
-        addRawData(numberFormat.format(n));
+        if (di.getDecimalDigits() == 0 || cfg.removePoint4BD) {
+            addRawData(numberFormat.format(n));
+        } else {
+            outputFixedPointScaledInt(di, n);
+        }
+    }
+    // long
+    @Override
+    public void addField(BasicNumericElementaryDataItem di, long n) throws IOException {
+        writeSeparator();
+        if (di.getDecimalDigits() == 0 || cfg.removePoint4BD) {
+            addRawData(numberFormat.format(n));
+        } else {
+            outputFixedPointScaledInt(di, n);
+        }
     }
 
-    // int(n)
+    protected void outputFixedPointScaledInt(BasicNumericElementaryDataItem di, long n) throws IOException {
+        int scale = di.getDecimalDigits();
+        // use standard locale formatter to get the localized . or ,
+        bigDecimalFormat.setMaximumFractionDigits(scale);
+        bigDecimalFormat.setMinimumFractionDigits(scale);
+        addRawData(bigDecimalFormat.format(BigDecimal.valueOf(n, scale)));
+    }
+    
+    // BigInteger(n)
     @Override
     public void addField(BasicNumericElementaryDataItem di, BigInteger n) throws IOException {
         writeSeparator();
@@ -65,12 +96,5 @@ public class CSVComposer2 extends CSVComposer {
         } else {
             writeNull();
         }
-    }
-
-    // long
-    @Override
-    public void addField(BasicNumericElementaryDataItem di, long n) throws IOException {
-        writeSeparator();
-        addRawData(numberFormat.format(n));
     }
 }
