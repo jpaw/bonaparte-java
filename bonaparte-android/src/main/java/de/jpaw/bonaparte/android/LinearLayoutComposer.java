@@ -208,7 +208,7 @@ abstract public class LinearLayoutComposer  implements MessageComposer<RuntimeEx
     @Override
     public void addField(BasicNumericElementaryDataItem di, BigInteger n) {
         if (n != null) {
-            newTextView(di, Integer.toString(n));
+            newTextView(di, n.toString());
         } else {
             writeNull(di);
         }

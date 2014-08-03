@@ -12,7 +12,7 @@
     <artifactId>bonaparte-android</artifactId>
     <packaging>jar</packaging>
 
-    <name>Some support classes for android, using xtend for smaller code</name>
+    <name>BONAPARTE Android support classes, using xtend for smaller code</name>
     <url>http://www.jpaw.de/projects/bonaparte/index.html</url>
 
     <repositories>
