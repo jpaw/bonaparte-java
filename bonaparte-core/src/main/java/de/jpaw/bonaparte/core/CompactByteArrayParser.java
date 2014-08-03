@@ -369,10 +369,10 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
     }
 
     @Override
-    public Integer readNumber(String fieldname, boolean allowNull, int length, boolean isSigned) throws MessageParserException {
+    public BigInteger readBigInteger(String fieldname, boolean allowNull, int length, boolean isSigned) throws MessageParserException {
         if (checkForNull(fieldname, allowNull))
             return null;
-        return readInt(needToken(), fieldname);
+        return BigInteger.valueOf(readLong(needToken(), fieldname));
     }
 
     private String readAscii(int len, String fieldname) throws MessageParserException {

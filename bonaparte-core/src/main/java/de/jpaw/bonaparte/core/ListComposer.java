@@ -1,6 +1,7 @@
 package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -121,7 +122,7 @@ public class ListComposer extends NoOpComposer implements MessageComposer<Runtim
     }
 
     @Override
-    public void addField(BasicNumericElementaryDataItem di, Integer n) {
+    public void addField(BasicNumericElementaryDataItem di, BigInteger n) {
         storage.add(n);
     }
 

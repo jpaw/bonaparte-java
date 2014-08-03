@@ -17,6 +17,7 @@ package de.jpaw.bonaparte.core;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -238,7 +239,7 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
 
     // int(n)
     @Override
-    public void addField(BasicNumericElementaryDataItem di, Integer n) throws IOException {
+    public void addField(BasicNumericElementaryDataItem di, BigInteger n) throws IOException {
         if (n != null) {
             work.append(n.toString());
             terminateField();

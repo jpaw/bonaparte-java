@@ -16,6 +16,7 @@
 package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -265,7 +266,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
 
     // int(n)
     @Override
-    public void addField(BasicNumericElementaryDataItem di, Integer n) {
+    public void addField(BasicNumericElementaryDataItem di, BigInteger n) {
         if (n != null) {
             work.appendAscii(n.toString());
             terminateField();

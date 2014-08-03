@@ -1,6 +1,7 @@
 package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.UUID;
 
 import org.joda.time.Instant;
@@ -113,7 +114,7 @@ public class NoOpComposer implements MessageComposer<RuntimeException> {
     }
 
     @Override
-    public void addField(BasicNumericElementaryDataItem di, Integer n) {
+    public void addField(BasicNumericElementaryDataItem di, BigInteger n) {
     }
 
     @Override

@@ -17,6 +17,7 @@ package de.jpaw.bonaparte.core;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.Format;
 import java.text.NumberFormat;
 import java.util.UUID;
@@ -180,7 +181,7 @@ public class CSVComposer extends AppendableComposer {
 
     // int(n)
     @Override
-    public void addField(BasicNumericElementaryDataItem di, Integer n) throws IOException {
+    public void addField(BasicNumericElementaryDataItem di, BigInteger n) throws IOException {
         writeSeparator();
         super.addField(di, n);
     }

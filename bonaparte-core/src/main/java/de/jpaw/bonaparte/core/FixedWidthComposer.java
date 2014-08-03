@@ -17,6 +17,7 @@ package de.jpaw.bonaparte.core;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
@@ -185,19 +186,25 @@ public class FixedWidthComposer extends CSVComposer {
     
     // int(n) (SIGNED AND UNSIGNED; specific length, LEADING SIGN), null possible
     @Override
-    public void addField(BasicNumericElementaryDataItem di, Integer n) throws IOException {
+    public void addField(BasicNumericElementaryDataItem di, BigInteger n) throws IOException {
         writeSeparator();
         if (n == null) {
             addRawData(SPACE_PADDINGS[di.getTotalDigits() + (di.getIsSigned() ? 1 : 0)]);
         } else {
             if (cfg.rightPadNumbers) {
-                String val = Integer.toString(n);
+                String val = n.toString();
                 addRawData(val);
                 addRawData(SPACE_PADDINGS[di.getTotalDigits() - val.length()]);
             } else {
-                if (di.getIsSigned())
-                    addRawData(n < 0 ? "-" : " ");
-                String val = Integer.toString(n < 0 ? -n : n);
+                if (di.getIsSigned()) {
+                    if (n.signum() < 0) {
+                        addRawData("-");
+                        n = n.negate();
+                    } else {
+                        addRawData(" ");
+                    }
+                }
+                String val = n.toString();
                 numericPad(di.getTotalDigits() - val.length());
                 addRawData(val);
             }

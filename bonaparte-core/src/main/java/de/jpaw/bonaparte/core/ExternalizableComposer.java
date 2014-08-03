@@ -20,6 +20,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectOutput;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.UUID;
 
 import org.joda.time.Instant;
@@ -360,11 +361,11 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
     }
 
     @Override
-    public void addField(BasicNumericElementaryDataItem di, Integer n) throws IOException {
+    public void addField(BasicNumericElementaryDataItem di, BigInteger n) throws IOException {
         if (n == null) {
             out.writeByte(NULL_FIELD);
         } else {
-            writeVarInt(n);
+            writeVarLong(n.longValue());       // FIXME: may exceed allowable length if mantissa size check is raised
         }
     }
 

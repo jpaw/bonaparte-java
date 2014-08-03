@@ -2,6 +2,7 @@ package de.jpaw.bonaparte.core;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.UUID;
 
 import org.joda.time.Instant;
@@ -350,7 +351,7 @@ public class JsonComposer implements MessageComposer<IOException> {
     }
 
     @Override
-    public void addField(BasicNumericElementaryDataItem di, Integer n) throws IOException {
+    public void addField(BasicNumericElementaryDataItem di, BigInteger n) throws IOException {
         writeOptionalUnquotedString(di, n == null ? null : n.toString());
     }
 

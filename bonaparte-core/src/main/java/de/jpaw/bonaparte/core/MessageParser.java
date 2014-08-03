@@ -16,6 +16,7 @@
 package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.List;
 import java.util.UUID;
 
@@ -44,23 +45,23 @@ public interface MessageParser<E extends Exception> {
     // unmarshaller methods: field type specific
     public BigDecimal readBigDecimal(String fieldname, boolean allowNull, int length, int decimals, boolean isSigned, boolean rounding, boolean autoScale) throws E;
     public Character  readCharacter (String fieldname, boolean allowNull) throws E;
-    public UUID    readUUID         (String fieldname, boolean allowNull) throws E;
-    public Boolean readBoolean      (String fieldname, boolean allowNull) throws E;
-    public Double  readDouble       (String fieldname, boolean allowNull, boolean isSigned) throws E;
-    public Float   readFloat        (String fieldname, boolean allowNull, boolean isSigned) throws E;
-    public Long    readLong         (String fieldname, boolean allowNull, boolean isSigned) throws E;
-    public Integer readInteger      (String fieldname, boolean allowNull, boolean isSigned) throws E;
-    public Short   readShort        (String fieldname, boolean allowNull, boolean isSigned) throws E;
-    public Byte    readByte         (String fieldname, boolean allowNull, boolean isSigned) throws E;
-    public Integer readNumber       (String fieldname, boolean allowNull, int length, boolean isSigned)   throws E;
-    public String  readAscii        (String fieldname, boolean allowNull, int length, boolean doTrim, boolean doTruncate) throws E;
-    public String  readString       (String fieldname, boolean allowNull, int length, boolean doTrim, boolean doTruncate, boolean allowCtrls, boolean allowUnicode) throws E;
-    public ByteArray readByteArray  (String fieldname, boolean allowNull, int length) throws E;
-    public byte []   readRaw        (String fieldname, boolean allowNull, int length) throws E;
-    public LocalDate readDay        (String fieldname, boolean allowNull) throws E;
-    public LocalTime readTime       (String fieldname, boolean allowNull, boolean hhmmss, int length) throws E;
+    public UUID       readUUID      (String fieldname, boolean allowNull) throws E;
+    public Boolean    readBoolean   (String fieldname, boolean allowNull) throws E;
+    public Double     readDouble    (String fieldname, boolean allowNull, boolean isSigned) throws E;
+    public Float      readFloat     (String fieldname, boolean allowNull, boolean isSigned) throws E;
+    public Long       readLong      (String fieldname, boolean allowNull, boolean isSigned) throws E;
+    public Integer    readInteger   (String fieldname, boolean allowNull, boolean isSigned) throws E;
+    public Short      readShort     (String fieldname, boolean allowNull, boolean isSigned) throws E;
+    public Byte       readByte      (String fieldname, boolean allowNull, boolean isSigned) throws E;
+    public BigInteger readBigInteger(String fieldname, boolean allowNull, int length, boolean isSigned)   throws E;
+    public String     readAscii     (String fieldname, boolean allowNull, int length, boolean doTrim, boolean doTruncate) throws E;
+    public String     readString    (String fieldname, boolean allowNull, int length, boolean doTrim, boolean doTruncate, boolean allowCtrls, boolean allowUnicode) throws E;
+    public ByteArray  readByteArray (String fieldname, boolean allowNull, int length) throws E;
+    public byte []    readRaw       (String fieldname, boolean allowNull, int length) throws E;
+    public LocalDate  readDay       (String fieldname, boolean allowNull) throws E;
+    public LocalTime  readTime      (String fieldname, boolean allowNull, boolean hhmmss, int length) throws E;
     public LocalDateTime readDayTime(String fieldname, boolean allowNull, boolean hhmmss, int length) throws E;
-    public Instant  readInstant(String fieldname, boolean allowNull, boolean hhmmss, int length) throws E;
+    public Instant    readInstant   (String fieldname, boolean allowNull, boolean hhmmss, int length) throws E;
     public BonaPortable readObject  (String fieldname, Class<? extends BonaPortable> type, boolean allowNull, boolean allowSubtypes) throws E; // parser factory
     // composite methods
     public int parseMapStart        (String fieldname, boolean allowNull, int indexID) throws E;
@@ -73,13 +74,4 @@ public interface MessageParser<E extends Exception> {
     public void eatParentSeparator() throws E;  // restores the previous class name
     public E enumExceptionConverter(IllegalArgumentException e);  // convert e to an exception of appropriate type. Also enrich it with current parser status
     public <T extends AbstractXEnumBase<T>> T readXEnum(XEnumDataItem di, XEnumFactory<T> factory) throws E;
-    // upload of current class to be parsed: now all done locally within the parser
-    // public String setCurrentClass(String classname);
-
-    // methods from common settings
-    // omit, these are only valid for the ASCII / UTF format. Set them on the Composer object directly, or create an "ASCIIComposer" interface
-    //public boolean doWriteCRs();
-    //public void setWriteCRs(boolean writeCRs);
-    //public Charset getCharset();
-    //public void setCharset(Charset charset);
 }

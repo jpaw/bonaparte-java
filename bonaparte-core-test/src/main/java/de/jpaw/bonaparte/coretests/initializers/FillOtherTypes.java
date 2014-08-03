@@ -1,6 +1,7 @@
 package de.jpaw.bonaparte.coretests.initializers;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.UUID;
 
@@ -29,7 +30,7 @@ public class FillOtherTypes {
         x.setTime1(new LocalTime(13, 56, 37));
         x.setTime2(new LocalTime(13, 56, 37, 334));
         x.setDecimal1(new BigDecimal("-3.14"));
-        x.setNumber1(42);
+        x.setNumber1(BigInteger.valueOf(42L));
         x.setRaw1(shortraw);
         x.setBinary1(new ByteArray(shortraw));
         x.setTimestamp1(new LocalDateTime(2012, 8, 5, 11, 55, 03));

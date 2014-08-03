@@ -1,6 +1,7 @@
 package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -123,7 +124,7 @@ public class ListMetaComposer extends NoOpComposer implements MessageComposer<Ru
     }
 
     @Override
-    public void addField(BasicNumericElementaryDataItem di, Integer n) {
+    public void addField(BasicNumericElementaryDataItem di, BigInteger n) {
         add(di, n);
     }
 

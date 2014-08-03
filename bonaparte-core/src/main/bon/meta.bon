@@ -72,11 +72,11 @@ package meta factoryId 29 {
         boolean                         isSigned;
         int                             totalDigits;
         int                             decimalDigits;      // number of digits (max) behind the decimal point
+        boolean                         rounding;           // if true, parsing numbers with more decimals will result in rounding, if false, an error will be raised
     }
     
     // NumericElementaryDataItem represents decimal
     class NumericElementaryDataItem classId 9 extends BasicNumericElementaryDataItem {
-        boolean                         rounding;           // if true, parsing numbers with more decimals will result in rounding, if false, an error will be raised
         boolean                         ^autoScale;         // if true, any input will be scaled to the required number of decimal digits
     }
 

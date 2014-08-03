@@ -20,12 +20,12 @@ public interface StaticMeta {
     public static final AlphanumericElementaryDataItem MAP_INDEX_META_STRING = new AlphanumericElementaryDataItem(Visibility.PRIVATE, false, "map$Index",
             Multiplicity.SCALAR, 0, 0, 0, DataCategory.STRING, "Unicode", false, true, false, false, false, false, 255, 0, null);
     public static final BasicNumericElementaryDataItem MAP_INDEX_META_INTEGER = new BasicNumericElementaryDataItem(Visibility.PRIVATE, false, "map$Index",
-            Multiplicity.SCALAR, 0, 0, 0, DataCategory.BASICNUMERIC, "Integer", false, true, true, 9, 0);
+            Multiplicity.SCALAR, 0, 0, 0, DataCategory.BASICNUMERIC, "Integer", false, true, true, 9, 0, false);
     public static final BasicNumericElementaryDataItem MAP_INDEX_META_LONG = new BasicNumericElementaryDataItem(Visibility.PRIVATE, false, "map$Index",
-            Multiplicity.SCALAR, 0, 0, 0, DataCategory.BASICNUMERIC, "Long", false, true, true, 18, 0);
+            Multiplicity.SCALAR, 0, 0, 0, DataCategory.BASICNUMERIC, "Long", false, true, true, 18, 0, false);
 
     public static final AlphanumericElementaryDataItem ENUM_TOKEN = new AlphanumericElementaryDataItem(Visibility.PRIVATE, false, "enum$Token",
             Multiplicity.SCALAR, 0, 0, 0, DataCategory.STRING, "Unicode", false, true, false, false, false, false, 40, 0, null);
     public static final BasicNumericElementaryDataItem INTERNAL_INTEGER = new BasicNumericElementaryDataItem(Visibility.PRIVATE, false, "int$Int",
-            Multiplicity.SCALAR, 0, 0, 0, DataCategory.BASICNUMERIC, "int", true, false, false, 9, 0);
+            Multiplicity.SCALAR, 0, 0, 0, DataCategory.BASICNUMERIC, "int", true, false, false, 9, 0, false);
 }

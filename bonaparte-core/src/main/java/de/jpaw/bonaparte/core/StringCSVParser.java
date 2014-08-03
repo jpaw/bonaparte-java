@@ -16,6 +16,7 @@
 package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.List;
 import java.util.UUID;
 
@@ -414,12 +415,12 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
     }
 
     @Override
-    public Integer readNumber(String fieldname, boolean allowNull, int length, boolean isSigned)
+    public BigInteger readBigInteger(String fieldname, boolean allowNull, int length, boolean isSigned)
             throws MessageParserException {
         String token = getField(fieldname, allowNull, length+(isSigned ? 1 : 0));
         if (token == null)
             return null;
-        return Integer.valueOf(token.trim());
+        return new BigInteger(token.trim());
     }
 
     @Override

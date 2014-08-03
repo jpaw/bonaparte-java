@@ -18,6 +18,7 @@ package de.jpaw.bonaparte.core;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -540,11 +541,11 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
     }
 
     @Override
-    public Integer readNumber(String fieldname, boolean allowNull, int length, boolean isSigned) throws IOException {
+    public BigInteger readBigInteger(String fieldname, boolean allowNull, int length, boolean isSigned) throws IOException {
         if (checkForNull(fieldname, allowNull)) {
             return null;
         }
-        return Integer.valueOf(readVarInt(fieldname, 32));
+        return BigInteger.valueOf(readLongNoNull(fieldname));
     }
 
     @Override

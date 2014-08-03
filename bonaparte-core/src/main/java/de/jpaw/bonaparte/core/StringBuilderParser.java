@@ -16,6 +16,7 @@
 package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -704,7 +705,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
     }
 
     @Override
-    public Integer readNumber(String fieldname, boolean allowNull, int length, boolean isSigned)
+    public BigInteger readBigInteger(String fieldname, boolean allowNull, int length, boolean isSigned)
             throws MessageParserException {
         if (checkForNull(fieldname, allowNull)) {
             return null;
@@ -714,7 +715,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
             throw new MessageParserException(MessageParserException.NUMERIC_TOO_LONG,
                     String.format("(allowed %d, found %d for %s)", length, tmp.length(), fieldname), parseIndex, currentClass);
         }
-        return Integer.valueOf(tmp);
+        return new BigInteger(tmp);
     }
 
     @Override

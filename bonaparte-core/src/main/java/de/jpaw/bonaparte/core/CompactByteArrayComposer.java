@@ -454,9 +454,9 @@ public class CompactByteArrayComposer extends CompactConstants implements Messag
 
     // int(n)
     @Override
-    public void addField(BasicNumericElementaryDataItem di, Integer n) {
+    public void addField(BasicNumericElementaryDataItem di, BigInteger n) {
         if (n != null) {
-            intOut(n);
+            addField(di, n.longValue());        // FIXME
         } else {
             writeNull();
         }

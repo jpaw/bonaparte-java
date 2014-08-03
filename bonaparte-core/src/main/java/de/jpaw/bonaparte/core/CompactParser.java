@@ -3,6 +3,7 @@ package de.jpaw.bonaparte.core;
 import java.io.DataInput;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -135,7 +136,7 @@ public class CompactParser extends CompactConstants implements MessageParser<IOE
     }
 
     @Override
-    public Integer readNumber(String fieldname, boolean allowNull, int length, boolean isSigned) throws IOException {
+    public BigInteger readBigInteger(String fieldname, boolean allowNull, int length, boolean isSigned) throws IOException {
         // TODO Auto-generated method stub
         return null;
     }

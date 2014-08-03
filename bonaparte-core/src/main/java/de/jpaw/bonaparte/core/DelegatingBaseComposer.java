@@ -1,6 +1,7 @@
 package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.UUID;
 
 import org.joda.time.Instant;
@@ -140,7 +141,7 @@ public class DelegatingBaseComposer<E extends Exception> implements MessageCompo
     }
 
     @Override
-    public void addField(BasicNumericElementaryDataItem di, Integer n) throws E {
+    public void addField(BasicNumericElementaryDataItem di, BigInteger n) throws E {
         delegateComposer.addField(di, n);
     }
 

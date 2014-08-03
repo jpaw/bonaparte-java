@@ -16,6 +16,7 @@
 package de.jpaw.bonaparte.poi;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -245,7 +246,7 @@ public class BaseExcelComposer implements MessageComposer<RuntimeException> {
 
     // int(n)
     @Override
-    public void addField(BasicNumericElementaryDataItem di, Integer n) {
+    public void addField(BasicNumericElementaryDataItem di, BigInteger n) {
         if (n != null) {
             newCell().setCellValue(n.doubleValue());
         } else {
