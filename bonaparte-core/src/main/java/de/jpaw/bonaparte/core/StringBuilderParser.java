@@ -35,6 +35,7 @@ import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDefinition;
@@ -625,7 +626,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
         skipOptionalBom();
         needToken(RECORD_BEGIN);
         needToken(NULL_FIELD); // version no
-        result = readObject(GENERIC_RECORD, BonaPortable.class, false, true);
+        result = readObject(StaticMeta.OUTER_BONAPORTABLE, BonaPortable.class);
         skipChar(RECORD_OPT_TERMINATOR);
         needToken(RECORD_TERMINATOR);
         return result;
@@ -738,10 +739,12 @@ public final class StringBuilderParser extends StringBuilderConstants implements
     }
 
     @Override
-    public BonaPortable readObject(String fieldname, Class<? extends BonaPortable> type, boolean isRequired, boolean allowSubtypes) throws MessageParserException {
-        if (checkForNull(fieldname, isRequired)) {
+    public BonaPortable readObject(ObjectReference di, Class<? extends BonaPortable> type) throws MessageParserException {
+        if (checkForNull(di)) {
             return null;
         }
+        boolean allowSubtypes = di.getAllowSubclasses();
+        String fieldname = di.getName();
         if (useCache && parseIndex < messageLength && work.charAt(parseIndex) == OBJECT_AGAIN) {
             // we reuse an object
             ++parseIndex;

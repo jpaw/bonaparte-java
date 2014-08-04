@@ -32,6 +32,7 @@ import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDefinition;
@@ -437,8 +438,8 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
     }
 
     @Override
-    public BonaPortable readObject(String fieldname, Class<? extends BonaPortable> type, boolean allowNull, boolean allowSubtypes) throws MessageParserException {
-        if (allowSubtypes)
+    public BonaPortable readObject(ObjectReference di, Class<? extends BonaPortable> type) throws MessageParserException {
+        if (di.getAllowSubclasses())
             throw new MessageParserException(MessageParserException.UNSUPPORTED_DATA_TYPE, "readObject(subtypes = true)", parseIndex, currentClass);
         BonaPortable newObject;
         try {

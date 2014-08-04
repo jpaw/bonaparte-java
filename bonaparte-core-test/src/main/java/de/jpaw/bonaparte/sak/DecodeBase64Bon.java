@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.ByteArrayParser;
+import de.jpaw.bonaparte.core.StaticMeta;
 import de.jpaw.util.Base64;
 import de.jpaw.util.ToStringHelper;
 
@@ -26,10 +27,10 @@ public class DecodeBase64Bon {
                 ByteArrayParser bap = new ByteArrayParser(data, 0, -1);
                 try {
                     BonaPortable obj = null;
-                    switch ((int)data[0]) {
+                    switch (data[0]) {
                     case 0x0e:
                     case 0x13:   // object or null
-                        obj = bap.readObject("param", BonaPortable.class, true, true);
+                        obj = bap.readObject(StaticMeta.OUTER_BONAPORTABLE, BonaPortable.class);
                         what = "OBJ";
                         break;
                     case 0x12:   // record

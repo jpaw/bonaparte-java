@@ -49,6 +49,7 @@ public class BigDecimalTools {
     }
     
     /** Check a parsed BigDecimal for allowed digits, and perform (if desired) scaling. */
+    @Deprecated
     static public BigDecimal checkAndScale(BigDecimal r, int length, int decimals, boolean isSigned, boolean rounding, boolean autoScale,
             String fieldname, int parseIndex, String currentClass) throws MessageParserException {
         try {
@@ -68,7 +69,6 @@ public class BigDecimalTools {
     }
     
     /** Check a parsed BigDecimal for allowed digits, and perform (if desired) scaling. Use the second form with the metadata parameter instead. */
-    @Deprecated
     static public BigDecimal checkAndScale(BigDecimal r, NumericElementaryDataItem di, int parseIndex, String currentClass) throws MessageParserException {
         String fieldname = di.getName();
         int decimals = di.getDecimalDigits();

@@ -32,6 +32,8 @@ import org.joda.time.LocalTime;
 
 
 
+
+
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
@@ -460,7 +462,7 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
 
     @Override
     public String readString(AlphanumericElementaryDataItem di) throws MessageParserException {
-        return readAscii(null);
+        return readString(di.getName(), di.getIsRequired());
     }
 
 
@@ -573,10 +575,12 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
 
 
     @Override
-    public BonaPortable readObject(String fieldname, Class<? extends BonaPortable> type, boolean allowNull, boolean allowSubtypes) throws MessageParserException {
-        if (checkForNull(fieldname, allowNull)) {
+    public BonaPortable readObject(ObjectReference di, Class<? extends BonaPortable> type) throws MessageParserException {
+        if (checkForNull(di)) {
             return null;
         }
+        boolean allowSubtypes = di.getAllowSubclasses();
+        String fieldname = di.getName();
         int c = needToken();
         if (useCache && c == OBJECT_AGAIN) {
             // we reuse an object
@@ -598,7 +602,7 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
             return newObject;
         } else if (c == OBJECT_BEGIN_PQON){
             String previousClass = currentClass;
-            String classname = readString(null);
+            String classname = readString(fieldname, di.getIsRequired());
             // String revision = readAscii(true, 0, false, false);
             needToken(NULL_FIELD); // version not yet allowed
             BonaPortable newObject = BonaPortableFactory.createObject(classname);
@@ -658,7 +662,7 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
     @Override
     public BonaPortable readRecord() throws MessageParserException {
         // there are no record start/end markers in this format
-        return readObject(GENERIC_RECORD, BonaPortable.class, false, true);
+        return readObject(StaticMeta.OUTER_BONAPORTABLE, BonaPortable.class);
     }
 
 

@@ -35,6 +35,7 @@ import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDefinition;
@@ -733,7 +734,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
         skipOptionalBom();
         needToken(RECORD_BEGIN);
         needToken(NULL_FIELD); // version no
-        result = readObject(GENERIC_RECORD, BonaPortable.class, false, true);
+        result = readObject(StaticMeta.OUTER_BONAPORTABLE, BonaPortable.class);
         skipByte(RECORD_OPT_TERMINATOR);
         needToken(RECORD_TERMINATOR);
         return result;
@@ -846,10 +847,12 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
     }
 
     @Override
-    public BonaPortable readObject(String fieldname, Class<? extends BonaPortable> type, boolean allowNull, boolean allowSubtypes) throws MessageParserException {
-        if (checkForNull(fieldname, allowNull)) {
+    public BonaPortable readObject(ObjectReference di, Class<? extends BonaPortable> type) throws MessageParserException {
+        if (checkForNull(di)) {
             return null;
         }
+        boolean allowSubtypes = di.getAllowSubclasses();
+        String fieldname = di.getName();
         if (useCache && parseIndex < messageLength && inputdata[parseIndex] == OBJECT_AGAIN) {
             // we reuse an object
             ++parseIndex;

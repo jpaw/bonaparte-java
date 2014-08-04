@@ -67,11 +67,11 @@ public interface MessageParser<E extends Exception> {
     public String     readString    (AlphanumericElementaryDataItem di) throws E;
     public ByteArray  readByteArray (BinaryElementaryDataItem di) throws E;
     public byte []    readRaw       (BinaryElementaryDataItem di) throws E;
+    public Instant    readInstant   (TemporalElementaryDataItem di) throws E;
     public LocalDate  readDay       (TemporalElementaryDataItem di) throws E;
     public LocalTime  readTime      (TemporalElementaryDataItem di) throws E;
     public LocalDateTime readDayTime(TemporalElementaryDataItem di) throws E;
-    public Instant    readInstant   (TemporalElementaryDataItem di) throws E;
-    public BonaPortable readObject  (String fieldname, Class<? extends BonaPortable> type, boolean allowNull, boolean allowSubtypes) throws E; // parser factory
+    public BonaPortable  readObject (ObjectReference di, Class<? extends BonaPortable> type) throws E; // parser factory
     // composite methods
     public int parseMapStart        (FieldDefinition di) throws E;
     public int parseArrayStart      (FieldDefinition di, int sizeOfElement) throws E;

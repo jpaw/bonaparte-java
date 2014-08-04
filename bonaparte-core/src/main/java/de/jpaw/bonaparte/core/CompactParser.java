@@ -19,6 +19,7 @@ import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.enums.AbstractXEnumBase;
@@ -197,7 +198,7 @@ public class CompactParser extends CompactConstants implements MessageParser<IOE
     }
 
     @Override
-    public BonaPortable readObject(String fieldname, Class<? extends BonaPortable> type, boolean allowNull, boolean allowSubtypes) throws IOException {
+    public BonaPortable readObject(ObjectReference di, Class<? extends BonaPortable> type) throws IOException {
         // TODO Auto-generated method stub
         return null;
     }

@@ -43,7 +43,7 @@ public class TestFixedWidth {
     public void testFixedWidth() throws Exception {
         Test1 t1 = new Test1("Hello", 12, new BigDecimal("3.1"), new LocalDateTime(2013, 04, 01, 23, 55, 0), new LocalDate(2001, 11, 12), true, 1234567890123L);
 
-        runTest(fixedWidthCfg1,  t1, "Hello      000000012000000000003.10 20130401235500200111121000001234567890123\n");
+        runTest(fixedWidthCfg1,  t1, "Hello      0000000012000000000003.10 201304012355002001111210000001234567890123\n");
         
         CSVConfiguration fixedWidthCfg2 = CSVConfiguration.Builder.from(fixedWidthCfg1)
                 .booleanTokens("J", "N")
@@ -51,7 +51,7 @@ public class TestFixedWidth {
                 .setCustomTimeFormats("HH:mm:ss", "HH:mm:ss.SSS")
                 .setCustomDayTimeFormats("YYYY-MM-dd HH:mm:ss", "YYYY-MM-DD HH:mm:ss.SSS")
                 .usingZeroPadding(false).build();
-        runTest(fixedWidthCfg2, t1, "Hello             12           3.10 2013-04-01 23:55:0012.11.2001J     1234567890123\n");
+        runTest(fixedWidthCfg2, t1, "Hello              12           3.10 2013-04-01 23:55:0012.11.2001J      1234567890123\n");
     }
 
     @Test
