@@ -29,6 +29,13 @@ import org.joda.time.LocalTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
+import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDefinition;
 import de.jpaw.enums.AbstractXEnumBase;
@@ -98,17 +105,26 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
     }
 
     // check for Null called for field members inside a class
-    private boolean checkForNull(String fieldname, boolean allowNull) throws MessageParserException {
+    private boolean checkForNull(FieldDefinition di) throws MessageParserException {
+        return checkForNull(di.getName(), di.getIsRequired());
+    }
+    protected Integer readInteger(String fieldname) throws MessageParserException {
+        checkForNull(fieldname, true);
+        return Integer.valueOf(nextIndexParseAscii(fieldname, false, false, false));
+    }
+
+    // check for Null called for field members inside a class
+    private boolean checkForNull(String fieldname, boolean isRequired) throws MessageParserException {
         byte c = needToken();
         if (c == NULL_FIELD) {
-            if (allowNull) {
+            if (!isRequired) {
                 return true;
             } else {
                 throw new MessageParserException(MessageParserException.ILLEGAL_EXPLICIT_NULL, fieldname, parseIndex, currentClass);
             }
         }
         if ((c == PARENT_SEPARATOR) || (c == ARRAY_TERMINATOR) || (c == OBJECT_TERMINATOR)) {
-            if (allowNull) {
+            if (!isRequired) {
                 // uneat it
                 --parseIndex;
                 return true;
@@ -202,30 +218,36 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
     }
 
     @Override
-    public BigDecimal readBigDecimal(String fieldname, boolean allowNull, int length, int decimals, boolean isSigned, boolean rounding, boolean autoScale) throws MessageParserException {
-        if (checkForNull(fieldname, allowNull)) {
+    public BigDecimal readBigDecimal(NumericElementaryDataItem di) throws MessageParserException {
+        if (checkForNull(di)) {
             return null;
         }
-        BigDecimal r = new BigDecimal(nextIndexParseAscii(fieldname, isSigned, true, false));
-        return BigDecimalTools.checkAndScale(r, length, decimals, isSigned, rounding, autoScale, fieldname, parseIndex, currentClass);
+        BigDecimal r = new BigDecimal(nextIndexParseAscii(di.getName(), di.getIsSigned(), true, false));
+        return BigDecimalTools.checkAndScale(r, di, parseIndex, currentClass);
     }
 
     @Override
-    public Character readCharacter(String fieldname, boolean allowNull) throws MessageParserException {
-        String tmp = readString(fieldname, allowNull, 1, false, false, true, true);
+    public Character readCharacter(MiscElementaryDataItem di) throws MessageParserException {
+        String tmp = readString(di.getName(), di.getIsRequired(), 1, false, false, true, true);
         if (tmp == null) {
             return null;
         }
         if (tmp.length() == 0) {
-            throw new MessageParserException(MessageParserException.EMPTY_CHAR, fieldname, parseIndex, currentClass);
+            throw new MessageParserException(MessageParserException.EMPTY_CHAR, di.getName(), parseIndex, currentClass);
         }
         return tmp.charAt(0);
     }
 
-    // readString does the job for Unicode as well as ASCII, but only used for Unicode (have an optimized version for ASCII)
+    
+    // readString does the job for Unicode as well as ASCII
     @Override
-    public String readString(String fieldname, boolean allowNull, int length, boolean doTrim, boolean doTruncate, boolean allowCtrls, boolean allowUnicode) throws MessageParserException {
-        if (checkForNull(fieldname, allowNull)) {
+    public String readString(AlphanumericElementaryDataItem di) throws MessageParserException {
+        return readString(di.getName(), di.getIsRequired(), di.getLength(), di.getDoTrim(), di.getDoTruncate(), di.getAllowControlCharacters(), true);
+    }
+    
+    // readString does the job for Unicode as well as ASCII, but only used for Unicode (have an optimized version for ASCII)
+    protected String readString(String fieldname, boolean isRequired, int length, boolean doTrim, boolean doTruncate, boolean allowCtrls, boolean allowUnicode) throws MessageParserException {
+        if (checkForNull(fieldname, isRequired)) {
             return null;
         }
         if (doTrim) {
@@ -311,8 +333,12 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
 
     // specialized version without charset conversion
     @Override
-    public String readAscii(String fieldname, boolean allowNull, int length, boolean doTrim, boolean doTruncate) throws MessageParserException {
-        if (checkForNull(fieldname, allowNull)) {
+    public String readAscii(AlphanumericElementaryDataItem di) throws MessageParserException {
+        return readAscii(di.getName(), di.getIsRequired(), di.getLength(), di.getDoTrim(), di.getDoTruncate());
+    }
+    
+    protected String readAscii(String fieldname, boolean isRequired, int length, boolean doTrim, boolean doTruncate) throws MessageParserException {
+        if (checkForNull(fieldname, isRequired)) {
             return null;
         }
         if (doTrim) {
@@ -364,9 +390,9 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
     }
 
     @Override
-    public Boolean readBoolean(String fieldname, boolean allowNull) throws MessageParserException {
+    public Boolean readBoolean(MiscElementaryDataItem di) throws MessageParserException {
         boolean result;
-        if (checkForNull(fieldname, allowNull)) {
+        if (checkForNull(di)) {
             return null;
         }
         byte c = needToken();
@@ -376,15 +402,15 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
             result = true;
         } else {
             throw new MessageParserException(MessageParserException.ILLEGAL_BOOLEAN,
-                    String.format("(found 0x%02x for %s)", (int)c, fieldname), parseIndex, currentClass);
+                    String.format("(found 0x%02x for %s)", (int)c, di.getName()), parseIndex, currentClass);
         }
         needToken(FIELD_TERMINATOR);
         return result;
     }
 
     @Override
-    public ByteArray readByteArray(String fieldname, boolean allowNull, int length) throws MessageParserException {
-        if (checkForNull(fieldname, allowNull)) {
+    public ByteArray readByteArray(BinaryElementaryDataItem di) throws MessageParserException {
+        if (checkForNull(di)) {
             return null;
         }
         skipLeadingSpaces();
@@ -396,7 +422,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
             if (b == FIELD_TERMINATOR) {
                 ByteArray result = ByteArray.fromBase64(inputdata, parseIndex, i-parseIndex-1);
                 if (result == null) {
-                    throw new MessageParserException(MessageParserException.BASE64_PARSING_ERROR, fieldname, parseIndex, currentClass);
+                    throw new MessageParserException(MessageParserException.BASE64_PARSING_ERROR, di.getName(), parseIndex, currentClass);
                 }
                 parseIndex = i;
                 return result;
@@ -407,15 +433,15 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
                 // OK
             } else {
                 throw new MessageParserException(MessageParserException.ILLEGAL_CHAR_BASE64,
-                        String.format("(found 0x%02x for %s)", (int)b, fieldname), parseIndex, currentClass);
+                        String.format("(found 0x%02x for %s)", (int)b, di.getName()), parseIndex, currentClass);
             }
         }
-        throw new MessageParserException(MessageParserException.MISSING_TERMINATOR, fieldname, parseIndex, currentClass);
+        throw new MessageParserException(MessageParserException.MISSING_TERMINATOR, di.getName(), parseIndex, currentClass);
     }
 
     @Override
-    public byte[] readRaw(String fieldname, boolean allowNull, int length) throws MessageParserException {
-        if (checkForNull(fieldname, allowNull)) {
+    public byte[] readRaw(BinaryElementaryDataItem di) throws MessageParserException {
+        if (checkForNull(di)) {
             return null;
         }
         skipLeadingSpaces();
@@ -433,7 +459,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
                 } else {
                     result = Base64.decode(inputdata, parseIndex, i-parseIndex-1);
                     if (result == null) {
-                        throw new MessageParserException(MessageParserException.BASE64_PARSING_ERROR, fieldname, parseIndex, currentClass);
+                        throw new MessageParserException(MessageParserException.BASE64_PARSING_ERROR, di.getName(), parseIndex, currentClass);
                     }
                 }
                 parseIndex = i;
@@ -445,18 +471,18 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
                 // OK
             } else {
                 throw new MessageParserException(MessageParserException.ILLEGAL_CHAR_BASE64,
-                        String.format("(found 0x%02x for %s)", (int)b, fieldname), parseIndex, currentClass);
+                        String.format("(found 0x%02x for %s)", (int)b, di.getName()), parseIndex, currentClass);
             }
         }
-        throw new MessageParserException(MessageParserException.MISSING_TERMINATOR, fieldname, parseIndex, currentClass);
+        throw new MessageParserException(MessageParserException.MISSING_TERMINATOR, di.getName(), parseIndex, currentClass);
     }
 
     @Override
-    public LocalDateTime readDayTime(String fieldname, boolean allowNull, boolean hhmmss, int fractionalDigits) throws MessageParserException {
-        if (checkForNull(fieldname, allowNull)) {
+    public LocalDateTime readDayTime(TemporalElementaryDataItem di) throws MessageParserException {
+        if (checkForNull(di)) {
             return null;
         }
-        String tmp = nextIndexParseAscii(fieldname, false, fractionalDigits >= 0, false);  // parse an unsigned numeric string without exponent
+        String tmp = nextIndexParseAscii(di.getName(), false, di.getFractionalSeconds() >= 0, false);  // parse an unsigned numeric string without exponent
         int date;
         int fractional = 0;
         int dpoint;
@@ -482,7 +508,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
             default: // something weird
                 throw new MessageParserException(
                         MessageParserException.BAD_TIMESTAMP_FRACTIONALS,
-                        String.format("(found %d for %s)", tmp.length() - dpoint - 1, fieldname),
+                        String.format("(found %d for %s)", tmp.length() - dpoint - 1, di.getName()),
                         parseIndex, currentClass);
             }
         }
@@ -491,7 +517,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
         year = date / 10000;
         month = (date %= 10000) / 100;
         day = date %= 100;
-        if (hhmmss) {
+        if (di.getHhmmss()) {
             hour = fractional / 10000000;
             minute = (fractional %= 10000000) / 100000;
             second = (fractional %= 100000) / 1000;
@@ -506,13 +532,13 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
                 || (day > 31)) {
             throw new MessageParserException(
                     MessageParserException.ILLEGAL_DAY, String.format(
-                            "(found %d for %s)", date, fieldname), parseIndex, currentClass);
+                            "(found %d for %s)", date, di.getName()), parseIndex, currentClass);
         }
         if ((hour > 23) || (minute > 59) || (second > 59)) {
             throw new MessageParserException(
                     MessageParserException.ILLEGAL_TIME,
                     String.format("(found %d for %s)", (hour * 10000) + (minute * 100)
-                            + second, fieldname), parseIndex, currentClass);
+                            + second, di.getName()), parseIndex, currentClass);
         }
         // now set the return value
         LocalDateTime result;
@@ -523,17 +549,17 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
             result = new LocalDateTime(year, month, day, hour, minute, second, fractional);
         } catch (Exception e) {
             throw new MessageParserException(
-                    MessageParserException.ILLEGAL_CALENDAR_VALUE, fieldname,
+                    MessageParserException.ILLEGAL_CALENDAR_VALUE, di.getName(),
                     parseIndex, currentClass);
         }
         return result;
     }
     @Override
-    public LocalDate readDay(String fieldname, boolean allowNull) throws MessageParserException {
-        if (checkForNull(fieldname, allowNull)) {
+    public LocalDate readDay(TemporalElementaryDataItem di) throws MessageParserException {
+        if (checkForNull(di)) {
             return null;
         }
-        String tmp = nextIndexParseAscii(fieldname, false, false, false);  // parse an unsigned numeric string without exponent
+        String tmp = nextIndexParseAscii(di.getName(), false, false, false);  // parse an unsigned numeric string without exponent
         int date = Integer.parseInt(tmp);
         // set the date and time
         int day, month, year;
@@ -545,7 +571,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
                 || (day > 31)) {
             throw new MessageParserException(
                     MessageParserException.ILLEGAL_DAY, String.format(
-                            "(found %d for %s)", date, fieldname), parseIndex, currentClass);
+                            "(found %d for %s)", date, di.getName()), parseIndex, currentClass);
         }
         // now set the return value
         LocalDate result;
@@ -555,17 +581,17 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
             // and year
             result = new LocalDate(year, month, day);
         } catch (Exception e) {
-            throw new MessageParserException(MessageParserException.ILLEGAL_CALENDAR_VALUE, fieldname,  parseIndex, currentClass);
+            throw new MessageParserException(MessageParserException.ILLEGAL_CALENDAR_VALUE, di.getName(),  parseIndex, currentClass);
         }
         return result;
     }
 
     @Override
-    public LocalTime readTime(String fieldname, boolean allowNull, boolean hhmmss, int fractionalDigits) throws MessageParserException {
-        if (checkForNull(fieldname, allowNull)) {
+    public LocalTime readTime(TemporalElementaryDataItem di) throws MessageParserException {
+        if (checkForNull(di)) {
             return null;
         }
-        String tmp = nextIndexParseAscii(fieldname, false, fractionalDigits > 0, false);  // parse an unsigned numeric string without exponent
+        String tmp = nextIndexParseAscii(di.getName(), false, di.getFractionalSeconds() > 0, false);  // parse an unsigned numeric string without exponent
         int millis = 0;
         int seconds = 0;
         int dpoint;
@@ -587,13 +613,13 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
             default: // something weird
                 throw new MessageParserException(
                         MessageParserException.BAD_TIMESTAMP_FRACTIONALS,
-                        String.format("(found %d for %s)", tmp.length() - dpoint - 1, fieldname),
+                        String.format("(found %d for %s)", tmp.length() - dpoint - 1, di.getName()),
                         parseIndex, currentClass);
             }
         }
         // set the date and time
         int hour, minute, second;
-        if (hhmmss) {
+        if (di.getHhmmss()) {
             hour = seconds / 10000;
             minute = (seconds % 10000) / 100;
             second = seconds % 100;
@@ -607,18 +633,18 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
         if ((hour > 23) || (minute > 59) || (second > 59)) {
             throw new MessageParserException(
                     MessageParserException.ILLEGAL_TIME,
-                    String.format("(found %d for %s)", (hour * 10000) + (minute * 100) + second, fieldname), parseIndex, currentClass);
+                    String.format("(found %d for %s)", (hour * 10000) + (minute * 100) + second, di.getName()), parseIndex, currentClass);
         }
         return new LocalTime(1000 * seconds + millis, DateTimeZone.UTC);
     }
 
 
     @Override
-    public Instant readInstant(String fieldname, boolean allowNull, boolean hhmmss, int fractionalDigits) throws MessageParserException {
-        if (checkForNull(fieldname, allowNull)) {
+    public Instant readInstant(TemporalElementaryDataItem di) throws MessageParserException {
+        if (checkForNull(di)) {
             return null;
         }
-        String tmp = nextIndexParseAscii(fieldname, false, fractionalDigits > 0, false);  // parse an unsigned numeric string without exponent
+        String tmp = nextIndexParseAscii(di.getName(), false, di.getFractionalSeconds() > 0, false);  // parse an unsigned numeric string without exponent
         int millis = 0;
         long seconds = 0;
         int dpoint;
@@ -640,7 +666,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
             default: // something weird
                 throw new MessageParserException(
                         MessageParserException.BAD_TIMESTAMP_FRACTIONALS,
-                        String.format("(found %d for %s)", tmp.length() - dpoint - 1, fieldname),
+                        String.format("(found %d for %s)", tmp.length() - dpoint - 1, di.getName()),
                         parseIndex, currentClass);
             }
         }
@@ -648,19 +674,20 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
     }
 
     @Override
-    public int parseMapStart(String fieldname, boolean allowNull, int indexID) throws MessageParserException {
-        if (checkForNull(fieldname, true)) {  // check it separately in order to give a distinct error message
-            if (!allowNull)
+    public int parseMapStart(FieldDefinition di) throws MessageParserException {
+        String fieldname = di.getName();
+        if (checkForNull(fieldname, false)) {  // check it separately in order to give a distinct error message
+            if (di.getIsAggregateRequired())
                 throw new MessageParserException(MessageParserException.NULL_MAP_NOT_ALLOWED_HERE, fieldname, parseIndex, currentClass);
             return -1;
         }
         needToken(MAP_BEGIN);
-        int foundIndexType = readInteger(fieldname, false, false);
-        if (foundIndexType != indexID) {
+        int foundIndexType = readInteger(fieldname);
+        if (foundIndexType != di.getMapIndexType()) {
             throw new MessageParserException(MessageParserException.WRONG_MAP_INDEX_TYPE,
-                    String.format("(got %d, expected for %s)", foundIndexType, indexID, fieldname), parseIndex, currentClass);
+                    String.format("(got %d, expected for %s)", foundIndexType, di.getMapIndexType(), fieldname), parseIndex, currentClass);
         }
-        int n = readInteger(fieldname, false, false);
+        int n = readInteger(fieldname);
         if ((n < 0) || (n > 1000000000)) {
             throw new MessageParserException(MessageParserException.ARRAY_SIZE_OUT_OF_BOUNDS,
                     String.format("(got %d entries (0x%x) for %s)", n, n, fieldname), parseIndex, currentClass);
@@ -669,14 +696,15 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
     }
 
     @Override
-    public int parseArrayStart(String fieldname, boolean allowNull, int max, int sizeOfChild) throws MessageParserException {
-        if (checkForNull(fieldname, true)) {
-            if (!allowNull)
+    public int parseArrayStart(FieldDefinition di, int sizeOfChild) throws MessageParserException {
+        String fieldname = di.getName();
+        if (checkForNull(fieldname, false)) {
+            if (di.getIsAggregateRequired())
                 throw new MessageParserException(MessageParserException.NULL_COLLECTION_NOT_ALLOWED, fieldname, parseIndex, currentClass);
             return -1;
         }
         needToken(ARRAY_BEGIN);
-        int n = readInteger(fieldname, false, false);
+        int n = readInteger(fieldname);
         if ((n < 0) || (n > 1000000000)) {
             throw new MessageParserException(MessageParserException.ARRAY_SIZE_OUT_OF_BOUNDS,
                     String.format("(got %d entries (0x%x) for %s)", n, n, fieldname), parseIndex, currentClass);
@@ -712,51 +740,51 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
     }
 
     @Override
-    public Byte readByte(String fieldname, boolean allowNull, boolean isSigned) throws MessageParserException {
-        if (checkForNull(fieldname, allowNull)) {
+    public Byte readByte(BasicNumericElementaryDataItem di) throws MessageParserException {
+        if (checkForNull(di)) {
             return null;
         }
-        return Byte.valueOf(nextIndexParseAscii(fieldname, isSigned, false, false));
+        return Byte.valueOf(nextIndexParseAscii(di.getName(), di.getIsSigned(), false, false));
     }
 
     @Override
-    public Short readShort(String fieldname, boolean allowNull, boolean isSigned) throws MessageParserException {
-        if (checkForNull(fieldname, allowNull)) {
+    public Short readShort(BasicNumericElementaryDataItem di) throws MessageParserException {
+        if (checkForNull(di)) {
             return null;
         }
-        return Short.valueOf(nextIndexParseAscii(fieldname, isSigned, false, false));
+        return Short.valueOf(nextIndexParseAscii(di.getName(), di.getIsSigned(), false, false));
     }
 
     @Override
-    public Long readLong(String fieldname, boolean allowNull, boolean isSigned) throws MessageParserException {
-        if (checkForNull(fieldname, allowNull)) {
+    public Integer readInteger(BasicNumericElementaryDataItem di) throws MessageParserException {
+        if (checkForNull(di)) {
             return null;
         }
-        return Long.valueOf(nextIndexParseAscii(fieldname, isSigned, false, false));
+        return Integer.valueOf(nextIndexParseAscii(di.getName(), di.getIsSigned(), false, false));
     }
 
     @Override
-    public Integer readInteger(String fieldname, boolean allowNull, boolean isSigned) throws MessageParserException {
-        if (checkForNull(fieldname, allowNull)) {
+    public Long readLong(BasicNumericElementaryDataItem di) throws MessageParserException {
+        if (checkForNull(di)) {
             return null;
         }
-        return Integer.valueOf(nextIndexParseAscii(fieldname, isSigned, false, false));
+        return Long.valueOf(nextIndexParseAscii(di.getName(), di.getIsSigned(), false, false));
     }
 
     @Override
-    public Float readFloat(String fieldname, boolean allowNull, boolean isSigned) throws MessageParserException {
-        if (checkForNull(fieldname, allowNull)) {
+    public Float readFloat(BasicNumericElementaryDataItem di) throws MessageParserException {
+        if (checkForNull(di)) {
             return null;
         }
-        return Float.valueOf(nextIndexParseAscii(fieldname, isSigned, true, true));
+        return Float.valueOf(nextIndexParseAscii(di.getName(), di.getIsSigned(), true, true));
     }
 
     @Override
-    public Double readDouble(String fieldname, boolean allowNull, boolean isSigned) throws MessageParserException {
-        if (checkForNull(fieldname, allowNull)) {
+    public Double readDouble(BasicNumericElementaryDataItem di) throws MessageParserException {
+        if (checkForNull(di)) {
             return null;
         }
-        return Double.valueOf(nextIndexParseAscii(fieldname, isSigned, true, true));
+        return Double.valueOf(nextIndexParseAscii(di.getName(), di.getIsSigned(), true, true));
     }
 
     @Override
@@ -805,15 +833,14 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
     }
 
     @Override
-    public BigInteger readBigInteger(String fieldname, boolean allowNull, int length, boolean isSigned)
-            throws MessageParserException {
-        if (checkForNull(fieldname, allowNull)) {
+    public BigInteger readBigInteger(BasicNumericElementaryDataItem di) throws MessageParserException {
+        if (checkForNull(di)) {
             return null;
         }
-        String tmp = nextIndexParseAscii(fieldname, isSigned, false, false);
-        if (tmp.length() > (length + (((tmp.charAt(0) == '-') || (tmp.charAt(0) == '+')) ? 1 : 0))) {
+        String tmp = nextIndexParseAscii(di.getName(), di.getIsSigned(), false, false);
+        if (tmp.length() > (di.getTotalDigits() + (((tmp.charAt(0) == '-') || (tmp.charAt(0) == '+')) ? 1 : 0))) {
             throw new MessageParserException(MessageParserException.NUMERIC_TOO_LONG,
-                    String.format("(allowed %d, found %d for %s)", length, tmp.length(), fieldname), parseIndex, currentClass);
+                    String.format("(allowed %d, found %d for %s)", di.getTotalDigits(), tmp.length(), di.getName()), parseIndex, currentClass);
         }
         return new BigInteger(tmp);
     }
@@ -826,7 +853,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
         if (useCache && parseIndex < messageLength && inputdata[parseIndex] == OBJECT_AGAIN) {
             // we reuse an object
             ++parseIndex;
-            int objectIndex = readInteger(fieldname, false, false).intValue();
+            int objectIndex = readInteger(fieldname).intValue();
             if (objectIndex >= objects.size())
                 throw new MessageParserException(MessageParserException.INVALID_BACKREFERENCE, String.format(
                         "at %s: requested object %d of only %d available", fieldname, objectIndex, objects.size()),
@@ -844,7 +871,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
         } else {
             String previousClass = currentClass;
             needToken(OBJECT_BEGIN); // version not yet allowed
-            String classname = readString(fieldname, false, 0, false, false, false, false);
+            String classname = readAscii(fieldname, true, 0, true, false);
             // String revision = readAscii(true, 0, false, false);
             needToken(NULL_FIELD); // version not yet allowed
             BonaPortable newObject = BonaPortableFactory.createObject(classname);
@@ -899,8 +926,8 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
 
 
     @Override
-    public UUID readUUID(String fieldname, boolean allowNull) throws MessageParserException {
-        String tmp = readAscii(fieldname, allowNull, 36, true, false);
+    public UUID readUUID(MiscElementaryDataItem di) throws MessageParserException {
+        String tmp = readString(di.getName(), di.getIsRequired(), 36, false, false, false, false);
         if (tmp == null) {
             return null;
         }
@@ -927,7 +954,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
     @Override
     public <T extends AbstractXEnumBase<T>> T readXEnum(XEnumDataItem di, XEnumFactory<T> factory) throws MessageParserException {
         XEnumDefinition spec = di.getBaseXEnum();
-        String scannedToken = readString(di.getName(), !di.getIsRequired() || spec.getHasNullToken(), spec.getMaxTokenLength(), true, false, false, true);
+        String scannedToken = readString(di.getName(), di.getIsRequired() && !spec.getHasNullToken(), spec.getMaxTokenLength(), true, false, false, true);
         if (scannedToken == null)
             return factory.getNullToken();
         T value = factory.getByToken(scannedToken);

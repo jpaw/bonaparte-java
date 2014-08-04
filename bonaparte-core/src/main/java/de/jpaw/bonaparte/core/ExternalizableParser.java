@@ -31,6 +31,13 @@ import org.joda.time.LocalTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
+import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDefinition;
 import de.jpaw.enums.AbstractXEnumBase;
@@ -97,17 +104,21 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
     }
 
     // check for Null called for field members inside a class
-    private boolean checkForNull(String fieldname, boolean allowNull) throws IOException {
+    private boolean checkForNull(FieldDefinition di) throws IOException {
+        return checkForNull(di.getName(), di.getIsRequired());
+    }
+    // check for Null called for field members inside a class
+    private boolean checkForNull(String fieldname, boolean isRequired) throws IOException {
         byte c = nextByte();
         if (c == NULL_FIELD) {
-            if (allowNull) {
+            if (!isRequired) {
                 return true;
             } else {
                 throw new IOException("Illegal explicit NULL in " + currentClass + "." + fieldname);
             }
         }
         if ((c == PARENT_SEPARATOR) || (c == ARRAY_TERMINATOR) || (c == OBJECT_TERMINATOR)) {
-            if (allowNull) {
+            if (!isRequired) {
                 // uneat it
                 pushBack(c);
                 return true;
@@ -130,10 +141,11 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
     }
 
     @Override
-    public BigDecimal readBigDecimal(String fieldname, boolean allowNull, int length, int decimals, boolean isSigned, boolean rounding, boolean autoScale) throws IOException {
-        if (checkForNull(fieldname, allowNull)) {
+    public BigDecimal readBigDecimal(NumericElementaryDataItem di) throws IOException {
+        if (checkForNull(di)) {
             return null;
         }
+        String fieldname = di.getName();
         BigDecimal r;
         byte c = nextByte();
         if ((c > FRAC_SCALE_0) && (c <= FRAC_SCALE_18)) {
@@ -148,28 +160,36 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         }
         // now check precision, if required, convert!
         try {
-            return BigDecimalTools.checkAndScale(r, length, decimals, isSigned, rounding, autoScale, fieldname, -1, currentClass);
+            return BigDecimalTools.checkAndScale(r, di, -1, currentClass);
         } catch (MessageParserException a) {
             throw new IOException("Decimal number does not comply with specs: " + a.getStandardDescription() + " for " + currentClass + "." + fieldname);
         }
     }
 
     @Override
-    public Character readCharacter(String fieldname, boolean allowNull) throws IOException {
-        String tmp = readString(fieldname, allowNull, 1, false, false, true, true);
+    public Character readCharacter(MiscElementaryDataItem di) throws IOException {
+        String tmp = readString(di.getName(), di.getIsRequired(), 1, false, false, true, true);
         if (tmp == null) {
             return null;
         }
         if (tmp.length() == 0) {
-            throw new IOException("EMPTY CHAR in " + currentClass + "." + fieldname);
+            throw new IOException("EMPTY CHAR in " + currentClass + "." + di.getName());
         }
         return tmp.charAt(0);
     }
 
-    // readString does the job for Unicode as well as ASCII, but only used for Unicode (have an optimized version for ASCII)
     @Override
-    public String readString(String fieldname, boolean allowNull, int length, boolean doTrim, boolean doTruncate, boolean allowCtrls, boolean allowUnicode) throws IOException {
-        if (checkForNull(fieldname, allowNull)) {
+    public String readAscii(AlphanumericElementaryDataItem di) throws IOException {
+        return readString(di.getName(), di.getIsRequired(), di.getLength(), di.getDoTrim(), di.getDoTruncate(), di.getAllowControlCharacters(), false);
+    }
+    // readString does the job for Unicode as well as ASCII
+    @Override
+    public String readString(AlphanumericElementaryDataItem di) throws IOException {
+        return readString(di.getName(), di.getIsRequired(), di.getLength(), di.getDoTrim(), di.getDoTruncate(), di.getAllowControlCharacters(), true);
+    }
+    
+    protected String readString(String fieldname, boolean isRequired, int length, boolean doTrim, boolean doTruncate, boolean allowCtrls, boolean allowUnicode) throws IOException {
+        if (checkForNull(fieldname, isRequired)) {
             return null;
         }
         needToken(TEXT);
@@ -184,15 +204,9 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         return s;
     }
 
-    // specialized version without charset conversion
     @Override
-    public String readAscii(String fieldname, boolean allowNull, int length, boolean doTrim, boolean doTruncate) throws IOException {
-        return readString(fieldname, allowNull, length, doTrim, doTruncate, false, false);
-    }
-
-    @Override
-    public Boolean readBoolean(String fieldname, boolean allowNull) throws IOException {
-        if (checkForNull(fieldname, allowNull)) {
+    public Boolean readBoolean(MiscElementaryDataItem di) throws IOException {
+        if (checkForNull(di)) {
             return null;
         }
         byte c = nextByte();
@@ -201,12 +215,12 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         } else if (c == INT_ONE) {
             return true;
         }
-        throw new IOException(String.format("ILLEGAL BOOLEAN: found 0x%02x for %s.%s", (int)c, currentClass, fieldname));
+        throw new IOException(String.format("ILLEGAL BOOLEAN: found 0x%02x for %s.%s", (int)c, currentClass, di.getName()));
     }
 
     @Override
-    public ByteArray readByteArray(String fieldname, boolean allowNull, int length) throws IOException {
-        if (checkForNull(fieldname, allowNull)) {
+    public ByteArray readByteArray(BinaryElementaryDataItem di) throws IOException {
+        if (checkForNull(di)) {
             return null;
         }
         needToken(BINARY);
@@ -215,16 +229,17 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
     }
 
     @Override
-    public byte[] readRaw(String fieldname, boolean allowNull, int length) throws IOException {
-        if (checkForNull(fieldname, allowNull)) {
+    public byte[] readRaw(BinaryElementaryDataItem di) throws IOException {
+        if (checkForNull(di)) {
             return null;
         }
         needToken(BINARY);
         assert !hasByte; // readInt() does not respect pushed back byte
         byte [] tmp = ByteArray.readBytes(in);
+        int length = di.getLength();
         if ((length > 0) && (tmp.length > length)) {
             throw new IOException(String.format("byte buffer too long (found %d where only %d is allowed in %s.%s)",
-                    tmp.length, length, currentClass, fieldname));
+                    tmp.length, length, currentClass, di.getName()));
         }
         return tmp;
     }
@@ -247,35 +262,35 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
     }
 
     @Override
-    public Byte readByte(String fieldname, boolean allowNull, boolean isSigned) throws IOException {
-        if (checkForNull(fieldname, allowNull)) {
+    public Byte readByte(BasicNumericElementaryDataItem di) throws IOException {
+        if (checkForNull(di)) {
             return null;
         }
-        return (byte)readVarInt(fieldname, 8);
+        return (byte)readVarInt(di.getName(), 8);
     }
 
     @Override
-    public Short readShort(String fieldname, boolean allowNull, boolean isSigned) throws IOException {
-        if (checkForNull(fieldname, allowNull)) {
+    public Short readShort(BasicNumericElementaryDataItem di) throws IOException {
+        if (checkForNull(di)) {
             return null;
         }
-        return (short)readVarInt(fieldname, 16);
+        return (short)readVarInt(di.getName(), 16);
     }
 
     @Override
-    public Integer readInteger(String fieldname, boolean allowNull, boolean isSigned) throws IOException {
-        if (checkForNull(fieldname, allowNull)) {
+    public Integer readInteger(BasicNumericElementaryDataItem di) throws IOException {
+        if (checkForNull(di)) {
             return null;
         }
-        return readVarInt(fieldname, 32);
+        return readVarInt(di.getName(), 32);
     }
 
     @Override
-    public Long readLong(String fieldname, boolean allowNull, boolean isSigned) throws IOException {
-        if (checkForNull(fieldname, allowNull)) {
+    public Long readLong(BasicNumericElementaryDataItem di) throws IOException {
+        if (checkForNull(di)) {
             return null;
         }
-        return readLongNoNull(fieldname);
+        return readLongNoNull(di.getName());
     }
 
     private long readLongNoNull(String fieldname) throws IOException {
@@ -288,10 +303,11 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
     }
 
     @Override
-    public LocalDateTime readDayTime(String fieldname, boolean allowNull, boolean hhmmss, int fractionalDigits) throws IOException {
-        if (checkForNull(fieldname, allowNull)) {
+    public LocalDateTime readDayTime(TemporalElementaryDataItem di) throws IOException {
+        if (checkForNull(di)) {
             return null;
         }
+        String fieldname = di.getName();
         int fractional = 0;
         byte c = nextByte();
         if ((c > FRAC_SCALE_0) && (c <= FRAC_SCALE_18)) {
@@ -317,7 +333,7 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         year = date / 10000;
         month = (date %= 10000) / 100;
         day = date %= 100;
-        if (hhmmss) {
+        if (di.getHhmmss()) {
             hour = fractional / 10000000;
             minute = (fractional %= 10000000) / 100000;
             second = (fractional %= 100000) / 1000;
@@ -349,10 +365,11 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         return result;
     }
     @Override
-    public LocalDate readDay(String fieldname, boolean allowNull) throws IOException {
-        if (checkForNull(fieldname, allowNull)) {
+    public LocalDate readDay(TemporalElementaryDataItem di) throws IOException {
+        if (checkForNull(di)) {
             return null;
         }
+        String fieldname = di.getName();
         int date = readVarInt(fieldname, 32);
         if (date < 0) {
             throw new IOException(String.format("negative numbers found for date field: %d in %s.%s",
@@ -383,15 +400,15 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
     }
 
     @Override
-    public LocalTime readTime(String fieldname, boolean allowNull, boolean hhmmss, int fractionalDigits) throws IOException {
-        if (checkForNull(fieldname, allowNull)) {
+    public LocalTime readTime(TemporalElementaryDataItem di) throws IOException {
+        if (checkForNull(di)) {
             return null;
         }
         int fractional = 0;
         byte c = nextByte();
         if ((c > FRAC_SCALE_0) && (c <= FRAC_SCALE_18)) {
             // read fractional part
-            long fraction = readLongNoNull(fieldname);
+            long fraction = readLongNoNull(di.getName());
             int scale = c-FRAC_SCALE_0;
             if (scale > 9) {
                 fraction /= powersOfTen[scale - 9];
@@ -404,7 +421,7 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         }
         // set the date and time
         int hour, minute, second;
-        if (hhmmss) {
+        if (di.getHhmmss()) {
             hour = fractional / 10000000;
             minute = (fractional % 10000000) / 100000;
             second = (fractional % 100000) / 1000;
@@ -416,31 +433,32 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         }
         // first checks
         if ((hour > 23) || (minute > 59) || (second > 59)) {
-            throw new IOException(String.format("ILLEGAL TIME: found %d:%d:%d in %s.%s", hour, minute, second, currentClass, fieldname));
+            throw new IOException(String.format("ILLEGAL TIME: found %d:%d:%d in %s.%s", hour, minute, second, currentClass, di.getName()));
         }
         return new LocalTime(fractional, DateTimeZone.UTC);
     }
     
     @Override
-    public Instant readInstant(String fieldname, boolean allowNull, boolean hhmmss, int fractionalDigits) throws IOException {
-        if (checkForNull(fieldname, allowNull)) {
+    public Instant readInstant(TemporalElementaryDataItem di) throws IOException {
+        if (checkForNull(di)) {
             return null;
         }
-        return new Instant(readLongNoNull(fieldname));
+        return new Instant(readLongNoNull(di.getName()));
     }
     
     @Override
-    public int parseMapStart(String fieldname, boolean allowNull, int indexID) throws IOException {
-        if (checkForNull(fieldname, true)) {  // check it separately in order to give a distinct error message
-            if (!allowNull)
+    public int parseMapStart(FieldDefinition di) throws IOException {
+        String fieldname = di.getName();
+        if (checkForNull(fieldname, false)) {  // check it separately in order to give a distinct error message
+            if (di.getIsAggregateRequired())
                 throw new IOException("ILLEGAL NULL Map in " + currentClass + "." + fieldname);
             return -1;
         }
         needToken(MAP_BEGIN);
         int foundIndexType = readVarInt(fieldname, 32);
-        if (foundIndexType != indexID) {
+        if (foundIndexType != di.getMapIndexType()) {
             throw new IOException(String.format("WRONG_MAP_INDEX_TYPE: got %d, expected for %s.%s",
-                    foundIndexType, indexID, currentClass, fieldname));
+                    foundIndexType, di.getMapIndexType(), currentClass, fieldname));
         }
         int n = readVarInt(fieldname, 32);
         if ((n < 0) || (n > 1000000000)) {
@@ -451,9 +469,10 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
     }
 
     @Override
-    public int parseArrayStart(String fieldname, boolean allowNull, int max, int sizeOfChild) throws IOException {
-        if (checkForNull(fieldname, true)) {  // check it separately in order to give a distinct error message
-            if (!allowNull)
+    public int parseArrayStart(FieldDefinition di, int sizeOfChild) throws IOException {
+        String fieldname = di.getName();
+        if (checkForNull(fieldname, false)) {  // check it separately in order to give a distinct error message
+            if (di.getIsAggregateRequired())
                 throw new IOException("ILLEGAL NULL List, Set or Array in " + currentClass + "." + fieldname);
             return -1;
         }
@@ -483,8 +502,8 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
     }
 
     @Override
-    public Float readFloat(String fieldname, boolean allowNull, boolean isSigned) throws IOException {
-        if (checkForNull(fieldname, allowNull)) {
+    public Float readFloat(BasicNumericElementaryDataItem di) throws IOException {
+        if (checkForNull(di)) {
             return null;
         }
         // TODO: accept other numeric types as well & perform conversion
@@ -493,8 +512,8 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
     }
 
     @Override
-    public Double readDouble(String fieldname, boolean allowNull, boolean isSigned) throws IOException {
-        if (checkForNull(fieldname, allowNull)) {
+    public Double readDouble(BasicNumericElementaryDataItem di) throws IOException {
+        if (checkForNull(di)) {
             return null;
         }
         needToken(BINARY_DOUBLE);
@@ -541,11 +560,11 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
     }
 
     @Override
-    public BigInteger readBigInteger(String fieldname, boolean allowNull, int length, boolean isSigned) throws IOException {
-        if (checkForNull(fieldname, allowNull)) {
+    public BigInteger readBigInteger(BasicNumericElementaryDataItem di) throws IOException {
+        if (checkForNull(di)) {
             return null;
         }
-        return BigInteger.valueOf(readLongNoNull(fieldname));
+        return BigInteger.valueOf(readLongNoNull(di.getName()));
     }
 
     @Override
@@ -631,8 +650,8 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
 
 
     @Override
-    public UUID readUUID(String fieldname, boolean allowNull) throws IOException {
-        String tmp = readAscii(fieldname, allowNull, 36, true, false);
+    public UUID readUUID(MiscElementaryDataItem di) throws IOException {
+        String tmp = readString(di.getName(), di.getIsRequired(), 36, false, false, false, false);
         if (tmp == null) {
             return null;
         }
@@ -656,7 +675,7 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
     @Override
     public <T extends AbstractXEnumBase<T>> T readXEnum(XEnumDataItem di, XEnumFactory<T> factory) throws IOException {
         XEnumDefinition spec = di.getBaseXEnum();
-        String scannedToken = readString(di.getName(), !di.getIsRequired() || spec.getHasNullToken(), spec.getMaxTokenLength(), true, false, false, true);
+        String scannedToken = readString(di.getName(), di.getIsRequired() && !spec.getHasNullToken(), spec.getMaxTokenLength(), true, false, false, true);
         if (scannedToken == null)
             return factory.getNullToken();
         T value = factory.getByToken(scannedToken);

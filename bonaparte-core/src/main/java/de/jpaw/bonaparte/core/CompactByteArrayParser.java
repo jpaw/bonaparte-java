@@ -32,13 +32,22 @@ import org.joda.time.LocalTime;
 
 
 
-
+import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
+import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
+import de.jpaw.bonaparte.pojos.meta.ObjectReference;
+import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDefinition;
 import de.jpaw.enums.AbstractXEnumBase;
 import de.jpaw.enums.XEnumFactory;
 import de.jpaw.util.BigDecimalTools;
 import de.jpaw.util.ByteArray;
+
 /**
  * The CompactByteArrayParser class.
  *
@@ -102,19 +111,23 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
     }
 
     // check for Null called for field members inside a class
-    private boolean checkForNullOrNeedToken(String fieldname, boolean allowNull, int token) throws MessageParserException {
+    private boolean checkForNullOrNeedToken(FieldDefinition di, int token) throws MessageParserException {
+        return checkForNullOrNeedToken(di.getName(), di.getIsRequired(), token);
+    }
+    // check for Null called for field members inside a class
+    private boolean checkForNullOrNeedToken(String fieldname, boolean isRequired, int token) throws MessageParserException {
         int c = needToken();
         if (c == token)
             return false;
         if (c == NULL_FIELD) {
-            if (allowNull) {
+            if (!isRequired) {
                 return true;
             } else {
                 throw new MessageParserException(MessageParserException.ILLEGAL_EXPLICIT_NULL, fieldname, parseIndex, currentClass);
             }
         }
         if ((c == PARENT_SEPARATOR) || (c == COLLECTIONS_TERMINATOR) || (c == OBJECT_TERMINATOR)) {
-            if (allowNull) {
+            if (!isRequired) {
                 // uneat it
                 --parseIndex;
                 return true;
@@ -125,18 +138,24 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
         throw new MessageParserException(MessageParserException.UNEXPECTED_CHARACTER,
                 String.format("(expected 0x%02x, got 0x%02x)", token, c), parseIndex, currentClass);
     }
+    
     // check for Null called for field members inside a class
-    private boolean checkForNull(String fieldname, boolean allowNull) throws MessageParserException {
+    private boolean checkForNull(FieldDefinition di) throws MessageParserException {
+        return checkForNull(di.getName(), di.getIsRequired());
+    }
+
+    // check for Null called for field members inside a class
+    private boolean checkForNull(String fieldname, boolean isRequired) throws MessageParserException {
         int c = needToken();
         if (c == NULL_FIELD) {
-            if (allowNull) {
+            if (!isRequired) {
                 return true;
             } else {
                 throw new MessageParserException(MessageParserException.ILLEGAL_EXPLICIT_NULL, fieldname, parseIndex, currentClass);
             }
         }
         if ((c == PARENT_SEPARATOR) || (c == COLLECTIONS_TERMINATOR) || (c == OBJECT_TERMINATOR)) {
-            if (allowNull) {
+            if (!isRequired) {
                 // uneat it
                 --parseIndex;
                 return true;
@@ -226,8 +245,8 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
 
 
     @Override
-    public UUID readUUID(String fieldname, boolean allowNull) throws MessageParserException {
-        if (checkForNullOrNeedToken(fieldname, allowNull, COMPACT_UUID))
+    public UUID readUUID(MiscElementaryDataItem di) throws MessageParserException {
+        if (checkForNullOrNeedToken(di, COMPACT_UUID))
             return null;
         long msl = readFixed8ByteLong();
         long lsl = readFixed8ByteLong();
@@ -250,7 +269,7 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
     @Override
     public <T extends AbstractXEnumBase<T>> T readXEnum(XEnumDataItem di, XEnumFactory<T> factory) throws MessageParserException {
         XEnumDefinition spec = di.getBaseXEnum();
-        String scannedToken = readString(di.getName(), !di.getIsRequired() || spec.getHasNullToken(), spec.getMaxTokenLength(), true, false, false, true);
+        String scannedToken = readString(di.getName(), di.getIsRequired() && !spec.getHasNullToken());
         if (scannedToken == null)
             return factory.getNullToken();
         T value = factory.getByToken(scannedToken);
@@ -262,9 +281,10 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
 
 
     @Override
-    public BigDecimal readBigDecimal(String fieldname, boolean allowNull, int length, int decimals, boolean isSigned, boolean rounding, boolean autoScale) throws MessageParserException {
-        if (checkForNull(fieldname, allowNull))
+    public BigDecimal readBigDecimal(NumericElementaryDataItem di) throws MessageParserException {
+        if (checkForNull(di))
             return null;
+        String fieldname = di.getName();
         int scale = 0;
         int c = needToken();
         if (c == 0)
@@ -292,13 +312,13 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
             c = readInt(c, fieldname);
             r = BigDecimal.valueOf(c, scale);
         }
-        return BigDecimalTools.checkAndScale(r, length, decimals, isSigned, rounding, autoScale, fieldname, parseIndex, currentClass);
+        return BigDecimalTools.checkAndScale(r, di, parseIndex, currentClass);
     }
 
 
     @Override
-    public Character readCharacter(String fieldname, boolean allowNull) throws MessageParserException {
-        if (checkForNull(fieldname, allowNull))
+    public Character readCharacter(MiscElementaryDataItem di) throws MessageParserException {
+        if (checkForNull(di))
             return null;
         int c = needToken();
         if (c >= 0x20 && c < 0x80)
@@ -314,8 +334,8 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
 
 
     @Override
-    public Boolean readBoolean(String fieldname, boolean allowNull) throws MessageParserException {
-        if (checkForNull(fieldname, allowNull))
+    public Boolean readBoolean(MiscElementaryDataItem di) throws MessageParserException {
+        if (checkForNull(di))
             return null;
         int c = needToken();
         if (c == 0)
@@ -327,52 +347,52 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
     }
 
     @Override
-    public Double readDouble(String fieldname, boolean allowNull, boolean isSigned) throws MessageParserException {
-        if (checkForNullOrNeedToken(fieldname, allowNull, COMPACT_DOUBLE))
+    public Double readDouble(BasicNumericElementaryDataItem di) throws MessageParserException {
+        if (checkForNullOrNeedToken(di, COMPACT_DOUBLE))
             return null;
         return Double.longBitsToDouble(readFixed8ByteLong());
     }
 
     @Override
-    public Float readFloat(String fieldname, boolean allowNull, boolean isSigned) throws MessageParserException {
-        if (checkForNullOrNeedToken(fieldname, allowNull, COMPACT_FLOAT))
+    public Float readFloat(BasicNumericElementaryDataItem di) throws MessageParserException {
+        if (checkForNullOrNeedToken(di, COMPACT_FLOAT))
             return null;
         return Float.intBitsToFloat(readFixed4ByteInt());
     }
 
     @Override
-    public Long readLong(String fieldname, boolean allowNull, boolean isSigned) throws MessageParserException {
-        if (checkForNull(fieldname, allowNull))
+    public Long readLong(BasicNumericElementaryDataItem di) throws MessageParserException {
+        if (checkForNull(di))
             return null;
-        return readLong(needToken(), fieldname);
+        return readLong(needToken(), di.getName());
     }
 
     @Override
-    public Integer readInteger(String fieldname, boolean allowNull, boolean isSigned) throws MessageParserException {
-        if (checkForNull(fieldname, allowNull))
+    public Integer readInteger(BasicNumericElementaryDataItem di) throws MessageParserException {
+        if (checkForNull(di))
             return null;
-        return readInt(needToken(), fieldname);
+        return readInt(needToken(), di.getName());
     }
 
     @Override
-    public Short readShort(String fieldname, boolean allowNull, boolean isSigned) throws MessageParserException {
-        if (checkForNull(fieldname, allowNull))
+    public Short readShort(BasicNumericElementaryDataItem di) throws MessageParserException {
+        if (checkForNull(di))
             return null;
-        return (short)readInt(needToken(), fieldname);
+        return (short)readInt(needToken(), di.getName());
     }
 
     @Override
-    public Byte readByte(String fieldname, boolean allowNull, boolean isSigned) throws MessageParserException {
-        if (checkForNull(fieldname, allowNull))
+    public Byte readByte(BasicNumericElementaryDataItem di) throws MessageParserException {
+        if (checkForNull(di))
             return null;
-        return (byte)readInt(needToken(), fieldname);
+        return (byte)readInt(needToken(), di.getName());
     }
 
     @Override
-    public BigInteger readBigInteger(String fieldname, boolean allowNull, int length, boolean isSigned) throws MessageParserException {
-        if (checkForNull(fieldname, allowNull))
+    public BigInteger readBigInteger(BasicNumericElementaryDataItem di) throws MessageParserException {
+        if (checkForNull(di))
             return null;
-        return BigInteger.valueOf(readLong(needToken(), fieldname));
+        return BigInteger.valueOf(readLong(needToken(), di.getName()));
     }
 
     private String readAscii(int len, String fieldname) throws MessageParserException {
@@ -384,8 +404,12 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
     }
     
     @Override
-    public String readAscii(String fieldname, boolean allowNull, int length, boolean doTrim, boolean doTruncate) throws MessageParserException {
-        if (checkForNull(fieldname, allowNull))
+    public String readAscii(AlphanumericElementaryDataItem di) throws MessageParserException {
+        return readString(di.getName(), di.getIsRequired());
+    }
+    
+    protected String readString(String fieldname, boolean isRequired) throws MessageParserException {
+        if (checkForNull(fieldname, isRequired))
             return null;
         int len;
         String result;
@@ -407,7 +431,7 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
                 return String.valueOf(cc); // single Unicode char string
             case ASCII_STRING:
                 len = readInt(needToken(), fieldname);
-                // return readAscii(len, fieldname);
+                // return readAscii(len, di.getName());
                 require(len);
                 result = new String(inputdata, parseIndex, len, CHARSET_ASCII);
                 parseIndex += len;
@@ -435,21 +459,21 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
 
 
     @Override
-    public String readString(String fieldname, boolean allowNull, int length, boolean doTrim, boolean doTruncate, boolean allowCtrls, boolean allowUnicode) throws MessageParserException {
-        return readAscii(fieldname, allowNull, length, doTrim, doTruncate);
+    public String readString(AlphanumericElementaryDataItem di) throws MessageParserException {
+        return readAscii(null);
     }
 
 
     @Override
-    public ByteArray readByteArray(String fieldname, boolean allowNull, int length) throws MessageParserException {
-        if (checkForNull(fieldname, allowNull))
+    public ByteArray readByteArray(BinaryElementaryDataItem di) throws MessageParserException {
+        if (checkForNull(di))
             return null;
         int c = needToken();
         switch (c) {
         case EMPTY_FIELD:
             return ByteArray.ZERO_BYTE_ARRAY;
         case COMPACT_BINARY:
-            int len = readInt(needToken(), fieldname);
+            int len = readInt(needToken(), di.getName());
             ByteArray result = new ByteArray(inputdata, parseIndex, len);
             parseIndex += len;
             return result;
@@ -461,15 +485,15 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
 
 
     @Override
-    public byte[] readRaw(String fieldname, boolean allowNull, int length) throws MessageParserException {
-        if (checkForNull(fieldname, allowNull))
+    public byte[] readRaw(BinaryElementaryDataItem di) throws MessageParserException {
+        if (checkForNull(di))
             return null;
         int c = needToken();
         switch (c) {
         case EMPTY_FIELD:
             return EMPTY_BYTE_ARRAY;
         case COMPACT_BINARY:
-            int len = readInt(needToken(), fieldname);
+            int len = readInt(needToken(), di.getName());
             byte [] data = new byte [len];
             System.arraycopy(inputdata, parseIndex, data, 0, len);
             parseIndex += len;
@@ -482,9 +506,10 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
 
 
     @Override
-    public LocalDate readDay(String fieldname, boolean allowNull) throws MessageParserException {
-        if (checkForNullOrNeedToken(fieldname, allowNull, COMPACT_DATE))
+    public LocalDate readDay(TemporalElementaryDataItem di) throws MessageParserException {
+        if (checkForNullOrNeedToken(di, COMPACT_DATE))
             return null;
+        String fieldname = di.getName();
         int year = readInt(needToken(), fieldname);
         int month = readInt(needToken(), fieldname);
         int day = readInt(needToken(), fieldname);
@@ -493,15 +518,15 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
 
 
     @Override
-    public LocalTime readTime(String fieldname, boolean allowNull, boolean hhmmss, int length) throws MessageParserException {
-        if (checkForNull(fieldname, allowNull))
+    public LocalTime readTime(TemporalElementaryDataItem di) throws MessageParserException {
+        if (checkForNull(di))
             return null;
         int c = needToken();
         switch (c) {
         case COMPACT_TIME_MILLIS:
-            return new LocalTime(readInt(needToken(), fieldname), DateTimeZone.UTC);
+            return new LocalTime(readInt(needToken(), di.getName()), DateTimeZone.UTC);
         case COMPACT_TIME:
-            return new LocalTime(readInt(needToken(), fieldname) * 1000L, DateTimeZone.UTC);
+            return new LocalTime(readInt(needToken(), di.getName()) * 1000L, DateTimeZone.UTC);
         default:
             throw new MessageParserException(MessageParserException.UNEXPECTED_CHARACTER,
                     String.format("(expected COMPACT_TIME_*, got 0x%02x)", c), parseIndex, currentClass);
@@ -510,8 +535,8 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
 
 
     @Override
-    public LocalDateTime readDayTime(String fieldname, boolean allowNull, boolean hhmmss, int length) throws MessageParserException {
-        if (checkForNull(fieldname, allowNull))
+    public LocalDateTime readDayTime(TemporalElementaryDataItem di) throws MessageParserException {
+        if (checkForNull(di))
             return null;
         boolean fractional = false;
         int c = needToken();
@@ -525,6 +550,7 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
             throw new MessageParserException(MessageParserException.UNEXPECTED_CHARACTER,
                     String.format("(expected COMPACT_TIME_*, got 0x%02x)", c), parseIndex, currentClass);
         }
+        String fieldname = di.getName();
         int year = readInt(needToken(), fieldname);
         int month = readInt(needToken(), fieldname);
         int day = readInt(needToken(), fieldname);
@@ -539,8 +565,8 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
 
 
     @Override
-    public Instant readInstant(String fieldname, boolean allowNull, boolean hhmmss, int length) throws MessageParserException {
-        if (checkForNullOrNeedToken(fieldname, allowNull, INT_8BYTE))
+    public Instant readInstant(TemporalElementaryDataItem di) throws MessageParserException {
+        if (checkForNullOrNeedToken(di, INT_8BYTE))
             return null;
         return new Instant(readFixed8ByteLong());
     }
@@ -572,7 +598,7 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
             return newObject;
         } else if (c == OBJECT_BEGIN_PQON){
             String previousClass = currentClass;
-            String classname = readString(fieldname, false, 0, false, false, false, false);
+            String classname = readString(null);
             // String revision = readAscii(true, 0, false, false);
             needToken(NULL_FIELD); // version not yet allowed
             BonaPortable newObject = BonaPortableFactory.createObject(classname);
@@ -608,18 +634,18 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
 
 
     @Override
-    public int parseMapStart(String fieldname, boolean allowNull, int indexID) throws MessageParserException {
-        if (checkForNullOrNeedToken(fieldname, allowNull, MAP_BEGIN))
+    public int parseMapStart(FieldDefinition di) throws MessageParserException {
+        if (checkForNullOrNeedToken(di.getName(), di.getIsAggregateRequired(), MAP_BEGIN))
             return -1;
-        return readInt(needToken(), fieldname);
+        return readInt(needToken(), di.getName());
     }
 
 
     @Override
-    public int parseArrayStart(String fieldname, boolean allowNull, int max, int sizeOfElement) throws MessageParserException {
-        if (checkForNullOrNeedToken(fieldname, allowNull, ARRAY_BEGIN))
+    public int parseArrayStart(FieldDefinition di, int sizeOfElement) throws MessageParserException {
+        if (checkForNullOrNeedToken(di.getName(), di.getIsAggregateRequired(), ARRAY_BEGIN))
             return -1;
-        return readInt(needToken(), fieldname);
+        return readInt(needToken(), di.getName());
     }
 
 

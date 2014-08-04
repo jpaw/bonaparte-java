@@ -26,6 +26,13 @@ import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormatter;
 
+import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
+import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDefinition;
 import de.jpaw.enums.AbstractXEnumBase;
@@ -107,7 +114,7 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
      **************************************************************************************************/
     
 
-    private String getField(String fieldname, boolean allowNull, int length) throws MessageParserException {
+    private String getField(String fieldname, boolean isRequired, int length) throws MessageParserException {
         String result = null;
         if (fixedLength) {
             if (parseIndex == messageLength) {
@@ -148,14 +155,14 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
             if (result.length() == 0)
                 result = null;
         }
-        if (result == null && !allowNull)
+        if (result == null && isRequired)
             throw new MessageParserException(MessageParserException.ILLEGAL_EXPLICIT_NULL, fieldname, parseIndex, currentClass);
         return result;
     }
 
     @Override
-    public Boolean readBoolean(String fieldname, boolean allowNull) throws MessageParserException {
-        String token = getField(fieldname, allowNull, lengthOfBoolean);
+    public Boolean readBoolean(MiscElementaryDataItem di) throws MessageParserException {
+        String token = getField(di.getName(), di.getIsRequired(), lengthOfBoolean);
         if (token == null)
             return null;
         if (token.equals(cfg.booleanTrue))
@@ -163,18 +170,22 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
         if (token.equals(cfg.booleanFalse))
             return false;
         throw new MessageParserException(MessageParserException.ILLEGAL_BOOLEAN,
-            String.format("(%s, expected %s or %s for %s)", token, cfg.booleanTrue, cfg.booleanFalse, fieldname), parseIndex, currentClass);
+            String.format("(%s, expected %s or %s for %s)", token, cfg.booleanTrue, cfg.booleanFalse, di.getName()), parseIndex, currentClass);
     }
     
 
     @Override
-    public String readAscii(String fieldname, boolean allowNull, int length, boolean doTrim, boolean doTruncate) throws MessageParserException {
-        return readString(fieldname, allowNull, length, doTrim, doTruncate, false, false);
+    public String readAscii(AlphanumericElementaryDataItem di) throws MessageParserException {
+        return readString(di.getName(), di.getIsRequired(), di.getLength(), di.getDoTrim(), di.getDoTruncate(), di.getAllowControlCharacters(), false);
     }
     // readString does the job for Unicode as well as ASCII
     @Override
-    public String readString(String fieldname, boolean allowNull, int length, boolean doTrim, boolean doTruncate, boolean allowCtrls, boolean allowUnicode) throws MessageParserException {
-        String token = getField(fieldname, allowNull, length);
+    public String readString(AlphanumericElementaryDataItem di) throws MessageParserException {
+        return readString(di.getName(), di.getIsRequired(), di.getLength(), di.getDoTrim(), di.getDoTruncate(), di.getAllowControlCharacters(), true);
+    }
+    
+    protected String readString(String fieldname, boolean isRequired, int length, boolean doTrim, boolean doTruncate, boolean allowCtrls, boolean allowUnicode) throws MessageParserException {
+        String token = getField(fieldname, isRequired, length);
         if (token == null)
             return null;
         if (doTrim) {
@@ -214,30 +225,30 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
     }
 
     @Override
-    public BigDecimal readBigDecimal(String fieldname, boolean allowNull, int length, int decimals, boolean isSigned, boolean rounding, boolean autoScale) throws MessageParserException {
-        int extra = fixedLength ? (decimals > 0 && !cfg.removePoint4BD ? 1 : 0) + (isSigned ? 1 : 0) : 0;
-        String token = getField(fieldname, allowNull, length + extra);
+    public BigDecimal readBigDecimal(NumericElementaryDataItem di) throws MessageParserException {
+        int extra = fixedLength ? (di.getDecimalDigits() > 0 && !cfg.removePoint4BD ? 1 : 0) + (di.getIsSigned() ? 1 : 0) : 0;
+        String token = getField(di.getName(), di.getIsRequired(), di.getTotalDigits() + extra);
         if (token == null)
             return null;
         BigDecimal r = new BigDecimal(token.trim());
-        return BigDecimalTools.checkAndScale(r, length, decimals, isSigned, rounding, autoScale, fieldname, parseIndex, currentClass);
+        return BigDecimalTools.checkAndScale(r, di, parseIndex, currentClass);
     }
 
     @Override
-    public Character readCharacter(String fieldname, boolean allowNull) throws MessageParserException {
-        String tmp = readString(fieldname, allowNull, 1, false, false, true, true);
+    public Character readCharacter(MiscElementaryDataItem di) throws MessageParserException {
+        String tmp = readString(di.getName(), di.getIsRequired(), 1, false, false, true, true);
         if (tmp == null) {
             return null;
         }
         if (tmp.length() == 0) {
-            throw new MessageParserException(MessageParserException.EMPTY_CHAR, fieldname, parseIndex, currentClass);
+            throw new MessageParserException(MessageParserException.EMPTY_CHAR, di.getName(), parseIndex, currentClass);
         }
         return tmp.charAt(0);
     }
 
     @Override
-    public ByteArray readByteArray(String fieldname, boolean allowNull, int length) throws MessageParserException {
-        byte [] tmp = readRaw(fieldname, allowNull, length);
+    public ByteArray readByteArray(BinaryElementaryDataItem di) throws MessageParserException {
+        byte [] tmp = readRaw(di);
         if (tmp == null) {
             return null;
         }
@@ -245,62 +256,62 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
     }
 
     @Override
-    public byte[] readRaw(String fieldname, boolean allowNull, int length) throws MessageParserException {
-        String token = getField(fieldname, allowNull, length);
+    public byte[] readRaw(BinaryElementaryDataItem di) throws MessageParserException {
+        String token = getField(di.getName(), di.getIsRequired(), di.getLength());
         if (token == null)
             return null;
         try {
             byte [] btmp = token.getBytes();
             return Base64.decode(btmp, 0, btmp.length);
         } catch (IllegalArgumentException e) {
-            throw new MessageParserException(MessageParserException.BASE64_PARSING_ERROR, fieldname, parseIndex, currentClass);
+            throw new MessageParserException(MessageParserException.BASE64_PARSING_ERROR, di.getName(), parseIndex, currentClass);
         }
         // return DatatypeConverter.parseHexBinary(tmp);
     }
     
     @Override
-    public LocalDateTime readDayTime(String fieldname, boolean allowNull, boolean hhmmss, int fractionalDigits) throws MessageParserException {
-        String token = getField(fieldname, allowNull, fractionalDigits > 0 ? timestamp3FormatLength : timestampFormatLength);
+    public LocalDateTime readDayTime(TemporalElementaryDataItem di) throws MessageParserException {
+        String token = getField(di.getName(), di.getIsRequired(), di.getFractionalSeconds() > 0 ? timestamp3FormatLength : timestampFormatLength);
         if (token == null)
             return null;
         try {
-            if (fractionalDigits > 0)
+            if (di.getFractionalSeconds() > 0)
                 return timestamp3Format.parseLocalDateTime(token);
             else
                 return timestampFormat.parseLocalDateTime(token);
         } catch (Exception e) {
-            throw new MessageParserException(MessageParserException.ILLEGAL_CALENDAR_VALUE, fieldname, parseIndex, currentClass);
+            throw new MessageParserException(MessageParserException.ILLEGAL_CALENDAR_VALUE, di.getName(), parseIndex, currentClass);
         }
     }
     @Override
-    public LocalDate readDay(String fieldname, boolean allowNull) throws MessageParserException {
-        String token = getField(fieldname, allowNull, dayFormatLength);
+    public LocalDate readDay(TemporalElementaryDataItem di) throws MessageParserException {
+        String token = getField(di.getName(), di.getIsRequired(), dayFormatLength);
         if (token == null)
             return null;
         try {
             return dayFormat.parseLocalDate(token);
         } catch (Exception e) {
-            throw new MessageParserException(MessageParserException.ILLEGAL_CALENDAR_VALUE, fieldname, parseIndex, currentClass);
+            throw new MessageParserException(MessageParserException.ILLEGAL_CALENDAR_VALUE, di.getName(), parseIndex, currentClass);
         }
     }
     @Override
-    public LocalTime readTime(String fieldname, boolean allowNull, boolean hhmmss, int fractionalDigits) throws MessageParserException {
-        String token = getField(fieldname, allowNull, fractionalDigits > 0 ? timestamp3FormatLength : timestampFormatLength);
+    public LocalTime readTime(TemporalElementaryDataItem di) throws MessageParserException {
+        String token = getField(di.getName(), di.getIsRequired(), di.getFractionalSeconds() > 0 ? timestamp3FormatLength : timestampFormatLength);
         if (token == null)
             return null;
         try {
-            if (fractionalDigits > 0)
+            if (di.getFractionalSeconds() > 0)
                 return time3Format.parseLocalTime(token);
             else
                 return timeFormat.parseLocalTime(token);
         } catch (Exception e) {
-            throw new MessageParserException(MessageParserException.ILLEGAL_CALENDAR_VALUE, fieldname, parseIndex, currentClass);
+            throw new MessageParserException(MessageParserException.ILLEGAL_CALENDAR_VALUE, di.getName(), parseIndex, currentClass);
         }
     }
 
     @Override
-    public Instant readInstant(String fieldname, boolean allowNull, boolean hhmmss, int fractionalDigits) throws MessageParserException {
-        String tmp = getField(fieldname, allowNull, 19);
+    public Instant readInstant(TemporalElementaryDataItem di) throws MessageParserException {
+        String tmp = getField(di.getName(), di.getIsRequired(), 19);
         if (tmp == null)
             return null;
         int millis = 0;
@@ -324,7 +335,7 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
             default: // something weird
                 throw new MessageParserException(
                         MessageParserException.BAD_TIMESTAMP_FRACTIONALS,
-                        String.format("(found %d for %s)", tmp.length() - dpoint - 1, fieldname),
+                        String.format("(found %d for %s)", tmp.length() - dpoint - 1, di.getName()),
                         parseIndex, currentClass);
             }
         }
@@ -333,21 +344,24 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
 
     
     @Override
-    public int parseMapStart(String fieldname, boolean allowNull, int indexID) throws MessageParserException {
-        throw new MessageParserException(MessageParserException.UNSUPPORTED_DATA_TYPE, fieldname, parseIndex, currentClass);
+    public int parseMapStart(FieldDefinition di) throws MessageParserException {
+        throw new MessageParserException(MessageParserException.UNSUPPORTED_DATA_TYPE, di.getName(), parseIndex, currentClass);
     }
 
     @Override
-    public int parseArrayStart(String fieldname, boolean allowNull, int max, int sizeOfChild) throws MessageParserException {
-        Integer n = readInteger(fieldname, true, false);
+    public int parseArrayStart(FieldDefinition di, int sizeOfChild) throws MessageParserException {
+        String token = getField(di.getName(), false, 9);
+        if (token == null)
+            return -1;
+        Integer n = Integer.valueOf(token.trim());
         if (n == null) {
-            if (!allowNull)
-                throw new MessageParserException(MessageParserException.NULL_COLLECTION_NOT_ALLOWED, fieldname, parseIndex, currentClass);
+            if (di.getIsAggregateRequired())
+                throw new MessageParserException(MessageParserException.NULL_COLLECTION_NOT_ALLOWED, di.getName(), parseIndex, currentClass);
             return -1;
         }
         if ((n < 0) || (n > 1000000000)) {
             throw new MessageParserException(MessageParserException.ARRAY_SIZE_OUT_OF_BOUNDS,
-                    String.format("(got %d entries (0x%x) for %s)", n, n, fieldname), parseIndex, currentClass);
+                    String.format("(got %d entries (0x%x) for %s)", n, n, di.getName()), parseIndex, currentClass);
         }
         return n;
     }
@@ -363,48 +377,48 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
 
 
     @Override
-    public Byte readByte(String fieldname, boolean allowNull, boolean isSigned) throws MessageParserException {
-        String token = getField(fieldname, allowNull, 3+(isSigned ? 1 : 0));
+    public Byte readByte(BasicNumericElementaryDataItem di) throws MessageParserException {
+        String token = getField(di.getName(), di.getIsRequired(), di.getTotalDigits()+(di.getIsSigned() ? 1 : 0));
         if (token == null)
             return null;
         return Byte.valueOf(token.trim());
     }
 
     @Override
-    public Short readShort(String fieldname, boolean allowNull, boolean isSigned) throws MessageParserException {
-        String token = getField(fieldname, allowNull, 5+(isSigned ? 1 : 0));
+    public Short readShort(BasicNumericElementaryDataItem di) throws MessageParserException {
+        String token = getField(di.getName(), di.getIsRequired(), di.getTotalDigits()+(di.getIsSigned() ? 1 : 0));
         if (token == null)
             return null;
         return Short.valueOf(token.trim());
     }
 
     @Override
-    public Long readLong(String fieldname, boolean allowNull, boolean isSigned) throws MessageParserException {
-        String token = getField(fieldname, allowNull, 18+(isSigned ? 1 : 0));
-        if (token == null)
-            return null;
-        return Long.valueOf(token.trim());
-    }
-
-    @Override
-    public Integer readInteger(String fieldname, boolean allowNull, boolean isSigned) throws MessageParserException {
-        String token = getField(fieldname, allowNull, 9+(isSigned ? 1 : 0));
+    public Integer readInteger(BasicNumericElementaryDataItem di) throws MessageParserException {
+        String token = getField(di.getName(), di.getIsRequired(), di.getTotalDigits()+(di.getIsSigned() ? 1 : 0));
         if (token == null)
             return null;
         return Integer.valueOf(token.trim());
     }
 
     @Override
-    public Float readFloat(String fieldname, boolean allowNull, boolean isSigned) throws MessageParserException {
-        String token = getField(fieldname, allowNull, 10+(isSigned ? 1 : 0));
+    public Long readLong(BasicNumericElementaryDataItem di) throws MessageParserException {
+        String token = getField(di.getName(), di.getIsRequired(), di.getTotalDigits()+(di.getIsSigned() ? 1 : 0));
+        if (token == null)
+            return null;
+        return Long.valueOf(token.trim());
+    }
+
+    @Override
+    public Float readFloat(BasicNumericElementaryDataItem di) throws MessageParserException {
+        String token = getField(di.getName(), di.getIsRequired(), di.getTotalDigits()+(di.getIsSigned() ? 1 : 0));
         if (token == null)
             return null;
         return Float.valueOf(token.trim());
     }
 
     @Override
-    public Double readDouble(String fieldname, boolean allowNull, boolean isSigned) throws MessageParserException {
-        String token = getField(fieldname, allowNull, 18+(isSigned ? 1 : 0));
+    public Double readDouble(BasicNumericElementaryDataItem di) throws MessageParserException {
+        String token = getField(di.getName(), di.getIsRequired(), di.getTotalDigits()+(di.getIsSigned() ? 1 : 0));
         if (token == null)
             return null;
         return Double.valueOf(token.trim());
@@ -415,9 +429,8 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
     }
 
     @Override
-    public BigInteger readBigInteger(String fieldname, boolean allowNull, int length, boolean isSigned)
-            throws MessageParserException {
-        String token = getField(fieldname, allowNull, length+(isSigned ? 1 : 0));
+    public BigInteger readBigInteger(BasicNumericElementaryDataItem di) throws MessageParserException {
+        String token = getField(di.getName(), di.getIsRequired(), di.getTotalDigits()+(di.getIsSigned() ? 1 : 0));
         if (token == null)
             return null;
         return new BigInteger(token.trim());
@@ -449,8 +462,8 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
     }
 
     @Override
-    public UUID readUUID(String fieldname, boolean allowNull) throws MessageParserException {
-        String tmp = readAscii(fieldname, allowNull, 36, true, false);
+    public UUID readUUID(MiscElementaryDataItem di) throws MessageParserException {
+        String tmp = readString(di.getName(), di.getIsRequired(), 36, false, false, false, false);
         if (tmp == null) {
             return null;
         }
@@ -475,7 +488,7 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
     @Override
     public <T extends AbstractXEnumBase<T>> T readXEnum(XEnumDataItem di, XEnumFactory<T> factory) throws MessageParserException {
         XEnumDefinition spec = di.getBaseXEnum();
-        String scannedToken = readString(di.getName(), !di.getIsRequired() || spec.getHasNullToken(), spec.getMaxTokenLength(), true, false, false, true);
+        String scannedToken = readString(di.getName(), di.getIsRequired() && !spec.getHasNullToken(), spec.getMaxTokenLength(), true, false, false, true);
         if (scannedToken == null)
             return factory.getNullToken();
         T value = factory.getByToken(scannedToken);

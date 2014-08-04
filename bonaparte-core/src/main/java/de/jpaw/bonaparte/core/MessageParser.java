@@ -25,6 +25,15 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
 
+import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
+import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
+import de.jpaw.bonaparte.pojos.meta.ObjectReference;
+import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.enums.AbstractXEnumBase;
 import de.jpaw.enums.XEnumFactory;
@@ -43,29 +52,29 @@ public interface MessageParser<E extends Exception> {
     static public final String GENERIC_RECORD = "RECORD";   // field name to be used when parsing top level record
 
     // unmarshaller methods: field type specific
-    public BigDecimal readBigDecimal(String fieldname, boolean allowNull, int length, int decimals, boolean isSigned, boolean rounding, boolean autoScale) throws E;
-    public Character  readCharacter (String fieldname, boolean allowNull) throws E;
-    public UUID       readUUID      (String fieldname, boolean allowNull) throws E;
-    public Boolean    readBoolean   (String fieldname, boolean allowNull) throws E;
-    public Double     readDouble    (String fieldname, boolean allowNull, boolean isSigned) throws E;
-    public Float      readFloat     (String fieldname, boolean allowNull, boolean isSigned) throws E;
-    public Long       readLong      (String fieldname, boolean allowNull, boolean isSigned) throws E;
-    public Integer    readInteger   (String fieldname, boolean allowNull, boolean isSigned) throws E;
-    public Short      readShort     (String fieldname, boolean allowNull, boolean isSigned) throws E;
-    public Byte       readByte      (String fieldname, boolean allowNull, boolean isSigned) throws E;
-    public BigInteger readBigInteger(String fieldname, boolean allowNull, int length, boolean isSigned)   throws E;
-    public String     readAscii     (String fieldname, boolean allowNull, int length, boolean doTrim, boolean doTruncate) throws E;
-    public String     readString    (String fieldname, boolean allowNull, int length, boolean doTrim, boolean doTruncate, boolean allowCtrls, boolean allowUnicode) throws E;
-    public ByteArray  readByteArray (String fieldname, boolean allowNull, int length) throws E;
-    public byte []    readRaw       (String fieldname, boolean allowNull, int length) throws E;
-    public LocalDate  readDay       (String fieldname, boolean allowNull) throws E;
-    public LocalTime  readTime      (String fieldname, boolean allowNull, boolean hhmmss, int length) throws E;
-    public LocalDateTime readDayTime(String fieldname, boolean allowNull, boolean hhmmss, int length) throws E;
-    public Instant    readInstant   (String fieldname, boolean allowNull, boolean hhmmss, int length) throws E;
+    public BigDecimal readBigDecimal(NumericElementaryDataItem di) throws E;
+    public Character  readCharacter (MiscElementaryDataItem di) throws E;
+    public UUID       readUUID      (MiscElementaryDataItem di) throws E;
+    public Boolean    readBoolean   (MiscElementaryDataItem di) throws E;
+    public Double     readDouble    (BasicNumericElementaryDataItem di) throws E;
+    public Float      readFloat     (BasicNumericElementaryDataItem di) throws E;
+    public Long       readLong      (BasicNumericElementaryDataItem di) throws E;
+    public Integer    readInteger   (BasicNumericElementaryDataItem di) throws E;
+    public Short      readShort     (BasicNumericElementaryDataItem di) throws E;
+    public Byte       readByte      (BasicNumericElementaryDataItem di) throws E;
+    public BigInteger readBigInteger(BasicNumericElementaryDataItem di)   throws E;
+    public String     readAscii     (AlphanumericElementaryDataItem di) throws E;
+    public String     readString    (AlphanumericElementaryDataItem di) throws E;
+    public ByteArray  readByteArray (BinaryElementaryDataItem di) throws E;
+    public byte []    readRaw       (BinaryElementaryDataItem di) throws E;
+    public LocalDate  readDay       (TemporalElementaryDataItem di) throws E;
+    public LocalTime  readTime      (TemporalElementaryDataItem di) throws E;
+    public LocalDateTime readDayTime(TemporalElementaryDataItem di) throws E;
+    public Instant    readInstant   (TemporalElementaryDataItem di) throws E;
     public BonaPortable readObject  (String fieldname, Class<? extends BonaPortable> type, boolean allowNull, boolean allowSubtypes) throws E; // parser factory
     // composite methods
-    public int parseMapStart        (String fieldname, boolean allowNull, int indexID) throws E;
-    public int parseArrayStart      (String fieldname, boolean allowNull, int max, int sizeOfElement) throws E;
+    public int parseMapStart        (FieldDefinition di) throws E;
+    public int parseArrayStart      (FieldDefinition di, int sizeOfElement) throws E;
     public void parseArrayEnd() throws E;
     public BonaPortable       readRecord()       throws E;
     public List<BonaPortable> readTransmission() throws E;

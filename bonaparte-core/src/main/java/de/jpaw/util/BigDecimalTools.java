@@ -67,6 +67,27 @@ public class BigDecimalTools {
         return r;
     }
     
+    /** Check a parsed BigDecimal for allowed digits, and perform (if desired) scaling. Use the second form with the metadata parameter instead. */
+    @Deprecated
+    static public BigDecimal checkAndScale(BigDecimal r, NumericElementaryDataItem di, int parseIndex, String currentClass) throws MessageParserException {
+        String fieldname = di.getName();
+        int decimals = di.getDecimalDigits();
+        try {
+            if (r.scale() > decimals)
+                r = r.setScale(decimals, di.getRounding() ? RoundingMode.HALF_EVEN : RoundingMode.UNNECESSARY);
+            if (di.getAutoScale() && r.scale() < decimals)  // round for smaller as well!
+                r = r.setScale(decimals, RoundingMode.UNNECESSARY);
+        } catch (ArithmeticException a) {
+            throw new MessageParserException(MessageParserException.TOO_MANY_DECIMALS, fieldname, parseIndex, currentClass);
+        }
+        if (!di.getIsSigned() && r.signum() < 0)
+            throw new MessageParserException(MessageParserException.SUPERFLUOUS_SIGN, fieldname, parseIndex, currentClass);
+        // check for overflow
+        if (di.getTotalDigits() - decimals < r.precision() - r.scale())
+            throw new MessageParserException(MessageParserException.TOO_MANY_DIGITS, fieldname, parseIndex, currentClass);
+        return r;
+    }
+    
     /** Check a BigDecimal for compliance of the spec. */
     static public void validate(BigDecimal r, NumericElementaryDataItem meta, String classname) throws ObjectValidationException {
         try {
