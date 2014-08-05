@@ -96,11 +96,11 @@ public class FixedWidthComposer extends CSVComposer {
             break;
         case TEMPORAL:
             if (di.getDataType().equals("LocalDate")) {
-                addRawData(SPACE_PADDINGS[10]); // FIXME
+                addRawData(SPACE_PADDINGS[10]); // FIXME - this length could vary with the selected format
                 return;
             }
             if (di.getDataType().equals("LocalDateTime")) {
-                addRawData(SPACE_PADDINGS[19]);  // FIXME
+                addRawData(SPACE_PADDINGS[19]);  // FIXME - this length could vary with the selected format
                 return;
             }
             break;
@@ -201,8 +201,13 @@ public class FixedWidthComposer extends CSVComposer {
         writeSeparator();
         if (di.getIsSigned()) {
             addRawData(n < 0 ? "-" : " ");
-            if (n < 0)
-                n = -n;     // FIXME: MINVAL => ERROR
+            if (n < 0L)
+                n = -n;
+            if (n < 0L) {
+                // must have been MINVAL => special treatment here
+                paddedFixedWidthString(di, "9223372036854775808");
+                return;
+            }
         }
         paddedFixedWidthString(di, Long.toString(n));
     }
@@ -214,7 +219,12 @@ public class FixedWidthComposer extends CSVComposer {
         if (di.getIsSigned()) {
             addRawData(n < 0 ? "-" : " ");
             if (n < 0)
-                n = -n;     // FIXME: MINVAL => ERROR
+                n = -n;
+            if (n < 0) {
+                // must have been MINVAL => special treatment here
+                paddedFixedWidthString(di, "2147483648");
+                return;
+            }
         }
         paddedFixedWidthString(di, Integer.toString(n));
     }

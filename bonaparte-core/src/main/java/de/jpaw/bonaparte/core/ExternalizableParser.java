@@ -565,7 +565,10 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         if (checkForNull(di)) {
             return null;
         }
-        return BigInteger.valueOf(readLongNoNull(di.getName()));
+        needToken(BINARY);
+        assert !hasByte; // readInt() does not respect pushed back byte
+        byte [] tmp = ByteArray.readBytes(in);
+        return new BigInteger(tmp);
     }
 
     @Override

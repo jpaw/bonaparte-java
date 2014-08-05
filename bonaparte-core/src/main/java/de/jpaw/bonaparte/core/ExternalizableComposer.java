@@ -365,7 +365,10 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
         if (n == null) {
             out.writeByte(NULL_FIELD);
         } else {
-            writeVarLong(n.longValue());       // FIXME: may exceed allowable length if mantissa size check is raised
+            // write it as a byte array: an improved version would "steal" the existing internal byte Array using reflection, instead of copying the stuff
+            out.writeByte(BINARY);
+            byte [] tmp = n.toByteArray();
+            ByteArray.writeBytes(out, tmp, 0, tmp.length);
         }
     }
 

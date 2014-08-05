@@ -361,7 +361,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
         if (i == messageLength) {
             throw new MessageParserException(MessageParserException.MISSING_TERMINATOR, di.getName(), parseIndex, currentClass);
         }
-        String tmp = work.subSequence(parseIndex, i).toString();  // FIXME: too many temporary objects created
+        String tmp = work.subSequence(parseIndex, i).toString();  // TODO: too many temporary objects created. This could be improved.
         parseIndex = i+1;
         try {
             byte [] btmp = tmp.getBytes();
