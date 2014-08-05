@@ -457,7 +457,7 @@ public class CompactComposer extends CompactConstants implements MessageComposer
     @Override
     public void addField(BasicNumericElementaryDataItem di, BigInteger n) throws IOException {
         if (n != null) {
-            addField(di, n.longValue());
+            bigintOut(n);
         } else {
             writeNull();
         }

@@ -456,14 +456,7 @@ public class CompactByteArrayComposer extends CompactConstants implements Messag
     @Override
     public void addField(BasicNumericElementaryDataItem di, BigInteger n) {
         if (n != null) {
-            byte [] tmp = n.toByteArray();
-            if (tmp.length == 0) {
-                out.writeByte(EMPTY_FIELD);
-            } else {
-                out.writeByte(COMPACT_BINARY);
-                intOut(tmp.length);
-                out.append(tmp);
-            }
+            bigintOut(n);
         } else {
             writeNull();
         }

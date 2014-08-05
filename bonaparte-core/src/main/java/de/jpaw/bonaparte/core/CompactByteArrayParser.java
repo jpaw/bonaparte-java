@@ -394,7 +394,19 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
     public BigInteger readBigInteger(BasicNumericElementaryDataItem di) throws MessageParserException {
         if (checkForNull(di))
             return null;
-        return BigInteger.valueOf(readLong(needToken(), di.getName()));
+        int c = needToken();
+        if (c == COMPACT_BIGINTEGER) {
+            // length and mantissa
+            int len = readInt(needToken(), di.getName());
+            require(len);
+            byte [] mantissa = new byte [len];
+            System.arraycopy(inputdata, parseIndex, mantissa, 0, len);
+            parseIndex += len;
+            return new BigInteger(mantissa);
+        } else {
+            c = readInt(c, di.getName());
+            return BigInteger.valueOf(c);
+        }
     }
 
     private String readAscii(int len, String fieldname) throws MessageParserException {

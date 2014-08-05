@@ -123,10 +123,11 @@ package tests1 {
         (Primitives) List<> listOfObjects;
     }
     
-    class XmlTest XML FIELD {
-        ascii(20)          name;
-        int                age;
-    }
+//  needs additional dependency bonaparte-xml
+//    class XmlTest XML FIELD {
+//        ascii(20)          name;
+//        int                age;
+//    }
     
     class UnicodeTest {
         Unicode(10) allowControlChars string1; 
