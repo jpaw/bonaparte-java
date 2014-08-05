@@ -11,6 +11,7 @@ import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.CSVConfiguration;
 import de.jpaw.bonaparte.core.FixedWidthComposer;
 import de.jpaw.bonaparte.core.MessageParserException;
+import de.jpaw.bonaparte.core.StaticMeta;
 import de.jpaw.bonaparte.core.StringCSVParser;
 import de.jpaw.bonaparte.pojos.csvTests.ScaledInts;
 import de.jpaw.bonaparte.pojos.csvTests.Test1;
@@ -34,9 +35,9 @@ public class TestFixedWidth {
 //        System.out.println("Result is " + actualOutput);
         assert(expectedOutput.equals(actualOutput));
         
-//        StringCSVParser p = new StringCSVParser(cfg, actualOutput);
-//        BonaPortable result = p.readObject("root", input.getClass(), false, false);
-//        assert(input.equals(result));
+        StringCSVParser p = new StringCSVParser(cfg, actualOutput);
+        BonaPortable result = p.readObject(StaticMeta.OUTER_BONAPORTABLE_FOR_CSV, input.getClass());
+        assert(input.equals(result));
     }
 
     @Test

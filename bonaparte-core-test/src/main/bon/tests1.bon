@@ -138,4 +138,8 @@ package tests1 {
         signed Decimal(14,2) sum;
         signed Decimal(14,2) [] elements;
     }
+    
+    class TestBigInteger {
+        Number(38)      bignum;
+    }
 }

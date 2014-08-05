@@ -16,10 +16,13 @@
 
 package testcases.conversion;
 
+import java.math.BigInteger;
+
 import org.testng.annotations.Test;
 
 import de.jpaw.bonaparte.coretests.initializers.FillOtherTypes;
 import de.jpaw.bonaparte.coretests.util.SimpleTestRunner;
+import de.jpaw.bonaparte.pojos.tests1.TestBigInteger;
 
 /**
  * The TestPrimitives class.
@@ -35,5 +38,30 @@ public class TestOtherTypesM {
     @Test
     public void testOtherTypes() throws Exception {
         SimpleTestRunner.run(FillOtherTypes.test2(555), false);
+    }
+    
+    @Test
+    public void testBigIntegerSmall() throws Exception {
+        SimpleTestRunner.run(new TestBigInteger(new BigInteger("42")), false);
+    }
+    @Test
+    public void testBigIntegerNegative() throws Exception {
+        SimpleTestRunner.run(new TestBigInteger(new BigInteger("-892743923749242")), false);
+    }
+    @Test
+    public void testBigIntegerMedium() throws Exception {
+        SimpleTestRunner.run(new TestBigInteger(new BigInteger("142426143")), false);
+    }
+    @Test
+    public void testBigIntegerBig() throws Exception {
+        SimpleTestRunner.run(new TestBigInteger(new BigInteger("427862438723648723468234682346823")), false);
+    }
+    @Test
+    public void testBigIntegerZero() throws Exception {
+        SimpleTestRunner.run(new TestBigInteger(new BigInteger("0")), false);
+    }
+    @Test
+    public void testBigIntegerNull() throws Exception {
+        SimpleTestRunner.run(new TestBigInteger(), false);
     }
 }

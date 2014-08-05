@@ -130,7 +130,7 @@ public class MessageParserException extends ApplicationException {
         codeToDescription.put(NULL_COLLECTION_NOT_ALLOWED  , "parsed NULL for a required List, Set or Array");
         codeToDescription.put(TOO_MANY_DECIMALS            , "number contains more decimal places than allowed");
         codeToDescription.put(INVALID_BACKREFERENCE        , "The serialized message contains an invalid backreference");
-        codeToDescription.put(UNSUPPORTED_DATA_TYPE        , "The request field type or operation is not supported for this cpomposer or parser");
+        codeToDescription.put(UNSUPPORTED_DATA_TYPE        , "The request field type or operation is not supported for this composer or parser");
         codeToDescription.put(EXTRA_FIELDS                 , "Extra (non-null) fields have been encountered while expecting a class terminator. Most likely your client JAR is not up to date.");
         codeToDescription.put(TOO_MANY_DIGITS              , "Number too big");
     }

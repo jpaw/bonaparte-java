@@ -105,6 +105,7 @@ abstract public class LinearLayoutComposer  implements MessageComposer<RuntimeEx
         }
     }
     // called if a button (to show an object) has been clicked.
+    @Override
     public void onClick(View v) {
         if (onClickListener != null && buttonPayload != null) {
             int id = v.getId();
@@ -173,16 +174,20 @@ abstract public class LinearLayoutComposer  implements MessageComposer<RuntimeEx
         newTextView(di, s);
     }
 
+    private void outputBigDecimal(BasicNumericElementaryDataItem di, BigDecimal n) {
+        int digs = di.getDecimalDigits();
+        DecimalFormat df = new DecimalFormat(BIGDECIMAL_FORMATS[digs]);
+        df.setMaximumFractionDigits(digs);
+        df.setMinimumFractionDigits(digs);
+        df.setGroupingUsed(true);
+        newTextView(di, df.format(n));
+    }
+    
     // decimal
     @Override
     public void addField(NumericElementaryDataItem di, BigDecimal n) {
         if (n != null) {
-            int digs = di.getDecimalDigits();
-            DecimalFormat df = new DecimalFormat(BIGDECIMAL_FORMATS[digs]);
-            df.setMaximumFractionDigits(digs);
-            df.setMinimumFractionDigits(digs);
-            df.setGroupingUsed(true);
-            newTextView(di, df.format(n));
+            outputBigDecimal(di, n);
         } else {
             writeNull(di);
         }
@@ -191,17 +196,35 @@ abstract public class LinearLayoutComposer  implements MessageComposer<RuntimeEx
     // byte
     @Override
     public void addField(BasicNumericElementaryDataItem di, byte n) {
-        newTextView(di, Byte.toString(n));
+        if (di.getDecimalDigits() > 0)
+            outputBigDecimal(di, BigDecimal.valueOf(n, di.getDecimalDigits()));
+        else
+            newTextView(di, Byte.toString(n));
     }
     // short
     @Override
     public void addField(BasicNumericElementaryDataItem di, short n) {
-        newTextView(di, Short.toString(n));
+        if (di.getDecimalDigits() > 0)
+            outputBigDecimal(di, BigDecimal.valueOf(n, di.getDecimalDigits()));
+        else
+            newTextView(di, Short.toString(n));
     }
     // integer
     @Override
     public void addField(BasicNumericElementaryDataItem di, int n) {
-        newTextView(di, Integer.toString(n));
+        if (di.getDecimalDigits() > 0)
+            outputBigDecimal(di, BigDecimal.valueOf(n, di.getDecimalDigits()));
+        else
+            newTextView(di, Integer.toString(n));
+    }
+
+    // long
+    @Override
+    public void addField(BasicNumericElementaryDataItem di, long n) {
+        if (di.getDecimalDigits() > 0)
+            outputBigDecimal(di, BigDecimal.valueOf(n, di.getDecimalDigits()));
+        else
+            newTextView(di, Long.toString(n));
     }
 
     // int(n)
@@ -212,12 +235,6 @@ abstract public class LinearLayoutComposer  implements MessageComposer<RuntimeEx
         } else {
             writeNull(di);
         }
-    }
-
-    // long
-    @Override
-    public void addField(BasicNumericElementaryDataItem di, long n) {
-        newTextView(di, Long.toString(n));
     }
 
     // boolean

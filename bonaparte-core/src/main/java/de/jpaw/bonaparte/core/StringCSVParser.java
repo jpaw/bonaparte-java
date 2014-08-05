@@ -17,6 +17,7 @@ package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,6 +43,7 @@ import de.jpaw.util.Base64;
 import de.jpaw.util.BigDecimalTools;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.CharTestsASCII;
+import de.jpaw.util.IntegralLimits;
 /**
  * The StringCSVParser class.
  * 
@@ -116,6 +118,7 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
     
 
     private String getField(String fieldname, boolean isRequired, int length) throws MessageParserException {
+        // System.out.println("parsing " + fieldname + " for length " + length);
         String result = null;
         if (fixedLength) {
             if (parseIndex == messageLength) {
@@ -374,39 +377,72 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
     @Override
     public BonaPortable readRecord() throws MessageParserException {
         throw new MessageParserException(MessageParserException.UNSUPPORTED_DATA_TYPE, "readRecord()", parseIndex, currentClass);
+        // parsing an arbitrary object is not possible here because we have no type information
+        // return readObject(StaticMeta.OUTER_BONAPORTABLE, BonaPortable.class);
     }
 
+    private String readBufferForInteger(BasicNumericElementaryDataItem di) throws MessageParserException {
+        return getField(di.getName(), di.getIsRequired(), di.getTotalDigits() + (di.getIsSigned() ? 1 : 0) + (!cfg.removePoint4BD && di.getDecimalDigits() > 0 ? 1 : 0));
+    }
+    private long postProcessForImplicitDecimals(BasicNumericElementaryDataItem di, String token) throws MessageParserException {
+        token = token.trim();
+        int decimals = di.getDecimalDigits();
 
+        // run it through a BigDecimal for now...
+        BigDecimal tmp = new BigDecimal(token);
+        if (tmp.signum() == 0)
+            return 0L; // always valid
+        // set the scale
+        BigDecimal vv = tmp.setScale(decimals, di.getRounding() ? RoundingMode.HALF_EVEN : RoundingMode.UNNECESSARY);
+        long ltmp = vv.unscaledValue().longValue();
+        // verify that we do not exceed bounds...
+        if (ltmp < 0L && !di.getIsSigned())
+            throw new MessageParserException(MessageParserException.SUPERFLUOUS_SIGN, di.getName(), parseIndex, currentClass);
+        // make sure that the parsed value does not exceed the configured number of digits
+        if (ltmp < IntegralLimits.LONG_MIN_VALUES[di.getTotalDigits()] ||
+            ltmp > IntegralLimits.LONG_MAX_VALUES[di.getTotalDigits()])
+            throw new MessageParserException(MessageParserException.NUMERIC_TOO_LONG, di.getName(), parseIndex, currentClass);
+        return ltmp;
+    }
+    
     @Override
     public Byte readByte(BasicNumericElementaryDataItem di) throws MessageParserException {
-        String token = getField(di.getName(), di.getIsRequired(), di.getTotalDigits()+(di.getIsSigned() ? 1 : 0));
+        String token = readBufferForInteger(di);
         if (token == null)
             return null;
-        return Byte.valueOf(token.trim());
+        if (cfg.removePoint4BD || di.getDecimalDigits() == 0)
+            return Byte.valueOf(token.trim());
+        return Byte.valueOf((byte) postProcessForImplicitDecimals(di, token));
     }
 
     @Override
     public Short readShort(BasicNumericElementaryDataItem di) throws MessageParserException {
-        String token = getField(di.getName(), di.getIsRequired(), di.getTotalDigits()+(di.getIsSigned() ? 1 : 0));
+        String token = readBufferForInteger(di);
         if (token == null)
             return null;
-        return Short.valueOf(token.trim());
+        if (cfg.removePoint4BD || di.getDecimalDigits() == 0)
+            return Short.valueOf(token.trim());
+        return Short.valueOf((short) postProcessForImplicitDecimals(di, token));
     }
 
     @Override
     public Integer readInteger(BasicNumericElementaryDataItem di) throws MessageParserException {
-        String token = getField(di.getName(), di.getIsRequired(), di.getTotalDigits()+(di.getIsSigned() ? 1 : 0));
+        String token = readBufferForInteger(di);
         if (token == null)
             return null;
-        return Integer.valueOf(token.trim());
+        if (cfg.removePoint4BD || di.getDecimalDigits() == 0)
+            return Integer.valueOf(token.trim());
+        return Integer.valueOf((int) postProcessForImplicitDecimals(di, token));
     }
 
     @Override
     public Long readLong(BasicNumericElementaryDataItem di) throws MessageParserException {
-        String token = getField(di.getName(), di.getIsRequired(), di.getTotalDigits()+(di.getIsSigned() ? 1 : 0));
+        String token = readBufferForInteger(di);
         if (token == null)
             return null;
-        return Long.valueOf(token.trim());
+        if (cfg.removePoint4BD || di.getDecimalDigits() == 0)
+            return Long.valueOf(token.trim());
+        return Long.valueOf(postProcessForImplicitDecimals(di, token));
     }
 
     @Override
