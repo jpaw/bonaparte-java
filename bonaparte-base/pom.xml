@@ -404,7 +404,9 @@
         <module>../bonaparte-android/pom.xml</module>
         <module>../bonaparte-xenum-init/pom.xml</module>
         <module>../bonaparte-xml/pom.xml</module>
+        <module>../bonaparte-xml-test/pom.xml</module>
         <module>../bonaparte-hazelcast/pom.xml</module>
+        <!-- <module>../bonaparte-hazelcast-test/pom.xml</module> This is slow and also may be network dependent. Omitting it from main build. -->
         <module>../bonaparte-poi/pom.xml</module>
         <module>../bonaparte-poix/pom.xml</module>
         <module>../bonaparte-demorqrs/pom.xml</module>
