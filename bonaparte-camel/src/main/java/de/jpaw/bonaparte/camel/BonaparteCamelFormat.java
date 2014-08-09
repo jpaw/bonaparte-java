@@ -57,6 +57,7 @@ public final class BonaparteCamelFormat implements DataFormat {
             stream.write(encoding.getBytes(w.getCharset()));
     }
 
+    @Override
     public void marshal(Exchange exchange, Object graph, OutputStream stream) throws Exception {
         StringBuilder work;  // TODO: allocate during new()? Keeps it persistent, but may occupy too much space. Multithreading?
         
@@ -86,6 +87,7 @@ public final class BonaparteCamelFormat implements DataFormat {
         }
     }
 
+    @Override
     public Object unmarshal(Exchange exchange, InputStream stream) throws Exception {
         // get the bytes, convert to String, parse
         // TODO: avoid byte buffer breaks within UTF-8-sequence!

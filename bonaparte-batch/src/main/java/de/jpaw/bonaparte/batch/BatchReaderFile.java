@@ -16,11 +16,13 @@ import com.martiansoftware.jsap.Switch;
 
 abstract public class BatchReaderFile implements Contributor {
     private static final Logger LOG = LoggerFactory.getLogger(BatchReaderFile.class);
+    private static final int BUFFER_SIZE = 65536;       // GZIP Buffer size (tunable constant for performance)
     private boolean useGzip = false;
     private boolean useZip = false;
     private String filename = null;
     private InputStream rawStream = null;
-    protected InputStream uncompressedStream = null;  // the effective input. Subclasses can add buffering and decoding
+    protected InputStream uncompressedStream = null;    // the effective input. Subclasses can add buffering and decoding
+    protected boolean isBuffered = false;               // information if this stream is buffered already, to avoid duplicate buffers 
     protected int delayInMillis = 0;
     protected int skip = 0;
     protected int maxRecords = 0;
@@ -74,7 +76,8 @@ abstract public class BatchReaderFile implements Contributor {
             }
         }
         if (useGzip) {
-            uncompressedStream = new GZIPInputStream(rawStream);
+            uncompressedStream = new GZIPInputStream(rawStream, BUFFER_SIZE);
+            isBuffered = true;
         } else if (useZip) {
             ZipInputStream zipInput = new ZipInputStream(rawStream);
             zipInput.getNextEntry();

@@ -35,6 +35,7 @@ public class BonaparteMarshalException extends Exception {
         this.message        = message;
     }
 
+    @Override
     public String toString() {
         return "Bonaparte exception: " + message;
     }

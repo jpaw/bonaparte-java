@@ -45,6 +45,7 @@ public final class Bonaparte2ByteDataFormat implements DataFormat {
 
     private ByteArrayComposer w = null;
 
+    @Override
     public void marshal(Exchange exchange, Object graph, OutputStream stream) throws Exception {
         if (w == null)
             w = new ByteArrayComposer();  // create on demand
@@ -55,6 +56,7 @@ public final class Bonaparte2ByteDataFormat implements DataFormat {
         stream.write(w.getBuffer(), 0, w.getLength());
     }
 
+    @Override
     public Object unmarshal(Exchange exchange, InputStream stream) throws Exception {
         // get the bytes, convert to String, parse
         // TODO: avoid byte buffer breaks within UTF-8-sequence!

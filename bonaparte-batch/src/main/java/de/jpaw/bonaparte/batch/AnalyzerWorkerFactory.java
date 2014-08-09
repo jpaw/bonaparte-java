@@ -52,6 +52,7 @@ public class AnalyzerWorkerFactory extends ContributorNoop implements BatchProce
             if (maxVal < other.maxVal)
                 maxVal = other.maxVal;
         }
+        @Override
         public String toString() {
             return String.format("[%3d,%3d]", minVal, maxVal);
         }
@@ -306,7 +307,7 @@ public class AnalyzerWorkerFactory extends ContributorNoop implements BatchProce
                 type = String.format("Lowercase(%d)", defLen);
                 comment = optionalLengthComment(s.len);
             } else if (!s.nonDigit) {
-                type = String.format("%s(%d)", defLen > 9 ? "Decimal" : "Number", defLen);
+                type = String.format("%s(%d)", defLen > 18 ? "Number" : defLen > 9 ? "Long" : "Integer", defLen);
                 comment = "unsigned";
             }
             if (type == null) {

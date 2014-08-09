@@ -33,7 +33,7 @@ abstract public class BatchReaderTextFileAbstract extends BatchReaderFile {
         // encoding has been clarified. Now technically everything is fine, get the actual file. That will provide the stream uncompressedStream in the superclass
         super.evalCommandlineParameters(params);
         
-        // provide the buffering and charset decoding on top...
+        // provide the buffering and charset decoding on top... (need buffering due to readLine() even if parent does buffering already)
         bufferedReader = new BufferedReader(new InputStreamReader(uncompressedStream, encoding));       
     }
     
