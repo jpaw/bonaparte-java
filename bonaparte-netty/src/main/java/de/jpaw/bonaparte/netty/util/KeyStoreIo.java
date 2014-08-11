@@ -8,6 +8,7 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
+import java.security.UnrecoverableKeyException;
 
 import javax.net.ssl.KeyManagerFactory;
 
@@ -80,6 +81,60 @@ public class KeyStoreIo {
             kmf.init(ks, keyPassword);
         } catch (Exception e) {
             logger.error("Cannot read from key pw file: {}", e.getStackTrace());
+            return null;
+        }
+
+        return kmf;
+    }
+
+    
+    
+    static public KeyManagerFactory keyStoreFromFile(String keyFilename, String pwFilename, String type) {
+        char[] keyPassword;
+        String keyPwFilename = pwFilename;
+        logger.info("Reading key password from file {}", keyPwFilename);
+        try (BufferedReader rpw = new BufferedReader(new FileReader(keyPwFilename))) {
+            String line = rpw.readLine();
+            rpw.close();
+            // get user password
+            keyPassword = line.toCharArray();
+        } catch (Exception e) {
+            logger.error("Cannot read from key pw file: {}", e.getStackTrace());
+            return null;
+        }
+
+        KeyStore ks;
+        try {
+            ks = KeyStore.getInstance(type);
+        } catch (KeyStoreException e) {
+            logger.error("Cannot instantiate keystore {}: {}", type, e.getStackTrace());
+            return null;
+        }
+
+        try (FileInputStream kis = new java.io.FileInputStream(keyFilename)) {
+            ks.load(kis, keyPassword);
+            kis.close();
+        } catch (Exception e) {
+            logger.error("Cannot read from keystore file: {}", e.getStackTrace());
+            return null;
+        }
+
+        String algorithm = Security.getProperty("ssl.KeyManagerFactory.algorithm");
+        if (algorithm == null) {
+            algorithm = "SunX509";
+        }
+        KeyManagerFactory kmf;
+        try {
+            kmf = KeyManagerFactory.getInstance(algorithm);
+        } catch (NoSuchAlgorithmException e2) {
+            logger.error("Cannot instantiate key manager factory: {}", e2.getStackTrace());
+            return null;
+        }
+
+        try {
+            kmf.init(ks, keyPassword);
+        } catch (UnrecoverableKeyException | KeyStoreException | NoSuchAlgorithmException e) {
+            logger.error("Cannot init kmf", e.getStackTrace());
             return null;
         }
 
