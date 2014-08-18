@@ -484,15 +484,27 @@ public class CompactComposer extends CompactConstants implements MessageComposer
     // float
     @Override
     public void addField(BasicNumericElementaryDataItem di, float f) throws IOException {
-        out.writeByte(COMPACT_FLOAT);
-        out.writeFloat(f);
+        int i = (int)f;
+        if (i == f) {
+            // integral number, can be stored in compact form
+            intOut(i);
+        } else {
+            out.writeByte(COMPACT_FLOAT);
+            out.writeFloat(f);
+        }
     }
 
     // double
     @Override
     public void addField(BasicNumericElementaryDataItem di, double d) throws IOException {
-        out.writeByte(COMPACT_DOUBLE);
-        out.writeDouble(d);
+        int i = (int)d;
+        if (i == d) {
+            // integral number, can be stored in compact form
+            intOut(i);
+        } else {
+            out.writeByte(COMPACT_DOUBLE);
+            out.writeDouble(d);
+        }
     }
 
     // UUID

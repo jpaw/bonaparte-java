@@ -483,15 +483,27 @@ public class CompactByteArrayComposer extends CompactConstants implements Messag
     // float
     @Override
     public void addField(BasicNumericElementaryDataItem di, float f) {
-        out.writeByte(COMPACT_FLOAT);
-        out.append(Float.floatToRawIntBits(f));
+        int i = (int)f;
+        if (i == f) {
+            // integral number, can be stored in compact form
+            intOut(i);
+        } else {
+            out.writeByte(COMPACT_FLOAT);
+            out.append(Float.floatToRawIntBits(f));
+        }
     }
 
     // double
     @Override
     public void addField(BasicNumericElementaryDataItem di, double d) {
-        out.writeByte(COMPACT_DOUBLE);
-        out.append(Double.doubleToRawLongBits(d));
+        int i = (int)d;
+        if (i == d) {
+            // integral number, can be stored in compact form
+            intOut(i);
+        } else {
+            out.writeByte(COMPACT_DOUBLE);
+            out.append(Double.doubleToRawLongBits(d));
+        }
     }
 
     // UUID

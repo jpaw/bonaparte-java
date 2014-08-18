@@ -27,17 +27,10 @@ import org.joda.time.Instant;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
-
-
-
-
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
-import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
@@ -188,11 +181,11 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
             return needToken() + ((firstByte & 0x0f) << 8);
         }
         switch (firstByte) {
-        case 0xe2:
+        case INT_2BYTE:
             short n = (short)(needToken() << 8);
             n += needToken();
             return n;
-        case 0xe3:
+        case INT_3BYTE:
             require(3);
             int nn = (inputdata[parseIndex++] & 0xff) << 16;
             nn += (inputdata[parseIndex++] & 0xff) << 8;
@@ -200,7 +193,7 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
             if ((nn & 0x800000) != 0)
                 nn |= 0xff << 24;   // sign-extend
             return nn;
-        case 0xe4:
+        case INT_4BYTE:
             return readFixed4ByteInt();
         default:
             throw new MessageParserException(MessageParserException.ILLEGAL_CHAR_NOT_NUMERIC, fieldname, parseIndex, currentClass);
@@ -229,7 +222,7 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
         return ((long)nn1 << 32) | (nn2 & 0xffffffffL);
     }
     private long readLong(int firstByte, String fieldname) throws MessageParserException {
-        if (firstByte != 0xe8)
+        if (firstByte != INT_8BYTE)
             return readInt(firstByte, fieldname);
         return readFixed8ByteLong();
     }
@@ -350,16 +343,26 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
 
     @Override
     public Double readDouble(BasicNumericElementaryDataItem di) throws MessageParserException {
-        if (checkForNullOrNeedToken(di, COMPACT_DOUBLE))
+        if (checkForNull(di))
             return null;
-        return Double.longBitsToDouble(readFixed8ByteLong());
+        int c = needToken();
+        if (c == COMPACT_DOUBLE) {
+            return Double.longBitsToDouble(readFixed8ByteLong());
+        }
+        // not a float, try upgrade of int to double (doubles of value 0 or 1 are explicitly written as int)
+        return (double)readInt(c, di.getName());
     }
 
     @Override
     public Float readFloat(BasicNumericElementaryDataItem di) throws MessageParserException {
-        if (checkForNullOrNeedToken(di, COMPACT_FLOAT))
+        if (checkForNull(di))
             return null;
-        return Float.intBitsToFloat(readFixed4ByteInt());
+        int c = needToken();
+        if (c == COMPACT_FLOAT) {
+            return Float.intBitsToFloat(readFixed4ByteInt());
+        }
+        // not a float, try upgrade of int to float (floats of value 0 or 1 are explicitly written as int)
+        return (float)readInt(c, di.getName());
     }
 
     @Override
