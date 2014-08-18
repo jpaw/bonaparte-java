@@ -78,22 +78,31 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
     protected int recordTypeFieldWidth = 0;         // support for readRecord()
     protected Map<String, Class<? extends BonaPortable>> recordMap = null;
     
+    /** Defines the portion of src from offset (inclusive) to length (exclusive) as parsing source, i.e. length - offset characters. */
     public final void setSource(String src, int offset, int length) {
-        work = src;
-        parseIndex = offset;
-        messageLength = length;
-    }
-    public final void setSource(String src) {
-        work = src;
-        parseIndex = 0;
-        messageLength = src.length();
         // auto-truncate CR/LF, if it exists
-        if (messageLength > 0 && work.charAt(messageLength-1) == '\n') {
-            --messageLength;
+        if (length > 0 && src.charAt(length-1) == '\n') {
+            --length;
         }
-        if (messageLength > 0 && work.charAt(messageLength-1) == '\r') {
-            --messageLength;
+        if (length > 0 && src.charAt(length-1) == '\r') {
+            --length;
         }
+        if (length < src.length()) { 
+            // some truncation done: remove it from the buffer!
+            work = src.substring(offset, length);
+            parseIndex = 0;
+            messageLength = work.length();
+        } else {
+            // a copy is not needed
+            work = src;
+            parseIndex = offset;
+            messageLength = length;
+        }
+    }
+    
+    /** Defines src as parsing source. */
+    public final void setSource(String src) {
+        setSource(src, 0, src.length());
     }
     
     public StringCSVParser(CSVConfiguration cfg, String work) {
@@ -402,7 +411,7 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
         Class<? extends BonaPortable> mappedClass = recordMap.get(key);
         if (mappedClass == null)
             throw new MessageParserException(MessageParserException.UNKNOW_RECORD_TYPE, key, parseIndex, currentClass);
-        return readObject(StaticMeta.OUTER_BONAPORTABLE, mappedClass);
+        return readObject(StaticMeta.OUTER_BONAPORTABLE_FOR_CSV, mappedClass);
     }
 
     private String readBufferForInteger(BasicNumericElementaryDataItem di) throws MessageParserException {

@@ -17,7 +17,7 @@ public class TestCSV {
 
     private static void runTest(CSVConfiguration cfg, BonaPortable input, String expectedOutput) throws MessageParserException {
         StringBuilder buffer = new StringBuilder(200);
-       CSVComposer2 cmp = new CSVComposer2(buffer, cfg);
+        CSVComposer2 cmp = new CSVComposer2(buffer, cfg);
         cmp.setWriteCRs(false);
         try {
             cmp.writeRecord(input);
