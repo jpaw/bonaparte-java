@@ -86,6 +86,7 @@ public class MessageParserException extends ApplicationException {
     static public final int UNSUPPORTED_DATA_TYPE        = OFFSET + 43;
     static public final int EXTRA_FIELDS                 = OFFSET + 44;
     static public final int TOO_MANY_DIGITS              = OFFSET + 45;
+    static public final int UNKNOW_RECORD_TYPE           = OFFSET + 46;
 
     static {
         codeToDescription.put(MISSING_FIELD_TERMINATOR     , "Missing field terminator");
@@ -133,6 +134,7 @@ public class MessageParserException extends ApplicationException {
         codeToDescription.put(UNSUPPORTED_DATA_TYPE        , "The request field type or operation is not supported for this composer or parser");
         codeToDescription.put(EXTRA_FIELDS                 , "Extra (non-null) fields have been encountered while expecting a class terminator. Most likely your client JAR is not up to date.");
         codeToDescription.put(TOO_MANY_DIGITS              , "Number too big");
+        codeToDescription.put(UNKNOW_RECORD_TYPE           , "An unmapped record type has been encountered (CSV or fixed width parser)");
     }
 
     public final String getSpecificDescription() {

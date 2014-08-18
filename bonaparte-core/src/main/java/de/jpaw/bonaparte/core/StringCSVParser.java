@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.joda.time.Instant;
@@ -74,7 +75,9 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
     protected final int time3FormatLength;          // time on millisecond precision (Joda)
     protected final int timestampFormatLength;      // day and time on second precision (Joda)
     protected final int timestamp3FormatLength;     // day and time on millisecond precision (Joda)
-
+    protected int recordTypeFieldWidth = 0;         // support for readRecord()
+    protected Map<String, Class<? extends BonaPortable>> recordMap = null;
+    
     public final void setSource(String src, int offset, int length) {
         work = src;
         parseIndex = offset;
@@ -110,6 +113,14 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
         this.timestamp3FormatLength = cfg.customTimestampWithMsFormat == null ? 17 : cfg.customTimestampWithMsFormat.length();
         fixedLength = cfg.separator.length() == 0;
         currentClass = "N/A";
+    }
+    
+    // setting this allows to use readRecord in subsequent calls 
+    public void setMapping(Map<String, Class<? extends BonaPortable>> recordMap, int recordTypeFieldWidth) {
+        this.recordMap = recordMap;
+        this.recordTypeFieldWidth = recordTypeFieldWidth;
+        if (recordTypeFieldWidth <= 0 && fixedLength)
+            throw new RuntimeException("recordTypeFieldWidth > 0 must be specified for fixed width formats");
     }
 
     /**************************************************************************************************
@@ -376,9 +387,22 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
 
     @Override
     public BonaPortable readRecord() throws MessageParserException {
-        throw new MessageParserException(MessageParserException.UNSUPPORTED_DATA_TYPE, "readRecord()", parseIndex, currentClass);
-        // parsing an arbitrary object is not possible here because we have no type information
-        // return readObject(StaticMeta.OUTER_BONAPORTABLE, BonaPortable.class);
+        if (recordMap == null) {
+            // parsing an arbitrary object is not possible here because we have no type information
+            throw new MessageParserException(MessageParserException.UNSUPPORTED_DATA_TYPE, "readRecord()", parseIndex, currentClass);
+        }
+        String key;
+        if (fixedLength) {
+            key = work.length() < recordTypeFieldWidth ? work : work.substring(0, recordTypeFieldWidth);
+        } else {
+            int pos = work.indexOf(cfg.separator);
+            key = pos < 0 ? work : work.substring(0, pos);      // if pos < 0: record types such as "EOF" etc... these are valid
+        }
+        key = key.trim();
+        Class<? extends BonaPortable> mappedClass = recordMap.get(key);
+        if (mappedClass == null)
+            throw new MessageParserException(MessageParserException.UNKNOW_RECORD_TYPE, key, parseIndex, currentClass);
+        return readObject(StaticMeta.OUTER_BONAPORTABLE, mappedClass);
     }
 
     private String readBufferForInteger(BasicNumericElementaryDataItem di) throws MessageParserException {
