@@ -41,9 +41,9 @@ is ideal to work in cross-language environments.
 
 
 \section{A first example}
-Before digging into too much detail, let's start with a small example.  You need an Eclipse IDE (release 4.3 Kepler SR1) with
-Xtext and Xtend version 2.5.0 or better and special plugins (available at \url{https://www.jpaw.de/eclipse/master} for stable
-releases or \url{https://www.jpaw.de/eclipse/develop} for development milestones) to follow the examples.
+Before digging into too much detail, let's start with a small example.  You need an Eclipse IDE (release 4.3 Kepler SR1 or
+newer) with Xtext and Xtend version 2.6.2 or newer and special plugins (available at \url{https://www.jpaw.de/eclipse/master}
+for stable releases or \url{https://www.jpaw.de/eclipse/develop} for development milestones) to follow the examples.
 
 Create a new Java project, create a new source folder (for example {\ttfamily src/main/bon}), and create a new file with extension {\ttfamily .bon},
 for example {\ttfamily tutorial1.bon}. If everything is set up correctly, Eclipse will ask ``Do you want to assign the XText
@@ -89,33 +89,51 @@ primitives and their boxed equivalents of Java (which, for the Java code generat
       country codes, or ISO 639 language codes.  The {\ttfamily Unicode} finally allows all know character codes, including multi-byte codes such as Japanese Kanji.
   \item Numeric types: {\ttfamily Int}, {\ttfamily Number}, {\ttfamily Decimal}.  {\ttfamily Int} is no special type, just a synonym for {\ttfamily Integer},
       provided to ensure that a capitalized keyword for any primitive data type represents it's boxed equivalent, which in Java is unfortunately a bit inconsistent.
-      {\ttfamily Number} is a subset of {\ttfamily Int} which requires the specification of the maximum allowed number of digits. {\ttfamily Number(3)}
-       for example allows the mantissas from 0 to 999. This type is very useful when building interfaces to languages like COBOL. The {\ttfamily Decimal} type 
-      requires the specification of significant digits and fractional digits. It is mapped to a type which supports fixed point BCD arithmetic, suitable for
+      {\ttfamily Number} is a subset of {\ttfamily BigInteger} which requires the specification of the maximum allowed number of
+      digits (currently, up to 38 digits are supported). {\ttfamily Number(3)} for example allows the mantissas from 0 to 999.
+      The {\ttfamily Decimal} type requires the specification of significant digits and fractional digits. It is mapped to a type which supports fixed point BCD arithmetic, suitable for
       financial calculations, where the use of {\ttfamily float} or {\ttfamily double} is a no-go due to potential rounding issues. The {\ttfamily Decimal} type
       maps to the Java type BigDecimal. {\ttfamily Decimal} allows up to 18 significant digits. The number of fractional digits cannot exceed the number of significant digits.
-  \item Temporal types: {\ttfamily Day}, {\ttfamily Timestamp}, {\ttfamily Calendar}. The {\ttfamily Day} type represents a calendar date without time. In Java,
-    it maps to the {\ttfamily LocalDate} class of the JodaTime library. The {\ttfamily Timestamp} type represents an instant (day plus time), which in Java maps   
+  \item Temporal types: {\ttfamily Day}, {\ttfamily Time}, {\ttfamily Timestamp}, and {\ttfamily Instant}. The {\ttfamily Day}
+  type represents a calendar date without time. In Java, it maps to the {\ttfamily LocalDate} class of the JodaTime library. The {\ttfamily Timestamp} type represents an instant (day plus time), which in Java maps   
     to the {\ttfamily LocalDateTime} class of the JodaTime library. In serialized form, the timestamp is always in UTC time zone. For {\ttfamily Timestamp},
     you can specify a sub-second precision of 0 to 3 (0 meaning single second precision, 3 meaning millisecond precision). 
-    The {\ttfamily Calendar} finally is there to support the standard Java interface/class
-    (Gregorian)Calendar, but it's use is discouraged, because the {\ttfamily GregorianCalendar} is not an immutable Java class. As soon as JSR310 has been made
-    part of the Java standard, this type will be changed to map to a better type.
+    The {\ttfamily Instant} finally is there to support the JodaTime {\ttfamily Instant} class.
+    As Java 8 includes JSR310, you can also configure the DSL to use Java 8 classes instead of the JodaTime classes, as all
+    supported JodaTime classes have a Java 8 equivalent. There is an important difference concerning the serialized form,
+    between {\ttfamily Timestamp} and {\ttfamily Instant}: {\ttfamily Instant} will be transmitted as 64 bit long integer,
+    specifying the number of milliseconds since the epoch, while {\ttfamily Timestamp} is serializes as a decimal, with the
+    integral part representing the date in YYYYMMDD format, and the fractional digits the time of day, in either hhmmss
+    format, or in (milli)seconds of the day.
   \item Binary data: {\ttfamily Binary}, {\ttfamily Raw}: The {\ttfamily Binary} data type maps to a Java type supplied by Bonaparte itself, which is an
     equivalent to the Java {\ttfamily String} type: immutable, supporting subsets of contents without the need to perform deep copies of the underlying buffer etc.
     The {\ttfamily Raw} data type maps to the Java standard {\ttfamily byte []} type. Its use is discouraged and will cause warnings, because
     {\ttfamily byte []} is not immutable and has weird syntax concerning ordering of indexes, when itself part of an array.
     In the Bonaparte serialization format, the content of both types are represented in a nonstandard base64 encoding (nonstandard with respect to omission of
     newlines after every 60 characters, as required by the RFC. Those newlines would break the overall Bonaparte message format).
-  \item Other types: {\ttfamily Uuid}, {\ttfamily Object}, {\ttfamily ()}, {\ttfamily Enum}. The {\ttfamily Uuid} type supports the universally unique identifiers
-   (\url{http://en.wikipedia.org/wiki/Uuid}) and their standardized transmission format as a 36 byte hex string, formatted with dashes.
+  \item Other types: {\ttfamily Uuid}, {\ttfamily Object}, {\ttfamily Enum} and {\ttfamily Xenum}. The
+  {\ttfamily Uuid} type supports the universally unique identifiers (\url{http://en.wikipedia.org/wiki/Uuid}) and their standardized transmission format as a 36 byte hex string, formatted with dashes.
    The type maps to the Java UUID class. The {\ttfamily Object} holds a generic type defined in Bonaparte. A type (or subtype) of a specific class can be
     referenced by giving it's name in round parenthesis.  
-   The {\ttfamily Enum} references a special enumeration class, also defined in Bonaparte, which will be discussed later.  
+   The {\ttfamily Enum} references a special enumeration class, also defined in Bonaparte, which will be discussed later.   
+   The {\ttfamily Xenum} references an extended enum, for which some kind of inheritance (allowing the addition of instances) is
+   allowed.
 \end{itemize}
 
 To extend the primitives vs. boxed types relationship, all these additional types can also be used in lowercase. In Java, they will still be implemented as
 classes, but with the corresponding property that they don't accept null as a valid value when parsing input from the serialized forms.
+
+\vspace{2mm}
+
+Any integral type can be specified with a maximum number of digits, for example {\ttfamily Long(12)}. This is very useful when
+building interfaces to languages or systems using fixed width formats, like COBOL or SAP (IDOC).
+
+You can even specify the number of some (assumed) fractional digits, for example {\ttfamily Long(18,6)}. Some formats (CSV, XML)
+will transmit the numbers as fractional numbers then, while the internal representation will be integral. This feature is
+intended to support building interfaces for the fixed point arithmetic of the upcoming JSR354 (money API).
+
+
+\vspace{2mm}
 
 As an exercise, try some types and save the file {\ttfamily .bon} file. The default configuration is that Eclipse automatically transforms the source into
 Java code during the save process (which can be configured via the standard Eclipse project setting ``build automatically''). The generated code goes into 
@@ -124,7 +142,7 @@ This can be done per project or via global workspace settings, in the ``BonScrip
 
 \vspace{2mm}
 \begin{center}
-\includegraphics[scale=0.5]{images/tut1-003.png}
+\includegraphics[scale=0.45]{images/tut1-003.png}
 \end{center} 
  
 Look into the generated code. It will have tons of unnecessary imports, but otherwise should be pretty much readable.
@@ -138,6 +156,12 @@ The {\ttfamily Externalizable} interface indicates that there is a customization
 via the standard Java serialization (namely {\ttfamily readExternal} and {\ttfamily writeExternal} are implemented) (and this behaviour can be disabled),
 the other interface is the for the standard Bonaparte interface. Ignoring the metadata part, all Java classes generated by Bonaparte implement the interface
  {\ttfamily de.jpaw.bonaparte.code.BonaPortable}. This is the interface you should reference for fields which hold any object created by the Bonaparte grammar.
+
+
+\vspace{2mm}
+\begin{center}
+\includegraphics[scale=0.45]{images/tut1-prefs1.png}
+\end{center}
 
 Apart from these, you see implementations of {\ttfamily hashCode} and {\ttfamily equals} (which behaves as expected, comparing the contents of
 the instances), as well as getters and setters for the fields.
@@ -292,6 +316,8 @@ class names or package Javadoc occurs. (If there are conflicts, the one generate
 
 Regular single-line comments which appear behind a field definition will be copied to the generated Java source file.
 (Plan is to convert it to field level Javadoc, at the moment the required value converter has not yet been implemented.)
+
+\newpage
  
 \section{Enums}
 As briefly mentioned before, enumeration data types are supported as well.
@@ -310,6 +336,22 @@ The syntax is very close to Java syntax. Enum references must start with the {\t
 \noindent The mappings of tokens to string equivalents must either be provided for all values or for none. If the mapping is provided, the
 mapped strings will be used in the serialized form.
 
+
+\section{Extensible Enums}
+Extensible enumeration data types allow adding instances throug inheritance.
+
+As Java does not allow this for native enums, an {\ttfamily xenum} will create a wrapper class, which is a regular Java class,
+and which holds a reference to the underlying enum. {\ttfamily xenum} classes only support {\ttfamily enum}s with alphanumeric
+tokens. At runtime, all inheriting classes must be loaded before the functionality works as expected.
+
+\vspace{2mm}
+
+\hspace{1cm}\includegraphics[scale=0.5]{images/tut1-xenum.png}
+
+The purpose of the {\ttfamily :2} specifier in the definition of the base xenum {\ttfamily XColor} is to provide the maximum
+token length for subclasses. If not specified, the maximum length of all tokens of the base enum will be used.
+
+
 \section{Class references}
 A very important aspect is the ability to reference other classes. This is done by referencing the class in in round parenthesis.
 Such a reference can either be valid for exactly the referenced class (no subclasses), or for any class in the inheritance hierarchy below or equal to
@@ -323,6 +365,8 @@ Such a reference can either be valid for exactly the referenced class (no subcla
 would accept a {\ttfamily CustomerReference} or {\ttfamily GenericCustomerReference} (or any other subclass) and would need to be able to resolve all these
 references. (Again, this check is only implemented when parsing serialized messages. As Java does not support such functionality, nothing prevents you
 from assigned an instance of {\ttfamily GenericCustomerReference}  to the {\ttfamily Order.customer} field directly in Java.
+
+
 
 \section{Arrays, Lists, Sets and Maps}
 Often, fields do not occur a single time only. Bonaparte supports arrays, lists, sets and maps. All except maps are
