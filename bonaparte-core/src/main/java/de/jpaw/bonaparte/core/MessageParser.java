@@ -28,7 +28,6 @@ import org.joda.time.LocalTime;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
-import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
