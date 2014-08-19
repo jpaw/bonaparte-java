@@ -1,0 +1,18 @@
+/** Demonstration package to show very dense serialized formats. */
+package very.compact {
+    
+    class Complex {
+        double real;
+        double imaginary;
+    }
+    
+    class Vector {
+        (Complex...) x;
+        (Complex...) y;
+        (Complex...) z;
+    }
+    
+    class Container public type {
+        (Vector) outer;
+    }
+}

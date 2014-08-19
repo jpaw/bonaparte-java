@@ -599,7 +599,6 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
         int c = needToken();
         if (useCache && c == OBJECT_AGAIN) {
             // we reuse an object
-            ++parseIndex;
             int objectIndex = readInt(needToken(), fieldname);
             if (objectIndex >= objects.size())
                 throw new MessageParserException(MessageParserException.INVALID_BACKREFERENCE, String.format(

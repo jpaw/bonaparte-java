@@ -15,6 +15,7 @@ import com.esotericsoftware.kryo.io.Output;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.ByteArrayComposer;
 import de.jpaw.bonaparte.core.ByteArrayParser;
+import de.jpaw.bonaparte.core.CompactByteArrayComposer;
 import de.jpaw.bonaparte.core.CompactComposer;
 import de.jpaw.bonaparte.core.MessageComposer;
 import de.jpaw.bonaparte.core.MessageParser;
@@ -60,13 +61,26 @@ public class SerializationTest {
         System.out.println("Length with Kryo is " + output.position());
         output.close();
 
+        
         System.out.println("Test starting: composer Compact");
         ByteArrayOutputStream baos = new ByteArrayOutputStream(4000);
         DataOutputStream dataOut = new DataOutputStream(baos);
         CompactComposer cc = new CompactComposer(dataOut, false);
         cc.reset();
         cc.writeRecord(obj1);
+        dataOut.flush();
+        byte [] ccResult = baos.toByteArray();
         System.out.println("Length with CompactComposer is " + dataOut.size());
+        assert(dataOut.size() == ccResult.length);
+        
+        System.out.println("Test starting: composer ByteArrayCompact");
+        CompactByteArrayComposer cbac = new CompactByteArrayComposer(4000, false);
+        cbac.writeRecord(obj1);
+        byte [] cbacResult = cbac.getBuilder().getBytes();
+        System.out.println("Length with ByteArrayCompactComposer is " + cbacResult.length);
+        assert(cbacResult.length == dataOut.size());
+        assert Arrays.equals(ccResult, cbacResult) : "produced byte data should be identical";
+        
 
         System.out.println("Test starting: composer StringBuilder");
         StringBuilderComposer sbc = new StringBuilderComposer(new StringBuilder());
