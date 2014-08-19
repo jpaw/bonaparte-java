@@ -1,0 +1,7 @@
+package customValidation {
+    
+    class SpecialClass customValidator {
+        int lower;
+        int upper;
+    }
+}

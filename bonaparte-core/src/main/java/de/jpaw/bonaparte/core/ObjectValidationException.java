@@ -43,6 +43,7 @@ public class ObjectValidationException extends ApplicationException {
     static public final int TOO_SHORT             = OFFSET + 5;
     static public final int NOT_ENOUGH_ELEMENTS   = OFFSET + 6;
     static public final int NO_NEGATIVE_ALLOWED   = OFFSET + 7;
+    static public final int CUSTOM_VALIDATION     = OFFSET + 8;
     
     // BigDecimal checks
     static public final int TOO_MANY_FRACTIONAL_DIGITS   = OFFSET + 10;
@@ -60,6 +61,7 @@ public class ObjectValidationException extends ApplicationException {
         codeToDescription.put(TOO_SHORT                 , "String is too short");
         codeToDescription.put(NOT_ENOUGH_ELEMENTS       , "Array contains not enough elements");
         codeToDescription.put(NO_NEGATIVE_ALLOWED       , "Number may not be negative");
+        codeToDescription.put(CUSTOM_VALIDATION         , "A custom validation has failed");
             
         codeToDescription.put(TOO_MANY_FRACTIONAL_DIGITS, "Too many significant decimal digits");
         codeToDescription.put(TOO_MANY_DIGITS           , "Number too big");
