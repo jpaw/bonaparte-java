@@ -640,7 +640,10 @@ public class CompactByteArrayComposer extends CompactConstants implements Messag
             intOut(meta.getId());
         } else {
             out.writeByte(OBJECT_BEGIN_PQON);
-            writeLongStringStealArray(meta.getPqon());
+            if (di.getLowerBound() != null && di.getLowerBound().getName().equals(meta.getPqon()))
+                out.writeByte(EMPTY_FIELD);
+            else
+                writeLongStringStealArray(meta.getPqon());
             addField(REVISION_META, meta.getRevision());
         }
     }

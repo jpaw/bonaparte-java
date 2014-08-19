@@ -618,6 +618,14 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
         } else if (c == OBJECT_BEGIN_PQON){
             String previousClass = currentClass;
             String classname = readString(fieldname, di.getIsRequired());
+            if (classname == null)
+                throw new MessageParserException(MessageParserException.NULL_CLASS_PQON, "", parseIndex, currentClass);
+            if (classname.length() == 0) {
+                if (di.getLowerBound() == null)
+                    throw new MessageParserException(MessageParserException.INVALID_BASE_CLASS_REFERENCE, "", parseIndex, currentClass);
+                // the base class name is referred to, which is contained in the meta data 
+                classname = di.getLowerBound().getName();
+            }
             // String revision = readAscii(true, 0, false, false);
             needToken(NULL_FIELD); // version not yet allowed
             BonaPortable newObject = BonaPortableFactory.createObject(classname);

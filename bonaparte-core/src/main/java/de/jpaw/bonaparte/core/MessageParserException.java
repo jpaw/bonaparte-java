@@ -87,6 +87,8 @@ public class MessageParserException extends ApplicationException {
     static public final int EXTRA_FIELDS                 = OFFSET + 44;
     static public final int TOO_MANY_DIGITS              = OFFSET + 45;
     static public final int UNKNOW_RECORD_TYPE           = OFFSET + 46;
+    static public final int NULL_CLASS_PQON              = OFFSET + 47;
+    static public final int INVALID_BASE_CLASS_REFERENCE = OFFSET + 48;
 
     static {
         codeToDescription.put(MISSING_FIELD_TERMINATOR     , "Missing field terminator");
@@ -135,6 +137,8 @@ public class MessageParserException extends ApplicationException {
         codeToDescription.put(EXTRA_FIELDS                 , "Extra (non-null) fields have been encountered while expecting a class terminator. Most likely your client JAR is not up to date.");
         codeToDescription.put(TOO_MANY_DIGITS              , "Number too big");
         codeToDescription.put(UNKNOW_RECORD_TYPE           , "An unmapped record type has been encountered (CSV or fixed width parser)");
+        codeToDescription.put(NULL_CLASS_PQON              , "A null class name has been transferred");
+        codeToDescription.put(INVALID_BASE_CLASS_REFERENCE , "A zero length class name has been transferred, referring to a field without defined base class");
     }
 
     public final String getSpecificDescription() {

@@ -60,7 +60,7 @@ package de.jpaw.bonaparte.core;
  *          
  *          dd object backreference (next is positive int says how much back)
  *          de  identifiable object: next is factoryId, then objectId (suggestion: keep object IDs <= 4095) 
- *          df  object: next is String (PQON), then revision
+ *          df  object: next is String (PQON), then revision. If the string is sent as nullstring, then it is the base object as defined by the ObjectReference
  *          
  *          e0  big integer, next is length in bytes, then mantissa, in 2s complement, with MSB first
  *          e1  long String ASCII (next is length, then bytes)
