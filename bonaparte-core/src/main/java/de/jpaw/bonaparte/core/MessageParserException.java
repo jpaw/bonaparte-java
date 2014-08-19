@@ -118,8 +118,8 @@ public class MessageParserException extends ApplicationException {
         codeToDescription.put(BAD_CLASS                    , "parsed class is not a subclass of the expected one or subclassing is not allowed");
         codeToDescription.put(BAD_TRANSMISSION_START       , "Illegal character at the start of a transmission");
         codeToDescription.put(BAD_TIMESTAMP_FRACTIONALS    , "Illegal number of fractional digits for timestamp (must be 6..9 for precision 0..3)");
-        codeToDescription.put(ILLEGAL_DAY                  , "Illegal day");
-        codeToDescription.put(ILLEGAL_TIME                 , "Illegal time");
+        codeToDescription.put(ILLEGAL_DAY                  , "Illegal day (required: year in [1601,2399], month in [1,12], day in [1,31])");
+        codeToDescription.put(ILLEGAL_TIME                 , "Illegal time (required: hour in [0,23], minute in [0,59], second in [0,59]");
         codeToDescription.put(ILLEGAL_CALENDAR_VALUE       , "Exception converting the date/time");
         codeToDescription.put(EMPTY_CHAR                   , "empty character field");
         codeToDescription.put(BAD_OBJECT_NAME              , "bad object name (must contain a dot, and not as first or last character)");

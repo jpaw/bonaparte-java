@@ -533,7 +533,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
                 || (day > 31)) {
             throw new MessageParserException(
                     MessageParserException.ILLEGAL_DAY, String.format(
-                            "(found %d for %s)", date, di.getName()), parseIndex, currentClass);
+                            "(found %d for %s)", year*10000+month*100+day, di.getName()), parseIndex, currentClass);
         }
         if ((hour > 23) || (minute > 59) || (second > 59)) {
             throw new MessageParserException(
@@ -572,7 +572,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
                 || (day > 31)) {
             throw new MessageParserException(
                     MessageParserException.ILLEGAL_DAY, String.format(
-                            "(found %d for %s)", date, di.getName()), parseIndex, currentClass);
+                            "(found %d for %s)", year*10000+month*100+day, di.getName()), parseIndex, currentClass);
         }
         // now set the return value
         LocalDate result;
