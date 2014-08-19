@@ -18,6 +18,7 @@ package de.jpaw.bonaparte.coretests.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -30,10 +31,12 @@ import de.jpaw.bonaparte.core.ByteArrayComposer;
 import de.jpaw.bonaparte.core.ByteArrayParser;
 import de.jpaw.bonaparte.core.CompactByteArrayComposer;
 import de.jpaw.bonaparte.core.CompactByteArrayParser;
+import de.jpaw.bonaparte.core.CompactComposer;
 import de.jpaw.bonaparte.core.MessageParser;
 import de.jpaw.bonaparte.core.MessageParserException;
 import de.jpaw.bonaparte.core.StringBuilderComposer;
 import de.jpaw.bonaparte.core.StringBuilderParser;
+import de.jpaw.util.ByteUtil;
 
 /**
  * The SimpleTestRunner class.
@@ -199,11 +202,25 @@ public class SimpleTestRunner {
        System.out.println("compact");
        CompactByteArrayComposer cbac = new CompactByteArrayComposer(10000, false);
        cbac.writeRecord(src);
-       byte[] result3 = cbac.getBuilder().getBytes();
+       byte[] cbacResult = cbac.getBuilder().getBytes();
        if (doDumpToFile)
-           dumpToFile("/tmp/" + src.get$PQON() + "-dump-compact.bin", result3);
-       System.out.println("compact: Length of buffer is " + result3.length);
+           dumpToFile("/tmp/" + src.get$PQON() + "-dump-compact.bin", cbacResult);
+       System.out.println("compact: Length of buffer is " + cbacResult.length);
 
+       System.out.println("compact2");
+       ByteArrayOutputStream baos = new ByteArrayOutputStream(10000);
+       DataOutputStream dataOut = new DataOutputStream(baos);
+       CompactComposer cc = new CompactComposer(dataOut, false);
+       cc.reset();
+       cc.writeRecord(src);
+       dataOut.flush();
+       byte [] ccResult = baos.toByteArray();
+//       System.out.println(ByteUtil.dump(ccResult, 100));
+//       System.out.println(ByteUtil.dump(cbacResult, 100));
+       assert(ccResult.length == cbacResult.length);
+       assert Arrays.equals(ccResult, cbacResult) : "produced byte data should be identical";
+       
+       
        /************************************************************************************
         *
         * Part IIIb: Java compact: deserialize
@@ -211,7 +228,7 @@ public class SimpleTestRunner {
         ***********************************************************************************/
 
        System.out.println("decompacter");
-       CompactByteArrayParser cbap = new CompactByteArrayParser(result3, 0, -1);
+       CompactByteArrayParser cbap = new CompactByteArrayParser(cbacResult, 0, -1);
        BonaPortable dst33 = cbap.readRecord();
        assert dst33.getClass() == src.getClass() : "returned obj is of wrong type (decompacter)"; // assuming we have one class loader only
        assert src.hasSameContentsAs(dst33) : "returned obj is not equal to original one (decompacter)";

@@ -74,15 +74,15 @@ package de.jpaw.bonaparte.core;
  *          fb  end of collection
  *          fc  array begin (next is number of entries)
  *          
- *          fd  any length String UTF-16 (next is length, then bytes)
+ *          fd  any length String UTF-16 (next is length (in characters!), then bytes)
  *          
  *          fe   Binary (next: length, then bytes)
- *          ff   any length String UTF-8 (next: length, then chars, in modified UTF-8)
+ *          ff   any length String UTF-8 (next: length in bytes, then chars, in modified UTF-8)
  *      
  *          TODO: String should actually distinguish by the number of bytes / char and use a different encoding then, to approximate
  *          the number of characters needed. US-only strings should be encoded as single byte strings, if we find at least one
  *          3-byte sequence, let's use UTF-16, otherwise we use UTF8 (slow).
- *          This will slow down som international strings, but be faster and more compact for English, Chinese, and Japanese texts.
+ *          This will slow down some international strings, but be faster and more compact for English, Chinese, and Japanese texts.
  *           
  *          enum: no special token. stored as integer (ordinal) or string
  *          

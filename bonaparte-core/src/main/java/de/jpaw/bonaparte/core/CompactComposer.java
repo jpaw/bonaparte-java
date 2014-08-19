@@ -191,7 +191,7 @@ public class CompactComposer extends CompactConstants implements MessageComposer
         } else if (maxCode < 2048) {
             // UTF-8 out, with max. 2 byte sequences...
             out.writeByte(UTF8_STRING);
-            intOut(len);
+            intOut(len + numWith2Byte);
             for (int i = 0; i < len; ++i) {
                 int c = s.charAt(i);
                 if (c < 128) {
@@ -204,7 +204,7 @@ public class CompactComposer extends CompactConstants implements MessageComposer
         } else {
             // UTF-16, due to possible 3 byte sequences
             out.writeByte(UTF16_STRING);
-            intOut(len + numWith2Byte);
+            intOut(len);
             for (int i = 0; i < len; ++i)
                 out.writeChar(s.charAt(i));
         }
