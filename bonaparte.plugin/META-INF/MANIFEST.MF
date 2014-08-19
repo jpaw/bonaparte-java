@@ -3,7 +3,7 @@ Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-ManifestVersion: 2
 Bundle-Name: bonaparte core libraries plugin
 Bundle-SymbolicName: bonaparte.plugin
-Bundle-Version: 2.3.2
+Bundle-Version: 2.3.3.qualifier
 Bundle-Vendor: Michael Bischoff
 Require-Bundle: org.eclipse.xtext;visibility:=reexport,
  org.eclipse.xtext.xbase;resolution:=optional;visibility:=reexport,
