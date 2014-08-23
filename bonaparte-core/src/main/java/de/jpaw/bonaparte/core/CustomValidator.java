@@ -6,7 +6,7 @@ package de.jpaw.bonaparte.core;
 public interface CustomValidator {
 
     /** Invoked method for validation. If the method returns true, then further validations for this object
-     * should be skipped. Otherwise, they will be performed as usual.
+     * should be skipped. Otherwise, they will be performed as usual. If not needed, let it return false.
      * 
      * It is important to know that at time of invocation, neither this class not any of its superclasses have been validated.
      * 
@@ -16,4 +16,12 @@ public interface CustomValidator {
      * or better a specific exception defined in some class inherited from ObjectValidationException.  
      */
     public boolean validate(BonaPortable obj) throws ObjectValidationException;
+
+    /** Additionally invoked method for validation, which will be called after the default validation.
+     * 
+     * @param obj
+     * @throws ObjectValidationException - Either the default ObjectValidationException.CUSTOM_VALIDATION should be thrown,
+     * or better a specific exception defined in some class inherited from ObjectValidationException.  
+     */
+    public void validatePrechecked(BonaPortable obj) throws ObjectValidationException;
 }

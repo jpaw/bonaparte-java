@@ -1,6 +1,6 @@
 package customValidation {
     
-    class SpecialClass customValidator {
+    class SpecialClass customAddons {
         int lower;
         int upper;
     }

@@ -28,7 +28,7 @@
         <junit.version>4.11</junit.version>
         
         <!-- Some more versions, used by specific dependent projects -->
-        <netty.version>4.0.21.Final</netty.version>     <!-- https://netty.io/news/ UPTODATE 2014-07-01 -->
+        <netty.version>4.0.23.Final</netty.version>     <!-- https://netty.io/news/ UPTODATE 2014-08-16 -->
         <poi.version>3.10-FINAL</poi.version>           <!-- http://poi.apache.org/ UPTODATE 2014-06-20 -->
         <mina.version>2.0.7</mina.version>              <!-- http://mina.apache.org/ 2.0.7 -->
         <camel.version>2.12.4</camel.version>           <!-- http://camel.apache.org/ UPTODATE 2014-07-07 -->
