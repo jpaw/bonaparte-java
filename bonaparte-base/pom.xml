@@ -397,6 +397,7 @@
     </reporting>
 
     <modules>
+        <module>../bonaparte-fixedpoint/pom.xml</module>
         <module>../bonaparte-core/pom.xml</module>
         <module>../bonaparte-core-test/pom.xml</module>
         <module>../bonaparte-money/pom.xml</module>

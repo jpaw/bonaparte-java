@@ -117,7 +117,7 @@ public final class BonaCurrency implements Serializable {
      * If the scaled sum matches, that result is returned.
      * Otherwise, elements are picked for a different rounding strategy in order of increasing relative error.
      *
-     * @param unscaled
+     * @param unscaledAmounts
      * @return scaled values
      * @throws MonetaryException
      */

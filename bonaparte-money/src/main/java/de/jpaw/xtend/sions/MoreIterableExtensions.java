@@ -12,11 +12,6 @@ import org.eclipse.xtext.xbase.lib.IteratorExtensions;
 
 public class MoreIterableExtensions {
 
-    /** Just a shorthand for replacement of a value by a default value. */
-    static public <T> T nvl(T x, T inCaseOfNull) {
-        return x == null ? x : inCaseOfNull;
-    }
-
     /**
      * Returns the maximum element of an iterable.
      * 

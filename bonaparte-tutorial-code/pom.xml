@@ -9,7 +9,6 @@
         <relativePath>../bonaparte-base/pom.xml</relativePath>
     </parent>
 
-    <groupId>de.jpaw</groupId>
     <artifactId>bonaparte-tutorial-code</artifactId>
 
     <dependencies>
@@ -37,7 +36,6 @@
                 <!-- must deleted generated source as well as unit test output for the
                     clean target -->
                 <artifactId>maven-clean-plugin</artifactId>
-                <version>2.5</version>
                 <configuration>
                     <filesets>
                         <fileset>
@@ -59,7 +57,6 @@
                 <!-- must add the generated sources to the java source search path -->
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.7</version>
                 <executions>
                     <execution>
                         <phase>generate-sources</phase>

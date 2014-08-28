@@ -146,6 +146,7 @@ public final class BonaMoney implements Serializable, MoneyGetter, AbelianGroup<
 
     /** Add two BonaMoney instances. Both operands must have the identical currency and the same number of tax amounts.
      * A check is performed, if all signs all still consistent after the operation. */
+    @Override
     public BonaMoney add(BonaMoney augent) throws MonetaryException {
         if (!currency.equals(augent.getCurrency()) || componentAmounts.size() != augent.getNumComponentAmounts())
             throw new MonetaryException(MonetaryException.INCOMPATIBLE_OPERANDS, "add: "
@@ -164,6 +165,7 @@ public final class BonaMoney implements Serializable, MoneyGetter, AbelianGroup<
     /** Subtract two BonaMoney instances. Both operands must have the identical currency and the same number of tax amounts.
      * A check is performed, if all signs all still consistent after the operation.
      * Essentially same code as add. */
+    @Override
     public BonaMoney subtract(BonaMoney subtrahend) throws MonetaryException {
         if (!currency.equals(subtrahend.getCurrency()) || componentAmounts.size() != subtrahend.componentAmounts.size())
             throw new MonetaryException(MonetaryException.INCOMPATIBLE_OPERANDS, "subtract: "
@@ -271,10 +273,12 @@ public final class BonaMoney implements Serializable, MoneyGetter, AbelianGroup<
         return componentAmounts.size();
     }
 
+    @Override
     public BigDecimal getAmount() {
         return amount;
     }
 
+    @Override
     public ImmutableList<BigDecimal> getComponentAmounts() {
         return componentAmounts;
     }
