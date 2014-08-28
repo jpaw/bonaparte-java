@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-ManifestVersion: 2
+Bundle-Name: bonaparte fixed point arithmetic
+Bundle-SymbolicName: bonaparte.fixedpoint
+Bundle-Version: 2.3.5.qualifier
+Bundle-Vendor: Michael Bischoff
+Require-Bundle: guava
+Export-Package: de.jpaw.fixedpoint;de.jpaw.xtend.sions
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6 
