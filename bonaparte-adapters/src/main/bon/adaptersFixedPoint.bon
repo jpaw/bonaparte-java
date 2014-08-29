@@ -1,0 +1,25 @@
+import de.jpaw.fixedpoint.*
+
+/** Bonaparte monetary data.
+ * Assigned to factoryId 29
+ */
+package adapters.fixedpoint factoryId 27 {
+
+    final class Units public type is Units adapter de.jpaw.adapters.fixedpoint.UnitsAdapter singleField {
+        optional Long(18) mantissa;  // the field must be declared as optional, because a null is used to model an object null 
+    }
+
+    final class Millis public type is MilliUnits adapter de.jpaw.adapters.fixedpoint.MilliUnitsAdapter singleField {
+        optional Long(18,3) mantissa;  // the field must be declared as optional, because a null is used to model an object null 
+    }
+
+    final class Micros public type is MicroUnits adapter de.jpaw.adapters.fixedpoint.MicroUnitsAdapter singleField {
+        optional Long(18,6) mantissa;  // the field must be declared as optional, because a null is used to model an object null 
+    }
+
+    final class Nanos public type is NanoUnits adapter de.jpaw.adapters.fixedpoint.NanoUnitsAdapter singleField {
+        optional Long(18,9) mantissa;  // the field must be declared as optional, because a null is used to model an object null 
+    }
+
+}
+

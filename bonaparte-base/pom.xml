@@ -20,10 +20,10 @@
         <xtext.version>2.6.2</xtext.version>            <!-- UPTODATE 2014-07-03 -->
         <slf4j.version>1.7.7</slf4j.version>            <!-- http://www.slf4j.org/ UPTODATE 2014-04-04 -->
         <logback.version>1.1.2</logback.version>        <!-- http://logback.qos.ch/ UPTODATE 2014-04-02 -->
-        <guava.version>16.0.1</guava.version>           <!-- http://code.google.com/p/guava-libraries/ 14.0.1 UPTODATE 2013-06-09, 
-            15.0 UPTODATE 2013-09-26 -->
-        <jodatime.version>2.3</jodatime.version>        <!-- UPTODATE 2014-04-01 -->
-        <disruptor.version>3.2.1</disruptor.version>    <!-- UPTODATE 2014-06-18 -->
+        <guava.version>18.0</guava.version>             <!-- http://code.google.com/p/guava-libraries/ 14.0.1 UPTODATE 2013-06-09, 
+            18.0 UPTODATE 2014-08-25 -->
+        <jodatime.version>2.4</jodatime.version>        <!-- UPTODATE 2014-07-27 -->
+        <disruptor.version>3.2.1</disruptor.version>    <!-- UPTODATE 2014-06-18, 3.3.0 release in July -->
         <testng.version>5.12.1</testng.version>    <!-- 5.14.9 or 6.7 use waaay more dependencies -->
         <junit.version>4.11</junit.version>
         
@@ -35,7 +35,6 @@
         <vertx.version>2.1.2</vertx.version>            <!-- http://vertx.io/ UPTODATE 2014-07-22 -->
         <hazelcast.version>3.2.4</hazelcast.version>    <!-- http://hazelcast.org/download/ UPTODATE 2014-07-21 -->
         <hornetq.version>2.2.14.Final</hornetq.version> <!-- http://www.jboss.org/hornetq 2.3.0.Final -->
-        <jaxb.version>2.2.9</jaxb.version>              <!-- http://repo1.maven.org/maven2/javax/xml/bind/jaxb-api/ -->
         <jackson.version>2.2.2</jackson.version>        <!-- matches what's used in vertx -->
         <jsap.version>2.1</jsap.version>
         
@@ -399,6 +398,7 @@
     <modules>
         <module>../bonaparte-fixedpoint/pom.xml</module>
         <module>../bonaparte-core/pom.xml</module>
+        <module>../bonaparte-adapters/pom.xml</module>
         <module>../bonaparte-core-test/pom.xml</module>
         <module>../bonaparte-money/pom.xml</module>
         <module>../bonaparte-money-test/pom.xml</module>

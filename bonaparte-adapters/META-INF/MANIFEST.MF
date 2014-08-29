@@ -1,10 +1,13 @@
 Manifest-Version: 1.0
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-ManifestVersion: 2
-Bundle-Name: bonaparte fixed point arithmetic
-Bundle-SymbolicName: bonaparte.fixedpoint
+Bundle-Name: bonaparte external class adapters
+Bundle-SymbolicName: bonaparte.adapters
 Bundle-Version: 2.4.0.qualifier
 Bundle-Vendor: Michael Bischoff
-Export-Package: de.jpaw.fixedpoint
+Require-Bundle: bonaparte.core,
+ bonaparte.fixedpoint,
+ guava
+Export-Package: de.jpaw.adapters.fixedpoint
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6 
