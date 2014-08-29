@@ -34,7 +34,7 @@ package p1 {
 }
 
 package p2 {
-    class MiddleLevel<QQ extends Object> extends p1.Base<p1.Super1> {
+    class MiddleLevel<QQ> extends p1.Base<p1.Super1> {
         int                 d;
         Enum p1.SampleEnum  myEnum;
         (!QQ...)            anyObject;

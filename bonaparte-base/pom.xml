@@ -39,7 +39,7 @@
         <jsap.version>2.1</jsap.version>
         
         <!--  benchmarking -->
-        <jmh.version>0.9.5</jmh.version>                <!-- http://openjdk.java.net/projects/code-tools/jmh/ UPTODATE 2014-07-24 -->
+        <jmh.version>0.9.8</jmh.version>                <!-- http://openjdk.java.net/projects/code-tools/jmh/ UPTODATE 2014-08-29 -->
     </properties>
 
     <licenses>
