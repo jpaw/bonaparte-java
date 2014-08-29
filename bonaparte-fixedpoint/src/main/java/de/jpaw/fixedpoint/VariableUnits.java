@@ -1,5 +1,8 @@
 package de.jpaw.fixedpoint;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 public class VariableUnits extends FixedPointBase {
     private static final long serialVersionUID = 8621674182590849295L;
     private final int scale;
@@ -49,6 +52,12 @@ public class VariableUnits extends FixedPointBase {
     private final static void scaleCheck(int scale) {
         if (scale < 0 || scale > 18)
             throw new RuntimeException("Illegal scale " + scale + ", must be in range [0,18]");
+    }
+    
+    // This is certainly not be the most efficient implementation, as it involves the construction of up to 2 new BigDecimals
+    // TODO: replace it by a zero GC version
+    public static VariableUnits valueOf(BigDecimal number, int scale) {
+        return valueOf(number.setScale(scale, RoundingMode.UNNECESSARY).scaleByPowerOfTen(scale).longValue(), scale);
     }
     
     /** Factory method. Similar to the constructor, but returns cached instances for 0 and 1. */

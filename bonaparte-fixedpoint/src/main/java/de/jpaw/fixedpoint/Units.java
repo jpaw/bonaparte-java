@@ -1,5 +1,8 @@
 package de.jpaw.fixedpoint;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 public class Units extends FixedPointBase {
     private static final long serialVersionUID = -3073254135663195283L;
     public static final int DECIMALS = 0;
@@ -14,7 +17,13 @@ public class Units extends FixedPointBase {
     public static Units of(long mantissa) {
         return ZERO.newInstanceOf(mantissa);
     }
-    
+
+    // This is certainly not be the most efficient implementation, as it involves the construction of up to 2 new BigDecimals
+    // TODO: replace it by a zero GC version
+    public static Units of(BigDecimal number) {
+        return of(number.setScale(DECIMALS, RoundingMode.UNNECESSARY).longValue());
+    }
+
     @Override
     public Units newInstanceOf(long mantissa) {
         // caching checks...

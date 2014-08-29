@@ -96,6 +96,16 @@ public abstract class FixedPointBase implements Serializable, Comparable<FixedPo
         return Long.signum(mantissa);
     }
     
+    /** Returns true if this is numerically equivalent to 1. */
+    public boolean isOne() {
+        return mantissa == getUnitAsLong();
+    }
+    
+    /** Returns true if this is numerically equivalent to -1. */
+    public boolean isMinusOne() {
+        return mantissa == -getUnitAsLong();
+    }
+    
     /** Returns true if this is not 0. */
     public boolean isNotZero() {
         return mantissa != 0;
@@ -208,8 +218,29 @@ public abstract class FixedPointBase implements Serializable, Comparable<FixedPo
         return newInstanceOf(mantissa * factor);
     }
     /** Xtend syntax sugar. multiply maps to the multiply method. */
-    public FixedPointBase operator_multiply(int b) {
-        return multiply(b);
+    public FixedPointBase operator_multiply(int factor) {
+        return multiply(factor);
+    }
+    
+    /** Multiplies a fixed point number by an another one. The type / scale of the result is undefined. */
+    public FixedPointBase multiply(FixedPointBase that) {
+        if (mantissa == 0)
+            return this;                // 0 * x = 0
+        if (that.mantissa == 0)
+            return that;                // x * 0 = 0
+        if (isOne())
+            return that;                // 1 * x = x
+        if (isMinusOne())
+            return that.negate();       // -1 * x = -x
+        if (that.isOne())
+            return this;                // x * 1 = x
+        if (that.isMinusOne())
+            return this.negate();       // x * -1 = -x
+        return null;  // FIXME
+    }
+    /** Xtend syntax sugar. multiply maps to the multiply method. */
+    public FixedPointBase operator_multiply(FixedPointBase that) {
+        return multiply(that);
     }
     
     /** Adds two fixed point numbers. The scale (and type) of the sum is the bigger of the operand scales. */

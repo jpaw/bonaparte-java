@@ -2,6 +2,7 @@ package de.jpaw.money
 
 
 import static extension de.jpaw.fixedpoint.FixedPointExtensions.*
+import de.jpaw.fixedpoint.MilliUnits
 
 /** Syntactic sugar for the BonaMoney class when used from xtend */
 public class FixedPointOperatorDemo {
@@ -26,5 +27,9 @@ public class FixedPointOperatorDemo {
         
         println("result of " + myMicros + " / 3 is " + z + " remainder " + m)
         
+        
+        val vat = 19.units.percent
+        val amount = MilliUnits.of(100.0BD)
+        println("amount = " + amount + ", vat ratio is " + vat)
     }
 }

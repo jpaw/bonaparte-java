@@ -1,5 +1,8 @@
 package de.jpaw.fixedpoint;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 public class MilliUnits extends FixedPointBase {
     private static final long serialVersionUID = -3973421895055422944L;
     public static final int DECIMALS = 3;
@@ -13,6 +16,12 @@ public class MilliUnits extends FixedPointBase {
 
     public static MilliUnits of(long mantissa) {
         return ZERO.newInstanceOf(mantissa);
+    }
+    
+    // This is certainly not be the most efficient implementation, as it involves the construction of up to 2 new BigDecimals
+    // TODO: replace it by a zero GC version
+    public static MilliUnits of(BigDecimal number) {
+        return of(number.setScale(DECIMALS, RoundingMode.UNNECESSARY).scaleByPowerOfTen(DECIMALS).longValue());
     }
     
     @Override
