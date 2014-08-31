@@ -1,4 +1,4 @@
-import de.jpaw.fixedpoint.*
+import de.jpaw.fixedpoint.types.*
 
 /** Bonaparte monetary data.
  * Assigned to factoryId 29
@@ -18,6 +18,14 @@ package adapters.fixedpoint factoryId 27 {
     }
 
     final class Nanos public type is NanoUnits adapter de.jpaw.adapters.fixedpoint.NanoUnitsAdapter singleField {
+        optional Long(18,9) mantissa;  // the field must be declared as optional, because a null is used to model an object null 
+    }
+
+    final class Picos public type is PicoUnits adapter de.jpaw.adapters.fixedpoint.PicoUnitsAdapter singleField {
+        optional Long(18,9) mantissa;  // the field must be declared as optional, because a null is used to model an object null 
+    }
+
+    final class Femtos public type is FemtoUnits adapter de.jpaw.adapters.fixedpoint.FemtoUnitsAdapter singleField {
         optional Long(18,9) mantissa;  // the field must be declared as optional, because a null is used to model an object null 
     }
 

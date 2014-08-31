@@ -3,7 +3,7 @@ package de.jpaw.adapters.fixedpoint;
 import de.jpaw.bonaparte.core.MessageComposer;
 import de.jpaw.bonaparte.core.MessageParser;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
-import de.jpaw.fixedpoint.MilliUnits;
+import de.jpaw.fixedpoint.types.MilliUnits;
 import de.jpaw.bonaparte.pojos.adapters.fixedpoint.Millis;
 
 public class MilliUnitsAdapter {

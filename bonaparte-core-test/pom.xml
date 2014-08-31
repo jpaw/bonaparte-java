@@ -22,11 +22,6 @@
         </dependency>
         <dependency>
             <groupId>de.jpaw</groupId>
-            <artifactId>bonaparte-fixedpoint</artifactId>
-            <version>${bonaparte.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>de.jpaw</groupId>
             <artifactId>bonaparte-adapters</artifactId>
             <version>${bonaparte.version}</version>
         </dependency>

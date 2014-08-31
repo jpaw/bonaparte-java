@@ -3,7 +3,7 @@ package de.jpaw.adapters.fixedpoint;
 import de.jpaw.bonaparte.core.MessageComposer;
 import de.jpaw.bonaparte.core.MessageParser;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
-import de.jpaw.fixedpoint.MicroUnits;
+import de.jpaw.fixedpoint.types.MicroUnits;
 import de.jpaw.bonaparte.pojos.adapters.fixedpoint.Micros;
 
 public class MicroUnitsAdapter {
