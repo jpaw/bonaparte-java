@@ -8,9 +8,12 @@ Bundle-Vendor: Michael Bischoff
 Require-Bundle: slf4j.api,
  joda-time;bundle-version="2.3";visibility:=reexport,
  com.google.guava;bundle-version="16.0.1";visibility:=reexport
-Export-Package: de.jpaw.bonaparte.core;de.jpaw.bonaparte.core.annotation;de.jpaw.bonaparte.core.extensions;
- de.jpaw.bonaparte.core.enums;de.jpaw.util;de.jpaw.bonaparte.sock;de.jpaw.bonaparte.pojojs.meta;de.jpaw.bonaparte.pojos.ui
+Export-Package: de.jpaw.bonaparte.core,
+ de.jpaw.bonaparte.annotation,
+ de.jpaw.bonaparte.extensions,
+ de.jpaw.bonaparte.pojos.meta,
+ de.jpaw.bonaparte.pojos.ui,
+ de.jpaw.bonaparte.sock
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6 
-Import-Package: de.jpaw.bonaparte.pojos.meta,
- org.slf4j
+Import-Package: org.slf4j

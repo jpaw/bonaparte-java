@@ -43,7 +43,7 @@ import de.jpaw.enums.XEnum;
 import de.jpaw.util.Base64;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.ByteBuilder;
-import de.jpaw.util.CharTestsASCII;
+import de.jpaw.util.FixASCII;
 // according to http://stackoverflow.com/questions/469695/decode-base64-data-in-java , xml.bind is included in Java 6 SE
 //import javax.xml.bind.DatatypeConverter;  // but not in Android, so don't use it!
 /**
@@ -195,7 +195,7 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
     public void addField(AlphanumericElementaryDataItem di, String s) throws IOException {
         if (s != null) {
             if (di.getRestrictToAscii()) {
-                work.append(CharTestsASCII.checkAsciiAndFixIfRequired(s, di.getLength()));
+                work.append(FixASCII.checkAsciiAndFixIfRequired(s, di.getLength()));
             } else {
                 for (int i = 0; i < s.length(); ++i) {
                     addCharSub(s.charAt(i));

@@ -44,7 +44,7 @@ import de.jpaw.enums.XEnum;
 import de.jpaw.util.Base64;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.ByteBuilder;
-import de.jpaw.util.CharTestsASCII;
+import de.jpaw.util.FixASCII;
 /**
  * Implements the serialization for the bonaparte format into byte arrays, using the {@link de.jpaw.util.ByteBuilder ByteBuilder} class, which is similar to the well known {@link java.lang.StringBuilder StringBuilder}.
  *
@@ -219,7 +219,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
         if (s != null) {
             if (di.getRestrictToAscii()) {
                 // don't trust them!
-                work.append(CharTestsASCII.checkAsciiAndFixIfRequired(s, di.getLength()));
+                work.append(FixASCII.checkAsciiAndFixIfRequired(s, di.getLength()));
             } else {
                 // tak care not to break multi-Sequences
                 for (int i = 0; i < s.length();) {
