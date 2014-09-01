@@ -71,26 +71,22 @@ public class ObjectValidationException extends ApplicationException {
         codeToDescription.put(IS_IMMUTABLE              , "This object cannot be turned into mutable state");
     }
 
-    private final String getSpecificDescription() {
-        return (className == null ? "?" : className) + "."
-             + (fieldName == null ? "?" : fieldName);
-    }
-
     public ObjectValidationException(int errorCode, String fieldName, String className) {
-        super(errorCode, null);
+        super(errorCode, (className == null ? "?" : className) + "." + (fieldName == null ? "?" : fieldName));
         this.fieldName = fieldName;
         this.className = className;
-        // for the logger call, do NOT use toString, because that can be overridden, and we're called from a constructor here
-        // do not log at all this one, log output is up to the application
-        // logger.error("Error " + getErrorCode() + " (" + getStandardDescription() + ") for " + getSpecificDescription());
     }
 
     public ObjectValidationException(int errorCode) {
         this(errorCode, null, null);
     }
 
-    @Override
-    public String toString() {
-        return getSpecificDescription() + ": " + super.toString();
+    public String getFieldName() {
+        return fieldName;
     }
+    
+    public String getClassName() {
+        return className;
+    }
+
 }

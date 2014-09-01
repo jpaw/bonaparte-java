@@ -12,4 +12,5 @@ Export-Package: de.jpaw.bonaparte.core;de.jpaw.bonaparte.core.annotation;de.jpaw
  de.jpaw.bonaparte.core.enums;de.jpaw.util;de.jpaw.bonaparte.sock;de.jpaw.bonaparte.pojojs.meta;de.jpaw.bonaparte.pojos.ui
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6 
-Import-Package: org.slf4j
+Import-Package: de.jpaw.bonaparte.pojos.meta,
+ org.slf4j

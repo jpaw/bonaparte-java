@@ -9,6 +9,14 @@ package adapters.fixedpoint factoryId 27 {
         optional Long(18) mantissa;  // the field must be declared as optional, because a null is used to model an object null 
     }
 
+    final class Tenths public type is Tenths adapter de.jpaw.adapters.fixedpoint.TenthsAdapter singleField {
+        optional Long(18) mantissa;  // the field must be declared as optional, because a null is used to model an object null 
+    }
+
+    final class Hundreds public type is Hundreds adapter de.jpaw.adapters.fixedpoint.HundredsAdapter singleField {
+        optional Long(18) mantissa;  // the field must be declared as optional, because a null is used to model an object null 
+    }
+
     final class Millis public type is MilliUnits adapter de.jpaw.adapters.fixedpoint.MilliUnitsAdapter singleField {
         optional Long(18,3) mantissa;  // the field must be declared as optional, because a null is used to model an object null 
     }

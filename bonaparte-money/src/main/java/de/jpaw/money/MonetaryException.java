@@ -65,9 +65,6 @@ public class MonetaryException extends ApplicationException {
 
     public MonetaryException(int errorCode, String message) {
         super(errorCode, message);
-        // for the logger call, do NOT use toString, because that can be overridden, and we're called from a constructor here
-        // do not log at all this one, log output is up to the application
-        //logger.error("Error " + getErrorCode() + " (" + getStandardDescription() + ")");
     }
 
     public MonetaryException(int errorCode) {
