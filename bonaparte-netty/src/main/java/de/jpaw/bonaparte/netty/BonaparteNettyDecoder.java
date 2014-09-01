@@ -62,7 +62,7 @@ public class BonaparteNettyDecoder extends ByteToMessageDecoder {
             if (errorForwarder == null) {
                 throw e;
             } else {
-                out.add(errorForwarder.createErrorObject(e.getErrorCode(), e.getSpecificDescription(), array));
+                out.add(errorForwarder.createErrorObject(e.getErrorCode(), e.getMessage(), array));
             }
         }
     }
