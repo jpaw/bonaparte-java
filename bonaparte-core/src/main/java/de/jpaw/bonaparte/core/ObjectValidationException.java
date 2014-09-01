@@ -31,7 +31,7 @@ public class ObjectValidationException extends ApplicationException {
     private static final long serialVersionUID = 8530206162841355351L;
 //    private static final Logger logger = LoggerFactory.getLogger(MessageParserException.class);
 
-    private static final int OFFSET = VALIDATION_ERROR * CLASSIFICATION_FACTOR + 17000;  // offset for all codes in this class
+    private static final int OFFSET = VALIDATION_ERROR * CLASSIFICATION_FACTOR + 16000;  // offset for all codes in this class
 
     private final String fieldName;   // if known, the name of the field where the error occurred
     private final String className;   // if known, the name of the class which contained the field
