@@ -31,7 +31,7 @@ public class ObjectValidationException extends ApplicationException {
     private static final long serialVersionUID = 8530206162841355351L;
 //    private static final Logger logger = LoggerFactory.getLogger(MessageParserException.class);
 
-    private static final int OFFSET = VALIDATION_ERROR * CLASSIFICATION_FACTOR + 17000;  // offset for all codes in this class
+    private static final int OFFSET = VALIDATION_ERROR * CLASSIFICATION_FACTOR + 16000;  // offset for all codes in this class
 
     private final String fieldName;   // if known, the name of the field where the error occurred
     private final String className;   // if known, the name of the class which contained the field
@@ -71,26 +71,22 @@ public class ObjectValidationException extends ApplicationException {
         codeToDescription.put(IS_IMMUTABLE              , "This object cannot be turned into mutable state");
     }
 
-    private final String getSpecificDescription() {
-        return (className == null ? "?" : className) + "."
-             + (fieldName == null ? "?" : fieldName);
-    }
-
     public ObjectValidationException(int errorCode, String fieldName, String className) {
-        super(errorCode, null);
+        super(errorCode, (className == null ? "?" : className) + "." + (fieldName == null ? "?" : fieldName));
         this.fieldName = fieldName;
         this.className = className;
-        // for the logger call, do NOT use toString, because that can be overridden, and we're called from a constructor here
-        // do not log at all this one, log output is up to the application
-        // logger.error("Error " + getErrorCode() + " (" + getStandardDescription() + ") for " + getSpecificDescription());
     }
 
     public ObjectValidationException(int errorCode) {
         this(errorCode, null, null);
     }
 
-    @Override
-    public String toString() {
-        return getSpecificDescription() + ": " + super.toString();
+    public String getFieldName() {
+        return fieldName;
     }
+    
+    public String getClassName() {
+        return className;
+    }
+
 }

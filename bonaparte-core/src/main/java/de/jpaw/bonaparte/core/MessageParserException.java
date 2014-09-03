@@ -15,9 +15,6 @@
  */
 package de.jpaw.bonaparte.core;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import de.jpaw.util.ApplicationException;
 
 /**
@@ -32,7 +29,6 @@ import de.jpaw.util.ApplicationException;
 
 public class MessageParserException extends ApplicationException {
     private static final long serialVersionUID = 6578705245543364726L;
-    private static final Logger logger = LoggerFactory.getLogger(MessageParserException.class);
 
     private static final int OFFSET = (PARSER_ERROR * CLASSIFICATION_FACTOR) + 17000; // offset for all codes in this class
     private static final int OFFSET3 = (PARAMETER_ERROR * CLASSIFICATION_FACTOR) + 17000; // offset for all codes in this class
@@ -141,26 +137,15 @@ public class MessageParserException extends ApplicationException {
         codeToDescription.put(INVALID_BASE_CLASS_REFERENCE , "A zero length class name has been transferred, referring to a field without defined base class");
     }
 
-    public final String getSpecificDescription() {
-        return (className == null ? "?" : className) + "." + (fieldName == null ? "?" : fieldName) + " at position " + characterIndex;
-    }
-
     public MessageParserException(int errorCode, String fieldName, int characterIndex, String className) {
-        super(errorCode, fieldName);
+        super(errorCode, (className == null ? "?" : className) + "." + (fieldName == null ? "?" : fieldName) + (characterIndex >= 0 ? " at pos " + characterIndex : ""));
         this.characterIndex = characterIndex;
         this.fieldName = fieldName;
         this.className = className;
-        // for the logger call, do NOT use toString, because that can be overridden, and we're called from a constructor here
-        logger.error("Error " + getErrorCode() + " (" + getStandardDescription() + ") for " + getSpecificDescription());
     }
 
     public MessageParserException(int errorCode) {
         this(errorCode, null, -1, null);
-    }
-
-    @Override
-    public String toString() {
-        return getSpecificDescription() + ": " + super.toString();
     }
     
     // some boilerplate code to retrieve exception properties
