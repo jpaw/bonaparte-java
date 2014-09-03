@@ -3,7 +3,7 @@ Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-ManifestVersion: 2
 Bundle-Name: bonaparte XML libraries
 Bundle-SymbolicName: bonaparte.xml
-Bundle-Version: 2.3.5
+Bundle-Version: 2.3.6
 Bundle-Vendor: Michael Bischoff
 Require-Bundle: bonaparte.core
 Export-Package: de.jpaw.xml.jaxb
