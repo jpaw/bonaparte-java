@@ -7,8 +7,6 @@ import java.math.RoundingMode;
 import com.google.common.collect.ImmutableList;
 
 import de.jpaw.algebra.AbelianGroup;
-import de.jpaw.util.MoneyGetter;
-import de.jpaw.util.MoneySetter;
 
 /**
  * The BonaMoney class provides a series of functionality useful for working with monetary amounts.
@@ -21,10 +19,10 @@ import de.jpaw.util.MoneySetter;
  * @author BISC02
  *
  */
-public final class BonaMoney implements Serializable, MoneyGetter, AbelianGroup<BonaMoney> {
+public final class BonaMoney implements Serializable, AbelianGroup<BonaMoney> {
     private static final long serialVersionUID = 6269291861207854500L;
 
-    static private final BigDecimal [] EMPTY_ARRAY = new BigDecimal[0];
+//    static private final BigDecimal [] EMPTY_ARRAY = new BigDecimal[0];
     static private final ImmutableList<BigDecimal> EMPTY_LIST = ImmutableList.of();
 
     private final BonaCurrency currency;                        // the currency of this amount
@@ -181,35 +179,35 @@ public final class BonaMoney implements Serializable, MoneyGetter, AbelianGroup<
         return new BonaMoney(currency, false, false, amount.subtract(subtrahend.amount), taxes);
     }
 
-    /** Stores the amounts of this instance in a mutable object (for example BonaPortable DTO).
-     * The currency is skipped, due to most likely duplication. */
-    public void storeAmounts(MoneySetter target) {
-        target.setAmount(amount);
-        target.setComponentAmounts(componentAmounts);
-    }
-
-    /** Factory method to create a new BonaMoney from a readable source of amounts.
-     * If componentAmounts.size() >= 0, expects the list to have exactly that many amounts, else (-1) don't care.
-     * @throws MonetaryException */
-    public static BonaMoney fromAmounts(BonaCurrency currency, boolean allowRounding, int numTaxAmounts, boolean addMissingTaxAmounts, boolean requireSameSign,
-            MoneyGetter source)
-            throws MonetaryException {
-        int got = source.getComponentAmounts().size();
-        BigDecimal [] componentAmounts = numTaxAmounts == 0 ? EMPTY_ARRAY : new BigDecimal[numTaxAmounts];
-        for (int i = 0; i < got; ++i)
-            componentAmounts[i] = source.getComponentAmounts().get(i);
-        if (numTaxAmounts != got) {
-            // maybe a list extension is required
-            if (!addMissingTaxAmounts || numTaxAmounts < got)
-                // nope, too many, or extension not allowed
-                throw new MonetaryException(MonetaryException.INCORRECT_NUMBER_TAX_AMOUNTS, "Want " + numTaxAmounts + ", got " + got);
-            // Add some ZEROES
-            for (int i = got; i < numTaxAmounts; ++i)
-                componentAmounts[i] = currency.getZero();  // save later scaling by using a correctly scaled zero already now!
-        }
-        // no easy shortcut this time when numTaxAmounts = 0, because the source is unsecure, gross could be <> net
-        return new BonaMoney(currency, allowRounding, requireSameSign, source.getAmount(), componentAmounts);
-    }
+//    /** Stores the amounts of this instance in a mutable object (for example BonaPortable DTO).
+//     * The currency is skipped, due to most likely duplication. */
+//    public void storeAmounts(MoneySetter target) {
+//        target.setAmount(amount);
+//        target.setComponentAmounts(componentAmounts);
+//    }
+//
+//    /** Factory method to create a new BonaMoney from a readable source of amounts.
+//     * If componentAmounts.size() >= 0, expects the list to have exactly that many amounts, else (-1) don't care.
+//     * @throws MonetaryException */
+//    public static BonaMoney fromAmounts(BonaCurrency currency, boolean allowRounding, int numTaxAmounts, boolean addMissingTaxAmounts, boolean requireSameSign,
+//            MoneyGetter source)
+//            throws MonetaryException {
+//        int got = source.getComponentAmounts().size();
+//        BigDecimal [] componentAmounts = numTaxAmounts == 0 ? EMPTY_ARRAY : new BigDecimal[numTaxAmounts];
+//        for (int i = 0; i < got; ++i)
+//            componentAmounts[i] = source.getComponentAmounts().get(i);
+//        if (numTaxAmounts != got) {
+//            // maybe a list extension is required
+//            if (!addMissingTaxAmounts || numTaxAmounts < got)
+//                // nope, too many, or extension not allowed
+//                throw new MonetaryException(MonetaryException.INCORRECT_NUMBER_TAX_AMOUNTS, "Want " + numTaxAmounts + ", got " + got);
+//            // Add some ZEROES
+//            for (int i = got; i < numTaxAmounts; ++i)
+//                componentAmounts[i] = currency.getZero();  // save later scaling by using a correctly scaled zero already now!
+//        }
+//        // no easy shortcut this time when numTaxAmounts = 0, because the source is unsecure, gross could be <> net
+//        return new BonaMoney(currency, allowRounding, requireSameSign, source.getAmount(), componentAmounts);
+//    }
 
     @Override
     public String toString() {
@@ -273,12 +271,10 @@ public final class BonaMoney implements Serializable, MoneyGetter, AbelianGroup<
         return componentAmounts.size();
     }
 
-    @Override
     public BigDecimal getAmount() {
         return amount;
     }
 
-    @Override
     public ImmutableList<BigDecimal> getComponentAmounts() {
         return componentAmounts;
     }

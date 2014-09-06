@@ -136,7 +136,15 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
      * Deserialization goes here
      **************************************************************************************************/
     
-
+    protected String processTrailingSigns(String token) {
+        token = token.trim();
+        // check for trailing sign
+        int l = token.length();
+        if (l > 0 && token.charAt(l-1) == '-')
+            token = "-" + token.substring(0, l-1);  // move sign to the start of the string
+        return token;
+    }
+    
     private String getField(String fieldname, boolean isRequired, int length) throws MessageParserException {
         // System.out.println("parsing " + fieldname + " for length " + length);
         String result = null;
@@ -254,7 +262,7 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
         String token = getField(di.getName(), di.getIsRequired(), di.getTotalDigits() + extra);
         if (token == null)
             return null;
-        BigDecimal r = new BigDecimal(token.trim());
+        BigDecimal r = new BigDecimal(processTrailingSigns(token));
         return BigDecimalTools.checkAndScale(r, di, parseIndex, currentClass);
     }
 
@@ -418,7 +426,7 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
         return getField(di.getName(), di.getIsRequired(), di.getTotalDigits() + (di.getIsSigned() ? 1 : 0) + (!cfg.removePoint4BD && di.getDecimalDigits() > 0 ? 1 : 0));
     }
     private long postProcessForImplicitDecimals(BasicNumericElementaryDataItem di, String token) throws MessageParserException {
-        token = token.trim();
+        token = processTrailingSigns(token);
         int decimals = di.getDecimalDigits();
 
         // run it through a BigDecimal for now...
@@ -444,7 +452,7 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
         if (token == null)
             return null;
         if (cfg.removePoint4BD || di.getDecimalDigits() == 0)
-            return Byte.valueOf(token.trim());
+            return Byte.valueOf(processTrailingSigns(token));
         return Byte.valueOf((byte) postProcessForImplicitDecimals(di, token));
     }
 
@@ -454,7 +462,7 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
         if (token == null)
             return null;
         if (cfg.removePoint4BD || di.getDecimalDigits() == 0)
-            return Short.valueOf(token.trim());
+            return Short.valueOf(processTrailingSigns(token));
         return Short.valueOf((short) postProcessForImplicitDecimals(di, token));
     }
 
@@ -464,7 +472,7 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
         if (token == null)
             return null;
         if (cfg.removePoint4BD || di.getDecimalDigits() == 0)
-            return Integer.valueOf(token.trim());
+            return Integer.valueOf(processTrailingSigns(token));
         return Integer.valueOf((int) postProcessForImplicitDecimals(di, token));
     }
 
@@ -474,7 +482,7 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
         if (token == null)
             return null;
         if (cfg.removePoint4BD || di.getDecimalDigits() == 0)
-            return Long.valueOf(token.trim());
+            return Long.valueOf(processTrailingSigns(token));
         return Long.valueOf(postProcessForImplicitDecimals(di, token));
     }
 
@@ -503,7 +511,7 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
         String token = getField(di.getName(), di.getIsRequired(), di.getTotalDigits()+(di.getIsSigned() ? 1 : 0));
         if (token == null)
             return null;
-        return new BigInteger(token.trim());
+        return new BigInteger(processTrailingSigns(token));
     }
 
     @Override

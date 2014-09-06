@@ -1,0 +1,18 @@
+import de.jpaw.fixedpoint.types.*
+import de.jpaw.fixedpoint.money.*
+
+/** Fixed point monetary data.
+ * Assigned to factoryId 27
+ */
+package adapters.fpmoney factoryId 27 {
+    final class FpCurrency public type is FPCurrency static adapter de.jpaw.adapters.fpmoney.FpCurrencyAdapter {
+        required uppercase(3)       currencyCode;
+        required int                decimals;
+    }
+    
+    final class FpAmount public type is FPAmount static adapter de.jpaw.adapters.fpmoney.FpAmountAdapter {
+        required (FpCurrency)       currency;
+        required long               gross;
+        required Long List<>        amounts;
+    }
+}

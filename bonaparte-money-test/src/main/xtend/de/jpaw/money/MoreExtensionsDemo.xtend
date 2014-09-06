@@ -1,5 +1,6 @@
 package de.jpaw.money
 
+import org.eclipse.xtend.lib.annotations.Data
 import static extension de.jpaw.xtend.sions.MoreIterableExtensions.*
 import java.math.BigDecimal
 
@@ -12,7 +13,7 @@ class LineItem {
 }
 
 
-class Demo {
+class DemoMoreExtensions {
     def static public void main(String [] args) {
         val someStrings = #[ "hello", "world", "to", "every", "one", "and", "to", "me", "as", "well", "to", "the", "world" ]
         

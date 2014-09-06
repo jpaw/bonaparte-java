@@ -11,13 +11,13 @@ public class ToStringHelper {
     public static int maxList = -1;
     public static int maxMap = -1;
 
-    public static String toStringML(BonaPortable obj) {
+    public static String toStringML(Object obj) {
         StringBuilder _buffer = new StringBuilder(1000);
         BonaPortable(_buffer, new StringBuilder("\n"), true, obj);
         return _buffer.toString();
     }
 
-    public static String toStringSL(BonaPortable obj) {
+    public static String toStringSL(Object obj) {
         StringBuilder _buffer = new StringBuilder(1000);
         BonaPortable(_buffer, null, false, obj);
         return _buffer.toString();
@@ -40,13 +40,13 @@ public class ToStringHelper {
     }
 
     // returns true if at leastone field has been printed
-    private static boolean BonaPortableSub(StringBuilder _buffer, StringBuilder _currentIndent, boolean showNulls, BonaPortable obj,
+    private static boolean toStringHelperSub(StringBuilder _buffer, StringBuilder _currentIndent, boolean showNulls, Object obj,
             Class<?> thisClass) {
         boolean firstField = true;
         boolean didSome = false;
         if (thisClass.getSuperclass() != Object.class) {
             // descend
-            didSome = BonaPortableSub(_buffer, _currentIndent, showNulls, obj, thisClass.getSuperclass());
+            didSome = toStringHelperSub(_buffer, _currentIndent, showNulls, obj, thisClass.getSuperclass());
             if (didSome)
                 delimiter(_buffer, _currentIndent, true);
         }
@@ -82,7 +82,7 @@ public class ToStringHelper {
                 // catch some special cases, do the rest generic
                 if (value instanceof BonaPortable) {
                     // a sub-object, recursively call this method
-                    BonaPortable(_buffer, _currentIndent, showNulls, (BonaPortable)value);
+                    BonaPortable(_buffer, _currentIndent, showNulls, value);
                 } else if (value instanceof java.util.List) {
                     // output a list of objects
                     boolean firstInList = true;
@@ -100,7 +100,7 @@ public class ToStringHelper {
                         if (e == null) {
                             _buffer.append("null");
                         } else if (e instanceof BonaPortable) {
-                            BonaPortable(_buffer, _currentIndent, showNulls, (BonaPortable)e);
+                            BonaPortable(_buffer, _currentIndent, showNulls, e);
                         } else {
                             _buffer.append(e.toString());
                         }
@@ -123,7 +123,7 @@ public class ToStringHelper {
                         if (e == null) {
                             _buffer.append("null");
                         } else if (e instanceof BonaPortable) {
-                            BonaPortable(_buffer, _currentIndent, showNulls, (BonaPortable)e);
+                            BonaPortable(_buffer, _currentIndent, showNulls, e);
                         } else {
                             _buffer.append(e.toString());
                         }
@@ -150,7 +150,7 @@ public class ToStringHelper {
                         if (v == null) {
                             _buffer.append("null");
                         } else if (v instanceof BonaPortable) {
-                            BonaPortable(_buffer, _currentIndent, showNulls, (BonaPortable)v);
+                            BonaPortable(_buffer, _currentIndent, showNulls, v);
                         } else {
                             _buffer.append(v.toString());
                         }
@@ -164,8 +164,8 @@ public class ToStringHelper {
         return didSome || !firstField;
     }
 
-    public static void BonaPortable(StringBuilder _buffer, StringBuilder _currentIndent, boolean showNulls, BonaPortable obj) {
-        _buffer.append(obj.get$PQON());
+    public static void BonaPortable(StringBuilder _buffer, StringBuilder _currentIndent, boolean showNulls, Object obj) {
+        _buffer.append(obj.getClass().getSimpleName());
         _buffer.append("(");
         if (_currentIndent != null) {
             _currentIndent.append("  ");                                // indent more
@@ -173,7 +173,7 @@ public class ToStringHelper {
         }
         // object output
         // this is mainly used for debugging, so speed is not as relevant and reflection can be used instead of generated code
-        BonaPortableSub(_buffer, _currentIndent, showNulls, obj, obj.getClass());
+        toStringHelperSub(_buffer, _currentIndent, showNulls, obj, obj.getClass());
         // closure
         if (_currentIndent != null) {
             _currentIndent.setLength(_currentIndent.length() - 2);      // restore previous length

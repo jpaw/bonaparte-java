@@ -1,6 +1,10 @@
 package testcases.csv;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+
+import junit.framework.Assert;
+
 import org.testng.annotations.Test;
 
 import de.jpaw.bonaparte.core.BonaPortable;
@@ -10,6 +14,7 @@ import de.jpaw.bonaparte.core.MessageParserException;
 import de.jpaw.bonaparte.core.StaticMeta;
 import de.jpaw.bonaparte.core.StringCSVParser;
 import de.jpaw.bonaparte.pojos.csvTests.ScaledInts;
+import de.jpaw.bonaparte.pojos.csvTests.Test1;
 
 public class TestCSV {
 
@@ -46,4 +51,26 @@ public class TestCSV {
         runTest(cfg2, si1, "1;1;1;1\n");
         runTest(cfg2, si2, "1;1;-1;-1\n");
     }
+
+    
+    static private final Test1 testData = new Test1("Hello", -5, new BigDecimal("-3.14"), null, null, false, 12L);
+        
+    private void parseCSVAndCompare(String input, BonaPortable output) throws Exception {
+        StringCSVParser p = new StringCSVParser(cfg1, input);
+        BonaPortable o = p.readObject(StaticMeta.OUTER_BONAPORTABLE_FOR_CSV, output.getClass());
+        Assert.assertEquals(output, o);
+    }
+    
+    @Test
+    public void testCSVLeadingSigns() throws Exception {
+        String input = "Hello;-5;-3.14;;;0;12";
+        parseCSVAndCompare(input, testData);
+    }
+    
+    @Test
+    public void testCSVTrailingSigns() throws Exception {
+        String input = "Hello;5-;3.14-;;;0;12";
+        parseCSVAndCompare(input, testData);
+    }
+    
 }

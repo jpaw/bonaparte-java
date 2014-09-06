@@ -1,7 +1,9 @@
-package de.jpaw.util;
+package de.jpaw.bonaparte.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.util.CharTestsASCII;
 
 public class FixASCII {
     private static final Logger logger = LoggerFactory.getLogger(FixASCII.class);

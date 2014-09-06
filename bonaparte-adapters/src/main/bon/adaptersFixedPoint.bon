@@ -1,40 +1,40 @@
 import de.jpaw.fixedpoint.types.*
 
-/** Bonaparte monetary data.
- * Assigned to factoryId 29
+/** Fixed point data.
+ * Assigned to factoryId 27
  */
 package adapters.fixedpoint factoryId 27 {
 
-    final class Units public type is Units adapter de.jpaw.adapters.fixedpoint.UnitsAdapter singleField {
+    final class Units public type is Units static adapter de.jpaw.adapters.fixedpoint.UnitsAdapter singleField {
         optional Long(18) mantissa;  // the field must be declared as optional, because a null is used to model an object null 
     }
 
-    final class Tenths public type is Tenths adapter de.jpaw.adapters.fixedpoint.TenthsAdapter singleField {
-        optional Long(18) mantissa;  // the field must be declared as optional, because a null is used to model an object null 
+    final class Tenths public type is Tenths static adapter de.jpaw.adapters.fixedpoint.TenthsAdapter singleField {
+        optional Long(18,1) mantissa;  // the field must be declared as optional, because a null is used to model an object null 
     }
 
-    final class Hundreds public type is Hundreds adapter de.jpaw.adapters.fixedpoint.HundredsAdapter singleField {
-        optional Long(18) mantissa;  // the field must be declared as optional, because a null is used to model an object null 
+    final class Hundreds public type is Hundreds static adapter de.jpaw.adapters.fixedpoint.HundredsAdapter singleField {
+        optional Long(18,2) mantissa;  // the field must be declared as optional, because a null is used to model an object null 
     }
 
-    final class Millis public type is MilliUnits adapter de.jpaw.adapters.fixedpoint.MilliUnitsAdapter singleField {
+    final class Millis public type is MilliUnits static adapter de.jpaw.adapters.fixedpoint.MilliUnitsAdapter singleField {
         optional Long(18,3) mantissa;  // the field must be declared as optional, because a null is used to model an object null 
     }
 
-    final class Micros public type is MicroUnits adapter de.jpaw.adapters.fixedpoint.MicroUnitsAdapter singleField {
+    final class Micros public type is MicroUnits static adapter de.jpaw.adapters.fixedpoint.MicroUnitsAdapter singleField {
         optional Long(18,6) mantissa;  // the field must be declared as optional, because a null is used to model an object null 
     }
 
-    final class Nanos public type is NanoUnits adapter de.jpaw.adapters.fixedpoint.NanoUnitsAdapter singleField {
+    final class Nanos public type is NanoUnits static adapter de.jpaw.adapters.fixedpoint.NanoUnitsAdapter singleField {
         optional Long(18,9) mantissa;  // the field must be declared as optional, because a null is used to model an object null 
     }
 
-    final class Picos public type is PicoUnits adapter de.jpaw.adapters.fixedpoint.PicoUnitsAdapter singleField {
-        optional Long(18,9) mantissa;  // the field must be declared as optional, because a null is used to model an object null 
+    final class Picos public type is PicoUnits static adapter de.jpaw.adapters.fixedpoint.PicoUnitsAdapter singleField {
+        optional Long(18,12) mantissa;  // the field must be declared as optional, because a null is used to model an object null 
     }
 
-    final class Femtos public type is FemtoUnits adapter de.jpaw.adapters.fixedpoint.FemtoUnitsAdapter singleField {
-        optional Long(18,9) mantissa;  // the field must be declared as optional, because a null is used to model an object null 
+    final class Femtos public type is FemtoUnits static adapter de.jpaw.adapters.fixedpoint.FemtoUnitsAdapter singleField {
+        optional Long(18,15) mantissa;  // the field must be declared as optional, because a null is used to model an object null 
     }
 
 }

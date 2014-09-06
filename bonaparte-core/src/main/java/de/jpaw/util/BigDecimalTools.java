@@ -48,26 +48,6 @@ public class BigDecimalTools {
         return scale(a, aDecimals).compareTo(scale(b, bDecimals)) == 0;
     }
     
-    /** Check a parsed BigDecimal for allowed digits, and perform (if desired) scaling. */
-    @Deprecated
-    static public BigDecimal checkAndScale(BigDecimal r, int length, int decimals, boolean isSigned, boolean rounding, boolean autoScale,
-            String fieldname, int parseIndex, String currentClass) throws MessageParserException {
-        try {
-            if (r.scale() > decimals)
-                r = r.setScale(decimals, rounding ? RoundingMode.HALF_EVEN : RoundingMode.UNNECESSARY);
-            if (autoScale && r.scale() < decimals)  // round for smaller as well!
-                r = r.setScale(decimals, RoundingMode.UNNECESSARY);
-        } catch (ArithmeticException a) {
-            throw new MessageParserException(MessageParserException.TOO_MANY_DECIMALS, fieldname, parseIndex, currentClass);
-        }
-        if (!isSigned && r.signum() < 0)
-            throw new MessageParserException(MessageParserException.SUPERFLUOUS_SIGN, fieldname, parseIndex, currentClass);
-        // check for overflow
-        if (length - decimals < r.precision() - r.scale())
-            throw new MessageParserException(MessageParserException.TOO_MANY_DIGITS, fieldname, parseIndex, currentClass);
-        return r;
-    }
-    
     /** Check a parsed BigDecimal for allowed digits, and perform (if desired) scaling. Use the second form with the metadata parameter instead. */
     static public BigDecimal checkAndScale(BigDecimal r, NumericElementaryDataItem di, int parseIndex, String currentClass) throws MessageParserException {
         String fieldname = di.getName();
