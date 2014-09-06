@@ -16,7 +16,7 @@ import de.jpaw.algebra.AbelianGroup;
  * All amounts are of same scale, and therefore can be compared with equals().
  * All amounts are of same sign (all >= 0 or all <= 0)
  * Any rounding is done with appropriate error distribution.
- * @author BISC02
+ * @author Michael Bischoff
  *
  */
 public final class BonaMoney implements Serializable, AbelianGroup<BonaMoney> {

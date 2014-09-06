@@ -15,18 +15,7 @@
     <name>BONAPARTE monetary support classes</name>
 
     <build>
-        <resources>
-            <resource>
-                <directory>src/main/bon</directory>
-                <filtering>false</filtering>
-            </resource>
-        </resources>
-        
         <plugins>
-            <plugin>
-                <groupId>org.eclipse.xtext</groupId>
-                <artifactId>xtext-maven-plugin</artifactId>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -57,11 +46,6 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>${guava.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.xtend</groupId>
-            <artifactId>org.eclipse.xtend.lib</artifactId>
-            <version>${xtend.version}</version>
         </dependency>
     </dependencies>
     

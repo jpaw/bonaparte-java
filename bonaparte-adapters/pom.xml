@@ -55,6 +55,11 @@
         </dependency>
         <dependency>
             <groupId>de.jpaw</groupId>
+            <artifactId>bonaparte-money</artifactId>
+            <version>${bonaparte.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.jpaw</groupId>
             <artifactId>fixedpoint-core</artifactId>
             <version>${jpaw-fixedpoint.version}</version>
         </dependency>
