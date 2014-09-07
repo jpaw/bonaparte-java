@@ -5,35 +5,35 @@ import de.jpaw.fixedpoint.types.*
  */
 package adapters.fixedpointToBigDecimal factoryId 27 {
 
-    final class BigUnits public type is Units static adapter de.jpaw.adapters.fixedpoint.bigDecimal.UnitsAdapter singleField {
+    final class BigUnits public type is Units static adapter de.jpaw.adapters.fixedpoint.bigDecimal.BigUnitsAdapter singleField {
         optional Decimal(18) autoScale mantissa; 
     }
 
-    final class BigTenths public type is Tenths static adapter de.jpaw.adapters.fixedpoint.bigDecimal.TenthsAdapter singleField {
+    final class BigTenths public type is Tenths static adapter de.jpaw.adapters.fixedpoint.bigDecimal.BigTenthsAdapter singleField {
         optional Decimal(18,1) autoScale mantissa;  // the field must be declared as optional, because a null is used to model an object null 
     }
 
-    final class BigHundreds public type is Hundreds static adapter de.jpaw.adapters.fixedpoint.bigDecimal.HundredsAdapter singleField {
+    final class BigHundreds public type is Hundreds static adapter de.jpaw.adapters.fixedpoint.bigDecimal.BigHundredsAdapter singleField {
         optional Decimal(18,2) autoScale mantissa;  // the field must be declared as optional, because a null is used to model an object null 
     }
 
-    final class BigMillis public type is MilliUnits static adapter de.jpaw.adapters.fixedpoint.bigDecimal.MilliUnitsAdapter singleField {
+    final class BigMillis public type is MilliUnits static adapter de.jpaw.adapters.fixedpoint.bigDecimal.BigMilliUnitsAdapter singleField {
         optional Decimal(18,3) autoScale mantissa;  // the field must be declared as optional, because a null is used to model an object null 
     }
 
-    final class BigMicros public type is MicroUnits static adapter de.jpaw.adapters.fixedpoint.bigDecimal.MicroUnitsAdapter singleField {
+    final class BigMicros public type is MicroUnits static adapter de.jpaw.adapters.fixedpoint.bigDecimal.BigMicroUnitsAdapter singleField {
         optional Decimal(18,6) autoScale mantissa;  // the field must be declared as optional, because a null is used to model an object null 
     }
 
-    final class BigNanos public type is NanoUnits static adapter de.jpaw.adapters.fixedpoint.bigDecimal.NanoUnitsAdapter singleField {
+    final class BigNanos public type is NanoUnits static adapter de.jpaw.adapters.fixedpoint.bigDecimal.BigNanoUnitsAdapter singleField {
         optional Decimal(18,9) autoScale mantissa;  // the field must be declared as optional, because a null is used to model an object null 
     }
 
-    final class BigPicos public type is PicoUnits static adapter de.jpaw.adapters.fixedpoint.bigDecimal.PicoUnitsAdapter singleField {
+    final class BigPicos public type is PicoUnits static adapter de.jpaw.adapters.fixedpoint.bigDecimal.BigPicoUnitsAdapter singleField {
         optional Decimal(18,12) autoScale mantissa;  // the field must be declared as optional, because a null is used to model an object null 
     }
 
-    final class BigFemtos public type is FemtoUnits static adapter de.jpaw.adapters.fixedpoint.bigDecimal.FemtoUnitsAdapter singleField {
+    final class BigFemtos public type is FemtoUnits static adapter de.jpaw.adapters.fixedpoint.bigDecimal.BigFemtoUnitsAdapter singleField {
         optional Decimal(18,15) autoScale mantissa;  // the field must be declared as optional, because a null is used to model an object null 
     }
 

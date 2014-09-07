@@ -1,7 +1,10 @@
 package de.jpaw.bonaparte.testrunner;
 
+import java.io.IOException;
+
 import de.jpaw.bonaparte.core.BonaCustom;
 import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.util.ApplicationException;
 
 public abstract class AbstractTestrunner<T> {
     
@@ -28,6 +31,31 @@ public abstract class AbstractTestrunner<T> {
         BonaPortable intermediateResult = deserializationTest(src, expectedResult);
         serializationTest(intermediateResult, src);
         return intermediateResult;
+    }
+    
+    /** Deserialize the input, but expect an error, which is either a MessageParserException (of specified code), or an IOException, in case the latter in null. */
+    public void expectDeserializationError(T src, Integer errorCode) throws Exception {
+        try {
+            deserializationTest(src, null);
+            throw new Exception("Expected an exception here");
+        } catch (Exception e) {
+            if (errorCode == null) {
+                if (e instanceof IOException) {
+                    // OK
+                    return;
+                }
+                throw new Exception("Expected an IOException here, but got " + e);
+            }
+            if (!(e instanceof ApplicationException)) {
+                throw new Exception("Expected an ApplicationException here, but got " + e);
+            }
+            ApplicationException ae = (ApplicationException)e;
+            if (ae.getErrorCode() == errorCode.intValue()) {
+                // OK
+                return;
+            }
+            throw new Exception("Got an ApplicationException as expected, but wanted " + errorCode + " and got " + ae);
+        }
     }
 }
 
