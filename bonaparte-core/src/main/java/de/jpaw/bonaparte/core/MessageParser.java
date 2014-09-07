@@ -81,5 +81,6 @@ public interface MessageParser<E extends Exception> {
     public void setClassName(String newClassName); // returns the previously active class name
     public void eatParentSeparator() throws E;  // restores the previous class name
     public E enumExceptionConverter(IllegalArgumentException e);  // convert e to an exception of appropriate type. Also enrich it with current parser status
+    public E customExceptionConverter(String msg, Exception e);   // create a custom parsing exception (to be used for type converters). Enrich with optional exception e
     public <T extends AbstractXEnumBase<T>> T readXEnum(XEnumDataItem di, XEnumFactory<T> factory) throws E;
 }

@@ -85,6 +85,7 @@ public class MessageParserException extends ApplicationException {
     static public final int UNKNOW_RECORD_TYPE           = OFFSET + 46;
     static public final int NULL_CLASS_PQON              = OFFSET + 47;
     static public final int INVALID_BASE_CLASS_REFERENCE = OFFSET + 48;
+    static public final int CUSTOM_OBJECT_EXCEPTION      = OFFSET + 49;
 
     static {
         codeToDescription.put(MISSING_FIELD_TERMINATOR     , "Missing field terminator");
@@ -135,6 +136,7 @@ public class MessageParserException extends ApplicationException {
         codeToDescription.put(UNKNOW_RECORD_TYPE           , "An unmapped record type has been encountered (CSV or fixed width parser)");
         codeToDescription.put(NULL_CLASS_PQON              , "A null class name has been transferred");
         codeToDescription.put(INVALID_BASE_CLASS_REFERENCE , "A zero length class name has been transferred, referring to a field without defined base class");
+        codeToDescription.put(CUSTOM_OBJECT_EXCEPTION      , "Cannot construct custom object from parsed data");
     }
 
     public MessageParserException(int errorCode, String fieldName, int characterIndex, String className) {

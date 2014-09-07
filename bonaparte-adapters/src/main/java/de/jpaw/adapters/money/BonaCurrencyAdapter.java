@@ -1,6 +1,7 @@
 package de.jpaw.adapters.money;
 
 import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.core.MessageParser;
 import de.jpaw.bonaparte.pojos.adapters.money.BCurrency;
 import de.jpaw.money.BonaCurrency;
 import de.jpaw.money.MonetaryException;
@@ -12,7 +13,7 @@ public class BonaCurrencyAdapter {
     }
     
     /** Convert a parsed adapter type into the custom type. */
-    public static BonaCurrency fromBonaPortable(BonaPortable obj) {
+    public static <E extends Exception> BonaCurrency fromBonaPortable(BonaPortable obj, MessageParser<E> p) throws E {
         if (obj instanceof BCurrency) {
             BCurrency currency = (BCurrency)obj;
             try {
@@ -21,7 +22,7 @@ public class BonaCurrencyAdapter {
                     currency.getDecimals()
                     );
             } catch (MonetaryException e) {
-                throw new IllegalArgumentException("Cannot convert to BonaCurrency: " + e);
+                throw p.customExceptionConverter("Cannot convert " + obj + " to BonaCurrency", e);
             }
         } else {
             throw new IllegalArgumentException("Incorrect type returned");

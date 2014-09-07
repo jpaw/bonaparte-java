@@ -1,4 +1,4 @@
-package testcases;
+package de.jpaw.bonaparte.core.tests;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

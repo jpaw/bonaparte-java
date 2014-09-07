@@ -36,6 +36,7 @@ import de.jpaw.bonaparte.core.MessageParser;
 import de.jpaw.bonaparte.core.MessageParserException;
 import de.jpaw.bonaparte.core.StringBuilderComposer;
 import de.jpaw.bonaparte.core.StringBuilderParser;
+import de.jpaw.bonaparte.testrunner.MultiTestRunner;
 import de.jpaw.util.ByteUtil;
 
 /**
@@ -237,5 +238,7 @@ public class SimpleTestRunner {
        // verify the hashCodes
        assert dst33.hashCode() == srcHash : "hash code differs for dst3";
 
+       // repeat - the new testrunner
+       MultiTestRunner.serDeserMulti(src, null);
     }
 }

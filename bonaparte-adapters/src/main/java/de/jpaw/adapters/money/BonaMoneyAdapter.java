@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.core.MessageParser;
 import de.jpaw.bonaparte.pojos.adapters.money.BAmount;
 import de.jpaw.money.BonaCurrency;
 import de.jpaw.money.BonaMoney;
@@ -19,7 +20,7 @@ public class BonaMoneyAdapter {
     }
     
     /** Convert a parsed adapter type into the custom type. */
-    public static BonaMoney fromBonaPortable(BonaPortable obj) {
+    public static <E extends Exception> BonaMoney fromBonaPortable(BonaPortable obj, MessageParser<E> p) throws E {
         if (obj instanceof BAmount) {
             BAmount m = (BAmount)obj;
             try {
@@ -31,7 +32,7 @@ public class BonaMoneyAdapter {
                     return new BonaMoney(currency, BAmount.meta$$gross.getRounding(), false, m.getGross(), componentArray);
                 }
             } catch (MonetaryException e) {
-                throw new IllegalArgumentException("Cannot convert to BonaMoney: " + e);
+                throw p.customExceptionConverter("Cannot convert " + obj + " to BonaMoney", e);
             }
         } else {
             throw new IllegalArgumentException("Incorrect type returned");

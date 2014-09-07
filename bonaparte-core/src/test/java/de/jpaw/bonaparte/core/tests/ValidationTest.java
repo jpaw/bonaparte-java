@@ -1,4 +1,4 @@
-package testcases;
+package de.jpaw.bonaparte.core.tests;
 
 import org.testng.annotations.Test;
 

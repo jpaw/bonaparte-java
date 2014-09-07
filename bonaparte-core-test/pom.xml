@@ -13,7 +13,7 @@
     <packaging>jar</packaging>
 
     <name>BONAPARTE core library extended unit tests</name>
-
+    
     <dependencies>
         <dependency>
             <groupId>de.jpaw</groupId>
@@ -36,6 +36,13 @@
             <artifactId>slf4j-simple</artifactId>
             <version>${slf4j.version}</version>
             <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.jpaw</groupId>
+            <artifactId>bonaparte-core</artifactId>
+            <version>${bonaparte.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
         </dependency>
         <!-- need a Bean validation implementation. Apache BVal is said to 
             be twice as fast, but required commons & beanutils dependencies as well. 

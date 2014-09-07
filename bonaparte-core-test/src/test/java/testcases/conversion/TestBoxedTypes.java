@@ -20,6 +20,7 @@ import org.testng.annotations.Test;
 
 import de.jpaw.bonaparte.coretests.initializers.FillBoxedTypes;
 import de.jpaw.bonaparte.coretests.util.SimpleTestRunner;
+import de.jpaw.bonaparte.testrunner.MultiTestRunner;
 
 /**
  * The TestBoxedTypes class.
@@ -35,5 +36,10 @@ public class TestBoxedTypes {
     @Test
     public void testBoxedTypes() throws Exception {
         SimpleTestRunner.run(FillBoxedTypes.test1(), false);
+    }
+
+    @Test
+    public void testBoxedTypesStd() throws Exception {
+        MultiTestRunner.serDeserMulti(FillBoxedTypes.test1(), null);
     }
 }

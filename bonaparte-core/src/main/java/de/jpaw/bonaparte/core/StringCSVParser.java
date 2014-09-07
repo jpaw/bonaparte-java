@@ -559,6 +559,11 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
     }
 
     @Override
+    public MessageParserException customExceptionConverter(String msg, Exception e) {
+        return new MessageParserException(MessageParserException.CUSTOM_OBJECT_EXCEPTION, e != null ? msg + e.toString() : msg, parseIndex, currentClass);
+    }
+
+    @Override
     public void setClassName(String newClassName) {
         currentClass = newClassName;
     }

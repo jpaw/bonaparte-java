@@ -1,6 +1,6 @@
 import de.jpaw.fixedpoint.types.*
 
-/** Fixed point data.
+/** Fixed point data to Long.
  * Assigned to factoryId 27
  */
 package adapters.fixedpoint factoryId 27 {

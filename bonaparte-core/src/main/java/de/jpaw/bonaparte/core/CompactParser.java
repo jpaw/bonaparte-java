@@ -256,4 +256,10 @@ public class CompactParser extends CompactConstants implements MessageParser<IOE
         // TODO Auto-generated method stub
         return null;
     }
+
+    @Override
+    public IOException customExceptionConverter(String msg, Exception e) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

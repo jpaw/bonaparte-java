@@ -674,6 +674,11 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
     }
 
     @Override
+    public IOException customExceptionConverter(String msg, Exception e) {
+        return new IOException("Cannot construct custom object in " + currentClass + ": " + msg + (e != null ? e.toString() : ""));
+    }
+
+    @Override
     public void setClassName(String newClassName) {
         currentClass = newClassName;
     }

@@ -1,4 +1,4 @@
-package testcases;
+package de.jpaw.bonaparte.core.tests;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -11,7 +11,6 @@ import com.esotericsoftware.kryo.io.Output;
 import de.jpaw.bonaparte.core.CompactByteArrayComposer;
 import de.jpaw.bonaparte.core.CompactComposer;
 import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
-import de.jpaw.util.ByteBuilder;
 import de.jpaw.util.ByteUtil;
 
 
