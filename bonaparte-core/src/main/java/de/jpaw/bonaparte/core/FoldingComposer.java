@@ -18,13 +18,15 @@ public class FoldingComposer<E extends Exception> extends DelegatingBaseComposer
     private final Map<Class<? extends BonaCustom>, List<ParsedFoldingComponent>> parsedMapping;
     private final FoldingStrategy errorStrategy;
     private final List<String> bonaPortableMapping;
+    private final List<String> bonaCustomMapping;
     
     public FoldingComposer(MessageComposer<E> delegateComposer, Map<Class<? extends BonaCustom>, List<String>> mapping, FoldingStrategy errorStrategy) {
         super(delegateComposer);
         this.mapping = mapping;
         this.parsedMapping = new HashMap<Class<? extends BonaCustom>, List<ParsedFoldingComponent>>(20);
         this.errorStrategy = errorStrategy;
-        this.bonaPortableMapping = mapping.get(BonaCustom.class);  
+        this.bonaPortableMapping = mapping.get(BonaPortable.class);  
+        this.bonaCustomMapping = mapping.get(BonaCustom.class);  
     }
 
     @Override
@@ -63,7 +65,11 @@ public class FoldingComposer<E extends Exception> extends DelegatingBaseComposer
                             break;
                         }
                     } else {
-                        if (bonaPortableMapping == null) {
+                        if (bonaPortableMapping != null) {
+                            fieldList = bonaPortableMapping;
+                        } else if (bonaCustomMapping != null) {
+                            fieldList = bonaCustomMapping;
+                        } else {
                             if (errorStrategy != FoldingStrategy.TRY_SUPERCLASS) {
                                 // all others default to "full output"
                                 delegateComposer.startObject(di, obj);
@@ -72,7 +78,6 @@ public class FoldingComposer<E extends Exception> extends DelegatingBaseComposer
                             }
                             return null;  // skip, no mapping found even with recursion
                         }
-                        fieldList = bonaPortableMapping;
                         break;
                     }
                 }

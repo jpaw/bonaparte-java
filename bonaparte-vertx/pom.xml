@@ -12,7 +12,7 @@
     <artifactId>bonaparte-vertx</artifactId>
     <packaging>jar</packaging>
 
-    <name>BONAPARTE TCP/IP client/server tests using vert.x</name>
+    <name>BONAPARTE TCP/IP client/server vert.x support</name>
     <url>http://www.jpaw.de</url>
 
     <dependencies>

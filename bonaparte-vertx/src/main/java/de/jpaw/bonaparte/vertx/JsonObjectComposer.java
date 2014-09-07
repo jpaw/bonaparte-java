@@ -13,7 +13,7 @@ import org.joda.time.format.ISODateTimeFormat;
 import org.vertx.java.core.json.JsonArray;
 import org.vertx.java.core.json.JsonObject;
 
-import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.core.BonaCustom;
 import de.jpaw.bonaparte.core.MessageComposer;
 import de.jpaw.bonaparte.core.StaticMeta;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
@@ -44,12 +44,12 @@ public class JsonObjectComposer implements MessageComposer<RuntimeException> {
 
     
     // static converter method for convenience
-    public static JsonObject toJsonObject(BonaPortable o, boolean writeNulls) {
+    public static JsonObject toJsonObject(BonaCustom o, boolean writeNulls) {
         JsonObjectComposer composer = new JsonObjectComposer(writeNulls);
         composer.writeRecord(o);
         return composer.getObject();
     }
-    public static JsonObject toJsonObject(BonaPortable o) {
+    public static JsonObject toJsonObject(BonaCustom o) {
         return toJsonObject(o, false);
     }
     
@@ -92,13 +92,13 @@ public class JsonObjectComposer implements MessageComposer<RuntimeException> {
     }
 
     @Override
-    public void startObject(ObjectReference di, BonaPortable o) {
+    public void startObject(ObjectReference di, BonaCustom o) {
         obj = new JsonObject();
         obj.putString("_PQON", o.get$PQON());  // insert the actual object type
     }
 
     @Override
-    public void terminateObject(ObjectReference di, BonaPortable o) {
+    public void terminateObject(ObjectReference di, BonaCustom o) {
     }
     
     @Override
@@ -142,7 +142,7 @@ public class JsonObjectComposer implements MessageComposer<RuntimeException> {
     }
 
     @Override
-    public void writeRecord(BonaPortable o) {
+    public void writeRecord(BonaCustom o) {
         startRecord();
         // addField(StaticMeta.OUTER_BONAPORTABLE, o);
         // start a new object
@@ -153,7 +153,7 @@ public class JsonObjectComposer implements MessageComposer<RuntimeException> {
     }
 
     @Override
-    public void addField(ObjectReference di, BonaPortable o) {
+    public void addField(ObjectReference di, BonaCustom o) {
         if (inArray)
             arr.addObject(toJsonObject(o, writeNulls));
         else if (o != null) {
