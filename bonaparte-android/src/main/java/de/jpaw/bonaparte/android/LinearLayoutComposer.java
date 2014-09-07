@@ -20,7 +20,7 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.ImageView;
 import android.graphics.BitmapFactory;
-import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.core.BonaCustom;
 import de.jpaw.bonaparte.core.MessageComposer;
 import de.jpaw.bonaparte.core.StaticMeta;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
@@ -46,7 +46,7 @@ abstract public class LinearLayoutComposer  implements MessageComposer<RuntimeEx
     protected int rownum = -1;
     protected int column = 0;
     protected AndroidObjectClickListener onClickListener;
-    protected Map<Integer,BonaPortable> buttonPayload;  // this stores the object for an ID
+    protected Map<Integer,BonaCustom> buttonPayload;  // this stores the object for an ID
     protected boolean expandObjects = true;             // set to false if we sit behind a folding composer
     
     static protected final int ROW_FACTOR = 10000;  // for the ID calculation, take the column + ROW_FACTOR * row
@@ -101,7 +101,7 @@ abstract public class LinearLayoutComposer  implements MessageComposer<RuntimeEx
         if (onClickListener == null) {
             buttonPayload = null;
         } else {
-            buttonPayload = new HashMap<Integer,BonaPortable>();
+            buttonPayload = new HashMap<Integer,BonaCustom>();
         }
     }
     // called if a button (to show an object) has been clicked.
@@ -109,7 +109,7 @@ abstract public class LinearLayoutComposer  implements MessageComposer<RuntimeEx
     public void onClick(View v) {
         if (onClickListener != null && buttonPayload != null) {
             int id = v.getId();
-            BonaPortable obj = buttonPayload.get(id);
+            BonaCustom obj = buttonPayload.get(id);
             onClickListener.onClick(v, obj, id / ROW_FACTOR, id % ROW_FACTOR);
         }
     }
@@ -150,7 +150,7 @@ abstract public class LinearLayoutComposer  implements MessageComposer<RuntimeEx
     }
 
     @Override
-    public void writeRecord(BonaPortable o) {
+    public void writeRecord(BonaCustom o) {
         startRecord();
         addField(StaticMeta.OUTER_BONAPORTABLE, o);
         terminateRecord();
@@ -348,16 +348,16 @@ abstract public class LinearLayoutComposer  implements MessageComposer<RuntimeEx
     }
 
     @Override
-    public void startObject(ObjectReference di, BonaPortable obj) {
+    public void startObject(ObjectReference di, BonaCustom obj) {
     }
 
     @Override
-    public void terminateObject(ObjectReference di, BonaPortable obj) {
+    public void terminateObject(ObjectReference di, BonaCustom obj) {
     }
 
     /** Adding objects will lead to column misalignment if the objects itself are null. */
     @Override
-    public void addField(ObjectReference di, BonaPortable obj) {
+    public void addField(ObjectReference di, BonaCustom obj) {
         LOG.info("adding OBJECT in row {}, expand = {}", rownum, expandObjects);
         if (expandObjects) {
             if (obj != null) {

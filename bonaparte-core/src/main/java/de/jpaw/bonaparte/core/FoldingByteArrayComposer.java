@@ -8,7 +8,7 @@ import de.jpaw.bonaparte.pojos.meta.FoldingStrategy;
 public class FoldingByteArrayComposer<E extends Exception> extends FoldingComposer<E> implements BufferedMessageComposer<E> {
     private final BufferedMessageComposer<E> delegateComposer; 
     
-    public FoldingByteArrayComposer(BufferedMessageComposer<E> delegateComposer, Map<Class<? extends BonaPortable>, List<String>> mapping, FoldingStrategy errorStrategy) {
+    public FoldingByteArrayComposer(BufferedMessageComposer<E> delegateComposer, Map<Class<? extends BonaCustom>, List<String>> mapping, FoldingStrategy errorStrategy) {
         super(delegateComposer, mapping, errorStrategy);
         this.delegateComposer = delegateComposer;
     }

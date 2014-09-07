@@ -19,11 +19,9 @@ import java.math.BigDecimal;
 import java.util.Map;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
-import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
-import de.jpaw.bonaparte.pojos.meta.ParsedFoldingComponent;
 
 /** 
  * Defines the methods any object which should be serialized into the bonaparte format must implement.
@@ -32,7 +30,7 @@ import de.jpaw.bonaparte.pojos.meta.ParsedFoldingComponent;
  * @author Michael Bischoff
  *
  **/
-public interface BonaPortable extends BonaMeta {
+public interface BonaPortable extends BonaCustom {
     
     /** Return the metadata provider. (replacement for all class$xx methods)
      * 
@@ -45,21 +43,6 @@ public interface BonaPortable extends BonaMeta {
      * @return some numeric value defined in the DSL.
      */
     public int get$rtti();
-    
-    /** Gets the object revision (version number) as defined in the DSL.
-     * This is a constant string (static final), but defined as a member function in order to be able to declare it in the interface.
-     * The expression <code>getClass().getCanonicalName()</code> consists of some package prefix concatenated with the return value of this function. 
-     * @return the revision as Java String, or null if it has not been defined (which usually corresponds to the initial revision of an object).
-     */
-    public String get$Revision();
-    
-    /** Gets the Java serialization serial number. 
-     * Shortcut to access the data for an instance of the class.
-     *  
-     * @return the serial UID, which is a static private class variable.
-     */
-    @Deprecated
-    public long get$Serial();
     
     /** Retrieves a single property from the current map.
      * 
@@ -75,22 +58,6 @@ public interface BonaPortable extends BonaMeta {
      */
     @Deprecated
     public Map<String,String> get$PropertyMap();
-    
-    /** Gets the defined class of a "return type" if it has been defined for this object or one of its superclasses. Returns null if none has defined a return type. */
-    @Deprecated
-    public Class<? extends BonaPortable> get$returns();
-    
-    /** Gets the defined class of a "pk type" if it has been defined for this object or one of its superclasses. Returns null if none has defined a pk type. */
-    @Deprecated
-    public Class<? extends BonaPortable> get$pk();
-    
-    /** Serializes this object into the format implemented by the MessageComposer parameter. The method will invoke methods of the MessageComposer interface for every member field, and also for some metadata. Class headers itself are assumed to have been serialized before.
-     *  Different implementations are provided with the bonaparte library, for ASCII-like formats (bonaparte) or binary formats plugging into the standard Java {@link java.io.Serializable}/{@link java.io.Externalizable} interface.
-     *  
-     * @param w the implementation of the serializer.
-     * @throws E is usually either {@link RuntimeException}, for serializers writing to in-memory buffers, where no checked exceptions are thrown, or {@link java.io.IOException}, for serializers writing to streams. 
-     */
-    public <E extends Exception> void serializeSub(MessageComposer<E> w) throws E;
     
     /** Parses data from a stream or in-memory buffer into a preallocated object.
      * The reference to the IO stream or memory sits in the {@link MessageParser} parameter.
@@ -121,14 +88,6 @@ public interface BonaPortable extends BonaMeta {
     public <T extends BonaPortable> T copyAs(Class<T> desiredSuperType);
     
     
-    /** Serializes this object using a mapping. Not all fields are output, and not in the sequence they are declared in the class.
-     * In addition, specific indexes can be selected for arrays or Lists.
-     *  
-     * @param w the implementation of the serializer.
-     * @throws E is usually either {@link RuntimeException}, for serializers writing to in-memory buffers, where no checked exceptions are thrown, or {@link java.io.IOException}, for serializers writing to streams. 
-     */
-    public <E extends Exception> void foldedOutput(MessageComposer<E> w, ParsedFoldingComponent pfc) throws E;
-    
     /** Can be invoked to apply a String converter to all String typed fields in the object, parent objects, and included child objects. */
     public void treeWalkString(DataConverter<String, AlphanumericElementaryDataItem> _cvt, boolean descend);
 
@@ -140,10 +99,6 @@ public interface BonaPortable extends BonaMeta {
 
     /** Can be invoked to apply an Object converter to all fields in the object, and potentially also included child objects. */
     public void treeWalkBonaPortable(DataConverter<BonaPortable,ObjectReference> _cvt, boolean descend);
-
-    /** Gets the Metadata of the BonaPortable (which is a BonaPortable itself). */
-    @Deprecated
-    public ClassDefinition get$MetaData();  // name, revision etc as a class object. Use $ to avoid conflict with other getters
     
 
     /** A BonaPortable can become immutable, by locking all setters.
@@ -164,10 +119,6 @@ public interface BonaPortable extends BonaMeta {
      * 
      */
     boolean is$Frozen();
-    
-    /** Same as class$isFreezable(). */
-    @Deprecated
-    boolean is$Freezable();
     
     /** Obtain a mutable clone of a frozen object. 
      * If deepCopy is set, he object will be recursively mutable, otherwise just the initial layer. */

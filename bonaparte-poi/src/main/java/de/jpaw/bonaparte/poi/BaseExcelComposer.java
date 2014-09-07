@@ -24,7 +24,7 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
 
-import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.core.BonaCustom;
 import de.jpaw.bonaparte.core.MessageComposer;
 import de.jpaw.bonaparte.core.StaticMeta;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
@@ -179,7 +179,7 @@ public class BaseExcelComposer implements MessageComposer<RuntimeException> {
     }
 
     @Override
-    public void writeRecord(BonaPortable o) {
+    public void writeRecord(BonaCustom o) {
         startRecord();
         addField(StaticMeta.OUTER_BONAPORTABLE, o);
         terminateRecord();
@@ -374,16 +374,16 @@ public class BaseExcelComposer implements MessageComposer<RuntimeException> {
     }
 
     @Override
-    public void startObject(ObjectReference di, BonaPortable obj) {
+    public void startObject(ObjectReference di, BonaCustom obj) {
     }
 
     @Override
-    public void terminateObject(ObjectReference di, BonaPortable obj) {
+    public void terminateObject(ObjectReference di, BonaCustom obj) {
     }
 
     /** Adding objects will lead to column misalignment if the objects itself are null. */
     @Override
-    public void addField(ObjectReference di, BonaPortable obj) {
+    public void addField(ObjectReference di, BonaCustom obj) {
         if (obj != null) {
             obj.serializeSub(this);  // no start and stop for now...
         }

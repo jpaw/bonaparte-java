@@ -15,7 +15,7 @@ import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 public class ByteArrayComposerWithCache extends ByteArrayComposer {
 
     static public class OffsetInfo {
-        BonaPortable object;
+        // BonaPortable object;
         int start;
         int length;
         int minReferencedObject;
@@ -33,7 +33,7 @@ public class ByteArrayComposerWithCache extends ByteArrayComposer {
     }
     
     @Override
-    public void writeRecord(BonaPortable o) {
+    public void writeRecord(BonaCustom o) {
         super.reset();
         mem.clear();
         backtrack.clear();
@@ -46,7 +46,7 @@ public class ByteArrayComposerWithCache extends ByteArrayComposer {
     }
 
     @Override
-    public void startObject(ObjectReference di, BonaPortable obj) {
+    public void startObject(ObjectReference di, BonaCustom obj) {
         backtrack.push(currentObjectIndex);
         currentObjectIndex = getNumberOfObjectsSerialized()-1;
         OffsetInfo current = new OffsetInfo();
@@ -57,7 +57,7 @@ public class ByteArrayComposerWithCache extends ByteArrayComposer {
     }
     
     @Override
-    public void terminateObject(ObjectReference di, BonaPortable obj) {
+    public void terminateObject(ObjectReference di, BonaCustom obj) {
         super.terminateObject(di, obj);
         current.length = getLength() - current.start;
         // descend to the previous one. Compute referenced objects index

@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import de.jpaw.bonaparte.core.BonaCustom;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.DataAndMeta;
 import de.jpaw.bonaparte.core.FoldingComposer;
@@ -26,7 +27,7 @@ public class FieldGetter {
         
         // step 2: create and chain the message composers
         ListComposer writer = new ListComposer(target, false);
-        Map<Class<? extends BonaPortable>, List<String>> mapping = Collections.<Class<? extends BonaPortable>, List<String>>singletonMap(BonaPortable.class, fieldnames); 
+        Map<Class<? extends BonaCustom>, List<String>> mapping = Collections.<Class<? extends BonaCustom>, List<String>>singletonMap(BonaPortable.class, fieldnames); 
         new FoldingComposer<RuntimeException>(writer, mapping, FoldingStrategy.FORWARD_OBJECTS).writeRecord(obj);
 
         return target;
@@ -47,7 +48,7 @@ public class FieldGetter {
         
         // step 2: create and chain the message composers
         ListComposer writer = new ListObjComposer(target, false);
-        Map<Class<? extends BonaPortable>, List<String>> mapping = Collections.<Class<? extends BonaPortable>, List<String>>singletonMap(BonaPortable.class, fieldnames); 
+        Map<Class<? extends BonaCustom>, List<String>> mapping = Collections.<Class<? extends BonaCustom>, List<String>>singletonMap(BonaPortable.class, fieldnames); 
         new FoldingComposer<RuntimeException>(writer, mapping, FoldingStrategy.FORWARD_OBJECTS).writeRecord(obj);
 
         return target;

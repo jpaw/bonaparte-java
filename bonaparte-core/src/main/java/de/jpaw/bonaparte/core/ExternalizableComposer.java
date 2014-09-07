@@ -62,7 +62,7 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
     }
     
     // entry called from generated objects: (Object header has been written already by internal methods (and unfortunately in some different fashion...))
-    public static void serialize(BonaPortable obj, ObjectOutput _out) throws IOException {
+    public static void serialize(BonaCustom obj, ObjectOutput _out) throws IOException {
         MessageComposer<IOException> _w = new ExternalizableComposer(_out);
         obj.serializeSub(_w);
         _w.terminateObject(StaticMeta.OUTER_BONAPORTABLE, obj);
@@ -247,16 +247,16 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
         }
     }
 
-    static public void writeObject(ObjectOutput out, BonaPortable obj) throws IOException {
+    static public void writeObject(ObjectOutput out, BonaCustom obj) throws IOException {
         if (obj == null) {
             out.writeByte(NULL_FIELD);
         } else {
-            // do not rely on Java logic, we know the object is BonaPortable and call the externalizer interface directly
+            // do not rely on Java logic, we know the object is BonaCustom and call the externalizer interface directly
             // do we really? (At the moment it's optional)
             out.writeByte(OBJECT_BEGIN);
             if (nestedObjectsInternally) {
                 out.writeUTF(obj.get$PQON());
-                out.writeLong(obj.get$Serial());
+                out.writeLong(obj.get$MetaData().getSerialUID());
                 ((Externalizable)obj).writeExternal(out);  // TODO: obj.deserialize(this);
             } else {
                 out.writeObject(obj);   // so fall back to normal behaviour!
@@ -330,7 +330,7 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
     }
 
     @Override
-    public void writeRecord(BonaPortable o) throws IOException {
+    public void writeRecord(BonaCustom o) throws IOException {
         startRecord();
         addField(StaticMeta.OUTER_BONAPORTABLE, o);
         terminateRecord();
@@ -373,26 +373,26 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
     }
 
     @Override
-    public void startObject(ObjectReference di, BonaPortable obj) throws IOException {
+    public void startObject(ObjectReference di, BonaCustom obj) throws IOException {
     }
     @Override
-    public void terminateObject(ObjectReference di, BonaPortable obj) throws IOException {
+    public void terminateObject(ObjectReference di, BonaCustom obj) throws IOException {
         out.writeByte(OBJECT_TERMINATOR);
     }
     
 
     @Override
-    public void addField(ObjectReference di, BonaPortable obj) throws IOException {
+    public void addField(ObjectReference di, BonaCustom obj) throws IOException {
         if (obj == null) {
             out.writeByte(NULL_FIELD);
         } else {
-            // do not rely on Java logic, we know the object is BonaPortable and call the externalizer interface directly
+            // do not rely on Java logic, we know the object is BonaCustom and call the externalizer interface directly
             // do we really? (At the moment it's optional)
             startObject(di, obj);
             out.writeByte(OBJECT_BEGIN);  // this logically belongs to the lines below, do not split here!
             if (nestedObjectsInternally) {
                 out.writeUTF(obj.get$PQON());
-                addField(REVISION_META, obj.get$Revision());
+                addField(REVISION_META, obj.get$MetaData().getRevision());
                 obj.serializeSub(this);
             } else {
                 out.writeObject(obj);   // so fall back to normal behaviour!

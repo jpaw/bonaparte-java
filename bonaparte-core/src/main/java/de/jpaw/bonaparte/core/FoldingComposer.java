@@ -14,17 +14,17 @@ import de.jpaw.bonaparte.pojos.meta.ParsedFoldingComponent;
 /** Delegates most output to the delegateComposer, but uses a permutation/selection of fields for the object output. */ 
 public class FoldingComposer<E extends Exception> extends DelegatingBaseComposer<E> {
     private static final Logger LOGGER = LoggerFactory.getLogger(FoldingComposer.class);
-    private final Map<Class<? extends BonaPortable>, List<String>> mapping;
-    private final Map<Class<? extends BonaPortable>, List<ParsedFoldingComponent>> parsedMapping;
+    private final Map<Class<? extends BonaCustom>, List<String>> mapping;
+    private final Map<Class<? extends BonaCustom>, List<ParsedFoldingComponent>> parsedMapping;
     private final FoldingStrategy errorStrategy;
     private final List<String> bonaPortableMapping;
     
-    public FoldingComposer(MessageComposer<E> delegateComposer, Map<Class<? extends BonaPortable>, List<String>> mapping, FoldingStrategy errorStrategy) {
+    public FoldingComposer(MessageComposer<E> delegateComposer, Map<Class<? extends BonaCustom>, List<String>> mapping, FoldingStrategy errorStrategy) {
         super(delegateComposer);
         this.mapping = mapping;
-        this.parsedMapping = new HashMap<Class<? extends BonaPortable>, List<ParsedFoldingComponent>>(20);
+        this.parsedMapping = new HashMap<Class<? extends BonaCustom>, List<ParsedFoldingComponent>>(20);
         this.errorStrategy = errorStrategy;
-        this.bonaPortableMapping = mapping.get(BonaPortable.class);  
+        this.bonaPortableMapping = mapping.get(BonaCustom.class);  
     }
 
     @Override
@@ -33,10 +33,10 @@ public class FoldingComposer<E extends Exception> extends DelegatingBaseComposer
     }
 
     
-    private List<ParsedFoldingComponent> createParsedFieldList(ObjectReference di, BonaPortable obj, Class <? extends BonaPortable> objClass) throws E {
+    private List<ParsedFoldingComponent> createParsedFieldList(ObjectReference di, BonaCustom obj, Class <? extends BonaCustom> objClass) throws E {
         // get the original mapping...
         
-        // if only one mapping entry has been provided, and that is for a BonaPortable in general, this is straightforward.
+        // if only one mapping entry has been provided, and that is for a BonaCustom in general, this is straightforward.
         
         List<String> fieldList = mapping.get(objClass);
         if (fieldList == null) {
@@ -53,8 +53,8 @@ public class FoldingComposer<E extends Exception> extends DelegatingBaseComposer
             case FORWARD_OBJECTS:
                 Class <?> superclass;
                 while ((superclass = objClass.getSuperclass()) != null) {
-                    if (BonaPortable.class.isAssignableFrom(superclass)) {
-                        objClass = (Class<? extends BonaPortable>)superclass;
+                    if (BonaCustom.class.isAssignableFrom(superclass)) {
+                        objClass = (Class<? extends BonaCustom>)superclass;
                         fieldList = mapping.get(objClass);
                         if (fieldList != null) {
                             LOGGER.debug("Mapping for class {} found at superclass {}",
@@ -131,7 +131,7 @@ public class FoldingComposer<E extends Exception> extends DelegatingBaseComposer
     }
     
     @Override
-    public void addField(ObjectReference di, BonaPortable obj) throws E {
+    public void addField(ObjectReference di, BonaCustom obj) throws E {
         if (obj == null) {
             writeNull(di);
         } else {
@@ -142,7 +142,7 @@ public class FoldingComposer<E extends Exception> extends DelegatingBaseComposer
             }
             // only write the fields selectively
             // first, optionally create a cached mapping
-            Class <? extends BonaPortable> objClass = obj.getClass();
+            Class <? extends BonaCustom> objClass = obj.getClass();
             List<ParsedFoldingComponent> parsedFieldList = parsedMapping.get(objClass);
             if (parsedFieldList == null) {
                 parsedFieldList = createParsedFieldList(di, obj, objClass);

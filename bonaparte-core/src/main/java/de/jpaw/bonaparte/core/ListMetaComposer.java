@@ -29,7 +29,7 @@ import de.jpaw.util.ByteArray;
 /** Represents composer which does not serialize, but instead appends all objects into a list.
  * Only the clear() and add() methods of the List interface are used by this implementation.
  * This implementation is not ideal, since it may unbox/rebox objects of the BonaPortables.
- * To improve it, the BonaPortable interface would need to be changed. */
+ * To improve it, the BonaCustom interface would need to be changed. */
 public class ListMetaComposer extends NoOpComposer implements MessageComposer<RuntimeException> {
     final List<DataAndMeta<Object,FieldDefinition>> storage;
     final boolean doDeepCopies;
@@ -72,7 +72,7 @@ public class ListMetaComposer extends NoOpComposer implements MessageComposer<Ru
 
 
     @Override
-    public void writeRecord(BonaPortable o) {
+    public void writeRecord(BonaCustom o) {
         startRecord();  // noop in the base implementation
         addField(StaticMeta.OUTER_BONAPORTABLE, o);
         terminateRecord();  // noop in the base implementation
@@ -172,7 +172,7 @@ public class ListMetaComposer extends NoOpComposer implements MessageComposer<Ru
     }
 
     @Override
-    public void addField(ObjectReference di, BonaPortable obj) {
+    public void addField(ObjectReference di, BonaCustom obj) {
         if (obj == null) {
             writeNull(null);
         } else {

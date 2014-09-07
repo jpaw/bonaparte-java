@@ -19,7 +19,7 @@ public class ListObjMetaComposer extends ListMetaComposer {
     }
 
     @Override
-    public void addField(ObjectReference di, BonaPortable obj) {
+    public void addField(ObjectReference di, BonaCustom obj) {
         storage.add(new DataAndMeta<Object,FieldDefinition>(di, obj));
     }
 }

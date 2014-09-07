@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.LinearLayout
-import de.jpaw.bonaparte.core.BonaPortable
+import de.jpaw.bonaparte.core.BonaCustom
 import de.jpaw.bonaparte.core.FoldingComposer
 import de.jpaw.bonaparte.pojos.meta.FoldingStrategy
 import java.util.List
@@ -15,11 +15,11 @@ import de.jpaw.bonaparte.core.MessageComposer
 /**
  * Adapter for the ListView to create selected fields from an object via a FoldingComposer.
  */
-class BonaparteReuseViewsAdapter<T extends BonaPortable> extends BaseAdapter {
+class BonaparteReuseViewsAdapter<T extends BonaCustom> extends BaseAdapter {
     val List<T> data
     val Context context
     val ViewProvider viewProvider
-    val Map<Class<? extends BonaPortable>, List<String>> mapper
+    val Map<Class<? extends BonaCustom>, List<String>> mapper
     val ReuseViewsComposer delegateComposer
     val MessageComposer<RuntimeException> foldingComposer
     
@@ -27,7 +27,7 @@ class BonaparteReuseViewsAdapter<T extends BonaPortable> extends BaseAdapter {
         this.data = data
         this.context = context
         this.viewProvider = viewProvider
-        val Class<? extends BonaPortable> zz = BonaPortable
+        val Class<? extends BonaCustom> zz = BonaCustom
         this.mapper = #{ zz -> columnNames}
         this.delegateComposer = composer
         this.foldingComposer = new FoldingComposer(composer, mapper, FoldingStrategy.FORWARD_OBJECTS)

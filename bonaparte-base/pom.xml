@@ -33,17 +33,17 @@
         
         <!-- Some more versions, used by specific dependent projects -->
         <netty.version>4.0.23.Final</netty.version>     <!-- https://netty.io/news/ UPTODATE 2014-08-16 -->
-        <poi.version>3.10-FINAL</poi.version>           <!-- http://poi.apache.org/ UPTODATE 2014-06-20 -->
+        <poi.version>3.10.1</poi.version>               <!-- http://poi.apache.org/ UPTODATE 2014-09-06 -->
         <mina.version>2.0.7</mina.version>              <!-- http://mina.apache.org/ 2.0.7 -->
         <camel.version>2.12.4</camel.version>           <!-- http://camel.apache.org/ UPTODATE 2014-07-07 -->
         <vertx.version>2.1.2</vertx.version>            <!-- http://vertx.io/ UPTODATE 2014-07-22 -->
-        <hazelcast.version>3.2.4</hazelcast.version>    <!-- http://hazelcast.org/download/ UPTODATE 2014-07-21 -->
+        <hazelcast.version>3.2.5</hazelcast.version>    <!-- http://hazelcast.org/download/ UPTODATE 2014-09-06 -->
         <hornetq.version>2.2.14.Final</hornetq.version> <!-- http://www.jboss.org/hornetq 2.3.0.Final -->
         <jackson.version>2.2.2</jackson.version>        <!-- matches what's used in vertx -->
         <jsap.version>2.1</jsap.version>
         
         <!--  benchmarking -->
-        <jmh.version>0.9.8</jmh.version>                <!-- http://openjdk.java.net/projects/code-tools/jmh/ UPTODATE 2014-08-29 -->
+        <jmh.version>1.0.1</jmh.version>                <!-- http://openjdk.java.net/projects/code-tools/jmh/ UPTODATE 2014-09-06 -->
     </properties>
 
     <licenses>

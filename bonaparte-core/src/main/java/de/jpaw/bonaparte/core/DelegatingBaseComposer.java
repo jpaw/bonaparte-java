@@ -89,7 +89,7 @@ public class DelegatingBaseComposer<E extends Exception> implements MessageCompo
 
     // cannot delegate this, as it would give away control
     @Override
-    public void writeRecord(BonaPortable o) throws E {
+    public void writeRecord(BonaCustom o) throws E {
         startRecord();
         addField(StaticMeta.OUTER_BONAPORTABLE, o);
         terminateRecord();
@@ -186,19 +186,19 @@ public class DelegatingBaseComposer<E extends Exception> implements MessageCompo
     }
     
     @Override
-    public void startObject(ObjectReference di, BonaPortable obj) throws E {
+    public void startObject(ObjectReference di, BonaCustom obj) throws E {
         delegateComposer.startObject(di, obj);
     }
     
     @Override
-    public void terminateObject(ObjectReference di, BonaPortable obj) throws E {
+    public void terminateObject(ObjectReference di, BonaCustom obj) throws E {
         delegateComposer.terminateObject(di, obj);
     }
     
     
     // cannot delegate this, as it would give away control
     @Override
-    public void addField(ObjectReference di, BonaPortable obj) throws E {
+    public void addField(ObjectReference di, BonaCustom obj) throws E {
         if (obj == null) {
             writeNull(di);  // delegates...
         } else {

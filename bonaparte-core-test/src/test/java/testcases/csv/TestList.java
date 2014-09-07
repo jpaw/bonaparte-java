@@ -8,7 +8,7 @@ import java.util.Map;
 
 import org.testng.annotations.Test;
 
-import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.core.BonaCustom;
 import de.jpaw.bonaparte.core.FoldingComposer;
 import de.jpaw.bonaparte.core.ListComposer;
 import de.jpaw.bonaparte.pojos.csvTests.UnixPasswd;
@@ -44,7 +44,7 @@ public class TestList {
         ListComposer lc = new ListComposer(storage, false);
         
         List<String> fields = Arrays.asList( "gecos", "name", "shell");
-        Map<Class<? extends BonaPortable>, List<String>> map = new HashMap<> (10);
+        Map<Class<? extends BonaCustom>, List<String>> map = new HashMap<> (10);
         map.put(UnixPasswd.class, fields);
         FoldingComposer<RuntimeException> fld = new FoldingComposer<RuntimeException>(lc, map, FoldingStrategy.TRY_SUPERCLASS);
         fld.writeRecord(pwEntry2);

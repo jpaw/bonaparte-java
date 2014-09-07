@@ -61,11 +61,11 @@ public interface MessageComposer<E extends Exception> {
     public void terminateArray() throws E;
     public void terminateRecord() throws E;
     public void terminateTransmission() throws E;
-    public void writeRecord(BonaPortable o) throws E;
+    public void writeRecord(BonaCustom o) throws E;
 
     // the following methods are not required by the bonaportables directly, but for delegating composer operation
-    public void startObject(ObjectReference di, BonaPortable o) throws E;  // write the name and the revision  (only used internally in composers)
-    public void terminateObject(ObjectReference di, BonaPortable o) throws E;  // write the name and the revision  (only used internally in composers)
+    public void startObject(ObjectReference di, BonaCustom o) throws E;  // write the name and the revision  (only used internally in composers)
+    public void terminateObject(ObjectReference di, BonaCustom o) throws E;  // write the name and the revision  (only used internally in composers)
 
     // serialization methods: field type specific
 
@@ -80,7 +80,7 @@ public interface MessageComposer<E extends Exception> {
     void addField(BasicNumericElementaryDataItem di, long n) throws E;
 
     void addField(AlphanumericElementaryDataItem di, String s) throws E;    // Ascii, Upper, Lower, Unicode
-    void addField(ObjectReference di, BonaPortable obj) throws E;
+    void addField(ObjectReference di, BonaCustom obj) throws E;
     void addField(MiscElementaryDataItem di, UUID n) throws E;
     void addField(BinaryElementaryDataItem di, ByteArray b) throws E;
     void addField(BinaryElementaryDataItem di, byte [] b) throws E;

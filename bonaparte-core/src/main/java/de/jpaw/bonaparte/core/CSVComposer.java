@@ -357,7 +357,7 @@ public class CSVComposer extends AppendableComposer {
     }
 
     @Override
-    public void startObject(ObjectReference di, BonaPortable obj) throws IOException {
+    public void startObject(ObjectReference di, BonaCustom obj) throws IOException {
         if (cfg.objectStart != null && cfg.objectStart.length() > 0) {
             super.addRawData(cfg.objectStart);
             recordStart = true;
@@ -365,7 +365,7 @@ public class CSVComposer extends AppendableComposer {
     }
   
     @Override
-    public void terminateObject(ObjectReference di, BonaPortable obj) throws IOException {
+    public void terminateObject(ObjectReference di, BonaCustom obj) throws IOException {
         if (cfg.objectEnd != null && cfg.objectEnd.length() > 0) {
             super.addRawData(cfg.objectEnd);
             recordStart = true;
@@ -373,7 +373,7 @@ public class CSVComposer extends AppendableComposer {
     }
   
     @Override
-    public void addField(ObjectReference di, BonaPortable obj) throws IOException {
+    public void addField(ObjectReference di, BonaCustom obj) throws IOException {
         if (obj != null) {
             startObject(di, obj);
             // do all fields

@@ -172,7 +172,7 @@ public class JsonComposer implements MessageComposer<IOException> {
 
     // called for not-null elements only
     @Override
-    public void startObject(ObjectReference di, BonaPortable obj) throws IOException {
+    public void startObject(ObjectReference di, BonaCustom obj) throws IOException {
         out.append('{');
         // create the class canonical name as a special field , to be compatible to json-io
         jsonEscaper.outputAscii("@type");
@@ -182,7 +182,7 @@ public class JsonComposer implements MessageComposer<IOException> {
     }
     
     @Override
-    public void terminateObject(ObjectReference di, BonaPortable obj) throws IOException {
+    public void terminateObject(ObjectReference di, BonaCustom obj) throws IOException {
         out.append('}');
         needFieldSeparator = true;
     }
@@ -228,7 +228,7 @@ public class JsonComposer implements MessageComposer<IOException> {
     }
 
     @Override
-    public void writeRecord(BonaPortable o) throws IOException {
+    public void writeRecord(BonaCustom o) throws IOException {
         startRecord();
         addField(StaticMeta.OUTER_BONAPORTABLE, o);
         terminateRecord();
@@ -301,7 +301,7 @@ public class JsonComposer implements MessageComposer<IOException> {
     }
 
     @Override
-    public void addField(ObjectReference di, BonaPortable obj) throws IOException {
+    public void addField(ObjectReference di, BonaCustom obj) throws IOException {
         if (di.getMultiplicity() != Multiplicity.SCALAR) {
             // must write a null without a name
             writeSeparator();

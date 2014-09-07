@@ -74,7 +74,7 @@ public class NoOpComposer implements MessageComposer<RuntimeException> {
     }
 
     @Override
-    public void writeRecord(BonaPortable o) {
+    public void writeRecord(BonaCustom o) {
     }
     
     @Override
@@ -150,15 +150,15 @@ public class NoOpComposer implements MessageComposer<RuntimeException> {
     }
 
     @Override
-    public void addField(ObjectReference di, BonaPortable obj) {
+    public void addField(ObjectReference di, BonaCustom obj) {
     }
 
     @Override
-    public void startObject(ObjectReference di, BonaPortable obj) {
+    public void startObject(ObjectReference di, BonaCustom obj) {
     }
 
     @Override
-    public void terminateObject(ObjectReference di, BonaPortable obj) {
+    public void terminateObject(ObjectReference di, BonaCustom obj) {
     }
 
 

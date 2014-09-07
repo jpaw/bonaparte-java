@@ -14,6 +14,7 @@ import de.jpaw.bonaparte.pojos.meta.ParsedFoldingComponent;
  * It can be seen as a key / value map which integrates into existing classes.
  * Care must be taken not to use any static method to determine RTTI or PQON, but rather obtain all information through the instance's BClass. */
 public class AbstractDynamicBonaPortable implements BonaPortable {
+    private static final long serialVersionUID = -5308388498938365844L;
     private final BonaPortableClass<?> _my$BClass;
     private transient boolean _is$Frozen = false;      // current state of this instance
 
@@ -48,17 +49,6 @@ public class AbstractDynamicBonaPortable implements BonaPortable {
     }
 
     @Override
-    public String get$Revision() {
-        return _my$BClass.getRevision();
-    }
-
-    @Override
-    public long get$Serial() {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
     public String get$Property(String id) {
         // TODO Auto-generated method stub
         return null;
@@ -68,16 +58,6 @@ public class AbstractDynamicBonaPortable implements BonaPortable {
     public Map<String, String> get$PropertyMap() {
         // TODO Auto-generated method stub
         return null;
-    }
-
-    @Override
-    public Class<? extends BonaPortable> get$returns() {
-        return _my$BClass.getReturns().getBonaPortableClass();
-    }
-
-    @Override
-    public Class<? extends BonaPortable> get$pk() {
-        return _my$BClass.getPrimaryKey().getBonaPortableClass();
     }
 
     @Override
@@ -155,11 +135,6 @@ public class AbstractDynamicBonaPortable implements BonaPortable {
     @Override
     public boolean is$Frozen() {
         return _is$Frozen;
-    }
-
-    @Override
-    public boolean is$Freezable() {
-        return true;
     }
 
     @Override

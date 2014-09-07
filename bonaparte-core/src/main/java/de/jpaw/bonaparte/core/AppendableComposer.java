@@ -63,7 +63,7 @@ import de.jpaw.util.ByteBuilder;
 public class AppendableComposer extends StringBuilderConstants implements MessageComposer<IOException> {
     //private static final Logger LOGGER = LoggerFactory.getLogger(ByteArrayComposer.class);
     private final boolean useCache;
-    private final Map<BonaPortable,Integer> objectCache;
+    private final Map<BonaCustom,Integer> objectCache;
     private int numberOfObjectsSerialized;
     private int numberOfObjectReuses;
     // variables set by constructor
@@ -77,11 +77,11 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
     public AppendableComposer(Appendable work, ObjectReuseStrategy reuseStrategy) {
         switch (reuseStrategy) {
         case BY_CONTENTS:
-            this.objectCache = new HashMap<BonaPortable, Integer>(250);
+            this.objectCache = new HashMap<BonaCustom, Integer>(250);
             this.useCache = true;
             break;
         case BY_REFERENCE:
-            this.objectCache = new IdentityHashMap<BonaPortable, Integer>(250);
+            this.objectCache = new IdentityHashMap<BonaCustom, Integer>(250);
             this.useCache = true;
             break;
         default:
@@ -167,7 +167,7 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
     }
 
     @Override
-    public void writeRecord(BonaPortable o) throws IOException {
+    public void writeRecord(BonaCustom o) throws IOException {
         startRecord();
         addField(StaticMeta.OUTER_BONAPORTABLE, o);
         terminateRecord();
@@ -443,19 +443,19 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
 
 
     @Override
-    public void startObject(ObjectReference di, BonaPortable obj) throws IOException {
+    public void startObject(ObjectReference di, BonaCustom obj) throws IOException {
         work.append(OBJECT_BEGIN);
         addField(OBJECT_CLASS, obj.get$PQON());
-        addField(REVISION_META, obj.get$Revision());
+        addField(REVISION_META, obj.get$MetaData().getRevision());
     }
     
     @Override
-    public void terminateObject(ObjectReference di, BonaPortable obj) throws IOException {
+    public void terminateObject(ObjectReference di, BonaCustom obj) throws IOException {
         work.append(OBJECT_TERMINATOR);
     }
     
     @Override
-    public void addField(ObjectReference di, BonaPortable obj) throws IOException {
+    public void addField(ObjectReference di, BonaCustom obj) throws IOException {
         if (obj == null) {
             writeNull();
         } else {

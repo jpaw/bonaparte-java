@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.testng.annotations.Test;
 
+import de.jpaw.bonaparte.core.BonaCustom;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.CSVComposer;
 import de.jpaw.bonaparte.core.CSVConfiguration;
@@ -22,7 +23,7 @@ public class TestEnumFilter {
 
     private static CSVConfiguration unixPasswdCfg = new CSVConfiguration.Builder().usingSeparator(":").usingQuoteCharacter(null).build();
     private static List<String> fields = Arrays.asList( "color");
-    private static Map<Class<? extends BonaPortable>, List<String>> map = new HashMap<> (10);
+    private static Map<Class<? extends BonaCustom>, List<String>> map = new HashMap<> (10);
     static {
         map.put(BonaPortable.class, fields);
     }

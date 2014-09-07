@@ -10,6 +10,7 @@ import java.util.Map;
 import org.joda.time.LocalDate;
 import org.testng.annotations.Test;
 
+import de.jpaw.bonaparte.core.BonaCustom;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.CSVComposer;
 import de.jpaw.bonaparte.core.CSVConfiguration;
@@ -38,7 +39,7 @@ public class TestExchangeFolding {
     }
     
     private static void runTest(CSVConfiguration cfg, BonaPortable input, String expectedOutput,
-            Map<Class<? extends BonaPortable>, List<String>> map) {
+            Map<Class<? extends BonaCustom>, List<String>> map) {
         StringBuilder buffer = new StringBuilder(200);
         CSVComposer cmp = new CSVComposer(buffer, cfg);
         cmp.setWriteCRs(false);
@@ -59,7 +60,7 @@ public class TestExchangeFolding {
     public void testMetaDataWithIndex() throws Exception {
         Ratios r = setup();
         List<String> fields = Arrays.asList( "forSrc[GRD].ratioToCurrency[USD]");
-        Map<Class<? extends BonaPortable>, List<String>> map = new HashMap<> (10);
+        Map<Class<? extends BonaCustom>, List<String>> map = new HashMap<> (10);
         map.put(Ratios.class, fields);
         runTest(unixPasswdCfg, r, "3.252\n",  map);
     }

@@ -14,11 +14,11 @@ import org.joda.time.Instant;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
-import org.joda.time.field.ZeroIsMaxDateTimeField;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
 import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
@@ -52,7 +52,7 @@ public class CompactComposer extends CompactConstants implements MessageComposer
     }
 
     private final boolean useCache;
-    private final Map<BonaPortable, Integer> objectCache;
+    private final Map<BonaCustom, Integer> objectCache;
     private int numberOfObjectsSerialized;
     private int numberOfObjectReuses;
     // variables set by constructor
@@ -60,7 +60,7 @@ public class CompactComposer extends CompactConstants implements MessageComposer
     protected final boolean recommendIdentifiable;
 
     // entry called from generated objects: (Object header has been written already by internal methods (and unfortunately in some different fashion...))
-    public static void serialize(BonaPortable obj, DataOutput _out, boolean recommendIdentifiable) throws IOException {
+    public static void serialize(BonaCustom obj, DataOutput _out, boolean recommendIdentifiable) throws IOException {
         MessageComposer<IOException> _w = new CompactComposer(_out, recommendIdentifiable);
         obj.serializeSub(_w);
         _w.terminateObject(StaticMeta.OUTER_BONAPORTABLE, obj);
@@ -77,11 +77,11 @@ public class CompactComposer extends CompactConstants implements MessageComposer
     public CompactComposer(DataOutput out, ObjectReuseStrategy reuseStrategy, boolean recommendIdentifiable) {
         switch (reuseStrategy) {
         case BY_CONTENTS:
-            this.objectCache = new HashMap<BonaPortable, Integer>(250);
+            this.objectCache = new HashMap<BonaCustom, Integer>(250);
             this.useCache = true;
             break;
         case BY_REFERENCE:
-            this.objectCache = new IdentityHashMap<BonaPortable, Integer>(250);
+            this.objectCache = new IdentityHashMap<BonaCustom, Integer>(250);
             this.useCache = true;
             break;
         default:
@@ -160,7 +160,7 @@ public class CompactComposer extends CompactConstants implements MessageComposer
     }
 
     @Override
-    public void writeRecord(BonaPortable o) throws IOException {
+    public void writeRecord(BonaCustom o) throws IOException {
         startRecord();
         addField(StaticMeta.OUTER_BONAPORTABLE, o);
         terminateRecord();
@@ -634,29 +634,29 @@ public class CompactComposer extends CompactConstants implements MessageComposer
     }
 
     @Override
-    public void startObject(ObjectReference di, BonaPortable obj) throws IOException {
-        BonaPortableClass<?> meta = obj.get$BonaPortableClass();
+    public void startObject(ObjectReference di, BonaCustom obj) throws IOException {
+        ClassDefinition meta = obj.get$MetaData();
         if (recommendIdentifiable) {
             out.writeByte(OBJECT_BEGIN_ID);
             intOut(meta.getFactoryId());
             intOut(meta.getId());
         } else {
             out.writeByte(OBJECT_BEGIN_PQON);
-            if (di.getLowerBound() != null && di.getLowerBound().getName().equals(meta.getPqon()))
+            if (di.getLowerBound() != null && di.getLowerBound().getName().equals(meta.getName()))
                 out.writeByte(EMPTY_FIELD);
             else
-                writeLongStringStealArray(meta.getPqon());
+                writeLongStringStealArray(meta.getName());
             addField(REVISION_META, meta.getRevision());
         }
     }
 
     @Override
-    public void terminateObject(ObjectReference di, BonaPortable obj) throws IOException {
+    public void terminateObject(ObjectReference di, BonaCustom obj) throws IOException {
         out.writeByte(OBJECT_TERMINATOR);
     }
 
     @Override
-    public void addField(ObjectReference di, BonaPortable obj) throws IOException {
+    public void addField(ObjectReference di, BonaCustom obj) throws IOException {
         if (obj == null) {
             writeNull();
         } else {

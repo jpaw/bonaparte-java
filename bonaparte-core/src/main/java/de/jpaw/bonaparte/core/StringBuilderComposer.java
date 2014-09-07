@@ -69,7 +69,7 @@ public class StringBuilderComposer extends AppendableComposer implements Buffere
     
     /** Refine the main entry in order to relieve callers catching an Exception which is never thrown. */
     @Override
-    public void writeRecord(BonaPortable obj) {
+    public void writeRecord(BonaCustom obj) {
         try {
             super.writeRecord(obj);
         } catch (IOException e) {

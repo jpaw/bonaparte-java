@@ -15,7 +15,7 @@ public class TestPoiXMeta {
 
     public static void main(String[] args) throws IOException {
         ClassDefinition cd = new ClassDefinition(true, false, "myName", null, "bundle",  Instant.now(), null,
-                "Rev", 87264821612983L, 0, ImmutableList.<FieldDefinition>of(), ImmutableMap.<String,String>of(), false, false, false);
+                "Rev", 87264821612983L, 0, ImmutableList.<FieldDefinition>of(), ImmutableMap.<String,String>of(), false, 42, 13, 13, false, false);
 
         ExcelXComposer ec = new ExcelXComposer();
         ec.newSheet("Tabelle Nummer 1");

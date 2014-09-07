@@ -20,6 +20,7 @@ public class ReuseViewsComposer extends LinearLayoutComposer {
    
     // creates a new composer, with support of widget auto-creation
     
+    @Override
     public void newView(final LinearLayout rowWidget, int row) {
         this.rowWidget = rowWidget;
         this.rownum = row;
