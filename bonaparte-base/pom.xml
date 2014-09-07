@@ -401,10 +401,11 @@
 
     <modules>
         <module>../bonaparte-core/pom.xml</module>
-        <module>../bonaparte-adapters/pom.xml</module>
         <module>../bonaparte-core-test/pom.xml</module>
         <module>../bonaparte-money/pom.xml</module>
         <module>../bonaparte-money-test/pom.xml</module>
+        <module>../bonaparte-adapters/pom.xml</module>
+        <module>../bonaparte-adapters-test/pom.xml</module>
         <module>../bonaparte-android/pom.xml</module>
         <module>../bonaparte-xenum-init/pom.xml</module>
         <module>../bonaparte-xml/pom.xml</module>

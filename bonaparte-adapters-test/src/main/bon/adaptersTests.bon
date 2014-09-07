@@ -1,0 +1,20 @@
+import de.jpaw.money.*
+import adapters.fixedpoint.*
+import adapters.fixedpointToBigDecimal.*
+import adapters.fpmoney.*
+
+/** BigDecimal based monetary data.
+ * Assigned to factoryId 29
+ */
+package adapters.tests factoryId 22 {
+    final class CustomMillis {
+        required Ascii(8)               hello;
+        (Millis)                        myIntegralMillis;
+        required (BigMillis)            myBigDecimalMillis;
+    }
+
+    final class CustomCurrency {
+        required Ascii(8)               hello;
+        required (FpCurrency)           myCurrency;
+    }    
+}
