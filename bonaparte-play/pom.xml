@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -29,23 +28,16 @@
     </pluginRepositories>
 
     <build>
-        <!-- The project works fine without the lifecycle management in pluginManagement
-            below. In case of problems, try to comment that section and try again. -->
-        <!-- http://wiki.eclipse.org/M2E_plugin_execution_not_covered#m2e_maven_plugin_coverage_status
-            and http://wiki.eclipse.org/M2E_compatible_maven_plugins <pluginManagement>
-            <plugins> <plugin> <groupId>org.eclipse.m2e</groupId> <artifactId>lifecycle-mapping</artifactId>
-            <version>1.0.0</version> <configuration> <lifecycleMappingMetadata> <pluginExecutions>
-            <pluginExecution> <pluginExecutionFilter> <groupId>org.eclipse.xtend</groupId>
-            <artifactId>xtend-maven-plugin</artifactId> <versionRange>[2.3.0,]</versionRange>
-            <goals> <goal>compile</goal> <goal>testCompile</goal> </goals> </pluginExecutionFilter>
-            <action> <execute> <runOnIncremental>true</runOnIncremental> <runOnConfiguration>true</runOnConfiguration>
-            </execute> </action> </pluginExecution> </pluginExecutions> </lifecycleMappingMetadata>
-            </configuration> </plugin> </plugins> </pluginManagement> -->
 
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -59,10 +51,10 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
             </plugin>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>build-helper-maven-plugin</artifactId>
-                </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+            </plugin>
             <plugin>
                 <groupId>org.eclipse.xtend</groupId>
                 <artifactId>xtend-maven-plugin</artifactId>
@@ -103,6 +95,16 @@
             <groupId>org.eclipse.xtend</groupId>
             <artifactId>org.eclipse.xtend.lib</artifactId>
             <version>${xtend.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.luaj</groupId>
+            <artifactId>luaj-jse</artifactId>
+            <version>3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.aerospike</groupId>
+            <artifactId>aerospike-client</artifactId>
+            <version>3.0.28</version>
         </dependency>
         <dependency>
             <groupId>org.testng</groupId>

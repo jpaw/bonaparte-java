@@ -79,7 +79,7 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <finalName>bonaparte-benchmarks</finalName>
+                            <finalName>bonaparte-benchmarks-java8</finalName>
                             <transformers>
                                 <transformer
                                     implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
