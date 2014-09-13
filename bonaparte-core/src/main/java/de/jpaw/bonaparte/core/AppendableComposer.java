@@ -296,7 +296,7 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
     public void addField(BinaryElementaryDataItem di, ByteArray b) throws IOException {
         if (b != null) {
             ByteBuilder tmp = new ByteBuilder((b.length() * 2) + 4, null);
-            Base64.encodeToByte(tmp, b.getBytes(), 0, b.length());
+            b.appendBase64(tmp);
             work.append(new String(tmp.getCurrentBuffer(), 0, tmp.length()));
             //work.append(DatatypeConverter.printBase64Binary(b));
             //work.append(DatatypeConverter.printHexBinary(b));

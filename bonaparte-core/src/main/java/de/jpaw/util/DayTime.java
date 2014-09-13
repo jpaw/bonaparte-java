@@ -128,4 +128,23 @@ public class DayTime {
         }
         return (int)(t1 - t0);
     }
+    
+    /** Converts the day portion of a LocalDate or localDateTime into a number in the format YYYYMMDD. */
+    static public int dayAsInt(LocalDateTime when) {
+        return when.getDayOfMonth() + 100 * when.getMonthOfYear() + 10000 * when.getYear();
+    }
+    /** Converts the day portion of a LocalDate or localDateTime into a number in the format YYYYMMDD. */
+    static public int dayAsInt(LocalDate when) {
+        return when.getDayOfMonth() + 100 * when.getMonthOfYear() + 10000 * when.getYear();
+    }
+    
+    /** Converts the time portion of a LocalTime or localDateTime into a number in the format HHMMSSMMM. */
+    static public int timeAsInt(LocalDateTime when) {
+        return when.getMillisOfSecond() + 1000 * when.getSecondOfMinute() + 100000 * when.getMinuteOfHour() + 10000000 * when.getHourOfDay();
+    }
+    /** Converts the time portion of a LocalTime or localDateTime into a number in the format HHMMSSMMM. */
+    static public int timeAsInt(LocalTime when) {
+        return when.getMillisOfSecond() + 1000 * when.getSecondOfMinute() + 100000 * when.getMinuteOfHour() + 10000000 * when.getHourOfDay();
+    }
+
 }

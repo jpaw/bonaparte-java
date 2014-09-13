@@ -20,8 +20,8 @@
         <jpaw-util.version>0.9.2-SNAPSHOT</jpaw-util.version>
         <jpaw-fixedpoint.version>0.5.2-SNAPSHOT</jpaw-fixedpoint.version>
         
-        <xtend.version>2.7.0</xtend.version>            <!-- UPTODATE 2014-09-03 -->
-        <xtext.version>2.7.0</xtext.version>            <!-- UPTODATE 2014-09-03 -->
+        <xtend.version>2.7.1</xtend.version>            <!-- UPTODATE 2014-09-03 -->
+        <xtext.version>2.7.1</xtext.version>            <!-- UPTODATE 2014-09-03 -->
         <slf4j.version>1.7.7</slf4j.version>            <!-- http://www.slf4j.org/ UPTODATE 2014-04-04 -->
         <logback.version>1.1.2</logback.version>        <!-- http://logback.qos.ch/ UPTODATE 2014-04-02 -->
         <guava.version>18.0</guava.version>             <!-- http://code.google.com/p/guava-libraries/ 14.0.1 UPTODATE 2013-06-09, 
@@ -37,7 +37,7 @@
         <mina.version>2.0.7</mina.version>              <!-- http://mina.apache.org/ 2.0.7 -->
         <camel.version>2.12.4</camel.version>           <!-- http://camel.apache.org/ UPTODATE 2014-07-07 -->
         <vertx.version>2.1.2</vertx.version>            <!-- http://vertx.io/ UPTODATE 2014-07-22 -->
-        <hazelcast.version>3.2.5</hazelcast.version>    <!-- http://hazelcast.org/download/ UPTODATE 2014-09-06 -->
+        <hazelcast.version>3.2.6</hazelcast.version>    <!-- http://hazelcast.org/download/ UPTODATE 2014-09-11 -->
         <hornetq.version>2.2.14.Final</hornetq.version> <!-- http://www.jboss.org/hornetq 2.3.0.Final -->
         <jackson.version>2.2.2</jackson.version>        <!-- matches what's used in vertx -->
         <jsap.version>2.1</jsap.version>
