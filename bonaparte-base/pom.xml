@@ -308,11 +308,6 @@
                             <version>${bonaparte-plugin-version}</version>
                         </dependency>
                         <dependency>
-                            <groupId>de.jpaw.bonaparte-dsl</groupId>
-                            <artifactId>de.jpaw.persistence.dsl</artifactId>
-                            <version>${bonaparte-plugin-version}</version>
-                        </dependency>
-                        <dependency>
                             <groupId>commons-lang</groupId>
                             <artifactId>commons-lang</artifactId>
                             <version>2.6</version>
