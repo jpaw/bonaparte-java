@@ -39,7 +39,6 @@
         <vertx.version>2.1.2</vertx.version>            <!-- http://vertx.io/ UPTODATE 2014-07-22 -->
         <hazelcast.version>3.2.6</hazelcast.version>    <!-- http://hazelcast.org/download/ UPTODATE 2014-09-11 -->
         <hornetq.version>2.2.14.Final</hornetq.version> <!-- http://www.jboss.org/hornetq 2.3.0.Final -->
-        <jackson.version>2.2.2</jackson.version>        <!-- matches what's used in vertx -->
         <jsap.version>2.1</jsap.version>
         
         <!--  benchmarking -->

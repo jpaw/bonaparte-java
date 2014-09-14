@@ -12,7 +12,7 @@ package very.compact {
         (Complex...) z;
     }
     
-    class Container public type {
+    class Container {
         (Vector) outer;
     }
 }

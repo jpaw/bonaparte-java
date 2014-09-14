@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.ImmutableMap;
 
 import de.jpaw.bonaparte.pojos.meta.FoldingStrategy;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
@@ -14,6 +17,8 @@ import de.jpaw.bonaparte.pojos.meta.ParsedFoldingComponent;
 /** Delegates most output to the delegateComposer, but uses a permutation/selection of fields for the object output. */ 
 public class FoldingComposer<E extends Exception> extends DelegatingBaseComposer<E> {
     private static final Logger LOGGER = LoggerFactory.getLogger(FoldingComposer.class);
+    public static final Map<Class<? extends BonaCustom>, List<String>> EMPTY_MAPPING = ImmutableMap.of();
+
     private final Map<Class<? extends BonaCustom>, List<String>> mapping;
     private final Map<Class<? extends BonaCustom>, List<ParsedFoldingComponent>> parsedMapping;
     private final FoldingStrategy errorStrategy;
