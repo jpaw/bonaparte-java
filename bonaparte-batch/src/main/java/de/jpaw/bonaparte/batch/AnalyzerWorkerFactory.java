@@ -19,15 +19,33 @@ public class AnalyzerWorkerFactory extends ContributorNoop implements BatchProce
     private final static int MAX_DIFFERENT_VALUES = 10;    // if reaching this number, we are no longer interested in the specific values
     private final ClassDefinition meta;
     private final String separator;
+    private final int [] fieldLengths; 
     
+    private final int [] calculateLengths() {
+        if (separator != null) {
+            return null;
+        } else {
+            int [] lengths = new int [meta.getNumberOfFields()];
+            for (int i = 0; i < meta.getNumberOfFields(); ++i) {
+                AlphanumericElementaryDataItem f = (AlphanumericElementaryDataItem)meta.getFields().get(i);
+                lengths[i] = f.getLength();
+            }
+            return lengths;
+        }
+    }
+    
+    // separator must be non-null
     public AnalyzerWorkerFactory(String separator) {
         meta = null;
         this.separator = separator;
+        fieldLengths = calculateLengths();
     }
     
+    // if separator is null, meta must be a class definition with only Alphanumeric fields.
     public AnalyzerWorkerFactory(ClassDefinition meta, String separator) {
         this.meta = meta;
         this.separator = separator;
+        fieldLengths = calculateLengths();
     }
     
     @Override
@@ -172,7 +190,20 @@ public class AnalyzerWorkerFactory extends ContributorNoop implements BatchProce
         @Override
         public String process(int recordNo, String data) throws Exception {
             // split the line
-            String [] cols = data.split(myFactory.separator);
+            String [] cols;
+            if (myFactory.separator != null) {
+                cols = data.split(myFactory.separator);
+            } else {
+                cols = new String [myFactory.meta.getNumberOfFields()];
+                int currentPos = 0;
+                for (int i = 0; i < cols.length; ++i) {
+                    int endPos = currentPos + myFactory.fieldLengths[i];
+                    if (endPos > data.length())
+                        break;   // no more fields
+                    cols[i] = data.substring(currentPos, endPos);
+                    currentPos = endPos;
+                }
+            }
             numFields.upd(cols.length);
             for (int i = 0; i < cols.length; ++i)
                 check(columnData[i], cols[i]);

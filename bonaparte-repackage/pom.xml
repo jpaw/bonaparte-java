@@ -23,8 +23,8 @@
     <dependencies>
         <dependency>
             <groupId>de.jpaw</groupId>
-            <artifactId>bonaparte-xml</artifactId>
-            <version>${bonaparte.version}</version>
+            <artifactId>jpaw-xml</artifactId>
+            <version>${jpaw-util.version}</version>
         </dependency>
         <dependency>
             <groupId>javax.xml.bind</groupId>
@@ -49,7 +49,7 @@
                             <includes>
                                 <!-- groupId : artifactId -->
                                 <include>javax.xml.bind:jaxb-api</include>
-                                <include>de.jpaw:bonaparte-xml</include>
+                                <include>de.jpaw:jpaw-xml</include>
                             </includes>
                             <rules>
                                 <rule>

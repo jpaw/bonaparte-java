@@ -7,8 +7,7 @@
     <version>2.4.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>BONAPARTE common configuration (parent pom)</name>
-    <description>Common configuration settings for all BONAPARTE projects</description>
+    <description>Common configuration settings for BONAPARTE based projects</description>
     <url>http://www.jpaw.de/projects/bonaparte/index.html</url>
 
     <properties>
@@ -401,8 +400,6 @@
         <module>../bonaparte-adapters/pom.xml</module>
         <module>../bonaparte-adapters-test/pom.xml</module>
         <module>../bonaparte-android/pom.xml</module>
-        <module>../bonaparte-xenum-init/pom.xml</module>
-        <module>../bonaparte-xml/pom.xml</module>
         <module>../bonaparte-xml-test/pom.xml</module>
         <module>../bonaparte-hazelcast/pom.xml</module>
         <!-- <module>../bonaparte-hazelcast-test/pom.xml</module> This is slow and also may be network dependent. Omitting it from main build. -->

@@ -21,8 +21,8 @@
         </dependency>
         <dependency>
             <groupId>de.jpaw</groupId>
-            <artifactId>bonaparte-xml</artifactId>
-            <version>${bonaparte.version}</version>
+            <artifactId>jpaw-xml</artifactId>
+            <version>${jpaw-util.version}</version>
         </dependency>
         <dependency>
             <groupId>org.testng</groupId>
