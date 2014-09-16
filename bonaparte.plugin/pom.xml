@@ -12,7 +12,7 @@
     <artifactId>bonaparte.plugin</artifactId>
     <packaging>eclipse-plugin</packaging>
 
-    <name>BONAPARTE Eclipse plugin</name>
+    <description>BONAPARTE Eclipse plugin</description>
 
     <build>
         <plugins>
@@ -103,13 +103,18 @@
         </dependency>
         <dependency>
             <groupId>de.jpaw</groupId>
-            <artifactId>bonaparte-xml</artifactId>
-            <version>${bonaparte.version}</version>
+            <artifactId>jpaw-xml</artifactId>
+            <version>${jpaw-util.version}</version>
         </dependency>
         <dependency>
             <groupId>de.jpaw</groupId>
-            <artifactId>bonaparte-money</artifactId>
-            <version>${bonaparte.version}</version>
+            <artifactId>jpaw-enums</artifactId>
+            <version>${jpaw-util.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.jpaw</groupId>
+            <artifactId>jpaw-money</artifactId>
+            <version>${jpaw-util.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

@@ -55,8 +55,8 @@
         </dependency>
         <dependency>
             <groupId>de.jpaw</groupId>
-            <artifactId>bonaparte-money</artifactId>
-            <version>${bonaparte.version}</version>
+            <artifactId>jpaw-money</artifactId>
+            <version>${jpaw-util.version}</version>
         </dependency>
         <dependency>
             <groupId>de.jpaw</groupId>
