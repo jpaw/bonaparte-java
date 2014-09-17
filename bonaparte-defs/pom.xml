@@ -1,0 +1,208 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>de.jpaw</groupId>
+        <artifactId>jpaw-defs</artifactId>
+        <version>0.9.9-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>bonaparte-defs</artifactId>
+    <version>2.4.2-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <description>Additional revisions for BONAPARTE based projects, but no modules defined</description>
+    <url>http://www.jpaw.de/projects/bonaparte/index.html</url>
+
+    <properties>
+        <!-- define releases we want to use, to ensure consistency -->
+        <bonaparte.version>2.4.2-SNAPSHOT</bonaparte.version>
+        <bonaparte-plugin-version>2.4.2-SNAPSHOT</bonaparte-plugin-version>
+        
+        <jpaw.version>0.9.2-SNAPSHOT</jpaw.version>
+        <jpaw-fixedpoint.version>0.5.2-SNAPSHOT</jpaw-fixedpoint.version>
+        
+        <disruptor.version>3.2.1</disruptor.version>    <!-- UPTODATE 2014-06-18, 3.3.0 release in July -->
+        
+        <!-- Some more versions, used by specific dependent projects -->
+        <netty.version>4.0.23.Final</netty.version>     <!-- https://netty.io/news/ UPTODATE 2014-08-16 -->
+        <poi.version>3.10.1</poi.version>               <!-- http://poi.apache.org/ UPTODATE 2014-09-06 -->
+        <mina.version>2.0.7</mina.version>              <!-- http://mina.apache.org/ 2.0.7 -->
+        <camel.version>2.12.4</camel.version>           <!-- http://camel.apache.org/ UPTODATE 2014-07-07 -->
+        <vertx.version>2.1.2</vertx.version>            <!-- http://vertx.io/ UPTODATE 2014-07-22 -->
+        <hazelcast.version>3.2.6</hazelcast.version>    <!-- http://hazelcast.org/download/ UPTODATE 2014-09-11 -->
+        <hornetq.version>2.2.14.Final</hornetq.version> <!-- http://www.jboss.org/hornetq 2.3.0.Final -->
+    </properties>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>1.7</version>
+                    <executions>
+                        <execution>
+                            <id>add-source</id>
+                            <phase>generate-sources</phase>
+                            <goals>
+                                <goal>add-source</goal>
+                            </goals>
+                            <configuration>
+                                <sources>
+                                    <source>src/main/xtend</source>
+                                    <source>src/main/xtend-gen</source>
+                                    <source>src/generated/java</source>
+                                </sources>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>add-test-source</id>
+                            <phase>generate-test-sources</phase>
+                            <goals>
+                                <goal>add-test-source</goal>
+                            </goals>
+                            <configuration>
+                                <sources>
+                                    <source>src/test/xtend</source>
+                                    <source>src/test/xtend-gen</source>
+                                    <source>src/generated/test/java</source>
+                                </sources>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>2.9.1</version>
+                    <configuration>
+                        <charset>UTF-8</charset>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <!-- must delete generated sources as well -->
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>2.5</version>
+                    <configuration>
+                        <filesets>
+                            <fileset>
+                                <directory>src/generated</directory>
+                                <includes>
+                                    <include>**</include>
+                                </includes>
+                                <excludes>
+                                    <exclude>**/.git*</exclude>
+                                </excludes>
+                            </fileset>
+                            <fileset>
+                                <directory>src/main/xtend-gen</directory>
+                                <includes>
+                                    <include>**</include>
+                                </includes>
+                                <excludes>
+                                    <exclude>**/.git*</exclude>
+                                </excludes>
+                            </fileset>
+                            <fileset>
+                                <directory>src/test/xtend-gen</directory>
+                                <includes>
+                                    <include>**</include>
+                                </includes>
+                                <excludes>
+                                    <exclude>**/.git*</exclude>
+                                </excludes>
+                            </fileset>
+                            <fileset>
+                                <directory>test-output</directory>
+                                <includes>
+                                    <include>**</include>
+                                </includes>
+                            </fileset>
+                        </filesets>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.eclipse.xtext</groupId>
+                    <artifactId>xtext-maven-plugin</artifactId>
+                    <version>${xtext.version}</version>
+                    <executions>
+                        <execution>
+                            <phase>generate-sources</phase>
+                            <goals>
+                                <goal>generate</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <sourceRoots>
+                            <sourceRoot>${project.basedir}/src/main/bon</sourceRoot>
+                        </sourceRoots>
+                        <languages>
+                            <language>
+                                <setup>de.jpaw.bonaparte.dsl.BonScriptStandaloneSetup</setup>
+                                <outputConfigurations>
+                                    <outputConfiguration>
+                                        <outputDirectory>${project.basedir}/src/generated</outputDirectory>
+                                        <!--<javaSupport>false</javaSupport> -->
+                                    </outputConfiguration>
+                                </outputConfigurations>
+                            </language>
+                        </languages>
+                    </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>de.jpaw.bonaparte-dsl</groupId>
+                            <artifactId>de.jpaw.bonaparte.dsl</artifactId>
+                            <version>${bonaparte-plugin-version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>commons-lang</groupId>
+                            <artifactId>commons-lang</artifactId>
+                            <version>2.6</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9.1</version>
+                <configuration>
+                    <charset>UTF-8</charset>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
+
+</project>
