@@ -24,7 +24,7 @@
         <dependency>
             <groupId>de.jpaw</groupId>
             <artifactId>jpaw-xml</artifactId>
-            <version>${jpaw-util.version}</version>
+            <version>${jpaw.version}</version>
         </dependency>
         <dependency>
             <groupId>javax.xml.bind</groupId>

@@ -23,7 +23,7 @@ public class TestEnumFilter {
 
     private static CSVConfiguration unixPasswdCfg = new CSVConfiguration.Builder().usingSeparator(":").usingQuoteCharacter(null).build();
     private static List<String> fields = Arrays.asList( "color");
-    private static Map<Class<? extends BonaCustom>, List<String>> map = new HashMap<> (10);
+    private static Map<Class<? extends BonaCustom>, List<String>> map = new HashMap<Class<? extends BonaCustom>, List<String>> (10);
     static {
         map.put(BonaPortable.class, fields);
     }
@@ -32,7 +32,7 @@ public class TestEnumFilter {
         CSVComposer cmp = new CSVComposer(buffer, unixPasswdCfg);
         cmp.setWriteCRs(false);
         
-        MessageComposer<IOException> c1 = doEnumFilter ? new EnumAsTokenComposerFilter<>(cmp) : cmp;
+        MessageComposer<IOException> c1 = doEnumFilter ? new EnumAsTokenComposerFilter<IOException>(cmp) : cmp;
         MessageComposer<IOException> c2 = doFolding ? new FoldingComposer<IOException>(c1, map, FoldingStrategy.TRY_SUPERCLASS) : c1;
         try {
             c2.writeRecord(input);

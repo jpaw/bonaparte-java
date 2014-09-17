@@ -5,7 +5,7 @@ import de.jpaw.bonaparte.coretests.initializers.FillOtherTypes;
 import de.jpaw.bonaparte.pojos.mapTests.Maps1;
 import de.jpaw.bonaparte.pojos.mapTests.Sets1;
 import de.jpaw.bonaparte.pojos.tests1.OtherTypes;
-import de.jpaw.util.ToStringHelper;
+import de.jpaw.bonaparte.util.ToStringHelper;
 
 public class ToString {
 

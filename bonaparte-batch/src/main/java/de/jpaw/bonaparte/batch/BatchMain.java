@@ -9,7 +9,7 @@ import com.martiansoftware.jsap.JSAPResult;
 import com.martiansoftware.jsap.Parameter;
 import com.martiansoftware.jsap.SimpleJSAP;
 
-import de.jpaw.util.DayTime;
+import de.jpaw.bonaparte.util.DayTime;
 
 /** Implements the main thread of batch processing, as well as central components such as worker thread creation and termination,
  * buffer allocation, statistics output and more.

@@ -3,7 +3,7 @@ package de.jpaw.bonaparte.core.tests;
 import org.joda.time.LocalDateTime;
 import org.testng.annotations.Test;
 
-import de.jpaw.util.DayTime;
+import de.jpaw.bonaparte.util.DayTime;
 
 public class DayTimeTest {
     @Test

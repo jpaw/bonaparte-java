@@ -16,7 +16,7 @@ import de.jpaw.bonaparte.core.FoldingComposer;
 import de.jpaw.bonaparte.pojos.csvTests.UnixPasswd;
 import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
 import de.jpaw.bonaparte.pojos.meta.FoldingStrategy;
-import de.jpaw.util.FieldGetter;
+import de.jpaw.bonaparte.util.FieldGetter;
 
 public class TestFolding {
 
@@ -44,7 +44,7 @@ public class TestFolding {
         UnixPasswd pwEntry = new UnixPasswd("root", "x", 0, 0,"System superuser", "/root", "/bin/sh");
         UnixPasswd pwEntry2 = new UnixPasswd("jpaw", "x", 1003, 314,"Michael Bischoff", "/home/jpaw", "/bin/bash");
         List<String> fields = Arrays.asList( "gecos", "name", "shell");
-        Map<Class<? extends BonaCustom>, List<String>> map = new HashMap<> (10);
+        Map<Class<? extends BonaCustom>, List<String>> map = new HashMap<Class<? extends BonaCustom>, List<String>> (10);
         map.put(UnixPasswd.class, fields);
         runTest(unixPasswdCfg, pwEntry, "System superuser:root:/bin/sh\n", map);
         runTest(unixPasswdCfg, pwEntry2, "Michael Bischoff:jpaw:/bin/bash\n",  map);
@@ -53,7 +53,7 @@ public class TestFolding {
     @Test
     public void testMetaData() throws Exception {
         List<String> fields = Arrays.asList( "name", "fields.name", "numberOfFields");
-        Map<Class<? extends BonaCustom>, List<String>> map = new HashMap<> (10);
+        Map<Class<? extends BonaCustom>, List<String>> map = new HashMap<Class<? extends BonaCustom>, List<String>> (10);
         map.put(ClassDefinition.class, fields);
         runTest(unixPasswdCfg, UnixPasswd.class$MetaData(), "csvTests.UnixPasswd:name:passwd:uid:gid:gecos:dir:shell:7\n",  map);
     }
@@ -61,7 +61,7 @@ public class TestFolding {
     @Test
     public void testMetaDataWithIndex() throws Exception {
         List<String> fields = Arrays.asList( "name", "fields[2].name", "numberOfFields");
-        Map<Class<? extends BonaCustom>, List<String>> map = new HashMap<> (10);
+        Map<Class<? extends BonaCustom>, List<String>> map = new HashMap<Class<? extends BonaCustom>, List<String>> (10);
         map.put(ClassDefinition.class, fields);
         runTest(unixPasswdCfg, UnixPasswd.class$MetaData(), "csvTests.UnixPasswd:uid:7\n",  map);
     }

@@ -23,7 +23,7 @@ public class TestMultiRecordTypes {
     private static final String RECORD_ID_EDGE = "EDGE";
     private static final String RECORD_ID_EOF = "EOF";
     
-    private static Map<String, Class<? extends BonaPortable>> typeMap = new HashMap<>(4);
+    private static Map<String, Class<? extends BonaPortable>> typeMap = new HashMap<String, Class<? extends BonaPortable>>(4);
     static {
         typeMap.put(RECORD_ID_HEAD, HeadRecord.class);
         typeMap.put(RECORD_ID_NODE, NodeRecord.class);

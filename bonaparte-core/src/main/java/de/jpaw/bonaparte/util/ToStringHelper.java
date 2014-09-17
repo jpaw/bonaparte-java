@@ -1,4 +1,4 @@
-package de.jpaw.util;
+package de.jpaw.bonaparte.util;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;

@@ -104,17 +104,17 @@
         <dependency>
             <groupId>de.jpaw</groupId>
             <artifactId>jpaw-xml</artifactId>
-            <version>${jpaw-util.version}</version>
+            <version>${jpaw.version}</version>
         </dependency>
         <dependency>
             <groupId>de.jpaw</groupId>
             <artifactId>jpaw-enums</artifactId>
-            <version>${jpaw-util.version}</version>
+            <version>${jpaw.version}</version>
         </dependency>
         <dependency>
             <groupId>de.jpaw</groupId>
             <artifactId>jpaw-money</artifactId>
-            <version>${jpaw-util.version}</version>
+            <version>${jpaw.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

@@ -5,8 +5,8 @@ import java.nio.charset.StandardCharsets;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.ByteArrayParser;
 import de.jpaw.bonaparte.core.StaticMeta;
+import de.jpaw.bonaparte.util.ToStringHelper;
 import de.jpaw.util.Base64;
-import de.jpaw.util.ToStringHelper;
 
 /** decode a base64 encoded serialized bonaparte class.
  * Please put JARs which contain relevant bonaparte classes into the classpath, as they are needed for decoding.

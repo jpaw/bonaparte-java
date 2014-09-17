@@ -56,7 +56,7 @@
         <dependency>
             <groupId>de.jpaw</groupId>
             <artifactId>jpaw-money</artifactId>
-            <version>${jpaw-util.version}</version>
+            <version>${jpaw.version}</version>
         </dependency>
         <dependency>
             <groupId>de.jpaw</groupId>

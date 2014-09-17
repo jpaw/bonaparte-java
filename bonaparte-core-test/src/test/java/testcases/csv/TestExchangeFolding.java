@@ -60,7 +60,7 @@ public class TestExchangeFolding {
     public void testMetaDataWithIndex() throws Exception {
         Ratios r = setup();
         List<String> fields = Arrays.asList( "forSrc[GRD].ratioToCurrency[USD]");
-        Map<Class<? extends BonaCustom>, List<String>> map = new HashMap<> (10);
+        Map<Class<? extends BonaCustom>, List<String>> map = new HashMap<Class<? extends BonaCustom>, List<String>> (10);
         map.put(Ratios.class, fields);
         runTest(unixPasswdCfg, r, "3.252\n",  map);
     }

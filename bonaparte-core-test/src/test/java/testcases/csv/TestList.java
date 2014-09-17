@@ -44,7 +44,7 @@ public class TestList {
         ListComposer lc = new ListComposer(storage, false);
         
         List<String> fields = Arrays.asList( "gecos", "name", "shell");
-        Map<Class<? extends BonaCustom>, List<String>> map = new HashMap<> (10);
+        Map<Class<? extends BonaCustom>, List<String>> map = new HashMap<Class<? extends BonaCustom>, List<String>> (10);
         map.put(UnixPasswd.class, fields);
         FoldingComposer<RuntimeException> fld = new FoldingComposer<RuntimeException>(lc, map, FoldingStrategy.TRY_SUPERCLASS);
         fld.writeRecord(pwEntry2);

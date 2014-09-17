@@ -38,9 +38,9 @@ import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDefinition;
+import de.jpaw.bonaparte.util.BigDecimalTools;
 import de.jpaw.enums.AbstractXEnumBase;
 import de.jpaw.enums.XEnumFactory;
-import de.jpaw.util.BigDecimalTools;
 import de.jpaw.util.ByteArray;
 
 /**

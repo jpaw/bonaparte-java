@@ -49,6 +49,7 @@ public class DisruptorBench {
         }
         
         public final static EventFactory<MyElement> EVENT_FACTORY = new EventFactory<MyElement>() {
+            @Override
             public MyElement newInstance() {
                 return new MyElement();
             }
@@ -61,8 +62,9 @@ public class DisruptorBench {
     @Setup
     public void setUp() throws IOException {
         exec = Executors.newCachedThreadPool();
-        disruptor = new Disruptor<>(MyElement.EVENT_FACTORY, 4096, exec);
+        disruptor = new Disruptor<MyElement>(MyElement.EVENT_FACTORY, 4096, exec);
         final EventHandler<MyElement> handler = new EventHandler<DisruptorBench.MyElement>() {
+            @Override
             public void onEvent(final MyElement event, final long sequenceNo, final boolean end) throws Exception {
                 ;  // nuffin
             }

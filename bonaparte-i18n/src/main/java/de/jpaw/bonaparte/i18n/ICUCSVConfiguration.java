@@ -1,8 +1,11 @@
-package de.jpaw.bonaparte.core;
+package de.jpaw.bonaparte.i18n;
 
 import java.util.Locale;
 
 import com.ibm.icu.util.ULocale;
+
+import de.jpaw.bonaparte.core.CSVConfiguration;
+import de.jpaw.bonaparte.core.CSVStyle;
 
 public class ICUCSVConfiguration extends CSVConfiguration {
 

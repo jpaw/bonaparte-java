@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package de.jpaw.bonaparte.core;
+package de.jpaw.bonaparte.i18n;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.ibm.icu.text.NumberFormat;
 
+import de.jpaw.bonaparte.core.CSVComposer2;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 /**
  * The CSVComposer class.
@@ -33,7 +32,6 @@ import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
  */
 
 public class ICUCSVComposer extends CSVComposer2 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ICUCSVComposer.class);
 
     //protected boolean shouldWarnWhenUsingFloat;
     protected final ICUCSVConfiguration cfg2;

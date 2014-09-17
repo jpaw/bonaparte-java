@@ -2,46 +2,23 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>de.jpaw</groupId>
+
+    <parent>
+        <groupId>de.jpaw</groupId>
+        <artifactId>bonaparte-defs</artifactId>
+        <version>2.4.2-SNAPSHOT</version>
+    </parent>
+
     <artifactId>bonaparte.allplugins</artifactId>
-    <version>2.4.2-SNAPSHOT</version>
     <packaging>pom</packaging>
+    
     <modules>
         <module>../bonaparte.plugin</module>
         <module>../bonaparte.sdk</module>
         <module>../bonaparte.updatesite</module>
     </modules>
 
-    <licenses>
-        <license>
-            <name>The Apache Software License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-        </license>
-    </licenses>
-
-    <organization>
-        <name>Michael Bischoff</name>
-        <url>http://www.jpaw.de</url>
-    </organization>
-    <developers>
-        <developer>
-            <id>mbi</id>
-            <name>Michael Bischoff</name>
-            <email>jpaw@online.de</email>
-            <url>http://www.jpaw.de</url>
-        </developer>
-    </developers>
-
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <!-- define releases we want to use, to ensure consistency -->
-        <bonaparte.version>2.4.2-SNAPSHOT</bonaparte.version>
-        <slf4j.version>1.7.7</slf4j.version>            <!-- http://www.slf4j.org/ UPTODATE 2014-04-04 -->
-        <logback.version>1.1.2</logback.version>        <!-- http://logback.qos.ch/ UPTODATE 2014-04-02 -->
-        <guava.version>18.0</guava.version>             <!-- http://code.google.com/p/guava-libraries/ 14.0.1 UPTODATE 2013-06-09, 
-            18.0 UPTODATE 2014-08-25 -->
-        <jodatime.version>2.4</jodatime.version>        <!-- UPTODATE 2014-07-27 -->
-        <jaxb.version>2.2.9</jaxb.version>              <!-- http://repo1.maven.org/maven2/javax/xml/bind/jaxb-api/ -->
         <tycho.version>0.21.0</tycho.version>
     </properties>
 

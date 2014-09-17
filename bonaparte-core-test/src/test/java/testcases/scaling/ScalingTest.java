@@ -1,13 +1,14 @@
 package testcases.scaling;
 
 import java.math.BigDecimal;
+
 import org.testng.annotations.Test;
 
 import de.jpaw.bonaparte.pojos.scalingTest.Account;
 import de.jpaw.bonaparte.pojos.scalingTest.Amounts;
 import de.jpaw.bonaparte.pojos.scalingTest.Order;
-import de.jpaw.util.BigDecimalTools;
-import de.jpaw.util.ToStringHelper;
+import de.jpaw.bonaparte.util.BigDecimalTools;
+import de.jpaw.bonaparte.util.ToStringHelper;
 
 public class ScalingTest {
 

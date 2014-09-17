@@ -1,4 +1,4 @@
-package de.jpaw.util;
+package de.jpaw.bonaparte.util;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

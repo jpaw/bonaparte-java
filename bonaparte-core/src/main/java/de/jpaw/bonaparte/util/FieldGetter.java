@@ -1,4 +1,4 @@
-package de.jpaw.util;
+package de.jpaw.bonaparte.util;
 
 import java.util.ArrayList;
 import java.util.Collections;

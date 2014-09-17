@@ -6,8 +6,8 @@ import org.vertx.java.core.json.JsonObject;
 import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
 import de.jpaw.bonaparte.pojos.meta.XEnumDefinition;
 import de.jpaw.bonaparte.pojos.testobjects.XColor;
+import de.jpaw.bonaparte.util.ToStringHelper;
 import de.jpaw.bonaparte.vertx.JsonObjectComposer;
-import de.jpaw.util.ToStringHelper;
 
 public class JsonConversionTest {
 
