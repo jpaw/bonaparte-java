@@ -81,7 +81,7 @@ public class ApplicationException extends Exception {
 
     /** Creates a new ApplicationException for a given error code, with some explanatory details. */
     public ApplicationException(int errorCode, String detailedMessage) {
-        super(detailedMessage);
+        super("Code " + Integer.toString(errorCode) + (detailedMessage == null ? "" : " @ " + detailedMessage));
         this.errorCode = errorCode;
     }
 
@@ -116,7 +116,7 @@ public class ApplicationException extends Exception {
      */
     @Override
     public String toString() {
-        return "Error code " + errorCode + " (" + getStandardDescription() + "): " + super.toString();
+        return super.toString() + ": (" + getStandardDescription() + ")";
     }
 
     /**

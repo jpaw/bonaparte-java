@@ -18,11 +18,17 @@ package de.jpaw.bonaparte.core;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.UUID;
+
+import org.joda.time.Instant;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
+import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 /**
  * The CSVComposer class.
  *
@@ -93,27 +99,65 @@ public class FixedWidthComposer extends CSVComposer {
         // we have to cover at least all Wrapper types
         switch (di.getDataCategory()) {
         case BINARY:
+            int paddingBytes = getFieldWidth((BinaryElementaryDataItem)di);
+            while (paddingBytes >= MAX_SPACE_PADDING) {
+                paddingBytes -= MAX_SPACE_PADDING;
+                addRawData(SPACE_PADDINGS[MAX_SPACE_PADDING]);
+            }
+            if (paddingBytes > 0)
+                addRawData(SPACE_PADDINGS[paddingBytes]);
             break;
         case TEMPORAL:
             if (di.getDataType().equals("LocalDate")) {
-                addRawData(SPACE_PADDINGS[10]); // FIXME - this length could vary with the selected format
+                addRawData(SPACE_PADDINGS[10]);     // FIXME - this length could vary with the selected format
+                return;
+            }
+            if (di.getDataType().equals("LocalTime")) {
+                addRawData(SPACE_PADDINGS[8]);      // FIXME - this length could vary with the selected format
+                return;
+            }
+            if (di.getDataType().equals("Instant")) {
+                addRawData(SPACE_PADDINGS[18]);
                 return;
             }
             if (di.getDataType().equals("LocalDateTime")) {
-                addRawData(SPACE_PADDINGS[19]);  // FIXME - this length could vary with the selected format
+                addRawData(SPACE_PADDINGS[19]);     // FIXME - this length could vary with the selected format
                 return;
             }
             break;
-        case NUMERIC:
+        case BASICNUMERIC:
+            addRawData(SPACE_PADDINGS[getFieldWidth((BasicNumericElementaryDataItem)di)]);
             break;
         case MISC:
             if (di.getDataType().equals("Boolean")) {
                 addRawData(" ");
                 return;
             }
+            if (di.getDataType().equals("UUID")) {
+                addRawData(SPACE_PADDINGS[36]);
+                return;
+            }
             break;
         default:
-            throw new RuntimeException("writeNull() for category " + di.getDataCategory() + " should be converted by specific methods such as addENum() etc.");
+            throw new RuntimeException("writeNull() for category " + di.getDataCategory() + " should be converted by specific methods such as addEnum() etc.");
+        }
+    }
+    
+    @Override
+    public void addField(TemporalElementaryDataItem di, Instant t) throws IOException {
+        if (t != null) {
+            outputPaddedNumber(Long.toString(t.getMillis()), 18);
+        } else {
+            addRawData(SPACE_PADDINGS[18]);
+        }
+    }
+
+    @Override
+    public void addField(MiscElementaryDataItem di, UUID n) throws IOException {
+        if (n != null) {
+            addRawData(n.toString());
+        } else {
+            addRawData(SPACE_PADDINGS[36]);
         }
     }
 
@@ -128,6 +172,17 @@ public class FixedWidthComposer extends CSVComposer {
             addRawData(getPadding(di.getLength()));
         }
     }
+    
+    protected void outputPaddedNumber(String pattern, int totalLength) throws IOException {
+        if (cfg.rightPadNumbers) {
+            addRawData(pattern);
+            numericPad(totalLength - pattern.length());
+        } else {
+            numericPad(totalLength - pattern.length());
+            addRawData(pattern);
+        }
+        
+    }
 
     // decimal using TRAILING SIGN
     @Override
@@ -140,28 +195,19 @@ public class FixedWidthComposer extends CSVComposer {
             BigDecimal absVal = isNegative ? n.negate() : n;
             if (cfg.removePoint4BD) {
                 // use standard BigDecimal formatter, and remove the "." from the output
-                String pattern = absVal.setScale(decimals).toPlainString().replace(".", "");
-                numericPad(di.getTotalDigits() - pattern.length());
-                addRawData(pattern);
+                outputPaddedNumber(absVal.setScale(decimals).toPlainString().replace(".", ""), di.getTotalDigits());
             } else {
                 // use standard locale formatter to get the localized . or ,
                 bigDecimalFormat.setMaximumFractionDigits(decimals);
                 bigDecimalFormat.setMinimumFractionDigits(decimals);
-                String pattern = bigDecimalFormat.format(absVal);
-                if (cfg.rightPadNumbers) {
-                    addRawData(pattern);
-                    numericPad(di.getTotalDigits() + (decimals > 0 ? 1 : 0) - pattern.length());
-                } else {
-                    numericPad(di.getTotalDigits() + (decimals > 0 ? 1 : 0) - pattern.length());
-                    addRawData(pattern);
-                }
+                outputPaddedNumber(bigDecimalFormat.format(absVal), di.getTotalDigits() + (decimals > 0 ? 1 : 0));
             }
             if (di.getIsSigned()) {
                 addRawData(isNegative ? "-" : " ");
             }
         } else {
             // write an appropriate number of spaces
-            addRawData(getPadding(di.getTotalDigits() + (decimals > 0 && !cfg.removePoint4BD ? 1 : 0) + (di.getIsSigned() ? 1 : 0)));
+            addRawData(getPadding(getFieldWidth(di)));
         }
     }
     
@@ -254,7 +300,7 @@ public class FixedWidthComposer extends CSVComposer {
     public void addField(BasicNumericElementaryDataItem di, BigInteger n) throws IOException {
         writeSeparator();
         if (n == null) {
-            addRawData(SPACE_PADDINGS[di.getTotalDigits() + (di.getIsSigned() ? 1 : 0)]);
+            addRawData(SPACE_PADDINGS[getFieldWidth(di)]);
         } else {
             if (cfg.rightPadNumbers) {
                 String val = n.toString();
@@ -274,5 +320,12 @@ public class FixedWidthComposer extends CSVComposer {
                 addRawData(val);
             }
         }
+    }
+    
+    protected int getFieldWidth(BasicNumericElementaryDataItem di) {
+        return di.getTotalDigits() + (di.getIsSigned() ? 1 : 0) + (di.getDecimalDigits() > 0  && !cfg.removePoint4BD ? 1 : 0);
+    }
+    protected int getFieldWidth(BinaryElementaryDataItem di) {
+        return (di.getLength() + 2) / 3 * 4;
     }
 }
