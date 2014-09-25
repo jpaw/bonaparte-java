@@ -20,7 +20,6 @@
         <bonaparte.version>3.0.0-SNAPSHOT</bonaparte.version>
         <bonaparte-plugin-version>3.0.0-SNAPSHOT</bonaparte-plugin-version>
         
-        <jpaw.version>1.0.2-SNAPSHOT</jpaw.version>
         <jpaw-fixedpoint.version>0.5.3-SNAPSHOT</jpaw-fixedpoint.version>
         
         <disruptor.version>3.2.1</disruptor.version>    <!-- UPTODATE 2014-06-18, 3.3.0 release in July -->
