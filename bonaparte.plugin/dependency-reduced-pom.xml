@@ -3,7 +3,7 @@
   <parent>
     <artifactId>bonaparte.allplugins</artifactId>
     <groupId>de.jpaw</groupId>
-    <version>2.3.7</version>
+    <version>2.3.8</version>
     <relativePath>../bonaparte.allplugins/pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
@@ -81,9 +81,9 @@
     <dependency>
       <groupId>p2.eclipse-plugin</groupId>
       <artifactId>com.google.inject</artifactId>
-      <version>3.0.0.v2012.3.72045</version>
+      <version>3.0.0.v2012.3.82045</version>
       <scope>system</scope>
-      <systemPath>/home/cobol/.m2/repository/p2/osgi/bundle/com.google.inject/3.0.0.v2012.3.72045/com.google.inject-3.0.0.v2012.3.72045.jar</systemPath>
+      <systemPath>/home/cobol/.m2/repository/p2/osgi/bundle/com.google.inject/3.0.0.v2012.3.82045/com.google.inject-3.0.0.v2012.3.82045.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>p2.eclipse-plugin</groupId>
