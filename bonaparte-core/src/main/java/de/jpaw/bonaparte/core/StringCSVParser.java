@@ -75,8 +75,52 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
     protected final int time3FormatLength;          // time on millisecond precision (Joda)
     protected final int timestampFormatLength;      // day and time on second precision (Joda)
     protected final int timestamp3FormatLength;     // day and time on millisecond precision (Joda)
-    protected int recordTypeFieldWidth = 0;         // support for readRecord()
-    protected Map<String, Class<? extends BonaPortable>> recordMap = null;
+    protected CSVObjectTypeDetector objectTypeDetector = null;
+    
+    /** Define the method to guess the type of the record by inspecting its contents. */ 
+    public static interface CSVObjectTypeDetector {
+        Class<? extends BonaPortable> typeByContents(String msg) throws MessageParserException; 
+    }
+    
+    public static abstract class AbstractCSVObjectTypeDetector implements CSVObjectTypeDetector {
+        protected final Map<String, Class<? extends BonaPortable>> recordMap;
+        
+        public AbstractCSVObjectTypeDetector(Map<String, Class<? extends BonaPortable>> recordMap) {
+            this.recordMap = recordMap;
+        }
+    }
+        
+    /** Determines the object type based on the contents of the first field, using a delimiter. */
+    public static class DelimiterBasedObjectTypeDetector extends AbstractCSVObjectTypeDetector {
+        protected final String delimiter;
+
+        public DelimiterBasedObjectTypeDetector(Map<String, Class<? extends BonaPortable>> recordMap, String delimiter) {
+            super(recordMap);
+            this.delimiter = delimiter;
+        }
+
+        @Override
+        public Class<? extends BonaPortable> typeByContents(String msg) throws MessageParserException {
+            int pos = msg.indexOf(delimiter);
+            String key = pos < 0 ? msg : msg.substring(0, pos); // if pos < 0: record types such as "EOF" etc... these are valid
+            return recordMap.get(key.trim());
+        }
+    }
+    /** Determines the object type based on the contents of the first n characters. */
+    public static class FixedWidthObjectTypeDetector extends AbstractCSVObjectTypeDetector {
+        protected final int widthOfFirstField;
+
+        public FixedWidthObjectTypeDetector(Map<String, Class<? extends BonaPortable>> recordMap, int widthOfFirstField) {
+            super(recordMap);
+            this.widthOfFirstField = widthOfFirstField;
+        }
+
+        @Override
+        public Class<? extends BonaPortable> typeByContents(String msg) throws MessageParserException {
+            String key = msg.length() < widthOfFirstField ? msg : msg.substring(0, widthOfFirstField);
+            return recordMap.get(key.trim());
+        }
+    }
     
     /** Defines the portion of src from offset (inclusive) to length (exclusive) as parsing source, i.e. length - offset characters. */
     public final void setSource(String src, int offset, int length) {
@@ -124,12 +168,14 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
         currentClass = "N/A";
     }
     
+    public StringCSVParser(CSVConfiguration cfg, String work, CSVObjectTypeDetector objectTypeDetector) {
+        this(cfg, work);
+        this.objectTypeDetector = objectTypeDetector;
+    }
+    
     // setting this allows to use readRecord in subsequent calls 
-    public void setMapping(Map<String, Class<? extends BonaPortable>> recordMap, int recordTypeFieldWidth) {
-        this.recordMap = recordMap;
-        this.recordTypeFieldWidth = recordTypeFieldWidth;
-        if (recordTypeFieldWidth <= 0 && fixedLength)
-            throw new RuntimeException("recordTypeFieldWidth > 0 must be specified for fixed width formats");
+    public void setMapping(CSVObjectTypeDetector objectTypeDetector) {
+        this.objectTypeDetector = objectTypeDetector;
     }
 
     /**************************************************************************************************
@@ -404,21 +450,13 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
 
     @Override
     public BonaPortable readRecord() throws MessageParserException {
-        if (recordMap == null) {
+        if (objectTypeDetector == null) {
             // parsing an arbitrary object is not possible here because we have no type information
             throw new MessageParserException(MessageParserException.UNSUPPORTED_DATA_TYPE, "readRecord()", parseIndex, currentClass);
         }
-        String key;
-        if (fixedLength) {
-            key = work.length() < recordTypeFieldWidth ? work : work.substring(0, recordTypeFieldWidth);
-        } else {
-            int pos = work.indexOf(cfg.separator);
-            key = pos < 0 ? work : work.substring(0, pos);      // if pos < 0: record types such as "EOF" etc... these are valid
-        }
-        key = key.trim();
-        Class<? extends BonaPortable> mappedClass = recordMap.get(key);
+        Class<? extends BonaPortable> mappedClass = objectTypeDetector.typeByContents(work);
         if (mappedClass == null)
-            throw new MessageParserException(MessageParserException.UNKNOW_RECORD_TYPE, key, parseIndex, currentClass);
+            throw new MessageParserException(MessageParserException.UNKNOW_RECORD_TYPE, work, parseIndex, currentClass);
         return readObject(StaticMeta.OUTER_BONAPORTABLE_FOR_CSV, mappedClass);
     }
 

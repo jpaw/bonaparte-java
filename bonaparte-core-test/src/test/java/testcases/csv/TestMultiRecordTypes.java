@@ -58,8 +58,7 @@ public class TestMultiRecordTypes {
         }
         
         // setup parser
-        StringCSVParser p = new StringCSVParser(cfg, "");
-        p.setMapping(typeMap, 0);
+        StringCSVParser p = new StringCSVParser(cfg, "", new StringCSVParser.DelimiterBasedObjectTypeDetector(typeMap, cfg.separator));
         for (int i = 0; i < dataToSerialize.length; ++i) {
             p.setSource(results[i]);
             BonaPortable result = p.readRecord();
