@@ -28,8 +28,8 @@
         <netty.version>4.0.23.Final</netty.version>     <!-- https://netty.io/news/ UPTODATE 2014-08-16 -->
         <poi.version>3.10.1</poi.version>               <!-- http://poi.apache.org/ UPTODATE 2014-09-06 -->
         <mina.version>2.0.7</mina.version>              <!-- http://mina.apache.org/ 2.0.7 -->
-        <camel.version>2.12.4</camel.version>           <!-- http://camel.apache.org/ UPTODATE 2014-07-07 -->
-        <vertx.version>2.1.2</vertx.version>            <!-- http://vertx.io/ UPTODATE 2014-07-22 -->
+        <camel.version>2.12.4</camel.version>           <!-- http://camel.apache.org/ UPTODATE 2014-10-23 SSLv3 patch -->
+        <vertx.version>2.1.4</vertx.version>            <!-- http://vertx.io/ UPTODATE 2014-07-22 -->
         <hazelcast.version>3.2.6</hazelcast.version>    <!-- http://hazelcast.org/download/ UPTODATE 2014-09-11 -->
         <hornetq.version>2.2.14.Final</hornetq.version> <!-- http://www.jboss.org/hornetq 2.3.0.Final -->
     </properties>
