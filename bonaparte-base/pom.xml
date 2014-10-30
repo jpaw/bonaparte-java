@@ -6,6 +6,7 @@
         <groupId>de.jpaw</groupId>
         <artifactId>bonaparte-defs</artifactId>
         <version>3.0.0-SNAPSHOT</version>
+        <relativePath>../bonaparte-defs/pom.xml</relativePath>
     </parent>
 
     <artifactId>bonaparte-base</artifactId>
