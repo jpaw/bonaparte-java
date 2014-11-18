@@ -5,12 +5,12 @@
     <parent>
         <groupId>de.jpaw</groupId>
         <artifactId>jpaw-defs</artifactId>
-        <version>1.0.2</version>
+        <version>1.0.3-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
     <artifactId>bonaparte-defs</artifactId>
-    <version>3.0.0</version>
+    <version>3.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <description>Additional revisions for BONAPARTE based projects, but no modules defined</description>
@@ -18,10 +18,10 @@
 
     <properties>
         <!-- define releases we want to use, to ensure consistency -->
-        <bonaparte.version>3.0.0</bonaparte.version>
-        <bonaparte-plugin-version>3.0.0</bonaparte-plugin-version>
+        <bonaparte.version>3.0.1-SNAPSHOT</bonaparte.version>
+        <bonaparte-plugin-version>3.0.1-SNAPSHOT</bonaparte-plugin-version>
         
-        <jpaw-fixedpoint.version>0.5.3</jpaw-fixedpoint.version>
+        <jpaw-fixedpoint.version>0.5.4-SNAPSHOT</jpaw-fixedpoint.version>
         
         <disruptor.version>3.2.1</disruptor.version>    <!-- UPTODATE 2014-06-18, 3.3.0 release in July -->
         
