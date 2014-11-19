@@ -847,7 +847,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
     }
 
     @Override
-    public BonaPortable readObject(ObjectReference di, Class<? extends BonaPortable> type) throws MessageParserException {
+    public <R extends BonaPortable> R readObject (ObjectReference di, Class<R> type) throws MessageParserException {
         if (checkForNull(di)) {
             return null;
         }
@@ -870,7 +870,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
                             newObject.getClass().getSimpleName(), type.getSimpleName(), fieldname, allowSubtypes), parseIndex, currentClass);
                 }
             }
-            return newObject;
+            return type.cast(newObject);
         } else {
             String previousClass = currentClass;
             needToken(OBJECT_BEGIN); // version not yet allowed
@@ -896,7 +896,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
             newObject.deserialize(this);
             eatObjectTerminator();
             currentClass = previousClass;
-            return newObject;
+            return type.cast(newObject);
         }
     }
 

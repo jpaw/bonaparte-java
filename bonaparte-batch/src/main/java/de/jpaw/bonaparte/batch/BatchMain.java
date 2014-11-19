@@ -31,8 +31,8 @@ public class BatchMain<E, F> {
     }
     
     public void run(String [] args,
-            BatchReader<E> reader,
-            BatchWriter<F> writer,
+            BatchReader<? extends E> reader,
+            BatchWriter<? super F> writer,
             BatchProcessorFactory<E,F> processorFactory,
             BatchExecutor<E,F> executor) throws Exception {
         programStart = LocalDateTime.now();
@@ -90,24 +90,24 @@ public class BatchMain<E, F> {
     
     // shorthand to save an arg
     public void runST(String [] args,
-            BatchReader<E> reader,
-            BatchWriter<F> writer,
+            BatchReader<? extends E> reader,
+            BatchWriter<? super F> writer,
             BatchProcessorFactory<E,F> processorFactory) throws Exception {
         run(args, reader, writer, processorFactory, new BatchExecutorUnthreaded<E, F>());
     }
     
     // shorthand to save an arg
     public void runMT(String [] args,
-            BatchReader<E> reader,
-            BatchWriter<F> writer,
+            BatchReader<? extends E> reader,
+            BatchWriter<? super F> writer,
             BatchProcessorFactory<E,F> processorFactory) throws Exception {
         run(args, reader, writer, processorFactory, new BatchExecutorMultiThreaded<E, F>());
     }
     
     // shorthand to save an arg
     public void run3T(String [] args,
-            BatchReader<E> reader,
-            BatchWriter<F> writer,
+            BatchReader<? extends E> reader,
+            BatchWriter<? super F> writer,
             BatchProcessorFactory<E,F> processorFactory) throws Exception {
         run(args, reader, writer, processorFactory, new BatchExecutor3Threads<E, F>());
     }

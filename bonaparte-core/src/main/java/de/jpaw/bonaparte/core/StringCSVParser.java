@@ -553,10 +553,10 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
     }
 
     @Override
-    public BonaPortable readObject(ObjectReference di, Class<? extends BonaPortable> type) throws MessageParserException {
+    public <R extends BonaPortable> R readObject (ObjectReference di, Class<R> type) throws MessageParserException {
         if (di.getAllowSubclasses())
             throw new MessageParserException(MessageParserException.UNSUPPORTED_DATA_TYPE, "readObject(subtypes = true)", parseIndex, currentClass);
-        BonaPortable newObject;
+        R newObject;
         try {
             newObject = type.newInstance();
         } catch (InstantiationException e) {

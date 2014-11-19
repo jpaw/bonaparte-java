@@ -36,7 +36,7 @@ public class BatchExecutor3Threads<E,F> implements BatchExecutor<E,F> {
 //    }
 
     private BatchProcessor<E,F> localProcessor = null;
-    private BatchWriter<F> localWriter = null; 
+    private BatchWriter<? super F> localWriter = null; 
     
     private int inBufferSize = 1024;
     private int outBufferSize = 1024;
@@ -51,9 +51,9 @@ public class BatchExecutor3Threads<E,F> implements BatchExecutor<E,F> {
     private FirstEventHandler hdlr1 = null;
     
     private class SecondEventHandler implements EventHandler<DataWithOrdinal<F>> {
-        private final BatchWriter<F> localWriter;
+        private final BatchWriter<? super F> localWriter;
 
-        private SecondEventHandler(BatchWriter<F> localWriter) {
+        private SecondEventHandler(BatchWriter<? super F> localWriter) {
             this.localWriter = localWriter;
         }
         
@@ -82,7 +82,7 @@ public class BatchExecutor3Threads<E,F> implements BatchExecutor<E,F> {
         Disruptor<DataWithOrdinal<F>> disruptorOut;
         RingBuffer<DataWithOrdinal<F>> ringBufferOut = null;
         
-        private FirstEventHandler(BatchProcessor<E,F> localProcessor, BatchWriter<F> localWriter, int bs) {
+        private FirstEventHandler(BatchProcessor<E,F> localProcessor, BatchWriter<? super F> localWriter, int bs) {
             this.localProcessor = localProcessor;
             this.outBufferSize = bs;
             
@@ -132,7 +132,7 @@ public class BatchExecutor3Threads<E,F> implements BatchExecutor<E,F> {
     
     // if worker threads are desired, create
     @Override
-    public void open(BatchProcessorFactory<E,F> processorFactory, BatchWriter<F> writer) throws Exception {
+    public void open(BatchProcessorFactory<E,F> processorFactory, BatchWriter<? super F> writer) throws Exception {
         this.localWriter = writer;
         this.localProcessor = processorFactory.getProcessor(0);
         

@@ -24,7 +24,7 @@ public class BatchExecutorMultiThreaded<E,F> implements BatchExecutor<E,F> {
 
     private BlockingQueue<DataWithOrdinal<E>> inputQueue = null; 
     private BlockingQueue<DataWithOrdinal<F>> outputQueue = null;
-    private BatchExecutorMTResultCollector<F> collector = null;
+    private BatchExecutorMTResultCollector<? super F> collector = null;
     private Thread collectorThread = null;
     private Thread [] workerThreads = null;
 
@@ -34,7 +34,7 @@ public class BatchExecutorMultiThreaded<E,F> implements BatchExecutor<E,F> {
 
     // if worker threads are desired, create
     @Override
-    public void open(BatchProcessorFactory<E,F> processorFactory, BatchWriter<F> writer) throws Exception {
+    public void open(BatchProcessorFactory<E,F> processorFactory, BatchWriter<? super F> writer) throws Exception {
         inputQueue = new ArrayBlockingQueue<DataWithOrdinal<E>>(inQueueSize);
         outputQueue = new ArrayBlockingQueue<DataWithOrdinal<F>>(outQueueSize);
 

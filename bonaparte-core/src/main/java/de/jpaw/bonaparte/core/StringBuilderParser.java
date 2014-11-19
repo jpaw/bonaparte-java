@@ -739,7 +739,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
     }
 
     @Override
-    public BonaPortable readObject(ObjectReference di, Class<? extends BonaPortable> type) throws MessageParserException {
+    public <R extends BonaPortable> R readObject (ObjectReference di, Class<R> type) throws MessageParserException {
         if (checkForNull(di)) {
             return null;
         }
@@ -762,7 +762,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
                             newObject.getClass().getSimpleName(), type.getSimpleName(), fieldname, allowSubtypes), parseIndex, currentClass);
                 }
             }
-            return newObject;
+            return type.cast(newObject);
         } else {
             needToken(OBJECT_BEGIN); // version not yet allowed
             String previousClass = currentClass;
@@ -787,7 +787,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
             newObject.deserialize(this);
             eatObjectTerminator();
             currentClass = previousClass;
-            return newObject;
+            return type.cast(newObject);
         }
     }
 

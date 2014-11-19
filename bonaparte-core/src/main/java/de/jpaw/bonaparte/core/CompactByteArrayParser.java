@@ -595,7 +595,7 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
 
 
     @Override
-    public BonaPortable readObject(ObjectReference di, Class<? extends BonaPortable> type) throws MessageParserException {
+    public <R extends BonaPortable> R readObject (ObjectReference di, Class<R> type) throws MessageParserException {
         if (checkForNull(di)) {
             return null;
         }
@@ -618,7 +618,7 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
                             newObject.getClass().getSimpleName(), type.getSimpleName(), fieldname, allowSubtypes), parseIndex, currentClass);
                 }
             }
-            return newObject;
+            return type.cast(newObject);
         } else if (c == OBJECT_BEGIN_PQON){
             String previousClass = currentClass;
             String classname = readString(fieldname, di.getIsRequired());
@@ -652,7 +652,7 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
             skipNulls();
             needToken(OBJECT_TERMINATOR);
             currentClass = previousClass;
-            return newObject;
+            return type.cast(newObject);
         } else if (c == OBJECT_BEGIN_ID){
             throw new MessageParserException(MessageParserException.UNEXPECTED_CHARACTER,
                     String.format("not yet implemented*, got 0x%02x)", c), parseIndex, currentClass);

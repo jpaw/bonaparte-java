@@ -11,12 +11,12 @@ public class BatchExecutorMTResultCollector<F> implements Runnable {
     private static final Logger LOG = LoggerFactory.getLogger(BatchExecutorMTResultCollector.class);
     
     private final BlockingQueue<DataWithOrdinal<F>> outputQueue;
-    private final BatchWriter<F> writer;
+    private final BatchWriter<? super F> writer;
     // redundant counters...
     private int numProcessed = 0;
     private int numExceptions = 0;
 
-    public BatchExecutorMTResultCollector(BlockingQueue<DataWithOrdinal<F>> outputQueue, BatchWriter<F> writer) {
+    public BatchExecutorMTResultCollector(BlockingQueue<DataWithOrdinal<F>> outputQueue, BatchWriter<? super F> writer) {
         this.outputQueue = outputQueue;
         this.writer = writer;
     }

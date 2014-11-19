@@ -6,7 +6,7 @@ import de.jpaw.bonaparte.core.StringBuilderParser;
 public class BatchReaderBonaparteFile extends BatchReaderTextFileAbstract implements BatchReader<BonaPortable> {
     
     @Override
-    public void produceTo(BatchMainCallback<BonaPortable> whereToPut) throws Exception {
+    public void produceTo(BatchMainCallback<? super BonaPortable> whereToPut) throws Exception {
         StringBuilder buffer = new StringBuilder(10000);  // have a buffer which persists a bit longer to avoid GC overhead
         
         // while data is available, insert it into the queue

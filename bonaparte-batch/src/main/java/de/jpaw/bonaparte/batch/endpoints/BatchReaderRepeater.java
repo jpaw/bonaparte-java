@@ -31,7 +31,7 @@ public class BatchReaderRepeater<E> implements BatchReader<E> {
     }
 
     @Override
-    public void produceTo(BatchMainCallback<E> whereToPut) throws Exception {
+    public void produceTo(BatchMainCallback<? super E> whereToPut) throws Exception {
         for (int i = 0; i < numRepeats; ++i) {
             Thread.sleep(delayInMillis);
             whereToPut.scheduleForProcessing(objectToRepeat);

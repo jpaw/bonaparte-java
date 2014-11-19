@@ -70,7 +70,7 @@ public interface MessageParser<E extends Exception> {
     public LocalDate  readDay       (TemporalElementaryDataItem di) throws E;
     public LocalTime  readTime      (TemporalElementaryDataItem di) throws E;
     public LocalDateTime readDayTime(TemporalElementaryDataItem di) throws E;
-    public BonaPortable  readObject (ObjectReference di, Class<? extends BonaPortable> type) throws E; // parser factory
+    public <R extends BonaPortable> R readObject (ObjectReference di, Class<R> type) throws E; // parser factory
     // composite methods
     public int parseMapStart        (FieldDefinition di) throws E;
     public int parseArrayStart      (FieldDefinition di, int sizeOfElement) throws E;

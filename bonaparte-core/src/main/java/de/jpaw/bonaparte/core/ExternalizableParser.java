@@ -572,7 +572,7 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
     }
 
     @Override
-    public BonaPortable readObject(ObjectReference di, Class<? extends BonaPortable> type) throws IOException {
+    public <R extends BonaPortable> R readObject (ObjectReference di, Class<R> type) throws IOException {
         if (checkForNull(di)) {
             return null;
         }
@@ -623,7 +623,7 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
             }
         }
         currentClass = previousClass;       // pop class name
-        return newObject;
+        return type.cast(newObject);
     }
 
     @Override

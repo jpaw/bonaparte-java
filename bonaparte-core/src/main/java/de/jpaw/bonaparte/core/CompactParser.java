@@ -198,7 +198,7 @@ public class CompactParser extends CompactConstants implements MessageParser<IOE
     }
 
     @Override
-    public BonaPortable readObject(ObjectReference di, Class<? extends BonaPortable> type) throws IOException {
+    public <R extends BonaPortable> R readObject (ObjectReference di, Class<R> type) throws IOException {
         // TODO Auto-generated method stub
         return null;
     }

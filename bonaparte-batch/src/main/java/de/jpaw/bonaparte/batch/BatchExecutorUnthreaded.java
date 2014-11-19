@@ -2,12 +2,12 @@ package de.jpaw.bonaparte.batch;
 
 public class BatchExecutorUnthreaded<E,F> extends ContributorNoop implements BatchExecutor<E,F> {
     private BatchProcessor<E,F> localProcessor = null;
-    private BatchWriter<F> localWriter = null; 
+    private BatchWriter<? super F> localWriter = null; 
     private int numRecords = 0;         // number of records read (added to input queue)
     private int numExceptions = 0;      // number of records which resulted in an exception
     
     @Override
-    public void open(BatchProcessorFactory<E, F> processorFactory, BatchWriter<F> writer) throws Exception {
+    public void open(BatchProcessorFactory<E, F> processorFactory, BatchWriter<? super F> writer) throws Exception {
         localProcessor = processorFactory.getProcessor(0);
         localWriter = writer;
     }

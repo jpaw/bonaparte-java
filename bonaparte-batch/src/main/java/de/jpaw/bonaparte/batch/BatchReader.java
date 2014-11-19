@@ -7,5 +7,5 @@ package de.jpaw.bonaparte.batch;
  */
 
 public interface BatchReader<E> extends Contributor {
-    public void produceTo(BatchMainCallback<E> whereToPut) throws Exception;
+    public void produceTo(BatchMainCallback<? super E> whereToPut) throws Exception;
 }
