@@ -22,17 +22,20 @@
         <bonaparte-plugin-version>3.0.1-SNAPSHOT</bonaparte-plugin-version>
         
         <jpaw-fixedpoint.version>0.5.4-SNAPSHOT</jpaw-fixedpoint.version>
-        
-        <disruptor.version>3.2.1</disruptor.version>    <!-- UPTODATE 2014-06-18, 3.3.0 release in July -->
+        <offHeapMap.version>0.0.2</offHeapMap.version>
         
         <!-- Some more versions, used by specific dependent projects -->
+        <lucene.version>4.10.2</lucene.version>
         <netty.version>4.0.24.Final</netty.version>     <!-- https://netty.io/news/ UPTODATE 2014-10-29 SSLv3 patch is in -->
         <poi.version>3.10.1</poi.version>               <!-- http://poi.apache.org/ UPTODATE 2014-09-06 -->
         <mina.version>2.0.7</mina.version>              <!-- http://mina.apache.org/ 2.0.7 -->
         <camel.version>2.12.5</camel.version>           <!-- http://camel.apache.org/ UPTODATE 2014-10-28 SSLv3 patch is in -->
         <vertx.version>2.1.5</vertx.version>            <!-- http://vertx.io/ UPTODATE 2014-11-13 -->
-        <hazelcast.version>3.2.6</hazelcast.version>    <!-- http://hazelcast.org/download/ UPTODATE 2014-09-11 -->
+        <hazelcast.version>3.3.3</hazelcast.version>    <!-- http://hazelcast.org/download/ UPTODATE 2014-11-12 -->
+        <aerospike.version>3.0.32</aerospike.version>
         <hornetq.version>2.2.14.Final</hornetq.version> <!-- http://www.jboss.org/hornetq 2.3.0.Final -->
+        <mapdb.version>1.0.6</mapdb.version>
+        <disruptor.version>3.2.1</disruptor.version>    <!-- UPTODATE 2014-06-18, 3.3.0 release in July -->
     </properties>
 
     <build>
