@@ -20,6 +20,7 @@
         <!-- define releases we want to use, to ensure consistency -->
         <bonaparte.version>3.0.1-SNAPSHOT</bonaparte.version>
         <bonaparte-plugin-version>3.0.1-SNAPSHOT</bonaparte-plugin-version>
+        <bonaparte-plugin-commons-lang-version>2.6</bonaparte-plugin-commons-lang-version>
         
         <jpaw-fixedpoint.version>0.5.4-SNAPSHOT</jpaw-fixedpoint.version>
         <offHeapMap.version>0.0.2</offHeapMap.version>
@@ -44,7 +45,7 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>build-helper-maven-plugin</artifactId>
-                    <version>1.7</version>
+                    <version>${build-helper.plugin.version}</version>
                     <executions>
                         <execution>
                             <id>add-source</id>
@@ -79,7 +80,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>2.9.1</version>
+                    <version>${javadoc.plugin.version}</version>
                     <configuration>
                         <charset>UTF-8</charset>
                     </configuration>
@@ -88,7 +89,7 @@
                     <!-- must delete generated sources as well -->
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-clean-plugin</artifactId>
-                    <version>2.5</version>
+                    <version>${clean.plugin.version}</version>
                     <configuration>
                         <filesets>
                             <fileset>
@@ -164,7 +165,7 @@
                         <dependency>
                             <groupId>commons-lang</groupId>
                             <artifactId>commons-lang</artifactId>
-                            <version>2.6</version>
+                            <version>${bonaparte-plugin-commons-lang-version}</version>
                         </dependency>
                     </dependencies>
                 </plugin>
@@ -200,7 +201,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.9.1</version>
+                <version>${javadoc.plugin.version}</version>
                 <configuration>
                     <charset>UTF-8</charset>
                 </configuration>

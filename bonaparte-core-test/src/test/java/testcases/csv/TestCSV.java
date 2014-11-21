@@ -3,8 +3,7 @@ package testcases.csv;
 import java.io.IOException;
 import java.math.BigDecimal;
 
-import junit.framework.Assert;
-
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import de.jpaw.bonaparte.core.BonaPortable;
