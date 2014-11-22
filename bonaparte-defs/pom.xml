@@ -37,7 +37,6 @@
         <aerospike.version>3.0.32</aerospike.version>
         <hornetq.version>2.2.14.Final</hornetq.version> <!-- http://www.jboss.org/hornetq 2.3.0.Final -->
         <mapdb.version>1.0.6</mapdb.version>
-        <disruptor.version>3.2.1</disruptor.version>    <!-- UPTODATE 2014-06-18, 3.3.0 release in July -->
         <lz4.version>1.2.0</lz4.version>
         <kryo.version>2.24.0</kryo.version>
     </properties>

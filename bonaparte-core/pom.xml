@@ -27,6 +27,11 @@
             <version>${jpaw.version}</version>
         </dependency>
         <dependency>
+            <groupId>de.jpaw</groupId>
+            <artifactId>jpaw-socket</artifactId>
+            <version>${jpaw.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>

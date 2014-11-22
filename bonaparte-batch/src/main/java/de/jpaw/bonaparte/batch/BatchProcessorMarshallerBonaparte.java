@@ -2,6 +2,7 @@ package de.jpaw.bonaparte.batch;
 
 import java.io.OutputStream;
 
+import de.jpaw.batch.api.BatchProcessorMarshaller;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.ByteArrayComposer;
 import de.jpaw.bonaparte.core.ByteArrayParser;

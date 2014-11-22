@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.rqrs.Request;
 import de.jpaw.bonaparte.pojos.rqrs.Response;
-import de.jpaw.bonaparte.sock.SessionInfo;
+import de.jpaw.socket.SessionInfo;
 
 /**
  * Handler implementation for the echo server.

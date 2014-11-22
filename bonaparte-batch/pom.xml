@@ -22,18 +22,8 @@
         </dependency>
         <dependency>
             <groupId>de.jpaw</groupId>
-            <artifactId>bonaparte-netty</artifactId>
-            <version>${bonaparte.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.martiansoftware</groupId>
-            <artifactId>jsap</artifactId>
-            <version>${jsap.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.lmax</groupId>
-            <artifactId>disruptor</artifactId>
-            <version>${disruptor.version}</version>
+            <artifactId>jpaw-batch</artifactId>
+            <version>${jpaw.version}</version>
         </dependency>
 
         <dependency>

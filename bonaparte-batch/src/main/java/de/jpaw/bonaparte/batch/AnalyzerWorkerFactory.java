@@ -8,6 +8,9 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Joiner;
 
+import de.jpaw.batch.api.BatchProcessor;
+import de.jpaw.batch.api.BatchProcessorFactory;
+import de.jpaw.batch.impl.ContributorNoop;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;

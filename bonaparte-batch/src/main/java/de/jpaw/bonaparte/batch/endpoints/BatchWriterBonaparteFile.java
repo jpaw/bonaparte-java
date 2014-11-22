@@ -1,7 +1,7 @@
 package de.jpaw.bonaparte.batch.endpoints;
 
-import de.jpaw.bonaparte.batch.BatchWriter;
-import de.jpaw.bonaparte.batch.BatchWriterTextFileAbstract;
+import de.jpaw.batch.api.BatchWriter;
+import de.jpaw.batch.impl.BatchWriterTextFileAbstract;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.StringBuilderComposer;
 

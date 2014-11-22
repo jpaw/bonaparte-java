@@ -1,5 +1,8 @@
 package de.jpaw.bonaparte.batch;
 
+import de.jpaw.batch.api.BatchMainCallback;
+import de.jpaw.batch.api.BatchReader;
+import de.jpaw.batch.impl.BatchReaderTextFileAbstract;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.StringBuilderParser;
 
