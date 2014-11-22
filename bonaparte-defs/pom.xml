@@ -4,8 +4,8 @@
 
     <parent>
         <groupId>de.jpaw</groupId>
-        <artifactId>jpaw-defs</artifactId>
-        <version>1.0.3-SNAPSHOT</version>
+        <artifactId>jpaw-se-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
@@ -18,12 +18,13 @@
 
     <properties>
         <!-- define releases we want to use, to ensure consistency -->
+        <jpaw.version>1.0.3-SNAPSHOT</jpaw.version>
         <bonaparte.version>3.0.1-SNAPSHOT</bonaparte.version>
         <bonaparte-plugin-version>3.0.1-SNAPSHOT</bonaparte-plugin-version>
         <bonaparte-plugin-commons-lang-version>2.6</bonaparte-plugin-commons-lang-version>
         
         <jpaw-fixedpoint.version>0.5.4-SNAPSHOT</jpaw-fixedpoint.version>
-        <offHeapMap.version>0.0.2</offHeapMap.version>
+        <offheap.version>0.0.3-SNAPSHOT</offheap.version>
         
         <!-- Some more versions, used by specific dependent projects -->
         <lucene.version>4.10.2</lucene.version>
@@ -37,6 +38,8 @@
         <hornetq.version>2.2.14.Final</hornetq.version> <!-- http://www.jboss.org/hornetq 2.3.0.Final -->
         <mapdb.version>1.0.6</mapdb.version>
         <disruptor.version>3.2.1</disruptor.version>    <!-- UPTODATE 2014-06-18, 3.3.0 release in July -->
+        <lz4.version>1.2.0</lz4.version>
+        <kryo.version>2.24.0</kryo.version>
     </properties>
 
     <build>

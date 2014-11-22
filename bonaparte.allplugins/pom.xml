@@ -4,24 +4,24 @@
 
     <parent>
         <groupId>de.jpaw</groupId>
-        <artifactId>bonaparte-defs</artifactId>
-        <version>3.0.1-SNAPSHOT</version>
-        <relativePath />
+        <artifactId>jpaw-se-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath/>
     </parent>
 
     <artifactId>bonaparte.allplugins</artifactId>
+    <version>3.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     
-    <modules>
-        <module>../bonaparte.plugin</module>
-        <module>../bonaparte.sdk</module>
-        <module>../bonaparte.updatesite</module>
-    </modules>
-
     <properties>
+        <!-- define releases we want to use, to ensure consistency -->
+        <jpaw.version>1.0.3-SNAPSHOT</jpaw.version>
+        <bonaparte.version>3.0.1-SNAPSHOT</bonaparte.version>
+        
         <tycho.version>0.21.0</tycho.version>
-    </properties>
-
+        <shade.plugin.version>2.3</shade.plugin.version>
+    </properties>    
+    
     <repositories>
         <repository>
             <id>p2-luna</id>
@@ -86,5 +86,11 @@
  -->        </plugins>
 
     </build>
+    
+    <modules>
+        <module>../bonaparte.plugin</module>
+        <module>../bonaparte.sdk</module>
+        <module>../bonaparte.updatesite</module>
+    </modules>
 
 </project> 

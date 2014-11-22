@@ -11,11 +11,6 @@
     <artifactId>bonaparte-benchmarks</artifactId>
     <packaging>jar</packaging>
 
-    <properties>
-        <lz4.version>1.2.0</lz4.version>
-        <kryo.version>2.24.0</kryo.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>de.jpaw</groupId>
@@ -74,7 +69,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>2.0</version>
+                <version>${shade.plugin.version}</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
