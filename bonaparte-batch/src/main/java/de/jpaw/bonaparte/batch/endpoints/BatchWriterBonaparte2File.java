@@ -11,7 +11,7 @@ public class BatchWriterBonaparte2File extends BatchWriterFile implements BatchW
     private ByteArrayComposer bac = new ByteArrayComposer();    // share this across invocations
     
     @Override
-    public void storeResult(int no, BonaPortable response) throws Exception {
+    public void accept(int no, BonaPortable response) throws Exception {
         bac.reset();
         bac.writeRecord(response);
         uncompressedStream.write(bac.getBuffer(), 0, bac.getLength());

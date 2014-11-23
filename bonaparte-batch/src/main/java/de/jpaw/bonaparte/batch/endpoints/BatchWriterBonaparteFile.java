@@ -10,7 +10,7 @@ public class BatchWriterBonaparteFile extends BatchWriterTextFileAbstract implem
     private StringBuilderComposer sbc = new StringBuilderComposer(buff);    // share this across invocations
     
     @Override
-    public void storeResult(int no, BonaPortable response) throws Exception {
+    public void accept(int no, BonaPortable response) throws Exception {
         sbc.reset();
         sbc.writeRecord(response);
         write(buff.toString());

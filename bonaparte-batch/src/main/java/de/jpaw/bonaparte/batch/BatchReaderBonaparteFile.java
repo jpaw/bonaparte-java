@@ -21,7 +21,7 @@ public class BatchReaderBonaparteFile extends BatchReaderTextFileAbstract implem
             buffer.append("\n");
             StringBuilderParser sbp = new StringBuilderParser(buffer, 0, buffer.length());
             BonaPortable record = sbp.readRecord();         
-            whereToPut.scheduleForProcessing(record);
+            whereToPut.accept(record);
         }
     }
 }
