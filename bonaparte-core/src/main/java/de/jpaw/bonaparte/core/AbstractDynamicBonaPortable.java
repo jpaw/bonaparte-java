@@ -127,7 +127,7 @@ public class AbstractDynamicBonaPortable implements BonaPortable {
     }
 
     @Override
-    public void freeze() throws ObjectValidationException {
+    public void freeze() {
         // TODO Auto-generated method stub
         
     }

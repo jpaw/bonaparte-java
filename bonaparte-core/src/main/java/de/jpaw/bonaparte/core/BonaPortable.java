@@ -109,7 +109,7 @@ public interface BonaPortable extends BonaCustom {
      * always be performed on a private copy. Once frozen, the object may be shared with other threads. Use get$frozenClone() to
      * get an immutable copy if the previous object was shared with other threads or has other references in this thread.
      */
-    void freeze() throws ObjectValidationException;
+    void freeze();
     
     /** Returns information, if this object is frozen.
      * If the object is not frozen, it could still have frozen components.
