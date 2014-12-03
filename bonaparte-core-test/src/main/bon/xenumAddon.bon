@@ -1,0 +1,8 @@
+
+
+package metaExtension {
+    default private unsigned trim noControlChars;
+    
+    enum Set XVisibilitySet is meta.Visibility;
+    
+}
