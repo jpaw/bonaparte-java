@@ -539,7 +539,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
         if (checkForNull(di)) {
             return null;
         }
-        String tmp = nextIndexParseAscii(di.getName(), false, di.getFractionalSeconds() > 0, false);  // parse an unsigned numeric string without exponent
+        String tmp = nextIndexParseAscii(di.getName(), false, true, false);  // parse an unsigned numeric string without exponent
         int millis = 0;
         long seconds = 0;
         int dpoint;
@@ -564,6 +564,10 @@ public final class StringBuilderParser extends StringBuilderConstants implements
                         String.format("(found %d for %s)", tmp.length() - dpoint - 1, di.getName()),
                         parseIndex, currentClass);
             }
+        }
+        if (di.getFractionalSeconds() == 0) {
+            // don't want millis here: trunc!  (TODO: add a flag to complain!)
+            millis = 0;
         }
         return new Instant(1000L * seconds + millis);
     }

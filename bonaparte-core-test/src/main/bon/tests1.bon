@@ -1,4 +1,4 @@
-package tests1 {
+package tests1 Ext {
     type countryCode is uppercase(3);
     enum Color { RED, GREEN, BLUE }
     enum AlphaColor { RED="R", GREEN="G", BLUE="B" }
@@ -102,6 +102,11 @@ package tests1 {
         timestamp(3) hhmmss timestamp2a;
         time(0) hhmmss time1a;
         time(3) hhmmss time2a;
+    }
+    class Instants {
+        Instant i1;
+        Instant(0) i2;
+        Instant(3) i3;
     }
     class References orderedBy (country, classOrDerivedObject) {
         object someGenericRecord;

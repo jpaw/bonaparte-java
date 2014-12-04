@@ -408,7 +408,7 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
             work.append(Long.toString(millis / 1000L));
             int length = di.getFractionalSeconds();
             int millisecs = (int)(millis % 1000L);
-            if (length >= 0 && millisecs != 9) {
+            if (length > 0 && millisecs != 0) {
                 work.append('.');
                 lpad(Integer.toString(millisecs), 3, '0');
             }

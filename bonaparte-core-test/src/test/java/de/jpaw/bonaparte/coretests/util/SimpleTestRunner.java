@@ -37,7 +37,6 @@ import de.jpaw.bonaparte.core.MessageParserException;
 import de.jpaw.bonaparte.core.StringBuilderComposer;
 import de.jpaw.bonaparte.core.StringBuilderParser;
 import de.jpaw.bonaparte.testrunner.MultiTestRunner;
-import de.jpaw.util.ByteUtil;
 
 /**
  * The SimpleTestRunner class.

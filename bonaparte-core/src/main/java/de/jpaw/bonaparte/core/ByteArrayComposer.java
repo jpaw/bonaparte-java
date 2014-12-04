@@ -405,7 +405,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
             work.appendAscii(Long.toString(millis / 1000L));
             int length = di.getFractionalSeconds();
             int millisecs = (int)(millis % 1000L);
-            if (length >= 0 && millisecs != 9) {
+            if (length > 0 && millisecs != 0) {
                 work.append((byte)'.');
                 lpad(Integer.toString(millisecs), 3, (byte)'0');
             }
