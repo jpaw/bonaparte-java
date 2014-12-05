@@ -24,6 +24,9 @@ import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
  */
 public class BigDecimalTools {
     private static final Logger LOG = LoggerFactory.getLogger(BigDecimalTools.class);
+    private static final String DECIMALS_KEYWORD_MIN = "min";
+    private static final String DECIMALS_KEYWORD_MAX = "max";
+    
 
     /** Scales the BigDecimal to some predefined scale */
     static public BigDecimal scale(BigDecimal a, int decimals) {
@@ -95,7 +98,7 @@ public class BigDecimalTools {
      * If no decimals property can be found at any level, "min" is assumed.
      * 
      * @param root
-     * @param path
+     * @param path the path of the field,, in dot notation. At least the field name must be here (indicating a field at the root level)
      * @returns the scaled number
      */
     static public BigDecimal retrieveScaled(BonaPortable root, String path) {
@@ -104,25 +107,27 @@ public class BigDecimalTools {
             return null;  // wrong type
         BigDecimal numValue = (BigDecimal)value.data; 
         NumericElementaryDataItem meta = (NumericElementaryDataItem)value.meta;
-        String props = getFieldPropertyWithDescend(root, path, ".decimals", "min");
+        StringRef prefix = new StringRef();
+        prefix.prefix = path;
+        String props = getFieldPropertyWithDescend(root, path, prefix, ".decimals", DECIMALS_KEYWORD_MIN);
         
         if (props.length() == 0)
-            props = "min";
+            props = DECIMALS_KEYWORD_MIN;
         
-        if ("min".equals(props)) {
+        if (DECIMALS_KEYWORD_MIN.equals(props)) {
             BigDecimal tmp = numValue.stripTrailingZeros();
             if (tmp.scale() < 0)
                 tmp = tmp.setScale(0);
             return tmp;
         }
-        if ("max".equals(props)) {
+        if (DECIMALS_KEYWORD_MAX.equals(props)) {
             return numValue.setScale(meta.getDecimalDigits());
         }
         // check for numeric immediate specification
         if (Character.isDigit(props.charAt(0)))
             return numValue.setScale(Integer.valueOf(props));
         // last resort: assume it is another pathname, retrieve that value
-        Object precision = FieldGetter.getField(root, props);
+        Object precision = FieldGetter.getField(root, prefix.prefix + props);
         if (precision == null) {
             LOG.warn("Did not find referenced precision field for root object {} and path {}", root.get$PQON(), path);
             return numValue;  // this should not happen, but fall back instead of throwing an NPE
@@ -134,7 +139,12 @@ public class BigDecimalTools {
         return numValue.setScale(currencyPrecision, RoundingMode.HALF_EVEN);
     }
     
-    static public String getFieldPropertyWithDescend(BonaPortable root, String path, String propertyName, String defaultProperty) {
+    // utility class to pass back a second return value
+    static private class StringRef {
+        private String prefix;
+    }
+    
+    static public String getFieldPropertyWithDescend(BonaPortable root, String path, StringRef prefix, String propertyName, String defaultProperty) {
         String workingPath = path;
         String props = null;
         
@@ -144,6 +154,7 @@ public class BigDecimalTools {
             if (lastDot < 0) {
                 // no more component
                 props = root.get$Property(naked(workingPath) + propertyName);
+                prefix.prefix = "";
                 break;  // must stop here!
             } else {
                 // get the meta from the parent object
@@ -153,6 +164,7 @@ public class BigDecimalTools {
                 props = ((BonaPortable)parent).get$Property(naked(fieldname) + propertyName);
                 if (props != null) {
                     LOG.debug("found property " + props + " at path " + container);
+                    prefix.prefix = container + ".";
                     break;
                 }
                 // not found here, descend
