@@ -10,13 +10,13 @@
     </parent>
 
     <artifactId>bonaparte.allplugins</artifactId>
-    <version>3.0.1-SNAPSHOT</version>
+    <version>3.0.1</version>
     <packaging>pom</packaging>
     
     <properties>
         <!-- define releases we want to use, to ensure consistency -->
         <jpaw.version>1.0.3-SNAPSHOT</jpaw.version>
-        <bonaparte.version>3.0.1-SNAPSHOT</bonaparte.version>
+        <bonaparte.version>3.0.1</bonaparte.version>
         
         <tycho.version>0.21.0</tycho.version>
         <shade.plugin.version>2.3</shade.plugin.version>
