@@ -5,6 +5,7 @@ import java.io.Serializable;
 /** 
  * Defines the common identification methods of BonaPortables, Bonaparte enums and BonaParte XEnums.
  * The class and its implementation is usually created by the bonaparte DSL.
+ * Defined in the JPAW project because handwritten enums might want it as well.
  *  
  * @author Michael Bischoff
  *

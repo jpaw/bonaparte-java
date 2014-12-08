@@ -8,6 +8,7 @@ Bundle-Vendor: Michael Bischoff
 Require-Bundle: joda-time;bundle-version="2.3";visibility:=reexport,
  com.google.guava;bundle-version="16.0.1";visibility:=reexport
 Export-Package: de.jpaw.bonaparte.core,
+ de.jpaw.bonaparte.enums,
  de.jpaw.bonaparte.util,
  de.jpaw.bonaparte.annotation,
  de.jpaw.bonaparte.extensions,

@@ -21,8 +21,8 @@
         <jpaw.version>1.2.0-SNAPSHOT</jpaw.version>
         <jpaw8.version>1.1.0-SNAPSHOT</jpaw8.version>
         <bonaparte.version>3.1.0-SNAPSHOT</bonaparte.version>
-        <bonaparte-plugin-version>3.1.0-SNAPSHOT</bonaparte-plugin-version>
-        <bonaparte-plugin-commons-lang-version>2.6</bonaparte-plugin-commons-lang-version>
+        <bonaparte-plugin.version>3.1.0-SNAPSHOT</bonaparte-plugin.version>
+        <bonaparte-plugin-commons-lang.version>2.6</bonaparte-plugin-commons-lang.version>
         
         <jpaw-fixedpoint.version>0.6.0-SNAPSHOT</jpaw-fixedpoint.version>
         <offheap.version>0.1.0-SNAPSHOT</offheap.version>
@@ -32,7 +32,7 @@
         <netty.version>4.0.24.Final</netty.version>     <!-- https://netty.io/news/ UPTODATE 2014-10-29 SSLv3 patch is in -->
         <poi.version>3.10.1</poi.version>               <!-- http://poi.apache.org/ UPTODATE 2014-09-06 -->
         <mina.version>2.0.7</mina.version>              <!-- http://mina.apache.org/ 2.0.7 -->
-        <camel.version>2.12.5</camel.version>           <!-- http://camel.apache.org/ UPTODATE 2014-10-28 SSLv3 patch is in -->
+        <camel.version>2.14.0</camel.version>           <!-- http://camel.apache.org/ UPTODATE 2014-12-08 2.14 is the first for Java8-->
         <vertx.version>2.1.5</vertx.version>            <!-- http://vertx.io/ UPTODATE 2014-11-13 -->
         <hazelcast.version>3.3.3</hazelcast.version>    <!-- http://hazelcast.org/download/ UPTODATE 2014-11-12 -->
         <aerospike.version>3.0.32</aerospike.version>
@@ -40,6 +40,7 @@
         <mapdb.version>1.0.6</mapdb.version>
         <lz4.version>1.2.0</lz4.version>
         <kryo.version>2.24.0</kryo.version>
+        <hibernate-validator.version>5.1.3.Final</hibernate-validator.version>
     </properties>
 
     <build>
@@ -163,12 +164,12 @@
                         <dependency>
                             <groupId>de.jpaw.bonaparte-dsl</groupId>
                             <artifactId>de.jpaw.bonaparte.dsl</artifactId>
-                            <version>${bonaparte-plugin-version}</version>
+                            <version>${bonaparte-plugin.version}</version>
                         </dependency>
                         <dependency>
                             <groupId>commons-lang</groupId>
                             <artifactId>commons-lang</artifactId>
-                            <version>${bonaparte-plugin-commons-lang-version}</version>
+                            <version>${bonaparte-plugin-commons-lang.version}</version>
                         </dependency>
                     </dependencies>
                 </plugin>
