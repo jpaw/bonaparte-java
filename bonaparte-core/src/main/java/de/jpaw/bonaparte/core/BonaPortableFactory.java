@@ -33,6 +33,7 @@ public class BonaPortableFactory {
     static private Map<String, String> packagePrefixMap = new ConcurrentHashMap<String,String>(10);
     static {
         // mappings for bonaparte-core. Install a fresh map if you don't want these. Otherwise, add single mappings to them, or overwrite these
+        packagePrefixMap.put("bonaparte", "de.jpaw.bonaparte");                             // bonaparte-core, sub-packages core, meta, ui
         packagePrefixMap.put("meta", bonaparteClassDefaultPackagePrefix + ".meta");         // bonaparte-core
         packagePrefixMap.put("ui", bonaparteClassDefaultPackagePrefix + ".ui");             // bonaparte-core
         packagePrefixMap.put("money", bonaparteClassDefaultPackagePrefix + ".money");       // bonaparte-money

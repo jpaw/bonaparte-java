@@ -16,6 +16,8 @@ import org.vertx.java.core.json.JsonObject;
 import de.jpaw.bonaparte.core.BonaCustom;
 import de.jpaw.bonaparte.core.MessageComposer;
 import de.jpaw.bonaparte.core.StaticMeta;
+import de.jpaw.bonaparte.enums.BonaNonTokenizableEnum;
+import de.jpaw.bonaparte.enums.BonaTokenizableEnum;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
@@ -26,7 +28,6 @@ import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
-import de.jpaw.enums.TokenizableEnum;
 import de.jpaw.enums.XEnum;
 import de.jpaw.util.ByteArray;
 
@@ -327,7 +328,7 @@ public class JsonObjectComposer implements MessageComposer<RuntimeException> {
     }
 
     @Override
-    public void addEnum(EnumDataItem di, BasicNumericElementaryDataItem ord, Enum<?> n) {
+    public void addEnum(EnumDataItem di, BasicNumericElementaryDataItem ord, BonaNonTokenizableEnum n) {
         if (inArray)
             arr.addNumber(n == null ? null : n.ordinal());
         else if (n != null)
@@ -337,7 +338,7 @@ public class JsonObjectComposer implements MessageComposer<RuntimeException> {
     }
 
     @Override
-    public void addEnum(EnumDataItem di, AlphanumericElementaryDataItem token, TokenizableEnum n) {
+    public void addEnum(EnumDataItem di, AlphanumericElementaryDataItem token, BonaTokenizableEnum n) {
         if (inArray)
             arr.addString(n == null ? null : n.getToken());
         else if (n != null)

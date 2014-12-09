@@ -19,6 +19,12 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.UUID;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.DataFormat;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.joda.time.Instant;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
@@ -27,6 +33,8 @@ import org.joda.time.LocalTime;
 import de.jpaw.bonaparte.core.BonaCustom;
 import de.jpaw.bonaparte.core.MessageComposer;
 import de.jpaw.bonaparte.core.StaticMeta;
+import de.jpaw.bonaparte.enums.BonaNonTokenizableEnum;
+import de.jpaw.bonaparte.enums.BonaTokenizableEnum;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
@@ -38,19 +46,11 @@ import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.bonaparte.util.DayTime;
-import de.jpaw.enums.TokenizableEnum;
 import de.jpaw.enums.XEnum;
 import de.jpaw.util.Base64;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.ByteBuilder;
 import de.jpaw.util.IntegralLimits;
-
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.DataFormat;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
 
 // according to http://stackoverflow.com/questions/469695/decode-base64-data-in-java , xml.bind is included in Java 6 SE
 //import javax.xml.bind.DatatypeConverter;
@@ -390,7 +390,7 @@ public class BaseExcelComposer implements MessageComposer<RuntimeException> {
     }
     // enum with numeric expansion: delegate to Null/Int
     @Override
-    public void addEnum(EnumDataItem di, BasicNumericElementaryDataItem ord, Enum<?> n) {
+    public void addEnum(EnumDataItem di, BasicNumericElementaryDataItem ord, BonaNonTokenizableEnum n) {
         if (n == null)
             writeNull(ord);
         else
@@ -399,7 +399,7 @@ public class BaseExcelComposer implements MessageComposer<RuntimeException> {
 
     // enum with alphanumeric expansion: delegate to Null/String
     @Override
-    public void addEnum(EnumDataItem di, AlphanumericElementaryDataItem token, TokenizableEnum n) {
+    public void addEnum(EnumDataItem di, AlphanumericElementaryDataItem token, BonaTokenizableEnum n) {
         if (n == null)
             writeNull(token);
         else

@@ -21,8 +21,6 @@ import java.io.OutputStream;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
-// according to http://stackoverflow.com/questions/469695/decode-base64-data-in-java , xml.bind is included in Java 6 SE
-//import javax.xml.bind.DatatypeConverter;
 /**
  * Implements the output of Bonaparte objects into Excel formats.
  *
@@ -37,10 +35,12 @@ public class ExcelComposer extends BaseExcelComposer implements ExcelWriter {
     }
 
     /** Write the current state of the Workbook onto a stream. */
+    @Override
     public void write(OutputStream os) throws IOException {
         xls.write(os);
     }
 
+    @Override
     public void writeToFile(String filename) throws IOException {
         FileOutputStream out = new FileOutputStream(filename);
         write(out);

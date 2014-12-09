@@ -1,5 +1,5 @@
 /** Bonaparte metadata.
- * Assigned to factoryId 29, classIds 1-25
+ * Assigned to factoryId 29, classIds 1-20
  */
 package meta factoryId 29 {
     default private unsigned trim noControlChars;

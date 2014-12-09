@@ -14,15 +14,17 @@ import org.joda.time.LocalTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import android.graphics.BitmapFactory;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.TextView;
 import android.widget.ImageView;
-import android.graphics.BitmapFactory;
+import android.widget.TextView;
 import de.jpaw.bonaparte.core.BonaCustom;
 import de.jpaw.bonaparte.core.MessageComposer;
 import de.jpaw.bonaparte.core.StaticMeta;
+import de.jpaw.bonaparte.enums.BonaNonTokenizableEnum;
+import de.jpaw.bonaparte.enums.BonaTokenizableEnum;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
@@ -34,7 +36,6 @@ import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
-import de.jpaw.enums.TokenizableEnum;
 import de.jpaw.enums.XEnum;
 import de.jpaw.util.ByteArray;
 
@@ -381,7 +382,7 @@ abstract public class LinearLayoutComposer  implements MessageComposer<RuntimeEx
 
     // enum with numeric expansion: delegate to Null/Int
     @Override
-    public void addEnum(EnumDataItem di, BasicNumericElementaryDataItem ord, Enum<?> n) {
+    public void addEnum(EnumDataItem di, BasicNumericElementaryDataItem ord, BonaNonTokenizableEnum n) {
         if (n == null) {
             writeNull(ord);
         } else {
@@ -391,7 +392,7 @@ abstract public class LinearLayoutComposer  implements MessageComposer<RuntimeEx
 
     // enum with alphanumeric expansion: delegate to Null/String
     @Override
-    public void addEnum(EnumDataItem di, AlphanumericElementaryDataItem token, TokenizableEnum n) {
+    public void addEnum(EnumDataItem di, AlphanumericElementaryDataItem token, BonaTokenizableEnum n) {
         if (n == null) {
             writeNull(token);
         } else {

@@ -1,0 +1,11 @@
+// Bonaparte metadata.
+// Assigned to factoryId 29, classIds 21-25
+//
+// put no Javadoc here in order to avoid a duplicate package-info.java file
+package (de.jpaw) bonaparte.core XML NONE factoryId 29 {
+    default private unsigned trim noControlChars;
+
+    enum CSVStyle {
+        SHORT="S", MEDIUM="M", LONG="L", FULL="F"
+    }
+}
