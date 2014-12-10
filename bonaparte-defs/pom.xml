@@ -5,12 +5,12 @@
     <parent>
         <groupId>de.jpaw</groupId>
         <artifactId>jpaw-se-parent</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.1-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
     <artifactId>bonaparte-defs</artifactId>
-    <version>3.1.0</version>
+    <version>3.1.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <description>Additional revisions for BONAPARTE based projects, but no modules defined</description>
@@ -18,14 +18,14 @@
 
     <properties>
         <!-- define releases we want to use, to ensure consistency -->
-        <jpaw.version>1.0.3</jpaw.version>
-        <jpaw8.version>1.0.3</jpaw8.version>
-        <bonaparte.version>3.1.0</bonaparte.version>
-        <bonaparte-plugin.version>3.1.0</bonaparte-plugin.version>
+        <jpaw.version>1.2.0-SNAPSHOT</jpaw.version>
+        <jpaw8.version>1.1.0-SNAPSHOT</jpaw8.version>
+        <bonaparte.version>3.1.1-SNAPSHOT</bonaparte.version>
+        <bonaparte-plugin.version>3.1.1-SNAPSHOT</bonaparte-plugin.version>
         <bonaparte-plugin-commons-lang.version>2.6</bonaparte-plugin-commons-lang.version>
         
-        <jpaw-fixedpoint.version>0.5.4</jpaw-fixedpoint.version>
-        <offheap.version>0.0.3</offheap.version>
+        <jpaw-fixedpoint.version>0.6.0-SNAPSHOT</jpaw-fixedpoint.version>
+        <offheap.version>0.1.0-SNAPSHOT</offheap.version>
         
         <!-- Some more versions, used by specific dependent projects -->
         <lucene.version>4.10.2</lucene.version>
