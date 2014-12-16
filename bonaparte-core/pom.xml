@@ -11,10 +11,31 @@
     <artifactId>bonaparte-core</artifactId>
     <packaging>jar</packaging>
 
-    <name>BONAPARTE core libraries</name>
     <description>Definition and implementation of BONAPARTE serializers and deserializers</description>
-    <url>http://www.jpaw.de/projects/bonaparte/core/index.html</url>
 
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/bon</directory>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.eclipse.xtext</groupId>
+                <artifactId>xtext-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+    
     <dependencies>
         <dependency>
             <groupId>de.jpaw</groupId>
@@ -65,28 +86,5 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <build>
-        <resources>
-            <resource>
-                <directory>src/main/bon</directory>
-                <filtering>false</filtering>
-            </resource>
-        </resources>
-
-        <plugins>
-            <plugin>
-                <groupId>org.eclipse.xtext</groupId>
-                <artifactId>xtext-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <artifactId>maven-clean-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>

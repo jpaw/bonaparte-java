@@ -17,7 +17,9 @@
     <modules>
         <module>../bonaparte-core/pom.xml</module>
         <module>../bonaparte-core-test/pom.xml</module>
-        <module>../bonaparte-adapters/pom.xml</module>
+        <module>../bonaparte-adapters-scalar/pom.xml</module>
+        <module>../bonaparte-adapters-money-bd/pom.xml</module>
+        <module>../bonaparte-adapters-money-fp/pom.xml</module>
         <module>../bonaparte-adapters-test/pom.xml</module>
         <module>../bonaparte-android/pom.xml</module>
         <module>../bonaparte-xml-test/pom.xml</module>
