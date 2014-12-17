@@ -12,13 +12,13 @@
     <artifactId>bonaparte-hazelcast-test</artifactId>
     <packaging>jar</packaging>
 
-    <name>BONAPARTE Hazelcast serializer / deserializer tests</name>
+    <description>BONAPARTE Hazelcast serializer / deserializer tests</description>
 
     <dependencies>
         <dependency>
             <groupId>de.jpaw</groupId>
             <artifactId>bonaparte-hazelcast</artifactId>
-            <version>${bonaparte.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.testng</groupId>

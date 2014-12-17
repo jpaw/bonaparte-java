@@ -16,15 +16,14 @@
     <artifactId>bonaparte-repackage</artifactId>
     <packaging>jar</packaging>
 
-    <name>BONAPARTE repackage of JAXB related JARs for Android</name>
-    <description>Required to change references to javax.xml.bind to de.jpaw.xml.bind, in order to allow deployment to Android.
+    <description>BONAPARTE repackage of JAXB related JARs for Android.
+    Required to change references to javax.xml.bind to de.jpaw.xml.bind, in order to allow deployment to Android.
     You have to reintroduce an explicit dependency to bonaparte-core if using this.</description>
     
     <dependencies>
         <dependency>
             <groupId>de.jpaw</groupId>
             <artifactId>jpaw-xml</artifactId>
-            <version>${jpaw.version}</version>
         </dependency>
         <dependency>
             <groupId>javax.xml.bind</groupId>

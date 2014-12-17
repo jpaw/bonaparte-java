@@ -12,7 +12,7 @@
     <artifactId>bonaparte-netty</artifactId>
     <packaging>jar</packaging>
 
-    <name>BONAPARTE Netty encoder/decoder</name>
+    <description>BONAPARTE Netty encoder/decoder</description>
 
     <build>
         <plugins>
@@ -33,7 +33,7 @@
         <dependency>
             <groupId>de.jpaw</groupId>
             <artifactId>bonaparte-core</artifactId>
-            <version>${bonaparte.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>io.netty</groupId>

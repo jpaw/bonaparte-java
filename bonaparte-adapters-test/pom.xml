@@ -41,22 +41,22 @@
         <dependency>
             <groupId>de.jpaw</groupId>
             <artifactId>bonaparte-adapters-scalar</artifactId>
-            <version>${bonaparte.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>de.jpaw</groupId>
             <artifactId>bonaparte-adapters-money-fp</artifactId>
-            <version>${bonaparte.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>de.jpaw</groupId>
             <artifactId>bonaparte-adapters-money-bd</artifactId>
-            <version>${bonaparte.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>de.jpaw</groupId>
             <artifactId>bonaparte-core-test</artifactId>
-            <version>${bonaparte.version}</version>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 
