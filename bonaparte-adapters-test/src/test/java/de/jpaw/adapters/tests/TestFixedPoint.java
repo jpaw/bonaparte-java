@@ -6,6 +6,7 @@ import org.testng.annotations.Test;
 
 import de.jpaw.api.iso.impl.JavaCurrencyDataProvider;
 import de.jpaw.bonaparte.pojos.adapters.tests.CustomAmountsUsed;
+import de.jpaw.bonaparte.pojos.adapters.tests.CustomAmountsUsed2;
 import de.jpaw.bonaparte.pojos.adapters.tests.CustomCurrency;
 import de.jpaw.bonaparte.pojos.adapters.tests.CustomMillis;
 import de.jpaw.bonaparte.testrunner.MultiTestRunner;
@@ -78,6 +79,31 @@ public class TestFixedPoint {
         		+ "<S>adapters.moneyfp.FpAmountExt<F><N>1617210<F><B>2<F>1359000<F>258210<F><A><O>"
         		+ "3000000<F>"
         		+ "<S>adapters.moneyfp.FpAmountExt<F><N>485<F><B>2<F>408<F>77<F><A><O>"
+        		+ "<O>\n");
+        System.out.println("Result is " + new StringBuilderTestRunner().serializationTest(item, expectedResult));
+        MultiTestRunner.serDeserMulti(item, expectedResult);
+    }
+    
+    @Test
+    public void testAdapterCurrencyExt2() throws Exception {
+    	FPCurrency stdEUR = new FPCurrency(JavaCurrencyDataProvider.instance.get("EUR"));
+    	FPCurrency microsEUR = stdEUR.withMicrosPrecision();
+    	long net = 1359000;
+    	long tax = net * 19 / 100;
+    	FPAmount units = new FPAmount(microsEUR, net + tax);
+    	System.out.println("unit price is " + units);
+    	
+    	MicroUnits quantity = new MicroUnits(3000000);
+    	FPAmount total = units.convert(quantity, stdEUR);
+    	System.out.println("3 items cost " + total);
+    	
+    	CustomAmountsUsed2 item = new CustomAmountsUsed2(stdEUR, units, quantity, total);
+        String expectedResult = StringSerializer.altFromString(
+        		"<R><N><S>adapters.tests.CustomAmountsUsed2<F><N>"
+        		+ "EUR<F>"
+        		+ "1617210<F>"
+        		+ "3000000<F>"
+        		+ "485<F>"
         		+ "<O>\n");
         System.out.println("Result is " + new StringBuilderTestRunner().serializationTest(item, expectedResult));
         MultiTestRunner.serDeserMulti(item, expectedResult);

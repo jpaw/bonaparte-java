@@ -24,4 +24,12 @@ package adapters.tests factoryId 22 {
         required (Micros)                                                   quantity;
         required (FpAmountExt) for currency                                 amounts;
     }
+    
+    /** Use single field classes. */
+    class CustomAmountsUsed2 {
+        required (FpCurrencyStd)                                                currency;
+        required (FpSingleAmountExt) for "getCurrency().withMicrosPrecision()"  unitAmount;
+        required (Micros)                                                       quantity;
+        required (FpSingleAmountExt) for currency                               amount;
+    }
 }
