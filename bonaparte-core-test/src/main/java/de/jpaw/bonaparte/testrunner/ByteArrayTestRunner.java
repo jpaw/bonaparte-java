@@ -12,6 +12,7 @@ public class ByteArrayTestRunner extends AbstractTestrunner<byte[]> {
     @Override
     public byte[] serializationTest(BonaCustom src, byte[] expectedResult) throws Exception {
         ByteArrayComposer bac = new ByteArrayComposer();
+        bac.setWriteCRs(false);			// ensure the test is valid under Windows as well...
         bac.writeRecord(src);
         byte[] result = bac.getBytes();
         if (expectedResult != null)

@@ -66,6 +66,7 @@ public class SimpleTestRunner {
     static public BonaPortable runThroughByteArray(BonaPortable src) throws MessageParserException {
         int srcHash = src.hashCode();
         ByteArrayComposer bac = new ByteArrayComposer();
+        bac.setWriteCRs(false);			// ensure the test is valid under Windows as well...
         bac.reset();
         bac.writeRecord(src);
         byte [] bacResult = bac.getBytes();
@@ -84,6 +85,7 @@ public class SimpleTestRunner {
     static public BonaPortable runThroughStringBuilder(BonaPortable src) throws MessageParserException {
         int srcHash = src.hashCode();
         StringBuilderComposer sbc = new StringBuilderComposer(new StringBuilder());
+        sbc.setWriteCRs(false);			// ensure the test is valid under Windows as well...
         sbc.reset();
         sbc.writeRecord(src);
         byte [] sbcResult = sbc.getBytes();
@@ -112,12 +114,14 @@ public class SimpleTestRunner {
 
         System.out.println("composer StringBuilder");
         StringBuilderComposer sbc = new StringBuilderComposer(new StringBuilder());
+        sbc.setWriteCRs(false);			// ensure the test is valid under Windows as well...
         sbc.reset();
         sbc.writeRecord(src);
         byte [] sbcResult = sbc.getBytes();
 
         System.out.println("composer ByteArray");
         ByteArrayComposer bac = new ByteArrayComposer();
+        bac.setWriteCRs(false);			// ensure the test is valid under Windows as well...
         bac.reset();
         bac.writeRecord(src);
         byte [] bacResult = bac.getBytes();
