@@ -20,7 +20,8 @@ package adapters.tests factoryId 22 {
     
     class CustomAmountsUsed {
         required (FpCurrencyStd)                                            currency;
-        required (FpAmountExt) for currency                                 amounts;
         required (FpAmountExt) for "getCurrency().withMicrosPrecision()"    unitAmounts;
+        required (Micros)                                                   quantity;
+        required (FpAmountExt) for currency                                 amounts;
     }
 }

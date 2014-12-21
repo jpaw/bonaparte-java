@@ -5,11 +5,14 @@ import java.math.BigDecimal;
 import org.testng.annotations.Test;
 
 import de.jpaw.api.iso.impl.JavaCurrencyDataProvider;
+import de.jpaw.bonaparte.pojos.adapters.tests.CustomAmountsUsed;
 import de.jpaw.bonaparte.pojos.adapters.tests.CustomCurrency;
 import de.jpaw.bonaparte.pojos.adapters.tests.CustomMillis;
 import de.jpaw.bonaparte.testrunner.MultiTestRunner;
 import de.jpaw.bonaparte.testrunner.StringBuilderTestRunner;
+import de.jpaw.fixedpoint.money.FPAmount;
 import de.jpaw.fixedpoint.money.FPCurrency;
+import de.jpaw.fixedpoint.types.MicroUnits;
 import de.jpaw.fixedpoint.types.MilliUnits;
 import de.jpaw.util.StringSerializer;
 
@@ -28,7 +31,7 @@ public class TestFixedPoint {
     @Test
     public void testAdapterCurrency() throws Exception {
         String expectedResult = StringSerializer.fromString(
-                "\\R\\N\\Sadapters.tests.CustomCurrency\\F\\Nhello\\F\\Sadapters.fpmoney.FpCurrency\\F\\NEUR\\F2\\F\\O\\O\\J").toString();
+                "\\R\\N\\Sadapters.tests.CustomCurrency\\F\\Nhello\\F\\Sadapters.moneyfp.FpCurrency\\F\\NEUR\\F2\\F\\O\\O\\J").toString();
         CustomCurrency myCurrency = new CustomCurrency("hello", new FPCurrency(JavaCurrencyDataProvider.instance.get("EUR")));
         
         System.out.println("serialized currency is " + new StringBuilderTestRunner().serializationTest(myCurrency, expectedResult));
@@ -48,10 +51,35 @@ public class TestFixedPoint {
     @Test
     public void testAdapterCurrencyNewString() throws Exception {
         String expectedResult = StringSerializer.altFromString(
-                "<R><N><S>adapters.tests.CustomCurrency<F><N>hello<F><S>adapters.fpmoney.FpCurrency<F><N>EUR<F>2<F><O><O>\n").toString();
+                "<R><N><S>adapters.tests.CustomCurrency<F><N>hello<F><S>adapters.moneyfp.FpCurrency<F><N>EUR<F>2<F><O><O>\n").toString();
         CustomCurrency myCurrency = new CustomCurrency("hello", new FPCurrency(JavaCurrencyDataProvider.instance.get("EUR")));
         
         System.out.println("serialized currency is " + new StringBuilderTestRunner().serializationTest(myCurrency, expectedResult));
         MultiTestRunner.serDeserMulti(myCurrency, expectedResult);
+    }
+    
+    @Test
+    public void testAdapterCurrencyExt() throws Exception {
+    	FPCurrency stdEUR = new FPCurrency(JavaCurrencyDataProvider.instance.get("EUR"));
+    	FPCurrency microsEUR = stdEUR.withMicrosPrecision();
+    	long net = 1359000;
+    	long tax = net * 19 / 100;
+    	FPAmount units = new FPAmount(microsEUR, net + tax, net, tax);
+    	System.out.println("unit price is " + units);
+    	
+    	MicroUnits quantity = new MicroUnits(3000000);
+    	FPAmount total = units.convert(quantity, stdEUR);
+    	System.out.println("3 items cost " + total);
+    	
+    	CustomAmountsUsed item = new CustomAmountsUsed(stdEUR, units, quantity, total);
+        String expectedResult = StringSerializer.altFromString(
+        		"<R><N><S>adapters.tests.CustomAmountsUsed<F><N>"
+        		+ "<S>adapters.moneyfp.FpCurrencyStd<F><N>EUR<F><O>"
+        		+ "<S>adapters.moneyfp.FpAmountExt<F><N>1617210<F><B>2<F>1359000<F>258210<F><A><O>"
+        		+ "3000000<F>"
+        		+ "<S>adapters.moneyfp.FpAmountExt<F><N>485<F><B>2<F>408<F>77<F><A><O>"
+        		+ "<O>\n");
+        System.out.println("Result is " + new StringBuilderTestRunner().serializationTest(item, expectedResult));
+        MultiTestRunner.serDeserMulti(item, expectedResult);
     }
 }
