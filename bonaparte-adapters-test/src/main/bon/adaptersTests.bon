@@ -1,7 +1,7 @@
 import de.jpaw.money.*
 import adapters.fixedpoint.*
 import adapters.fixedpointToBigDecimal.*
-import adapters.fpmoney.*
+import adapters.moneyfp.*
 
 /** BigDecimal based monetary data.
  * Assigned to factoryId 29
@@ -16,5 +16,11 @@ package adapters.tests factoryId 22 {
     final class CustomCurrency {
         required Ascii(8)               hello;
         required (FpCurrency)           myCurrency;
-    }    
+    }
+    
+    class CustomAmountsUsed {
+        required (FpCurrencyStd)                                            currency;
+        required (FpAmountExt) for currency                                 amounts;
+        required (FpAmountExt) for "getCurrency().withMicrosPrecision()"    unitAmounts;
+    }
 }

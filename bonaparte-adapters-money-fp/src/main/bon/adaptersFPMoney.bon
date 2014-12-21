@@ -5,13 +5,31 @@ import de.jpaw.fixedpoint.money.*
  * Assigned to factoryId 27
  */
 package adapters.moneyfp factoryId 27 {
+    /** A currency class, derived from the ISO code literal and an explicit number of decimals. */
     final class FpCurrency is FPCurrency static adapter de.jpaw.bonaparte.adapters.moneyfp.FpCurrencyAdapter {
         required uppercase(3)       currencyCode;
         required int                decimals;
     }
     
+    /** A currency class, derived from the ISO code literal, using the currency's default precision. */
+    final class FpCurrencyStd is FPCurrency static adapter de.jpaw.bonaparte.adapters.moneyfp.FpCurrencyStdAdapter {
+        required uppercase(3)       currencyCode;
+    }
+    
+    /** A currency class, derived from the ISO code literal, with fixed 6 decimals precision. */
+    final class FpCurrencyMicros is FPCurrency static adapter de.jpaw.bonaparte.adapters.moneyfp.FpCurrencyMicrosAdapter {
+        required uppercase(3)       currencyCode;
+    }
+    
+    /** An amount class (gross, with optional net and tax breakdown), based on a currency class. */
     final class FpAmount is FPAmount static adapter de.jpaw.bonaparte.adapters.moneyfp.FpAmountAdapter {
         required (FpCurrency)       currency;
+        required long               gross;
+        required Long List<>        amounts;
+    }
+    
+    /** An amount class (gross, with optional net and tax breakdown), based on an externally supply currency, with its default precision. */
+    final class FpAmountExt is FPAmount static adapter de.jpaw.bonaparte.adapters.moneyfp.FpAmountExtAdapter needExtraParam {
         required long               gross;
         required Long List<>        amounts;
     }
