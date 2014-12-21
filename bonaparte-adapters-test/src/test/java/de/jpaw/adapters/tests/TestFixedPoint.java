@@ -74,7 +74,7 @@ public class TestFixedPoint {
     	CustomAmountsUsed item = new CustomAmountsUsed(stdEUR, units, quantity, total);
         String expectedResult = StringSerializer.altFromString(
         		"<R><N><S>adapters.tests.CustomAmountsUsed<F><N>"
-        		+ "<S>adapters.moneyfp.FpCurrencyStd<F><N>EUR<F><O>"
+        		+ "EUR<F>"
         		+ "<S>adapters.moneyfp.FpAmountExt<F><N>1617210<F><B>2<F>1359000<F>258210<F><A><O>"
         		+ "3000000<F>"
         		+ "<S>adapters.moneyfp.FpAmountExt<F><N>485<F><B>2<F>408<F>77<F><A><O>"
