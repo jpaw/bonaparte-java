@@ -5,7 +5,7 @@ import de.jpaw.fixedpoint.money.FPAmount;
 import de.jpaw.fixedpoint.money.FPCurrency;
 
 public class FpSingleAmountExtAdapter {
-    public static <E extends Exception> long marshal(FPAmount obj) throws E {
+    public static long marshal(FPAmount obj) {
         return obj.getGross();
     }
     

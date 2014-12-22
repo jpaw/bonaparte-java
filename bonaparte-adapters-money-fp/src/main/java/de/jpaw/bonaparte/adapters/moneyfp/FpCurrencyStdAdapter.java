@@ -8,7 +8,7 @@ import de.jpaw.fixedpoint.money.FPCurrency;
 public class FpCurrencyStdAdapter {
     public static CurrencyDataProvider dataProvider = JavaCurrencyDataProvider.instance;
     
-    public static <E extends Exception> String marshal(FPCurrency obj) throws E {
+    public static String marshal(FPCurrency obj) {
         return obj.getCurrencyCode();
     }
     

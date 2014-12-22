@@ -5,7 +5,7 @@ import de.jpaw.fixedpoint.types.PicoUnits;
 
 public class PicoUnitsAdapter {
 
-    public static <E extends Exception> Long marshal(PicoUnits obj) throws E {
+    public static Long marshal(PicoUnits obj) {
         return obj.getMantissa();
     }
     

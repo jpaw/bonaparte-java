@@ -7,7 +7,7 @@ import de.jpaw.fixedpoint.types.FemtoUnits;
 
 public class BigFemtoUnitsAdapter {
 
-    public static <E extends Exception> BigDecimal marshal(FemtoUnits obj) throws E {
+    public static BigDecimal marshal(FemtoUnits obj) {
         return BigDecimal.valueOf(obj.getMantissa(), obj.getScale());
     }
     

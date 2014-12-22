@@ -5,7 +5,7 @@ import de.jpaw.fixedpoint.types.MilliUnits;
 
 public class MilliUnitsAdapter {
 
-    public static <E extends Exception> Long marshal(MilliUnits obj) throws E {
+    public static Long marshal(MilliUnits obj) {
         return obj.getMantissa();
     }
     

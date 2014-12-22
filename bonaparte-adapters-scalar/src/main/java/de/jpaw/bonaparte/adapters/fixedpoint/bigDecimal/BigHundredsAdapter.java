@@ -7,7 +7,7 @@ import de.jpaw.fixedpoint.types.Hundreds;
 
 public class BigHundredsAdapter {
 
-    public static <E extends Exception> BigDecimal marshal(Hundreds obj) throws E {
+    public static BigDecimal marshal(Hundreds obj) {
         return BigDecimal.valueOf(obj.getMantissa(), obj.getScale());
     }
     

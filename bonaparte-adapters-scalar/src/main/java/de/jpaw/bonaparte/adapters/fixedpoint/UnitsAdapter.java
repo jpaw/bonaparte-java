@@ -5,7 +5,7 @@ import de.jpaw.bonaparte.pojos.adapters.fixedpoint.UnitsAd;
 
 public class UnitsAdapter {
 
-    public static <E extends Exception> Long marshal(UnitsAd obj) throws E {
+    public static Long marshal(UnitsAd obj) {
         return obj.getMantissa();
     }
     

@@ -5,7 +5,7 @@ import de.jpaw.fixedpoint.types.FemtoUnits;
 
 public class FemtoUnitsAdapter {
 
-    public static <E extends Exception> Long marshal(FemtoUnits obj) throws E {
+    public static Long marshal(FemtoUnits obj) {
         return obj.getMantissa();
     }
     

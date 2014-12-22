@@ -7,7 +7,7 @@ import de.jpaw.fixedpoint.types.MilliUnits;
 
 public class BigMilliUnitsAdapter {
 
-    public static <E extends Exception> BigDecimal marshal(MilliUnits obj) throws E {
+    public static BigDecimal marshal(MilliUnits obj) {
         return BigDecimal.valueOf(obj.getMantissa(), obj.getScale());
     }
     

@@ -5,6 +5,8 @@ import de.jpaw.fixedpoint.money.*
  * Assigned to factoryId 27
  */
 package adapters.moneyfp factoryId 27 {
+    properties unroll, prefix, suffix;
+    
     /** A currency class, derived from the ISO code literal and an explicit number of decimals. */
     final class FpCurrency is FPCurrency static adapter de.jpaw.bonaparte.adapters.moneyfp.FpCurrencyAdapter {
         required uppercase(3)       currencyCode;
@@ -15,7 +17,7 @@ package adapters.moneyfp factoryId 27 {
     final class FpAmount is FPAmount static adapter de.jpaw.bonaparte.adapters.moneyfp.FpAmountAdapter {
         required (FpCurrency)       currency;
         required long               gross;
-        required Long List<>        amounts;
+        required Long List<>        amounts     properties unroll="Net,Tax1,Tax2,Tax3"; // with JPA persistence, have 4 fields...
     }
     
     /** A currency class, derived from the ISO code literal, with fixed 6 decimals precision. single field version. */
@@ -36,6 +38,6 @@ package adapters.moneyfp factoryId 27 {
     /** An amount class (gross, with optional net and tax breakdown), based on an externally supply currency. */
     final class FpAmountExt is FPAmount static adapter de.jpaw.bonaparte.adapters.moneyfp.FpAmountExtAdapter needExtraParam {
         required long               gross;
-        required Long List<>        amounts;
+        required Long List<>        amounts     properties unroll="Net,Tax1,Tax2,Tax3"; // with JPA persistence, have 4 fields...
     }
 }

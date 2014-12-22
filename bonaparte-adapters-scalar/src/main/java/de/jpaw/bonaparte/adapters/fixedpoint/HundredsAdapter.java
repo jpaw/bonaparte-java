@@ -5,7 +5,7 @@ import de.jpaw.bonaparte.pojos.adapters.fixedpoint.HundredsAd;
 
 public class HundredsAdapter {
 
-    public static <E extends Exception> Long marshal(HundredsAd obj) throws E {
+    public static Long marshal(HundredsAd obj) {
         return obj.getMantissa();
     }
     

@@ -5,7 +5,7 @@ import de.jpaw.fixedpoint.types.NanoUnits;
 
 public class NanoUnitsAdapter {
 
-    public static <E extends Exception> Long marshal(NanoUnits obj) throws E {
+    public static Long marshal(NanoUnits obj) {
         return obj.getMantissa();
     }
     

@@ -7,7 +7,7 @@ import de.jpaw.fixedpoint.types.Tenths;
 
 public class BigTenthsAdapter {
 
-    public static <E extends Exception> BigDecimal marshal(Tenths obj) throws E {
+    public static BigDecimal marshal(Tenths obj) {
         return BigDecimal.valueOf(obj.getMantissa(), obj.getScale());
     }
     
