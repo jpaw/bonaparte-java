@@ -12,13 +12,13 @@ public class FpCurrencyAdapter {
     public static CurrencyDataProvider dataProvider = JavaCurrencyDataProvider.instance;
 
     /** Convert the custom type into a serializable BonaPortable. */
-    public static FpCurrency toBonaPortable(FPCurrency currency) {
+    public static FpCurrency marshal(FPCurrency currency) {
         return new FpCurrency(currency.getCurrencyCode(), currency.getDecimals());
     }
     
     /** Convert a parsed adapter type into the custom type. 
      * @throws E */
-    public static <E extends Exception> FPCurrency fromBonaPortable(BonaPortable obj, MessageParser<E> p) throws E {
+    public static <E extends Exception> FPCurrency unmarshal(BonaPortable obj, MessageParser<E> p) throws E {
         if (obj instanceof FpCurrency) {
             FpCurrency currency = (FpCurrency)obj;
             try {
@@ -27,7 +27,10 @@ public class FpCurrencyAdapter {
                         FixedPointSelector.getZeroForScale(currency.getDecimals())
                         );
             } catch (Exception e) {
-                throw p.customExceptionConverter("FPCurrency(" + currency.getCurrencyCode() + ", " + currency.getDecimals() + ") not accepted", e);
+            	if (p == null)
+            		throw new RuntimeException(e);
+            	else
+            		throw p.customExceptionConverter("FPCurrency(" + currency.getCurrencyCode() + ", " + currency.getDecimals() + ") not accepted", e);
             }
         } else {
             throw new IllegalArgumentException("Incorrect type returned");

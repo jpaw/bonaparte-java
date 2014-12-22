@@ -5,15 +5,15 @@ import de.jpaw.fixedpoint.types.*
  */
 package adapters.fixedpoint factoryId 27 {
 
-    final class Units is Units static adapter de.jpaw.bonaparte.adapters.fixedpoint.UnitsAdapter singleField {
+    final class UnitsAd is Units static adapter de.jpaw.bonaparte.adapters.fixedpoint.UnitsAdapter singleField {
         optional Long(18) mantissa;  // the field must be declared as optional, because a null is used to model an object null 
     }
 
-    final class Tenths is Tenths static adapter de.jpaw.bonaparte.adapters.fixedpoint.TenthsAdapter singleField {
+    final class TenthsAd is Tenths static adapter de.jpaw.bonaparte.adapters.fixedpoint.TenthsAdapter singleField {
         optional Long(18,1) mantissa;  // the field must be declared as optional, because a null is used to model an object null 
     }
 
-    final class Hundreds is Hundreds static adapter de.jpaw.bonaparte.adapters.fixedpoint.HundredsAdapter singleField {
+    final class HundredsAd is Hundreds static adapter de.jpaw.bonaparte.adapters.fixedpoint.HundredsAdapter singleField {
         optional Long(18,2) mantissa;  // the field must be declared as optional, because a null is used to model an object null 
     }
 
