@@ -5,9 +5,8 @@ import java.util.Set;
 
 import de.jpaw.bonaparte.core.BonaMeta;
 
-@Deprecated // use BonaIntEnumSet
-public interface BonaEnumSet<E extends Enum<E>> extends BonaMeta, Set<E>, Serializable {
+public interface BonaByteEnumSet<E extends Enum<E>> extends BonaMeta, Set<E>, Serializable {
 
     public int getMaxOrdinal();
-    public int getBitmap();
+    public byte getBitmap();
 }
