@@ -8,35 +8,35 @@ package adapters.moneyfp factoryId 27 {
     properties unroll, prefix, suffix;
     
     /** A currency class, derived from the ISO code literal and an explicit number of decimals. */
-    final class FpCurrency is FPCurrency static adapter de.jpaw.bonaparte.adapters.moneyfp.FpCurrencyAdapter {
+    final class FpCurrency is FPCurrency adapter de.jpaw.bonaparte.adapters.moneyfp.FpCurrencyAdapter withExceptionConverter {
         required uppercase(3)       currencyCode;
         required int                decimals;
     }
     
     /** An amount class (gross, with optional net and tax breakdown), based on a currency class. */
-    final class FpAmount is FPAmount static adapter de.jpaw.bonaparte.adapters.moneyfp.FpAmountAdapter {
+    final class FpAmount is FPAmount adapter de.jpaw.bonaparte.adapters.moneyfp.FpAmountAdapter withExceptionConverter {
         required (FpCurrency)       currency;
         required long               gross;
         required Long List<>        amounts     properties unroll="Net,Tax1,Tax2,Tax3"; // with JPA persistence, have 4 fields...
     }
     
     /** A currency class, derived from the ISO code literal, with fixed 6 decimals precision. single field version. */
-    final class FpCurrencyMicros is FPCurrency static adapter de.jpaw.bonaparte.adapters.moneyfp.FpCurrencyMicrosAdapter singleField {
+    final class FpCurrencyMicros is FPCurrency adapter de.jpaw.bonaparte.adapters.moneyfp.FpCurrencyMicrosAdapter singleField withExceptionConverter {
         optional Uppercase(3)       currencyCode;
     }
     
     /** A currency class, derived from the ISO code literal, using the currency's default precision. single field version. */
-    final class FpCurrencyStd is FPCurrency static adapter de.jpaw.bonaparte.adapters.moneyfp.FpCurrencyStdAdapter singleField {
+    final class FpCurrencyStd is FPCurrency adapter de.jpaw.bonaparte.adapters.moneyfp.FpCurrencyStdAdapter singleField withExceptionConverter {
         optional Uppercase(3)       currencyCode;
     }
     
     /** An amount class with a single value (gross only), based on an externally supply currency. */
-    final class FpSingleAmountExt is FPAmount static adapter de.jpaw.bonaparte.adapters.moneyfp.FpSingleAmountExtAdapter needExtraParam singleField {
+    final class FpSingleAmountExt is FPAmount adapter de.jpaw.bonaparte.adapters.moneyfp.FpSingleAmountExtAdapter needExtraParam singleField withExceptionConverter {
         optional Long               gross;
     }
     
     /** An amount class (gross, with optional net and tax breakdown), based on an externally supply currency. */
-    final class FpAmountExt is FPAmount static adapter de.jpaw.bonaparte.adapters.moneyfp.FpAmountExtAdapter needExtraParam {
+    final class FpAmountExt is FPAmount adapter de.jpaw.bonaparte.adapters.moneyfp.FpAmountExtAdapter needExtraParam withExceptionConverter {
         required long               gross;
         required Long List<>        amounts     properties unroll="Net,Tax1,Tax2,Tax3"; // with JPA persistence, have 4 fields...
     }

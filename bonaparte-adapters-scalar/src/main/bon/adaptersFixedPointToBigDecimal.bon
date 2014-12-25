@@ -5,35 +5,35 @@ import de.jpaw.fixedpoint.types.*
  */
 package adapters.fixedpointToBigDecimal factoryId 27 {
 
-    final class BigUnits is Units static adapter de.jpaw.bonaparte.adapters.fixedpoint.bigDecimal.BigUnitsAdapter singleField {
+    final class BigUnits is Units adapter de.jpaw.bonaparte.adapters.fixedpoint.bigDecimal.BigUnitsAdapter singleField withExceptionConverter {
         optional Decimal(18) autoScale mantissa; 
     }
 
-    final class BigTenths is Tenths static adapter de.jpaw.bonaparte.adapters.fixedpoint.bigDecimal.BigTenthsAdapter singleField {
+    final class BigTenths is Tenths adapter de.jpaw.bonaparte.adapters.fixedpoint.bigDecimal.BigTenthsAdapter singleField withExceptionConverter {
         optional Decimal(18,1) autoScale mantissa;  // the field must be declared as optional, because a null is used to model an object null 
     }
 
-    final class BigHundreds is Hundreds static adapter de.jpaw.bonaparte.adapters.fixedpoint.bigDecimal.BigHundredsAdapter singleField {
+    final class BigHundreds is Hundreds adapter de.jpaw.bonaparte.adapters.fixedpoint.bigDecimal.BigHundredsAdapter singleField withExceptionConverter {
         optional Decimal(18,2) autoScale mantissa;  // the field must be declared as optional, because a null is used to model an object null 
     }
 
-    final class BigMillis is MilliUnits static adapter de.jpaw.bonaparte.adapters.fixedpoint.bigDecimal.BigMilliUnitsAdapter singleField {
+    final class BigMillis is MilliUnits adapter de.jpaw.bonaparte.adapters.fixedpoint.bigDecimal.BigMilliUnitsAdapter singleField withExceptionConverter {
         optional Decimal(18,3) autoScale mantissa;  // the field must be declared as optional, because a null is used to model an object null 
     }
 
-    final class BigMicros is MicroUnits static adapter de.jpaw.bonaparte.adapters.fixedpoint.bigDecimal.BigMicroUnitsAdapter singleField {
+    final class BigMicros is MicroUnits adapter de.jpaw.bonaparte.adapters.fixedpoint.bigDecimal.BigMicroUnitsAdapter singleField withExceptionConverter {
         optional Decimal(18,6) autoScale mantissa;  // the field must be declared as optional, because a null is used to model an object null 
     }
 
-    final class BigNanos is NanoUnits static adapter de.jpaw.bonaparte.adapters.fixedpoint.bigDecimal.BigNanoUnitsAdapter singleField {
+    final class BigNanos is NanoUnits adapter de.jpaw.bonaparte.adapters.fixedpoint.bigDecimal.BigNanoUnitsAdapter singleField withExceptionConverter {
         optional Decimal(18,9) autoScale mantissa;  // the field must be declared as optional, because a null is used to model an object null 
     }
 
-    final class BigPicos is PicoUnits static adapter de.jpaw.bonaparte.adapters.fixedpoint.bigDecimal.BigPicoUnitsAdapter singleField {
+    final class BigPicos is PicoUnits adapter de.jpaw.bonaparte.adapters.fixedpoint.bigDecimal.BigPicoUnitsAdapter singleField withExceptionConverter {
         optional Decimal(18,12) autoScale mantissa;  // the field must be declared as optional, because a null is used to model an object null 
     }
 
-    final class BigFemtos is FemtoUnits static adapter de.jpaw.bonaparte.adapters.fixedpoint.bigDecimal.BigFemtoUnitsAdapter singleField {
+    final class BigFemtos is FemtoUnits adapter de.jpaw.bonaparte.adapters.fixedpoint.bigDecimal.BigFemtoUnitsAdapter singleField withExceptionConverter {
         optional Decimal(18,15) autoScale mantissa;  // the field must be declared as optional, because a null is used to model an object null 
     }
 

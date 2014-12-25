@@ -119,9 +119,9 @@ package meta factoryId 29 {
     // holds extra meta information for a class which is not a bonaportable, but some external class
     class ExternalClassDefinition classId 17 extends ClassDefinition {
         required boolean                    isSingleField;      // the serialization is done by mapping the field to one existing field. (If false, a replacement object wrapper will be written)
-        required boolean                    isStaticAdapter;    // true if the adapter methods are static (the only ones supported currently), false for instance methods
+        required boolean                    exceptionConverter; // the unmarshaller possibly throws Exceptions for invalid data which should be enriched with the parsing position
         required identifier                 canonicalName;      // canonical name of the external class (Java type)
-        required identifier                 adapterClassName;   // canonical name of the marshaller adapter (Java type)
+        optional identifier                 adapterClassName;   // canonical name of the marshaller adapter (Java type), if there is a separate class
     }
     class EnumDefinition classId 12 extends AbstractObjectParent<EnumDefinition> {
         required signed int                 maxTokenLength;     // signed because we store -1 for enums which do not have tokens at all

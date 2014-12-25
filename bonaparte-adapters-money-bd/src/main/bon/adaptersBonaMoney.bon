@@ -4,12 +4,12 @@ import de.jpaw.money.*
  * Assigned to factoryId 29
  */
 package adapters.moneybd factoryId 27 {
-    final class BCurrency is BonaCurrency static adapter de.jpaw.bonaparte.adapters.moneybd.BonaCurrencyAdapter {
+    final class BCurrency is BonaCurrency adapter de.jpaw.bonaparte.adapters.moneybd.BonaCurrencyAdapter withExceptionConverter {
         required uppercase(3)           currencyCode;
         required int                    decimals;
     }
     
-    final class BAmount is BonaMoney static adapter de.jpaw.bonaparte.adapters.moneybd.BonaMoneyAdapter {
+    final class BAmount is BonaMoney adapter de.jpaw.bonaparte.adapters.moneybd.BonaMoneyAdapter withExceptionConverter {
         required (BCurrency)            currency;
         required Decimal(18,6)          gross;
         required Decimal(18,6) List<>   components;
