@@ -27,10 +27,10 @@ public class FpCurrencyAdapter {
                         FixedPointSelector.getZeroForScale(currency.getDecimals())
                         );
             } catch (Exception e) {
-            	if (p == null)
-            		throw new RuntimeException(e);
-            	else
-            		throw p.customExceptionConverter("FPCurrency(" + currency.getCurrencyCode() + ", " + currency.getDecimals() + ") not accepted", e);
+                if (p == null)
+                    throw new RuntimeException(e);
+                else
+                    throw p.customExceptionConverter("FPCurrency(" + currency.getCurrencyCode() + ", " + currency.getDecimals() + ") not accepted", e);
             }
         } else {
             throw new IllegalArgumentException("Incorrect type returned");

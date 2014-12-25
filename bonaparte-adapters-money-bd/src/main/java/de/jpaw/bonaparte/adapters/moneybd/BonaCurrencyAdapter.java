@@ -22,7 +22,7 @@ public class BonaCurrencyAdapter {
                     currency.getDecimals()
                     );
             } catch (MonetaryException e) {
-            	throw p.customExceptionConverter("Cannot convert " + obj + " to BonaCurrency", e);
+                throw p.customExceptionConverter("Cannot convert " + obj + " to BonaCurrency", e);
             }
         } else {
             throw new IllegalArgumentException("Incorrect type returned");

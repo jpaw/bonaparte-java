@@ -14,7 +14,7 @@ public class CompactByteArrayTestRunner extends AbstractTestrunner<byte[]> {
     public byte[] serializationTest(BonaCustom src, byte[] expectedResult) throws Exception {
         ByteBuilder buffer = new ByteBuilder();
         CompactByteArrayComposer bac = new CompactByteArrayComposer(buffer, false);
-        bac.setWriteCRs(false);			// ensure the test is valid under Windows as well...
+        bac.setWriteCRs(false);         // ensure the test is valid under Windows as well...
         bac.writeRecord(src);
         byte[] result = buffer.getBytes();
         if (expectedResult != null)

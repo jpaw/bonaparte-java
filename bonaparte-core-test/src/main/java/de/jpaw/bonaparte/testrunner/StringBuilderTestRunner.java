@@ -12,7 +12,7 @@ public class StringBuilderTestRunner extends AbstractTestrunner<String> {
     public String serializationTest(BonaCustom src, String expectedResult) throws Exception {
         StringBuilder buffer = new StringBuilder(256);
         StringBuilderComposer bac = new StringBuilderComposer(buffer);
-        bac.setWriteCRs(false);			// ensure the test is valid under Windows as well...
+        bac.setWriteCRs(false);         // ensure the test is valid under Windows as well...
         bac.writeRecord(src);
         String result = buffer.toString();
         if (expectedResult != null)

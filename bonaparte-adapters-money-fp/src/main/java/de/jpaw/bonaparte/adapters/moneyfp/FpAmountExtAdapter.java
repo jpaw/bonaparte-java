@@ -22,7 +22,7 @@ public class FpAmountExtAdapter {
             try {
                 return new FPAmount(amount.getAmounts(), amount.getGross(), curr);
             } catch (Exception e) {
-            	throw p.customExceptionConverter("FPAmount(" + obj + ") not accepted", e);
+                throw p.customExceptionConverter("FPAmount(" + obj + ") not accepted", e);
             }
         } else {
             throw new IllegalArgumentException("Incorrect type returned");

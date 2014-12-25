@@ -32,7 +32,7 @@ public class BonaMoneyAdapter {
                     return new BonaMoney(currency, BAmount.meta$$gross.getRounding(), false, m.getGross(), componentArray);
                 }
             } catch (MonetaryException e) {
-            	throw p.customExceptionConverter("Cannot convert " + obj + " to BonaMoney", e);
+                throw p.customExceptionConverter("Cannot convert " + obj + " to BonaMoney", e);
             }
         } else {
             throw new IllegalArgumentException("Incorrect type returned");
