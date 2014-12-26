@@ -688,7 +688,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
         }
         needToken(MAP_BEGIN);
         int foundIndexType = readInteger(fieldname);
-        if (foundIndexType != di.getMapIndexType()) {
+        if (foundIndexType != di.getMapIndexType().ordinal()) {
             throw new MessageParserException(MessageParserException.WRONG_MAP_INDEX_TYPE,
                     String.format("(got %d, expected for %s)", foundIndexType, di.getMapIndexType(), fieldname), parseIndex, currentClass);
         }

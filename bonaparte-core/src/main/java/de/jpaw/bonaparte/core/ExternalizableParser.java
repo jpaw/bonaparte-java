@@ -457,7 +457,7 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         }
         needToken(MAP_BEGIN);
         int foundIndexType = readVarInt(fieldname, 32);
-        if (foundIndexType != di.getMapIndexType()) {
+        if (foundIndexType != di.getMapIndexType().ordinal()) {
             throw new IOException(String.format("WRONG_MAP_INDEX_TYPE: got %d, expected for %s.%s",
                     foundIndexType, di.getMapIndexType(), currentClass, fieldname));
         }

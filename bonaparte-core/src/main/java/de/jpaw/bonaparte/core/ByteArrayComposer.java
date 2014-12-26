@@ -443,7 +443,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
     @Override
     public void startMap(FieldDefinition di, int currentMembers) {
         work.append(MAP_BEGIN);
-        addField(StaticMeta.INTERNAL_INTEGER, di.getMapIndexType());
+        addField(StaticMeta.INTERNAL_INTEGER, di.getMapIndexType().ordinal());
         addField(StaticMeta.INTERNAL_INTEGER, currentMembers);
     }
 

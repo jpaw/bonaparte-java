@@ -268,7 +268,7 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
     @Override
     public void startMap(FieldDefinition di, int currentMembers) throws IOException {
         out.writeByte(MAP_BEGIN);
-        writeVarInt(di.getMapIndexType());
+        writeVarInt(di.getMapIndexType().ordinal());
         writeVarInt(currentMembers);
     }
 

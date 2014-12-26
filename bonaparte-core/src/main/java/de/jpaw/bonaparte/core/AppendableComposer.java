@@ -422,7 +422,7 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
     @Override
     public void startMap(FieldDefinition di, int currentMembers) throws IOException {
         work.append(MAP_BEGIN);
-        addField(StaticMeta.INTERNAL_INTEGER, di.getMapIndexType());
+        addField(StaticMeta.INTERNAL_INTEGER, di.getMapIndexType().ordinal());
         addField(StaticMeta.INTERNAL_INTEGER, currentMembers);
     }
 
