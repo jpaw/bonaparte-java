@@ -5,35 +5,35 @@ import de.jpaw.fixedpoint.types.*
  */
 package adapters.fixedpoint factoryId 27 {
 
-    final class UnitsAd is Units singleField {
+    final immutable class UnitsAd is Units singleField {
         optional Long(18) mantissa;  // the field must be declared as optional, because a null is used to model an object null 
     }
 
-    final class TenthsAd is Tenths singleField {
+    final immutable class TenthsAd is Tenths singleField {
         optional Long(18,1) mantissa;  // the field must be declared as optional, because a null is used to model an object null 
     }
 
-    final class HundredsAd is Hundreds singleField {
+    final immutable class HundredsAd is Hundreds singleField {
         optional Long(18,2) mantissa;  // the field must be declared as optional, because a null is used to model an object null 
     }
 
-    final class Millis is MilliUnits singleField {
+    final immutable class Millis is MilliUnits singleField {
         optional Long(18,3) mantissa;  // the field must be declared as optional, because a null is used to model an object null 
     }
 
-    final class Micros is MicroUnits singleField {
+    final immutable class Micros is MicroUnits singleField {
         optional Long(18,6) mantissa;  // the field must be declared as optional, because a null is used to model an object null 
     }
 
-    final class Nanos is NanoUnits singleField {
+    final immutable class Nanos is NanoUnits singleField {
         optional Long(18,9) mantissa;  // the field must be declared as optional, because a null is used to model an object null 
     }
 
-    final class Picos is PicoUnits singleField {
+    final immutable class Picos is PicoUnits singleField {
         optional Long(18,12) mantissa;  // the field must be declared as optional, because a null is used to model an object null 
     }
 
-    final class Femtos is FemtoUnits singleField {
+    final immutable class Femtos is FemtoUnits singleField {
         optional Long(18,15) mantissa;  // the field must be declared as optional, because a null is used to model an object null 
     }
 

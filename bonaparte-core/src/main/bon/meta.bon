@@ -1,5 +1,5 @@
 /** Bonaparte metadata.
- * Assigned to factoryId 29, classIds 1-20
+ * Assigned to factoryId 29, classIds 1-24
  */
 package meta factoryId 29 {
     default private unsigned trim noControlChars;
@@ -12,8 +12,9 @@ package meta factoryId 29 {
     enum BundleStatus { UNUSED, RESOLVED, INSTALLED, STARTING, SHUTTING_DOWN, MAINTENANCE }  // borrow OSGi statuses
     enum Multiplicity { SCALAR, ARRAY, LIST, SET, MAP }
     // the DataCategory matches the enum of same name in the Bonaparte DSL generator project
-    enum DataCategory { OBJECT, ENUM, NUMERIC, STRING, TEMPORAL, MISC, BINARY, BASICNUMERIC, XENUM }  // misc is boolean, char, uuid, ...
+    enum DataCategory { OBJECT, ENUM, NUMERIC, STRING, TEMPORAL, MISC, BINARY, BASICNUMERIC, XENUM, ENUMSET, XENUMSET }  // misc is boolean, char, uuid, ...
     enum FoldingStrategy { SKIP_UNMAPPED, TRY_SUPERCLASS, FULL_OUTPUT, SUPERCLASS_OR_FULL, FORWARD_OBJECTS }  // what to do if no folding mapping is found
+    enum IndexType { DEFAULT, STRING, INTEGER, LONG, SHORT, BYTE }   // index type for enum sets and maps. DO NOT CHANGE SEQUENCE AS ORDINALS ARE USED IN TRANSMISSION!
     
     abstract immutable class FieldDefinition {
         enum Visibility                 visibility;
@@ -81,7 +82,7 @@ package meta factoryId 29 {
     }
 
     // AlphanumericElementaryDataItem represents all text based fields
-    // ascii, unicode, uppercase, lowercase 
+    // ascii, unicode, uppercase, lowercase
     class AlphanumericElementaryDataItem classId 10 extends ElementaryDataItem {
         boolean                             doTrim;
         boolean                             doTruncate;
@@ -91,6 +92,19 @@ package meta factoryId 29 {
         int                                 minLength;
         optional Ascii(500)                 ^regexp;
     }
+    
+    // (X)EnumSet definitions
+    
+    class AlphanumericEnumSetDataItem classId 18 extends AlphanumericElementaryDataItem {
+        required (EnumSetDefinition)        baseEnumset;
+    }
+    class XEnumSetDataItem classId 19 extends AlphanumericElementaryDataItem {
+        required (XEnumSetDefinition)       baseXEnumset;
+    }
+    class NumericEnumSetDataItem classId 20 extends BasicNumericElementaryDataItem {
+        required (EnumSetDefinition)        baseEnumset;
+    }
+    
     
     // common superclass for class, enum and xenum
     abstract immutable class AbstractObjectParent<E extends AbstractObjectParent<!E>> cacheHash {
@@ -133,6 +147,13 @@ package meta factoryId 29 {
         required signed int                 maxTokenLength;     // signed for symmetry with EnumDefinition
         required boolean                    hasNullToken;       // has a token "" (which is converted to null)
         required (EnumDefinition)           baseEnum;
+    }
+    class EnumSetDefinition classId 21 extends AbstractObjectParent<EnumSetDefinition> {
+        required enum IndexType             indexType;
+        required (EnumDefinition)           baseEnum;
+    }
+    class XEnumSetDefinition classId 22 extends AbstractObjectParent<XEnumSetDefinition> {
+        required (XEnumDefinition)          baseXEnum;
     }
     
     class BundleInformation classId 15 {

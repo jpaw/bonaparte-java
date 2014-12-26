@@ -27,5 +27,5 @@ package testXenum {
         xenum MoreColors    myMoreColors;  // not yet working, typecast issue!
     }
     
-    xenum Set MyXEnumSet is XColor ;
+    xenumset MyXEnumSet is XColor ;
 }
