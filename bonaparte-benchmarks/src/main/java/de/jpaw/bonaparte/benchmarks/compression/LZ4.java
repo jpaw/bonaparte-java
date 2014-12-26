@@ -26,6 +26,7 @@ import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
 //ClassDef: Uncompressed length = 2563, compressed length = 1037
 //String: Uncompressed length = 294, compressed length = 264
 
+// LZ4 1.2.0, jmh 1.0.1
 //Benchmark                                   Mode   Samples         Mean   Mean error    Units
 //d.j.b.b.c.LZ4.compressClass                thrpt         9      199.573        3.544   ops/ms
 //d.j.b.b.c.LZ4.compressString               thrpt         9      930.807       23.536   ops/ms
@@ -33,6 +34,24 @@ import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
 //d.j.b.b.c.LZ4.uncompressKnownSizeClass     thrpt         9      853.847       12.694   ops/ms
 //d.j.b.b.c.LZ4.uncompressKnownSizeString    thrpt         9     6868.212      216.922   ops/ms
 //d.j.b.b.c.LZ4.uncompressString             thrpt         9     7136.771       33.089   ops/ms
+
+// LZ4 1.3.0, jmh 1.3.1
+//Benchmark                                   Mode  Samples        Score        Error  Units
+//d.j.b.b.c.LZ4.compressClass                thrpt        9   154916.270 ±   1481.254  ops/s
+//d.j.b.b.c.LZ4.compressString               thrpt        9  1001878.510 ±  10256.525  ops/s
+//d.j.b.b.c.LZ4.uncompressClass              thrpt        9   494119.120 ±  18157.665  ops/s
+//d.j.b.b.c.LZ4.uncompressKnownSizeClass     thrpt        9   491971.137 ±   9598.116  ops/s
+//d.j.b.b.c.LZ4.uncompressKnownSizeString    thrpt        9  5759525.375 ± 447055.958  ops/s
+//d.j.b.b.c.LZ4.uncompressString             thrpt        9  6363411.590 ±  33180.468  ops/s
+
+// LZ4 1.2.0, jmh 1.3.1
+//Benchmark                                   Mode  Samples        Score        Error  Units
+//d.j.b.b.c.LZ4.compressClass                thrpt        9   146333.259 ±   2753.113  ops/s
+//d.j.b.b.c.LZ4.compressString               thrpt        9   915318.550 ±  39796.593  ops/s
+//d.j.b.b.c.LZ4.uncompressClass              thrpt        9   518634.403 ±  15230.610  ops/s
+//d.j.b.b.c.LZ4.uncompressKnownSizeClass     thrpt        9   548950.967 ±  22384.097  ops/s
+//d.j.b.b.c.LZ4.uncompressKnownSizeString    thrpt        9  6245136.341 ±  56415.508  ops/s
+//d.j.b.b.c.LZ4.uncompressString             thrpt        9  6409991.988 ± 233722.373  ops/s
 
 @State(value = Scope.Thread)
 @OperationsPerInvocation(LZ4.OPERATIONS_PER_INVOCATION)

@@ -55,6 +55,16 @@
 
     <build>
         <plugins>
+            <!-- Java 1.7 required for LZ4 1.3.0 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
             <plugin>
                 <artifactId>maven-clean-plugin</artifactId>
             </plugin>
