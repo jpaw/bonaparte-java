@@ -73,9 +73,7 @@ public class SimpleTestRunner {
         MessageParser<MessageParserException> w2 = new ByteArrayParser(bacResult, 0, -1);
         BonaPortable dst2 = w2.readRecord();
         assert dst2.getClass() == src.getClass() : "returned obj is of wrong type (ByteArrayParser)"; // assuming we have one class loader only
-        assert src.hasSameContentsAs(dst2) : "returned obj is not equal to original one (ByteArrayParser)";
-        // the inherited equals() normally does not return true
-        assert src.equals(dst2) : "returned obj is not equal to original one (ByteArrayParser) (with equals())";
+        assert src.equals(dst2) : "returned obj is not equal to original one (ByteArrayParser)";
         // verify the hashCodes
         assert dst2.hashCode() == srcHash : "hash code differs for dst2";
         return dst2;
@@ -93,9 +91,7 @@ public class SimpleTestRunner {
         MessageParser<MessageParserException> w1 = new StringBuilderParser(work, 0, -1);
         BonaPortable dst1 = w1.readRecord();
         assert dst1.getClass() == src.getClass() : "returned obj is of wrong type (StringBuilderParser)"; // assuming we have one class loader only
-        assert src.hasSameContentsAs(dst1) : "returned obj is not equal to original one (StringBuilderParser)";
-        // the inherited equals() normally does not return true
-        assert src.equals(dst1) : "returned obj is not equal to original one (StringBuilderParser) (with equals())";
+        assert src.equals(dst1) : "returned obj is not equal to original one (StringBuilderParser)";
         // verify the hashCodes
         assert dst1.hashCode() == srcHash : "hash code differs for dst1";
         return dst1;
@@ -146,9 +142,7 @@ public class SimpleTestRunner {
         MessageParser<MessageParserException> w1 = new StringBuilderParser(work, 0, -1);
         BonaPortable dst1 = w1.readRecord();
         assert dst1.getClass() == src.getClass() : "returned obj is of wrong type (StringBuilderParser)"; // assuming we have one class loader only
-        assert src.hasSameContentsAs(dst1) : "returned obj is not equal to original one (StringBuilderParser)";
-        // the inherited equals() normally does not return true
-        assert src.equals(dst1) : "returned obj is not equal to original one (StringBuilderParser) (with equals())";
+        assert src.equals(dst1) : "returned obj is not equal to original one (StringBuilderParser)";
         // verify the hashCodes
         assert dst1.hashCode() == srcHash : "hash code differs for dst1";
 
@@ -157,9 +151,7 @@ public class SimpleTestRunner {
         MessageParser<MessageParserException> w2 = new ByteArrayParser(sbcResult, 0, -1);
         BonaPortable dst2 = w2.readRecord();
         assert dst2.getClass() == src.getClass() : "returned obj is of wrong type (ByteArrayParser)"; // assuming we have one class loader only
-        assert src.hasSameContentsAs(dst2) : "returned obj is not equal to original one (ByteArrayParser)";
-        // the inherited equals() normally does not return true
-        assert src.equals(dst2) : "returned obj is not equal to original one (ByteArrayParser) (with equals())";
+        assert src.equals(dst2) : "returned obj is not equal to original one (ByteArrayParser)";
         // verify the hashCodes
         assert dst2.hashCode() == srcHash : "hash code differs for dst2";
 
@@ -191,9 +183,7 @@ public class SimpleTestRunner {
         Object xdst = in.readObject();
         assert xdst.getClass() == src.getClass() : "returned obj is of wrong type (deexternalizer)"; // assuming we have one class loader only
         BonaPortable dst3 = (BonaPortable)xdst;
-        assert src.hasSameContentsAs(dst3) : "returned obj is not equal to original one (deexternalizer)";
-        // the inherited equals() normally does not return true
-        assert src.equals(dst3) : "returned obj is not equal to original one (deexternalizer) (with equals())";
+        assert src.equals(dst3) : "returned obj is not equal to original one (deexternalizer)";
         // verify the hashCodes
         assert dst3.hashCode() == srcHash : "hash code differs for dst3";
 
@@ -235,9 +225,7 @@ public class SimpleTestRunner {
        CompactByteArrayParser cbap = new CompactByteArrayParser(cbacResult, 0, -1);
        BonaPortable dst33 = cbap.readRecord();
        assert dst33.getClass() == src.getClass() : "returned obj is of wrong type (decompacter)"; // assuming we have one class loader only
-       assert src.hasSameContentsAs(dst33) : "returned obj is not equal to original one (decompacter)";
-       // the inherited equals() normally does not return true
-       assert src.equals(dst33) : "returned obj is not equal to original one (decompacter) (with equals())";
+       assert src.equals(dst33) : "returned obj is not equal to original one (decompacter)";
        // verify the hashCodes
        assert dst33.hashCode() == srcHash : "hash code differs for dst3";
 

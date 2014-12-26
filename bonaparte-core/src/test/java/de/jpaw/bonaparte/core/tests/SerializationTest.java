@@ -106,14 +106,14 @@ public class SerializationTest {
         BonaPortable obj2 = w.readRecord();
         assert obj2 instanceof ClassDefinition : "returned obj is of wrong type (StringBuilderParser)";
         assert compareTest1(obj1, (ClassDefinition)obj2) : "returned obj is not equal to original one (StringBuilderParser)";
-        assert obj1.hasSameContentsAs(obj2) : "returned obj is not equal to original one (StringBuilderParser) (own test)";
+        assert obj1.equals(obj2) : "returned obj is not equal to original one (StringBuilderParser) (own test)";
 
         // alternate deserializer
         MessageParser<MessageParserException> w2 = new ByteArrayParser(sbcResult, 0, -1);
         BonaPortable obj3 = w2.readRecord();
         assert obj3 instanceof ClassDefinition : "returned obj is of wrong type (ByteArrayParser)";
         assert compareTest1(obj1, (ClassDefinition)obj3) : "returned obj is not equal to original one (ByteArrayParser)";
-        assert obj1.hasSameContentsAs(obj3) : "returned obj is not equal to original one (ByteArrayParser) (own test)";
+        assert obj1.equals(obj3) : "returned obj is not equal to original one (ByteArrayParser) (own test)";
 
     }
 }

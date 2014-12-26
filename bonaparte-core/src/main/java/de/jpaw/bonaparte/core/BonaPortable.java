@@ -16,7 +16,6 @@
 package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
-import java.util.Map;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
@@ -44,20 +43,6 @@ public interface BonaPortable extends BonaCustom {
      */
     public int get$rtti();
     
-    /** Retrieves a single property from the current map.
-     * 
-     * @param id the key of the property.
-     * @return the property for the given parameter, or null if it does not exist.
-     */    
-    @Deprecated
-    public String get$Property(String id);
-    
-    /** Gets the map of current properties of this class. All properties are defines by the DSL, the returned map will be immutable.
-     * 
-     * @return the current map of properties, which is never null, but may be empty.
-     */
-    @Deprecated
-    public Map<String,String> get$PropertyMap();
     
     /** Parses data from a stream or in-memory buffer into a preallocated object.
      * The reference to the IO stream or memory sits in the {@link MessageParser} parameter.
@@ -68,13 +53,7 @@ public interface BonaPortable extends BonaCustom {
      */
     public <E extends Exception> void deserialize(MessageParser<E> p) throws E;
     
-    /** An implementation of <code>equals</code>, which receives an object of the BonaPortable type as a parameter.
-     *  
-     * @param that the object to compare.
-     * @return true, if the objects have the same content, false otherwise.
-     */
-    public boolean hasSameContentsAs(BonaPortable that);
-    
+  
     /** Will provide an explicit implementation of object validation, similar to JSR 303 Bean Validation. This is still work in progress, please use the reflection based validation for now.
      * 
      * @throws ObjectValidationException

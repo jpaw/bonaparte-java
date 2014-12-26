@@ -109,7 +109,7 @@ public class BigDecimalTools {
         NumericElementaryDataItem meta = (NumericElementaryDataItem)value.meta;
         StringRef prefix = new StringRef();
         prefix.prefix = path;
-        String props = getFieldPropertyWithDescend(root, path, prefix, ".decimals", DECIMALS_KEYWORD_MIN);
+        String props = getFieldPropertyWithDescend(root, path, prefix, "decimals", DECIMALS_KEYWORD_MIN);
         
         if (props.length() == 0)
             props = DECIMALS_KEYWORD_MIN;
@@ -153,7 +153,7 @@ public class BigDecimalTools {
             int lastDot = workingPath.lastIndexOf('.');
             if (lastDot < 0) {
                 // no more component
-                props = root.get$Property(naked(workingPath) + propertyName);
+                props = root.get$BonaPortableClass().getFieldProperty(naked(workingPath), propertyName);
                 prefix.prefix = "";
                 break;  // must stop here!
             } else {
@@ -161,7 +161,7 @@ public class BigDecimalTools {
                 String container = workingPath.substring(0, lastDot);
                 String fieldname = workingPath.substring(lastDot+1);
                 Object parent = FieldGetter.getFieldOrObj(root, container);
-                props = ((BonaPortable)parent).get$Property(naked(fieldname) + propertyName);
+                props = ((BonaPortable)parent).get$BonaPortableClass().getFieldProperty(naked(fieldname), propertyName);
                 if (props != null) {
                     LOG.debug("found property " + props + " at path " + container);
                     prefix.prefix = container + ".";

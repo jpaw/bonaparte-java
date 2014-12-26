@@ -48,8 +48,20 @@ public interface BonaPortableClass<T extends BonaPortable> {
     BonaPortableClass<? extends BonaPortable> getParent();
     BonaPortableClass<? extends BonaPortable> getReturns();
     BonaPortableClass<? extends BonaPortable> getPrimaryKey();
+    
+    /** Gets the map of current properties of this class. All properties are defines by the DSL, the returned map will be immutable.
+     * 
+     * @return the current map of properties, which is never null, but may be empty.
+     */
     ImmutableMap<String,String> getPropertyMap();
+    
+    /** Retrieves a single property from the current map.
+     * 
+     * @param property the key of the property.
+     * @return the property for the given parameter, or null if it does not exist.
+     */ 
     String getClassProperty(String property);
+    
     String getFieldProperty(String fieldname, String propertyname);
     boolean hasClassProperty(String property);
     boolean hasFieldProperty(String fieldname, String propertyname);

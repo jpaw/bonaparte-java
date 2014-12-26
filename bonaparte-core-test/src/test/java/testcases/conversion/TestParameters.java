@@ -50,7 +50,7 @@ public class TestParameters {
         MessageParser<MessageParserException> w2 = new ByteArrayParser(sbcResult, 0, -1);
         BonaPortable dst2 = w2.readRecord();
         assert dst2.getClass() == src.getClass() : "returned obj is of wrong type (ByteArrayParser)"; // assuming we have one class loader only
-        assert dst1.hasSameContentsAs(dst2) : "returned obj is not equal to original one (ByteArrayParser)";
+        assert dst1.equals(dst2) : "returned obj is not equal to original one (ByteArrayParser)";
         Parameters dst2p = (Parameters)dst2;
         assert dst1.equals(dst2p);
 

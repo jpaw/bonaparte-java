@@ -49,18 +49,6 @@ public class AbstractDynamicBonaPortable implements BonaPortable {
     }
 
     @Override
-    public String get$Property(String id) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Map<String, String> get$PropertyMap() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public <E extends Exception> void serializeSub(MessageComposer<E> w) throws E {
         // TODO Auto-generated method stub
         
@@ -70,12 +58,6 @@ public class AbstractDynamicBonaPortable implements BonaPortable {
     public <E extends Exception> void deserialize(MessageParser<E> p) throws E {
         // TODO Auto-generated method stub
         
-    }
-
-    @Override
-    public boolean hasSameContentsAs(BonaPortable that) {
-        // TODO Auto-generated method stub
-        return false;
     }
 
     @Override
