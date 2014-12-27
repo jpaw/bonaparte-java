@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>bonaparte-defs</artifactId>
-    <version>3.1.1-SNAPSHOT</version>
+    <version>3.1.1</version>
     <packaging>pom</packaging>
 
     <description>Additional revisions for BONAPARTE based projects, but no modules defined</description>
@@ -20,8 +20,8 @@
         <!-- define releases we want to use, to ensure consistency -->
         <jpaw.version>1.2.0</jpaw.version>
         <jpaw8.version>1.1.0</jpaw8.version>
-        <bonaparte.version>3.1.1-SNAPSHOT</bonaparte.version>
-        <bonaparte-plugin.version>3.1.1-SNAPSHOT</bonaparte-plugin.version>
+        <bonaparte.version>3.1.1</bonaparte.version>
+        <bonaparte-plugin.version>3.1.1</bonaparte-plugin.version>
         <bonaparte-plugin-commons-lang.version>2.6</bonaparte-plugin-commons-lang.version>
         
         <jpaw-fixedpoint.version>0.6.0</jpaw-fixedpoint.version>
