@@ -12,7 +12,7 @@ package meta factoryId 29 {
     enum BundleStatus { UNUSED, RESOLVED, INSTALLED, STARTING, SHUTTING_DOWN, MAINTENANCE }  // borrow OSGi statuses
     enum Multiplicity { SCALAR, ARRAY, LIST, SET, MAP }
     // the DataCategory matches the enum of same name in the Bonaparte DSL generator project
-    enum DataCategory { OBJECT, ENUM, NUMERIC, STRING, TEMPORAL, MISC, BINARY, BASICNUMERIC, XENUM, ENUMSET, XENUMSET }  // misc is boolean, char, uuid, ...
+    enum DataCategory { OBJECT, ENUM, NUMERIC, STRING, TEMPORAL, MISC, BINARY, BASICNUMERIC, XENUM, ENUMSET, XENUMSET, ENUMALPHA, ENUMSETALPHA }  // misc is boolean, char, uuid, ...
     enum FoldingStrategy { SKIP_UNMAPPED, TRY_SUPERCLASS, FULL_OUTPUT, SUPERCLASS_OR_FULL, FORWARD_OBJECTS }  // what to do if no folding mapping is found
     enum IndexType { ^NONE, STRING, INTEGER, LONG, SHORT, BYTE }   // index type for enum sets and maps. DO NOT CHANGE SEQUENCE AS ORDINALS ARE USED IN TRANSMISSION!
     
