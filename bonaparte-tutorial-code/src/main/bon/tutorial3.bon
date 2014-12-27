@@ -7,8 +7,8 @@ package tutorial.^xenum {
         BLACK="BL", WHITE="W"
     }
     
-    xenum XColor is Color : 2
-    xenum MoreColors is BW extends XColor
+    xenum XColor is Color : 2;
+    xenum MoreColors is BW extends XColor;
     
 
     class SimpleSampleUsingXEnum {

@@ -10,9 +10,9 @@ package testXenum {
         ALPHA="A", BRAVO="B", CHARLIE="C"
     }
     
-    xenum XColor is Color : 2
-    xenum MoreColors is BW extends XColor
-    xenum XAbc is Abc
+    xenum XColor is Color : 2;
+    xenum MoreColors is BW extends XColor;
+    xenum XAbc is Abc;
     
     class SimpleSampleUsingEnum {
         enum Color          myColor;
