@@ -15,7 +15,7 @@
     <description>BONAPARTE batch processor (Java 8 API)</description>
 
     <properties>
-        <jpaw8.version>1.1.1-SNAPSHOT</jpaw8.version>
+        <jpaw8.version>1.1.0</jpaw8.version>
     </properties>
     
     <build>
