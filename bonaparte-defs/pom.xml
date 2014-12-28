@@ -5,12 +5,12 @@
     <parent>
         <groupId>de.jpaw</groupId>
         <artifactId>jpaw-se-parent</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
     <artifactId>bonaparte-defs</artifactId>
-    <version>3.2.0</version>
+    <version>3.2.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <description>Additional revisions for BONAPARTE based projects, but no modules defined</description>
@@ -18,7 +18,7 @@
 
     <properties>
         <!-- define releases we want to use, to ensure consistency -->
-        <bonaparte-plugin.version>3.2.0</bonaparte-plugin.version>
+        <bonaparte-plugin.version>3.2.1-SNAPSHOT</bonaparte-plugin.version>
         
         <bonaparte-plugin-commons-lang.version>2.6</bonaparte-plugin-commons-lang.version>
         
