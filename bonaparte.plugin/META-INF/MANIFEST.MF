@@ -14,7 +14,7 @@ Require-Bundle: org.eclipse.xtext;visibility:=reexport,
  jpaw.util;visibility:=reexport,
  jpaw.xml;visibility:=reexport,
  com.google.guava;visibility:=reexport,
- bonaparte.core;bundle-version="2.4.2"
+ bonaparte.core;bundle-version="3.2.1.qualifier"
 Export-Package: de.jpaw.bonaparte.core,
  de.jpaw.bonaparte.annotation,
  de.jpaw.bonaparte.extensions,
