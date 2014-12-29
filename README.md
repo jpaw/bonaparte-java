@@ -1,4 +1,4 @@
-##Support library for the main Bonaparte JPA DSL
+##Support library for the main Bonaparte DSL
 
 The classes defined within this repository are supporting the generated Java POJOs of the DSL.
 
