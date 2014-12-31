@@ -9,5 +9,4 @@ echo "Cleaning repo folder..."
 git clean -fdx
 
 echo "executing mvn $GOAL..."
-(cd bonaparte-defs && mvn $GOAL)
 (cd bonaparte-base && mvn $GOAL)

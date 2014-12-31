@@ -9,6 +9,10 @@ import de.jpaw.bonaparte.core.StringBuilderComposer;
 import de.jpaw.bonaparte.core.StringBuilderParser;
 import de.jpaw.bonaparte.util.QuickConverter;
 
+/** Immutable class which implements the QuickConverter into/from String.
+ * Every invocation will create and destroy their own Composer / Parser instance, therefore
+ * a single instance of this class can be shared across multiple threads.
+ */
 public class ConverterBonaString implements QuickConverter<String> {
 
     /** Serializes an object using the "almost readable" notation into a String. */

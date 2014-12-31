@@ -17,7 +17,6 @@ Some documentation and a tutorial is available in the projects bonaparte-tex and
 
 This project uses maven3 as a build tool. Just run
 
-    (cd bonaparts-defs && mvn install)
     (cd bonaparts-base && mvn install)
 
 ###Compatibility

@@ -8,6 +8,10 @@ import de.jpaw.bonaparte.core.StaticMeta;
 import de.jpaw.bonaparte.util.QuickConverter;
 import de.jpaw.util.ByteBuilder;
 
+/** Immutable class which implements the QuickConverter into/from byte[], using the compact format.
+ * Every invocation will create and destroy their own Composer / Parser instance, therefore
+ * a single instance of this class can be shared across multiple threads.
+ */
 public class ConverterCompactByte implements QuickConverter<byte []> {
 
     /** Serializes an object using the compact binary notation into byte []. */
