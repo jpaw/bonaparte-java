@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.joda.time.DateTimeZone;
 import org.joda.time.Instant;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
@@ -39,7 +38,6 @@ import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDefinition;
-import de.jpaw.bonaparte.util.BigDecimalTools;
 import de.jpaw.enums.AbstractXEnumBase;
 import de.jpaw.enums.XEnumFactory;
 import de.jpaw.util.Base64;
@@ -64,6 +62,19 @@ public final class StringBuilderParser extends StringBuilderConstants implements
     private String currentClass;
     private final boolean useCache = true;
     private List<BonaPortable> objects;
+    
+    protected final StringParserUtil stringParser = new StringParserUtil(new ParsePositionProvider() {
+
+        @Override
+        public int getParsePosition() {
+            return parseIndex;
+        }
+
+        @Override
+        public String getCurrentClassName() {
+            return currentClass;
+        }
+    });
 
     public final void setSource(CharSequence src, int offset, int length) {
         work = src;
@@ -228,20 +239,12 @@ public final class StringBuilderParser extends StringBuilderConstants implements
         if (checkForNull(di)) {
             return null;
         }
-        BigDecimal r = new BigDecimal(nextIndexParseAscii(di.getName(), di.getIsSigned(), true, false));
-        return BigDecimalTools.checkAndScale(r, di, parseIndex, currentClass);
+        return stringParser.readBigDecimal(di, nextIndexParseAscii(di.getName(), di.getIsSigned(), true, false));
     }
 
     @Override
     public Character readCharacter(MiscElementaryDataItem di) throws MessageParserException {
-        String tmp = readString(di.getName(), di.getIsRequired(), 1, false, false, true, true);
-        if (tmp == null) {
-            return null;
-        }
-        if (tmp.length() == 0) {
-            throw new MessageParserException(MessageParserException.EMPTY_CHAR, di.getName(), parseIndex, currentClass);
-        }
-        return tmp.charAt(0);
+        return stringParser.readCharacter(di, readString(di.getName(), di.getIsRequired(), 1, false, false, true, true));
     }
 
     @Override
@@ -376,110 +379,14 @@ public final class StringBuilderParser extends StringBuilderConstants implements
         if (checkForNull(di)) {
             return null;
         }
-        String tmp = nextIndexParseAscii(di.getName(), false, di.getFractionalSeconds() >= 0, false);  // parse an unsigned numeric string without exponent
-        int date;
-        int fractional = 0;
-        int dpoint;
-        if ((dpoint = tmp.indexOf('.')) < 0) {
-            // day only despite allowed time
-            date = Integer.parseInt(tmp);
-        } else {
-            // day and time
-            date = Integer.parseInt(tmp.substring(0, dpoint));
-            fractional = Integer.parseInt(tmp.substring(dpoint + 1));
-            switch (tmp.length() - dpoint - 1) { // i.e. number of fractional digits
-            case 6:
-                fractional *= 1000;
-                break; // precisely seconds resolution (timestamp(0))
-            case 7:
-                fractional *= 100;
-                break;
-            case 8:
-                fractional *= 10;
-                break;
-            case 9:
-                break; // maximum resolution (milliseconds)
-            default: // something weird
-                throw new MessageParserException(
-                        MessageParserException.BAD_TIMESTAMP_FRACTIONALS,
-                        String.format("(found %d for %s)", tmp.length() - dpoint - 1, di.getName()),
-                        parseIndex, currentClass);
-            }
-        }
-        // set the date and time
-        int day, month, year, hour, minute, second;
-        year = date / 10000;
-        month = (date %= 10000) / 100;
-        day = date %= 100;
-        if (di.getHhmmss()) {
-            hour = fractional / 10000000;
-            minute = (fractional %= 10000000) / 100000;
-            second = (fractional %= 100000) / 1000;
-        } else {
-            hour = fractional / 3600000;
-            minute = (fractional %= 3600000) / 60000;
-            second = (fractional %= 60000) / 1000;
-        }
-        fractional %= 1000;
-        // first checks
-        if ((year < 1601) || (year > 2399) || (month == 0) || (month > 12) || (day == 0)
-                || (day > 31)) {
-            throw new MessageParserException(
-                    MessageParserException.ILLEGAL_DAY, String.format(
-                            "(found %d for %s)", year*10000+month*100+day, di.getName()), parseIndex, currentClass);
-        }
-        if ((hour > 23) || (minute > 59) || (second > 59)) {
-            throw new MessageParserException(
-                    MessageParserException.ILLEGAL_TIME,
-                    String.format("(found %d for %s)", (hour * 10000) + (minute * 100)
-                            + second, di.getName()), parseIndex, currentClass);
-        }
-        // now set the return value
-        LocalDateTime result;
-        try {
-            // TODO! default is lenient mode, therefore will not check. Solution
-            // is to read the data again and compare the values of day, month
-            // and year
-            result = new LocalDateTime(year, month, day, hour, minute, second, fractional);
-        } catch (Exception e) {
-            throw new MessageParserException(
-                    MessageParserException.ILLEGAL_CALENDAR_VALUE, di.getName(),
-                    parseIndex, currentClass);
-        }
-        return result;
+        return stringParser.readDayTime(di, nextIndexParseAscii(di.getName(), false, di.getFractionalSeconds() >= 0, false));
     }
     @Override
     public LocalDate readDay(TemporalElementaryDataItem di) throws MessageParserException {
         if (checkForNull(di)) {
             return null;
         }
-        String tmp = nextIndexParseAscii(di.getName(), false, false, false);  // parse an unsigned numeric string without exponent
-        int date = Integer.parseInt(tmp);
-        // set the date and time
-        int day, month, year;
-        year = date / 10000;
-        month = (date %= 10000) / 100;
-        day = date %= 100;
-        // first checks
-        if ((year < 1601) || (year > 2399) || (month == 0) || (month > 12) || (day == 0)
-                || (day > 31)) {
-            throw new MessageParserException(
-                    MessageParserException.ILLEGAL_DAY, String.format(
-                            "(found %d for %s)", year*10000+month*100+day, di.getName()), parseIndex, currentClass);
-        }
-        // now set the return value
-        LocalDate result;
-        try {
-            // TODO! default is lenient mode, therefore will not check. Solution
-            // is to read the data again and compare the values of day, month
-            // and year
-            result = new LocalDate(year, month, day);
-        } catch (Exception e) {
-            throw new MessageParserException(
-                    MessageParserException.ILLEGAL_CALENDAR_VALUE, di.getName(),
-                    parseIndex, currentClass);
-        }
-        return result;
+        return stringParser.readDay(di, nextIndexParseAscii(di.getName(), false, false, false));  // parse an unsigned numeric string without exponent
     }
 
     @Override
@@ -487,51 +394,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
         if (checkForNull(di)) {
             return null;
         }
-        String tmp = nextIndexParseAscii(di.getName(), false, di.getFractionalSeconds() > 0, false);  // parse an unsigned numeric string without exponent
-        int millis = 0;
-        int seconds = 0;
-        int dpoint;
-        if ((dpoint = tmp.indexOf('.')) < 0) {
-            seconds = Integer.parseInt(tmp);  // only seconds
-        } else {
-            // seconds and millis seconds
-            seconds = Integer.parseInt(tmp.substring(0, dpoint));
-            millis = Integer.parseInt(tmp.substring(dpoint + 1));
-            switch (tmp.length() - dpoint - 1) { // i.e. number of fractional digits
-            case 2:
-                millis *= 10;
-                break;
-            case 1:
-                millis *= 100;
-                break;
-            case 3:
-                break; // maximum resolution (milliseconds)
-            default: // something weird
-                throw new MessageParserException(
-                        MessageParserException.BAD_TIMESTAMP_FRACTIONALS,
-                        String.format("(found %d for %s)", tmp.length() - dpoint - 1, di.getName()),
-                        parseIndex, currentClass);
-            }
-        }
-        // set the date and time
-        int hour, minute, second;
-        if (di.getHhmmss()) {
-            hour = seconds / 10000;
-            minute = (seconds % 10000) / 100;
-            second = seconds % 100;
-            seconds = 3600 * hour + 60 * minute + second;  // convert to seconds of day
-        } else {
-            hour = seconds / 3600;
-            minute = (seconds % 3600) / 60;
-            second = seconds % 60;
-        }
-        // first checks
-        if ((hour > 23) || (minute > 59) || (second > 59)) {
-            throw new MessageParserException(
-                    MessageParserException.ILLEGAL_TIME,
-                    String.format("(found %d for %s)", (hour * 10000) + (minute * 100) + second, di.getName()), parseIndex, currentClass);
-        }
-        return new LocalTime(1000 * seconds + millis, DateTimeZone.UTC);
+        return stringParser.readTime(di, nextIndexParseAscii(di.getName(), false, di.getFractionalSeconds() > 0, false));  // parse an unsigned numeric string without exponent
     }
 
     @Override
@@ -539,37 +402,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
         if (checkForNull(di)) {
             return null;
         }
-        String tmp = nextIndexParseAscii(di.getName(), false, true, false);  // parse an unsigned numeric string without exponent
-        int millis = 0;
-        long seconds = 0;
-        int dpoint;
-        if ((dpoint = tmp.indexOf('.')) < 0) {
-            seconds = Long.parseLong(tmp);  // only seconds
-        } else {
-            // seconds and millis seconds
-            seconds = Long.parseLong(tmp.substring(0, dpoint));
-            millis = Integer.parseInt(tmp.substring(dpoint + 1));
-            switch (tmp.length() - dpoint - 1) { // i.e. number of fractional digits
-            case 2:
-                millis *= 10;
-                break;
-            case 1:
-                millis *= 100;
-                break;
-            case 3:
-                break; // maximum resolution (milliseconds)
-            default: // something weird
-                throw new MessageParserException(
-                        MessageParserException.BAD_TIMESTAMP_FRACTIONALS,
-                        String.format("(found %d for %s)", tmp.length() - dpoint - 1, di.getName()),
-                        parseIndex, currentClass);
-            }
-        }
-        if (di.getFractionalSeconds() == 0) {
-            // don't want millis here: trunc!  (TODO: add a flag to complain!)
-            millis = 0;
-        }
-        return new Instant(1000L * seconds + millis);
+        return stringParser.readInstant(di, nextIndexParseAscii(di.getName(), false, true, false));  // parse an unsigned numeric string without exponent
     }
 
     
@@ -641,7 +474,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
         if (checkForNull(di)) {
             return null;
         }
-        return Byte.valueOf(nextIndexParseAscii(di.getName(), di.getIsSigned(), false, false));
+        return stringParser.readByte(di, nextIndexParseAscii(di.getName(), di.getIsSigned(), false, false));
     }
 
     @Override
@@ -649,7 +482,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
         if (checkForNull(di)) {
             return null;
         }
-        return Short.valueOf(nextIndexParseAscii(di.getName(), di.getIsSigned(), false, false));
+        return stringParser.readShort(di, nextIndexParseAscii(di.getName(), di.getIsSigned(), false, false));
     }
 
     @Override
@@ -657,7 +490,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
         if (checkForNull(di)) {
             return null;
         }
-        return Integer.valueOf(nextIndexParseAscii(di.getName(), di.getIsSigned(), false, false));
+        return stringParser.readInteger(di, nextIndexParseAscii(di.getName(), di.getIsSigned(), false, false));
     }
 
     @Override
@@ -665,7 +498,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
         if (checkForNull(di)) {
             return null;
         }
-        return Long.valueOf(nextIndexParseAscii(di.getName(), di.getIsSigned(), false, false));
+        return stringParser.readLong(di, nextIndexParseAscii(di.getName(), di.getIsSigned(), false, false));
     }
 
     @Override
@@ -673,7 +506,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
         if (checkForNull(di)) {
             return null;
         }
-        return Float.valueOf(nextIndexParseAscii(di.getName(), di.getIsSigned(), true, true));
+        return stringParser.readFloat(di, nextIndexParseAscii(di.getName(), di.getIsSigned(), true, true));
     }
 
     @Override
@@ -681,7 +514,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
         if (checkForNull(di)) {
             return null;
         }
-        return Double.valueOf(nextIndexParseAscii(di.getName(), di.getIsSigned(), true, true));
+        return stringParser.readDouble(di, nextIndexParseAscii(di.getName(), di.getIsSigned(), true, true));
     }
 
     @Override
@@ -734,12 +567,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
         if (checkForNull(di)) {
             return null;
         }
-        String tmp = nextIndexParseAscii(di.getName(), di.getIsSigned(), false, false);
-        if (tmp.length() > (di.getTotalDigits() + (((tmp.charAt(0) == '-') || (tmp.charAt(0) == '+')) ? 1 : 0))) {
-            throw new MessageParserException(MessageParserException.NUMERIC_TOO_LONG,
-                    String.format("(allowed %d, found %d for %s)", di.getTotalDigits(), tmp.length(), di.getName()), parseIndex, currentClass);
-        }
-        return new BigInteger(tmp);
+        return stringParser.readBigInteger(di, nextIndexParseAscii(di.getName(), di.getIsSigned(), false, false));
     }
 
     @Override
@@ -828,12 +656,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
         if (tmp == null) {
             return null;
         }
-        try {
-            return UUID.fromString(tmp);
-        } catch (IllegalArgumentException e) {
-            throw new MessageParserException(MessageParserException.BAD_UUID_FORMAT,
-                    tmp, parseIndex, currentClass);
-        }
+        return stringParser.readUUID(di, tmp);
     }
 
     @Override
@@ -856,12 +679,6 @@ public final class StringBuilderParser extends StringBuilderConstants implements
     public <T extends AbstractXEnumBase<T>> T readXEnum(XEnumDataItem di, XEnumFactory<T> factory) throws MessageParserException {
         XEnumDefinition spec = di.getBaseXEnum();
         String scannedToken = readString(di.getName(), di.getIsRequired() && !spec.getHasNullToken(), spec.getMaxTokenLength(), true, false, false, true);
-        if (scannedToken == null)
-            return factory.getNullToken();
-        T value = factory.getByToken(scannedToken);
-        if (value == null) {
-            throw new MessageParserException(MessageParserException.INVALID_ENUM_TOKEN, scannedToken, parseIndex, currentClass);
-        }
-        return value;
+        return stringParser.readXEnum(di, factory, scannedToken);
     }
 }

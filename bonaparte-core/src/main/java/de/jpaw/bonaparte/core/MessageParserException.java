@@ -86,6 +86,9 @@ public class MessageParserException extends ApplicationException {
     static public final int NULL_CLASS_PQON              = OFFSET + 47;
     static public final int INVALID_BASE_CLASS_REFERENCE = OFFSET + 48;
     static public final int CUSTOM_OBJECT_EXCEPTION      = OFFSET + 49;
+    static public final int NUMERIC_TOO_MANY_DIGITS      = OFFSET + 50;
+    static public final int CHAR_TOO_LONG                = OFFSET + 51;
+    static public final int NUMBER_PARSING_ERROR         = OFFSET + 52;
 
     static {
         codeToDescription.put(MISSING_FIELD_TERMINATOR     , "Missing field terminator");
@@ -137,13 +140,30 @@ public class MessageParserException extends ApplicationException {
         codeToDescription.put(NULL_CLASS_PQON              , "A null class name has been transferred");
         codeToDescription.put(INVALID_BASE_CLASS_REFERENCE , "A zero length class name has been transferred, referring to a field without defined base class");
         codeToDescription.put(CUSTOM_OBJECT_EXCEPTION      , "Cannot construct custom object from parsed data");
+        codeToDescription.put(NUMERIC_TOO_MANY_DIGITS      , "Numeric field has more digits than specifically configured");
+        codeToDescription.put(CHAR_TOO_LONG                , "Parsed a character, but got more than 1 character");
+        codeToDescription.put(NUMBER_PARSING_ERROR         , "Cannot parse number");
     }
 
-    public MessageParserException(int errorCode, String fieldName, int characterIndex, String className) {
-        super(errorCode, (className == null ? "?" : className) + "." + (fieldName == null ? "?" : fieldName) + (characterIndex >= 0 ? " at pos " + characterIndex : ""));
+    /** Creates a parser exception with an explicitly defined position and class name. */
+    public MessageParserException(int errorCode, String fieldName, int characterIndex, String className, String contents) {
+        super(errorCode, (className == null ? "?" : className)
+                + "." + (fieldName == null ? "?" : fieldName)
+                + (characterIndex >= 0 ? " at pos " + characterIndex : "")
+                + (contents == null ? "<" + contents + ">" : ""));
         this.characterIndex = characterIndex;
         this.fieldName = fieldName;
         this.className = className;
+    }
+    
+    /** Creates a parser exception with an explicitly defined position and class name. */
+    public MessageParserException(int errorCode, String fieldName, int characterIndex, String className) {
+        this(errorCode, fieldName, characterIndex, className, null);
+    }
+    
+    /** Creates a parser exception for which parse position and class name will be provided by some callback. */
+    public MessageParserException(int errorCode, String fieldName, String fieldContents, ParsePositionProvider parsePositionProvider) {
+        this(errorCode, fieldName, parsePositionProvider.getParsePosition(), parsePositionProvider.getCurrentClassName());
     }
 
     public MessageParserException(int errorCode) {

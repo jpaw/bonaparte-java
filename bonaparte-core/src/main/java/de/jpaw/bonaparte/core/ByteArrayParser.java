@@ -322,7 +322,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
             } else if ((b != ' ') && (b != '\t')) {
                 lastNonBlank = currentIndex;
             } else if (!allowUnicode) {
-                if (!ByteTestsASCII.isAsciiPrintable(b) && (b != '\t')) {
+                if (!ByteTestsASCII.isAsciiPrintableOrTab(b)) {
                     throw new MessageParserException(MessageParserException.ILLEGAL_CHAR_ASCII,
                             String.format("(found 0x%02x for %s)", (int)b, fieldname), parseIndex, currentClass);
                 }
@@ -381,7 +381,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
             }
             if (b == ESCAPE_CHAR) {
                 throw new MessageParserException(MessageParserException.ILLEGAL_CHAR_CTRL, fieldname, parseIndex, currentClass);
-            } else if (!ByteTestsASCII.isAsciiPrintable(b) && (b != '\t')) {
+            } else if (!ByteTestsASCII.isAsciiPrintableOrTab(b)) {
                 throw new MessageParserException(MessageParserException.ILLEGAL_CHAR_ASCII,
                         String.format("(found 0x%02x for %s)", (int)b, fieldname), parseIndex, currentClass);
             }

@@ -9,7 +9,7 @@ public class FixASCII {
     private static final Logger logger = LoggerFactory.getLogger(FixASCII.class);
 
     /**
-     * <code>checkAsciiAndFixIfRequired()</code> tests if a String is indeed an ASCII string and does not exceed tge maximum length. It will issue a warning and
+     * <code>checkAsciiAndFixIfRequired()</code> tests if a String is indeed an ASCII string and does not exceed the maximum length. It will issue a warning and
      * replace offending characters with a question mark.
      *
      * @param s
@@ -23,21 +23,13 @@ public class FixASCII {
             logger.warn("Application violating interface specs: trying to send contents which is too long: {} instead of {} characters", s.length(), maxlength);
             s = s.substring(0, maxlength);
         }
-        // check contents
-        int i;
-        for (i = 0; i < s.length(); ++i) {
-            char c = s.charAt(i);
-            if ((c != '\t') && !CharTestsASCII.isAsciiPrintable(c)) {
-                break;
-            }
-        }
-        if (i != s.length()) {
+        if (!CharTestsASCII.isPrintableOrTab(s)) {
             // violated a test
-            logger.warn("Application violating interface specs: illegal character in ASCII field: code {}", Character.codePointAt(s, i));
+            logger.warn("Application violating interface specs: illegal character in ASCII field");
             StringBuilder buff = new StringBuilder(s.length());
-            for (i = 0; i < s.length(); ++i) {
+            for (int i = 0; i < s.length(); ++i) {
                 char c = s.charAt(i);
-                if ((c != '\t') && !CharTestsASCII.isAsciiPrintable(c)) {
+                if (!CharTestsASCII.isAsciiPrintableOrTab(c)) {
                     buff.append('?');
                 } else {
                     buff.append(c);
