@@ -3,8 +3,7 @@ package de.jpaw.bonaparte.converter;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 
 /** Sample implementation of StringConverter interface which trims Strings. */
-
-public class StringConverterTrim extends StringConverterAbstract {
+public class StringConverterTrim extends DataConverterAbstract<String,AlphanumericElementaryDataItem> {
 
     @Override
     public String convert(String oldValue, final AlphanumericElementaryDataItem meta) {

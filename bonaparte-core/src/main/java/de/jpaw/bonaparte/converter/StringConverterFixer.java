@@ -3,8 +3,7 @@ package de.jpaw.bonaparte.converter;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 
 /** Sample implementation of StringConverter interface which performs several fixes on the data. */
-
-public class StringConverterFixer extends StringConverterAbstract {
+public class StringConverterFixer extends DataConverterAbstract<String,AlphanumericElementaryDataItem> {
 
     private final boolean doTrimAll;
     private final boolean doTruncateAll;
