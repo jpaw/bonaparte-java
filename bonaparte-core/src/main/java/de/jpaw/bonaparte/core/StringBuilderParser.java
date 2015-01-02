@@ -103,10 +103,10 @@ public final class StringBuilderParser extends StringBuilderConstants implements
 
     /** Create a processor for parsing a buffer. */
     public StringBuilderParser(CharSequence work, int offset, int length) {
-        setSource(work, offset, length < 0 ? work.length() : length); // -1 means full array size
-        currentClass = "N/A";
         if (useCache)
             objects = new ArrayList<BonaPortable>(60);
+        setSource(work, offset, length < 0 ? work.length() : length); // -1 means full array size
+        currentClass = "N/A";
     }
 
     /**************************************************************************************************

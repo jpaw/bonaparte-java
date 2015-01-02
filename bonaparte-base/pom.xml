@@ -48,7 +48,6 @@
         <mina.version>2.0.7</mina.version>              <!-- http://mina.apache.org/ 2.0.7 -->
         <camel.version>2.14.1</camel.version>           <!-- http://camel.apache.org/ UPTODATE 2014-12-17 (2.14.0 is the first for Java8, but introduces a lot new dependencies)-->
         <vertx.version>2.1.5</vertx.version>            <!-- http://vertx.io/ UPTODATE 2014-11-13 -->
-        <vertx3.version>3.0.0-dev_preview1</vertx3.version>   <!-- http://vertx.io/ UPTODATE 2014-12-21 -->
         <hazelcast.version>3.3.3</hazelcast.version>    <!-- http://hazelcast.org/download/ UPTODATE 2014-11-12 -->
         <aerospike.version>3.0.32</aerospike.version>
         <hornetq.version>2.2.14.Final</hornetq.version> <!-- http://www.jboss.org/hornetq 2.3.0.Final -->
