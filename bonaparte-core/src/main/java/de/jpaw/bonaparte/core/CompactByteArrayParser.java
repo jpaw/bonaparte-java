@@ -32,9 +32,9 @@ import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
-import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDefinition;
@@ -64,7 +64,32 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
     private final boolean useCache = true;
     private List<BonaPortable> objects;
     
-    // create a processor for parsing
+    /** Quick conversion utility method, for use by code generators. (null safe) */
+    public static <T extends BonaPortable> T unmarshal(byte [] x, ObjectReference di, Class<T> expectedClass) throws MessageParserException {
+        if (x == null || x.length == 0)
+            return null;
+        return new CompactByteArrayParser(x, 0, -1).readObject(di, expectedClass);
+    }
+
+    /** Assigns a new source to subsequent parsing operations. */
+    public final void setSource(byte [] src, int offset, int length) {
+        inputdata = src;
+        parseIndex = offset;
+        messageLength = length;
+        if (useCache)
+            objects.clear();
+    }
+    
+    /** Assigns a new source to subsequent parsing operations. */
+    public final void setSource(byte [] src) {
+        inputdata = src;
+        parseIndex = 0;
+        messageLength = src.length;
+        if (useCache)
+            objects.clear();
+    }
+    
+    /** Create a processor for parsing a buffer. */
     public CompactByteArrayParser(byte [] buffer, int offset, int length) {
         inputdata = buffer;
         parseIndex = offset;
@@ -73,7 +98,6 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
         if (useCache)
             objects = new ArrayList<BonaPortable>(60);
     }
-
 
     /**************************************************************************************************
      * Deserialization goes here. Code below does not use the ByteBuilder class,

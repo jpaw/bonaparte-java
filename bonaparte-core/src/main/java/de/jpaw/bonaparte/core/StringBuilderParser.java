@@ -76,16 +76,32 @@ public final class StringBuilderParser extends StringBuilderConstants implements
         }
     });
 
+    /** Quick conversion utility method, for use by code generators. (null safe) */
+    public static <T extends BonaPortable> T unmarshal(String x, ObjectReference di, Class<T> expectedClass) throws MessageParserException {
+        if (x == null || x.length() == 0)
+            return null;
+        return new StringBuilderParser(x, 0, -1).readObject(di, expectedClass);
+    }
+
+    /** Assigns a new source to subsequent parsing operations. */
     public final void setSource(CharSequence src, int offset, int length) {
         work = src;
         parseIndex = offset;
         messageLength = length;
+        if (useCache)
+            objects.clear();
     }
+    
+    /** Assigns a new source to subsequent parsing operations. */
     public final void setSource(CharSequence src) {
         work = src;
         parseIndex = 0;
         messageLength = src.length();
+        if (useCache)
+            objects.clear();
     }
+
+    /** Create a processor for parsing a buffer. */
     public StringBuilderParser(CharSequence work, int offset, int length) {
         setSource(work, offset, length < 0 ? work.length() : length); // -1 means full array size
         currentClass = "N/A";

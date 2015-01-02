@@ -73,8 +73,34 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
             return currentClass;
         }
     });
+
     
-    // create a processor for parsing
+    /** Quick conversion utility method, for use by code generators. (null safe) */
+    public static <T extends BonaPortable> T unmarshal(byte [] x, ObjectReference di, Class<T> expectedClass) throws MessageParserException {
+        if (x == null || x.length == 0)
+            return null;
+        return new ByteArrayParser(x, 0, -1).readObject(di, expectedClass);
+    }
+    
+    /** Assigns a new source to subsequent parsing operations. */
+    public final void setSource(byte [] src, int offset, int length) {
+        inputdata = src;
+        parseIndex = offset;
+        messageLength = length;
+        if (useCache)
+            objects.clear();
+    }
+    
+    /** Assigns a new source to subsequent parsing operations. */
+    public final void setSource(byte [] src) {
+        inputdata = src;
+        parseIndex = 0;
+        messageLength = src.length;
+        if (useCache)
+            objects.clear();
+    }
+    
+    /** Create a processor for parsing a buffer. */
     public ByteArrayParser(byte [] buffer, int offset, int length) {
         inputdata = buffer;
         parseIndex = offset;

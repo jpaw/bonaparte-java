@@ -58,6 +58,15 @@ public class CompactByteArrayComposer extends CompactConstants implements Messag
     // variables set by constructor
     protected final boolean recommendIdentifiable;
     protected final ByteBuilder out;
+    
+    /** Quick conversion utility method, for use by code generators. (null safe) */
+    public static byte [] marshal(ObjectReference di, BonaPortable x) {
+        if (x == null)
+            return null;
+        ByteBuilder b = new ByteBuilder();
+        new CompactByteArrayComposer(b, false).addField(di, x);
+        return b.getBytes();
+    }
 
     public CompactByteArrayComposer(int bufferSize, boolean recommendIdentifiable) {
         this(new ByteBuilder(bufferSize, getDefaultCharset()), ObjectReuseStrategy.defaultStrategy, recommendIdentifiable);

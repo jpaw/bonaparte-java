@@ -19,6 +19,8 @@ import java.io.IOException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 // according to http://stackoverflow.com/questions/469695/decode-base64-data-in-java , xml.bind is included in Java 6 SE
 //import javax.xml.bind.DatatypeConverter;
 /**
@@ -36,6 +38,19 @@ public class StringBuilderComposer extends AppendableComposer implements Buffere
     // variables set by constructor
     private final StringBuilder work;
 
+    /** Quick conversion utility method, for use by code generators. (null safe) */
+    public static String marshal(ObjectReference di, BonaPortable x) {
+        if (x == null)
+            return null;
+        StringBuilder b = new StringBuilder(1000);
+        new StringBuilderComposer(b).addField(di, x);
+        return b.toString();
+    }
+
+    public String asString() {
+        return work.toString();
+    }
+    
     public StringBuilderComposer(StringBuilder work) {
         super(work);
         this.work = work;
@@ -72,6 +87,20 @@ public class StringBuilderComposer extends AppendableComposer implements Buffere
     public void writeRecord(BonaCustom obj) {
         try {
             super.writeRecord(obj);
+        } catch (IOException e) {
+            // StringBuilder.append does not throw an IOException.
+            LOGGER.error("Got an IOException from within StringBuilder, which should not happen, really!", e);
+            // to throw or not to throw (i.e. to ignore), that is the question...
+            // Decision: By assumption, this cannot happen, so if it does, we should know about it!
+            throw new RuntimeException("Got an IOException from within StringBuilder, which should not happen, really!", e);
+        }
+    }
+    
+    /** Refine the secondary entry in order to relieve callers catching an Exception which is never thrown. */
+    @Override
+    public void addField(ObjectReference di, BonaCustom obj) {
+        try {
+            super.addField(di, obj);
         } catch (IOException e) {
             // StringBuilder.append does not throw an IOException.
             LOGGER.error("Got an IOException from within StringBuilder, which should not happen, really!", e);

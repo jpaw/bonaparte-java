@@ -59,11 +59,19 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
     private final Map<BonaCustom,Integer> objectCache;
     private int numberOfObjectsSerialized;
     private int numberOfObjectReuses;
-    
-    
+
     // variables for serialization
     private ByteBuilder work;
-
+    
+    /** Quick conversion utility method, for use by code generators. (null safe) */
+    public static byte [] marshal(ObjectReference di, BonaPortable x) {
+        if (x == null)
+            return null;
+        ByteArrayComposer bac = new ByteArrayComposer();
+        bac.addField(di, x);
+        return bac.getBytes();
+    }
+    
     /** Creates a new ByteArrayComposer, using this classes static default Charset **/
     public ByteArrayComposer() {
         this(ObjectReuseStrategy.defaultStrategy);

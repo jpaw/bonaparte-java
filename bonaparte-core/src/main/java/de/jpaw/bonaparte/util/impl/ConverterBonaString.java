@@ -1,7 +1,5 @@
 package de.jpaw.bonaparte.util.impl;
 
-import java.io.IOException;
-
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.MessageParserException;
 import de.jpaw.bonaparte.core.StaticMeta;
@@ -22,12 +20,7 @@ public class ConverterBonaString implements QuickConverter<String> {
             return null;
         StringBuilder buff = new StringBuilder(INITIAL_BUFFER_SIZE); // guess some initial size
         StringBuilderComposer composer = new StringBuilderComposer(buff);
-        try {
-            composer.addField(StaticMeta.OUTER_BONAPORTABLE, obj);
-        } catch (IOException e) {
-            // IOException writing to a String? Java, you're not serious!
-            throw new RuntimeException("Got an IOException from within StringBuilder, which should not happen, really!", e);
-        }
+        composer.addField(StaticMeta.OUTER_BONAPORTABLE, obj);
         return buff.toString();
     }
 
