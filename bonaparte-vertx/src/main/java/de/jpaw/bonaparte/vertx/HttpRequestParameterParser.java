@@ -45,11 +45,6 @@ public class HttpRequestParameterParser implements MessageParser<MessageParserEx
             throw new MessageParserException(MessageParserException.EMPTY_BUT_REQUIRED_FIELD, di.getName(), -1, currentClass);
         return data;
     }
-    
-    @Override
-    public BigDecimal readBigDecimal(NumericElementaryDataItem di) throws MessageParserException {
-        return stringParser.readBigDecimal(di, getParameter(di));
-    }
 
     @Override
     public Character readCharacter(MiscElementaryDataItem di) throws MessageParserException {
@@ -99,6 +94,11 @@ public class HttpRequestParameterParser implements MessageParser<MessageParserEx
     @Override
     public BigInteger readBigInteger(BasicNumericElementaryDataItem di) throws MessageParserException {
         return stringParser.readBigInteger(di, getParameter(di));
+    }
+    
+    @Override
+    public BigDecimal readBigDecimal(NumericElementaryDataItem di) throws MessageParserException {
+        return stringParser.readBigDecimal(di, getParameter(di));
     }
 
     @Override

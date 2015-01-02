@@ -235,14 +235,6 @@ public final class StringBuilderParser extends StringBuilderConstants implements
     }
 
     @Override
-    public BigDecimal readBigDecimal(NumericElementaryDataItem di) throws MessageParserException {
-        if (checkForNull(di)) {
-            return null;
-        }
-        return stringParser.readBigDecimal(di, nextIndexParseAscii(di.getName(), di.getIsSigned(), true, false));
-    }
-
-    @Override
     public Character readCharacter(MiscElementaryDataItem di) throws MessageParserException {
         return stringParser.readCharacter(di, readString(di.getName(), di.getIsRequired(), 1, false, false, true, true));
     }
@@ -518,6 +510,22 @@ public final class StringBuilderParser extends StringBuilderConstants implements
     }
 
     @Override
+    public BigInteger readBigInteger(BasicNumericElementaryDataItem di) throws MessageParserException {
+        if (checkForNull(di)) {
+            return null;
+        }
+        return stringParser.readBigInteger(di, nextIndexParseAscii(di.getName(), di.getIsSigned(), false, false));
+    }
+
+    @Override
+    public BigDecimal readBigDecimal(NumericElementaryDataItem di) throws MessageParserException {
+        if (checkForNull(di)) {
+            return null;
+        }
+        return stringParser.readBigDecimal(di, nextIndexParseAscii(di.getName(), di.getIsSigned(), true, false));
+    }
+
+    @Override
     public void eatParentSeparator() throws MessageParserException {
         eatObjectOrParentSeparator(PARENT_SEPARATOR);
     }       
@@ -560,14 +568,6 @@ public final class StringBuilderParser extends StringBuilderConstants implements
                 skipUntilNext(OBJECT_TERMINATOR);
             }
         }
-    }
-
-    @Override
-    public BigInteger readBigInteger(BasicNumericElementaryDataItem di) throws MessageParserException {
-        if (checkForNull(di)) {
-            return null;
-        }
-        return stringParser.readBigInteger(di, nextIndexParseAscii(di.getName(), di.getIsSigned(), false, false));
     }
 
     @Override
@@ -652,11 +652,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
 
     @Override
     public UUID readUUID(MiscElementaryDataItem di) throws MessageParserException {
-        String tmp = readString(di.getName(), di.getIsRequired(), 36, false, false, false, false);
-        if (tmp == null) {
-            return null;
-        }
-        return stringParser.readUUID(di, tmp);
+        return stringParser.readUUID(di, readString(di.getName(), di.getIsRequired(), 36, false, false, false, false));
     }
 
     @Override
