@@ -1,6 +1,7 @@
 package de.jpaw.bonaparte.core;
 
 public class ClassAdapter {
+    
     public static String marshal(Class<?> obj) {
         return obj.getCanonicalName();
     }

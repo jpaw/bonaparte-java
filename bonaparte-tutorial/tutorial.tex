@@ -24,6 +24,8 @@
 This document provides a tutorial for the Bonaparte DSL grammar. While the grammar is independent of the generated code language,
 the tutorial will often reference generated Java specific aspects, simply because currently Java is the only implemented target language
 and splitting this information into a different document would complicate the understanding.
+
+This documentation has been updated to Bonaparte version 3.2.2.
 \end{abstract}
 
 \section{Main Concepts}
@@ -42,7 +44,7 @@ is ideal to work in cross-language environments.
 
 \section{A first example}
 Before digging into too much detail, let's start with a small example.  You need an Eclipse IDE (release 4.3 Kepler SR1 or
-newer) with Xtext and Xtend version 2.6.2 or newer and special plugins (available at \url{https://www.jpaw.de/eclipse/master}
+newer) with Xtext and Xtend version 2.7.3 or newer and special plugins (available at \url{https://www.jpaw.de/eclipse/master}
 for stable releases or \url{https://www.jpaw.de/eclipse/develop} for development milestones) to follow the examples.
 
 Create a new Java project, create a new source folder (for example {\ttfamily src/main/bon}), and create a new file with extension {\ttfamily .bon},
@@ -82,11 +84,14 @@ primitives and their boxed equivalents of Java (which, for the Java code generat
 \begin{itemize}
   \item Character types:  {\ttfamily Ascii}, {\ttfamily Lowercase}, {\ttfamily Uppercase}, {\ttfamily Unicode}. In Java, all of them map to {\ttfamily String},
    but they have different plausibility checks in the deserializer. The {\ttfamily Ascii} type accepts the printable 7 bit ASCII characters
-    (code points 0x20 to 0x7f), therefore you know characters in these fields can be represented in any encoding, and they occupy a single byte only in the
-     UTF-8 encoding. They represent the most portable subset of characters. They have a special type, because they are often used as the allowed subset for
+    (code points 0x20 to 0x7e), therefore you know characters in these fields can be represented in any encoding, and they
+    occupy a single byte only in the UTF-8 encoding. They represent the most portable subset of characters. They have a special type, because they are often used as the allowed subset for
       alphanumeric IDs. {\ttfamily Lowercase} and {\ttfamily Uppercase} are subsets of {\ttfamily Ascii}, which allow the characters {\ttfamily 'a'..'z'},
       respectively {\ttfamily 'A'..'Z'} only. These types are useful for ISO codes such as ISO 4217 currency codes or ISO 3166
-      country codes, or ISO 639 language codes.  The {\ttfamily Unicode} finally allows all know character codes, including multi-byte codes such as Japanese Kanji.
+      country codes, or ISO 639 language codes.
+      The {\ttfamily Unicode} finally allows all know character codes, including multi-byte codes such as Japanese Kanji. It
+      allow the tab character as well.
+      It has an option {\ttfamily allowControlChars}, which also allows the other control characters such as line feeds as part of the content.
   \item Numeric types: {\ttfamily Int}, {\ttfamily Number}, {\ttfamily Decimal}.  {\ttfamily Int} is no special type, just a synonym for {\ttfamily Integer},
       provided to ensure that a capitalized keyword for any primitive data type represents it's boxed equivalent, which in Java is unfortunately a bit inconsistent.
       {\ttfamily Number} is a subset of {\ttfamily BigInteger} which requires the specification of the maximum allowed number of
@@ -94,6 +99,12 @@ primitives and their boxed equivalents of Java (which, for the Java code generat
       The {\ttfamily Decimal} type requires the specification of significant digits and fractional digits. It is mapped to a type which supports fixed point BCD arithmetic, suitable for
       financial calculations, where the use of {\ttfamily float} or {\ttfamily double} is a no-go due to potential rounding issues. The {\ttfamily Decimal} type
       maps to the Java type BigDecimal. {\ttfamily Decimal} allows up to 18 significant digits. The number of fractional digits cannot exceed the number of significant digits.
+      
+      A length can be provided also for the Java primitives and their boyed equivalents, if given, it determines the maximum
+      number of accepted digits. {\ttfamily short(4)} for example allows the numbers 0 to 9999 (possible with a sign, unless
+      the {\ttfamily unsigned} attribute has been given). You can provide even decimal digits, for example {\ttfamily
+      short(4,2)}. Depending on the serialization format, the short with the value 314 will then be sent as either 3.14 (XML,
+      CSV type formats) or 314 (Bonaportable and compact format).
   \item Temporal types: {\ttfamily Day}, {\ttfamily Time}, {\ttfamily Timestamp}, and {\ttfamily Instant}. The {\ttfamily Day}
   type represents a calendar date without time. In Java, it maps to the {\ttfamily LocalDate} class of the JodaTime library. The {\ttfamily Timestamp} type represents an instant (day plus time), which in Java maps   
     to the {\ttfamily LocalDateTime} class of the JodaTime library. In serialized form, the timestamp is always in UTC time zone. For {\ttfamily Timestamp},
@@ -115,9 +126,24 @@ primitives and their boxed equivalents of Java (which, for the Java code generat
   {\ttfamily Uuid} type supports the universally unique identifiers (\url{http://en.wikipedia.org/wiki/Uuid}) and their standardized transmission format as a 36 byte hex string, formatted with dashes.
    The type maps to the Java UUID class. The {\ttfamily Object} holds a generic type defined in Bonaparte. A type (or subtype) of a specific class can be
     referenced by giving it's name in round parenthesis.  
-   The {\ttfamily Enum} references a special enumeration class, also defined in Bonaparte, which will be discussed later.   
-   The {\ttfamily Xenum} references an extended enum, for which some kind of inheritance (allowing the addition of instances) is
-   allowed.
+   The {\ttfamily Enum} references a special enumeration class, also defined in Bonaparte, which will be discussed later.
+   {\ttfamily enum}s can be either regular (as in Java, identified by some integral ordinal), or alphanumeric ({\ttfamily
+   Tokenizable}, where a string can be used to identify the instance). The latter one is preferred, because additional instances
+   can be added in a portable way, and indenpendent of the order of reference. The {\ttfamily Xenum} references an extended
+   enum, for which some kind of inheritance (allowing the addition of instances) is allowed. {\ttfamily Xenum}s always build on
+   top of {\ttfamily Tokenaizable} {\ttfamily enum}s.
+   \item Sets of enums and xenums are supported as well, these are comparable to the Java {\ttfamily EnumSet} class, but allow
+   access to the underlying bitmap. For {\ttfamily enumset}s, all primitive integral types are supported for the bitmap. In
+   addition, an {\ttfamily enumset} can be represented by the concatenated list of tokens, provided the tokens are all single
+   characters. Such sets are always stored in ascending order of the token, such that the representation is deterministic, and
+   it is possible to define simple regular expressions matching all enum sets which contain a specified subset of instances. 
+   \item External type adapters. Any Java Class can be used within Bonaparte, if a suitable type adapter is provided. Type
+   adapters work similar to JAXB's {\ttfamily XmlAdapter}s. Bonaparte distinguishes {\ttfamily singleField} adapters, which map
+   to a single directly supported Bonaparte type (i.e. one of the above), or arbitrary adapters, which map through some
+   intermediate support class, described by a list of Bonaparte types (including previously defined adapters).
+   
+   An adapter can receive input from a separate previously defined field. This way a class using a number of money types for
+   example can be serialized, transmitting the currency only once.
 \end{itemize}
 
 To extend the primitives vs. boxed types relationship, all these additional types can also be used in lowercase. In Java, they will still be implemented as
@@ -130,7 +156,7 @@ building interfaces to languages or systems using fixed width formats, like COBO
 
 You can even specify the number of some (assumed) fractional digits, for example {\ttfamily Long(18,6)}. Some formats (CSV, XML)
 will transmit the numbers as fractional numbers then, while the internal representation will be integral. This feature is
-intended to support building interfaces for the fixed point arithmetic of the upcoming JSR354 (money API).
+intended to support building interfaces for the fixed point arithmetic of the upcoming JSR-354 (money API).
 
 
 \vspace{2mm}
@@ -144,6 +170,13 @@ This can be done per project or via global workspace settings, in the ``BonScrip
 \begin{center}
 \includegraphics[scale=0.45]{images/tut1-003.png}
 \end{center} 
+
+There are some more settings you can adjust in order to adapt the code generator to your needs:
+
+\vspace{2mm}
+\begin{center}
+\includegraphics[scale=0.5]{images/tut1-prefs2.png}
+\end{center}
  
 Look into the generated code. It will have tons of unnecessary imports, but otherwise should be pretty much readable.
 You will notice that the generated class implements two interfaces, {\ttfamily Externalizable} and {\ttfamily BonaPortableWithMetaData}.
@@ -157,11 +190,6 @@ via the standard Java serialization (namely {\ttfamily readExternal} and {\ttfam
 the other interface is the for the standard Bonaparte interface. Ignoring the metadata part, all Java classes generated by Bonaparte implement the interface
  {\ttfamily de.jpaw.bonaparte.code.BonaPortable}. This is the interface you should reference for fields which hold any object created by the Bonaparte grammar.
 
-
-\vspace{2mm}
-\begin{center}
-\includegraphics[scale=0.45]{images/tut1-prefs1.png}
-\end{center}
 
 Apart from these, you see implementations of {\ttfamily hashCode} and {\ttfamily equals} (which behaves as expected, comparing the contents of
 the instances), as well as getters and setters for the fields.
@@ -327,7 +355,8 @@ for transmission in serialized forms (usually one or two characters).
 Enum definitions have to appear below typedefs, but above class defintions.
 The syntax is very close to Java syntax. Enum references must start with the {\ttfamily enum} or {\ttfamily Enum} keyword
  (for required / nullable enumerations) and the enum reference should always start with an uppercase letter.
-
+All enum classes generated by the Bonaparte DSL will either implement {\ttfamily BonaNonTokenizableEnum} or {\ttfamily BonaTokenizableEnum}
+(both interfaces extend the common interface {\ttfamily BonaEnum}).
 
 \vspace{2mm}
 
@@ -389,8 +418,77 @@ implementations, which also require that, for example most classes of the Google
 \hspace{1cm}\includegraphics[scale=0.5]{images/tut1-016-collections.png}
 
 
+\section{Sets of enums}
+For eenumsets, it is important to know that their iterator will always provide the instances in a defined ordering: for
+sets using a bitmap for storage, it is by ascending ordinal, for concatenated token storage in strings, it is by ascending
+token.
+
+\vspace{2mm}
+
+\hspace{1cm}\includegraphics[scale=0.5]{images/tut1-enumsets1.png}
+
+Their use is accordingly:
+
+\vspace{2mm}
+
+\hspace{1cm}\includegraphics[scale=0.5]{images/tut1-enumsets2.png}
+
+Please note the {\ttfamily properties nullWhenZero} addition, this does not have any effect in the main Bonaparte DSL, but is
+evaluated by the Bonaparte JPA DSL: The effect is that if such a class is stored in a database, empty sets will be stored as
+{\ttfamily null} in case of 0, resp. {\ttfamily ""}, optimizing index size.
+
+
 \section{Generics}
-TODO
+All generic references in Bonaparte specify classes defined in Bonaparte, i.e. they map to the Java representation of {\ttfamily
+? extends BonaPortable}. It is not possible to use generics to reference boxed primitives. 
+
+\section{Adapters}
+The following code fragment allows storing an instance of {\ttfamily java.lang.Class} inside a Bonaportable:
+
+\vspace{2mm}
+
+\hspace{1cm}\includegraphics[scale=0.5]{images/tut1-adapter1.png}
+
+The adapter is defined as follows:
+
+\vspace{2mm}
+
+\hspace{1cm}\includegraphics[scale=0.5]{images/tut1-adapter2.png}
+
+An adapter consists of a {\ttfamily marshal} and an {\ttfamily unmarshal} method. The unmarshal method is always static, the
+marshal method is an instance method, of the adapter is defined as part of the external class itself.
+The marshal method is invoked after null checks have been performed, this allows to return primitive types, avoiding
+unnecessary boxing / unboxing during serialization.
+
+For the unmarshal, this is always responsibility of the adapter, because the return type is an object anyway.
+The unmarshaller can receive an extra exception converter parameter; use this if the conversion can throw exceptions for invalid
+input data. This allows to enrich the response with field and class name information and sometimes save you from digging
+through stack traces.
+
+The unmarshaller can also receive extra parameters. A more complex example of an adapter without extra parameter
+
+\vspace{2mm}
+
+\hspace{1cm}\includegraphics[scale=0.5]{images/tut1-adapter3.png}
+
+looks like this with the extra parameter:
+
+\vspace{2mm}
+
+\hspace{1cm}\includegraphics[scale=0.5]{images/tut1-adapter4.png}
+
+Here, the first component has been omitted and is taken from another field of the class, which one is defined when the adapter
+is used:
+
+\vspace{2mm}
+
+\hspace{1cm}\includegraphics[scale=0.5]{images/tut1-adapter5.png}
+
+In the example, the {\ttfamily currencyCode} field (which by coincidence is itself mapped by an adapter here) is used to provide
+the missing information.
+
+You can find more examples of adapters on the projects {\ttfamily bonaparte-adapters-}*. 
+
 
 \section{Special directives}
 The following directives can be specified at package or class level, in the given order. 
