@@ -40,12 +40,12 @@ public class FillBoxedTypeArrays {
         x.setBoolean1(booleana);
 
         Character [] chara = new Character [333];
-        Arrays.fill(chara, new Character((char)'Ä'));
+        Arrays.fill(chara, new Character('Ä'));
         chara[88] = '€';
         x.setChar1(chara);
 
         Character [] charb = new Character [55];
-        Arrays.fill(charb, new Character((char)'\n'));
+        Arrays.fill(charb, new Character('\n'));
         charb[12] = '\r';
         x.setChar2(charb);
 

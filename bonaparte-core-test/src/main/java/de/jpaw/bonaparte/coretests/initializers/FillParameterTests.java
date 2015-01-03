@@ -4,9 +4,6 @@ import de.jpaw.bonaparte.pojos.tests1.Parameters;
 
 public class FillParameterTests {
 
-    /**
-     * @param args
-     */
     static public Parameters test1() {
         Parameters x = new Parameters();
         x.setTestNoTrim    ("   no trim   ");

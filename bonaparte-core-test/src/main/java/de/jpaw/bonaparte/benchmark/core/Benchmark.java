@@ -62,6 +62,8 @@ public class Benchmark {
         case 4:
             src = FillLists.test1();
             break;
+        default:
+            throw new RuntimeException("Unrecognized objectId " + objectId);
         }
 
         // start all the threads...

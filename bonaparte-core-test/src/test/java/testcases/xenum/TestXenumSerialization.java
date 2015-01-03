@@ -11,7 +11,6 @@ import org.testng.annotations.Test;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.testXenum.BW;
 import de.jpaw.bonaparte.pojos.testXenum.Color;
-import de.jpaw.bonaparte.pojos.testXenum.MoreColors;
 import de.jpaw.bonaparte.pojos.testXenum.SimpleSampleUsingInheritedXEnum;
 import de.jpaw.bonaparte.pojos.testXenum.SimpleSampleUsingXEnum;
 

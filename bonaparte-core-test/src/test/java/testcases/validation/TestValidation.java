@@ -18,9 +18,7 @@ public class TestValidation {
         try {
             x.validate();
         } catch (ObjectValidationException e) {
-            if (e.getErrorCode() == ObjectValidationException.MAY_NOT_BE_BLANK)
-                ; // OK, expected
-            else
+            if (e.getErrorCode() != ObjectValidationException.MAY_NOT_BE_BLANK)
                 throw e;
         }
     }

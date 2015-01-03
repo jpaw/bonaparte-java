@@ -40,12 +40,12 @@ public class FillPrimitiveArrays {
         x.setBoolean1(booleana);
 
         char [] chara = new char [333];
-        Arrays.fill(chara, (char)'Ä');
+        Arrays.fill(chara, 'Ä');
         chara[88] = '€';
         x.setChar1(chara);
 
         char [] charb = new char [55];
-        Arrays.fill(charb, (char)'\n');
+        Arrays.fill(charb, '\n');
         charb[12] = '\r';
         x.setChar2(charb);
 

@@ -17,9 +17,7 @@ public class TestBigDecimalParser {
         try {
             SimpleTestRunner.run(new BDTest(new BigDecimal("3.140100000003")), false);
         } catch (MessageParserException e) {
-            if (e.getErrorCode() == 200017041)
-                ;       // this is the expected one: (number contains more decimal places than allowed)
-            else
+            if (e.getErrorCode() != 200017041)  // this is the expected one: (number contains more decimal places than allowed)
                 throw e;
         }
     }
