@@ -13,8 +13,11 @@ Most of the other projects are either demonstration showcases for integration wi
 
 Some documentation and a tutorial is available in the projects bonaparte-tex and bonaparte-tutorial. The sample code used in the tutorial sits in bonaparte-tutorial-code.
 
-You can find the PDFs here: [https://github.com/jpaw/bonaparte-java/blob/master/bonaparte-tutorial/tutorial.pdf](https://github.com/jpaw/bonaparte-java/blob/master/bonaparte-tutorial/tutorial.pdf) and here:
-[https://github.com/jpaw/bonaparte-java/blob/master/bonaparte-tex/bonaparte.pdf](https://github.com/jpaw/bonaparte-java/blob/master/bonaparte-tex/bonaparte.pdf).
+You can find the PDFs at the following URLs:
+
+* [https://github.com/jpaw/bonaparte-java/blob/master/bonaparte-tutorial/tutorial.pdf](https://github.com/jpaw/bonaparte-java/blob/master/bonaparte-tutorial/tutorial.pdf)
+
+* [https://github.com/jpaw/bonaparte-java/blob/master/bonaparte-tex/bonaparte.pdf](https://github.com/jpaw/bonaparte-java/blob/master/bonaparte-tex/bonaparte.pdf)
 
 ###Building
 
