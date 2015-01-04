@@ -267,16 +267,15 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
         if (token == null)
             return null;
         if (doTrim) {
-            token = token.trim();
+            token = token.trim();       // CSV formats trim by default
         }
         for (int i = 0; i < token.length(); ++i) {
             char c = token.charAt(i);
             if (allowUnicode) {
                 // checks for Unicode characters
                 if (c < ' ') {
-                    if (allowCtrls && (c == '\t')) {
-                        // special case: unescaped TAB character allowed
-                    } else {
+                    if (c != '\t' && !allowCtrls) {
+                        // special control character, not TAB, and not allowed
                         throw new MessageParserException(MessageParserException.ILLEGAL_CHAR_CTRL, fieldname, parseIndex, currentClass);
                     }
                 }
