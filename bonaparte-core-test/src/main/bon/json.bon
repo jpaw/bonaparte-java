@@ -1,0 +1,12 @@
+package jsonTest {
+    
+    class TestObj {
+        int         primitiveInt;
+        Long        wrappedLong;
+        Day         myDay;
+        Instant     myInstant;
+        Unicode(20) myText;
+        Boolean     myBoolean;
+        Uuid        myNull;
+    }
+}

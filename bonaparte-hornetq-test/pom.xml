@@ -37,6 +37,8 @@
             <version>${slf4j.version}</version>
             <scope>runtime</scope>
         </dependency>
+        
+        
         <!-- client settings -->
         <dependency>
             <groupId>org.hornetq</groupId>
@@ -73,6 +75,22 @@
            <version>1.1.0.GA</version>
            <scope>compile</scope>
         </dependency>
+
+<!-- 
+        <dependency>
+            <groupId>com.rabbitmq</groupId>
+            <artifactId>amqp-client</artifactId>
+            <version>3.4.3</version>
+        </dependency>
+ -->
+        <!-- removed due to mega dependencies -->
+<!--         
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>apollo-amqp</artifactId>
+            <version>1.7</version>
+        </dependency>
+ -->
     </dependencies>
 
 

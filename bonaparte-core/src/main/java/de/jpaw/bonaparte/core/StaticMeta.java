@@ -17,7 +17,11 @@ public interface StaticMeta {
             Multiplicity.SCALAR, IndexType.NONE, 0, 0, DataCategory.STRING, "Ascii", false, false, false, false, false, true, 16, 0, null);
     public static final ObjectReference OUTER_BONAPORTABLE = new ObjectReference(Visibility.PRIVATE, false, "record",
             Multiplicity.SCALAR, IndexType.NONE, 0, 0, DataCategory.OBJECT, "BonaPortable", false, false, true, "BonaPortable", null, null, null);
+    // CSV special: no subclasses allowed (for parsing)
     public static final ObjectReference OUTER_BONAPORTABLE_FOR_CSV = new ObjectReference(Visibility.PRIVATE, false, "record",
+            Multiplicity.SCALAR, IndexType.NONE, 0, 0, DataCategory.OBJECT, "BonaPortable", false, false, false, "BonaPortable", null, null, null);
+    // JSON special: keep the name of the outer record secret! Due to missing type info, also here no subclasses are possible
+    public static final ObjectReference OUTER_BONAPORTABLE_FOR_JSON = new ObjectReference(Visibility.PRIVATE, false, "",
             Multiplicity.SCALAR, IndexType.NONE, 0, 0, DataCategory.OBJECT, "BonaPortable", false, false, false, "BonaPortable", null, null, null);
 
     public static final AlphanumericElementaryDataItem MAP_INDEX_META_STRING = new AlphanumericElementaryDataItem(Visibility.PRIVATE, false, "map$Index",

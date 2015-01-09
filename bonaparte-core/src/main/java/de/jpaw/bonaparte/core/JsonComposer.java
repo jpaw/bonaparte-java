@@ -33,6 +33,7 @@ import de.jpaw.util.DefaultJsonEscaperForAppendables;
 import de.jpaw.util.JsonEscaper;
 
 /** This class natively generates JSON output. It aims for compatibility with the extensions used by the json-io library (@Type class information).
+ * See https://github.com/jdereg/json-io and http://code.google.com/p/json-io/ for json-io source and documentation.
  * 
  * @author Michael Bischoff (jpaw.de)
  *
@@ -43,23 +44,45 @@ public class JsonComposer implements MessageComposer<IOException> {
     protected static final DateTimeFormatter LOCAL_TIME_ISO = DateTimeFormat.forPattern("HH:mm:ss"); // ISODateTimeFormat.basicTime();
     protected final Appendable out;
     protected final boolean writeNulls;
+    protected final boolean writeTypeInfo;
     protected final JsonEscaper jsonEscaper;
     
     protected boolean needFieldSeparator = false;
     
+    public static String toJsonString(BonaPortable obj) {
+        StringBuilder buff = new StringBuilder(4000);
+        JsonComposer bjc = new JsonComposer(buff);
+        try {
+            bjc.writeRecord(obj);
+        } catch (IOException e) {
+            // oh yes, sure, StringBuilder throws IOException!
+            throw new RuntimeException(e);
+        }
+        return buff.toString();
+    }
+    
     public JsonComposer(Appendable out) {
         this.out = out;
         this.writeNulls = false;
+        this.writeTypeInfo = false;
         this.jsonEscaper = new DefaultJsonEscaperForAppendables(out);
     }
     public JsonComposer(Appendable out, boolean writeNulls) {
         this.out = out;
         this.writeNulls = writeNulls;
+        this.writeTypeInfo = false;
         this.jsonEscaper = new DefaultJsonEscaperForAppendables(out);
     }
     public JsonComposer(Appendable out, boolean writeNulls, JsonEscaper jsonEscaper) {
         this.out = out;
         this.writeNulls = writeNulls;
+        this.writeTypeInfo = false;
+        this.jsonEscaper = jsonEscaper;
+    }
+    public JsonComposer(Appendable out, boolean writeNulls, boolean writeTypeInfo, JsonEscaper jsonEscaper) {
+        this.out = out;
+        this.writeNulls = writeNulls;
+        this.writeTypeInfo = writeTypeInfo;
         this.jsonEscaper = jsonEscaper;
     }
 
@@ -73,9 +96,12 @@ public class JsonComposer implements MessageComposer<IOException> {
 
     /** Writes a quoted fieldname. We assume that no escaping is required, because all valid identifier characters in Java don't need escaping. */
     protected void writeFieldName(FieldDefinition di) throws IOException {
-        writeSeparator();
-        jsonEscaper.outputUnicodeNoControls(di.getName());
-        out.append(':');
+        if (di.getName().length() > 0) {
+            writeSeparator();
+            jsonEscaper.outputUnicodeNoControls(di.getName());
+            out.append(':');
+        }
+        // else it's the special JSON outer type to be ignored...
     }
 
     /** Writes a quoted fieldname, if not in an array, or a separator only. */
@@ -175,11 +201,15 @@ public class JsonComposer implements MessageComposer<IOException> {
     @Override
     public void startObject(ObjectReference di, BonaCustom obj) throws IOException {
         out.append('{');
-        // create the class canonical name as a special field , to be compatible to json-io
-        jsonEscaper.outputAscii("@type");
-        out.append(':');
-        jsonEscaper.outputUnicodeNoControls(obj.getClass().getCanonicalName());
-        needFieldSeparator = true;
+        if (writeTypeInfo) {
+            // create the class canonical name as a special field , to be compatible to json-io
+            jsonEscaper.outputAscii("@type");
+            out.append(':');
+            jsonEscaper.outputUnicodeNoControls(obj.getClass().getCanonicalName());
+            needFieldSeparator = true;
+        } else {
+            needFieldSeparator = false;
+        }
     }
     
     @Override
@@ -231,7 +261,7 @@ public class JsonComposer implements MessageComposer<IOException> {
     @Override
     public void writeRecord(BonaCustom o) throws IOException {
         startRecord();
-        addField(StaticMeta.OUTER_BONAPORTABLE, o);
+        addField(StaticMeta.OUTER_BONAPORTABLE_FOR_JSON, o);
         terminateRecord();
     }
 
