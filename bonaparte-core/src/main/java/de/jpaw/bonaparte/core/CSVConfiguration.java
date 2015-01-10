@@ -2,6 +2,7 @@ package de.jpaw.bonaparte.core;
 
 import java.util.Locale;
 
+import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
@@ -25,6 +26,7 @@ public class CSVConfiguration {
     public final boolean removePoint4BD;    // SPECIAL: remove decimal point for BigDecimal output, to support some specific interfaces
     public final boolean zeroPadNumbers;    // SPECIAL: (only if separator is null or empty (= fixed width format): left-pad numeric values with zeroes instead of spaces
     public final boolean rightPadNumbers;   // SPECIAL: (only if separator is null or empty (= fixed width format): right-pad numeric values (Decimal or Number)
+    public final boolean useGrouping;       // SPECIAL: use decimal grouping
     public final String arrayStart;         // string to output for array start, List<> and Set<>
     public final String arrayEnd;           // string to output for array end
     public final String mapStart;           // string to output for map start
@@ -34,6 +36,7 @@ public class CSVConfiguration {
     public final String booleanTrue;        // string to output for boolean true value
     public final String booleanFalse;       // string to output for boolean false value
     public final Locale locale;             // used to determine date format
+    public final DateTimeZone timeZone;     // the timezone to use (for special output formatters). Will use UTC if null.
     public final CSVStyle dateStyle;        // verbosity for day output
     public final CSVStyle timeStyle;        // verbosity for time output
     public final String customDayFormat;             // set to override locale specific LocalDate formatter
@@ -43,19 +46,19 @@ public class CSVConfiguration {
     public final String customTimestampWithMsFormat; // set to override locale specific LocalDateTime formatter if milliseconds should be printed
 
     public final static CSVConfiguration CSV_DEFAULT_CONFIGURATION = new CSVConfiguration(
-            ";", '\"', "\"\"", "?", false, false, null, null, null, null, null, null, "1", "0", Locale.ROOT, CSVStyle.SHORT, CSVStyle.SHORT,
-            DEFAULT_DAY_FORMAT, DEFAULT_TIME_FORMAT, DEFAULT_TIME_WITH_MS_FORMAT, DEFAULT_TIMESTAMP_FORMAT, DEFAULT_TS_WITH_MS_FORMAT, false, false);
+            ";", '\"', "\"\"", "?", false, false, null, null, null, null, null, null, "1", "0", Locale.ROOT, null, CSVStyle.SHORT, CSVStyle.SHORT,
+            DEFAULT_DAY_FORMAT, DEFAULT_TIME_FORMAT, DEFAULT_TIME_WITH_MS_FORMAT, DEFAULT_TIMESTAMP_FORMAT, DEFAULT_TS_WITH_MS_FORMAT, false, false, false);
 
     public static final String nvl(String s) {
         return s != null ? s : EMPTY_STRING;
     }
     public CSVConfiguration(String separator, Character quote, String quoteReplacement, String ctrlReplacement, boolean datesQuoted, boolean removePoint4BD,
             String mapStart, String mapEnd, String arrayStart, String arrayEnd, String objectStart, String objectEnd, String booleanTrue, String booleanFalse,
-            Locale locale, CSVStyle dateStyle, CSVStyle timeStyle,
+            Locale locale, DateTimeZone timeZone, CSVStyle dateStyle, CSVStyle timeStyle,
             String customDayFormat,
             String customTimeFormat, String customTimeWithMsFormat,
             String customTimestampFormat, String customTimestampWithMsFormat,
-            boolean zeroPadNumbers, boolean rightPadNumbers) {
+            boolean zeroPadNumbers, boolean rightPadNumbers, boolean useGrouping) {
         this.separator = nvl(separator);
         this.quote = quote;
         this.quoteReplacement = nvl(quoteReplacement);
@@ -64,6 +67,7 @@ public class CSVConfiguration {
         this.removePoint4BD = removePoint4BD;
         this.zeroPadNumbers = zeroPadNumbers;
         this.rightPadNumbers = rightPadNumbers;
+        this.useGrouping = useGrouping;
         this.arrayStart = nvl(arrayStart);
         this.arrayEnd = nvl(arrayEnd);
         this.mapStart = nvl(mapStart);
@@ -73,6 +77,7 @@ public class CSVConfiguration {
         this.booleanTrue = nvl(booleanTrue);
         this.booleanFalse = nvl(booleanFalse);
         this.locale = locale;
+        this.timeZone = timeZone;
         this.dateStyle = dateStyle;
         this.timeStyle = timeStyle;
         this.customDayFormat = customDayFormat;
@@ -97,6 +102,7 @@ public class CSVConfiguration {
         protected boolean removePoint4BD;     // SPECIAL: remove decimal point for BigDecimal output, to support some specific interfaces
         protected boolean zeroPadNumbers;     // SPECIAL: (only if separator is null or empty (= fixed width format): left-pad numeric values with zeroes instead of spaces
         protected boolean rightPadNumbers;    // SPECIAL: (only if separator is null or empty (= fixed width format): right-pad numeric values (Decimal or Number)
+        protected boolean useGrouping;        // SPECIAL: use decimal grouping
         protected String arrayStart;          // string to output for array start, List<> and Set<>
         protected String arrayEnd;            // string to output for array end
         protected String mapStart;            // string to output for map start
@@ -106,6 +112,7 @@ public class CSVConfiguration {
         protected String booleanTrue;         // string to output for boolean true value
         protected String booleanFalse;        // string to output for boolean false value
         protected Locale locale;              // used to determine date format
+        protected DateTimeZone timeZone;      // the timezone to use (for special output formatters). Will use UTC if null.
         protected CSVStyle dateStyle;         // verbosity for day output
         protected CSVStyle timeStyle;         // verbosity for time output
         protected String customDayFormat;             // set to override locale specific LocalDate formatter
@@ -127,6 +134,7 @@ public class CSVConfiguration {
             this.removePoint4BD = cfg.removePoint4BD;
             this.zeroPadNumbers = cfg.zeroPadNumbers;
             this.rightPadNumbers = cfg.rightPadNumbers;
+            this.useGrouping = cfg.useGrouping;
             this.arrayStart = cfg.arrayStart;
             this.arrayEnd = cfg.arrayEnd;
             this.mapStart = cfg.mapStart;
@@ -136,6 +144,7 @@ public class CSVConfiguration {
             this.booleanTrue = cfg.booleanTrue;
             this.booleanFalse = cfg.booleanFalse;
             this.locale = cfg.locale;
+            this.timeZone = cfg.timeZone;
             this.dateStyle = cfg.dateStyle;
             this.timeStyle = cfg.timeStyle;
             this.customDayFormat = cfg.customDayFormat;
@@ -163,14 +172,18 @@ public class CSVConfiguration {
         public CSVConfiguration build() {
             return new CSVConfiguration(separator, quote, quoteReplacement, ctrlReplacement, datesQuoted, removePoint4BD,
                     mapStart, mapEnd, arrayStart, arrayEnd, objectStart, objectEnd, booleanTrue, booleanFalse,
-                    locale, dateStyle, timeStyle,
+                    locale, timeZone, dateStyle, timeStyle,
                     customDayFormat, customTimeFormat, customTimeWithMsFormat, customTimestampFormat, customTimestampWithMsFormat,
-                    zeroPadNumbers, rightPadNumbers);
+                    zeroPadNumbers, rightPadNumbers, useGrouping);
         }
 
         // now the individual builder setters follow
         public Builder forLocale(Locale locale) {
             this.locale = locale;
+            return this;
+        }
+        public Builder forTimeZone(DateTimeZone timeZone) {
+            this.timeZone = timeZone;
             return this;
         }
         public Builder arrayDelimiters(String arrayStart, String arrayEnd) {
@@ -207,6 +220,10 @@ public class CSVConfiguration {
         }
         public Builder usingRightPadding(boolean rightPadNumbers) {
             this.rightPadNumbers = rightPadNumbers;
+            return this;
+        }
+        public Builder usingGrouping(boolean useGrouping) {
+            this.useGrouping = useGrouping;
             return this;
         }
         public Builder usingQuoteCharacter(Character quote) {

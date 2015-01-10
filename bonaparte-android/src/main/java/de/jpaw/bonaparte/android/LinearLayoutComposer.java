@@ -42,7 +42,7 @@ import de.jpaw.util.ByteArray;
 /** Composer which is designed to work as a delegate for a foldingComposer.
  * Therefore object output itself is not supported. */
 
-abstract public class LinearLayoutComposer  implements MessageComposer<RuntimeException>, AndroidViewComposer, View.OnClickListener {
+abstract public class LinearLayoutComposer implements MessageComposer<RuntimeException>, AndroidViewComposer, View.OnClickListener {
     static private final Logger LOG = LoggerFactory.getLogger(LinearLayoutComposer.class);
     protected int rownum = -1;
     protected int column = 0;

@@ -41,50 +41,36 @@ public class CSVComposer2 extends CSVComposer {
     // byte
     @Override
     public void addField(BasicNumericElementaryDataItem di, byte n) throws IOException {
-        writeSeparator();
-        if (di.getDecimalDigits() == 0 || cfg.removePoint4BD) {
-            addRawData(numberFormat.format(n));
-        } else {
-            outputFixedPointScaledInt(di, n);
-        }
+        outputFixedPointScaledInt(di, n);
     }
     // short
     @Override
     public void addField(BasicNumericElementaryDataItem di, short n) throws IOException {
-        writeSeparator();
-        if (di.getDecimalDigits() == 0 || cfg.removePoint4BD) {
-            addRawData(numberFormat.format(n));
-        } else {
-            outputFixedPointScaledInt(di, n);
-        }
+        outputFixedPointScaledInt(di, n);
     }
     // integer
     @Override
     public void addField(BasicNumericElementaryDataItem di, int n) throws IOException {
-        writeSeparator();
-        if (di.getDecimalDigits() == 0 || cfg.removePoint4BD) {
-            addRawData(numberFormat.format(n));
-        } else {
-            outputFixedPointScaledInt(di, n);
-        }
+        outputFixedPointScaledInt(di, n);
     }
     // long
     @Override
     public void addField(BasicNumericElementaryDataItem di, long n) throws IOException {
+        outputFixedPointScaledInt(di, n);
+    }
+
+    protected void outputFixedPointScaledInt(BasicNumericElementaryDataItem di, long n) throws IOException {
         writeSeparator();
         if (di.getDecimalDigits() == 0 || cfg.removePoint4BD) {
             addRawData(numberFormat.format(n));
         } else {
-            outputFixedPointScaledInt(di, n);
+            int scale = di.getDecimalDigits();
+            // use standard locale formatter to get the localized . or ,
+            // cannot call the BigDecimal method, because that one expects the NumericElementaryDataItem type as first parameter
+            bigDecimalFormat.setMaximumFractionDigits(scale);
+            bigDecimalFormat.setMinimumFractionDigits(scale);
+            addRawData(bigDecimalFormat.format(BigDecimal.valueOf(n, scale)));
         }
-    }
-
-    protected void outputFixedPointScaledInt(BasicNumericElementaryDataItem di, long n) throws IOException {
-        int scale = di.getDecimalDigits();
-        // use standard locale formatter to get the localized . or ,
-        bigDecimalFormat.setMaximumFractionDigits(scale);
-        bigDecimalFormat.setMinimumFractionDigits(scale);
-        addRawData(bigDecimalFormat.format(BigDecimal.valueOf(n, scale)));
     }
     
     // BigInteger(n)

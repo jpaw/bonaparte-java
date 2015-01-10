@@ -7,6 +7,7 @@ import com.ibm.icu.util.ULocale;
 import de.jpaw.bonaparte.core.CSVConfiguration;
 import de.jpaw.bonaparte.core.CSVStyle;
 
+/** An example how to extend the CSVConfiguration builder pattern. Is not actually used. */
 public class ICUCSVConfiguration extends CSVConfiguration {
 
     public final ULocale ulocale; // the ICU locale replacement (597 instead of 159 available Locales)
@@ -17,13 +18,14 @@ public class ICUCSVConfiguration extends CSVConfiguration {
             String customDayFormat, String customTimeFormat, String customTimeWithMsFormat, String customTimestampFormat, String customTimestampWithMsFormat,
             ULocale ulocale) {
         super(separator, quote, quoteReplacement, ctrlReplacement, datesQuoted, removePoint4BD, mapStart, mapEnd, arrayStart, arrayEnd, objectStart, objectEnd,
-                booleanTrue, booleanFalse, locale, dateStyle, timeStyle,
+                booleanTrue, booleanFalse, locale, null, dateStyle, timeStyle,
                 customDayFormat, customTimeFormat, customTimeWithMsFormat, customTimestampFormat, customTimestampWithMsFormat,
-                false, false);
+                false, false, false);
         this.ulocale = ulocale;
     }
 
     /** Creates a new CSVConfiguration.Builder based on the current object. */
+    @Override
     public Builder builder() {
         return new Builder(this);
     }
@@ -54,6 +56,7 @@ public class ICUCSVConfiguration extends CSVConfiguration {
         }
 
         /** Constructs the CSVConfiguration from the data collected so far */
+        @Override
         public ICUCSVConfiguration build() {
             return new ICUCSVConfiguration(separator, quote, quoteReplacement, ctrlReplacement, datesQuoted, removePoint4BD, mapStart, mapEnd, arrayStart,
                     arrayEnd, objectStart, objectEnd, booleanTrue, booleanFalse, locale, dateStyle, timeStyle,
