@@ -24,8 +24,20 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
+
 public class BonaPortableFactory {
     private static final Logger logger = LoggerFactory.getLogger(BonaPortableFactory.class);
+    
+    // Skip the next field and PathResolverTest may fail. Required to load the meta data classes in the correct order, required due to cyclic dependencies
+    // of static fields and their initialization.
+    public static String UNUSED = ClassDefinition.class$Property("unused");
+    // it will definitely fail if for example FieldDefinition is loaded before ClassDefinition
+    
+    /** Stub to call to force initialization, in case no other initialization is required. */
+    public static void init() {
+    }
+    
     static private ConcurrentMap<String, BonaPortableClass<BonaPortable>> newMap = new ConcurrentHashMap<String, BonaPortableClass<BonaPortable>>();
     
     static private ConcurrentMap<String, Class<? extends BonaPortable>> map = new ConcurrentHashMap<String, Class<? extends BonaPortable>>();

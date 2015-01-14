@@ -9,23 +9,40 @@ package ui factoryId 29 {
     enum Alignment    { DEFAULT="D", LEFT="L", CENTER="C", RIGHT="M" }  // default aligns by field type: boolean and images centered, numeric right, rest left (subject to change for locale specific refinement) 
     enum LayoutHint   { TEXT="T", IMAGE="I", CHECKBOX="B", OBJECT="O" } // object is a generic bonaortable, the only way to display it is via popup and specific toString renderers 
     
+    enum UIFilterType {
+        EQUALITY="E",                   // filter criteria must match exactly (the only possible for references and enums)
+        LOWER_BOUND="L",                // input is a lower bound
+        UPPER_BOUND="U",                // input is an upper bound
+        RANGE="R",                      // lower and upper bound (relates to 2 separate input fields)
+        LIKE="W"                        // equality with wildcard (affects plausi check, only possible for text fields)
+    }
+    
     /** Defines properties of a column displayed in some UI, to be used with the foldingComposer. */
     class UIColumn classId 31 {
-        required identifier         fieldName;          // field name in dotted notation (data.component.field[arrayIndex])
-        required int                width;              // specific width, if 0, then it is determined using the data type width
-        optional Enum Alignment     alignment;          // L/M/R 
-        optional Enum LayoutHint    layoutHint;         // type of view to display 
+        required identifier                         fieldName;          // field name in dotted notation (data.component.field[arrayIndex])
+        required int                                width;              // specific width, if 0, then it is determined using the data type width
+        optional Enum Alignment                     alignment;          // L/M/R 
+        optional Enum LayoutHint                    layoutHint;         // type of view to display 
     }
     
+    /** User specific configuration for a column. */
+    class UIColumnConfiguration extends UIColumn {
+        required boolean                            visible;                // true, if column should be shown.    
+        required boolean                            allowSorting;           // leave it false if sorting would be too resource intense
+        required boolean                            negateFilter;           // if a filter is configured: negate the condition
+        optional Enum UIFilterType                  filterType;             // determines which type of filter to apply
+        
+    }
+    
+    /** Parameters used by autoconfiguration, to determine default column withs. */
     class UIDefaults classId 30 {
-        required int                renderMaxArrayColumns;  // unrolled lists: how many columns to show at max?
-        required int                widthObject;            // width in pixels of an object column (shows a button)
-        required int                widthCheckbox;          // width in pixels of an boolean column (shown as checkbox)
-        required int                widthEnum;              // width in pixels of an enum or xenum type
-        required int                widthEnumset;           // width in pixels of an enumset type
-        required int                widthOffset;            // width in pixels offset for variable width items
-        required int                widthPerCharacter;      // width in pixels per character
-        required int                widthMax;               // width in pixels where to cap huge columns
+        required int                                renderMaxArrayColumns;  // unrolled lists: how many columns to show at max?
+        required int                                widthObject;            // width in pixels of an object column (shows a button)
+        required int                                widthCheckbox;          // width in pixels of an boolean column (shown as checkbox)
+        required int                                widthEnum;              // width in pixels of an enum or xenum type
+        required int                                widthEnumset;           // width in pixels of an enumset type
+        required int                                widthOffset;            // width in pixels offset for variable width items
+        required int                                widthPerCharacter;      // width in pixels per character
+        required int                                widthMax;               // width in pixels where to cap huge columns
     }
-    
 }
