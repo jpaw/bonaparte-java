@@ -3,11 +3,11 @@ package de.jpaw.bonaparte.core;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 
 /** DTO class for the extended List composer */
-public class DataAndMeta<JAVATYPE,METATYPE extends FieldDefinition> {
-    public final METATYPE meta;
-    public final JAVATYPE data;
+public class DataAndMeta {
+    public final FieldDefinition meta;
+    public final Object data;
     
-    public DataAndMeta(METATYPE meta, JAVATYPE data) {
+    public DataAndMeta(FieldDefinition meta, Object data) {
         this.meta = meta;
         this.data = data;
     }

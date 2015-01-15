@@ -32,25 +32,25 @@ import de.jpaw.util.ByteArray;
  * This implementation is not ideal, since it may unbox/rebox objects of the BonaPortables.
  * To improve it, the BonaCustom interface would need to be changed. */
 public class ListMetaComposer extends NoOpComposer implements MessageComposer<RuntimeException> {
-    final List<DataAndMeta<Object,FieldDefinition>> storage;
+    final List<DataAndMeta> storage;
     final boolean doDeepCopies;
     
     /** Creates a new ListMetaComposer for a given preallocated external storage. */
-    public ListMetaComposer(final List<DataAndMeta<Object,FieldDefinition>> storage, boolean doDeepCopies) {
+    public ListMetaComposer(final List<DataAndMeta> storage, boolean doDeepCopies) {
         this.storage = storage;
         this.doDeepCopies = doDeepCopies;
     }
     /** Creates a new ListMetaComposer, creating an own internal storage. */
     public ListMetaComposer(boolean doDeepCopies) {
-        this.storage = new ArrayList<DataAndMeta<Object,FieldDefinition>>();
+        this.storage = new ArrayList<DataAndMeta>();
         this.doDeepCopies = doDeepCopies;
     }
     
     protected void add(FieldDefinition di, Object o) {
-        storage.add(new DataAndMeta<Object,FieldDefinition>(di, o));
+        storage.add(new DataAndMeta(di, o));
     }
     
-    public List<DataAndMeta<Object,FieldDefinition>> getStorage() {
+    public List<DataAndMeta> getStorage() {
         return storage;
     }
     public boolean getDoDeepCopies() {

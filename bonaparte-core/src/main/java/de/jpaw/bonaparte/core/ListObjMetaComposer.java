@@ -10,7 +10,7 @@ import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 public class ListObjMetaComposer extends ListMetaComposer {
     
     /** Creates a new ListObjMetaComposer for a given preallocated external storage. */
-    public ListObjMetaComposer(final List<DataAndMeta<Object,FieldDefinition>> storage, boolean doDeepCopies) {
+    public ListObjMetaComposer(final List<DataAndMeta> storage, boolean doDeepCopies) {
         super(storage, doDeepCopies);
     }
     /** Creates a new ListObjMetaComposer, creating an own internal storage. */
@@ -20,6 +20,6 @@ public class ListObjMetaComposer extends ListMetaComposer {
 
     @Override
     public void addField(ObjectReference di, BonaCustom obj) {
-        storage.add(new DataAndMeta<Object,FieldDefinition>(di, obj));
+        storage.add(new DataAndMeta(di, obj));
     }
 }

@@ -13,6 +13,7 @@ import de.jpaw.bonaparte.core.ListComposer;
 import de.jpaw.bonaparte.core.ListMetaComposer;
 import de.jpaw.bonaparte.core.ListObjComposer;
 import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
+import de.jpaw.bonaparte.pojos.meta.ExternalClassDefinition;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.FoldingStrategy;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
@@ -20,6 +21,9 @@ import de.jpaw.bonaparte.pojos.meta.ParsedFoldingComponent;
 
 /** Utility method to get a fields from BonaPortables via pathname. */
 public class FieldGetter {
+    // configuration constant
+    final private static boolean DEFAULT_AUTOSKIP_ADAPTERS = true;      // do not return adapter classes but their contents
+    
     public static List<Object> getFields(BonaPortable obj, List<String> fieldnames) {
         if (obj == null || fieldnames == null)
             return null;
@@ -73,9 +77,9 @@ public class FieldGetter {
     }
 
     /** Get a single field, alternate implementation, going directly to ListComposer (should be faster, less object allocations). */
-    public static DataAndMeta<Object,FieldDefinition> getSingleFieldWithMeta(BonaPortable obj, String fieldname) {
+    public static DataAndMeta getSingleFieldWithMeta(BonaPortable obj, String fieldname) {
         ParsedFoldingComponent pfc = FoldingComposer.createRecursiveFoldingComponent(fieldname);
-        List<DataAndMeta<Object,FieldDefinition>> target = new ArrayList<DataAndMeta<Object,FieldDefinition>>(1);
+        List<DataAndMeta> target = new ArrayList<DataAndMeta>(1);
         ListMetaComposer delegate = new ListMetaComposer(target, false);
         obj.foldedOutput(delegate, pfc);
         return (target.size() == 0) ? null : target.get(0);
@@ -95,9 +99,25 @@ public class FieldGetter {
         return null;
     }
     
+    /** Returns the first field defined in a superclass or this class, or null, if neither this class nor a superclass defines a field. */
+    public static FieldDefinition getFirstField(ClassDefinition cls) {
+        FieldDefinition f = cls.getParentMeta() == null ? null : getFirstField(cls.getParentMeta());
+        if (f != null)
+            return f;  // found a field in a parent
+        if (cls.getFields().size() == 0)
+            return null;
+        return cls.getFields().get(0);
+    }
+    
     /** Retrieves just the meta data. Throws an exception if the path is invalid.
      * This is a static path resolver, pathnames must reference valid paths for any valid data. */
     public static FieldDefinition getFieldDefinitionForPathname(ClassDefinition cls, String pathname) throws UtilException {
+        return getFieldDefinitionForPathname(cls, pathname, DEFAULT_AUTOSKIP_ADAPTERS);
+    }
+    
+    /** Retrieves just the meta data. Throws an exception if the path is invalid.
+     * This is a static path resolver, pathnames must reference valid paths for any valid data. */
+    public static FieldDefinition getFieldDefinitionForPathname(ClassDefinition cls, String pathname, final boolean autoSkipAdapters) throws UtilException {
 
         // if the pathname contains no dot, the only containing object is the root
         for (;;) {
@@ -118,13 +138,34 @@ public class FieldGetter {
             FieldDefinition fld = lookupField(cls, currentElement);
             if (fld == null)
                 throw new UtilException(UtilException.PATH_COMPONENT_NOT_FOUND, currentElement + " in " + cls.get$PQON());
+            
+            // check for adapters...
+            ObjectReference oRef;
+            if (autoSkipAdapters) {
+                for (;;) {
+                    oRef = fld instanceof ObjectReference ? (ObjectReference)fld : null;
+                    if (oRef != null && oRef.getLowerBound() != null && oRef.getLowerBound() instanceof ExternalClassDefinition) {
+                        ExternalClassDefinition extRef = (ExternalClassDefinition)oRef.getLowerBound();
+                        if (extRef.getIsSingleField()) {
+                            // forward fld to the first fld of the adapter...
+                            fld = getFirstField(extRef);
+                            if (fld == null)
+                                throw new UtilException(UtilException.ADAPTER_WITHOUT_FIELDS, extRef.getClassRef().getCanonicalName());
+                            continue;   // iterative check for adapters, in case of nested adapters...
+                        }
+                    }
+                    break;      // any condition not fulfilled: stop iterating
+                }
+            } else {
+                oRef = fld instanceof ObjectReference ? (ObjectReference)fld : null; // just a one time evaluation
+            }
+
             if (lastDot < 0)
                 // this was the result
                 return fld;
             // otherwise, must descend further. For that, fld must be a class reference
-            if (!(fld instanceof ObjectReference))
+            if (oRef == null)
                 throw new UtilException(UtilException.DESCEND_TO_NON_REFERENCE, currentElement + " in " + cls.get$PQON());
-            ObjectReference oRef = (ObjectReference)fld;
             if (oRef.getLowerBound() == null)
                 throw new UtilException(UtilException.DESCEND_TO_GENERIC_OBJECT, currentElement + " in " + cls.get$PQON());
             cls = oRef.getSecondaryLowerBound() == null ? oRef.getLowerBound() : oRef.getSecondaryLowerBound();

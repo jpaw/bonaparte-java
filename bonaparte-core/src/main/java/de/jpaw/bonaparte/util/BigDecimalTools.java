@@ -102,7 +102,7 @@ public class BigDecimalTools {
      * @returns the scaled number
      */
     static public BigDecimal retrieveScaled(BonaPortable root, String path) {
-        DataAndMeta<Object,FieldDefinition> value = FieldGetter.getSingleFieldWithMeta(root, path);
+        DataAndMeta value = FieldGetter.getSingleFieldWithMeta(root, path);
         if (value == null || value.data == null || !(value.data instanceof BigDecimal))
             return null;  // wrong type
         BigDecimal numValue = (BigDecimal)value.data; 
