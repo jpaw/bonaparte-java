@@ -508,4 +508,9 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
         else
             addField(token, n.getToken());
     }
+    
+    @Override
+    public boolean addExternal(ObjectReference di, Object obj) throws IOException {
+        return false;       // perform conversion by default
+    }
 }

@@ -413,4 +413,9 @@ public class BaseExcelComposer implements MessageComposer<RuntimeException> {
         else
             addField(token, n.getToken());
     }
+    
+    @Override
+    public boolean addExternal(ObjectReference di, Object obj) {
+        return false;       // perform conversion by default
+    }
 }

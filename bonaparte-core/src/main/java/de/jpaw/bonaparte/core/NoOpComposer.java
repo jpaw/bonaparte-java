@@ -175,4 +175,8 @@ public class NoOpComposer implements MessageComposer<RuntimeException> {
     public void addEnum(XEnumDataItem di, AlphanumericElementaryDataItem token, XEnum<?> n) throws RuntimeException {
     }
 
+    @Override
+    public boolean addExternal(ObjectReference di, Object obj) throws RuntimeException {
+        return false;       // perform conversion by default
+    }
 }

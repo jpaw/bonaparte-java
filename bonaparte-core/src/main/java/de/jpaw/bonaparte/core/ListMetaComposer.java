@@ -32,18 +32,23 @@ import de.jpaw.util.ByteArray;
  * This implementation is not ideal, since it may unbox/rebox objects of the BonaPortables.
  * To improve it, the BonaCustom interface would need to be changed. */
 public class ListMetaComposer extends NoOpComposer implements MessageComposer<RuntimeException> {
-    final List<DataAndMeta> storage;
-    final boolean doDeepCopies;
+    final protected List<DataAndMeta> storage;
+    final protected boolean doDeepCopies;
+    final protected boolean keepObjects;
+    final protected boolean keepExternals;
     
-    /** Creates a new ListMetaComposer for a given preallocated external storage. */
-    public ListMetaComposer(final List<DataAndMeta> storage, boolean doDeepCopies) {
+    /** Creates a new ListMetaComposer for a given preallocated external storage.
+     * keepObjects = true replaces the prior ListObjMetaComposer */
+    public ListMetaComposer(final List<DataAndMeta> storage, boolean doDeepCopies, boolean keepObjects, boolean keepExternals) {
         this.storage = storage;
         this.doDeepCopies = doDeepCopies;
+        this.keepObjects = keepObjects;
+        this.keepExternals = keepExternals;
     }
+    
     /** Creates a new ListMetaComposer, creating an own internal storage. */
-    public ListMetaComposer(boolean doDeepCopies) {
-        this.storage = new ArrayList<DataAndMeta>();
-        this.doDeepCopies = doDeepCopies;
+    public ListMetaComposer(boolean doDeepCopies, boolean keepObjects, boolean keepExternals) {
+        this(new ArrayList<DataAndMeta>(), doDeepCopies, keepObjects, keepExternals);
     }
     
     protected void add(FieldDefinition di, Object o) {
@@ -177,9 +182,13 @@ public class ListMetaComposer extends NoOpComposer implements MessageComposer<Ru
         if (obj == null) {
             writeNull(null);
         } else {
-            startObject(di, obj);
-            obj.serializeSub(this);
-            terminateObject(di, obj);
+            if (keepObjects) {
+                add(di, obj);
+            } else {
+                startObject(di, obj);
+                obj.serializeSub(this);
+                terminateObject(di, obj);
+            }
         }
     }
     
@@ -196,5 +205,13 @@ public class ListMetaComposer extends NoOpComposer implements MessageComposer<Ru
     @Override
     public void addEnum(XEnumDataItem di, AlphanumericElementaryDataItem token, XEnum<?> n) {
         add(di, n);
+    }
+    
+    @Override
+    public boolean addExternal(ObjectReference di, Object obj) {
+        if (keepExternals) {
+            add(di, obj);
+        }
+        return keepExternals;
     }
 }

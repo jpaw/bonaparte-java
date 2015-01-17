@@ -545,4 +545,8 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
             addField(token, n.getToken());
     }
 
+    @Override
+    public boolean addExternal(ObjectReference di, Object obj) {
+        return false;       // perform conversion by default
+    }
 }

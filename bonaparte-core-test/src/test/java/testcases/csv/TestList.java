@@ -22,7 +22,7 @@ public class TestList {
         UnixPasswd pwEntry2 = new UnixPasswd("jpaw", "x", 1003, 314,"Michael Bischoff", "/home/jpaw", "/bin/bash");
         
         List<Object> storage = new ArrayList<Object>(10);
-        ListComposer lc = new ListComposer(storage, false);
+        ListComposer lc = new ListComposer(storage, false, false, false);
         lc.writeRecord(pwEntry);
         lc.writeRecord(pwEntry2);
         
@@ -41,7 +41,7 @@ public class TestList {
         UnixPasswd pwEntry2 = new UnixPasswd("jpaw", "x", 1003, 314,"Michael Bischoff", "/home/jpaw", "/bin/bash");
         
         List<Object> storage = new ArrayList<Object>(10);
-        ListComposer lc = new ListComposer(storage, false);
+        ListComposer lc = new ListComposer(storage, false, false, false);
         
         List<String> fields = Arrays.asList( "gecos", "name", "shell");
         Map<Class<? extends BonaCustom>, List<String>> map = new HashMap<Class<? extends BonaCustom>, List<String>> (10);

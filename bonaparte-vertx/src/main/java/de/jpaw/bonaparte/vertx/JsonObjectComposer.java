@@ -356,4 +356,9 @@ public class JsonObjectComposer implements MessageComposer<RuntimeException> {
         else
             writeNull(di);
     }
+    
+    @Override
+    public boolean addExternal(ObjectReference di, Object obj) {
+        return false;       // perform conversion by default
+    }
 }

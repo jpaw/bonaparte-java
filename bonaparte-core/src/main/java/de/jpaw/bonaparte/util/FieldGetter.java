@@ -11,7 +11,6 @@ import de.jpaw.bonaparte.core.DataAndMeta;
 import de.jpaw.bonaparte.core.FoldingComposer;
 import de.jpaw.bonaparte.core.ListComposer;
 import de.jpaw.bonaparte.core.ListMetaComposer;
-import de.jpaw.bonaparte.core.ListObjComposer;
 import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
 import de.jpaw.bonaparte.pojos.meta.ExternalClassDefinition;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
@@ -32,7 +31,7 @@ public class FieldGetter {
         List<Object> target = new ArrayList<Object>(fieldnames.size());     // the list to write the field into
         
         // step 2: create and chain the message composers
-        ListComposer writer = new ListComposer(target, false);
+        ListComposer writer = new ListComposer(target, false, true, !DEFAULT_AUTOSKIP_ADAPTERS);
         Map<Class<? extends BonaCustom>, List<String>> mapping = Collections.<Class<? extends BonaCustom>, List<String>>singletonMap(BonaPortable.class, fieldnames); 
         new FoldingComposer<RuntimeException>(writer, mapping, FoldingStrategy.FORWARD_OBJECTS).writeRecord(obj);
 
@@ -53,7 +52,7 @@ public class FieldGetter {
         List<Object> target = new ArrayList<Object>(fieldnames.size());     // the list to write the field into
         
         // step 2: create and chain the message composers
-        ListComposer writer = new ListObjComposer(target, false);
+        ListComposer writer = new ListComposer(target, false, true, !DEFAULT_AUTOSKIP_ADAPTERS);
         Map<Class<? extends BonaCustom>, List<String>> mapping = Collections.<Class<? extends BonaCustom>, List<String>>singletonMap(BonaPortable.class, fieldnames); 
         new FoldingComposer<RuntimeException>(writer, mapping, FoldingStrategy.FORWARD_OBJECTS).writeRecord(obj);
 
@@ -71,7 +70,7 @@ public class FieldGetter {
     public static Object getSingleField(BonaPortable obj, String fieldname) {
         ParsedFoldingComponent pfc = FoldingComposer.createRecursiveFoldingComponent(fieldname);
         List<Object> target = new ArrayList<Object>(1);
-        ListComposer delegate = new ListComposer(target, false);
+        ListComposer delegate = new ListComposer(target, false, true, !DEFAULT_AUTOSKIP_ADAPTERS);
         obj.foldedOutput(delegate, pfc);
         return (target.size() == 0) ? null : target.get(0);
     }
@@ -80,7 +79,7 @@ public class FieldGetter {
     public static DataAndMeta getSingleFieldWithMeta(BonaPortable obj, String fieldname) {
         ParsedFoldingComponent pfc = FoldingComposer.createRecursiveFoldingComponent(fieldname);
         List<DataAndMeta> target = new ArrayList<DataAndMeta>(1);
-        ListMetaComposer delegate = new ListMetaComposer(target, false);
+        ListMetaComposer delegate = new ListMetaComposer(target, false, false, !DEFAULT_AUTOSKIP_ADAPTERS);
         obj.foldedOutput(delegate, pfc);
         return (target.size() == 0) ? null : target.get(0);
     }

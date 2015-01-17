@@ -28,7 +28,6 @@ import de.jpaw.bonaparte.enums.BonaTokenizableEnum;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
-import de.jpaw.bonaparte.pojos.meta.ElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
@@ -156,7 +155,7 @@ abstract public class LinearLayoutComposer implements MessageComposer<RuntimeExc
         addField(StaticMeta.OUTER_BONAPORTABLE, o);
         terminateRecord();
     }
-    private void newTextView(ElementaryDataItem di, String s) {
+    private void newTextView(FieldDefinition di, String s) {
         TextView tv = needTextView(di);
         tv.setId(getId());
         tv.setText(s != null ? s : "");
@@ -408,5 +407,15 @@ abstract public class LinearLayoutComposer implements MessageComposer<RuntimeExc
         } else {
             addField(token, n.getToken());
         }
+    }
+    
+    @Override
+    public boolean addExternal(ObjectReference di, Object obj) {
+        if (obj != null) {
+            newTextView(di, obj.toString());
+        } else {
+            writeNull(di);
+        }
+        return true;       // for the UI display, use the string representation by default
     }
 }

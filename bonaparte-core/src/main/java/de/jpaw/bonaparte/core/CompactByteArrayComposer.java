@@ -718,4 +718,9 @@ public class CompactByteArrayComposer extends CompactConstants implements Messag
         else
             addField(token, n.getToken());
     }
+    
+    @Override
+    public boolean addExternal(ObjectReference di, Object obj) {
+        return false;       // perform conversion by default
+    }
 }

@@ -227,5 +227,9 @@ public class DelegatingBaseComposer<E extends Exception> implements MessageCompo
     public void addEnum(XEnumDataItem di, AlphanumericElementaryDataItem token, XEnum<?> n) throws E {
         delegateComposer.addEnum(di, token, n);
     }
-
+    
+    @Override
+    public boolean addExternal(ObjectReference di, Object obj) throws E {
+        return delegateComposer.addExternal(di, obj);
+    }
 }

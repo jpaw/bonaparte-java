@@ -32,19 +32,24 @@ import de.jpaw.util.ByteArray;
  * This implementation is not ideal, since it may unbox/rebox objects of the BonaPortables.
  * To improve it, the BonaCustom interface would need to be changed. */
 public class ListComposer extends NoOpComposer implements MessageComposer<RuntimeException> {
-    final List<Object> storage;
-    final boolean doDeepCopies;
+    final protected List<Object> storage;
+    final protected boolean doDeepCopies;
+    final protected boolean keepObjects;
+    final protected boolean keepExternals;
     
-    /** Creates a new ListComposer for a given preallocated external storage. */
-    public ListComposer(final List<Object> storage, boolean doDeepCopies) {
+    
+    /** Creates a new ListComposer for a given preallocated external storage.
+     * keepObjects = true replaces the prior ListObjComposer */
+    public ListComposer(final List<Object> storage, boolean doDeepCopies, boolean keepObjects, boolean keepExternals) {
         this.storage = storage;
         this.doDeepCopies = doDeepCopies;
+        this.keepObjects = keepObjects;
+        this.keepExternals = keepExternals;
     }
     
     /** Creates a new ListComposer, creating an own internal storage. */
-    public ListComposer(boolean doDeepCopies) {
-        this.storage = new ArrayList<Object>();
-        this.doDeepCopies = doDeepCopies;
+    public ListComposer(boolean doDeepCopies, boolean keepObjects, boolean keepExternals) {
+        this(new ArrayList<Object>(), doDeepCopies, keepObjects, keepExternals);
     }
     
     
@@ -175,9 +180,13 @@ public class ListComposer extends NoOpComposer implements MessageComposer<Runtim
         if (obj == null) {
             writeNull(null);
         } else {
-            startObject(di, obj);
-            obj.serializeSub(this);
-            terminateObject(di, obj);
+            if (keepObjects) {
+                storage.add(obj);
+            } else {
+                startObject(di, obj);
+                obj.serializeSub(this);
+                terminateObject(di, obj);
+            }
         }
     }
     
@@ -194,5 +203,13 @@ public class ListComposer extends NoOpComposer implements MessageComposer<Runtim
     @Override
     public void addEnum(XEnumDataItem di, AlphanumericElementaryDataItem token, XEnum<?> n) {
         storage.add(n);
+    }
+    
+    @Override
+    public boolean addExternal(ObjectReference di, Object obj) {
+        if (keepExternals) {
+            storage.add(obj);
+        }
+        return keepExternals;
     }
 }

@@ -425,4 +425,9 @@ public class JsonComposer implements MessageComposer<IOException> {
     public void addEnum(XEnumDataItem di, AlphanumericElementaryDataItem token, XEnum<?> n) throws IOException {
         writeOptionalQuotedUnicodeNoControls(di, n == null ? null : n.getToken());
     }
+    
+    @Override
+    public boolean addExternal(ObjectReference di, Object obj) throws IOException {
+        return false;       // perform conversion by default
+    }
 }
