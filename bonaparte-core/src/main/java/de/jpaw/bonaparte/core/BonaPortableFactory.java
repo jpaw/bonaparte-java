@@ -31,7 +31,7 @@ public class BonaPortableFactory {
     
     // Skip the next field and PathResolverTest may fail. Required to load the meta data classes in the correct order, required due to cyclic dependencies
     // of static fields and their initialization.
-    public static String UNUSED = ClassDefinition.class$Property("unused");
+    public static Object UNUSED = ClassDefinition.class$MetaData();
     // it will definitely fail if for example FieldDefinition is loaded before ClassDefinition
     
     /** Stub to call to force initialization, in case no other initialization is required. */
