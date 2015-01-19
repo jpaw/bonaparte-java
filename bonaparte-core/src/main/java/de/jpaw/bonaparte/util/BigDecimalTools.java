@@ -152,7 +152,7 @@ public class BigDecimalTools {
             int lastDot = workingPath.lastIndexOf('.');
             if (lastDot < 0) {
                 // no more component
-                props = root.get$BonaPortableClass().getFieldProperty(naked(workingPath), propertyName);
+                props = root.get$BonaPortableClass().getProperty(naked(workingPath) + "." + propertyName);
                 prefix.prefix = "";
                 break;  // must stop here!
             } else {
@@ -160,7 +160,7 @@ public class BigDecimalTools {
                 String container = workingPath.substring(0, lastDot);
                 String fieldname = workingPath.substring(lastDot+1);
                 Object parent = FieldGetter.getFieldOrObj(root, container);
-                props = ((BonaPortable)parent).get$BonaPortableClass().getFieldProperty(naked(fieldname), propertyName);
+                props = ((BonaPortable)parent).get$BonaPortableClass().getProperty(naked(fieldname) + "." + propertyName);
                 if (props != null) {
                     LOG.debug("found property " + props + " at path " + container);
                     prefix.prefix = container + ".";

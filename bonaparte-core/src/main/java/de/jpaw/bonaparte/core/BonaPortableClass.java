@@ -90,17 +90,5 @@ public interface BonaPortableClass<T extends BonaPortable> {
      * 
      * @Since 2.3.4
      */ 
-//    String getProperty(String property);
-    
-    @Deprecated // use getProperty(property)
-    String getClassProperty(String property);
-    
-    @Deprecated // use getProperty(fieldname + "." + propertyname)
-    String getFieldProperty(String fieldname, String propertyname);
-    
-    @Deprecated // use getProperty(property) != null
-    boolean hasClassProperty(String property);
-    
-    @Deprecated // use getProperty(fieldname + "." + propertyname) != null
-    boolean hasFieldProperty(String fieldname, String propertyname);
+    String getProperty(String property);
 }

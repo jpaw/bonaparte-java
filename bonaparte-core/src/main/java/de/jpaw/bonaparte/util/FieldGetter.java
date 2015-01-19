@@ -38,15 +38,19 @@ public class FieldGetter {
             throw new IllegalArgumentException();
         }
         try {
-            Class<?> [] innerClasses = bonaPortableClass.getDeclaredClasses();
-            for (int i = 0; i < innerClasses.length; ++i) {
-                if (BonaPortableClass.class.isAssignableFrom(innerClasses[i])) {
-                    Method method = innerClasses[i].getMethod("getInstance");
-                    return (BonaPortableClass<?>)method.invoke(null);
-                }
-            }
-            LOG.error(bonaPortableClass.getCanonicalName() + " does not define an inner BonaPortable class");
-            throw new IllegalArgumentException();
+            // new method since bonaparte-3.2.4
+            Method method = bonaPortableClass.getMethod("class$BonaPortableClass");
+            return (BonaPortableClass<?>)method.invoke(null);
+            // removed more complicated lookup of 3.2.3
+//            Class<?> [] innerClasses = bonaPortableClass.getDeclaredClasses();
+//            for (int i = 0; i < innerClasses.length; ++i) {
+//                if (BonaPortableClass.class.isAssignableFrom(innerClasses[i])) {
+//                    Method method = innerClasses[i].getMethod("getInstance");
+//                    return (BonaPortableClass<?>)method.invoke(null);
+//                }
+//            }
+//            LOG.error(bonaPortableClass.getCanonicalName() + " does not define an inner BonaPortable class");
+//            throw new IllegalArgumentException();
         } catch (Exception e) {
             LOG.error(bonaPortableClass.getCanonicalName() + " failed to return its BonaPortableClass via reflection: ", e);
             throw new RuntimeException(e);
