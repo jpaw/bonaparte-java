@@ -11,14 +11,14 @@ public class TestPropertyInheritance {
 
     @Test
     public void testSimpleProperties() throws Exception {
-        assert "red".equals(MyHouse.class$Property("color"));
-        assert MyHouse.class$Property("someWeirdStuff") == null;
+        assert "red".equals(MyHouse.BClass.INSTANCE.getClassProperty("color"));
+        assert MyHouse.BClass.INSTANCE.getClassProperty("someWeirdStuff") == null;
     }
 
     @Test
     public void testInheritedProperties() throws Exception {
-        assert "red".equals(YetAnotherHouse.class$Property("color"));
-        assert "green".equals(YetAnotherHouseRepainted.class$Property("color"));
-        assert AnotherBus.class$Property("color") == null;
+        assert "red".equals(YetAnotherHouse.BClass.INSTANCE.getClassProperty("color"));
+        assert "green".equals(YetAnotherHouseRepainted.BClass.INSTANCE.getClassProperty("color"));
+        assert AnotherBus.BClass.INSTANCE.getClassProperty("color") == null;
     }
 }

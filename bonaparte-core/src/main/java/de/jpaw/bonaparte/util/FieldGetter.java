@@ -1,12 +1,17 @@
 package de.jpaw.bonaparte.util;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.jpaw.bonaparte.core.BonaCustom;
 import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.core.BonaPortableClass;
 import de.jpaw.bonaparte.core.DataAndMeta;
 import de.jpaw.bonaparte.core.FoldingComposer;
 import de.jpaw.bonaparte.core.ListComposer;
@@ -20,8 +25,35 @@ import de.jpaw.bonaparte.pojos.meta.ParsedFoldingComponent;
 
 /** Utility method to get a fields from BonaPortables via pathname. */
 public class FieldGetter {
+    private static final Logger LOG = LoggerFactory.getLogger(FieldGetter.class);
+    
     // configuration constant
     final private static boolean DEFAULT_AUTOSKIP_ADAPTERS = true;      // do not return adapter classes but their contents
+    
+    /** Retrieves the class instance for the previously static methods, the BClass.getInstance, for a given class.
+     * Throws an exception if the provided class is not a BonaPortable or the BClass cannot be obtained. */
+    public static BonaPortableClass<?> getBClass(Class<?> bonaPortableClass) {
+        if (!BonaPortable.class.isAssignableFrom(bonaPortableClass)) {
+            LOG.error(bonaPortableClass.getCanonicalName() + " is not a BonaPortable");
+            throw new IllegalArgumentException();
+        }
+        try {
+            Class<?> [] innerClasses = bonaPortableClass.getDeclaredClasses();
+            for (int i = 0; i < innerClasses.length; ++i) {
+                if (BonaPortableClass.class.isAssignableFrom(innerClasses[i])) {
+                    Method method = innerClasses[i].getMethod("getInstance");
+                    return (BonaPortableClass<?>)method.invoke(null);
+                }
+            }
+            LOG.error(bonaPortableClass.getCanonicalName() + " does not define an inner BonaPortable class");
+            throw new IllegalArgumentException();
+        } catch (Exception e) {
+            LOG.error(bonaPortableClass.getCanonicalName() + " failed to return its BonaPortableClass via reflection: ", e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    
     
     public static List<Object> getFields(BonaPortable obj, List<String> fieldnames) {
         if (obj == null || fieldnames == null)

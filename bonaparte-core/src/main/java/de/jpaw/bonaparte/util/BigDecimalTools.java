@@ -11,7 +11,6 @@ import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.DataAndMeta;
 import de.jpaw.bonaparte.core.MessageParserException;
 import de.jpaw.bonaparte.core.ObjectValidationException;
-import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 
 /** A class which provides some support functions which simplify working with BigDecimals.

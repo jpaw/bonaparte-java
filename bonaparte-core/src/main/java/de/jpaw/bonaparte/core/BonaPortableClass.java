@@ -29,24 +29,51 @@ import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
  *
  **/
 public interface BonaPortableClass<T extends BonaPortable> {
-    /** factory method, creates a new instance of the embedding class (no args constructor).
-     * 
-     */
+    /** Factory method, creates a new instance of the embedding class (using the no args constructor, i.e. all fields initialized to null). */
     T newInstance();
+    
+    /** Returns the Java Class<?> of the described BonaPortable. */
     Class<T> getBonaPortableClass();
 
+    /** Returns the ID of the factory for deserialization (Hazelcast alternative to use of the String class name in the serialized form). */
     int getFactoryId();
+    
+    /** Returns the ID of the class within the factory for deserialization (Hazelcast alternative to use of the String class name in the serialized form). */
     int getId();
+    
+    /** Returns the run time type information, usually used for some offset for surrogate keys or determining customization. */
     int getRtti();
+    
+    /** Returns the partially qualified name, a substring of the canonical name, but with a common prefix omitted for brevity of the serialized form, required to identify the class. */ 
     String getPqon();
+    
+    /** Returns true if the class can be rendered unchangeable. */
     boolean isFreezable();
+    
+    /** Returns true of the class is immutable by nature. */
     boolean isImmutable();
+    
+    /** Returns the bundle ID of the package (corresponds to a deployable unit or JAR ID). */ 
     String getBundle();
+    
+    /** Returns the change revision of this class. */
     String getRevision();
+    
+    /** returns the otherwise private SerialVersionUid of related class. */
     long getSerial();
+    
+    /** Returns the BonaPortable presenation of the class's meta data. */
     ClassDefinition getMetaData();
+    
+    /** Returns null if the class does not inherit any other class, or the BonaPortableClass of the parent. */
     BonaPortableClass<? extends BonaPortable> getParent();
+    
+    /** Returns BonaPortableClass of the class defined as the related return type.
+     *  Transitive, inherited classes will return return their parent's return type, unless they refined it to a subclass of it. */
     BonaPortableClass<? extends BonaPortable> getReturns();
+    
+    /** Returns BonaPortableClass of the class defined as the related primary key type.
+     *  Transitive, inherited classes will return return their parent's key type. Redefinition is not possible. */
     BonaPortableClass<? extends BonaPortable> getPrimaryKey();
     
     /** Gets the map of current properties of this class. All properties are defines by the DSL, the returned map will be immutable.
@@ -56,13 +83,24 @@ public interface BonaPortableClass<T extends BonaPortable> {
     ImmutableMap<String,String> getPropertyMap();
     
     /** Retrieves a single property from the current map.
+     * Field properties are stored as fieldname "." propertyname.
      * 
      * @param property the key of the property.
-     * @return the property for the given parameter, or null if it does not exist.
+     * @return the property for the given parameter, or null if it does not exist. Returns an empty String for properties defined without a value.
+     * 
+     * @Since 2.3.4
      */ 
+//    String getProperty(String property);
+    
+    @Deprecated // use getProperty(property)
     String getClassProperty(String property);
     
+    @Deprecated // use getProperty(fieldname + "." + propertyname)
     String getFieldProperty(String fieldname, String propertyname);
+    
+    @Deprecated // use getProperty(property) != null
     boolean hasClassProperty(String property);
+    
+    @Deprecated // use getProperty(fieldname + "." + propertyname) != null
     boolean hasFieldProperty(String fieldname, String propertyname);
 }
