@@ -460,7 +460,13 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
     }
 
     private String readBufferForInteger(BasicNumericElementaryDataItem di) throws MessageParserException {
-        return getField(di.getName(), di.getIsRequired(), di.getTotalDigits() + (di.getIsSigned() ? 1 : 0) + (!cfg.removePoint4BD && di.getDecimalDigits() > 0 ? 1 : 0));
+        String tmp = getField(di.getName(), di.getIsRequired(), di.getTotalDigits() + (di.getIsSigned() ? 1 : 0) + (!cfg.removePoint4BD && di.getDecimalDigits() > 0 ? 1 : 0));
+        if (tmp != null) {
+            tmp = tmp.trim();
+            if (tmp.length() == 0)
+                return null;
+        }
+        return tmp;
     }
     private long postProcessForImplicitDecimals(BasicNumericElementaryDataItem di, String token) throws MessageParserException {
         token = processTrailingSigns(token);
