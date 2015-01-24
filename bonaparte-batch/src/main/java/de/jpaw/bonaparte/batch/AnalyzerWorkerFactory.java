@@ -119,6 +119,8 @@ public class AnalyzerWorkerFactory extends ContributorNoop implements BatchProce
         private final AnalyzerWorkerFactory myFactory;
         private Range numFields = new Range();
         private Statistics [] columnData = new Statistics[500];
+        private int warnForstringsLongerThan = 1000;
+        private int lastLineWarned = 0;
         
         public AnalyzerWorker(AnalyzerWorkerFactory myFactory) {
             this.myFactory = myFactory;
@@ -126,7 +128,7 @@ public class AnalyzerWorkerFactory extends ContributorNoop implements BatchProce
                 columnData[i] = new  Statistics();
         }
 
-        private void check(Statistics s, String w) {
+        private void check(int recordNo, Statistics s, String w) {
             if (w == null) {
                 s.optional = true;
                 return;
@@ -136,6 +138,10 @@ public class AnalyzerWorkerFactory extends ContributorNoop implements BatchProce
             if (len == 0) {
                 s.optional = true;
                 return;
+            }
+            if (len > warnForstringsLongerThan && recordNo > lastLineWarned) {
+                LOG.info("Line {} contains a field of length {}", recordNo, len);
+                lastLineWarned = recordNo;
             }
             s.len.upd(len);
             if (s.values.size() < MAX_DIFFERENT_VALUES)
@@ -209,7 +215,7 @@ public class AnalyzerWorkerFactory extends ContributorNoop implements BatchProce
             }
             numFields.upd(cols.length);
             for (int i = 0; i < cols.length; ++i)
-                check(columnData[i], cols[i]);
+                check(recordNo, columnData[i], cols[i]);
             return null;
         }
 

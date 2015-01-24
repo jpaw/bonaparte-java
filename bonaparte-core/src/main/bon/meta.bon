@@ -178,4 +178,8 @@ package meta factoryId 29 {
         optional Unicode(255)               alphaIndex;     // alphanumeric index, or null if none exists
         optional (ParsedFoldingComponent)   component;      // optional specification of the substructure
     }
+ 
+    /** Placeholder class to be used as a default template for a guessed description, used in bonaparte-batch. */   
+    abstract class CsvInput {
+    }
 }
