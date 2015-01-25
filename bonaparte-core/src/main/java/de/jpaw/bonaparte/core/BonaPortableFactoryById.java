@@ -1,6 +1,5 @@
 package de.jpaw.bonaparte.core;
 
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
@@ -21,7 +20,7 @@ public class BonaPortableFactoryById {
     }
     
     // the big factory lookup map
-    static private Map<Long,BonaPortableClass<?>> lookup = new ConcurrentHashMap<Long,BonaPortableClass<?>>(2048);
+    static private ConcurrentHashMap<Long,BonaPortableClass<?>> lookup = new ConcurrentHashMap<Long,BonaPortableClass<?>>(2048);
     
     /** Adds a new class to the registry. Returns true if the class has been accepted and was not known before. */
     public static boolean registerClass(BonaPortableClass<?> bclass) {
