@@ -48,7 +48,7 @@
         <mina.version>2.0.7</mina.version>              <!-- http://mina.apache.org/ 2.0.7 -->
         <camel.version>2.14.1</camel.version>           <!-- http://camel.apache.org/ UPTODATE 2014-12-17 (2.14.0 is the first for Java8, but introduces a lot new dependencies)-->
         <vertx.version>2.1.5</vertx.version>            <!-- http://vertx.io/ UPTODATE 2014-11-13 -->
-        <hazelcast.version>3.3.3</hazelcast.version>    <!-- http://hazelcast.org/download/ UPTODATE 2014-11-12 -->
+        <hazelcast.version>3.3.5</hazelcast.version>    <!-- http://hazelcast.org/download/ UPTODATE 2015-01-22 -->
         <aerospike.version>3.0.32</aerospike.version>
         <hornetq.version>2.2.21.Final</hornetq.version> <!-- http://www.jboss.org/hornetq 2.2.14.Final is last tested one, 2.4.x required for AMQP, JMS 2.0 -->
         <mapdb.version>1.0.6</mapdb.version>
@@ -232,6 +232,7 @@
     <modules>
         <module>../bonaparte-bom/pom.xml</module>
         <module>../bonaparte-core/pom.xml</module>
+        <module>../bonaparte-scanner/pom.xml</module>
         <module>../bonaparte-core-test/pom.xml</module>
         <module>../bonaparte-adapters-scalar/pom.xml</module>
         <module>../bonaparte-adapters-money-bd/pom.xml</module>

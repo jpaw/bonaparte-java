@@ -643,20 +643,29 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
                 }
             }
             return type.cast(newObject);
-        } else if (c == OBJECT_BEGIN_PQON){
+        } else if (c == OBJECT_BEGIN_PQON || c == OBJECT_BEGIN_ID) {
             String previousClass = currentClass;
-            String classname = readString(fieldname, di.getIsRequired());
-            if (classname == null)
-                throw new MessageParserException(MessageParserException.NULL_CLASS_PQON, "", parseIndex, currentClass);
-            if (classname.length() == 0) {
-                if (di.getLowerBound() == null)
-                    throw new MessageParserException(MessageParserException.INVALID_BASE_CLASS_REFERENCE, "", parseIndex, currentClass);
-                // the base class name is referred to, which is contained in the meta data 
-                classname = di.getLowerBound().getName();
+            BonaPortable newObject;
+            String classname;
+            if (c == OBJECT_BEGIN_PQON) {
+                classname = readString(fieldname, false);
+                if (classname == null || classname.length() == 0) {
+                    if (di.getLowerBound() == null)
+                        throw new MessageParserException(MessageParserException.INVALID_BASE_CLASS_REFERENCE, "", parseIndex, currentClass);
+                    // the base class name is referred to, which is contained in the meta data 
+                    classname = di.getLowerBound().getName();
+                }
+                needToken(NULL_FIELD); // version not yet allowed
+                newObject = BonaPortableFactory.createObject(classname);
+            } else {
+                int factoryId = readInt(needToken(), "$factoryId");
+                int classId = readInt(needToken(), "$classId");
+                BonaPortableClass<?> bclass = BonaPortableFactoryById.getByIds(factoryId, classId);
+                if (bclass == null)
+                    throw new MessageParserException(MessageParserException.BAD_CLASS_IDS, factoryId + "/" + classId, parseIndex, currentClass);
+                classname = bclass.getPqon();
+                newObject = bclass.newInstance();
             }
-            // String revision = readAscii(true, 0, false, false);
-            needToken(NULL_FIELD); // version not yet allowed
-            BonaPortable newObject = BonaPortableFactory.createObject(classname);
             // System.out.println("Creating new obj " + classname + " gave me " + newObject);
             // check if the object is of expected type
             if (newObject.getClass() != type) {
@@ -677,10 +686,6 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
             needToken(OBJECT_TERMINATOR);
             currentClass = previousClass;
             return type.cast(newObject);
-        } else if (c == OBJECT_BEGIN_ID){
-            throw new MessageParserException(MessageParserException.UNEXPECTED_CHARACTER,
-                    String.format("not yet implemented*, got 0x%02x)", c), parseIndex, currentClass);
-            // TODO
         } else {
             throw new MessageParserException(MessageParserException.UNEXPECTED_CHARACTER,
                     String.format("(expected OBJECT_START*, got 0x%02x)", c), parseIndex, currentClass);

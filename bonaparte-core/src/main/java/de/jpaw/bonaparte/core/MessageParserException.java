@@ -89,6 +89,7 @@ public class MessageParserException extends ApplicationException {
     static public final int NUMERIC_TOO_MANY_DIGITS      = OFFSET + 50;
     static public final int CHAR_TOO_LONG                = OFFSET + 51;
     static public final int NUMBER_PARSING_ERROR         = OFFSET + 52;
+    static public final int BAD_CLASS_IDS                = OFFSET + 53;
 
     static {
         codeToDescription.put(MISSING_FIELD_TERMINATOR     , "Missing field terminator");
@@ -143,6 +144,7 @@ public class MessageParserException extends ApplicationException {
         codeToDescription.put(NUMERIC_TOO_MANY_DIGITS      , "Numeric field has more digits than specifically configured");
         codeToDescription.put(CHAR_TOO_LONG                , "Parsed a character, but got more than 1 character");
         codeToDescription.put(NUMBER_PARSING_ERROR         , "Cannot parse number");
+        codeToDescription.put(BAD_CLASS_IDS                , "No class registered for factoryId/ClassId");
     }
 
     /** Creates a parser exception with an explicitly defined position and class name. */

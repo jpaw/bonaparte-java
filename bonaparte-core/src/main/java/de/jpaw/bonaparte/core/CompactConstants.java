@@ -59,8 +59,9 @@ package de.jpaw.bonaparte.core;
  *          dc   datetime with millis (day + time in millis of day) (1 + 4 + x byte for sensible years)
  *          
  *          dd object backreference (next is positive int says how much back)
- *          de  identifiable object: next is factoryId, then objectId (suggestion: keep object IDs <= 4095) 
- *          df  object: next is String (PQON), then revision. If the string is sent as nullstring, then it is the base object as defined by the ObjectReference
+ *          de  identifiable object: next is factoryId, then objectId (suggestion: keep object IDs <= 4095, IDs less or equal to 63 will even be single bytes...) 
+ *          df  object: next is String (PQON), then revision. If the string is sent as null or empty string, then it is the base object as defined by the ObjectReference
+ *              Revision currently must always be null.
  *          
  *          e0  big integer, next is length in bytes, then mantissa, in 2s complement, with MSB first
  *          e1  long String ASCII (next is length, then bytes)

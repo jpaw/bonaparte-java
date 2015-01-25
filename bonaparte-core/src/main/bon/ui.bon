@@ -1,6 +1,6 @@
 import meta.*
 /** Bonaparte metadata.
- * Assigned to factoryId 29, classIds 28-31
+ * Assigned to factoryId 29, classIds 41-50
  */
 
 package ui factoryId 29 {
@@ -18,7 +18,7 @@ package ui factoryId 29 {
     }
     
     /** Defines properties of a column displayed in some UI, to be used with the foldingComposer. */
-    class UIColumn classId 31 {
+    class UIColumn classId 41 {
         required identifier                         fieldName;          // field name in dotted notation (data.component.field[arrayIndex])
         required int                                width;              // specific width, if 0, then it is determined using the data type width
         optional Enum Alignment                     alignment;          // L/M/R 
@@ -26,7 +26,7 @@ package ui factoryId 29 {
     }
     
     /** User specific configuration for a column. */
-    class UIColumnConfiguration extends UIColumn {
+    class UIColumnConfiguration classId 42 extends UIColumn {
         required boolean                            visible;                // true, if column should be shown.    
         required boolean                            allowSorting;           // leave it false if sorting would be too resource intense
         required boolean                            negateFilter;           // if a filter is configured: negate the condition
@@ -35,7 +35,7 @@ package ui factoryId 29 {
     }
     
     /** Parameters used by autoconfiguration, to determine default column withs. */
-    class UIDefaults classId 30 {
+    class UIDefaults classId 43 {
         required int                                renderMaxArrayColumns;  // unrolled lists: how many columns to show at max?
         required int                                widthObject;            // width in pixels of an object column (shows a button)
         required int                                widthCheckbox;          // width in pixels of an boolean column (shown as checkbox)

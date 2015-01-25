@@ -11,7 +11,10 @@
     <artifactId>bonaparte-core</artifactId>
     <packaging>jar</packaging>
 
-    <description>Definition and implementation of BONAPARTE serializers and deserializers</description>
+    <description>
+        Definition and implementation of BONAPARTE serializers and deserializers.
+        Reserved factoryId: 29
+    </description>
 
     <build>
         <resources>

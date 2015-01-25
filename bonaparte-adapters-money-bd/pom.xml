@@ -12,8 +12,10 @@
     <artifactId>bonaparte-adapters-money-bd</artifactId>
     <packaging>jar</packaging>
 
-
-    <description>BONAPARTE external class adapters for scalar types using BigDecimal presentation</description>
+    <description>
+        BONAPARTE external class adapters for scalar types using BigDecimal presentation
+        Reserved factoryId: 27 (shared across all bonaparte-adapter-* projects)
+    </description>
 
     <build>
         <resources>

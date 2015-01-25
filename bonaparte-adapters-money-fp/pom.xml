@@ -13,7 +13,10 @@
     <packaging>jar</packaging>
 
 
-    <description>BONAPARTE external class adapters for monetary fixed point types</description>
+    <description>
+        BONAPARTE external class adapters for monetary fixed point types
+        Reserved factoryId: 27 (shared across all bonaparte-adapter-* projects)
+    </description>
 
     <build>
         <resources>
