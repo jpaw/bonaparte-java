@@ -16,7 +16,7 @@ import de.jpaw.bonaparte.pojos.hazeltest.IDSTest;
 import de.jpaw.util.ByteUtil;
 
 @Test
-public class SerializationTestIDS {
+public class IDSSerializationTest {
     
     private void dotstIDs(IDSTest obj) throws IOException {
         System.out.println("SUB IDS");

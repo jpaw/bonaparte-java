@@ -12,7 +12,7 @@ import com.hazelcast.nio.serialization.SerializationServiceBuilder;
 import de.jpaw.util.ByteUtil;
 
 @Test
-public class SerializationTestUTF {
+public class UTFSerializationTest {
     private void dotstUTF(String obj) throws IOException {
         System.out.println("SUB UTF");
         
