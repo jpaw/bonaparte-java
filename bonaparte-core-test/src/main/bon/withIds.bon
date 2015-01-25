@@ -1,0 +1,18 @@
+/** Demonstration package to show very dense serialized formats. */
+package very.compact.withIds factoryId 55 {
+    
+    class Complex classId 12 {
+        Ascii(3) aa;
+        int bb;
+    }
+    
+    class Vector classId 13 {
+        (Complex...) x;
+        (Complex...) y;
+        (Complex...) z;
+    }
+    
+    class Container classId 63 {
+        (Vector) outer;
+    }
+}
