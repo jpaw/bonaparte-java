@@ -1,7 +1,7 @@
 package hazeltest factoryId 12 {
     default public;
     
-    class DSTest DataSer {
+    class DSTest DataSer classId 3 {
         Unicode(40)     hello;
         int             num;
         Ascii(8)        short1; 

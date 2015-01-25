@@ -1,13 +1,9 @@
 package de.jpaw.bonaparte.hazelcast.test;
 
 import java.io.IOException;
-import java.util.Map;
 
 import org.testng.annotations.Test;
 
-import com.hazelcast.config.Config;
-import com.hazelcast.core.Hazelcast;
-import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.nio.ObjectDataOutput;
 import com.hazelcast.nio.serialization.Data;
 import com.hazelcast.nio.serialization.SerializationService;
@@ -20,11 +16,11 @@ public class SerializationTestUTF {
     private void dotstUTF(String obj) throws IOException {
         System.out.println("SUB UTF");
         
-        Config cfg = new Config();
-        
-        HazelcastInstance instance = Hazelcast.newHazelcastInstance(cfg);
-        Map<Integer, String> testMap = instance.getMap("dstest");
-        testMap.put(1, obj);
+//        Config cfg = new Config();
+//        
+//        HazelcastInstance instance = Hazelcast.newHazelcastInstance(cfg);
+//        Map<Integer, String> testMap = instance.getMap("dstest");
+//        testMap.put(1, obj);
         
         // now obtain the raw data behind it
         SerializationService ss = new SerializationServiceBuilder().setUseNativeByteOrder(true).build();

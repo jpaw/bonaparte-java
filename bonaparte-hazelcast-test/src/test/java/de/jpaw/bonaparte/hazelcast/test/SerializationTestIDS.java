@@ -1,13 +1,10 @@
 package de.jpaw.bonaparte.hazelcast.test;
 
 import java.io.IOException;
-import java.util.Map;
 
 import org.testng.annotations.Test;
 
 import com.hazelcast.config.Config;
-import com.hazelcast.core.Hazelcast;
-import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.nio.ObjectDataOutput;
 import com.hazelcast.nio.serialization.Data;
 import com.hazelcast.nio.serialization.DataSerializableFactory;
@@ -20,6 +17,7 @@ import de.jpaw.util.ByteUtil;
 
 @Test
 public class SerializationTestIDS {
+    
     private void dotstIDs(IDSTest obj) throws IOException {
         System.out.println("SUB IDS");
         
@@ -35,10 +33,11 @@ public class SerializationTestIDS {
             }
         });
         
-        
-        HazelcastInstance instance = Hazelcast.newHazelcastInstance(cfg);
-        Map<Integer, IDSTest> testMap = instance.getMap("dstest");
-        testMap.put(1, obj);
+
+        // for the serialization test, no hazelcast instance is required
+//        HazelcastInstance instance = Hazelcast.newHazelcastInstance(cfg);
+//        Map<Integer, IDSTest> testMap = instance.getMap("dstest");
+//        testMap.put(1, obj);
         
         // now obtain the raw data behind it
         SerializationService ss = new SerializationServiceBuilder().setUseNativeByteOrder(true).build();

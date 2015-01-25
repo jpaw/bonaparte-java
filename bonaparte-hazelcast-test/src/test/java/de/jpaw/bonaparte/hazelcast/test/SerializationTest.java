@@ -1,17 +1,13 @@
 package de.jpaw.bonaparte.hazelcast.test;
 
 import java.io.IOException;
-import java.util.Map;
 
 import org.testng.annotations.Test;
 
-import com.hazelcast.config.Config;
 import com.hazelcast.nio.ObjectDataOutput;
 import com.hazelcast.nio.serialization.Data;
 import com.hazelcast.nio.serialization.SerializationService;
 import com.hazelcast.nio.serialization.SerializationServiceBuilder;
-import com.hazelcast.core.Hazelcast;
-import com.hazelcast.core.HazelcastInstance;
 
 import de.jpaw.bonaparte.pojos.hazeltest.DSTest;
 import de.jpaw.util.ByteUtil;
@@ -22,10 +18,10 @@ public class SerializationTest {
     private void dotstDs(DSTest obj) throws IOException {
         System.out.println("SUB DS");
         
-        Config cfg = new Config();
-        HazelcastInstance instance = Hazelcast.newHazelcastInstance(cfg);
-        Map<Integer, DSTest> testMap = instance.getMap("dstest");
-        testMap.put(1, obj);
+//        Config cfg = new Config();
+//        HazelcastInstance instance = Hazelcast.newHazelcastInstance(cfg);
+//        Map<Integer, DSTest> testMap = instance.getMap("dstest");
+//        testMap.put(1, obj);
         
         // now obtain the raw data behind it
         SerializationService ss = new SerializationServiceBuilder().setUseNativeByteOrder(true).build();
