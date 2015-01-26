@@ -25,158 +25,158 @@ import de.jpaw.enums.XEnum;
 import de.jpaw.util.ByteArray;
 
 /** Represents some stub methods. */
-public class NoOpComposer implements MessageComposer<RuntimeException> {
+public class NoOpComposer<E extends Exception> implements MessageComposer<E> {
     
     public NoOpComposer() {
     }
     
     @Override
-    public void writeNull(FieldDefinition di) {
+    public void writeNull(FieldDefinition di) throws E {
     }
     
     @Override
-    public void writeNullCollection(FieldDefinition di) {
+    public void writeNullCollection(FieldDefinition di) throws E {
     }
 
     @Override
-    public void startTransmission() {
+    public void startTransmission() throws E {
     }
 
     @Override
-    public void startRecord() {
+    public void startRecord() throws E {
     }
 
     @Override
-    public void startArray(FieldDefinition di, int currentMembers, int sizeOfElement) {
+    public void startArray(FieldDefinition di, int currentMembers, int sizeOfElement) throws E {
     }
 
     @Override
-    public void startMap(FieldDefinition di, int currentMembers) {
+    public void startMap(FieldDefinition di, int currentMembers) throws E {
     }
 
     @Override
-    public void writeSuperclassSeparator() {
+    public void writeSuperclassSeparator() throws E {
     }
 
     @Override
-    public void terminateMap() {
+    public void terminateMap() throws E {
     }
 
     @Override
-    public void terminateArray() {
+    public void terminateArray() throws E {
     }
 
     @Override
-    public void terminateRecord() {
+    public void terminateRecord() throws E {
     }
     
     @Override
-    public void terminateTransmission() {
+    public void terminateTransmission() throws E {
     }
 
     @Override
-    public void writeRecord(BonaCustom o) {
+    public void writeRecord(BonaCustom o) throws E {
     }
     
     @Override
-    public void addField(AlphanumericElementaryDataItem di, String s) {
+    public void addField(AlphanumericElementaryDataItem di, String s) throws E {
     }
 
     @Override
-    public void addField(MiscElementaryDataItem di, boolean b) {
+    public void addField(MiscElementaryDataItem di, boolean b) throws E {
     }
 
     @Override
-    public void addField(MiscElementaryDataItem di, char c) {
+    public void addField(MiscElementaryDataItem di, char c) throws E {
     }
 
     @Override
-    public void addField(BasicNumericElementaryDataItem di, double d) {
+    public void addField(BasicNumericElementaryDataItem di, double d) throws E {
     }
 
     @Override
-    public void addField(BasicNumericElementaryDataItem di, float f) {
+    public void addField(BasicNumericElementaryDataItem di, float f) throws E {
     }
 
     @Override
-    public void addField(BasicNumericElementaryDataItem di, byte n) {
+    public void addField(BasicNumericElementaryDataItem di, byte n) throws E {
     }
 
     @Override
-    public void addField(BasicNumericElementaryDataItem di, short n) {
+    public void addField(BasicNumericElementaryDataItem di, short n) throws E {
     }
 
     @Override
-    public void addField(BasicNumericElementaryDataItem di, int n) {
+    public void addField(BasicNumericElementaryDataItem di, int n) throws E {
     }
 
     @Override
-    public void addField(BasicNumericElementaryDataItem di, long n) {
+    public void addField(BasicNumericElementaryDataItem di, long n) throws E {
     }
 
     @Override
-    public void addField(BasicNumericElementaryDataItem di, BigInteger n) {
+    public void addField(BasicNumericElementaryDataItem di, BigInteger n) throws E {
     }
 
     @Override
-    public void addField(NumericElementaryDataItem di, BigDecimal n) {
+    public void addField(NumericElementaryDataItem di, BigDecimal n) throws E {
     }
 
     @Override
-    public void addField(MiscElementaryDataItem di, UUID n) {
+    public void addField(MiscElementaryDataItem di, UUID n) throws E {
     }
 
     @Override
-    public void addField(BinaryElementaryDataItem di, ByteArray b) {
+    public void addField(BinaryElementaryDataItem di, ByteArray b) throws E {
     }
 
     @Override
-    public void addField(BinaryElementaryDataItem di, byte[] b) {
+    public void addField(BinaryElementaryDataItem di, byte[] b) throws E {
     }
 
     @Override
-    public void addField(TemporalElementaryDataItem di, LocalDate t) {
+    public void addField(TemporalElementaryDataItem di, LocalDate t) throws E {
     }
 
     @Override
-    public void addField(TemporalElementaryDataItem di, LocalDateTime t) {
+    public void addField(TemporalElementaryDataItem di, LocalDateTime t) throws E {
     }
 
     @Override
-    public void addField(TemporalElementaryDataItem di, LocalTime t) {
+    public void addField(TemporalElementaryDataItem di, LocalTime t) throws E {
     }
 
     @Override
-    public void addField(TemporalElementaryDataItem di, Instant t) {
+    public void addField(TemporalElementaryDataItem di, Instant t) throws E {
     }
 
     @Override
-    public void addField(ObjectReference di, BonaCustom obj) {
+    public void addField(ObjectReference di, BonaCustom obj) throws E {
     }
 
     @Override
-    public void startObject(ObjectReference di, BonaCustom obj) {
+    public void startObject(ObjectReference di, BonaCustom obj) throws E {
     }
 
     @Override
-    public void terminateObject(ObjectReference di, BonaCustom obj) {
+    public void terminateObject(ObjectReference di, BonaCustom obj) throws E {
     }
 
 
     @Override
-    public void addEnum(EnumDataItem di, BasicNumericElementaryDataItem ord, BonaNonTokenizableEnum n) throws RuntimeException {
+    public void addEnum(EnumDataItem di, BasicNumericElementaryDataItem ord, BonaNonTokenizableEnum n) throws E {
     }
 
     @Override
-    public void addEnum(EnumDataItem di, AlphanumericElementaryDataItem token, BonaTokenizableEnum n) throws RuntimeException {
+    public void addEnum(EnumDataItem di, AlphanumericElementaryDataItem token, BonaTokenizableEnum n) throws E {
     }
 
     @Override
-    public void addEnum(XEnumDataItem di, AlphanumericElementaryDataItem token, XEnum<?> n) throws RuntimeException {
+    public void addEnum(XEnumDataItem di, AlphanumericElementaryDataItem token, XEnum<?> n) throws E {
     }
 
     @Override
-    public boolean addExternal(ObjectReference di, Object obj) throws RuntimeException {
+    public boolean addExternal(ObjectReference di, Object obj) throws E {
         return false;       // perform conversion by default
     }
 }

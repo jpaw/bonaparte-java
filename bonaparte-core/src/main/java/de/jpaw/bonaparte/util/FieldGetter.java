@@ -4,12 +4,10 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.core.BonaCustom;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.BonaPortableClass;
 import de.jpaw.bonaparte.core.DataAndMeta;
@@ -19,7 +17,6 @@ import de.jpaw.bonaparte.core.ListMetaComposer;
 import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
 import de.jpaw.bonaparte.pojos.meta.ExternalClassDefinition;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
-import de.jpaw.bonaparte.pojos.meta.FoldingStrategy;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.ParsedFoldingComponent;
 
@@ -60,18 +57,7 @@ public class FieldGetter {
     
     
     public static List<Object> getFields(BonaPortable obj, List<String> fieldnames) {
-        if (obj == null || fieldnames == null)
-            return null;
-        
-        // step 1: construct the output buffer
-        List<Object> target = new ArrayList<Object>(fieldnames.size());     // the list to write the field into
-        
-        // step 2: create and chain the message composers
-        ListComposer writer = new ListComposer(target, false, true, !DEFAULT_AUTOSKIP_ADAPTERS);
-        Map<Class<? extends BonaCustom>, List<String>> mapping = Collections.<Class<? extends BonaCustom>, List<String>>singletonMap(BonaPortable.class, fieldnames); 
-        new FoldingComposer<RuntimeException>(writer, mapping, FoldingStrategy.FORWARD_OBJECTS).writeRecord(obj);
-
-        return target;
+        return getFieldsOrObjects(obj, fieldnames, false, !DEFAULT_AUTOSKIP_ADAPTERS);
     }
     
     /** Get a single field, reusing the get multiple implementation. */
@@ -81,6 +67,10 @@ public class FieldGetter {
     }
 
     public static List<Object> getFieldsOrObjects(BonaPortable obj, List<String> fieldnames) {
+        return getFieldsOrObjects(obj, fieldnames, true, !DEFAULT_AUTOSKIP_ADAPTERS);
+    }
+    
+    public static List<Object> getFieldsOrObjects(BonaPortable obj, List<String> fieldnames, boolean keepObjects, boolean keepExternals) {
         if (obj == null || fieldnames == null)
             return null;
         
@@ -88,9 +78,8 @@ public class FieldGetter {
         List<Object> target = new ArrayList<Object>(fieldnames.size());     // the list to write the field into
         
         // step 2: create and chain the message composers
-        ListComposer writer = new ListComposer(target, false, true, !DEFAULT_AUTOSKIP_ADAPTERS);
-        Map<Class<? extends BonaCustom>, List<String>> mapping = Collections.<Class<? extends BonaCustom>, List<String>>singletonMap(BonaPortable.class, fieldnames); 
-        new FoldingComposer<RuntimeException>(writer, mapping, FoldingStrategy.FORWARD_OBJECTS).writeRecord(obj);
+        ListComposer writer = new ListComposer(target, false, keepObjects, keepExternals);
+        FoldingComposer.writeFieldsToDelegate(writer, obj, fieldnames);
 
         return target;
     }

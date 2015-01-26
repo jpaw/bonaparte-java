@@ -1,6 +1,7 @@
 package de.jpaw.bonaparte.core;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,13 @@ public class FoldingComposer<E extends Exception> extends DelegatingBaseComposer
         this.bonaPortableMapping = mapping.get(BonaPortable.class);  
         this.bonaCustomMapping = mapping.get(BonaCustom.class);  
     }
+    
+    /** Convenience method to write a list of fieldnames to some output. */
+    public static <X extends Exception> void writeFieldsToDelegate(MessageComposer<X> writer, BonaCustom obj, List<String> fieldnames) throws X {
+        Map<Class<? extends BonaCustom>, List<String>> mapping = Collections.<Class<? extends BonaCustom>, List<String>>singletonMap(BonaPortable.class, fieldnames);
+        new FoldingComposer<X>(writer, mapping, FoldingStrategy.FORWARD_OBJECTS).writeRecord(obj);
+    }
+    
 
     @Override
     public void writeSuperclassSeparator() throws E {

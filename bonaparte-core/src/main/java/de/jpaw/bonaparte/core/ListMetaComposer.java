@@ -31,7 +31,7 @@ import de.jpaw.util.ByteArray;
  * Only the clear() and add() methods of the List interface are used by this implementation.
  * This implementation is not ideal, since it may unbox/rebox objects of the BonaPortables.
  * To improve it, the BonaCustom interface would need to be changed. */
-public class ListMetaComposer extends NoOpComposer implements MessageComposer<RuntimeException> {
+public class ListMetaComposer extends NoOpComposer<RuntimeException> implements MessageComposer<RuntimeException> {
     final protected List<DataAndMeta> storage;
     final protected boolean doDeepCopies;
     final protected boolean keepObjects;
