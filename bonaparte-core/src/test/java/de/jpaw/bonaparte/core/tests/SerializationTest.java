@@ -1,6 +1,8 @@
 package de.jpaw.bonaparte.core.tests;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -16,7 +18,9 @@ import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.ByteArrayComposer;
 import de.jpaw.bonaparte.core.ByteArrayParser;
 import de.jpaw.bonaparte.core.CompactByteArrayComposer;
+import de.jpaw.bonaparte.core.CompactByteArrayParser;
 import de.jpaw.bonaparte.core.CompactComposer;
+import de.jpaw.bonaparte.core.CompactParser;
 import de.jpaw.bonaparte.core.MessageComposer;
 import de.jpaw.bonaparte.core.MessageParser;
 import de.jpaw.bonaparte.core.MessageParserException;
@@ -115,5 +119,21 @@ public class SerializationTest {
         assert compareTest1(obj1, (ClassDefinition)obj3) : "returned obj is not equal to original one (ByteArrayParser)";
         assert obj1.equals(obj3) : "returned obj is not equal to original one (ByteArrayParser) (own test)";
 
+        // compact byte array parser
+        CompactByteArrayParser bap = new CompactByteArrayParser(ccResult, 0, -1);
+        BonaPortable resultBap = bap.readRecord();
+        assert resultBap instanceof ClassDefinition : "returned obj is of wrong type (CompactByteArrayParser)";
+        assert compareTest1(obj1, (ClassDefinition)resultBap) : "returned obj is not equal to original one (CompactByteArrayParser)";
+        assert obj1.equals(resultBap) : "returned obj is not equal to original one (CompactByteArrayParser) (own test)";
+
+        // compact parser
+        ByteArrayInputStream bais = new ByteArrayInputStream(ccResult);
+        DataInputStream dis = new DataInputStream(bais);
+        CompactParser cp = new CompactParser(dis);
+        BonaPortable resultCp = cp.readRecord();
+        assert resultCp instanceof ClassDefinition : "returned obj is of wrong type (CompactParser)";
+        assert compareTest1(obj1, (ClassDefinition)resultCp) : "returned obj is not equal to original one (CompactParser)";
+        assert obj1.equals(resultCp) : "returned obj is not equal to original one (CompactParser) (own test)";
+        
     }
 }

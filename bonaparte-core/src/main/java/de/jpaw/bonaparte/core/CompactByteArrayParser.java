@@ -594,7 +594,7 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
             break;
         default:
             throw new MessageParserException(MessageParserException.UNEXPECTED_CHARACTER,
-                    String.format("(expected COMPACT_TIME_*, got 0x%02x)", c), parseIndex, currentClass);
+                    String.format("(expected COMPACT_DATETIME_*, got 0x%02x)", c), parseIndex, currentClass);
         }
         String fieldname = di.getName();
         int year = readInt(needToken(), fieldname);

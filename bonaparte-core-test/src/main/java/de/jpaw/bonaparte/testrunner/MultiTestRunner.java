@@ -18,7 +18,8 @@ public class MultiTestRunner {
         Assert.assertEquals(gotBA, sbAsBa);
         
         byte [] gotCB = new CompactByteArrayTestRunner().serDeser(src, null);
-        new CompactTestRunner().serializationTest(src, gotCB);
+        byte [] gotC = new CompactTestRunner().serDeser(src, gotCB);
+        Assert.assertEquals(gotCB, gotC);
         
         byte [] gotExt = new ExternalizableTestRunner().serDeser(src, null);
         
