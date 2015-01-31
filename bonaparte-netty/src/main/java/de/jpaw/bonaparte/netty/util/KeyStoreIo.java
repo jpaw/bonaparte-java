@@ -23,7 +23,7 @@ public class KeyStoreIo {
         try {
             ks = KeyStore.getInstance("JKS");
         } catch (KeyStoreException e) {
-            logger.error("Cannot instantiate keystore JKS: {}", e.getStackTrace());
+            logger.error("Cannot instantiate keystore JKS: {}", e);
             return null;
         }
 
@@ -42,11 +42,11 @@ public class KeyStoreIo {
                 ks.load(kis, password);
                 kis.close();
             } catch (Exception e) {
-                logger.error("Cannot read from keystore file: {}", e.getStackTrace());
+                logger.error("Cannot read from keystore file: {}", e);
                 return null;
             }
         } catch (IOException e) {
-            logger.error("Cannot read from pw file: {}", e.getStackTrace());
+            logger.error("Cannot read from pw file: {}", e);
             return null;
         }
 
@@ -67,7 +67,7 @@ public class KeyStoreIo {
         try {
             kmf = KeyManagerFactory.getInstance(algorithm);
         } catch (NoSuchAlgorithmException e2) {
-            logger.error("Cannot instantiate key manager factory: {}", e2.getStackTrace());
+            logger.error("Cannot instantiate key manager factory: {}", e2);
             return null;
         }
 
@@ -80,7 +80,7 @@ public class KeyStoreIo {
             char[] keyPassword = line.toCharArray();
             kmf.init(ks, keyPassword);
         } catch (Exception e) {
-            logger.error("Cannot read from key pw file: {}", e.getStackTrace());
+            logger.error("Cannot read from key pw file: {}", e);
             return null;
         }
 
@@ -99,7 +99,7 @@ public class KeyStoreIo {
             // get user password
             keyPassword = line.toCharArray();
         } catch (Exception e) {
-            logger.error("Cannot read from key pw file: {}", e.getStackTrace());
+            logger.error("Cannot read from key pw file: {}", e);
             return null;
         }
 
@@ -107,7 +107,7 @@ public class KeyStoreIo {
         try {
             ks = KeyStore.getInstance(type);
         } catch (KeyStoreException e) {
-            logger.error("Cannot instantiate keystore {}: {}", type, e.getStackTrace());
+            logger.error("Cannot instantiate keystore {}: {}", type, e);
             return null;
         }
 
@@ -115,7 +115,7 @@ public class KeyStoreIo {
             ks.load(kis, keyPassword);
             kis.close();
         } catch (Exception e) {
-            logger.error("Cannot read from keystore file: {}", e.getStackTrace());
+            logger.error("Cannot read from keystore file: {}", e);
             return null;
         }
 
@@ -127,14 +127,14 @@ public class KeyStoreIo {
         try {
             kmf = KeyManagerFactory.getInstance(algorithm);
         } catch (NoSuchAlgorithmException e2) {
-            logger.error("Cannot instantiate key manager factory: {}", e2.getStackTrace());
+            logger.error("Cannot instantiate key manager factory: {}", e2);
             return null;
         }
 
         try {
             kmf.init(ks, keyPassword);
         } catch (UnrecoverableKeyException | KeyStoreException | NoSuchAlgorithmException e) {
-            logger.error("Cannot init kmf", e.getStackTrace());
+            logger.error("Cannot init kmf", e);
             return null;
         }
 

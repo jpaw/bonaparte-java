@@ -323,7 +323,7 @@ public class CompactByteArrayComposer extends CompactConstants implements Messag
     protected void intOut(int n) {
         if (n >= 0) {
             // bisect the cases...
-            if (n < 64) {
+            if (n <= 60) {
                 // single byte
                 if (n < 32)
                     out.writeByte(n);
@@ -349,7 +349,7 @@ public class CompactByteArrayComposer extends CompactConstants implements Messag
             }
         } else {
             if (n >= -32768) {
-                if (n >= -12)
+                if (n >= -10)
                     out.writeByte(0xa0 - n);
                 else {
                     out.writeByte(INT_2BYTE);
@@ -645,17 +645,24 @@ public class CompactByteArrayComposer extends CompactConstants implements Messag
     @Override
     public void startObject(ObjectReference di, BonaCustom obj) {
         ClassDefinition meta = obj.get$MetaData();
-        if (recommendIdentifiable) {
-            out.writeByte(OBJECT_BEGIN_ID);
-            intOut(meta.getFactoryId());
-            intOut(meta.getId());
-        } else {
-            out.writeByte(OBJECT_BEGIN_PQON);
-            if (di.getLowerBound() != null && di.getLowerBound().getName().equals(meta.getName()))
+        if (di.getLowerBound() != null && di.getLowerBound().getName().equals(meta.getName())) {
+            if (recommendIdentifiable) {
+                out.writeByte(OBJECT_BEGIN_BASE);
+            } else {
+                out.writeByte(OBJECT_BEGIN_PQON);
                 out.writeByte(EMPTY_FIELD);
-            else
+                addField(REVISION_META, meta.getRevision());
+            }
+        } else {
+            if (recommendIdentifiable) {
+                out.writeByte(OBJECT_BEGIN_ID);
+                intOut(meta.getFactoryId());
+                intOut(meta.getId());
+            } else {
+                out.writeByte(OBJECT_BEGIN_PQON);
                 writeLongStringStealArray(meta.getName());
-            addField(REVISION_META, meta.getRevision());
+                addField(REVISION_META, meta.getRevision());
+            }
         }
     }
 

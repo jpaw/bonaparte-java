@@ -139,12 +139,12 @@ public class CompactParser extends CompactConstants implements MessageParser<IOE
             if (firstByte <= 31)
                 return firstByte;
             if (firstByte >= 0x80)
-                return firstByte - 0x60;  // 0x20..0x3f
+                return firstByte - 0x60;  // 0x20..0x3f     // TODO: currently 61..63 are accepted, later deprecated these
             eNotNumeric(firstByte, fieldname);
         }
         if (firstByte <= 0xd0) {
             if (firstByte <= 0xac)
-                return 0xa0 - firstByte;  // -1 .. -12
+                return 0xa0 - firstByte;  // -1 .. -10      // TODO: currently still -11, -12, later deprecated these
             if (firstByte < 0xc0)
                 eNotNumeric(firstByte, fieldname);
             // 2 byte number 0...2047
@@ -545,25 +545,11 @@ public class CompactParser extends CompactConstants implements MessageParser<IOE
                 }
             }
             return type.cast(newObject);
-        } else if (c == OBJECT_BEGIN_PQON || c == OBJECT_BEGIN_ID) {
+        } else if (c == OBJECT_BEGIN_PQON || c == OBJECT_BEGIN_ID || c == OBJECT_BEGIN_BASE) {
             String previousClass = currentClass;
             BonaPortable newObject;
             String classname;
-            if (c == OBJECT_BEGIN_PQON) {
-                classname = readString(fieldname, false);
-                if (classname == null || classname.length() == 0) {
-                    if (di.getLowerBound() == null)
-                        throw new IOException(String.format("Invalid base class reference for %s.%s", currentClass, fieldname));
-                    // the base class name is referred to, which is contained in the meta data 
-                    classname = di.getLowerBound().getName();
-                }
-                needToken(NULL_FIELD); // version not yet allowed
-                try {
-                    newObject = BonaPortableFactory.createObject(classname);
-                } catch (MessageParserException e) {
-                    throw new IOException(e);  // wrap exception
-                }
-            } else {
+            if (c == OBJECT_BEGIN_ID) {
                 int factoryId = readInt(needToken(), "$factoryId");
                 int classId = readInt(needToken(), "$classId");
                 BonaPortableClass<?> bclass = BonaPortableFactoryById.getByIds(factoryId, classId);
@@ -571,6 +557,26 @@ public class CompactParser extends CompactConstants implements MessageParser<IOE
                     throw new IOException(String.format("Bad class IDs %d / %d for %s.%s", factoryId, classId, currentClass, fieldname));
                 classname = bclass.getPqon();
                 newObject = bclass.newInstance();
+            } else {
+                if (c == OBJECT_BEGIN_BASE) {
+                    if (di.getLowerBound() == null)
+                        throw new IOException(String.format("Invalid base class reference for %s.%s", currentClass, fieldname));
+                    classname = di.getLowerBound().getName();
+                } else {
+                    classname = readString(fieldname, false);
+                    if (classname == null || classname.length() == 0) {
+                        if (di.getLowerBound() == null)
+                            throw new IOException(String.format("Invalid base class reference for %s.%s", currentClass, fieldname));
+                        // the base class name is referred to, which is contained in the meta data
+                        classname = di.getLowerBound().getName();
+                    }
+                    needToken(NULL_FIELD); // version not yet allowed
+                }
+                try {
+                    newObject = BonaPortableFactory.createObject(classname);
+                } catch (MessageParserException e) {
+                    throw new IOException(e);  // wrap exception
+                }
             }
             // System.out.println("Creating new obj " + classname + " gave me " + newObject);
             // check if the object is of expected type

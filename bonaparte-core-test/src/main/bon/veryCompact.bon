@@ -1,18 +1,18 @@
 /** Demonstration package to show very dense serialized formats. */
-package very.compact {
+package very.compact factoryId 54 {
     
-    class Complex {
+    class Complex classId 12 {
         double real;
         double imaginary;
     }
     
-    class Vector {
+    class Vector classId 13 {
         (Complex...) x;
         (Complex...) y;
         (Complex...) z;
     }
     
-    class Container {
+    abstract class Container {
         (Vector) outer;
     }
 }

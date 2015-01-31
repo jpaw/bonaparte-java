@@ -31,7 +31,7 @@ public class TestWithIds {
         // dump the bytes
         byte [] data = cbac.getBuilder().getBytes();
         System.out.println(ByteUtil.dump(data, 100));
-        assert(data.length == 28);  // outer object per PQON, first two complex components as base object, last as repeated.
+        assert(data.length == 24);  // outer object per PQON, first two complex components as base object, last as repeated.
         
         // parse the result
         CompactByteArrayParser cbap = new CompactByteArrayParser(data, 0, data.length);
@@ -40,4 +40,5 @@ public class TestWithIds {
         assert(copy instanceof Vector);
         assert(org.equals(copy));
     }
+
 }

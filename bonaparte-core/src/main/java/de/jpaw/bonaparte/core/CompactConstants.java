@@ -25,16 +25,21 @@ package de.jpaw.bonaparte.core;
  *          Defines some constants which are used for the binary / compact data parsers and composers.
  *          A lot of values are represented by a single byte.
  *          
- *          If the first byte is 00-9f or c0-cf, then the whole value is a single byte.
+ *          If the first byte is 00-aa, then the whole value is a single byte.
  *          
  *          00 - 1f     integral numbers 0 - 31 (boolean false or true are represented as 0 and 1) 
  *          20 - 7f     1 character Strings or chars (ASCII)  [only space, +, -, ., ,, 0-9, A-Z, a-z ]
  *          
  *          8x  integers 32..47
- *          9x  integers 48..63
+ *          9x  integers 48..60
+ *          9d          RESERVED for future expansion
+ *          9e          RESERVED for future expansion
+ *          9f          RESERVED for future expansion
  *          
  *          a0          null (any data type)
- *          a1 - ac     -1 to -12
+ *          a1 - aa     -1 to -10
+ *          ab          RESERVED for future expansion
+ *          ac          object begin (lower bound as specified)
  *          ad          object end
  *          ae          subobject end
  *          af          empty (zero character String, empty Map, Set, List, array with 0 elements)
@@ -102,6 +107,7 @@ public abstract class CompactConstants extends Settings {
     protected static final int PARENT_SEPARATOR = 0xae;
     protected static final int OBJECT_BEGIN_ID = 0xde;
     protected static final int OBJECT_BEGIN_PQON = 0xdf;
+    protected static final int OBJECT_BEGIN_BASE = 0xac;
     protected static final int OBJECT_TERMINATOR = 0xad;
     protected static final int OBJECT_AGAIN = 0xdd;
     

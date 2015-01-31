@@ -1,5 +1,14 @@
 /** Bonaparte metadata.
  * Assigned to factoryId 29, classIds 1-40
+ * 
+ * Other factory IDs:
+ * 0: illegal
+ * 1..25 reserved for other jpaw projects
+ * 26: default if nothing assigned
+ * 27: adapters
+ * 28: framework "twentyeight"
+ * 29: bonaparte-core
+ * 30ff:  3rd parties 
  */
 package meta factoryId 29 {
     default private unsigned trim noControlChars;
@@ -25,7 +34,7 @@ package meta factoryId 29 {
         optional Integer                    minCount;               // minimum number of occurrences, if a collection or array
         optional Integer                    maxCount;               // maximum number of occurrences, if a collection or array
         required enum DataCategory          dataCategory;           // gives high level information about the data 
-        required ascii(20)                  dataType;               // the Bonaparte data type
+        required identifier                 dataType;               // the Bonaparte data type
         required boolean                    isPrimitive;            // true if the field is a primitive data type in Java
         required boolean                    isAggregateRequired;    // field is an aggregate field (array, List, Set, Map) and the aggregate itself may not be null 
     }

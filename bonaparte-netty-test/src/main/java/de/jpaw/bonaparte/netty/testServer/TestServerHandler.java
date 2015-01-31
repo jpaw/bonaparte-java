@@ -64,14 +64,14 @@ public class TestServerHandler extends SimpleChannelInboundHandler<BonaPortable>
 
     @Override
     public void channelRead0(ChannelHandlerContext ctx, BonaPortable request) throws Exception {
-        String cipher;
+        // String cipher;
         SslHandler sslH = ctx.pipeline().get(SslHandler.class);
         if (sslH != null) {
             SSLSession session = sslH.engine().getSession();
-            cipher = " (with cipher " + session.getCipherSuite() + ")";
+            // cipher = " (with cipher " + session.getCipherSuite() + ")";
             SessionInfo.logSessionInfo(session, "Client");
         } else {
-            cipher = " (unencrypted)";
+            // cipher = " (unencrypted)";
         }
         // logger.info("Received an object of type " + request.getClass().getCanonicalName() + cipher);
         Request myRequest = (Request) request;

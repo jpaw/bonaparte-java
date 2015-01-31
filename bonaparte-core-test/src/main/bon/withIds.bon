@@ -12,7 +12,7 @@ package very.compact.withIds factoryId 55 {
         (Complex...) z;
     }
     
-    class Container classId 63 {
+    class Container classId 59 {
         (Vector) outer;
     }
 }
