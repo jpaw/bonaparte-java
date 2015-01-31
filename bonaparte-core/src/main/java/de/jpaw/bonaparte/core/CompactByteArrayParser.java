@@ -104,37 +104,35 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
      * but reads from the byte[] directly
      **************************************************************************************************/
 
-    private void require(int length) throws MessageParserException {
+    protected void require(int length) throws MessageParserException {
         if (parseIndex + length > messageLength) {
-            throw new MessageParserException(MessageParserException.PREMATURE_END, null, parseIndex, currentClass);
+            throw newMPE(MessageParserException.PREMATURE_END, null);
         }
     }
     
-    private int needToken() throws MessageParserException {
+    protected int needToken() throws MessageParserException {
         if (parseIndex >= messageLength) {
-            throw new MessageParserException(MessageParserException.PREMATURE_END, null, parseIndex, currentClass);
+            throw newMPE(MessageParserException.PREMATURE_END, null);
         }
         return inputdata[parseIndex++] & 0xff;
     }
 
-    private void needToken(int c) throws MessageParserException {
+    protected void needToken(int c) throws MessageParserException {
         if (parseIndex >= messageLength) {
-            throw new MessageParserException(MessageParserException.PREMATURE_END,
-                    String.format("(expected 0x%02x)", c), parseIndex, currentClass);
+            throw newMPE(MessageParserException.PREMATURE_END, String.format("(expected 0x%02x)", c));
         }
         int d = inputdata[parseIndex++] & 0xff;
         if (c != d) {
-            throw new MessageParserException(MessageParserException.UNEXPECTED_CHARACTER,
-                    String.format("(expected 0x%02x, got 0x%02x)", c, d), parseIndex, currentClass);
+            throw newMPE(MessageParserException.UNEXPECTED_CHARACTER, String.format("(expected 0x%02x, got 0x%02x)", c, d));
         }
     }
 
     // check for Null called for field members inside a class
-    private boolean checkForNullOrNeedToken(FieldDefinition di, int token) throws MessageParserException {
+    protected boolean checkForNullOrNeedToken(FieldDefinition di, int token) throws MessageParserException {
         return checkForNullOrNeedToken(di.getName(), di.getIsRequired(), token);
     }
     // check for Null called for field members inside a class
-    private boolean checkForNullOrNeedToken(String fieldname, boolean isRequired, int token) throws MessageParserException {
+    protected boolean checkForNullOrNeedToken(String fieldname, boolean isRequired, int token) throws MessageParserException {
         int c = needToken();
         if (c == token)
             return false;
@@ -142,7 +140,7 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
             if (!isRequired) {
                 return true;
             } else {
-                throw new MessageParserException(MessageParserException.ILLEGAL_EXPLICIT_NULL, fieldname, parseIndex, currentClass);
+                throw newMPE(MessageParserException.ILLEGAL_EXPLICIT_NULL, fieldname);
             }
         }
         if ((c == PARENT_SEPARATOR) || (c == COLLECTIONS_TERMINATOR) || (c == OBJECT_TERMINATOR)) {
@@ -151,26 +149,25 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
                 --parseIndex;
                 return true;
             } else {
-                throw new MessageParserException(MessageParserException.ILLEGAL_IMPLICIT_NULL, fieldname, parseIndex, currentClass);
+                throw newMPE(MessageParserException.ILLEGAL_IMPLICIT_NULL, fieldname);
             }
         }
-        throw new MessageParserException(MessageParserException.UNEXPECTED_CHARACTER,
-                String.format("(expected 0x%02x, got 0x%02x)", token, c), parseIndex, currentClass);
+        throw newMPE(MessageParserException.UNEXPECTED_CHARACTER, String.format("(expected 0x%02x, got 0x%02x)", token, c));
     }
     
     // check for Null called for field members inside a class
-    private boolean checkForNull(FieldDefinition di) throws MessageParserException {
+    protected boolean checkForNull(FieldDefinition di) throws MessageParserException {
         return checkForNull(di.getName(), di.getIsRequired());
     }
 
     // check for Null called for field members inside a class
-    private boolean checkForNull(String fieldname, boolean isRequired) throws MessageParserException {
+    protected boolean checkForNull(String fieldname, boolean isRequired) throws MessageParserException {
         int c = needToken();
         if (c == NULL_FIELD) {
             if (!isRequired) {
                 return true;
             } else {
-                throw new MessageParserException(MessageParserException.ILLEGAL_EXPLICIT_NULL, fieldname, parseIndex, currentClass);
+                throw newMPE(MessageParserException.ILLEGAL_EXPLICIT_NULL, fieldname);
             }
         }
         if ((c == PARENT_SEPARATOR) || (c == COLLECTIONS_TERMINATOR) || (c == OBJECT_TERMINATOR)) {
@@ -179,7 +176,7 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
                 --parseIndex;
                 return true;
             } else {
-                throw new MessageParserException(MessageParserException.ILLEGAL_IMPLICIT_NULL, fieldname, parseIndex, currentClass);
+                throw newMPE(MessageParserException.ILLEGAL_IMPLICIT_NULL, fieldname);
             }
         }
         --parseIndex;
@@ -187,20 +184,20 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
     }
     
     // upon entry, we know that firstByte is not null (0xa0)
-    private int readInt(int firstByte, String fieldname) throws MessageParserException {
+    protected int readInt(int firstByte, String fieldname) throws MessageParserException {
         if (firstByte < 0xa0) {
             // 1 positive byte numbers 
             if (firstByte <= 31)
                 return firstByte;
             if (firstByte >= 0x80)
                 return firstByte - 0x60;  // 0x20..0x3f
-            throw new MessageParserException(MessageParserException.ILLEGAL_CHAR_NOT_NUMERIC, fieldname, parseIndex, currentClass);
+            throw newMPE(MessageParserException.ILLEGAL_CHAR_NOT_NUMERIC, fieldname);
         }
         if (firstByte <= 0xd0) {
             if (firstByte <= 0xaa)
                 return 0xa0 - firstByte;  // -1 .. -10
             if (firstByte < 0xc0)
-                throw new MessageParserException(MessageParserException.ILLEGAL_CHAR_NOT_NUMERIC, fieldname, parseIndex, currentClass);
+                throw newMPE(MessageParserException.ILLEGAL_CHAR_NOT_NUMERIC, fieldname);
             // 2 byte number 0...2047
             return needToken() + ((firstByte & 0x0f) << 8);
         }
@@ -220,11 +217,11 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
         case INT_4BYTE:
             return readFixed4ByteInt();
         default:
-            throw new MessageParserException(MessageParserException.ILLEGAL_CHAR_NOT_NUMERIC, fieldname, parseIndex, currentClass);
+            throw newMPE(MessageParserException.ILLEGAL_CHAR_NOT_NUMERIC, fieldname);
         }
     }
 
-    private int readFixed4ByteInt() throws MessageParserException {
+    protected int readFixed4ByteInt() throws MessageParserException {
         require(4);
         int nn = (inputdata[parseIndex++] & 0xff) << 24;
         nn += (inputdata[parseIndex++] & 0xff) << 16;
@@ -233,7 +230,7 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
         return nn;
     }
     
-    private long readFixed8ByteLong() throws MessageParserException {
+    protected long readFixed8ByteLong() throws MessageParserException {
         require(8);
         int nn1 = (inputdata[parseIndex++] & 0xff) << 24;
         nn1 += (inputdata[parseIndex++] & 0xff) << 16;
@@ -245,13 +242,13 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
         nn2 += inputdata[parseIndex++] & 0xff;
         return ((long)nn1 << 32) | (nn2 & 0xffffffffL);
     }
-    private long readLong(int firstByte, String fieldname) throws MessageParserException {
+    protected long readLong(int firstByte, String fieldname) throws MessageParserException {
         if (firstByte != INT_8BYTE)
             return readInt(firstByte, fieldname);
         return readFixed8ByteLong();
     }
     
-    private void skipNulls() {
+    protected void skipNulls() {
         while (parseIndex < messageLength) {
             int c = inputdata[parseIndex] & 0xff;
             if (c != NULL_FIELD) {
@@ -275,15 +272,18 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
 
     @Override
     public MessageParserException enumExceptionConverter(IllegalArgumentException e) {
-        return new MessageParserException(MessageParserException.INVALID_ENUM_TOKEN, e.getMessage(), parseIndex, currentClass);
+        return newMPE(MessageParserException.INVALID_ENUM_TOKEN, e.getMessage());
     }
 
     @Override
     public MessageParserException customExceptionConverter(String msg, Exception e) {
-        return new MessageParserException(MessageParserException.CUSTOM_OBJECT_EXCEPTION, e != null ? msg + e.toString() : msg, parseIndex, currentClass);
+        return newMPE(MessageParserException.CUSTOM_OBJECT_EXCEPTION, e != null ? msg + e.toString() : msg);
     }
 
-
+    protected MessageParserException newMPE(int errorCode, String msg) {
+        return new MessageParserException(errorCode, msg, parseIndex, currentClass);
+    }
+    
     @Override
     public void setClassName(String newClassName) {
         currentClass = newClassName;
@@ -298,7 +298,7 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
             return factory.getNullToken();
         T value = factory.getByToken(scannedToken);
         if (value == null) {
-            throw new MessageParserException(MessageParserException.INVALID_ENUM_TOKEN, scannedToken, parseIndex, currentClass);
+            throw newMPE(MessageParserException.INVALID_ENUM_TOKEN, scannedToken);
         }
         return value;
     }
@@ -348,8 +348,8 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
         if (c >= 0x20 && c < 0x80)
             return Character.valueOf((char)c);      // single byte char
         if (c != UNICODE_CHAR)
-            throw new MessageParserException(MessageParserException.UNEXPECTED_CHARACTER,
-                    String.format("(expected UNICODE_CHAR, got 0x%02x)", c), parseIndex, currentClass);
+            throw newMPE(MessageParserException.UNEXPECTED_CHARACTER,
+                    String.format("(expected UNICODE_CHAR, got 0x%02x)", c));
         require(2);
         char cc = (char)(((inputdata[parseIndex] & 0xff) << 8) | (inputdata[parseIndex+1] & 0xff));
         parseIndex += 2;
@@ -364,10 +364,9 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
         int c = needToken();
         if (c == 0)
             return Boolean.FALSE;
-        if (c == 1)
-            return Boolean.TRUE;
-        throw new MessageParserException(MessageParserException.UNEXPECTED_CHARACTER,
-                String.format("(expected BOOLEAN 0/1, got 0x%02x)", c), parseIndex, currentClass);
+        if (c != 1)
+            throw newMPE(MessageParserException.UNEXPECTED_CHARACTER, String.format("(expected BOOLEAN 0/1, got 0x%02x)", c));
+        return Boolean.TRUE;
     }
 
     @Override
@@ -441,7 +440,7 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
         }
     }
 
-    private String readAscii(int len, String fieldname) throws MessageParserException {
+    protected String readAscii(int len, String fieldname) throws MessageParserException {
         require(len);
         char data [] = new char [len];
         for (int i = 0; i < len; ++i)
@@ -495,11 +494,10 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
                 parseIndex += len;
                 return result;
             default:
-                throw new MessageParserException(MessageParserException.UNEXPECTED_CHARACTER, String.format("(expected STRING*, got 0x%02x)", c), parseIndex,
-                        currentClass);
+                throw newMPE(MessageParserException.UNEXPECTED_CHARACTER, String.format("(expected STRING*, got 0x%02x)", c));
             }
         } catch (UnsupportedEncodingException e) {
-            throw new MessageParserException(MessageParserException.ILLEGAL_CHAR_ASCII, String.format("(encoding %02x)", c), parseIndex, currentClass);
+            throw newMPE(MessageParserException.ILLEGAL_CHAR_ASCII, String.format("(encoding %02x)", c));
         }
     }
 
@@ -524,8 +522,7 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
             parseIndex += len;
             return result;
         default:
-            throw new MessageParserException(MessageParserException.UNEXPECTED_CHARACTER,
-                    String.format("(expected BINARY*, got 0x%02x)", c), parseIndex, currentClass);
+            throw newMPE(MessageParserException.UNEXPECTED_CHARACTER, String.format("(expected BINARY*, got 0x%02x)", c));
         }
     }
 
@@ -545,8 +542,7 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
             parseIndex += len;
             return data;
         default:
-            throw new MessageParserException(MessageParserException.UNEXPECTED_CHARACTER,
-                    String.format("(expected BINARY*, got 0x%02x)", c), parseIndex, currentClass);
+            throw newMPE(MessageParserException.UNEXPECTED_CHARACTER, String.format("(expected BINARY*, got 0x%02x)", c));
         }
     }
 
@@ -574,8 +570,7 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
         case COMPACT_TIME:
             return new LocalTime(readInt(needToken(), di.getName()) * 1000L, DateTimeZone.UTC);
         default:
-            throw new MessageParserException(MessageParserException.UNEXPECTED_CHARACTER,
-                    String.format("(expected COMPACT_TIME_*, got 0x%02x)", c), parseIndex, currentClass);
+            throw newMPE(MessageParserException.UNEXPECTED_CHARACTER, String.format("(expected COMPACT_TIME_*, got 0x%02x)", c));
         }
     }
 
@@ -593,8 +588,7 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
             fractional = true;
             break;
         default:
-            throw new MessageParserException(MessageParserException.UNEXPECTED_CHARACTER,
-                    String.format("(expected COMPACT_DATETIME_*, got 0x%02x)", c), parseIndex, currentClass);
+            throw newMPE(MessageParserException.UNEXPECTED_CHARACTER, String.format("(expected COMPACT_DATETIME_*, got 0x%02x)", c));
         }
         String fieldname = di.getName();
         int year = readInt(needToken(), fieldname);
@@ -630,16 +624,14 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
             // we reuse an object
             int objectIndex = readInt(needToken(), fieldname);
             if (objectIndex >= objects.size())
-                throw new MessageParserException(MessageParserException.INVALID_BACKREFERENCE, String.format(
-                        "at %s: requested object %d of only %d available", fieldname, objectIndex, objects.size()),
-                        parseIndex, currentClass);
+                throw newMPE(MessageParserException.INVALID_BACKREFERENCE, String.format("at %s: requested object %d of only %d available", fieldname, objectIndex, objects.size()));
             BonaPortable newObject = objects.get(objects.size() - 1 - objectIndex);  // 0 is the last one put in, 1 the one before last etc...
             // check if the object is of expected type
             if (newObject.getClass() != type) {
                 // check if it is a superclass
                 if (!allowSubtypes || !type.isAssignableFrom(newObject.getClass())) {
-                    throw new MessageParserException(MessageParserException.BAD_CLASS, String.format("(got %s, expected %s for %s, subclassing = %b)",
-                            newObject.getClass().getSimpleName(), type.getSimpleName(), fieldname, allowSubtypes), parseIndex, currentClass);
+                    throw newMPE(MessageParserException.BAD_CLASS, String.format("(got %s, expected %s for %s, subclassing = %b)",
+                            newObject.getClass().getSimpleName(), type.getSimpleName(), fieldname, allowSubtypes));
                 }
             }
             return type.cast(newObject);
@@ -652,19 +644,19 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
                 int classId = readInt(needToken(), "$classId");
                 BonaPortableClass<?> bclass = BonaPortableFactoryById.getByIds(factoryId, classId);
                 if (bclass == null)
-                    throw new MessageParserException(MessageParserException.BAD_CLASS_IDS, factoryId + "/" + classId, parseIndex, currentClass);
+                    throw newMPE(MessageParserException.BAD_CLASS_IDS, factoryId + "/" + classId);
                 classname = bclass.getPqon();
                 newObject = bclass.newInstance();
             } else {
                 if (c == OBJECT_BEGIN_BASE) {
                     if (di.getLowerBound() == null)
-                        throw new MessageParserException(MessageParserException.INVALID_BASE_CLASS_REFERENCE, "", parseIndex, currentClass);
+                        throw newMPE(MessageParserException.INVALID_BASE_CLASS_REFERENCE, "");
                     classname = di.getLowerBound().getName();
                 } else {
                     classname = readString(fieldname, false);
                     if (classname == null || classname.length() == 0) {
                         if (di.getLowerBound() == null)
-                            throw new MessageParserException(MessageParserException.INVALID_BASE_CLASS_REFERENCE, "", parseIndex, currentClass);
+                            throw newMPE(MessageParserException.INVALID_BASE_CLASS_REFERENCE, "");
                         // the base class name is referred to, which is contained in the meta data
                         classname = di.getLowerBound().getName();
                     }
@@ -677,8 +669,8 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
             if (newObject.getClass() != type) {
                 // check if it is a superclass
                 if (!allowSubtypes || !type.isAssignableFrom(newObject.getClass())) {
-                    throw new MessageParserException(MessageParserException.BAD_CLASS, String.format("(got %s, expected %s for %s, subclassing = %b)",
-                            newObject.getClass().getSimpleName(), type.getSimpleName(), fieldname, allowSubtypes), parseIndex, currentClass);
+                    throw newMPE(MessageParserException.BAD_CLASS, String.format("(got %s, expected %s for %s, subclassing = %b)",
+                            newObject.getClass().getSimpleName(), type.getSimpleName(), fieldname, allowSubtypes));
                 }
             }
             // all good here. Parse the contents
@@ -693,8 +685,7 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
             currentClass = previousClass;
             return type.cast(newObject);
         } else {
-            throw new MessageParserException(MessageParserException.UNEXPECTED_CHARACTER,
-                    String.format("(expected OBJECT_START*, got 0x%02x)", c), parseIndex, currentClass);
+            throw newMPE(MessageParserException.UNEXPECTED_CHARACTER, String.format("(expected OBJECT_START*, got 0x%02x)", c));
         }
     }
 

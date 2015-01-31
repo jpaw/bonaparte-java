@@ -1,12 +1,12 @@
 package de.jpaw.bonaparte.scanner;
 
-import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.BonaPortableClass;
 import de.jpaw.bonaparte.core.BonaPortableFactoryById;
+import de.jpaw.xenums.init.ReflectionsPackageCache;
 
 public class BClassScanner {
     private static final Logger LOGGER = LoggerFactory.getLogger(BClassScanner.class);
@@ -22,7 +22,7 @@ public class BClassScanner {
     /** Entry for separate packages. */
     public static void scanAndRegisterBonaPortables(String packageName) {
         int ctr = 0;
-        for (Class<? extends BonaPortable> cls : new Reflections(packageName).getSubTypesOf(BonaPortable.class)) {
+        for (Class<? extends BonaPortable> cls : ReflectionsPackageCache.get(packageName).getSubTypesOf(BonaPortable.class)) {
             try {
                 BonaPortableClass<?> bclass = (BonaPortableClass<?>) cls.getMethod("class$BonaPortableClass").invoke(null);
                 if (BonaPortableFactoryById.registerClass(bclass))

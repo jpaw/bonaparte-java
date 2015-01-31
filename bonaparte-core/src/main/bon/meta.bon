@@ -3,7 +3,8 @@
  * 
  * Other factory IDs:
  * 0: illegal
- * 1..25 reserved for other jpaw projects
+ * 1..24 reserved for other jpaw projects
+ * 25: refs
  * 26: default if nothing assigned
  * 27: adapters
  * 28: framework "twentyeight"

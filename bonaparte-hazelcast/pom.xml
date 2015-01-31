@@ -26,9 +26,8 @@
             <version>${hazelcast.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.reflections</groupId>
-            <artifactId>reflections</artifactId>
-            <version>${reflections.version}</version>
+            <groupId>de.jpaw</groupId>
+            <artifactId>jpaw-xenum-init</artifactId>
         </dependency>
     </dependencies>
 </project>

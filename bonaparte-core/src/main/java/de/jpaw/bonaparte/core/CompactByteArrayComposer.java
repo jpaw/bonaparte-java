@@ -473,9 +473,8 @@ public class CompactByteArrayComposer extends CompactConstants implements Messag
         }
     }
 
-    // long
-    @Override
-    public void addField(BasicNumericElementaryDataItem di, long n) {
+    // entry which does not need a reference
+    protected void addLong(long n) { 
         int nn = (int)n;
         if (nn == n)
             intOut((int)n);
@@ -483,6 +482,12 @@ public class CompactByteArrayComposer extends CompactConstants implements Messag
             out.writeByte(INT_8BYTE);  // TODO: optimize for 5, 6, 7 digits here!
             out.append(n);
         }
+    }
+
+    // long
+    @Override
+    public void addField(BasicNumericElementaryDataItem di, long n) {
+        addLong(n);
     }
 
     // boolean

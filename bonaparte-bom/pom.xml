@@ -137,6 +137,11 @@
             </dependency>
             <dependency>
                 <groupId>de.jpaw</groupId>
+                <artifactId>bonaparte-refs</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.jpaw</groupId>
                 <artifactId>bonaparte-zk</artifactId>
                 <version>${project.version}</version>
             </dependency>
