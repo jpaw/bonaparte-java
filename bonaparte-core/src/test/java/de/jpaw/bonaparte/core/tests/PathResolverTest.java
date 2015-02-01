@@ -6,8 +6,7 @@ import org.testng.annotations.Test;
 import de.jpaw.bonaparte.core.BonaPortableFactory;
 import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
-import de.jpaw.bonaparte.pojos.ui.UIColumn;
-import de.jpaw.bonaparte.pojos.ui.UIColumnConfiguration;
+import de.jpaw.bonaparte.pojos.meta.XEnumSetDefinition;
 import de.jpaw.bonaparte.util.FieldGetter;
 
 public class PathResolverTest {
@@ -21,10 +20,10 @@ public class PathResolverTest {
 
     @Test
     public void testPathResolving1() throws Exception {
-        ClassDefinition obj = UIColumnConfiguration.BClass.INSTANCE.getMetaData();
+        ClassDefinition obj = XEnumSetDefinition.BClass.INSTANCE.getMetaData();
         
-        FieldDefinition f = FieldGetter.getFieldDefinitionForPathname(obj, "width");
-        Assert.assertEquals(f, UIColumn.meta$$width);
+        FieldDefinition f = FieldGetter.getFieldDefinitionForPathname(obj, "baseXEnum");
+        Assert.assertEquals(f, XEnumSetDefinition.meta$$baseXEnum);
     }
     
     @Test
@@ -38,9 +37,9 @@ public class PathResolverTest {
     @Test
     public void testPathResolving12() throws Exception {
         info();
-        ClassDefinition obj = UIColumnConfiguration.BClass.INSTANCE.getMetaData();
-        FieldDefinition f = FieldGetter.getFieldDefinitionForPathname(obj, "width");
-        Assert.assertEquals(f, UIColumn.meta$$width);
+        ClassDefinition obj = XEnumSetDefinition.BClass.INSTANCE.getMetaData();
+        FieldDefinition f = FieldGetter.getFieldDefinitionForPathname(obj, "baseXEnum");
+        Assert.assertEquals(f, XEnumSetDefinition.meta$$baseXEnum);
         
         ClassDefinition obj2 = ClassDefinition.BClass.INSTANCE.getMetaData();
         

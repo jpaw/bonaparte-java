@@ -1,10 +1,10 @@
-package de.jpaw.bonaparte.core.tests;
+package de.jpaw.bonaparte.api.tests;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import de.jpaw.bonaparte.api.ColumnCollector;
 import de.jpaw.bonaparte.pojos.ui.UIColumn;
-import de.jpaw.bonaparte.util.ColumnCollector;
 
 public class ColumnCollectorTest {
 

@@ -6,14 +6,14 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import de.jpaw.bonaparte.core.BonaPortableClass;
-import de.jpaw.bonaparte.pojos.ui.UIColumnConfiguration;
+import de.jpaw.bonaparte.pojos.meta.BundleInformation;
 import de.jpaw.bonaparte.util.FieldGetter;
 
 public class ReflectionTest {
     @Test
     public void testReflection() throws Exception {
-        BonaPortableClass<?> bclass = FieldGetter.getBClass(UIColumnConfiguration.class);
-        Assert.assertEquals(bclass,  UIColumnConfiguration.BClass.INSTANCE);
+        BonaPortableClass<?> bclass = FieldGetter.getBClass(BundleInformation.class);
+        Assert.assertEquals(bclass,  BundleInformation.BClass.INSTANCE);
     }
 
     @Test

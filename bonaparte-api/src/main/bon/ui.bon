@@ -1,9 +1,9 @@
 import meta.*
 /** Bonaparte metadata.
- * Assigned to factoryId 29, classIds 41-50
+ * Assigned to factoryId 25, classIds 41-50
  */
 
-package ui factoryId 29 {
+package ui factoryId 25 {
     default private unsigned trim noControlChars;
 
     enum Alignment    { DEFAULT="D", LEFT="L", CENTER="C", RIGHT="M" }  // default aligns by field type: boolean and images centered, numeric right, rest left (subject to change for locale specific refinement) 

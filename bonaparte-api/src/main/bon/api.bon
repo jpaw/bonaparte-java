@@ -1,4 +1,4 @@
-package api XML PROPERTY factoryId 25 {
+package api factoryId 25 {
     default private unsigned trim noControlChars;
 
     /** Root class of reference objects. The field has been defined as a primitive in order to avoid type wrapping,

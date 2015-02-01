@@ -24,9 +24,17 @@
             <artifactId>bonaparte-core</artifactId>
             <version>${project.version}</version>
         </dependency>
+<!--         
         <dependency>
             <groupId>de.jpaw</groupId>
             <artifactId>jpaw-xml</artifactId>
+        </dependency>
+ -->        
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>${testng.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
