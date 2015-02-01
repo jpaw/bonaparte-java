@@ -155,7 +155,9 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
         throw newMPE(MessageParserException.UNEXPECTED_CHARACTER, String.format("(expected 0x%02x, got 0x%02x)", token, c));
     }
     
-    // check for Null called for field members inside a class
+    /** Check for Null. Returns true if null has been encountered and was allowed. Throws an exception in case it was not allowed. Returns false
+     * if no null is next. (Called for field members inside a class.)
+     */
     protected boolean checkForNull(FieldDefinition di) throws MessageParserException {
         return checkForNull(di.getName(), di.getIsRequired());
     }
@@ -230,22 +232,24 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
         return nn;
     }
     
+    protected long readFixed6ByteLong() throws MessageParserException {
+        require(6);
+        int nn1 = inputdata[parseIndex++] << 8;
+        nn1 |= inputdata[parseIndex++] & 0xff;
+        int nn2 = readFixed4ByteInt();
+        return ((long)nn1 << 32) | (nn2 & 0xffffffffL);
+    }
     protected long readFixed8ByteLong() throws MessageParserException {
-        require(8);
-        int nn1 = (inputdata[parseIndex++] & 0xff) << 24;
-        nn1 += (inputdata[parseIndex++] & 0xff) << 16;
-        nn1 += (inputdata[parseIndex++] & 0xff) << 8;
-        nn1 += inputdata[parseIndex++] & 0xff;
-        int nn2 = (inputdata[parseIndex++] & 0xff) << 24;
-        nn2 += (inputdata[parseIndex++] & 0xff) << 16;
-        nn2 += (inputdata[parseIndex++] & 0xff) << 8;
-        nn2 += inputdata[parseIndex++] & 0xff;
+        int nn1 = readFixed4ByteInt();
+        int nn2 = readFixed4ByteInt();
         return ((long)nn1 << 32) | (nn2 & 0xffffffffL);
     }
     protected long readLong(int firstByte, String fieldname) throws MessageParserException {
-        if (firstByte != INT_8BYTE)
-            return readInt(firstByte, fieldname);
-        return readFixed8ByteLong();
+        if (firstByte == INT_6BYTE)
+            return readFixed6ByteLong();
+        if (firstByte == INT_8BYTE)
+            return readFixed8ByteLong();
+        return readInt(firstByte, fieldname);
     }
     
     protected void skipNulls() {
@@ -606,9 +610,9 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
 
     @Override
     public Instant readInstant(TemporalElementaryDataItem di) throws MessageParserException {
-        if (checkForNullOrNeedToken(di, INT_8BYTE))
+        if (checkForNull(di))
             return null;
-        return new Instant(readFixed8ByteLong());
+        return new Instant(readLong(needToken(), di.getName()));
     }
 
 

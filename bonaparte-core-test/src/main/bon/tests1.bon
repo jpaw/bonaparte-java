@@ -147,4 +147,8 @@ package tests1 Ext {
     class TestBigInteger {
         Number(38)      bignum;
     }
+    
+    class Longtest {
+        long l;
+    }
 }

@@ -70,7 +70,7 @@ package de.jpaw.bonaparte.core;
  *          
  *          e0  big integer, next is length in bytes, then mantissa, in 2s complement, with MSB first
  *          e1  long String ASCII (next is length, then bytes)
- *          e2..e8  integer (short, int, long) with 2..8 bytes, next is mantissa, in 2's complement  (5,6,7 currently unused)
+ *          e2..e8  integer (short, int, long) with 2..8 bytes, next is mantissa, in 2's complement  (5 and 7 currently unused)
  *          
  *          f0  long fractional, next is scale, then big integer of mantissa
  *          f1..f9  fractional, with 1..9 decimal places, next is big integer of mantissa
@@ -120,6 +120,7 @@ public abstract class CompactConstants extends Settings {
     protected static final int INT_2BYTE = 0xe2;
     protected static final int INT_3BYTE = 0xe3;
     protected static final int INT_4BYTE = 0xe4;
+    protected static final int INT_6BYTE = 0xe6;
     protected static final int INT_8BYTE = 0xe8;
     protected static final int UNICODE_CHAR = 0xd6;
     protected static final int SHORT_ASCII_STRING = 0xb0;  // 16 consequtive

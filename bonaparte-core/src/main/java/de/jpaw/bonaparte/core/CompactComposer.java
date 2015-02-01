@@ -474,16 +474,28 @@ public class CompactComposer extends CompactConstants implements MessageComposer
         }
     }
 
-    // long
-    @Override
-    public void addField(BasicNumericElementaryDataItem di, long n) throws IOException {
+    // entry which does not need a reference
+    protected void addLong(long n) throws IOException { 
         int nn = (int)n;
         if (nn == n)
             intOut((int)n);
         else {
-            out.writeByte(INT_8BYTE);  // TODO: optimize for 5, 6, 7 digits here!
+            if ((n & 0xffff0000L) == (n > 0 ? 0 : 0xffff0000L)) {
+                out.writeByte(INT_6BYTE);
+                out.writeShort((short)(n >> 32));
+                out.writeInt((int)n);
+                return;
+            }
+            // default
+            out.writeByte(INT_8BYTE);  // TODO: optimize for 5 or 7 bytes here!
             out.writeLong(n);
         }
+    }
+    
+    // long
+    @Override
+    public void addField(BasicNumericElementaryDataItem di, long n) throws IOException {
+        addLong(n);
     }
 
     // boolean
@@ -613,9 +625,7 @@ public class CompactComposer extends CompactConstants implements MessageComposer
     @Override
     public void addField(TemporalElementaryDataItem di, Instant t) throws IOException {
         if (t != null) {
-            long millis = t.getMillis();
-            out.writeByte(INT_8BYTE);
-            out.writeLong(millis);
+            addLong(t.getMillis());
         } else {
             writeNull();
         }

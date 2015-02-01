@@ -33,9 +33,11 @@ public class ReferencingParser extends CompactByteArrayParser {
         if (r == null)
             return super.readObject(di, type);
         // read a long and resolve it
+        if (checkForNull(di))
+            return null;
         long ref = readLong(needToken(), di.getName());
         if (ref <= 0L)
-            return null;
+            return null;        // mapping 0 => null
         BonaPortable newObject = r.getDTO(ref);
         if (newObject.getClass() != type) {
             // check if it is a superclass

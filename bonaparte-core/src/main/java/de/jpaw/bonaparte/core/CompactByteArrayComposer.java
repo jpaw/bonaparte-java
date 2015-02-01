@@ -488,7 +488,14 @@ public class CompactByteArrayComposer extends CompactConstants implements Messag
         if (nn == n)
             intOut((int)n);
         else {
-            out.writeByte(INT_8BYTE);  // TODO: optimize for 5, 6, 7 digits here!
+            if ((n & 0xffff0000L) == (n > 0 ? 0 : 0xffff0000L)) {
+                out.writeByte(INT_6BYTE);
+                out.append((short)(n >> 32));
+                out.append((int)n);
+                return;
+            }
+            // default
+            out.writeByte(INT_8BYTE);  // TODO: optimize for 5 or 7 bytes here!
             out.append(n);
         }
     }
@@ -626,9 +633,7 @@ public class CompactByteArrayComposer extends CompactConstants implements Messag
     @Override
     public void addField(TemporalElementaryDataItem di, Instant t) {
         if (t != null) {
-            long millis = t.getMillis();
-            out.writeByte(INT_8BYTE);
-            out.append(millis);
+            addLong(t.getMillis());
         } else {
             writeNull();
         }

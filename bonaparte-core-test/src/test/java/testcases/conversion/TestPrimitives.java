@@ -20,6 +20,7 @@ import org.testng.annotations.Test;
 
 import de.jpaw.bonaparte.coretests.initializers.FillPrimitives;
 import de.jpaw.bonaparte.coretests.util.SimpleTestRunner;
+import de.jpaw.bonaparte.pojos.tests1.Longtest;
 
 /**
  * The TestPrimitives class.
@@ -37,4 +38,24 @@ public class TestPrimitives {
     public void testPrimitives() throws Exception {
         SimpleTestRunner.run(FillPrimitives.test1(), false);
     }
+    
+    @Test
+    public void testPrimitiveLongFibonacci() throws Exception {
+        final int n = 91;
+        // run the serialization and deserialization for various numeric magnitudes 
+        long [] fibonacci = new long [n];
+        
+        fibonacci[0] = 1;
+        fibonacci[1] = 1;
+        for (int i = 2; i < n; ++i) {
+            fibonacci[i] = fibonacci[i-1] + fibonacci[i-2];
+            if (fibonacci[i] < 0)
+                System.out.println("Fibonacci[" + i + "] is negative");
+        }
+        for (int i = 2; i < n; ++i) {
+            Longtest obj = new Longtest(fibonacci[i]);
+            SimpleTestRunner.run(obj, false);
+        }
+    }
+    
 }

@@ -27,7 +27,7 @@ public class ReferencingComposer extends CompactByteArrayComposer {
     @Override
     public void addField(ObjectReference di, BonaCustom obj) {
         final RefResolver<Ref,?> r = di.getLowerBound() == null ? null : resolvers.get(di.getLowerBound());
-        if (r == null || obj == excludedObject) {
+        if (r == null || obj == null || obj == excludedObject) {
             super.addField(di, obj);
         } else {
             // this is an object to replace by its reference

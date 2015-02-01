@@ -171,13 +171,19 @@ public class CompactParser extends CompactConstants implements MessageParser<IOE
         return in.readInt();
     }
     
+    private long readFixed6ByteLong() throws IOException {
+        int nn1 = in.readShort();
+        return (long)nn1 << 32 | (in.readInt() & 0xffffffffL);
+    }
     private long readFixed8ByteLong() throws IOException {
         return in.readLong();
     }
     private long readLong(int firstByte, String fieldname) throws IOException {
-        if (firstByte != INT_8BYTE)
-            return readInt(firstByte, fieldname);
-        return readFixed8ByteLong();
+        if (firstByte == INT_6BYTE)
+            return readFixed6ByteLong();
+        if (firstByte == INT_8BYTE)
+            return readFixed8ByteLong();
+        return readInt(firstByte, fieldname);
     }
     
     @Override
@@ -512,9 +518,9 @@ public class CompactParser extends CompactConstants implements MessageParser<IOE
 
     @Override
     public Instant readInstant(TemporalElementaryDataItem di) throws IOException {
-        if (checkForNullOrNeedToken(di, INT_8BYTE))
+        if (checkForNull(di))
             return null;
-        return new Instant(readFixed8ByteLong());
+        return new Instant(readLong(needToken(), di.getName()));
     }
 
 
