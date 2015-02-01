@@ -1,14 +1,16 @@
 package de.jpaw.bonaparte.refs;
 
+import de.jpaw.bonaparte.pojos.api.DataWithTracking;
 import de.jpaw.bonaparte.pojos.api.Ref;
+import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.primitivecollections.HashMapPrimitiveLongObject;
 
-public abstract class AbstractRefResolver<REF extends Ref, DTO extends REF> implements RefResolver<REF, DTO> {
-    protected HashMapPrimitiveLongObject<DTO> cache;
+public abstract class AbstractRefResolver<REF extends Ref, DTO extends REF, TRACKING extends TrackingBase> implements RefResolver<REF, DTO, TRACKING> {
+    protected HashMapPrimitiveLongObject<DataWithTracking<DTO, TRACKING>> cache;
 //    protected HashMapObjectPrimitiveLong<REF> indexCache;
 
     protected abstract long getUncachedKey(REF refObject);
-    protected abstract DTO getUncached(long ref);
+    protected abstract DataWithTracking<DTO, TRACKING> getUncached(long ref);
     
     @Override
     public long getRef(REF refObject) {
@@ -29,18 +31,18 @@ public abstract class AbstractRefResolver<REF extends Ref, DTO extends REF> impl
     }
 
     @Override
-    public DTO getDTO(REF refObject) {
+    public DataWithTracking<DTO, TRACKING> getDTO(REF refObject) {
         if (refObject == null)
             return null;
         return getDTO(getRef(refObject));
     }
 
     @Override
-    public DTO getDTO(long ref) {
+    public DataWithTracking<DTO, TRACKING> getDTO(long ref) {
         if (ref <= 0L)
             return null;
         // first, try to retrieve a value from the cache, in order to be identity-safe
-        DTO value = cache.get(ref);
+        DataWithTracking<DTO, TRACKING> value = cache.get(ref);
         if (value != null)
             return value;
         // not here, consult second level (in-memory DB)
@@ -54,4 +56,4 @@ public abstract class AbstractRefResolver<REF extends Ref, DTO extends REF> impl
     public void clear() {
         cache.clear();
     }
- }
+}

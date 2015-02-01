@@ -90,6 +90,7 @@ public class MessageParserException extends ApplicationException {
     static public final int CHAR_TOO_LONG                = OFFSET + 51;
     static public final int NUMBER_PARSING_ERROR         = OFFSET + 52;
     static public final int BAD_CLASS_IDS                = OFFSET + 53;
+    static public final int INVALID_REFERENCES           = OFFSET + 54;
 
     static {
         codeToDescription.put(MISSING_FIELD_TERMINATOR     , "Missing field terminator");
@@ -145,6 +146,7 @@ public class MessageParserException extends ApplicationException {
         codeToDescription.put(CHAR_TOO_LONG                , "Parsed a character, but got more than 1 character");
         codeToDescription.put(NUMBER_PARSING_ERROR         , "Cannot parse number");
         codeToDescription.put(BAD_CLASS_IDS                , "No class registered for factoryId/ClassId");
+        codeToDescription.put(INVALID_REFERENCES           , "Could not resolve recursive references (record for index not found)");    // mapped PersistenceException
     }
 
     /** Creates a parser exception with an explicitly defined position and class name. */
