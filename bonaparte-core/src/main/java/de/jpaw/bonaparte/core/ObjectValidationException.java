@@ -36,22 +36,23 @@ public class ObjectValidationException extends ApplicationException {
     private final String fieldName;   // if known, the name of the field where the error occurred
     private final String className;   // if known, the name of the class which contained the field
 
-    static public final int MAY_NOT_BE_BLANK      = OFFSET + 1;
-    static public final int NO_PATTERN_MATCH      = OFFSET + 2;
-    static public final int TOO_MANY_ELEMENTS     = OFFSET + 3;
-    static public final int TOO_LONG              = OFFSET + 4;
-    static public final int TOO_SHORT             = OFFSET + 5;
-    static public final int NOT_ENOUGH_ELEMENTS   = OFFSET + 6;
-    static public final int NO_NEGATIVE_ALLOWED   = OFFSET + 7;
-    static public final int CUSTOM_VALIDATION     = OFFSET + 8;
+    static public final int MAY_NOT_BE_BLANK            = OFFSET + 1;
+    static public final int NO_PATTERN_MATCH            = OFFSET + 2;
+    static public final int TOO_MANY_ELEMENTS           = OFFSET + 3;
+    static public final int TOO_LONG                    = OFFSET + 4;
+    static public final int TOO_SHORT                   = OFFSET + 5;
+    static public final int NOT_ENOUGH_ELEMENTS         = OFFSET + 6;
+    static public final int NO_NEGATIVE_ALLOWED         = OFFSET + 7;
+    static public final int CUSTOM_VALIDATION           = OFFSET + 8;
+    static public final int NO_ACTIVE_FIELD             = OFFSET + 9;
     
     // BigDecimal checks
-    static public final int TOO_MANY_FRACTIONAL_DIGITS   = OFFSET + 10;
-    static public final int TOO_MANY_DIGITS              = OFFSET + 11;
+    static public final int TOO_MANY_FRACTIONAL_DIGITS  = OFFSET + 10;
+    static public final int TOO_MANY_DIGITS             = OFFSET + 11;
 
-    static public final int NOT_FREEZABLE         = OFFSET + 21;
-    static public final int OBJECT_IS_FROZEN      = OFFSET + 22;
-    static public final int IS_IMMUTABLE          = OFFSET + 23;
+    static public final int NOT_FREEZABLE               = OFFSET + 21;
+    static public final int OBJECT_IS_FROZEN            = OFFSET + 22;
+    static public final int IS_IMMUTABLE                = OFFSET + 23;
 
     static {
         codeToDescription.put(MAY_NOT_BE_BLANK          , "Empty, but required field");
@@ -62,6 +63,7 @@ public class ObjectValidationException extends ApplicationException {
         codeToDescription.put(NOT_ENOUGH_ELEMENTS       , "Array contains not enough elements");
         codeToDescription.put(NO_NEGATIVE_ALLOWED       , "Number may not be negative");
         codeToDescription.put(CUSTOM_VALIDATION         , "A custom validation has failed");
+        codeToDescription.put(NO_ACTIVE_FIELD           , "Cannot alter the active state for a class without an active field");
             
         codeToDescription.put(TOO_MANY_FRACTIONAL_DIGITS, "Too many significant decimal digits");
         codeToDescription.put(TOO_MANY_DIGITS           , "Number too big");

@@ -105,4 +105,11 @@ public interface BonaPortable extends BonaCustom {
     
     /** Obtain an immutable clone of a (possibly) mutable object. */
     BonaPortable get$FrozenClone() throws ObjectValidationException;
+
+    /** Method to set an "active" flag on a data record, if it exists.
+     * Throws an exception if no active field has been defined in this class or a superclass. */
+    public void set$Active(boolean _a) throws ObjectValidationException;
+    
+    /** Returns the value of the "active" field, or "true" if no active field exists, i.e. all instances are regarded as active by default. */
+    public boolean get$Active();
 }

@@ -131,4 +131,16 @@ public class AbstractDynamicBonaPortable implements BonaPortable {
         return null;
     }
 
+    @Override
+    public void set$Active(boolean _a) throws ObjectValidationException {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public boolean get$Active() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
 }
