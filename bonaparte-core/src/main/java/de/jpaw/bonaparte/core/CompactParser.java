@@ -427,10 +427,7 @@ public class CompactParser extends CompactConstants implements MessageParser<IOE
             return ByteArray.ZERO_BYTE_ARRAY;
         case COMPACT_BINARY:
             int len = readInt(needToken(), di.getName());
-            byte [] data = new byte [len];
-            in.readFully(data);
-            ByteArray result = new ByteArray(data);          // FIXME: add read(DataInput, len) as new factory to ByteArray
-            return result;
+            return ByteArray.fromDataInput(in, len);
         default:
             throw new IOException(String.format("expected BINARY*, got 0x%02x in %s.%s", c, currentClass, di.getName()));
         }

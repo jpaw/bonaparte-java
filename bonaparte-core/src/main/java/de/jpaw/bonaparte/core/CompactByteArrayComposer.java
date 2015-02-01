@@ -56,9 +56,18 @@ public class CompactByteArrayComposer extends CompactConstants implements Messag
     private int numberOfObjectsSerialized;
     private int numberOfObjectReuses;
     // variables set by constructor
-    protected final boolean recommendIdentifiable;
     protected final ByteBuilder out;
+    protected final boolean recommendIdentifiable;              // if true, then factoryId and classId will be used to identify the object (requires prior registration of factories before parsing)
+    protected boolean skipLowerBoundObjectDescription = true;   // if true and the object to serialize corresponds to its lower bound, then do not output the class description
     
+    public boolean isSkipLowerBoundObjectDescription() {
+        return skipLowerBoundObjectDescription;
+    }
+
+    public void setSkipLowerBoundObjectDescription(boolean skipLowerBoundObjectDescription) {
+        this.skipLowerBoundObjectDescription = skipLowerBoundObjectDescription;
+    }
+
     /** Quick conversion utility method, for use by code generators. (null safe) */
     public static byte [] marshal(ObjectReference di, BonaPortable x) {
         if (x == null)
@@ -650,7 +659,7 @@ public class CompactByteArrayComposer extends CompactConstants implements Messag
     @Override
     public void startObject(ObjectReference di, BonaCustom obj) {
         ClassDefinition meta = obj.get$MetaData();
-        if (di.getLowerBound() != null && di.getLowerBound().getName().equals(meta.getName())) {
+        if (skipLowerBoundObjectDescription && di.getLowerBound() != null && di.getLowerBound().getName().equals(meta.getName())) {
             if (recommendIdentifiable) {
                 out.writeByte(OBJECT_BEGIN_BASE);
             } else {
