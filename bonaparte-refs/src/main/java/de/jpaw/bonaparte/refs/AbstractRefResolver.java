@@ -1,10 +1,9 @@
 package de.jpaw.bonaparte.refs;
 
-import de.jpaw.bonaparte.pojos.refs.RefLong;
+import de.jpaw.bonaparte.pojos.api.Ref;
 import de.jpaw.primitivecollections.HashMapPrimitiveLongObject;
-import de.jpaw.primitivecollections.HashMapObjectPrimitiveLong;
 
-public abstract class AbstractRefResolver<REF extends RefLong, DTO extends REF> implements RefResolver<REF, DTO> {
+public abstract class AbstractRefResolver<REF extends Ref, DTO extends REF> implements RefResolver<REF, DTO> {
     protected HashMapPrimitiveLongObject<DTO> cache;
 //    protected HashMapObjectPrimitiveLong<REF> indexCache;
 
@@ -15,7 +14,7 @@ public abstract class AbstractRefResolver<REF extends RefLong, DTO extends REF> 
     public long getRef(REF refObject) {
         if (refObject == null)
             return 0;
-        long key = refObject.getRef();
+        long key = refObject.getObjectRef();
         if (key > 0)
             return key;
         // shortcuts not possible, try the local reverse cache

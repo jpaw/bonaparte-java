@@ -1,25 +1,31 @@
-package refs factoryId 25 {
+package api XML PROPERTY factoryId 25 {
     default private unsigned trim noControlChars;
-
-    type identifier             is Unicode(255);
-    type enumIdType             is Unicode(63);
-    type enumTokenType          is Unicode(63);
 
     /** Root class of reference objects. The field has been defined as a primitive in order to avoid type wrapping,
      * any value <= 0 should be treated as null (no (valid) reference).
      */     
-    class RefLong classId 1 {
-        required long                           ref;
+    class Ref classId 1 {
+        required long                           objectRef;
     }
+    
+//    /** Root class of reference objects, in case wrapped types are used.
+//     */
+//    class Ref classId 2 {
+//        optional Long                           objectRef;
+//    }
     
     /** Base class for all audit information. Any other audit data holding class should inherit this one.
      * If tracking is not present, the returned data should be null, therefore this class has been made abstract.
      */
     abstract class TrackingBase {}
     
-    /** Class which contains the DTO component as well as the audit data. In addition, possible tenant information is provided. */
+    /** Class which contains the DTO component as well as the audit data. In addition, possible tenant information is provided.
+     * The DTO part contains all information which is actively maintained by the application, the tracking part all data which
+     * is updated automatically, such as timestamps and versions.
+     */
     final class DataWithTracking<DTO, TRACKING extends TrackingBase> classId 3 {
         required long                           tenantRef;              // if > 0: references the tenant
+        required boolean                        inactive;               // in case the DTO has a concept of "active / inactive" records, and the DTO is marked inactive, this is replicated here
         required (!DTO...)                      dto;                    // the actual data
         optional (!TRACKING...)                 tracking;               // audit data, if it exists
     }

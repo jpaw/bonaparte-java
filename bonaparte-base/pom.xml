@@ -245,6 +245,7 @@
         <module>../bonaparte-poi/pom.xml</module>
         <module>../bonaparte-poix/pom.xml</module>
         <module>../bonaparte-demorqrs/pom.xml</module>
+        <module>../bonaparte-api/pom.xml</module>
         <module>../bonaparte-refs/pom.xml</module>
         <module>../bonaparte-netty/pom.xml</module>
         <module>../bonaparte-netty-test/pom.xml</module>

@@ -1,9 +1,10 @@
 package de.jpaw.bonaparte.refs;
 
-import de.jpaw.bonaparte.pojos.refs.RefLong;
+import de.jpaw.bonaparte.pojos.api.Ref;
+
 
 // API to the in-memory-DB backend (mini EntityManager)
-public interface RefResolver<REF extends RefLong, DTO extends REF> {
+public interface RefResolver<REF extends Ref, DTO extends REF> {
 //    int getRtti();                                    // returns the RTTI of the class
     long getRef(REF refObject);                         // return the primary key for an object, or 0 if the reference points to an invalid object
     DTO getDTO(REF refObject);                          // return the full object, or null if the reference was invalid.

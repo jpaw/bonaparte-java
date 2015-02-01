@@ -12,12 +12,6 @@
     <artifactId>bonaparte-refs</artifactId>
     <packaging>jar</packaging>
 
-
-    <description>
-        Definition of some basic objects for noSQL object nesting as required in most applications.
-        Reserved factoryId: 25
-    </description>
-
     <dependencies>
         <dependency>
             <groupId>de.jpaw</groupId>
@@ -25,10 +19,17 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>de.jpaw</groupId>
+            <artifactId>bonaparte-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+<!--         
+        <dependency>
             <groupId>com.carrotsearch</groupId>
             <artifactId>hppc</artifactId>
             <version>0.6.1</version>
         </dependency>
+ -->        
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
@@ -36,28 +37,5 @@
             <scope>runtime</scope>
         </dependency>
     </dependencies>
-
-    <build>
-        <resources>
-            <resource>
-                <directory>src/main/bon</directory>
-                <filtering>false</filtering>
-            </resource>
-        </resources>
-        
-        <plugins>
-            <plugin>
-                <groupId>org.eclipse.xtext</groupId>
-                <artifactId>xtext-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <artifactId>maven-clean-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>

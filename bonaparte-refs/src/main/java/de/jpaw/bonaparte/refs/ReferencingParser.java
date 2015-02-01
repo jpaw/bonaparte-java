@@ -5,15 +5,15 @@ import java.util.Map;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.CompactByteArrayParser;
 import de.jpaw.bonaparte.core.MessageParserException;
+import de.jpaw.bonaparte.pojos.api.Ref;
 import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
-import de.jpaw.bonaparte.pojos.refs.RefLong;
 
 public class ReferencingParser extends CompactByteArrayParser {
-    private final Map<ClassDefinition,RefResolver<RefLong,?>> resolvers;
+    private final Map<ClassDefinition,RefResolver<Ref,?>> resolvers;
     private boolean doSkipNext;        // skip the resolving for the next object (required if the outer object is in the map itself) 
     
-    public ReferencingParser(byte[] buffer, int offset, int length, Map<ClassDefinition,RefResolver<RefLong,?>> resolvers, boolean skipFirst) {
+    public ReferencingParser(byte[] buffer, int offset, int length, Map<ClassDefinition,RefResolver<Ref,?>> resolvers, boolean skipFirst) {
         super(buffer, offset, length);
         this.resolvers = resolvers;
         this.doSkipNext = skipFirst;
@@ -29,7 +29,7 @@ public class ReferencingParser extends CompactByteArrayParser {
             doSkipNext = false;
             return super.readObject(di, type);
         }
-        final RefResolver<RefLong,?> r = di.getLowerBound() == null ? null : resolvers.get(di.getLowerBound());
+        final RefResolver<Ref,?> r = di.getLowerBound() == null ? null : resolvers.get(di.getLowerBound());
         if (r == null)
             return super.readObject(di, type);
         // read a long and resolve it
