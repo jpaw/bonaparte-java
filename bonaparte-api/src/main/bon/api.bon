@@ -8,12 +8,6 @@ package api factoryId 25 {
         required long                           objectRef;
     }
     
-//    /** Root class of reference objects, in case wrapped types are used.
-//     */
-//    class Ref classId 2 {
-//        optional Long                           objectRef;
-//    }
-    
     /** Base class for all audit information. Any other audit data holding class should inherit this one.
      * If tracking is not present, the returned data should be null, therefore this class has been made abstract.
      */
@@ -24,8 +18,6 @@ package api factoryId 25 {
      * is updated automatically, such as timestamps and versions.
      */
     final class DataWithTracking<DTO, TRACKING extends TrackingBase> classId 3 {
-        required long                           tenantRef;              // if > 0: references the tenant
-        required boolean                        inactive;               // in case the DTO has a concept of "active / inactive" records, and the DTO is marked inactive, this is replicated here
         required (!DTO...)                      dto;                    // the actual data
         optional (!TRACKING...)                 tracking;               // audit data, if it exists
     }

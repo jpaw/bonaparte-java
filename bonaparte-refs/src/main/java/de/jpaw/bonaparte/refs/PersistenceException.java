@@ -5,7 +5,8 @@ import de.jpaw.util.ApplicationException;
 public class PersistenceException extends ApplicationException {
     private static final long serialVersionUID = 61705245543364726L;
 
-    private static final int OFFSET = (DATABASE_ERROR * CLASSIFICATION_FACTOR) + 14000; // offset for all codes in this class
+    private static final int ERROR_CODE_OFFSET = 14000;                                             // offset for all codes in this class
+    private static final int OFFSET = (DATABASE_ERROR * CLASSIFICATION_FACTOR) + ERROR_CODE_OFFSET; // offset for all codes in this class
 
     static public final int RECORD_DOES_NOT_EXIST        = OFFSET + 1;
     static public final int RECORD_ALREADY_EXISTS        = OFFSET + 2;
@@ -13,6 +14,9 @@ public class PersistenceException extends ApplicationException {
     static public final int UNKNOWN_INDEX_TYPE           = OFFSET + 4;
     static public final int NO_TRANSACTION               = OFFSET + 5;
     static public final int READONLY                     = OFFSET + 6;
+    static public final int NO_RECORD_FOR_INDEX          = (PARAMETER_ERROR * CLASSIFICATION_FACTOR) + ERROR_CODE_OFFSET + 7;
+    static public final int NO_PRIMARY_KEY               = OFFSET + 8;
+    static public final int RECORD_DOES_NOT_EXIST_ILE    = (INTERNAL_LOGIC_ERROR * CLASSIFICATION_FACTOR) + ERROR_CODE_OFFSET + 9;
     
     static {
         codeToDescription.put(RECORD_DOES_NOT_EXIST     , "No record for primary key found");
@@ -21,6 +25,9 @@ public class PersistenceException extends ApplicationException {
         codeToDescription.put(UNKNOWN_INDEX_TYPE        , "Not known as a unique index");
         codeToDescription.put(NO_TRANSACTION            , "Not active transaction");
         codeToDescription.put(READONLY                  , "Entity is readonly via this API");
+        codeToDescription.put(NO_RECORD_FOR_INDEX       , "No record has been found for the provided index");
+        codeToDescription.put(NO_PRIMARY_KEY            , "No primary key provided for create or update operation");
+        codeToDescription.put(RECORD_DOES_NOT_EXIST_ILE , "No record for primary key found, but this should not have happened");
     }
     
     private final long key;
