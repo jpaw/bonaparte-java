@@ -3,7 +3,7 @@ package de.jpaw.bonaparte.refs;
 import de.jpaw.bonaparte.pojos.api.Ref;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 
-// API to the in-memory-DB backend (mini EntityManager)
+/** API to noSQL backends (mini EntityManager) */
 public interface RefResolver<REF extends Ref, DTO extends REF, TRACKING extends TrackingBase> {
     /**
      * Returns the key for the provided unique index. Null-safe, returns 0 for a null parameter. Throws an exception if the reference does not exist.

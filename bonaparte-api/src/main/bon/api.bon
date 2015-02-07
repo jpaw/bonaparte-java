@@ -5,7 +5,7 @@ package api factoryId 25 {
      * any value <= 0 should be treated as null (no (valid) reference).
      */     
     class Ref classId 1 {
-        required long                           objectRef;
+        required long                               objectRef;
     }
     
     /** Base class for all audit information. Any other audit data holding class should inherit this one.
@@ -13,12 +13,38 @@ package api factoryId 25 {
      */
     abstract class TrackingBase {}
     
+    /** A tracking class which only tracks creation time. */
+    class WriteTracking classId 10 extends TrackingBase {
+        required Instant                            whenCreated;
+    }
+    
+    /** A tracking class which tracks creation as well as update time. */
+    class ReadWriteTracking classId 11 extends TrackingBase {
+        required Instant                            whenCreated;
+        optional Instant                            whenUpdated;            // null if the record is in its initial state, or the modification time otherwise 
+    }
+
+
+    /** A class which allows the separation of multiple tenants. */
+    class TenantDiscriminator classId 2 {
+        required long                               tenantRef;
+    }
+    
     /** Class which contains the DTO component as well as the audit data. In addition, possible tenant information is provided.
      * The DTO part contains all information which is actively maintained by the application, the tracking part all data which
      * is updated automatically, such as timestamps and versions.
      */
     final class DataWithTracking<DATA, TRACKING extends TrackingBase> classId 3 {
-        required (!DATA...)                     data;                   // the actual data
-        optional (!TRACKING...)                 tracking;               // audit data, if it exists
+        required (!DATA...)                         data;                   // the actual data
+        optional (!TRACKING...)                     tracking;               // audit data, if it exists
     }
+    
+    /**
+     * Defines the various implementations of the persistence providers.
+     * The main purpose of this enum is to ensure that the assigned IDs are unique within the application.
+     * The actual enum is only used by the implementations. 
+     */
+    enum PersistenceProviders {
+        JPA, TERRACOTTA, HAZELCAST, MESSAGING, UNUSED, AEROSPIKE, OFFHEAPMAP, OPENHFT
+    }    
 }
