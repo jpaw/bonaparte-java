@@ -17,8 +17,8 @@ package api factoryId 25 {
      * The DTO part contains all information which is actively maintained by the application, the tracking part all data which
      * is updated automatically, such as timestamps and versions.
      */
-    final class DataWithTracking<DTO, TRACKING extends TrackingBase> classId 3 {
-        required (!DTO...)                      dto;                    // the actual data
+    final class DataWithTracking<DATA, TRACKING extends TrackingBase> classId 3 {
+        required (!DATA...)                     data;                   // the actual data
         optional (!TRACKING...)                 tracking;               // audit data, if it exists
     }
 }
