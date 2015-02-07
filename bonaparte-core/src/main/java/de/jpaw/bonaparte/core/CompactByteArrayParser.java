@@ -352,12 +352,11 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
         if (c >= 0x20 && c < 0x80)
             return Character.valueOf((char)c);      // single byte char
         if (c != UNICODE_CHAR)
-            throw newMPE(MessageParserException.UNEXPECTED_CHARACTER,
-                    String.format("(expected UNICODE_CHAR, got 0x%02x)", c));
+            throw newMPE(MessageParserException.UNEXPECTED_CHARACTER, String.format("(expected UNICODE_CHAR, got 0x%02x)", c));
         require(2);
         char cc = (char)(((inputdata[parseIndex] & 0xff) << 8) | (inputdata[parseIndex+1] & 0xff));
         parseIndex += 2;
-        return cc;
+        return Character.valueOf(cc);
     }
 
 

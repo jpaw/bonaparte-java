@@ -121,14 +121,16 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
     /** Returns the current buffer as a Java byte array. Only the first <code>getLength()</code> bytes of this buffer are valid. */
     @Override
     public byte[] getBuffer() {
-        LOGGER.debug("Buffer retrieved, {} bytes written, {} object reuses", work.length(), numberOfObjectReuses);
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug("Buffer retrieved, {} bytes written, {} object reuses", getLength(), numberOfObjectReuses);
         return work.getCurrentBuffer();
     }
 
     /** returns the result as a deep copy byte array of precise length of the result. */
     @Override
     public byte[] getBytes() {
-        LOGGER.debug("Bytes retrieved, {} bytes written, {} object reuses", work.length(), numberOfObjectReuses);
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug("Bytes retrieved, {} bytes written, {} object reuses", getLength(), numberOfObjectReuses);
         return work.getBytes();  // slow!
     }
 

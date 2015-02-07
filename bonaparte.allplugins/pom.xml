@@ -17,9 +17,6 @@
         <!-- define releases we want to use, to ensure consistency -->
         <jpaw.version>1.2.4-SNAPSHOT</jpaw.version>
         <bonaparte.version>3.3.0-SNAPSHOT</bonaparte.version>
-        
-        <tycho.version>0.21.0</tycho.version>
-        <shade.plugin.version>2.3</shade.plugin.version>
     </properties>    
     
     <repositories>

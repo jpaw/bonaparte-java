@@ -45,7 +45,7 @@ public class ReferencingParser extends CompactByteArrayParser {
                 // check if it is a superclass
                 if (!di.getAllowSubclasses() || !type.isAssignableFrom(newObject.getClass())) {
                     throw newMPE(MessageParserException.BAD_CLASS, String.format("(got %s, expected %s for %s, subclassing = %b)",
-                            newObject.getClass().getSimpleName(), type.getSimpleName(), di.getName(), di.getAllowSubclasses())
+                            newObject.getClass().getSimpleName(), type.getSimpleName(), di.getName(), Boolean.valueOf(di.getAllowSubclasses()))
                         );
                 }
             }

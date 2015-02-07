@@ -50,7 +50,7 @@ public class StringParserUtil {
         } else if (data.length() > 1) {
             throw new MessageParserException(MessageParserException.CHAR_TOO_LONG, di.getName(), data, parsePositionProvider);
         }
-        return data.charAt(0);
+        return Character.valueOf(data.charAt(0));
     }
 
     // just do trim and length checks

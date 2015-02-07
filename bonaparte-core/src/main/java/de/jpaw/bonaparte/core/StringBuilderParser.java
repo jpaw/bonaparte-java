@@ -143,9 +143,9 @@ public final class StringBuilderParser extends StringBuilderConstants implements
     private boolean checkForNull(FieldDefinition di) throws MessageParserException {
         return checkForNull(di.getName(), di.getIsRequired());
     }
-    protected Integer readInteger(String fieldname) throws MessageParserException {
+    protected int readInteger(String fieldname) throws MessageParserException {
         checkForNull(fieldname, true);
-        return Integer.valueOf(nextIndexParseAscii(fieldname, false, false, false));
+        return Integer.parseInt(nextIndexParseAscii(fieldname, false, false, false));
     }
     // check for Null called for field members inside a class
     private boolean checkForNull(String fieldname, boolean isRequired) throws MessageParserException {
@@ -347,7 +347,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
                     String.format("(found 0x%02x for %s)", (int)c, di.getName()), parseIndex, currentClass);
         }
         needToken(FIELD_TERMINATOR);
-        return result;
+        return Boolean.valueOf(result);
     }
 
     @Override
@@ -596,7 +596,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
         if (useCache && parseIndex < messageLength && work.charAt(parseIndex) == OBJECT_AGAIN) {
             // we reuse an object
             ++parseIndex;
-            int objectIndex = readInteger(fieldname).intValue();
+            int objectIndex = readInteger(fieldname);
             if (objectIndex >= objects.size())
                 throw new MessageParserException(MessageParserException.INVALID_BACKREFERENCE, String.format(
                         "at %s: requested object %d of only %d available", fieldname, objectIndex, objects.size()),
