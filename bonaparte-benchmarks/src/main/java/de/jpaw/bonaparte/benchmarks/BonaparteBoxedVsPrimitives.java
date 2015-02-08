@@ -10,6 +10,7 @@ import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
+import org.openjdk.jmh.annotations.Threads;
 
 import de.jpaw.bonaparte.core.ByteArrayComposer;
 import de.jpaw.bonaparte.core.ByteArrayParser;
@@ -78,6 +79,7 @@ public class BonaparteBoxedVsPrimitives {
     }
     
     @Benchmark
+    @Threads(1)
     public ByteBuilder serializeCompactPrimitives() {
         cbac.reset();
         cbac.addField(Primitives.meta$$this, primObj);
@@ -85,6 +87,7 @@ public class BonaparteBoxedVsPrimitives {
     }
 
     @Benchmark
+    @Threads(1)
     public ByteBuilder serializeCompactBoxed() {
         cbac.reset();
         cbac.addField(BoxedTypes.meta$$this, boxedObj);
@@ -92,6 +95,7 @@ public class BonaparteBoxedVsPrimitives {
     }
     
     @Benchmark
+    @Threads(1)
     public byte [] serializeAsciiPrimitives() {
         bac.reset();
         bac.addField(Primitives.meta$$this, primObj);
@@ -99,6 +103,7 @@ public class BonaparteBoxedVsPrimitives {
     }
 
     @Benchmark
+    @Threads(1)
     public byte [] serializeAsciiBoxed() {
         bac.reset();
         bac.addField(BoxedTypes.meta$$this, boxedObj);
@@ -106,24 +111,28 @@ public class BonaparteBoxedVsPrimitives {
     }
     
     @Benchmark
+    @Threads(1)
     public Primitives parseCompactPrimitives() throws MessageParserException {
         CompactByteArrayParser bap = new CompactByteArrayParser(dataCompactPrimitives, 0, -1);
         return bap.readObject(Primitives.meta$$this, Primitives.class);
     }
 
     @Benchmark
+    @Threads(1)
     public BoxedTypes parseCompactBoxed() throws MessageParserException {
         CompactByteArrayParser bap = new CompactByteArrayParser(dataCompactBoxed, 0, -1);
         return bap.readObject(BoxedTypes.meta$$this, BoxedTypes.class);
     }
     
     @Benchmark
+    @Threads(1)
     public Primitives parseAsciiPrimitives() throws MessageParserException {
         ByteArrayParser bap = new ByteArrayParser(dataAsciiPrimitives, 0, -1);
         return bap.readObject(Primitives.meta$$this, Primitives.class);
     }
 
     @Benchmark
+    @Threads(1)
     public BoxedTypes parseAsciiBoxed() throws MessageParserException {
         ByteArrayParser bap = new ByteArrayParser(dataAsciiBoxed, 0, -1);
         return bap.readObject(BoxedTypes.meta$$this, BoxedTypes.class);
