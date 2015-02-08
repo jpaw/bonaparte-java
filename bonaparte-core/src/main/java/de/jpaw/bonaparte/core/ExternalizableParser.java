@@ -212,9 +212,9 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         }
         byte c = nextByte();
         if (c == INT_ZERO) {
-            return false;
+            return Boolean.FALSE;
         } else if (c == INT_ONE) {
-            return true;
+            return Boolean.TRUE;
         }
         throw new IOException(String.format("ILLEGAL BOOLEAN: found 0x%02x for %s.%s", (int)c, currentClass, di.getName()));
     }
@@ -694,6 +694,58 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
             throw new IOException(String.format("Invalid enum token %s for field %s.%s", scannedToken, currentClass, di.getName()));
         }
         return value;
+    }
+
+    @Override
+    public boolean readPrimitiveBoolean(MiscElementaryDataItem di) throws IOException {
+        int c = needToken();
+        if (c == 0)
+            return false;
+        if (c == 1)
+            return true;
+        throw new IOException(String.format("Unexpected character: (expected BOOLEAN 0/1, got 0x%02x) in %s.%s", c, currentClass, di.getName()));
+    }
+
+    // default implementations for the next ones...
+    @Override
+    public char readPrimitiveCharacter(MiscElementaryDataItem di) throws IOException {
+        String tmp = readString(di.getName(), true, 1, false, false, true, true);
+        if (tmp.length() == 0) {
+            throw new IOException("EMPTY CHAR in " + currentClass + "." + di.getName());
+        }
+        return tmp.charAt(0);
+    }
+
+    @Override
+    public double readPrimitiveDouble(BasicNumericElementaryDataItem di) throws IOException {
+        needToken(BINARY_DOUBLE);
+        return in.readDouble();
+    }
+
+    @Override
+    public float readPrimitiveFloat(BasicNumericElementaryDataItem di) throws IOException {
+        needToken(BINARY_FLOAT);
+        return in.readFloat();
+    }
+
+    @Override
+    public long readPrimitiveLong(BasicNumericElementaryDataItem di) throws IOException {
+        return readLongNoNull(di.getName());
+    }
+
+    @Override
+    public int readPrimitiveInteger(BasicNumericElementaryDataItem di) throws IOException {
+        return readVarInt(di.getName(), 32);
+    }
+
+    @Override
+    public short readPrimitiveShort(BasicNumericElementaryDataItem di) throws IOException {
+        return (short)readVarInt(di.getName(), 16);
+    }
+
+    @Override
+    public byte readPrimitiveByte(BasicNumericElementaryDataItem di) throws IOException {
+        return (byte)readVarInt(di.getName(), 8);
     }
 }
 

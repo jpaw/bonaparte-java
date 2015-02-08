@@ -348,15 +348,7 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
     public Character readCharacter(MiscElementaryDataItem di) throws MessageParserException {
         if (checkForNull(di))
             return null;
-        int c = needToken();
-        if (c >= 0x20 && c < 0x80)
-            return Character.valueOf((char)c);      // single byte char
-        if (c != UNICODE_CHAR)
-            throw newMPE(MessageParserException.UNEXPECTED_CHARACTER, String.format("(expected UNICODE_CHAR, got 0x%02x)", c));
-        require(2);
-        char cc = (char)(((inputdata[parseIndex] & 0xff) << 8) | (inputdata[parseIndex+1] & 0xff));
-        parseIndex += 2;
-        return Character.valueOf(cc);
+        return Character.valueOf(readPrimitiveCharacter(di));
     }
 
 
@@ -376,24 +368,14 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
     public Double readDouble(BasicNumericElementaryDataItem di) throws MessageParserException {
         if (checkForNull(di))
             return null;
-        int c = needToken();
-        if (c == COMPACT_DOUBLE) {
-            return Double.longBitsToDouble(readFixed8ByteLong());
-        }
-        // not a float, try upgrade of int to double (doubles of value 0 or 1 are explicitly written as int)
-        return (double)readInt(c, di.getName());
+        return Double.valueOf(readPrimitiveDouble(di));
     }
 
     @Override
     public Float readFloat(BasicNumericElementaryDataItem di) throws MessageParserException {
         if (checkForNull(di))
             return null;
-        int c = needToken();
-        if (c == COMPACT_FLOAT) {
-            return Float.intBitsToFloat(readFixed4ByteInt());
-        }
-        // not a float, try upgrade of int to float (floats of value 0 or 1 are explicitly written as int)
-        return (float)readInt(c, di.getName());
+        return Float.valueOf(readPrimitiveFloat(di));
     }
 
     @Override
@@ -735,5 +717,69 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
     public void eatParentSeparator() throws MessageParserException {
         skipNulls();  // upwards compatibility: skip extra fields if they are blank.
         needToken(PARENT_SEPARATOR);
+    }
+
+    @Override
+    public boolean readPrimitiveBoolean(MiscElementaryDataItem di) throws MessageParserException {
+        int c = needToken();
+        if (c == 0)
+            return false;
+        if (c != 1)
+            throw newMPE(MessageParserException.UNEXPECTED_CHARACTER, String.format("(expected BOOLEAN 0/1, got 0x%02x)", c));
+        return true;
+    }
+
+    // default implementations for the next ones...
+    @Override
+    public char readPrimitiveCharacter(MiscElementaryDataItem di) throws MessageParserException {
+        int c = needToken();
+        if (c >= 0x20 && c < 0x80)
+            return (char)c;      // single byte char
+        if (c != UNICODE_CHAR)
+            throw newMPE(MessageParserException.UNEXPECTED_CHARACTER, String.format("(expected UNICODE_CHAR, got 0x%02x)", c));
+        require(2);
+        char cc = (char)(((inputdata[parseIndex] & 0xff) << 8) | (inputdata[parseIndex+1] & 0xff));
+        parseIndex += 2;
+        return cc;
+    }
+
+    @Override
+    public double readPrimitiveDouble(BasicNumericElementaryDataItem di) throws MessageParserException {
+        int c = needToken();
+        if (c == COMPACT_DOUBLE) {
+            return Double.longBitsToDouble(readFixed8ByteLong());
+        }
+        // not a float, try upgrade of int to double (doubles of value 0 or 1 are explicitly written as int)
+        return readInt(c, di.getName());
+    }
+
+    @Override
+    public float readPrimitiveFloat(BasicNumericElementaryDataItem di) throws MessageParserException {
+        int c = needToken();
+        if (c == COMPACT_FLOAT) {
+            return Float.intBitsToFloat(readFixed4ByteInt());
+        }
+        // not a float, try upgrade of int to float (floats of value 0 or 1 are explicitly written as int)
+        return readInt(c, di.getName());
+    }
+
+    @Override
+    public long readPrimitiveLong(BasicNumericElementaryDataItem di) throws MessageParserException {
+        return readLong(needToken(), di.getName());
+    }
+
+    @Override
+    public int readPrimitiveInteger(BasicNumericElementaryDataItem di) throws MessageParserException {
+        return readInt(needToken(), di.getName());
+    }
+
+    @Override
+    public short readPrimitiveShort(BasicNumericElementaryDataItem di) throws MessageParserException {
+        return (short)readInt(needToken(), di.getName());
+    }
+
+    @Override
+    public byte readPrimitiveByte(BasicNumericElementaryDataItem di) throws MessageParserException {
+        return (byte)readInt(needToken(), di.getName());
     }
 }

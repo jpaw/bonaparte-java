@@ -244,9 +244,9 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
         if (token == null)
             return null;
         if (token.equals(cfg.booleanTrue))
-            return true;
+            return Boolean.TRUE;
         if (token.equals(cfg.booleanFalse))
-            return false;
+            return Boolean.FALSE;
         throw new MessageParserException(MessageParserException.ILLEGAL_BOOLEAN,
             String.format("(%s, expected %s or %s for %s)", token, cfg.booleanTrue, cfg.booleanFalse, di.getName()), parseIndex, currentClass);
     }
@@ -430,12 +430,13 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
         String token = getField(di.getName(), false, 9);
         if (token == null)
             return -1;
-        Integer n = Integer.valueOf(token.trim());
-        if (n == null) {
+        token = token.trim();
+        if (token == null || token.length() == 0) {
             if (di.getIsAggregateRequired())
                 throw new MessageParserException(MessageParserException.NULL_COLLECTION_NOT_ALLOWED, di.getName(), parseIndex, currentClass);
             return -1;
         }
+        int n = Integer.parseInt(token);
         if ((n < 0) || (n > 1000000000)) {
             throw new MessageParserException(MessageParserException.ARRAY_SIZE_OUT_OF_BOUNDS,
                     String.format("(got %d entries (0x%x) for %s)", n, n, di.getName()), parseIndex, currentClass);
@@ -622,6 +623,70 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
             throw new MessageParserException(MessageParserException.INVALID_ENUM_TOKEN, scannedToken, parseIndex, currentClass + "." + di.getName());
         }
         return value;
+    }
+    
+    @Override
+    public boolean readPrimitiveBoolean(MiscElementaryDataItem di) throws MessageParserException {
+        String token = getField(di.getName(), true, lengthOfBoolean);
+        if (token.equals(cfg.booleanTrue))
+            return true;
+        if (token.equals(cfg.booleanFalse))
+            return false;
+        throw new MessageParserException(MessageParserException.ILLEGAL_BOOLEAN,
+            String.format("(%s, expected %s or %s for %s)", token, cfg.booleanTrue, cfg.booleanFalse, di.getName()), parseIndex, currentClass);
+    }
+
+    @Override
+    public char readPrimitiveCharacter(MiscElementaryDataItem di) throws MessageParserException {
+        String tmp = readString(di.getName(), true, 1, false, false, true, true);
+        if (tmp.length() == 0) {
+            throw new MessageParserException(MessageParserException.EMPTY_CHAR, di.getName(), parseIndex, currentClass);
+        }
+        return tmp.charAt(0);
+    }
+
+    @Override
+    public double readPrimitiveDouble(BasicNumericElementaryDataItem di) throws MessageParserException {
+        String token = getField(di.getName(), di.getIsRequired(), di.getTotalDigits()+(di.getIsSigned() ? 1 : 0));
+        return Double.parseDouble(token.trim());
+    }
+
+    @Override
+    public float readPrimitiveFloat(BasicNumericElementaryDataItem di) throws MessageParserException {
+        String token = getField(di.getName(), di.getIsRequired(), di.getTotalDigits()+(di.getIsSigned() ? 1 : 0));
+        return Float.parseFloat(token.trim());
+    }
+
+    @Override
+    public long readPrimitiveLong(BasicNumericElementaryDataItem di) throws MessageParserException {
+        String token = readBufferForInteger(di);
+        if (cfg.removePoint4BD || di.getDecimalDigits() == 0)
+            return Long.parseLong(processTrailingSigns(token));
+        return postProcessForImplicitDecimals(di, token);
+    }
+
+    @Override
+    public int readPrimitiveInteger(BasicNumericElementaryDataItem di) throws MessageParserException {
+        String token = readBufferForInteger(di);
+        if (cfg.removePoint4BD || di.getDecimalDigits() == 0)
+            return Integer.parseInt(processTrailingSigns(token));
+        return (int) postProcessForImplicitDecimals(di, token);
+    }
+
+    @Override
+    public short readPrimitiveShort(BasicNumericElementaryDataItem di) throws MessageParserException {
+        String token = readBufferForInteger(di);
+        if (cfg.removePoint4BD || di.getDecimalDigits() == 0)
+            return Short.parseShort(processTrailingSigns(token));
+        return (short) postProcessForImplicitDecimals(di, token);
+    }
+
+    @Override
+    public byte readPrimitiveByte(BasicNumericElementaryDataItem di) throws MessageParserException {
+        String token = readBufferForInteger(di);
+        if (cfg.removePoint4BD || di.getDecimalDigits() == 0)
+            return Byte.parseByte(processTrailingSigns(token));
+        return (byte) postProcessForImplicitDecimals(di, token);
     }
 }
 

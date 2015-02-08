@@ -14,6 +14,7 @@ import org.joda.time.LocalTime;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
@@ -40,6 +41,11 @@ public class StringParserUtil {
     
     public StringParserUtil(ParsePositionProvider parsePositionProvider) {
         this.parsePositionProvider = parsePositionProvider;
+    }
+    
+    public void ensureNotNull(FieldDefinition di, String data) throws MessageParserException {
+        if (data == null)
+            throw new MessageParserException(MessageParserException.ILLEGAL_EXPLICIT_NULL, di.getName(), null, parsePositionProvider);
     }
 
     public Character readCharacter(final MiscElementaryDataItem di, String data) throws MessageParserException {
@@ -317,108 +323,40 @@ public class StringParserUtil {
         if (data == null) {
             return null;
         }
-        try {
-            final byte r = Byte.parseByte(data);
-            if (r < 0 && !di.getIsSigned())
-                throw new MessageParserException(MessageParserException.SUPERFLUOUS_SIGN, di.getName(), data, parsePositionProvider);
-            final int maxDigits = di.getTotalDigits();
-            if (maxDigits > 0) {
-                // make sure that the parsed value does not exceed the configured number of digits
-                if (r < IntegralLimits.BYTE_MIN_VALUES[maxDigits] || r > IntegralLimits.BYTE_MAX_VALUES[maxDigits])
-                    throw new MessageParserException(MessageParserException.NUMERIC_TOO_MANY_DIGITS, di.getName(), data, parsePositionProvider);
-            }
-            return Byte.valueOf(r);
-        } catch (NumberFormatException e) {
-            throw new MessageParserException(MessageParserException.NUMBER_PARSING_ERROR, di.getName(), data, parsePositionProvider);
-        }
+        return Byte.valueOf(readPrimitiveByte(di, data));
     }
     
     public Short readShort(final BasicNumericElementaryDataItem di, String data) throws MessageParserException {
         if (data == null) {
             return null;
         }
-        try {
-            final short r = Short.parseShort(data);
-            if (r < 0 && !di.getIsSigned())
-                throw new MessageParserException(MessageParserException.SUPERFLUOUS_SIGN, di.getName(), data, parsePositionProvider);
-            final int maxDigits = di.getTotalDigits();
-            if (maxDigits > 0) {
-                // make sure that the parsed value does not exceed the configured number of digits
-                if (r < IntegralLimits.SHORT_MIN_VALUES[maxDigits] || r > IntegralLimits.SHORT_MAX_VALUES[maxDigits])
-                    throw new MessageParserException(MessageParserException.NUMERIC_TOO_MANY_DIGITS, di.getName(), data, parsePositionProvider);
-            }
-            return Short.valueOf(r);
-        } catch (NumberFormatException e) {
-            throw new MessageParserException(MessageParserException.NUMBER_PARSING_ERROR, di.getName(), data, parsePositionProvider);
-        }
+        return Short.valueOf(readPrimitiveShort(di, data));
     }
 
     public Integer readInteger(final BasicNumericElementaryDataItem di, String data) throws MessageParserException {
         if (data == null) {
             return null;
         }
-        try {
-            final int r = Integer.parseInt(data);
-            if (r < 0 && !di.getIsSigned())
-                throw new MessageParserException(MessageParserException.SUPERFLUOUS_SIGN, di.getName(), data, parsePositionProvider);
-            final int maxDigits = di.getTotalDigits();
-            if (maxDigits > 0) {
-                // make sure that the parsed value does not exceed the configured number of digits
-                if (r < IntegralLimits.INT_MIN_VALUES[maxDigits] || r > IntegralLimits.INT_MAX_VALUES[maxDigits])
-                    throw new MessageParserException(MessageParserException.NUMERIC_TOO_MANY_DIGITS, di.getName(), data, parsePositionProvider);
-            }
-            return Integer.valueOf(r);
-        } catch (NumberFormatException e) {
-            throw new MessageParserException(MessageParserException.NUMBER_PARSING_ERROR, di.getName(), data, parsePositionProvider);
-        }
+        return Integer.valueOf(readPrimitiveInteger(di, data));
     }
 
     public Long readLong(final BasicNumericElementaryDataItem di, String data) throws MessageParserException {
         if (data == null) {
             return null;
         }
-        try {
-            final long r = Long.parseLong(data);
-            if (r < 0 && !di.getIsSigned())
-                throw new MessageParserException(MessageParserException.SUPERFLUOUS_SIGN, di.getName(), data, parsePositionProvider);
-            final int maxDigits = di.getTotalDigits();
-            if (maxDigits > 0) {
-                // make sure that the parsed value does not exceed the configured number of digits
-                if (r < IntegralLimits.LONG_MIN_VALUES[maxDigits] || r > IntegralLimits.LONG_MAX_VALUES[maxDigits])
-                    throw new MessageParserException(MessageParserException.NUMERIC_TOO_MANY_DIGITS, di.getName(), data, parsePositionProvider);
-            }
-            return Long.valueOf(r);
-        } catch (NumberFormatException e) {
-            throw new MessageParserException(MessageParserException.NUMBER_PARSING_ERROR, di.getName(), data, parsePositionProvider);
-        }
+        return Long.valueOf(readPrimitiveLong(di, data));
     }
 
     public Float readFloat(final BasicNumericElementaryDataItem di, String data) throws MessageParserException {
-        if (data == null) {
+        if (data == null)
             return null;
-        }
-        try {
-            final float r = Float.parseFloat(data);
-            if (!di.getIsSigned() && r < 0)
-                throw new MessageParserException(MessageParserException.SUPERFLUOUS_SIGN, di.getName(), data, parsePositionProvider);
-            return Float.valueOf(r);
-        } catch (NumberFormatException e) {
-            throw new MessageParserException(MessageParserException.NUMBER_PARSING_ERROR, di.getName(), data, parsePositionProvider);
-        }
+        return Float.valueOf(readPrimitiveFloat(di, data));
     }
 
     public Double readDouble(final BasicNumericElementaryDataItem di, String data) throws MessageParserException {
-        if (data == null) {
+        if (data == null)
             return null;
-        }
-        try {
-            final double r = Double.parseDouble(data);
-            if (!di.getIsSigned() && r < 0)
-                throw new MessageParserException(MessageParserException.SUPERFLUOUS_SIGN, di.getName(), data, parsePositionProvider);
-            return Double.valueOf(r);
-        } catch (NumberFormatException e) {
-            throw new MessageParserException(MessageParserException.NUMBER_PARSING_ERROR, di.getName(), data, parsePositionProvider);
-        }
+        return Double.valueOf(readPrimitiveDouble(di, data));
     }
 
     public BigInteger readBigInteger(final BasicNumericElementaryDataItem di, String data) throws MessageParserException {
@@ -481,5 +419,125 @@ public class StringParserUtil {
         if (value == null)
             throw new MessageParserException(MessageParserException.INVALID_ENUM_TOKEN, di.getName(), data, parsePositionProvider);
         return value;
+    }
+
+    public boolean readPrimitiveBoolean(MiscElementaryDataItem di, String data) throws MessageParserException {
+        ensureNotNull(di, data);
+        if (data.length() != 1)
+            throw new MessageParserException(MessageParserException.ILLEGAL_BOOLEAN, di.getName(), data, parsePositionProvider);
+        final char c = data.charAt(0);
+        if (c == '0') {
+            return false;
+        } else if (c == '1') {
+            return true;
+        } else {
+            throw new MessageParserException(MessageParserException.ILLEGAL_BOOLEAN, di.getName(), data, parsePositionProvider);
+        }
+    }
+
+    public char readPrimitiveCharacter(MiscElementaryDataItem di, String data) throws MessageParserException {
+        ensureNotNull(di, data);
+        if (data.length() == 0) {
+            throw new MessageParserException(MessageParserException.EMPTY_CHAR, di.getName(), data, parsePositionProvider);
+        } else if (data.length() > 1) {
+            throw new MessageParserException(MessageParserException.CHAR_TOO_LONG, di.getName(), data, parsePositionProvider);
+        }
+        return data.charAt(0);
+    }
+
+    public double readPrimitiveDouble(BasicNumericElementaryDataItem di, String data) throws MessageParserException {
+        ensureNotNull(di, data);
+        try {
+            final double r = Double.parseDouble(data);
+            if (!di.getIsSigned() && r < 0)
+                throw new MessageParserException(MessageParserException.SUPERFLUOUS_SIGN, di.getName(), data, parsePositionProvider);
+            return r;
+        } catch (NumberFormatException e) {
+            throw new MessageParserException(MessageParserException.NUMBER_PARSING_ERROR, di.getName(), data, parsePositionProvider);
+        }
+    }
+
+    public float readPrimitiveFloat(BasicNumericElementaryDataItem di, String data) throws MessageParserException {
+        ensureNotNull(di, data);
+        try {
+            final float r = Float.parseFloat(data);
+            if (!di.getIsSigned() && r < 0)
+                throw new MessageParserException(MessageParserException.SUPERFLUOUS_SIGN, di.getName(), data, parsePositionProvider);
+            return r;
+        } catch (NumberFormatException e) {
+            throw new MessageParserException(MessageParserException.NUMBER_PARSING_ERROR, di.getName(), data, parsePositionProvider);
+        }
+    }
+
+    public long readPrimitiveLong(BasicNumericElementaryDataItem di, String data) throws MessageParserException {
+        ensureNotNull(di, data);
+        try {
+            final long r = Long.parseLong(data);
+            if (r < 0 && !di.getIsSigned())
+                throw new MessageParserException(MessageParserException.SUPERFLUOUS_SIGN, di.getName(), data, parsePositionProvider);
+            final int maxDigits = di.getTotalDigits();
+            if (maxDigits > 0) {
+                // make sure that the parsed value does not exceed the configured number of digits
+                if (r < IntegralLimits.LONG_MIN_VALUES[maxDigits] || r > IntegralLimits.LONG_MAX_VALUES[maxDigits])
+                    throw new MessageParserException(MessageParserException.NUMERIC_TOO_MANY_DIGITS, di.getName(), data, parsePositionProvider);
+            }
+            return r;
+        } catch (NumberFormatException e) {
+            throw new MessageParserException(MessageParserException.NUMBER_PARSING_ERROR, di.getName(), data, parsePositionProvider);
+        }
+    }
+
+    public int readPrimitiveInteger(BasicNumericElementaryDataItem di, String data) throws MessageParserException {
+        ensureNotNull(di, data);
+        try {
+            final int r = Integer.parseInt(data);
+            if (r < 0 && !di.getIsSigned())
+                throw new MessageParserException(MessageParserException.SUPERFLUOUS_SIGN, di.getName(), data, parsePositionProvider);
+            final int maxDigits = di.getTotalDigits();
+            if (maxDigits > 0) {
+                // make sure that the parsed value does not exceed the configured number of digits
+                if (r < IntegralLimits.INT_MIN_VALUES[maxDigits] || r > IntegralLimits.INT_MAX_VALUES[maxDigits])
+                    throw new MessageParserException(MessageParserException.NUMERIC_TOO_MANY_DIGITS, di.getName(), data, parsePositionProvider);
+            }
+            return r;
+        } catch (NumberFormatException e) {
+            throw new MessageParserException(MessageParserException.NUMBER_PARSING_ERROR, di.getName(), data, parsePositionProvider);
+        }
+    }
+
+    public short readPrimitiveShort(BasicNumericElementaryDataItem di, String data) throws MessageParserException {
+        ensureNotNull(di, data);
+        try {
+            final short r = Short.parseShort(data);
+            if (r < 0 && !di.getIsSigned())
+                throw new MessageParserException(MessageParserException.SUPERFLUOUS_SIGN, di.getName(), data, parsePositionProvider);
+            final int maxDigits = di.getTotalDigits();
+            if (maxDigits > 0) {
+                // make sure that the parsed value does not exceed the configured number of digits
+                if (r < IntegralLimits.SHORT_MIN_VALUES[maxDigits] || r > IntegralLimits.SHORT_MAX_VALUES[maxDigits])
+                    throw new MessageParserException(MessageParserException.NUMERIC_TOO_MANY_DIGITS, di.getName(), data, parsePositionProvider);
+            }
+            return r;
+        } catch (NumberFormatException e) {
+            throw new MessageParserException(MessageParserException.NUMBER_PARSING_ERROR, di.getName(), data, parsePositionProvider);
+        }
+    }
+
+    public byte readPrimitiveByte(BasicNumericElementaryDataItem di, String data) throws MessageParserException {
+        ensureNotNull(di, data);
+        try {
+            final byte r = Byte.parseByte(data);
+            if (r < 0 && !di.getIsSigned())
+                throw new MessageParserException(MessageParserException.SUPERFLUOUS_SIGN, di.getName(), data, parsePositionProvider);
+            final int maxDigits = di.getTotalDigits();
+            if (maxDigits > 0) {
+                // make sure that the parsed value does not exceed the configured number of digits
+                if (r < IntegralLimits.BYTE_MIN_VALUES[maxDigits] || r > IntegralLimits.BYTE_MAX_VALUES[maxDigits])
+                    throw new MessageParserException(MessageParserException.NUMERIC_TOO_MANY_DIGITS, di.getName(), data, parsePositionProvider);
+            }
+            return r;
+        } catch (NumberFormatException e) {
+            throw new MessageParserException(MessageParserException.NUMBER_PARSING_ERROR, di.getName(), data, parsePositionProvider);
+        }
     }
 }

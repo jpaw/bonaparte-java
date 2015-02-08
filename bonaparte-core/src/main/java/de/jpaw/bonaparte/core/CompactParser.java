@@ -270,12 +270,7 @@ public class CompactParser extends CompactConstants implements MessageParser<IOE
     public Character readCharacter(MiscElementaryDataItem di) throws IOException {
         if (checkForNull(di))
             return null;
-        int c = needToken();
-        if (c >= 0x20 && c < 0x80)
-            return Character.valueOf((char)c);      // single byte char
-        if (c != UNICODE_CHAR)
-            throw new IOException(String.format("Unexpected character: (expected UNICODE_CHAR, got 0x%02x) in %s.%s", c, currentClass, di.getName()));
-        return in.readChar();
+        return Character.valueOf(readPrimitiveCharacter(di));
     }
 
 
@@ -295,24 +290,14 @@ public class CompactParser extends CompactConstants implements MessageParser<IOE
     public Double readDouble(BasicNumericElementaryDataItem di) throws IOException {
         if (checkForNull(di))
             return null;
-        int c = needToken();
-        if (c == COMPACT_DOUBLE) {
-            return in.readDouble();  // same as Double.longBitsToDouble(readFixed8ByteLong());
-        }
-        // not a float, try upgrade of int to double (doubles of value 0 or 1 are explicitly written as int)
-        return (double)readInt(c, di.getName());
+        return Double.valueOf(readPrimitiveDouble(di));
     }
 
     @Override
     public Float readFloat(BasicNumericElementaryDataItem di) throws IOException {
         if (checkForNull(di))
             return null;
-        int c = needToken();
-        if (c == COMPACT_FLOAT) {
-            return Float.intBitsToFloat(readFixed4ByteInt());
-        }
-        // not a float, try upgrade of int to float (floats of value 0 or 1 are explicitly written as int)
-        return (float)readInt(c, di.getName());
+        return Float.valueOf(readPrimitiveFloat(di));
     }
 
     @Override
@@ -657,5 +642,66 @@ public class CompactParser extends CompactConstants implements MessageParser<IOE
     public void eatParentSeparator() throws IOException {
         skipNulls();  // upwards compatibility: skip extra fields if they are blank.
         needToken(PARENT_SEPARATOR);
+    }
+    
+    @Override
+    public boolean readPrimitiveBoolean(MiscElementaryDataItem di) throws IOException {
+        int c = needToken();
+        if (c == 0)
+            return false;
+        if (c == 1)
+            return true;
+        throw new IOException(String.format("Unexpected character: (expected BOOLEAN 0/1, got 0x%02x) in %s.%s", c, currentClass, di.getName()));
+    }
+
+    // default implementations for the next ones...
+    @Override
+    public char readPrimitiveCharacter(MiscElementaryDataItem di) throws IOException {
+        int c = needToken();
+        if (c >= 0x20 && c < 0x80)
+            return (char)c;      // single byte char
+        if (c != UNICODE_CHAR)
+            throw new IOException(String.format("Unexpected character: (expected UNICODE_CHAR, got 0x%02x) in %s.%s", c, currentClass, di.getName()));
+        return in.readChar();
+    }
+
+    @Override
+    public double readPrimitiveDouble(BasicNumericElementaryDataItem di) throws IOException {
+        int c = needToken();
+        if (c == COMPACT_DOUBLE) {
+            return Double.longBitsToDouble(readFixed8ByteLong());
+        }
+        // not a float, try upgrade of int to double (doubles of value 0 or 1 are explicitly written as int)
+        return readInt(c, di.getName());
+    }
+
+    @Override
+    public float readPrimitiveFloat(BasicNumericElementaryDataItem di) throws IOException {
+        int c = needToken();
+        if (c == COMPACT_FLOAT) {
+            return Float.intBitsToFloat(readFixed4ByteInt());
+        }
+        // not a float, try upgrade of int to float (floats of value 0 or 1 are explicitly written as int)
+        return readInt(c, di.getName());
+    }
+
+    @Override
+    public long readPrimitiveLong(BasicNumericElementaryDataItem di) throws IOException {
+        return readLong(needToken(), di.getName());
+    }
+
+    @Override
+    public int readPrimitiveInteger(BasicNumericElementaryDataItem di) throws IOException {
+        return readInt(needToken(), di.getName());
+    }
+
+    @Override
+    public short readPrimitiveShort(BasicNumericElementaryDataItem di) throws IOException {
+        return (short)readInt(needToken(), di.getName());
+    }
+
+    @Override
+    public byte readPrimitiveByte(BasicNumericElementaryDataItem di) throws IOException {
+        return (byte)readInt(needToken(), di.getName());
     }
 }

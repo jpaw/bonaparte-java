@@ -167,7 +167,7 @@ public class MessageParserException extends ApplicationException {
     
     /** Creates a parser exception for which parse position and class name will be provided by some callback. */
     public MessageParserException(int errorCode, String fieldName, String fieldContents, ParsePositionProvider parsePositionProvider) {
-        this(errorCode, fieldName, parsePositionProvider.getParsePosition(), parsePositionProvider.getCurrentClassName());
+        this(errorCode, fieldName, parsePositionProvider.getParsePosition(), parsePositionProvider.getCurrentClassName(), fieldContents);
     }
 
     public MessageParserException(int errorCode) {

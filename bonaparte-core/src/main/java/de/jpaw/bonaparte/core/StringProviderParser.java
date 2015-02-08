@@ -36,7 +36,7 @@ public class StringProviderParser implements MessageParser<MessageParserExceptio
     
     public static interface StringGetter {
         /** Returns the contents of the field named by name, or null if that field has not been provided. */
-        String get(String name);
+        String get(String name) throws MessageParserException;
     }
 
     /** Utility method: populate BonaPortable from provided getter.
@@ -62,7 +62,7 @@ public class StringProviderParser implements MessageParser<MessageParserExceptio
             throw new MessageParserException(MessageParserException.EMPTY_BUT_REQUIRED_FIELD, di.getName(), -1, currentClass);
         return data;
     }
-
+    
     @Override
     public Character readCharacter(MiscElementaryDataItem di) throws MessageParserException {
         return stringParser.readCharacter(di, getParameter(di));
@@ -210,5 +210,45 @@ public class StringProviderParser implements MessageParser<MessageParserExceptio
     @Override
     public MessageParserException customExceptionConverter(String msg, Exception e) throws MessageParserException {
         return new MessageParserException(MessageParserException.CUSTOM_OBJECT_EXCEPTION, e != null ? msg + e.toString() : msg, -1, currentClass);
+    }
+
+    @Override
+    public boolean readPrimitiveBoolean(MiscElementaryDataItem di) throws MessageParserException {
+        return stringParser.readPrimitiveBoolean(di, getParameter(di));
+    }
+
+    @Override
+    public char readPrimitiveCharacter(MiscElementaryDataItem di) throws MessageParserException {
+        return stringParser.readPrimitiveCharacter(di, getParameter(di));
+    }
+
+    @Override
+    public double readPrimitiveDouble(BasicNumericElementaryDataItem di) throws MessageParserException {
+        return stringParser.readPrimitiveDouble(di, getParameter(di));
+    }
+
+    @Override
+    public float readPrimitiveFloat(BasicNumericElementaryDataItem di) throws MessageParserException {
+        return stringParser.readPrimitiveFloat(di, getParameter(di));
+    }
+
+    @Override
+    public long readPrimitiveLong(BasicNumericElementaryDataItem di) throws MessageParserException {
+        return stringParser.readPrimitiveLong(di, getParameter(di));
+    }
+
+    @Override
+    public int readPrimitiveInteger(BasicNumericElementaryDataItem di) throws MessageParserException {
+        return stringParser.readPrimitiveInteger(di, getParameter(di));
+    }
+
+    @Override
+    public short readPrimitiveShort(BasicNumericElementaryDataItem di) throws MessageParserException {
+        return stringParser.readPrimitiveShort(di, getParameter(di));
+    }
+
+    @Override
+    public byte readPrimitiveByte(BasicNumericElementaryDataItem di) throws MessageParserException {
+        return stringParser.readPrimitiveByte(di, getParameter(di));
     }
 }

@@ -693,4 +693,55 @@ public final class StringBuilderParser extends StringBuilderConstants implements
         String scannedToken = readString(di.getName(), di.getIsRequired() && !spec.getHasNullToken(), spec.getMaxTokenLength(), true, false, false, true);
         return stringParser.readXEnum(di, factory, scannedToken);
     }
+
+    @Override
+    public boolean readPrimitiveBoolean(MiscElementaryDataItem di) throws MessageParserException {
+        boolean result;
+        char c = needToken();
+        if (c == '0') {
+            result = false;
+        } else if (c == '1') {
+            result = true;
+        } else {
+            throw new MessageParserException(MessageParserException.ILLEGAL_BOOLEAN,
+                    String.format("(found 0x%02x for %s)", (int)c, di.getName()), parseIndex, currentClass);
+        }
+        needToken(FIELD_TERMINATOR);
+        return result;
+    }
+
+    @Override
+    public char readPrimitiveCharacter(MiscElementaryDataItem di) throws MessageParserException {
+        return stringParser.readPrimitiveCharacter(di, readString(di.getName(), di.getIsRequired(), 1, false, false, true, true));
+    }
+
+    @Override
+    public double readPrimitiveDouble(BasicNumericElementaryDataItem di) throws MessageParserException {
+        return stringParser.readPrimitiveDouble(di, nextIndexParseAscii(di.getName(), di.getIsSigned(), true, true));
+    }
+
+    @Override
+    public float readPrimitiveFloat(BasicNumericElementaryDataItem di) throws MessageParserException {
+        return stringParser.readPrimitiveFloat(di, nextIndexParseAscii(di.getName(), di.getIsSigned(), true, true));
+    }
+
+    @Override
+    public long readPrimitiveLong(BasicNumericElementaryDataItem di) throws MessageParserException {
+        return stringParser.readPrimitiveLong(di, nextIndexParseAscii(di.getName(), di.getIsSigned(), false, false));
+    }
+
+    @Override
+    public int readPrimitiveInteger(BasicNumericElementaryDataItem di) throws MessageParserException {
+        return stringParser.readPrimitiveInteger(di, nextIndexParseAscii(di.getName(), di.getIsSigned(), false, false));
+    }
+
+    @Override
+    public short readPrimitiveShort(BasicNumericElementaryDataItem di) throws MessageParserException {
+        return stringParser.readPrimitiveShort(di, nextIndexParseAscii(di.getName(), di.getIsSigned(), false, false));
+    }
+
+    @Override
+    public byte readPrimitiveByte(BasicNumericElementaryDataItem di) throws MessageParserException {
+        return stringParser.readPrimitiveByte(di, nextIndexParseAscii(di.getName(), di.getIsSigned(), false, false));
+    }
 }

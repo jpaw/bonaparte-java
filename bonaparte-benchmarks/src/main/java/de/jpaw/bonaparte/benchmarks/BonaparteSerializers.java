@@ -27,6 +27,16 @@ import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
 //d.j.b.b.BonaparteSerializers.serKryoDefault             thrpt         9       51.745        0.493   ops/ms
 //d.j.b.b.BonaparteSerializers.serStringBuilder           thrpt         9       66.861        1.561   ops/ms
 
+// rerun: jmh 1.5.1, B3.2.5 => all about 33% slower
+//Benchmark                                      Mode  Cnt      Score       Error  Units
+//BonaparteSerializers.serByteArray             thrpt    9  38636.360 ±  1720.177  ops/s
+//BonaparteSerializers.serByteArrayCompactId    thrpt    9  75449.331 ±  2428.022  ops/s
+//BonaparteSerializers.serByteArrayCompactPqon  thrpt    9  56348.157 ±   678.213  ops/s
+//BonaparteSerializers.serCompactId             thrpt    9  33687.558 ± 18143.784  ops/s
+//BonaparteSerializers.serCompactPqon           thrpt    9  29567.237 ±   900.283  ops/s
+//BonaparteSerializers.serKryoDefault           thrpt    9  34601.543 ±   828.711  ops/s
+//BonaparteSerializers.serStringBuilder         thrpt    9  42197.779 ±   955.839  ops/s
+
 @State(value = Scope.Thread)
 @OperationsPerInvocation(BonaparteSerializers.OPERATIONS_PER_INVOCATION)
 public class BonaparteSerializers {

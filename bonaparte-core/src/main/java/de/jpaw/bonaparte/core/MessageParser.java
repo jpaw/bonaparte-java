@@ -81,4 +81,14 @@ public interface MessageParser<E extends Exception> extends ExceptionConverter<E
     public void setClassName(String newClassName); // returns the previously active class name
     public void eatParentSeparator() throws E;  // restores the previous class name
     public <T extends AbstractXEnumBase<T>> T readXEnum(XEnumDataItem di, XEnumFactory<T> factory) throws E;
+    
+    // add the primitive types
+    public char       readPrimitiveCharacter (MiscElementaryDataItem di) throws E;
+    public boolean    readPrimitiveBoolean   (MiscElementaryDataItem di) throws E;
+    public double     readPrimitiveDouble    (BasicNumericElementaryDataItem di) throws E;
+    public float      readPrimitiveFloat     (BasicNumericElementaryDataItem di) throws E;
+    public long       readPrimitiveLong      (BasicNumericElementaryDataItem di) throws E;
+    public int        readPrimitiveInteger   (BasicNumericElementaryDataItem di) throws E;
+    public short      readPrimitiveShort     (BasicNumericElementaryDataItem di) throws E;
+    public byte       readPrimitiveByte      (BasicNumericElementaryDataItem di) throws E;
 }

@@ -415,17 +415,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
         if (checkForNull(di)) {
             return null;
         }
-        byte c = needToken();
-        if (c == '0') {
-            result = false;
-        } else if (c == '1') {
-            result = true;
-        } else {
-            throw new MessageParserException(MessageParserException.ILLEGAL_BOOLEAN,
-                    String.format("(found 0x%02x for %s)", (int)c, di.getName()), parseIndex, currentClass);
-        }
-        needToken(FIELD_TERMINATOR);
-        return Boolean.valueOf(result);
+        return Boolean.valueOf(readPrimitiveBoolean(di));        
     }
 
     @Override
@@ -815,5 +805,57 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
         XEnumDefinition spec = di.getBaseXEnum();
         String scannedToken = readString(di.getName(), di.getIsRequired() && !spec.getHasNullToken(), spec.getMaxTokenLength(), true, false, false, true);
         return stringParser.readXEnum(di, factory, scannedToken);
+    }
+
+    @Override
+    public boolean readPrimitiveBoolean(MiscElementaryDataItem di) throws MessageParserException {
+        byte c = needToken();
+        boolean result;
+        if (c == '0') {
+            result = false;
+        } else if (c == '1') {
+            result = true;
+        } else {
+            throw new MessageParserException(MessageParserException.ILLEGAL_BOOLEAN,
+                    String.format("(found 0x%02x for %s)", (int)c, di.getName()), parseIndex, currentClass);
+        }
+        needToken(FIELD_TERMINATOR);
+        return result;
+    }
+
+    // default implementations for the next ones...
+    @Override
+    public char readPrimitiveCharacter(MiscElementaryDataItem di) throws MessageParserException {
+        return readCharacter(di).charValue();
+    }
+
+    @Override
+    public double readPrimitiveDouble(BasicNumericElementaryDataItem di) throws MessageParserException {
+        return readDouble(di).doubleValue();
+    }
+
+    @Override
+    public float readPrimitiveFloat(BasicNumericElementaryDataItem di) throws MessageParserException {
+        return readFloat(di).floatValue();
+    }
+
+    @Override
+    public long readPrimitiveLong(BasicNumericElementaryDataItem di) throws MessageParserException {
+        return readLong(di).longValue();
+    }
+
+    @Override
+    public int readPrimitiveInteger(BasicNumericElementaryDataItem di) throws MessageParserException {
+        return readInteger(di).intValue();
+    }
+
+    @Override
+    public short readPrimitiveShort(BasicNumericElementaryDataItem di) throws MessageParserException {
+        return readShort(di).shortValue();
+    }
+
+    @Override
+    public byte readPrimitiveByte(BasicNumericElementaryDataItem di) throws MessageParserException {
+        return readByte(di).byteValue();
     }
 }
