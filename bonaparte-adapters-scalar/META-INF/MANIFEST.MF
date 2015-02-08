@@ -3,7 +3,7 @@ Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-ManifestVersion: 2
 Bundle-Name: bonaparte external class adapters
 Bundle-SymbolicName: bonaparte.adapters.scalar
-Bundle-Version: 3.3.0
+Bundle-Version: 3.3.1.qualifier
 Bundle-Vendor: Michael Bischoff
 Require-Bundle: bonaparte.core,
  fixedpoint.core,
