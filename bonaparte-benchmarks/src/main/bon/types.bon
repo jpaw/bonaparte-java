@@ -1,0 +1,23 @@
+package myTypes factoryId 44 {
+    
+    class Primitives noExt classId 17 {
+        byte        byte1;
+        short       short1;
+        int         int1;
+        long        long1;
+        boolean     boolean1;
+        float       float1;
+        double      double1;
+        char        char1;
+    }
+    class BoxedTypes noExt classId 18 {
+        Byte        byte1;
+        Short       short1;
+        Integer     int1;
+        Long        long1;
+        Boolean     boolean1;
+        Float       float1;
+        Double      double1;
+        Character   char1;
+    }
+}

@@ -699,9 +699,9 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
     @Override
     public boolean readPrimitiveBoolean(MiscElementaryDataItem di) throws IOException {
         int c = needToken();
-        if (c == 0)
+        if (c == INT_ZERO)
             return false;
-        if (c == 1)
+        if (c == INT_ONE)
             return true;
         throw new IOException(String.format("Unexpected character: (expected BOOLEAN 0/1, got 0x%02x) in %s.%s", c, currentClass, di.getName()));
     }
