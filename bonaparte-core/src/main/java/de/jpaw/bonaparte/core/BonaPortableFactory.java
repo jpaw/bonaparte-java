@@ -49,6 +49,8 @@ public class BonaPortableFactory {
         packagePrefixMap.put("meta",      bonaparteClassDefaultPackagePrefix + ".meta");        // bonaparte-core
         packagePrefixMap.put("ui",        bonaparteClassDefaultPackagePrefix + ".ui");          // bonaparte-core
         packagePrefixMap.put("api",       bonaparteClassDefaultPackagePrefix + ".api");         // bonaparte-api
+        packagePrefixMap.put("apip",      bonaparteClassDefaultPackagePrefix + ".apip");        // bonaparte-api (primitive long primary keys)
+        packagePrefixMap.put("apiw",      bonaparteClassDefaultPackagePrefix + ".apiw");        // bonaparte-api (object wrapped long primary keys)
         packagePrefixMap.put("adapters",  bonaparteClassDefaultPackagePrefix + ".adapters");    // bonaparte-adapters-*
     }
     static private class HiddenClass {
