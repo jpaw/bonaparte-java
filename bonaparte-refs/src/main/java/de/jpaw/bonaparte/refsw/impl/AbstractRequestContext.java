@@ -22,14 +22,14 @@ public class AbstractRequestContext implements RequestContext, AutoCloseable {
     public final String tenantId;
     public final Long userRef;
     public final Long tenantRef;
-    public final Long requestRef;
+    public final long requestRef;
     public final Instant executionStart;     // to avoid checking the time repeatedly (takes 33 ns every time we do it), a timestamp is taken when the request processing starts
     
     private final PersistenceProvider [] persistenceUnits = new PersistenceProvider[MAX_PERSISTENCE_PROVIDERS];
     private int maxPersistenceProvider = -1;    // high water mark for the maximum index of a provider
 
     
-    public AbstractRequestContext(Instant executionStart, String userId, String tenantId, Long userRef, Long tenantRef, Long requestRef) {
+    public AbstractRequestContext(Instant executionStart, String userId, String tenantId, Long userRef, Long tenantRef, long requestRef) {
         this.tenantId = tenantId;
         this.userId = userId;
         this.tenantRef = tenantRef;
@@ -37,7 +37,7 @@ public class AbstractRequestContext implements RequestContext, AutoCloseable {
         this.requestRef = requestRef;
         this.executionStart = executionStart;
         if (LOGGER.isDebugEnabled())
-            LOGGER.debug("Starting RequestContext for user {}, tenant {}, processRef {}", userId, tenantId, requestRef);
+            LOGGER.debug("Starting RequestContext for user {}, tenant {}, processRef {}", userId, tenantId, Long.valueOf(requestRef));
     }
     
     // persistence services
@@ -89,7 +89,7 @@ public class AbstractRequestContext implements RequestContext, AutoCloseable {
     @Override
     public void close() throws Exception {
         if (LOGGER.isDebugEnabled())
-            LOGGER.debug("Closing RequestContext for user {}, tenant {}, processRef {}", userId, tenantId, requestRef);
+            LOGGER.debug("Closing RequestContext for user {}, tenant {}, processRef {}", userId, tenantId, Long.valueOf(requestRef));
         
         for (int i = 0; i <= maxPersistenceProvider; ++i) {
             if (persistenceUnits[i] != null) {
@@ -113,7 +113,7 @@ public class AbstractRequestContext implements RequestContext, AutoCloseable {
     }
 
     @Override
-    public Long getRequestRef() {
+    public long getRequestRef() {
         return requestRef;
     }
 

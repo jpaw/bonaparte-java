@@ -12,7 +12,7 @@ public interface RequestContext extends AutoCloseable {
     /** Returns some identification of the current user, or 0 if no user has been authenticated. */ 
     Long getUserRef();
     /** Returns some identification about the request being processed, or 0 if not applicable. */ 
-    Long getRequestRef();
+    long getRequestRef();
     /** Returns cached information when the request processing has started (to avoid repeatedly querying the system clock, which is a costly operation). */ 
     Instant getExecutionStart();
     
