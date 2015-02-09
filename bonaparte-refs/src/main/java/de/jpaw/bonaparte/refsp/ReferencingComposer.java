@@ -1,12 +1,13 @@
-package de.jpaw.bonaparte.refs;
+package de.jpaw.bonaparte.refsp;
 
 import java.util.Map;
 
 import de.jpaw.bonaparte.core.BonaCustom;
 import de.jpaw.bonaparte.core.CompactByteArrayComposer;
-import de.jpaw.bonaparte.pojos.api.Ref;
+import de.jpaw.bonaparte.pojos.apip.Ref;
 import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
+import de.jpaw.bonaparte.refs.PersistenceException;
 import de.jpaw.util.ByteBuilder;
 
 /** A composer of the compact format family, using classIds instead of names and replacing references to other classes by the key. */

@@ -1,4 +1,4 @@
-package de.jpaw.bonaparte.refs;
+package de.jpaw.bonaparte.refsp;
 
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 

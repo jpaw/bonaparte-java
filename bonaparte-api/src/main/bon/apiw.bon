@@ -1,0 +1,19 @@
+/** Definitions which rely on wrapper types for keys. */
+package apiw factoryId 25 {
+    default private unsigned trim noControlChars;
+
+    /** Root class of reference objects. The field has been defined as a primitive in order to avoid type wrapping,
+     * any value <= 0 should be treated as null (no (valid) reference).
+     * Wrapped long (object) version.
+     */     
+    class Ref classId 51 {
+        optional Long                               objectRef;
+    }
+
+    /** A class which allows the separation of multiple tenants.
+     * Wrapped long (object) version.
+     */
+    class TenantDiscriminator classId 52 {
+        required Long                               tenantRef;
+    }
+}

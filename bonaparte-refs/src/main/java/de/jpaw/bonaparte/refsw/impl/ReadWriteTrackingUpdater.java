@@ -1,8 +1,8 @@
-package de.jpaw.bonaparte.refs.impl;
+package de.jpaw.bonaparte.refsw.impl;
 
 import de.jpaw.bonaparte.pojos.api.ReadWriteTracking;
-import de.jpaw.bonaparte.refs.RequestContext;
-import de.jpaw.bonaparte.refs.TrackingUpdater;
+import de.jpaw.bonaparte.refsw.RequestContext;
+import de.jpaw.bonaparte.refsw.TrackingUpdater;
 
 public class ReadWriteTrackingUpdater implements TrackingUpdater<ReadWriteTracking> {
 

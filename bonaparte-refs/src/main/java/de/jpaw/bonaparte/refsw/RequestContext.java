@@ -1,16 +1,18 @@
-package de.jpaw.bonaparte.refs;
+package de.jpaw.bonaparte.refsw;
 
 import org.joda.time.Instant;
+
+import de.jpaw.bonaparte.refs.PersistenceProvider;
 
 /** Implementations provide information about the current request context, such as user, tenant, timestamp.
  * The implementing class is either some static information provider, some ThreadLocal, or some CDI injected instance. */
 public interface RequestContext extends AutoCloseable {
     /** Returns some identification about the current tenant in multi-tenant environments, or 0 if not applicable. */
-    long getTenantRef();
+    Long getTenantRef();
     /** Returns some identification of the current user, or 0 if no user has been authenticated. */ 
-    long getUserRef();
+    Long getUserRef();
     /** Returns some identification about the request being processed, or 0 if not applicable. */ 
-    long getRequestRef();
+    Long getRequestRef();
     /** Returns cached information when the request processing has started (to avoid repeatedly querying the system clock, which is a costly operation). */ 
     Instant getExecutionStart();
     

@@ -1,7 +1,8 @@
-package de.jpaw.bonaparte.refs;
+package de.jpaw.bonaparte.refsp;
 
-import de.jpaw.bonaparte.pojos.api.Ref;
+import de.jpaw.bonaparte.pojos.apip.Ref;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
+import de.jpaw.bonaparte.refs.PersistenceException;
 
 /** API to noSQL backends (mini EntityManager) */
 public interface RefResolver<REF extends Ref, DTO extends REF, TRACKING extends TrackingBase> {

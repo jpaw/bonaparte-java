@@ -1,11 +1,11 @@
-package de.jpaw.bonaparte.refs.impl;
+package de.jpaw.bonaparte.refsw.impl;
 
 import org.joda.time.Instant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.jpaw.bonaparte.refs.PersistenceProvider;
-import de.jpaw.bonaparte.refs.RequestContext;
+import de.jpaw.bonaparte.refsw.RequestContext;
 
 /** Base implementation of some request's environment, usually enhanced by specific applications.
  * 
@@ -20,16 +20,16 @@ public class AbstractRequestContext implements RequestContext, AutoCloseable {
     
     public final String userId;
     public final String tenantId;
-    public final long userRef;
-    public final long tenantRef;
-    public final long requestRef;
+    public final Long userRef;
+    public final Long tenantRef;
+    public final Long requestRef;
     public final Instant executionStart;     // to avoid checking the time repeatedly (takes 33 ns every time we do it), a timestamp is taken when the request processing starts
     
     private final PersistenceProvider [] persistenceUnits = new PersistenceProvider[MAX_PERSISTENCE_PROVIDERS];
     private int maxPersistenceProvider = -1;    // high water mark for the maximum index of a provider
 
     
-    public AbstractRequestContext(Instant executionStart, String userId, String tenantId, long userRef, long tenantRef, long requestRef) {
+    public AbstractRequestContext(Instant executionStart, String userId, String tenantId, Long userRef, Long tenantRef, Long requestRef) {
         this.tenantId = tenantId;
         this.userId = userId;
         this.tenantRef = tenantRef;
@@ -37,7 +37,7 @@ public class AbstractRequestContext implements RequestContext, AutoCloseable {
         this.requestRef = requestRef;
         this.executionStart = executionStart;
         if (LOGGER.isDebugEnabled())
-            LOGGER.debug("Starting RequestContext for user {}, tenant {}, processRef {}", userId, tenantId, Long.valueOf(requestRef));
+            LOGGER.debug("Starting RequestContext for user {}, tenant {}, processRef {}", userId, tenantId, requestRef);
     }
     
     // persistence services
@@ -89,7 +89,7 @@ public class AbstractRequestContext implements RequestContext, AutoCloseable {
     @Override
     public void close() throws Exception {
         if (LOGGER.isDebugEnabled())
-            LOGGER.debug("Closing RequestContext for user {}, tenant {}, processRef {}", userId, tenantId, Long.valueOf(requestRef));
+            LOGGER.debug("Closing RequestContext for user {}, tenant {}, processRef {}", userId, tenantId, requestRef);
         
         for (int i = 0; i <= maxPersistenceProvider; ++i) {
             if (persistenceUnits[i] != null) {
@@ -103,17 +103,17 @@ public class AbstractRequestContext implements RequestContext, AutoCloseable {
 
     // standard getters as defined in the interface
     @Override
-    public long getTenantRef() {
+    public Long getTenantRef() {
         return tenantRef;
     }
 
     @Override
-    public long getUserRef() {
+    public Long getUserRef() {
         return userRef;
     }
 
     @Override
-    public long getRequestRef() {
+    public Long getRequestRef() {
         return requestRef;
     }
 

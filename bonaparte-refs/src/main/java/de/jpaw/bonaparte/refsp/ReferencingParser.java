@@ -1,13 +1,14 @@
-package de.jpaw.bonaparte.refs;
+package de.jpaw.bonaparte.refsp;
 
 import java.util.Map;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.CompactByteArrayParser;
 import de.jpaw.bonaparte.core.MessageParserException;
-import de.jpaw.bonaparte.pojos.api.Ref;
+import de.jpaw.bonaparte.pojos.apip.Ref;
 import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
+import de.jpaw.bonaparte.refs.PersistenceException;
 
 public class ReferencingParser extends CompactByteArrayParser {
     private final Map<ClassDefinition,RefResolver<Ref, ?, ?>> resolvers;

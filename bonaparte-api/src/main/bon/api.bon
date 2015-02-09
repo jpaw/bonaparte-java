@@ -1,12 +1,5 @@
 package api factoryId 25 {
     default private unsigned trim noControlChars;
-
-    /** Root class of reference objects. The field has been defined as a primitive in order to avoid type wrapping,
-     * any value <= 0 should be treated as null (no (valid) reference).
-     */     
-    class Ref classId 1 {
-        required long                               objectRef;
-    }
     
     /** Base class for all audit information. Any other audit data holding class should inherit this one.
      * If tracking is not present, the returned data should be null, therefore this class has been made abstract.
@@ -24,17 +17,12 @@ package api factoryId 25 {
         optional Instant                            whenUpdated;            // null if the record is in its initial state, or the modification time otherwise 
     }
 
-
-    /** A class which allows the separation of multiple tenants. */
-    class TenantDiscriminator classId 2 {
-        required long                               tenantRef;
-    }
     
     /** Class which contains the DTO component as well as the audit data. In addition, possible tenant information is provided.
      * The DTO part contains all information which is actively maintained by the application, the tracking part all data which
      * is updated automatically, such as timestamps and versions.
      */
-    final class DataWithTracking<DATA, TRACKING extends TrackingBase> classId 3 {
+    final class DataWithTracking<DATA, TRACKING extends TrackingBase> classId 20 {
         required (!DATA...)                         data;                   // the actual data
         optional (!TRACKING...)                     tracking;               // audit data, if it exists
     }
