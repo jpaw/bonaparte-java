@@ -8,7 +8,7 @@ import de.jpaw.bonaparte.core.MessageParserException;
 import de.jpaw.bonaparte.pojos.apip.Ref;
 import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
-import de.jpaw.bonaparte.refs.PersistenceException;
+import de.jpaw.util.ApplicationException;
 
 public class ReferencingParser extends CompactByteArrayParser {
     private final Map<ClassDefinition,RefResolver<Ref, ?, ?>> resolvers;
@@ -51,7 +51,7 @@ public class ReferencingParser extends CompactByteArrayParser {
                 }
             }
             return type.cast(newObject);
-        } catch (PersistenceException e) {
+        } catch (ApplicationException e) {
             throw newMPE(MessageParserException.INVALID_REFERENCES, e.getMessage());
         }
     }
