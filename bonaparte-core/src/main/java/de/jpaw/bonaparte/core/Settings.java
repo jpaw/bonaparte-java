@@ -27,6 +27,7 @@ public abstract class Settings implements StaticMeta {
     // static private boolean defaultCRs = System.lineSeparator().length() == 2; // on Unix: false, on Windows: true (this check requires Java 7 which we do not have here)
     static private boolean defaultCRs = System.getProperty("line.separator").length() == 2;     // on Unix: false, on Windows: true
     static private Charset defaultCharset = Charset.forName("UTF-8");                           // always use UTF-8 unless explicitly requested differently
+    static public final Charset UTF8_CHARSET = Charset.forName("UTF-8");                       // StandardCharsets.UTF8 not yet available in Java 6...
     static private ParseSkipNonNulls defaultSkipNonNullsBehavior = ParseSkipNonNulls.WARN;     // allow improved downwards compatibility
     
     private boolean writeCRs = defaultCRs;          // determines the record terminator sequence. Attempts to mimic text file line breaks of the OS

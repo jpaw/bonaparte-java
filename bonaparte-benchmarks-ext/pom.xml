@@ -12,10 +12,10 @@
     <packaging>jar</packaging>
 
     <properties>
-        <mapdb.version>1.0.6</mapdb.version>
-        <chronicle.version>3.1.1</chronicle.version>
+        <chronicle.version>3.1.1</chronicle.version>        <!-- 3.3.6 is out, but uses different API -->
+        <chronicle-map.version>2.1.0</chronicle-map.version>
         <collections.version>3.1.0</collections.version>
-        <disruptor.version>3.2.1</disruptor.version>
+        <disruptor.version>3.3.0</disruptor.version>
     </properties>
 
     <dependencies>
@@ -39,14 +39,17 @@
             <artifactId>collections</artifactId>
             <version>${collections.version}</version>
         </dependency>
-        <!-- old version -->
-<!--
+        <!-- openHFT - Stand 13.2.2015 -->
         <dependency>
-            <groupId>com.higherfrequencytrading</groupId>
-            <artifactId>chronicle</artifactId>
-            <version>1.9.1</version>
+            <groupId>net.openhft</groupId>
+            <artifactId>chronicle-map</artifactId>
+            <version>${chronicle-map.version}</version>
         </dependency>
- -->
+        <dependency>
+            <groupId>net.openhft</groupId>
+            <artifactId>affinity</artifactId>
+            <version>2.2</version>
+        </dependency>
         <dependency>
             <groupId>net.openhft</groupId>
             <artifactId>chronicle</artifactId>

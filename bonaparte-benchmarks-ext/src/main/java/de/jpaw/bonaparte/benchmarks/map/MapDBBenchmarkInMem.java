@@ -2,10 +2,14 @@ package de.jpaw.bonaparte.benchmarks.map;
 
 import java.util.Random;
 import java.util.concurrent.ConcurrentNavigableMap;
+import java.util.concurrent.TimeUnit;
 
 import org.mapdb.*;
 import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.BenchmarkMode;
+import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.OperationsPerInvocation;
+import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
@@ -13,8 +17,17 @@ import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.infra.Blackhole;
 
 
-// results see MapDBBenchmark class
+//Benchmark                            Mode  Cnt     Score    Error  Units
+//MapDBBenchmarkInMem.readOnly         avgt    9    55.294 ±  1.479  ns/op
+//MapDBBenchmarkInMem.writeAnd4Reads   avgt    9  1795.072 ± 64.726  ns/op
+//MapDBBenchmarkInMem.writeNoCommit    avgt    9   824.227 ± 81.521  ns/op
+//MapDBBenchmarkInMem.writeWithCommit  avgt    9   847.648 ± 16.343  ns/op
+
+// => 800 ns per write, 150 per read (single Integer!)
+
 @State(value = Scope.Thread)
+@OutputTimeUnit(TimeUnit.NANOSECONDS)
+@BenchmarkMode(Mode.AverageTime)
 @OperationsPerInvocation(MapDBBenchmarkInMem.OPERATIONS_PER_INVOCATION)
 public class MapDBBenchmarkInMem {
     static public final int OPERATIONS_PER_INVOCATION = 10000;

@@ -3,10 +3,14 @@ package de.jpaw.bonaparte.benchmarks.map;
 import java.io.File;
 import java.util.Random;
 import java.util.concurrent.ConcurrentNavigableMap;
+import java.util.concurrent.TimeUnit;
 
 import org.mapdb.*;
 import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.BenchmarkMode;
+import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.OperationsPerInvocation;
+import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
@@ -42,6 +46,8 @@ import org.openjdk.jmh.infra.Blackhole;
 //d.j.b.b.m.MapDBBenchmarkInMem.writeWithCommit    thrpt        9   1241955.221    35134.413  ops/s
 
 @State(value = Scope.Thread)
+@OutputTimeUnit(TimeUnit.NANOSECONDS)
+@BenchmarkMode(Mode.AverageTime)
 @OperationsPerInvocation(MapDBBenchmark.OPERATIONS_PER_INVOCATION)
 public class MapDBBenchmark {
     static public final int OPERATIONS_PER_INVOCATION = 10000;

@@ -42,16 +42,16 @@
         
         <!-- define releases (mostly of 3rd party dependencies) we want to use, to ensure consistency -->
         <!-- Some more versions, used by specific dependent projects -->
-        <lucene.version>4.10.3</lucene.version>         <!-- UPTODATE 2014-12-20 -->
+        <lucene.version>4.10.3</lucene.version>         <!-- 5.0.0 is out 2015-02-20 -->
         <netty.version>4.0.25.Final</netty.version>     <!-- https://netty.io/news/ UPTODATE 2015-01-01 -->
         <poi.version>3.11</poi.version>                 <!-- http://poi.apache.org/ UPTODATE 2014-12-21 -->
         <mina.version>2.0.7</mina.version>              <!-- http://mina.apache.org/ 2.0.7 -->
         <camel.version>2.14.1</camel.version>           <!-- http://camel.apache.org/ UPTODATE 2014-12-17 (2.14.0 is the first for Java8, but introduces a lot new dependencies)-->
         <vertx.version>2.1.5</vertx.version>            <!-- http://vertx.io/ UPTODATE 2014-11-13 -->
-        <hazelcast.version>3.3.5</hazelcast.version>    <!-- http://hazelcast.org/download/ UPTODATE 2015-01-22 -->
-        <aerospike.version>3.0.32</aerospike.version>
+        <hazelcast.version>3.3.5</hazelcast.version>    <!-- 3.4.1 is out, but uses different API http://hazelcast.org/download/ UPTODATE 2015-01-22 -->
+        <aerospike.version>3.0.35</aerospike.version>   <!-- UPTODATE 2015-02-20 -->
         <hornetq.version>2.2.21.Final</hornetq.version> <!-- http://www.jboss.org/hornetq 2.2.14.Final is last tested one, 2.4.x required for AMQP, JMS 2.0 -->
-        <mapdb.version>1.0.6</mapdb.version>
+        <mapdb.version>1.0.7</mapdb.version>
         <lz4.version>1.3.0</lz4.version>                <!-- 1.2.0 was the last for Java 1.6, 1.3.0 UPDATE 2014-11-26 but SLOWER -->
         <kryo.version>2.24.0</kryo.version>
         <hibernate-validator.version>5.1.3.Final</hibernate-validator.version>
