@@ -35,7 +35,7 @@ public class AbstractRequestContext implements RequestContext, AutoCloseable {
         this.tenantRef = tenantRef;
         this.userRef = userRef;
         this.requestRef = requestRef;
-        this.executionStart = executionStart;
+        this.executionStart = executionStart != null ? executionStart : Instant.now();
         if (LOGGER.isDebugEnabled())
             LOGGER.debug("Starting RequestContext for user {}, tenant {}, processRef {}", userId, tenantId, Long.valueOf(requestRef));
     }

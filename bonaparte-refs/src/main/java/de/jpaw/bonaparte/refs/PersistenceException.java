@@ -6,7 +6,7 @@ public class PersistenceException extends ApplicationException {
     private static final long serialVersionUID = 61705245543364726L;
 
     private static final int ERROR_CODE_OFFSET = 14000;                                             // offset for all codes in this class
-    private static final int OFFSET = (DATABASE_ERROR * CLASSIFICATION_FACTOR) + ERROR_CODE_OFFSET; // offset for all codes in this class
+    private static final int OFFSET = (CL_DATABASE_ERROR * CLASSIFICATION_FACTOR) + ERROR_CODE_OFFSET; // offset for all codes in this class
 
     static public final int RECORD_DOES_NOT_EXIST        = OFFSET + 1;
     static public final int RECORD_ALREADY_EXISTS        = OFFSET + 2;
@@ -14,9 +14,9 @@ public class PersistenceException extends ApplicationException {
     static public final int UNKNOWN_INDEX_TYPE           = OFFSET + 4;
     static public final int NO_TRANSACTION               = OFFSET + 5;
     static public final int READONLY                     = OFFSET + 6;
-    static public final int NO_RECORD_FOR_INDEX          = (PARAMETER_ERROR * CLASSIFICATION_FACTOR) + ERROR_CODE_OFFSET + 7;
+    static public final int NO_RECORD_FOR_INDEX          = (CL_PARAMETER_ERROR * CLASSIFICATION_FACTOR) + ERROR_CODE_OFFSET + 7;
     static public final int NO_PRIMARY_KEY               = OFFSET + 8;
-    static public final int RECORD_DOES_NOT_EXIST_ILE    = (INTERNAL_LOGIC_ERROR * CLASSIFICATION_FACTOR) + ERROR_CODE_OFFSET + 9;
+    static public final int RECORD_DOES_NOT_EXIST_ILE    = (CL_INTERNAL_LOGIC_ERROR * CLASSIFICATION_FACTOR) + ERROR_CODE_OFFSET + 9;
     
     static {
         codeToDescription.put(RECORD_DOES_NOT_EXIST     , "No record for primary key found");

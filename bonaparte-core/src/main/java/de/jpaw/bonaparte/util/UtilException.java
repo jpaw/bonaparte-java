@@ -29,7 +29,7 @@ import de.jpaw.util.ApplicationException;
 public class UtilException extends ApplicationException {
     private static final long serialVersionUID = 85302061628413351L;
 
-    private static final int OFFSET = VALIDATION_ERROR * CLASSIFICATION_FACTOR + 15000;  // offset for all codes in this class
+    private static final int OFFSET = CL_VALIDATION_ERROR * CLASSIFICATION_FACTOR + 15000;  // offset for all codes in this class
 
     static public final int PATH_COMPONENT_NOT_FOUND    = OFFSET + 1;
     static public final int DESCEND_TO_NON_REFERENCE    = OFFSET + 2;

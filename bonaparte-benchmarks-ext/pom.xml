@@ -15,7 +15,6 @@
         <chronicle.version>3.1.1</chronicle.version>        <!-- 3.3.6 is out, but uses different API -->
         <chronicle-map.version>2.1.0</chronicle-map.version>
         <collections.version>3.1.0</collections.version>
-        <disruptor.version>3.3.0</disruptor.version>
     </properties>
 
     <dependencies>

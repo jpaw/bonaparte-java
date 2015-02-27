@@ -30,8 +30,8 @@ import de.jpaw.util.ApplicationException;
 public class MessageParserException extends ApplicationException {
     private static final long serialVersionUID = 6578705245543364726L;
 
-    private static final int OFFSET = (PARSER_ERROR * CLASSIFICATION_FACTOR) + 17000; // offset for all codes in this class
-    private static final int OFFSET3 = (PARAMETER_ERROR * CLASSIFICATION_FACTOR) + 17000; // offset for all codes in this class
+    private static final int OFFSET = (CL_PARSER_ERROR * CLASSIFICATION_FACTOR) + 17000; // offset for all codes in this class
+    private static final int OFFSET3 = (CL_PARAMETER_ERROR * CLASSIFICATION_FACTOR) + 17000; // offset for all codes in this class
 
     private final int characterIndex; // the byte count of the message at which the error occured
     private final String fieldName;   // if known, the name of the field where the error occured
