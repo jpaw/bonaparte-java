@@ -1,12 +1,13 @@
+import api.*
+
 /** Definitions which rely on wrapper types for keys. */
 package apiw factoryId 25 {
     default private unsigned trim noControlChars;
 
-    /** Root class of reference objects. The field has been defined as a primitive in order to avoid type wrapping,
-     * any value <= 0 should be treated as null (no (valid) reference).
+    /** Root class of reference objects. Using wrapped primitive long in order to support null intuitively.
      * Wrapped long (object) version.
      */     
-    class Ref classId 51 {
+    class Ref classId 51 extends AbstractRef refw "return objectRef;" {
         optional Long                               objectRef;
     }
 

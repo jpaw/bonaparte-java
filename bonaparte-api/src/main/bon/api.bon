@@ -1,6 +1,11 @@
 package api factoryId 25 {
     default private unsigned trim noControlChars;
     
+    /** Base class for all DTOs which can be stored in some key/value store and have a primitive or wrapped long
+     * primary key, either surrogate or derived by composing natural key fields. 
+     */
+    abstract class AbstractRef refp "" {}
+    
     /** Base class for all audit information. Any other audit data holding class should inherit this one.
      * If tracking is not present, the returned data should be null, therefore this class has been made abstract.
      */

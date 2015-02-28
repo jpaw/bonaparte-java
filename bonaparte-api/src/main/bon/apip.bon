@@ -1,3 +1,5 @@
+import api.*
+
 /** Definitions which rely on primitive types for keys. */
 package apip factoryId 25 {
     default private unsigned trim noControlChars;
@@ -6,7 +8,7 @@ package apip factoryId 25 {
      * any value <= 0 should be treated as null (no (valid) reference).
      * Primitive long version.
      */     
-    class Ref classId 1 {
+    class Ref classId 1 extends AbstractRef refp "return objectRef;" {
         required long                               objectRef;
     }
 
