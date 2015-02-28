@@ -75,9 +75,8 @@ package de.jpaw.bonaparte.core;
  *          f0  long fractional, next is scale, then big integer of mantissa
  *          f1..f9  fractional, with 1..9 decimal places, next is big integer of mantissa
  *          
- *          // next 3 are optional and will be deleted once all is tested
  *          fa  map begin (next is number of entries)
- *          fb  end of collection
+ *          fb  RESERVED (future use: multiple nulls, next is repeat count)
  *          fc  array begin (next is number of entries)
  *          
  *          fd  any length String UTF-16 (next is length (in characters!), then bytes)
@@ -114,7 +113,7 @@ public abstract class CompactConstants extends Settings {
     protected static final int NULL_FIELD = 0xa0;
     protected static final int EMPTY_FIELD = 0xaf;
     protected static final int MAP_BEGIN = 0xfa;
-    protected static final int COLLECTIONS_TERMINATOR = 0xfb;  // array / set / list / map terminator
+//    protected static final int COLLECTIONS_TERMINATOR = 0xfb;  // array / set / list / map terminator
     protected static final int ARRAY_BEGIN = 0xfc;
 
     protected static final int INT_2BYTE = 0xe2;

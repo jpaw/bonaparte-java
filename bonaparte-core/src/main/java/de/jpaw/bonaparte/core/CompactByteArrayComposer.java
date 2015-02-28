@@ -650,15 +650,17 @@ public class CompactByteArrayComposer extends CompactConstants implements Messag
         out.writeByte(ARRAY_BEGIN);
         intOut(currentMembers);
     }
+    
+    // removed collections terminator because it conflicts with the intended use of parent / child serialization to separate tables
 
     @Override
     public void terminateArray() {
-        out.writeByte(COLLECTIONS_TERMINATOR);
+//        out.writeByte(COLLECTIONS_TERMINATOR);
     }
 
     @Override
     public void terminateMap() {
-        out.writeByte(COLLECTIONS_TERMINATOR);
+//        out.writeByte(COLLECTIONS_TERMINATOR);
     }
 
     @Override

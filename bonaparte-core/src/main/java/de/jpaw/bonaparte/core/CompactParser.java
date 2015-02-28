@@ -90,7 +90,7 @@ public class CompactParser extends CompactConstants implements MessageParser<IOE
                 throw new IOException("Illegal explicit null for " + currentClass + "." + fieldname);
             }
         }
-        if ((c == PARENT_SEPARATOR) || (c == COLLECTIONS_TERMINATOR) || (c == OBJECT_TERMINATOR)) {
+        if ((c == PARENT_SEPARATOR) || (c == OBJECT_TERMINATOR)) {
             if (!isRequired) {
                 // uneat it
                 pushedBack = c;
@@ -112,7 +112,7 @@ public class CompactParser extends CompactConstants implements MessageParser<IOE
                 throw new IOException("Null not allowed for " + currentClass + "." + fieldname + " (found explicit null token)");
             }
         }
-        if ((c == PARENT_SEPARATOR) || (c == COLLECTIONS_TERMINATOR) || (c == OBJECT_TERMINATOR)) {
+        if ((c == PARENT_SEPARATOR) || (c == OBJECT_TERMINATOR)) {
             if (!isRequired) {
                 // uneat it
                 pushedBack = c;
@@ -610,7 +610,6 @@ public class CompactParser extends CompactConstants implements MessageParser<IOE
 
     @Override
     public void parseArrayEnd() throws IOException {
-        needToken(COLLECTIONS_TERMINATOR);
     }
 
 

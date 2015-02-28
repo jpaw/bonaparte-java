@@ -143,7 +143,7 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
                 throw newMPE(MessageParserException.ILLEGAL_EXPLICIT_NULL, fieldname);
             }
         }
-        if ((c == PARENT_SEPARATOR) || (c == COLLECTIONS_TERMINATOR) || (c == OBJECT_TERMINATOR)) {
+        if ((c == PARENT_SEPARATOR) || (c == OBJECT_TERMINATOR)) {
             if (!isRequired) {
                 // uneat it
                 --parseIndex;
@@ -172,7 +172,7 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
                 throw newMPE(MessageParserException.ILLEGAL_EXPLICIT_NULL, fieldname);
             }
         }
-        if ((c == PARENT_SEPARATOR) || (c == COLLECTIONS_TERMINATOR) || (c == OBJECT_TERMINATOR)) {
+        if ((c == PARENT_SEPARATOR) || (c == OBJECT_TERMINATOR)) {
             if (!isRequired) {
                 // uneat it
                 --parseIndex;
@@ -693,7 +693,6 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
 
     @Override
     public void parseArrayEnd() throws MessageParserException {
-        needToken(COLLECTIONS_TERMINATOR);
     }
 
 

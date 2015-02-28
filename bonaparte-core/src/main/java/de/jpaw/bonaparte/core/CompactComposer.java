@@ -643,14 +643,15 @@ public class CompactComposer extends CompactConstants implements MessageComposer
         intOut(currentMembers);
     }
 
+    // removed collections terminator because it conflicts with the intended use of parent / child serialization to separate tables
     @Override
     public void terminateArray() throws IOException {
-        out.writeByte(COLLECTIONS_TERMINATOR);
+//        out.writeByte(COLLECTIONS_TERMINATOR);
     }
 
     @Override
     public void terminateMap() throws IOException {
-        out.writeByte(COLLECTIONS_TERMINATOR);
+//        out.writeByte(COLLECTIONS_TERMINATOR);
     }
 
     @Override

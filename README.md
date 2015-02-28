@@ -29,6 +29,6 @@ This project uses maven3 as a build tool. Just run
 
 There have been some smaller DSL grammar changes, as well as API changes between the generated code and the support library. Normally, updating the support library and the the DSL synchronously should hide those differences, and only implementors of new serialization formats should notice this.
 
-The serialization formats are very stable, even across major releases.
+The Bonaparte serialization format is very stable, even across major releases.
 Data written into "Bonaportable" format by any release starting with Bonaparte 1.7.12 can be parsed by any release afterwards.
 The reverse is not true, due to the addition of new data types (Time, Instant, enum sets) etc. in new releases.
