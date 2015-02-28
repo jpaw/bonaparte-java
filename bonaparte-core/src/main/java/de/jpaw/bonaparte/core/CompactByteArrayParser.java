@@ -60,7 +60,7 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
     private int parseIndex;
     private int messageLength;
     private byte [] inputdata;
-    private String currentClass;
+    protected String currentClass;
     private final boolean useCache = true;
     private List<BonaPortable> objects;
     
@@ -678,7 +678,7 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
     @Override
     public int parseMapStart(FieldDefinition di) throws MessageParserException {
         if (checkForNullOrNeedToken(di.getName(), di.getIsAggregateRequired(), MAP_BEGIN))
-            return -1;
+            return COLLECTION_COUNT_NULL;
         return readInt(needToken(), di.getName());
     }
 
@@ -686,7 +686,7 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
     @Override
     public int parseArrayStart(FieldDefinition di, int sizeOfElement) throws MessageParserException {
         if (checkForNullOrNeedToken(di.getName(), di.getIsAggregateRequired(), ARRAY_BEGIN))
-            return -1;
+            return COLLECTION_COUNT_NULL;
         return readInt(needToken(), di.getName());
     }
 

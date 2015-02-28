@@ -2,15 +2,20 @@ package de.jpaw.bonaparte.refsp;
 
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.CompactByteArrayParser;
 import de.jpaw.bonaparte.core.MessageParserException;
 import de.jpaw.bonaparte.pojos.apip.Ref;
 import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
+import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.util.ApplicationException;
 
 public class ReferencingParser extends CompactByteArrayParser {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReferencingParser.class);
     private final Map<ClassDefinition,RefResolver<Ref, ?, ?>> resolvers;
     private boolean doSkipNext;        // skip the resolving for the next object (required if the outer object is in the map itself) 
     
@@ -24,13 +29,17 @@ public class ReferencingParser extends CompactByteArrayParser {
         doSkipNext = true;
     }
 
+    protected RefResolver<Ref, ?, ?> getReferencedResolver(ObjectReference di) {
+        return di.getLowerBound() == null ? null : resolvers.get(di.getLowerBound());
+    }
+    
     @Override
     public <R extends BonaPortable> R readObject (ObjectReference di, Class<R> type) throws MessageParserException {
         if (doSkipNext) {
             doSkipNext = false;
             return super.readObject(di, type);
         }
-        final RefResolver<Ref, ?, ?> r = di.getLowerBound() == null ? null : resolvers.get(di.getLowerBound());
+        final RefResolver<Ref, ?, ?> r = getReferencedResolver(di);
         if (r == null)
             return super.readObject(di, type);
         // read a long and resolve it
@@ -54,5 +63,29 @@ public class ReferencingParser extends CompactByteArrayParser {
         } catch (ApplicationException e) {
             throw newMPE(MessageParserException.INVALID_REFERENCES, e.getMessage());
         }
+    }
+    protected int collectionStart(FieldDefinition di, int storedCount) {
+        if (storedCount != COLLECTION_COUNT_REF) {
+            return storedCount; 
+        } else {
+            if (di instanceof ObjectReference) {
+                final RefResolver<Ref, ?, ?> r = getReferencedResolver((ObjectReference)di);
+                if (r == null) {
+                    LOGGER.warn("Resolver for {} not provided but referenced in stored instance of {}.{}",
+                            ((ObjectReference)di).getLowerBound().getName(), currentClass, di.getName());
+                }
+            }
+            return 0;  // currently always LAZY
+        }
+    }
+
+    @Override
+    public int parseMapStart(FieldDefinition di) throws MessageParserException {
+        return collectionStart(di, super.parseMapStart(di));
+    }
+
+    @Override
+    public int parseArrayStart(FieldDefinition di, int sizeOfElement) throws MessageParserException {
+        return collectionStart(di, super.parseArrayStart(di, sizeOfElement));
     }
 }

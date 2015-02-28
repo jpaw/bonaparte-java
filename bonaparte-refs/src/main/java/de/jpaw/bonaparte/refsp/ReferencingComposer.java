@@ -6,6 +6,7 @@ import de.jpaw.bonaparte.core.BonaCustom;
 import de.jpaw.bonaparte.core.CompactByteArrayComposer;
 import de.jpaw.bonaparte.pojos.apip.Ref;
 import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
+import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.util.ApplicationException;
 import de.jpaw.util.ByteBuilder;
@@ -25,9 +26,37 @@ public class ReferencingComposer extends CompactByteArrayComposer {
         excludedObject = obj == null ? DOES_NOT_MATCH_ANY : obj;
     }
 
+    protected RefResolver<Ref, ?, ?> getReferencedResolver(ObjectReference di) {
+        return di.getLowerBound() == null ? null : resolvers.get(di.getLowerBound());
+    }
+    
+    @Override
+    public void startMap(FieldDefinition di, int currentMembers) {
+        out.writeByte(MAP_BEGIN);
+        // write the map count or an indicator if the object is external (because size could change independently then)
+        // important: the provided map must be identical for composing and parsing
+        if (di instanceof ObjectReference && getReferencedResolver((ObjectReference)di) != null) {
+            intOut(COLLECTION_COUNT_REF);
+        } else {
+            intOut(currentMembers);
+        }
+    }
+
+    @Override
+    public void startArray(FieldDefinition di, int currentMembers, int sizeOfElement) {
+        out.writeByte(ARRAY_BEGIN);
+        // write the array count or an indicator if the object is external (because size could change independently then)
+        // important: the provided map must be identical for composing and parsing
+        if (di instanceof ObjectReference && getReferencedResolver((ObjectReference)di) != null) {
+            intOut(COLLECTION_COUNT_REF);
+        } else {
+            intOut(currentMembers);
+        }
+    }
+    
     @Override
     public void addField(ObjectReference di, BonaCustom obj) {
-        final RefResolver<Ref, ?, ?> r = di.getLowerBound() == null ? null : resolvers.get(di.getLowerBound());
+        final RefResolver<Ref, ?, ?> r = getReferencedResolver(di);
         if (r == null || obj == null || obj == excludedObject) {
             super.addField(di, obj);
         } else {

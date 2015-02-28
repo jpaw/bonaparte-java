@@ -595,7 +595,7 @@ public class CompactParser extends CompactConstants implements MessageParser<IOE
     @Override
     public int parseMapStart(FieldDefinition di) throws IOException {
         if (checkForNullOrNeedToken(di.getName(), di.getIsAggregateRequired(), MAP_BEGIN))
-            return -1;
+            return COLLECTION_COUNT_NULL;
         return readInt(needToken(), di.getName());
     }
 
@@ -603,7 +603,7 @@ public class CompactParser extends CompactConstants implements MessageParser<IOE
     @Override
     public int parseArrayStart(FieldDefinition di, int sizeOfElement) throws IOException {
         if (checkForNullOrNeedToken(di.getName(), di.getIsAggregateRequired(), ARRAY_BEGIN))
-            return -1;
+            return COLLECTION_COUNT_NULL;
         return readInt(needToken(), di.getName());
     }
 
