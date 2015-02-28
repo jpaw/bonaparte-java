@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.CompactByteArrayParser;
 import de.jpaw.bonaparte.core.MessageParserException;
-import de.jpaw.bonaparte.pojos.apiw.Ref;
+import de.jpaw.bonaparte.pojos.api.AbstractRef;
 import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
@@ -16,10 +16,10 @@ import de.jpaw.util.ApplicationException;
 
 public class ReferencingParser extends CompactByteArrayParser {
     private static final Logger LOGGER = LoggerFactory.getLogger(ReferencingParser.class);
-    private final Map<ClassDefinition,RefResolver<Ref, ?, ?>> resolvers;
+    private final Map<ClassDefinition,RefResolver<AbstractRef, ?, ?>> resolvers;
     private boolean doSkipNext;        // skip the resolving for the next object (required if the outer object is in the map itself) 
     
-    public ReferencingParser(byte[] buffer, int offset, int length, Map<ClassDefinition,RefResolver<Ref, ?, ?>> resolvers, boolean skipFirst) {
+    public ReferencingParser(byte[] buffer, int offset, int length, Map<ClassDefinition,RefResolver<AbstractRef, ?, ?>> resolvers, boolean skipFirst) {
         super(buffer, offset, length);
         this.resolvers = resolvers;
         this.doSkipNext = skipFirst;
@@ -29,7 +29,7 @@ public class ReferencingParser extends CompactByteArrayParser {
         doSkipNext = true;
     }
 
-    protected RefResolver<Ref, ?, ?> getReferencedResolver(ObjectReference di) {
+    protected RefResolver<AbstractRef, ?, ?> getReferencedResolver(ObjectReference di) {
         return di.getLowerBound() == null ? null : resolvers.get(di.getLowerBound());
     }
     
@@ -39,7 +39,7 @@ public class ReferencingParser extends CompactByteArrayParser {
             doSkipNext = false;
             return super.readObject(di, type);
         }
-        final RefResolver<Ref, ?, ?> r = getReferencedResolver(di);
+        final RefResolver<AbstractRef, ?, ?> r = getReferencedResolver(di);
         if (r == null)
             return super.readObject(di, type);
         // read a long and resolve it
@@ -70,7 +70,7 @@ public class ReferencingParser extends CompactByteArrayParser {
             return storedCount; 
         } else {
             if (di instanceof ObjectReference) {
-                final RefResolver<Ref, ?, ?> r = getReferencedResolver((ObjectReference)di);
+                final RefResolver<AbstractRef, ?, ?> r = getReferencedResolver((ObjectReference)di);
                 if (r == null) {
                     LOGGER.warn("Resolver for {} not provided but referenced in stored instance of {}.{}",
                             ((ObjectReference)di).getLowerBound().getName(), currentClass, di.getName());

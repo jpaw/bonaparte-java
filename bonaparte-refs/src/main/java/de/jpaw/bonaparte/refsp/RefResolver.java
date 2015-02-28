@@ -1,12 +1,12 @@
 package de.jpaw.bonaparte.refsp;
 
+import de.jpaw.bonaparte.pojos.api.AbstractRef;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
-import de.jpaw.bonaparte.pojos.apip.Ref;
 import de.jpaw.bonaparte.refs.BaseRefResolver;
 import de.jpaw.util.ApplicationException;
 
 /** API to noSQL backends (mini EntityManager) */
-public interface RefResolver<REF extends Ref, DTO extends REF, TRACKING extends TrackingBase> extends BaseRefResolver<REF, DTO, TRACKING> {
+public interface RefResolver<REF extends AbstractRef, DTO extends REF, TRACKING extends TrackingBase> extends BaseRefResolver<REF, DTO, TRACKING> {
     /**
      * Returns the key for the provided unique index. Null-safe, returns 0 for a null parameter. Throws an exception if the reference does not exist.
      */

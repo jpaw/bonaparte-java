@@ -18,7 +18,7 @@ public interface RefResolver<REF extends BonaPortable, KEY extends REF, DTO exte
     TRACKING getTracking(KEY ref) throws ApplicationException;
 
     /**
-     * Removes the record referenced by the key. Does nothing if key = 0. Throws an exception if the key does not exist.
+     * Removes the record referenced by the key. Does nothing if key is null. Throws an exception if the key does not exist.
      */
     void remove(KEY key) throws ApplicationException;
 
