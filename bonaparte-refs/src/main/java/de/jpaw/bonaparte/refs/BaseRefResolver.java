@@ -31,5 +31,16 @@ public interface BaseRefResolver<REF extends BonaPortable, DTO extends REF, TRAC
      * Flushes all modified but not yet written data to the database.
      */
     void flush();
+    
+    /**
+     * Creates a key object from a ref. Returns null for ref <= 0.
+     */
+    REF createKey(long ref);
+
+    /**
+     * Creates a key object from a ref. Returns null for ref = null.
+     * Similar method to previous, in order to avoid object allocation overhead.
+     */
+    REF createKey(Long ref);
 
 }

@@ -62,11 +62,18 @@ public class ReferencingComposer extends CompactByteArrayComposer {
             super.addField(di, obj);
         } else {
             // this is an object to replace by its reference
-            try {
-                addLong(r.getRef((AbstractRef)obj));
-            } catch (ApplicationException e) {
-                throw new RuntimeException(e);
+            AbstractRef refobj = (AbstractRef)obj;
+            // see if the reference is contained already
+            long ref = refobj.get$RefP();
+            if (ref <= 0) {
+                // contained references we have to resolve first
+                try {
+                    ref = r.getRef(refobj);
+                } catch (ApplicationException e) {
+                    throw new RuntimeException(e);
+                }
             }
+            addLong(ref);
         }
     }
 }
