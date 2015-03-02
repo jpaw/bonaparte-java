@@ -8,7 +8,7 @@ package apip factoryId 25 {
      * any value <= 0 should be treated as null (no (valid) reference).
      * Primitive long version.
      */     
-    class Ref classId 1 extends AbstractRef refp "return objectRef;" {
+    class Ref classId 1 extends AbstractRef refp "objectRef" {
         required long                               objectRef;
     }
 

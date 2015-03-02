@@ -29,7 +29,7 @@ package api factoryId 25 {
      */
     final class DataWithTracking<DATA, TRACKING extends TrackingBase> classId 20 {
         required (!DATA...)                         data;                   // the actual data
-        optional (!TRACKING...)                     tracking;               // audit data, if it exists
+        optional (!TRACKING...)                     ^tracking;              // audit data, if it exists
     }
     
     /**

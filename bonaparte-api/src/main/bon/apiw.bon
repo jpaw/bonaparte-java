@@ -7,7 +7,7 @@ package apiw factoryId 25 {
     /** Root class of reference objects. Using wrapped primitive long in order to support null intuitively.
      * Wrapped long (object) version.
      */     
-    class Ref classId 51 extends AbstractRef refw "return objectRef;" {
+    class Ref classId 51 extends AbstractRef refw "objectRef" {
         optional Long                               objectRef;
     }
 
