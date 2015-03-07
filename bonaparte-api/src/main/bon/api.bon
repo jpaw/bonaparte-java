@@ -61,19 +61,21 @@ package api factoryId 25 {
     }
     
     /** Combines multiple predicates by AND. */
-    final class AndFilter classId 21 {
-        required (SearchFilter...) required List<>  filters;        
-    }    
-      
-    /** Negates a filter. */
-    final class NotFilter classId 22 {
-        required (SearchFilter...)                  filter;        
+    final class AndFilter classId 21 extends SearchFilter {
+        required (SearchFilter...)                  filter1;        
+        required (SearchFilter...)                  filter2;        
     }    
       
     /** Combines multiple predicates by OR. */
-    final class OrFilter classId 23 {
-        required (SearchFilter...) required List<>  filters;        
+    final class OrFilter classId 23 extends SearchFilter {
+        required (SearchFilter...)                  filter1;        
+        required (SearchFilter...)                  filter2;        
     }
+      
+    /** Negates a filter. */
+    final class NotFilter classId 22 extends SearchFilter {
+        required (SearchFilter...)                  filter;        
+    }    
       
     /** Base class for all field specific filters. */
     abstract class FieldFilter extends SearchFilter {
@@ -94,7 +96,8 @@ package api factoryId 25 {
     /** Provides filtering for ASCII text fields (IDs, tokens). Exactly one of the parameters equalsValue and likeValue must be provided, the other one must be null.
      * If both parameters are null or both are not equal to null, an "invalid search filter" parameter error is returned. */
     final class AsciiFilter classId 26 extends FieldFilter {
-        optional Ascii(80)                          equalsValue;
+        optional Ascii(80)                          lowerBound;
+        optional Ascii(80)                          upperBound;
         optional Ascii(80)                          likeValue;
         required Ascii(80) List<>                   valueList;
     }
@@ -102,7 +105,8 @@ package api factoryId 25 {
     /** Provides filtering for Unicode text fields (IDs, tokens). Exactly one of the parameters equalsValue and likeValue must be provided, the other one must be null.
      * If both parameters are null or both are not equal to null, an "invalid search filter" parameter error is returned. */
     final class UnicodeFilter classId 27 extends FieldFilter {
-        optional Unicode(80)                        equalsValue;
+        optional Unicode(80)                        lowerBound;
+        optional Unicode(80)                        upperBound;
         optional Unicode(80)                        likeValue;
         required Unicode(80) List<>                 valueList;
     }
@@ -143,9 +147,9 @@ package api factoryId 25 {
     /** Provides filtering for time instants. All parameters are provided in UTC timezone. 
      */
     final class InstantFilter classId 32 extends FieldFilter {
-        optional Instant(0)                         lowerBound;
-        optional Instant(0)                         upperBound;
-        required Instant(0) List<>                  valueList;  
+        optional Instant(3)                         lowerBound;
+        optional Instant(3)                         upperBound;
+        required Instant(3) List<>                  valueList;  
     }
     
     /** Provides filtering for time elements. All parameters are provided in local timezone. 

@@ -31,6 +31,13 @@
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
+            <dependency>
+                <groupId>de.jpaw</groupId>
+                <artifactId>jdp-bom</artifactId>
+                <version>0.2.2-SNAPSHOT</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
         </dependencies>
     </dependencyManagement>
   
@@ -242,6 +249,7 @@
         <module>../bonaparte-android/pom.xml</module>
         <module>../bonaparte-xml-test/pom.xml</module>
         <module>../bonaparte-hazelcast/pom.xml</module>
+        <module>../bonaparte-hazelcast-api/pom.xml</module>
         <module>../bonaparte-hazelcast-test/pom.xml</module>
         <module>../bonaparte-poi/pom.xml</module>
         <module>../bonaparte-poix/pom.xml</module>

@@ -72,6 +72,11 @@
             </dependency>
             <dependency>
                 <groupId>de.jpaw</groupId>
+                <artifactId>bonaparte-hazelcast-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.jpaw</groupId>
                 <artifactId>bonaparte-hazelcast-test</artifactId>
                 <version>${project.version}</version>
             </dependency>
