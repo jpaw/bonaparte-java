@@ -1,6 +1,11 @@
 package de.jpaw.bonaparte.refs;
 
+import java.util.List;
+
 import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.pojos.api.DataWithTracking;
+import de.jpaw.bonaparte.pojos.api.SearchFilter;
+import de.jpaw.bonaparte.pojos.api.SortColumn;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.util.ApplicationException;
 
@@ -43,4 +48,14 @@ public interface BaseRefResolver<REF extends BonaPortable, DTO extends REF, TRAC
      */
     REF createKey(Long ref);
 
+    /** Returns a number of (technical) keys for a query.
+     * In case of objects where no technical key of type Long can be determined, throws UnsupportedOperationException.
+     * In this case, refsc will define an alternate query returning List<KEY>
+     */
+    List<Long> queryKeys(int limit, int offset, List<SearchFilter> filters, List<SortColumn> sortColumns) throws ApplicationException;
+    
+    /** Returns a number of records for a query.
+     * Throws UnsupportedOperationException in case the persistence provider does not support searches.
+     */
+    List<DataWithTracking<DTO,TRACKING>> query(int limit, int offset, List<SearchFilter> filters, List<SortColumn> sortColumns) throws ApplicationException;
 }

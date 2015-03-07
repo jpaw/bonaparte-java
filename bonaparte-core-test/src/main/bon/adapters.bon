@@ -1,0 +1,13 @@
+import meta.*
+
+/** Demonstration package to show the BonaPortableClass adapter. */
+package bclass.adapters factoryId 4095 {
+    
+    class Target classId 31 {
+        Ascii(8)                text;
+    }
+    
+    class Container classId 77 {
+        (BonaClassAdapter)      myContainer;
+    }    
+}

@@ -75,7 +75,7 @@ public class ReferencingParser extends CompactByteArrayParser {
                             ((ObjectReference)di).getLowerBound().getName(), currentClass, di.getName());
                 }
             }
-            return 0;  // currently always LAZY
+            return di.getIsAggregateRequired() ? 0 : COLLECTION_COUNT_NULL;  // currently always LAZY
         }
     }
 

@@ -117,7 +117,11 @@ package meta factoryId 29 {
     
     
     final immutable class ClassAdapter is java.lang.Class adapter de.jpaw.bonaparte.core.ClassAdapter singleField withExceptionConverter {
-        optional identifier                 canonicalName;  // fully qualified name
+        optional identifier                 canonicalName;      // fully qualified name
+    }
+    
+    final immutable class BonaClassAdapter is de.jpaw.bonaparte.core.BonaPortableClass adapter de.jpaw.bonaparte.core.BonaClassAdapter singleField withExceptionConverter {
+        optional Long                       key;                // factoryId and classId baked into a single field
     }
     
     // common superclass for class, enum and xenum, enumset, xenumset

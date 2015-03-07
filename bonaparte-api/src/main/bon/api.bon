@@ -1,3 +1,5 @@
+import meta.*
+
 package api factoryId 25 {
     default private unsigned trim noControlChars;
     
@@ -6,6 +8,12 @@ package api factoryId 25 {
      */
     abstract class AbstractRef refp "" {}
     
+    /** Class to indicate non existing References. */
+    final class VoidRef classId 99 extends AbstractRef
+       refp "0L"
+       keyp "new VoidRef()" {
+    }
+     
     /** Base class for all audit information. Any other audit data holding class should inherit this one.
      * If tracking is not present, the returned data should be null, therefore this class has been made abstract.
      */
@@ -39,5 +47,86 @@ package api factoryId 25 {
      */
     enum PersistenceProviders {
         JPA, TERRACOTTA, HAZELCAST, MESSAGING, UNUSED, AEROSPIKE, OFFHEAPMAP, OPENHFT
-    }    
+    }
+
+    /** Search related types. */
+
+    final class SortColumn {
+        required identifier                         fieldName;
+        required boolean                            descending;
+    }
+      
+    abstract class SearchFilter {
+        required identifier                         fieldName;                              // the field name subject to comparison
+        required boolean                            negateResult;                           // if true, this condition is negated.
+        required boolean                            orFieldIsNull;                          // if true, a null field is also valid
+    }
+    
+    /** Provides filtering for NULL fields. The result set consists of all rows which have a NULL value for the specified column.
+     * To select all rows with a NOT NULL value, set the "negateResult" field of the SearchFilter base class to true.
+     */
+    final class NullFilter extends SearchFilter {
+    }
+    
+    /** Provides filtering for boolean values. The result set is the subset of all rows which have the same boolean setting for the given field. */
+    final class BooleanFilter extends SearchFilter {
+        required boolean                            booleanValue;
+    }
+    
+    /** Provides filtering for ASCII text fields (IDs, tokens). Exactly one of the parameters equalsValue and likeValue must be provided, the other one must be null.
+     * If both parameters are null or both are not equal to null, an "invalid search filter" parameter error is returned. */
+    final class AsciiFilter extends SearchFilter {
+        optional Ascii(80)                          equalsValue;
+        optional Ascii(80)                          likeValue;
+        required Ascii(80) List<>                   valueList;
+    }
+    
+    
+    /** Provides filtering for integral values. At least one parameter must be provided. In order to search for exactly one value, both parameters must be set to the same value.
+     */
+    final class IntFilter extends SearchFilter {
+        optional Integer                            lowerBound;
+        optional Integer                            upperBound;
+        required Integer List<>                     valueList;
+    }
+    
+    
+    /** Provides filtering for integral values. At least one parameter must be provided. In order to search for exactly one value, both parameters must be set to the same value.
+     */
+    final class LongFilter extends SearchFilter {
+        optional Long                               lowerBound;
+        optional Long                               upperBound;
+        required Long List<>                        valueList;
+    }
+//    /** Provides filtering for calendar dates (full days). 
+//     */
+//    final class DayFilter extends SearchFilter {
+//        optional Day                                lowerBound;
+//        optional Day                                upperBound;
+//        required Day List<>                         valueList;
+//    }
+//    
+//    /** Provides filtering for local date / time. All parameters are provided in UTC timezone. 
+//     */
+//    final class TimestampFilter extends SearchFilter {
+//        optional Timestamp(0)                       lowerBound;
+//        optional Timestamp(0)                       upperBound;
+//        required Timestamp(0) List<>                valueList;  
+//    }
+//    
+//    /** Provides filtering for time instants. All parameters are provided in UTC timezone. 
+//     */
+//    final class InstantFilter extends SearchFilter {
+//        optional Instant(0)                         lowerBound;
+//        optional Instant(0)                         upperBound;
+//        required Instant(0) List<>                  valueList;  
+//    }
+//    
+//    /** Provides filtering for time elements. All parameters are provided in local timezone. 
+//     */
+//    final class TimeFilter extends SearchFilter {
+//        optional Time(0)                            lowerBound;
+//        optional Time(0)                            upperBound;
+//        required Time(0) List<>                     valueList;  
+//    }
 }

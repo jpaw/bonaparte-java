@@ -5,7 +5,7 @@ import java.util.Map;
 import de.jpaw.bonaparte.core.BonaCustom;
 import de.jpaw.bonaparte.core.CompactByteArrayComposer;
 import de.jpaw.bonaparte.pojos.api.AbstractRef;
-import de.jpaw.bonaparte.pojos.apiw.Ref;
+import de.jpaw.bonaparte.pojos.api.VoidRef;
 import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
@@ -14,7 +14,7 @@ import de.jpaw.util.ByteBuilder;
 
 /** A composer of the compact format family, using classIds instead of names and replacing references to other classes by the key. */
 public class ReferencingComposer extends CompactByteArrayComposer {
-    private static final AbstractRef DOES_NOT_MATCH_ANY = new Ref();
+    private static final AbstractRef DOES_NOT_MATCH_ANY = new VoidRef();
     private final Map<ClassDefinition,RefResolver<AbstractRef, ?, ?>> resolvers;
     private AbstractRef excludedObject = DOES_NOT_MATCH_ANY;       // an object not to replace, usually the outer one, in case the resolver map is created as a static object
     

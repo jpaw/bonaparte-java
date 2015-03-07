@@ -41,12 +41,27 @@ public class BonaPortableFactoryById {
     }
     
     /** Composes the factoryId and the classId into a single Long, which is used as a key. */
-    private static Long keyByIds(int factoryId, int classId) {
-        return Long.valueOf((((long)factoryId) << 32) + classId);
+    public static Long keyByIds(int factoryId, int classId) {
+        return Long.valueOf((((long)factoryId) << 32) | classId);
+    }
+    
+    /** Returns the factory Id portion of a composed long value. */
+    public static int factoryIdByKey(long key) {
+        return (int)(key >> 32);
+    }
+    
+    /** Returns the class Id portion of a composed long value. */
+    public static int classIdByKey(long key) {
+        return (int)key;
+    }
+    
+    /** Returns the BClass for the baked key. */
+    public static BonaPortableClass<?> getByKey(Long key) {
+        return lookup.get(key);
     }
     
     /** Returns the BClass for the ids. */
     public static BonaPortableClass<?> getByIds(int factoryId, int classId) {
-        return lookup.get(keyByIds(factoryId, classId));
+        return getByKey(keyByIds(factoryId, classId));
     }
 }

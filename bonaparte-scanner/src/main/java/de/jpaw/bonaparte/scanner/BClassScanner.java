@@ -1,5 +1,6 @@
 package de.jpaw.bonaparte.scanner;
 
+import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,16 +22,23 @@ public class BClassScanner {
     
     /** Entry for separate packages. */
     public static void scanAndRegisterBonaPortables(String packageName) {
-        int ctr = 0;
-        for (Class<? extends BonaPortable> cls : ReflectionsPackageCache.get(packageName).getSubTypesOf(BonaPortable.class)) {
-            try {
-                BonaPortableClass<?> bclass = (BonaPortableClass<?>) cls.getMethod("class$BonaPortableClass").invoke(null);
-                if (BonaPortableFactoryById.registerClass(bclass))
-                    ++ctr;
-            } catch (Exception e) {
-                LOGGER.warn("Cannot obtain BonaPortableClass for {}: {}", cls.getCanonicalName(), e.getMessage());
+        scanAndRegisterBonaPortables(ReflectionsPackageCache.get(packageName));
+    }
+    
+    /** Scan a list of available reflections. */
+    public static void scanAndRegisterBonaPortables(Reflections ... reflections) {
+        for (int i = 0; i < reflections.length; ++i) {
+            int ctr = 0;
+            for (Class<? extends BonaPortable> cls : reflections[i].getSubTypesOf(BonaPortable.class)) {
+                try {
+                    BonaPortableClass<?> bclass = (BonaPortableClass<?>) cls.getMethod("class$BonaPortableClass").invoke(null);
+                    if (BonaPortableFactoryById.registerClass(bclass))
+                        ++ctr;
+                } catch (Exception e) {
+                    LOGGER.warn("Cannot obtain BonaPortableClass for {}: {}", cls.getCanonicalName(), e.getMessage());
+                }
             }
+            LOGGER.info("Startup: Loaded {} BonaPortable classes", ctr);
         }
-        LOGGER.info("Startup: Loaded {} BonaPortable classes", ctr);
     }
 }
