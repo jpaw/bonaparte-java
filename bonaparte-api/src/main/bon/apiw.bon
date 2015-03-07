@@ -1,6 +1,8 @@
 import api.*
 
-/** Definitions which rely on wrapper types for keys. */
+/** Definitions which rely on wrapper types for keys.
+ * Assigned to factoryId 25, classIds 51-55
+ */
 package apiw factoryId 25 {
     default private unsigned trim noControlChars;
 

@@ -35,7 +35,7 @@ package api factoryId 25 {
      * The DTO part contains all information which is actively maintained by the application, the tracking part all data which
      * is updated automatically, such as timestamps and versions.
      */
-    final class DataWithTracking<DATA, TRACKING extends TrackingBase> classId 20 {
+    final class DataWithTracking<DATA, TRACKING extends TrackingBase> classId 12 {
         required (!DATA...)                         data;                   // the actual data
         optional (!TRACKING...)                     ^tracking;              // audit data, if it exists
     }
@@ -46,45 +46,71 @@ package api factoryId 25 {
      * The actual enum is only used by the implementations. 
      */
     enum PersistenceProviders {
-        JPA, TERRACOTTA, HAZELCAST, MESSAGING, UNUSED, AEROSPIKE, OFFHEAPMAP, OPENHFT
+        JPA, TERRACOTTA, HAZELCAST, INFINISPAN, MAPDB, MESSAGING, UNUSED, AEROSPIKE, OFFHEAPMAP, OPENHFT
     }
 
     /** Search related types. */
 
-    final class SortColumn {
+    final class SortColumn classId 20 {
         required identifier                         fieldName;
         required boolean                            descending;
     }
-      
+
+    /** Combines one or multiple field specific predicates. */
     abstract class SearchFilter {
+    }
+    
+    /** Combines multiple predicates by AND. */
+    final class AndFilter classId 21 {
+        required (SearchFilter...) required List<>  filters;        
+    }    
+      
+    /** Negates a filter. */
+    final class NotFilter classId 22 {
+        required (SearchFilter...)                  filter;        
+    }    
+      
+    /** Combines multiple predicates by OR. */
+    final class OrFilter classId 23 {
+        required (SearchFilter...) required List<>  filters;        
+    }
+      
+    /** Base class for all field specific filters. */
+    abstract class FieldFilter extends SearchFilter {
         required identifier                         fieldName;                              // the field name subject to comparison
-        required boolean                            negateResult;                           // if true, this condition is negated.
-        required boolean                            orFieldIsNull;                          // if true, a null field is also valid
     }
     
     /** Provides filtering for NULL fields. The result set consists of all rows which have a NULL value for the specified column.
-     * To select all rows with a NOT NULL value, set the "negateResult" field of the SearchFilter base class to true.
+     * To select all rows with a NOT NULL value, set the "negateResult" field of the FieldFilter base class to true.
      */
-    final class NullFilter extends SearchFilter {
+    final class NullFilter classId 24 extends FieldFilter {
     }
-    
+
     /** Provides filtering for boolean values. The result set is the subset of all rows which have the same boolean setting for the given field. */
-    final class BooleanFilter extends SearchFilter {
+    final class BooleanFilter classId 25 extends FieldFilter {
         required boolean                            booleanValue;
     }
     
     /** Provides filtering for ASCII text fields (IDs, tokens). Exactly one of the parameters equalsValue and likeValue must be provided, the other one must be null.
      * If both parameters are null or both are not equal to null, an "invalid search filter" parameter error is returned. */
-    final class AsciiFilter extends SearchFilter {
+    final class AsciiFilter classId 26 extends FieldFilter {
         optional Ascii(80)                          equalsValue;
         optional Ascii(80)                          likeValue;
         required Ascii(80) List<>                   valueList;
     }
     
+    /** Provides filtering for Unicode text fields (IDs, tokens). Exactly one of the parameters equalsValue and likeValue must be provided, the other one must be null.
+     * If both parameters are null or both are not equal to null, an "invalid search filter" parameter error is returned. */
+    final class UnicodeFilter classId 27 extends FieldFilter {
+        optional Unicode(80)                        equalsValue;
+        optional Unicode(80)                        likeValue;
+        required Unicode(80) List<>                 valueList;
+    }
+    
     
     /** Provides filtering for integral values. At least one parameter must be provided. In order to search for exactly one value, both parameters must be set to the same value.
      */
-    final class IntFilter extends SearchFilter {
+    final class IntFilter classId 28 extends FieldFilter {
         optional Integer                            lowerBound;
         optional Integer                            upperBound;
         required Integer List<>                     valueList;
@@ -93,40 +119,40 @@ package api factoryId 25 {
     
     /** Provides filtering for integral values. At least one parameter must be provided. In order to search for exactly one value, both parameters must be set to the same value.
      */
-    final class LongFilter extends SearchFilter {
+    final class LongFilter classId 29 extends FieldFilter {
         optional Long                               lowerBound;
         optional Long                               upperBound;
         required Long List<>                        valueList;
     }
-//    /** Provides filtering for calendar dates (full days). 
-//     */
-//    final class DayFilter extends SearchFilter {
-//        optional Day                                lowerBound;
-//        optional Day                                upperBound;
-//        required Day List<>                         valueList;
-//    }
-//    
-//    /** Provides filtering for local date / time. All parameters are provided in UTC timezone. 
-//     */
-//    final class TimestampFilter extends SearchFilter {
-//        optional Timestamp(0)                       lowerBound;
-//        optional Timestamp(0)                       upperBound;
-//        required Timestamp(0) List<>                valueList;  
-//    }
-//    
-//    /** Provides filtering for time instants. All parameters are provided in UTC timezone. 
-//     */
-//    final class InstantFilter extends SearchFilter {
-//        optional Instant(0)                         lowerBound;
-//        optional Instant(0)                         upperBound;
-//        required Instant(0) List<>                  valueList;  
-//    }
-//    
-//    /** Provides filtering for time elements. All parameters are provided in local timezone. 
-//     */
-//    final class TimeFilter extends SearchFilter {
-//        optional Time(0)                            lowerBound;
-//        optional Time(0)                            upperBound;
-//        required Time(0) List<>                     valueList;  
-//    }
+    /** Provides filtering for calendar dates (full days). 
+     */
+    final class DayFilter classId 30 extends FieldFilter {
+        optional Day                                lowerBound;
+        optional Day                                upperBound;
+        required Day List<>                         valueList;
+    }
+    
+    /** Provides filtering for local date / time. All parameters are provided in UTC timezone. 
+     */
+    final class TimestampFilter classId 31 extends FieldFilter {
+        optional Timestamp(0)                       lowerBound;
+        optional Timestamp(0)                       upperBound;
+        required Timestamp(0) List<>                valueList;  
+    }
+    
+    /** Provides filtering for time instants. All parameters are provided in UTC timezone. 
+     */
+    final class InstantFilter classId 32 extends FieldFilter {
+        optional Instant(0)                         lowerBound;
+        optional Instant(0)                         upperBound;
+        required Instant(0) List<>                  valueList;  
+    }
+    
+    /** Provides filtering for time elements. All parameters are provided in local timezone. 
+     */
+    final class TimeFilter classId 33 extends FieldFilter {
+        optional Time(0)                            lowerBound;
+        optional Time(0)                            upperBound;
+        required Time(0) List<>                     valueList;  
+    }
 }

@@ -1,6 +1,8 @@
 import api.*
 
-/** Definitions which rely on primitive types for keys. */
+/** Definitions which rely on primitive types for keys.
+ * Assigned to factoryId 25, classIds 56-60
+ */
 package apip factoryId 25 {
     default private unsigned trim noControlChars;
 
@@ -8,14 +10,14 @@ package apip factoryId 25 {
      * any value <= 0 should be treated as null (no (valid) reference).
      * Primitive long version.
      */     
-    class Ref classId 1 extends AbstractRef refp "objectRef" {
+    class Ref classId 56 extends AbstractRef refp "objectRef" {
         required long                               objectRef;
     }
 
     /** A class which allows the separation of multiple tenants.
      * Primitive long version.
      */
-    class TenantDiscriminator classId 2 {
+    class TenantDiscriminator classId 57 {
         required long                               tenantRef;
     }   
 }
