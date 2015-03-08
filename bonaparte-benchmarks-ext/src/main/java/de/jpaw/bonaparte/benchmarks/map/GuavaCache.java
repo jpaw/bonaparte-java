@@ -62,7 +62,7 @@ import com.google.common.cache.CacheBuilder;
 // guava wr TO = 100 / 180
 
 // => expiry timeouts add a significant overhead. Guava is a lot slower than Java hashMap anyway
-// => for read operations, chm is not slower than hm (within measurement precision) 
+// => for read operations, chm is not slower than hm (within measurement precision)
 
 
 @State(value = Scope.Thread)
@@ -71,7 +71,7 @@ import com.google.common.cache.CacheBuilder;
 @OperationsPerInvocation(GuavaCache.OPERATIONS_PER_INVOCATION)
 public class GuavaCache {
     static public final int OPERATIONS_PER_INVOCATION = 100000;
-    
+
     public final Integer [] numbers = new Integer[OPERATIONS_PER_INVOCATION];
     public final Integer [] id = new Integer[OPERATIONS_PER_INVOCATION];
     public Cache<Integer,Integer> cacheNoTO;
@@ -79,7 +79,7 @@ public class GuavaCache {
     public Cache<Integer,Integer> cacheRdTO;
     final Map<Integer,Integer> chm = new ConcurrentHashMap<Integer,Integer>(2 * OPERATIONS_PER_INVOCATION);
     final Map<Integer,Integer> hm = new HashMap<Integer,Integer>(2 * OPERATIONS_PER_INVOCATION);
-    
+
     @Setup
     public void init() {
         Random rnd = new Random(2846284628L);
@@ -97,12 +97,12 @@ public class GuavaCache {
                 .newBuilder()
                 .expireAfterAccess(60, TimeUnit.SECONDS).build();
     }
-    
+
     private void fillCache(Cache<Integer,Integer> cache) {
         for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i)
             cache.put(numbers[i], id[i]);
     }
-    
+
     private void readCache(Cache<Integer,Integer> cache, Blackhole bh) {
         for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i)
             bh.consume(cache.getIfPresent(numbers[i]));
@@ -112,7 +112,7 @@ public class GuavaCache {
         for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i)
             cache.put(numbers[i], id[i]);
     }
-    
+
     private void readMap(Map<Integer,Integer> cache, Blackhole bh) {
         for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i)
             bh.consume(cache.get(numbers[i]));

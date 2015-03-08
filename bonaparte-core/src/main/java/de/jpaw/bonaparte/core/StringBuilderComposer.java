@@ -25,16 +25,16 @@ import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 //import javax.xml.bind.DatatypeConverter;
 /**
  * The StringBuilderComposer class.
- * 
+ *
  * @author Michael Bischoff
  * @version $Revision$
- * 
+ *
  *          Implements the serialization for the bonaparte format using StringBuilder.
  */
 
 public class StringBuilderComposer extends AppendableComposer implements BufferedMessageComposer<IOException> {
     private static final Logger LOGGER = LoggerFactory.getLogger(StringBuilderComposer.class);
-    
+
     // variables set by constructor
     private final StringBuilder work;
 
@@ -50,7 +50,7 @@ public class StringBuilderComposer extends AppendableComposer implements Buffere
     public String asString() {
         return work.toString();
     }
-    
+
     public StringBuilderComposer(StringBuilder work) {
         super(work);
         this.work = work;
@@ -81,7 +81,7 @@ public class StringBuilderComposer extends AppendableComposer implements Buffere
     public final byte[] getBytes() {
         return work.toString().getBytes(getCharset());
     }
-    
+
     /** Refine the main entry in order to relieve callers catching an Exception which is never thrown. */
     @Override
     public void writeRecord(BonaCustom obj) {
@@ -95,7 +95,7 @@ public class StringBuilderComposer extends AppendableComposer implements Buffere
             throw new RuntimeException("Got an IOException from within StringBuilder, which should not happen, really!", e);
         }
     }
-    
+
     /** Refine the secondary entry in order to relieve callers catching an Exception which is never thrown. */
     @Override
     public void addField(ObjectReference di, BonaCustom obj) {

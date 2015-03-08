@@ -2,18 +2,18 @@
 package scalingTest {
     default public;
     properties decimals;
-    
+
     class Amounts {
         Decimal(18,6)               gross;
         Decimal(18,6)               net;
         Decimal(18,6)               tax;
         Decimal(18,6)               somethingElse properties decimals="2";      // always at 2 decimals
     }
-    
+
     class Account {
         Ascii(3)                    currency;
     }
-    
+
     class Order {
         (Account)                   account;
         Decimal(18,6)               quantity;
@@ -21,12 +21,12 @@ package scalingTest {
         (Amounts)                   unitPrice   properties decimals="4";
         (Amounts)                   total       properties decimals="account.currency";
     }
-    
+
     class ListOfOrders {
         Unicode(20)                 unit;
         required (Order) List<>     orders;
     }
-    
+
     class ContainerForAll {
         required (ListOfOrders)     myOrders;
     }

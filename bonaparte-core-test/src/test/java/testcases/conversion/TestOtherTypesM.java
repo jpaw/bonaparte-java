@@ -39,7 +39,7 @@ public class TestOtherTypesM {
     public void testOtherTypes() throws Exception {
         SimpleTestRunner.run(FillOtherTypes.test2(555), false);
     }
-    
+
     @Test
     public void testBigIntegerSmall() throws Exception {
         SimpleTestRunner.run(new TestBigInteger(new BigInteger("42")), false);

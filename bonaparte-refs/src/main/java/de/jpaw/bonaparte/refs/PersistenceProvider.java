@@ -2,7 +2,7 @@ package de.jpaw.bonaparte.refs;
 
 /**
  * API provided by persistence implementations like JPA, in-memory storage, noSQL providers...
- * 
+ *
  * PersistenceProviders register at the RequestContext in order to get their commit / rollback callback invoked at the end of the request.
  * */
 public interface PersistenceProvider extends AutoCloseable {

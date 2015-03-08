@@ -6,11 +6,11 @@ import de.jpaw.bonaparte.core.ObjectValidationException;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 
 public class ValidationTest {
-    
+
     @Test
     public void testValidationException() throws Exception {
         BasicNumericElementaryDataItem data = new BasicNumericElementaryDataItem();
-        
+
         try {
             data.validate();
             throw new Exception("Expected an ObjectValidationException");

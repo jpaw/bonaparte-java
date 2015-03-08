@@ -1,5 +1,5 @@
 package myTypes factoryId 44 {
-    
+
     class Primitives noExt classId 17 {
         byte        byte1;
         short       short1;

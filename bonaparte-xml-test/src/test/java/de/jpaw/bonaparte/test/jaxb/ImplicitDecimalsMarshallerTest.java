@@ -22,29 +22,29 @@ public class ImplicitDecimalsMarshallerTest {
           + "    <microUnits>42.123456</microUnits>\n"
           + "    <roundedMillis>333.666</roundedMillis>\n"
           + "</testXml2>\n";
-    
+
     public void marshallTestXml() throws Exception {
         TestXml2 obj = new TestXml2((byte)42, 42123456L, 333666);
-        
+
         // create the XML for this
         JAXBContext context = JAXBContext.newInstance(PACKAGE);
         Marshaller marshaller = context.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         StringWriter writer = new StringWriter();
         marshaller.marshal(obj, writer);
-        
+
         System.out.println("Output is " + writer);
-        String actualXml = writer.toString().replace("\r", ""); 
+        String actualXml = writer.toString().replace("\r", "");
         assert(actualXml.equals(EXPECTED_XML));
     }
-    
+
     public void unmarshallXenum() throws Exception {
         // create the XML for this
         JAXBContext context = JAXBContext.newInstance(PACKAGE);
-        
+
         Unmarshaller unmarshaller = context.createUnmarshaller();
         Object obj = unmarshaller.unmarshal(new StringReader(EXPECTED_XML));
-        
+
         assert(obj != null);
         assert(obj instanceof TestXml2);
         TestXml2 obj2 = (TestXml2)obj;

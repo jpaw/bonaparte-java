@@ -159,12 +159,12 @@ public class MessageParserException extends ApplicationException {
         this.fieldName = fieldName;
         this.className = className;
     }
-    
+
     /** Creates a parser exception with an explicitly defined position and class name. */
     public MessageParserException(int errorCode, String fieldName, int characterIndex, String className) {
         this(errorCode, fieldName, characterIndex, className, null);
     }
-    
+
     /** Creates a parser exception for which parse position and class name will be provided by some callback. */
     public MessageParserException(int errorCode, String fieldName, String fieldContents, ParsePositionProvider parsePositionProvider) {
         this(errorCode, fieldName, parsePositionProvider.getParsePosition(), parsePositionProvider.getCurrentClassName(), fieldContents);
@@ -173,7 +173,7 @@ public class MessageParserException extends ApplicationException {
     public MessageParserException(int errorCode) {
         this(errorCode, null, -1, null);
     }
-    
+
     // some boilerplate code to retrieve exception properties
     public int getCharacterIndex() {
         return characterIndex;

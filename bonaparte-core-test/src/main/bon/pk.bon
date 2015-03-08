@@ -1,18 +1,18 @@
 package pkTest {
-    
+
     class MyKey {
         int u;
         long l;
     }
-    
+
     class ClassA extends MyKey pk MyKey {
         Ascii(8)    hello;
     }
-    
+
     class ClassB pk MyKey {
         Ascii(8)    hello;
     }
-    
+
     class ClassC extends ClassA {
         Ascii(8)    hello2;
     }

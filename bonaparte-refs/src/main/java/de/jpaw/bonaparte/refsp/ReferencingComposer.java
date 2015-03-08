@@ -17,12 +17,12 @@ public class ReferencingComposer extends CompactByteArrayComposer {
     private static final AbstractRef DOES_NOT_MATCH_ANY = new VoidRef();
     private final Map<ClassDefinition,RefResolver<AbstractRef, ?, ?>> resolvers;
     private AbstractRef excludedObject = DOES_NOT_MATCH_ANY;       // an object not to replace, usually the outer one, in case the resolver map is created as a static object
-    
+
     public ReferencingComposer(ByteBuilder out, Map<ClassDefinition,RefResolver<AbstractRef, ?, ?>> resolvers) {
         super(out, true);
         this.resolvers = resolvers;
     }
-    
+
     public void excludeObject(AbstractRef obj) {
         excludedObject = obj == null ? DOES_NOT_MATCH_ANY : obj;
     }
@@ -30,7 +30,7 @@ public class ReferencingComposer extends CompactByteArrayComposer {
     protected RefResolver<AbstractRef, ?, ?> getReferencedResolver(ObjectReference di) {
         return di.getLowerBound() == null ? null : resolvers.get(di.getLowerBound());
     }
-    
+
     @Override
     public void startMap(FieldDefinition di, int currentMembers) {
         out.writeByte(MAP_BEGIN);
@@ -54,7 +54,7 @@ public class ReferencingComposer extends CompactByteArrayComposer {
             intOut(currentMembers);
         }
     }
-    
+
     @Override
     public void addField(ObjectReference di, BonaCustom obj) {
         final RefResolver<AbstractRef, ?, ?> r = getReferencedResolver(di);

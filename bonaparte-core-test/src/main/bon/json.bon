@@ -1,5 +1,5 @@
 package jsonTest {
-    
+
     class TestObj {
         int         primitiveInt;
         Long        wrappedLong;

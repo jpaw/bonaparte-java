@@ -36,7 +36,7 @@ public class HazelcastPortableComposer extends NoOpComposer<IOException> impleme
         CompactComposer composer = new CompactComposer(out, true);
         composer.addField(StaticMeta.OUTER_BONAPORTABLE, obj);
     }
-    
+
     // entry called from generated objects: all fields of primitive types, their wrappers, enums, and the UUID will be added as named fields.
     public static void serialize(BonaPortable obj, PortableWriter _out) throws IOException {
         // first, output all fields of the core class.
@@ -48,9 +48,9 @@ public class HazelcastPortableComposer extends NoOpComposer<IOException> impleme
     // writes only the named fields, and then dumps the whole object in compact format
     public static void serialize(BonaPortable obj, PortableWriter _out, List<String> fieldnames) throws IOException {
         FoldingComposer.writeFieldsToDelegate(new HazelcastPortableComposer(_out), obj, fieldnames);
-        
+
     }
-    
+
     public HazelcastPortableComposer(PortableWriter w) {
         this.w = w;
     }

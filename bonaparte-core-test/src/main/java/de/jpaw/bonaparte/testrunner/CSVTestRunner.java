@@ -14,13 +14,13 @@ public class CSVTestRunner extends AbstractTestrunner<String> {
     public final CSVConfiguration cfg;
     public final boolean fixedLength;
     public final boolean useComposer2;
-    
+
     public CSVTestRunner(CSVConfiguration cfg, boolean useComposer2) {
         this.cfg = cfg;
         this.fixedLength = cfg.separator.length() == 0;
         this.useComposer2 = useComposer2;
     }
-    
+
     @Override
     public String serializationTest(BonaCustom src, String expectedResult) throws Exception {
         StringBuilder buffer = new StringBuilder(256);

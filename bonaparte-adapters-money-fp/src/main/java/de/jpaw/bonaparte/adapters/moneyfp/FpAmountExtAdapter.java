@@ -14,7 +14,7 @@ public class FpAmountExtAdapter {
         List<Long> components = amount.getAmounts();
         return new FpAmountExt(amount.getGross(), components.size() == 0 ? null : components);
     }
-    
+
     /** Convert a parsed adapter type into the custom type. */
     public static <E extends Exception> FPAmount unmarshal(FPCurrency curr, BonaPortable obj, ExceptionConverter<E> p) throws E {
         if (obj instanceof FpAmountExt) {

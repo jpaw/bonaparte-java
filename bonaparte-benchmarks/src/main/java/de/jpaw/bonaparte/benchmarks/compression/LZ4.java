@@ -63,13 +63,13 @@ public class LZ4 {
     private final LZ4Compressor compressor = factory.fastCompressor();
     private final LZ4FastDecompressor fastDecompressor = factory.fastDecompressor();
     private final LZ4SafeDecompressor safeDecompressor = factory.safeDecompressor();
-    
+
     private static class Testcase {
         private byte[] uncompressedForm = null;
         private byte[] compressedForm = null;
         private int compressedLength = -1;
         private int decompressedLength = -1;
-        
+
         Testcase(byte [] data, String which) {
             uncompressedForm = data;
             decompressedLength = data.length;
@@ -81,13 +81,13 @@ public class LZ4 {
             compressedLength = compressor.compress(uncompressedForm, 0, decompressedLength, compressedForm, 0, maxCompressedLength);
             System.out.println(which + ": Uncompressed length = " + decompressedLength + ", compressed length = " + compressedLength);
             assert(compressedLength == compressedForm.length);
-            
+
         }
     }
-    
+
     private static Testcase cd;
     private static Testcase sd;
-    
+
     private static ClassDefinition obj1 = ClassDefinition.class$MetaData();
     static {
         ByteArrayComposer bac = new ByteArrayComposer();
@@ -95,13 +95,13 @@ public class LZ4 {
         bac.writeRecord(obj1);
         cd = new Testcase(bac.getBytes(), "ClassDef");
     }
-        
-        
+
+
     @Setup
     public void setUp() throws UnsupportedEncodingException {
         sd = new Testcase(DATA.getBytes("UTF-8"), "String");
     }
-    
+
     @TearDown
     public void tearDown() {
     }
@@ -113,9 +113,9 @@ public class LZ4 {
             tc.compressedLength = compressor.compress(tc.uncompressedForm, 0, tc.decompressedLength, tc.compressedForm, 0, maxCompressedLength);
             bh.consume(tc.compressedForm);
         }
-        
+
     }
-    
+
     @Benchmark
     public void compressString(Blackhole bh) {
         runCompressCase(sd, bh);
@@ -126,7 +126,7 @@ public class LZ4 {
         runCompressCase(cd, bh);
     }
 
-    
+
     private void runUncompressCase(Testcase tc, Blackhole bh) {
         byte [] target = new byte[tc.uncompressedForm.length];
         for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
@@ -144,8 +144,8 @@ public class LZ4 {
     public void uncompressClass(Blackhole bh) {
         runUncompressCase(cd, bh);
     }
-    
-    
+
+
     private void runUncompressKnownSize(Testcase tc, Blackhole bh) {
         byte [] target = new byte[tc.uncompressedForm.length];
         for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
@@ -158,7 +158,7 @@ public class LZ4 {
     public void uncompressKnownSizeString(Blackhole bh) {
         runUncompressKnownSize(sd, bh);
     }
-    
+
     @Benchmark
     public void uncompressKnownSizeClass(Blackhole bh) {
         runUncompressKnownSize(cd, bh);

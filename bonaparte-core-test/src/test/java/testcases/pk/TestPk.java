@@ -11,7 +11,7 @@ public class TestPk {
 
     @Test
     public void testPkInheritance() throws Exception {
-        
+
         BonaPortableClass<?> keyClass = ClassC.BClass.INSTANCE.getPrimaryKey();
         Assert.assertNotNull(keyClass);
         Assert.assertEquals(keyClass, ClassA.BClass.INSTANCE.getPrimaryKey());

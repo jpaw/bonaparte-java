@@ -10,12 +10,12 @@ import de.jpaw.util.Base64;
 
 /** decode a base64 encoded serialized bonaparte class.
  * Please put JARs which contain relevant bonaparte classes into the classpath, as they are needed for decoding.
- * 
+ *
  * Sample invocation parameters:
  * object null: Dg==
  * meta.propertyDefinition as object: E21ldGEuUHJvcGVydHlEZWZpbml0aW9uBg5oZWxsbwZ3b3JsZAYQ
  * meta.propertyDefinition as record: Eg4TbWV0YS5Qcm9wZXJ0eURlZmluaXRpb24GDmhlbGxvBndvcmxkBhANCg==
- * 
+ *
  *  */
 public class DecodeBase64Bon {
 

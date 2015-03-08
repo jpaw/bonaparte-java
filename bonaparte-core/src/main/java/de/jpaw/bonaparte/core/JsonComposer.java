@@ -34,7 +34,7 @@ import de.jpaw.util.JsonEscaper;
 
 /** This class natively generates JSON output. It aims for compatibility with the extensions used by the json-io library (@Type class information).
  * See https://github.com/jdereg/json-io and http://code.google.com/p/json-io/ for json-io source and documentation.
- * 
+ *
  * @author Michael Bischoff (jpaw.de)
  *
  */
@@ -46,9 +46,9 @@ public class JsonComposer implements MessageComposer<IOException> {
     protected final boolean writeNulls;
     protected final boolean writeTypeInfo;
     protected final JsonEscaper jsonEscaper;
-    
+
     protected boolean needFieldSeparator = false;
-    
+
     public static String toJsonString(BonaPortable obj) {
         StringBuilder buff = new StringBuilder(4000);
         JsonComposer bjc = new JsonComposer(buff);
@@ -60,7 +60,7 @@ public class JsonComposer implements MessageComposer<IOException> {
         }
         return buff.toString();
     }
-    
+
     public JsonComposer(Appendable out) {
         this.out = out;
         this.writeNulls = false;
@@ -114,13 +114,13 @@ public class JsonComposer implements MessageComposer<IOException> {
         }
     }
 
-//  /** Write output for a field. The contents is not null and has been converted to Json format already. 
+//  /** Write output for a field. The contents is not null and has been converted to Json format already.
 //   * @throws IOException */
 //  protected void writeStringifiedPrimitive(FieldDefinition di, String encoded) throws IOException {
 //      writeOptionalFieldName(di);
 //      out.append(encoded);
 //  }
-    
+
     protected void writeOptionalUnquotedString(FieldDefinition di, String s) throws IOException {
         if (di.getMultiplicity() != Multiplicity.SCALAR) {
             // must write a null without a name
@@ -134,7 +134,7 @@ public class JsonComposer implements MessageComposer<IOException> {
             out.append("null");
         }
     }
-    
+
     protected void writeOptionalQuotedAscii(FieldDefinition di, String s) throws IOException {
         if (di.getMultiplicity() != Multiplicity.SCALAR) {
             // must write a null without a name
@@ -151,7 +151,7 @@ public class JsonComposer implements MessageComposer<IOException> {
             out.append("null");
         }
     }
-    
+
     protected void writeOptionalQuotedUnicodeNoControls(FieldDefinition di, String s) throws IOException {
         if (di.getMultiplicity() != Multiplicity.SCALAR) {
             // must write a null without a name
@@ -168,7 +168,7 @@ public class JsonComposer implements MessageComposer<IOException> {
             out.append("null");
         }
     }
-    
+
     @Override
     public void writeNull(FieldDefinition di) throws IOException {
         if (di.getMultiplicity() != Multiplicity.SCALAR) {
@@ -211,13 +211,13 @@ public class JsonComposer implements MessageComposer<IOException> {
             needFieldSeparator = false;
         }
     }
-    
+
     @Override
     public void terminateObject(ObjectReference di, BonaCustom obj) throws IOException {
         out.append('}');
         needFieldSeparator = true;
     }
-    
+
 
     // called for not-null elements only
     @Override
@@ -229,7 +229,7 @@ public class JsonComposer implements MessageComposer<IOException> {
     @Override
     public void startMap(FieldDefinition di, int currentMembers) throws IOException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
@@ -239,7 +239,7 @@ public class JsonComposer implements MessageComposer<IOException> {
     @Override
     public void terminateMap() throws IOException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
@@ -425,7 +425,7 @@ public class JsonComposer implements MessageComposer<IOException> {
     public void addEnum(XEnumDataItem di, AlphanumericElementaryDataItem token, XEnum<?> n) throws IOException {
         writeOptionalQuotedUnicodeNoControls(di, n == null ? null : n.getToken());
     }
-    
+
     @Override
     public boolean addExternal(ObjectReference di, Object obj) throws IOException {
         return false;       // perform conversion by default

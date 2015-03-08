@@ -48,10 +48,10 @@ import de.jpaw.util.ByteArray;
 public class CSVComposer extends AppendableComposer {
 
     protected boolean recordStart = true;
-    
+
     //protected boolean shouldWarnWhenUsingFloat;
     protected final CSVConfiguration cfg;
-    
+
     // derived data from CSVConfiguration
     protected final String stringQuote;                     // quote character for strings, as a string
     protected final DateTimeFormatter dayFormat;            // day without time (Joda)
@@ -65,20 +65,20 @@ public class CSVComposer extends AppendableComposer {
     protected final DateTimeFormatter doDateTimeFormatter(DateTimeFormatter input) {
         return cfg.timeZone == null ? input.withLocale(cfg.locale).withZoneUTC() : input.withLocale(cfg.locale).withZone(cfg.timeZone);
     }
-    
+
     public CSVComposer(Appendable work, CSVConfiguration cfg) {
         super(work, ObjectReuseStrategy.NONE);  // CSV does not know about object backreferences...
         this.cfg = cfg;
         this.stringQuote = (cfg.quote != null) ? String.valueOf(cfg.quote) : "";  // use this for cases where a String is required
         //this.usesDefaultDecimalPoint = cfg.decimalPoint.equals(".");
         //this.shouldWarnWhenUsingFloat = cfg.decimalPoint.length() == 0;     // removing decimal points from float or double is a bad idea, because no scale is defined
-        
+
         this.dayFormat          = doDateTimeFormatter(cfg.determineDayFormatter());
         this.timeFormat         = doDateTimeFormatter(cfg.determineTimeFormatter());
         this.time3Format        = doDateTimeFormatter(cfg.determineTime3Formatter());
         this.timestampFormat    = doDateTimeFormatter(cfg.determineTimestampFormatter());
         this.timestamp3Format   = doDateTimeFormatter(cfg.determineTimestamp3Formatter());
-        
+
         this.numberFormat       = NumberFormat.getInstance(cfg.locale);
         this.numberFormat.setGroupingUsed(cfg.useGrouping);
         this.bigDecimalFormat   = cfg.removePoint4BD ? null : (NumberFormat)this.numberFormat.clone();    // make a copy for BigDecimal, where we set fractional digits as required
@@ -153,7 +153,7 @@ public class CSVComposer extends AppendableComposer {
         writeSeparator();
         super.addField(di, n);
     }
-    
+
     // decimal
     @Override
     public void addField(NumericElementaryDataItem di, BigDecimal n) throws IOException {
@@ -367,7 +367,7 @@ public class CSVComposer extends AppendableComposer {
             recordStart = true;
         }
     }
-  
+
     @Override
     public void terminateObject(ObjectReference di, BonaCustom obj) throws IOException {
         if (cfg.objectEnd != null && cfg.objectEnd.length() > 0) {
@@ -375,7 +375,7 @@ public class CSVComposer extends AppendableComposer {
             recordStart = true;
         }
     }
-  
+
     @Override
     public void addField(ObjectReference di, BonaCustom obj) throws IOException {
         if (obj != null) {

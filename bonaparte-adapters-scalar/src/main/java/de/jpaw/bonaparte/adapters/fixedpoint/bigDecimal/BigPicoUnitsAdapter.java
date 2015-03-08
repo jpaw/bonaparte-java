@@ -10,7 +10,7 @@ public class BigPicoUnitsAdapter {
     public static BigDecimal marshal(PicoUnits obj) {
         return BigDecimal.valueOf(obj.getMantissa(), obj.getScale());
     }
-    
+
     public static <E extends Exception> PicoUnits unmarshal(BigDecimal num, ExceptionConverter<E> p) throws E {
         return num == null ? null : PicoUnits.of(num.unscaledValue().longValue());
     }

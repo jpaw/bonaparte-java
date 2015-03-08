@@ -9,7 +9,7 @@ public class TestTheTest {
     public void testTheTestRunner() throws Exception {
         byte [] testData = "this cannot be parsed".getBytes();
         int iWantThisCode = 200017011;
-        
+
         new ByteArrayTestRunner().expectDeserializationError(testData, iWantThisCode);
     }
 
@@ -17,7 +17,7 @@ public class TestTheTest {
     public void testTheTestRunnerNegativeTest() throws Exception {
         byte [] testData = "this cannot be parsed".getBytes();
         int iWantThisCode = 200017012;
-        
+
         try {
             new ByteArrayTestRunner().expectDeserializationError(testData, iWantThisCode);
         } catch (Exception e) {

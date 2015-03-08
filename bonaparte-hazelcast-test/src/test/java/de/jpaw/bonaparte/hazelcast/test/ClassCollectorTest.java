@@ -11,7 +11,7 @@ public class ClassCollectorTest {
     @Test
     public void testIdentifiedDataSerializable() throws Exception {
         IdentifiedDataSerializableFactoryBuilder myBuilder = new IdentifiedDataSerializableFactoryBuilder();
-        
+
         myBuilder.scanPackage("de.jpaw.bonaparte");
         myBuilder.registerFactories(new SerializationConfig());
     }

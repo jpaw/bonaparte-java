@@ -2,7 +2,7 @@
 
 package metaExtension {
     default private unsigned trim noControlChars;
-    
+
     enumset XVisibilitySet is meta.Visibility;
-    
+
 }

@@ -28,15 +28,15 @@ public class ImplicitDecimalsRoundingTest {
           + "    <microUnits>42.1234562</microUnits>\n"
           + "    <roundedMillis>333.666</roundedMillis>\n"
           + "</testXml2>\n";
-    
+
     public void unmarshallXenumWithRounding() throws Exception {
         // create the XML for this
         JAXBContext context = JAXBContext.newInstance(PACKAGE);
-        
+
         Unmarshaller unmarshaller = context.createUnmarshaller();
         unmarshaller.setEventHandler(new DefaultValidationEventHandler());
         Object obj = unmarshaller.unmarshal(new StringReader(ROUNDED_XML));
-        
+
         assert(obj != null);
         assert(obj instanceof TestXml2);
         TestXml2 obj2 = (TestXml2)obj;
@@ -44,7 +44,7 @@ public class ImplicitDecimalsRoundingTest {
         assert(obj2.microUnits == 42123456L);
         assert(obj2.roundedMillis == 333667);
     }
-    
+
     public void unmarshallXenumWithRoundingException() throws Exception {
         // create the XML for this
         JAXBContext context = JAXBContext.newInstance(PACKAGE);

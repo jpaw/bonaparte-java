@@ -51,7 +51,7 @@ public class TestBigDecimalOverflows {
                         + " using " + p.getClass().getSimpleName());
         }
     }
-    
+
     private void checkOverflow(BigDecimal num, BonaPortable testClass, int parseException, int validationException) throws Exception {
         // first, do the validation test
         try {
@@ -70,19 +70,19 @@ public class TestBigDecimalOverflows {
                         + " for class " + testClass.get$PQON() + " and value " + num.toPlainString()
                         + ", but got " + ve.getErrorCode());
         }
-        
+
         // run serialization test for ByteArrayComposer
         ByteArrayComposer bac = new ByteArrayComposer();
         bac.writeRecord(testClass);
         ByteArrayParser bap = new ByteArrayParser(bac.getBytes(), 0, -1);
         checkParsingException(bap, num, testClass, parseException);
-        
+
         // run serialization test for CompactComposer
         CompactByteArrayComposer cbac = new CompactByteArrayComposer(new ByteBuilder(), false);
         cbac.writeRecord(testClass);
         CompactByteArrayParser cbap = new CompactByteArrayParser(cbac.getBuilder().getBytes(), 0, -1);
         checkParsingException(cbap, num, testClass, parseException);
-        
+
         // run serialization test for StringBuilderComposer
         StringBuilder sb = new StringBuilder();
         StringBuilderComposer sbc = new StringBuilderComposer(sb);
@@ -90,7 +90,7 @@ public class TestBigDecimalOverflows {
         StringBuilderParser sbp = new StringBuilderParser(sb, 0, -1);
         checkParsingException(sbp, num, testClass, parseException);
     }
-    
+
     // test function. inputNumber is the string to test,
     // parseException is 0 if the parsing should be successful, else the expected error code,
     // validationException is 0 if the validation should be successful, else the expected error code
@@ -102,33 +102,33 @@ public class TestBigDecimalOverflows {
         checkOverflow(ref, new BDTestWithAutoRounding2(ref), parseException, validationException);
         checkOverflow(ref, new BDTestWithAutoRoundingAndScaling(ref), parseException, validationException);
     }
-    
+
     @Test
     public void testOKNumber() throws Exception {
         checkOverflow("138712633456.6262", 0, 0);
     }
-    
+
     @Test
     public void testNegativeNumber() throws Exception {
         checkOverflow("-138712633456.6262", 0, 0);
     }
-    
+
     @Test
     public void testOKFractionalNumber() throws Exception {
         checkOverflow("138712633456.62620000000", 0, 0);
     }
-    
+
     @Test
     public void testTooManyFractionalNumber() throws Exception {
         BigDecimal ref = new BigDecimal("138712633456.6262123213");
         checkOverflow(ref, new BDTest(ref), MessageParserException.TOO_MANY_DECIMALS, ObjectValidationException.TOO_MANY_FRACTIONAL_DIGITS);
     }
-    
+
     @Test
     public void testTooManyDigitsNumber() throws Exception {
         checkOverflow("1387132633456.626", MessageParserException.TOO_MANY_DIGITS, ObjectValidationException.TOO_MANY_DIGITS);
     }
-    
+
     @Test
     public void testNegNOKNumber() throws Exception {
         BigDecimal ref = new BigDecimal("-13856.626");

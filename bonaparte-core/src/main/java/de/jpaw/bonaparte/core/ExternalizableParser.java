@@ -87,7 +87,7 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
     private byte needToken() throws IOException {
         return nextByte();  // just a synonym
     }
-    
+
     private void pushBack(byte b) {
         if (hasByte) {
             throw new RuntimeException("Duplicate pushback");
@@ -188,7 +188,7 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
     public String readString(AlphanumericElementaryDataItem di) throws IOException {
         return readString(di.getName(), di.getIsRequired(), di.getLength(), di.getDoTrim(), di.getDoTruncate(), di.getAllowControlCharacters(), true);
     }
-    
+
     protected String readString(String fieldname, boolean isRequired, int length, boolean doTrim, boolean doTruncate, boolean allowCtrls, boolean allowUnicode) throws IOException {
         if (checkForNull(fieldname, isRequired)) {
             return null;
@@ -438,7 +438,7 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         }
         return new LocalTime(fractional, DateTimeZone.UTC);
     }
-    
+
     @Override
     public Instant readInstant(TemporalElementaryDataItem di) throws IOException {
         if (checkForNull(di)) {
@@ -446,7 +446,7 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
         }
         return new Instant(readLongNoNull(di.getName()));
     }
-    
+
     @Override
     public int parseMapStart(FieldDefinition di) throws IOException {
         String fieldname = di.getName();
@@ -524,23 +524,23 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
     @Override
     public void eatParentSeparator() throws IOException {
         eatObjectOrParentSeparator(PARENT_SEPARATOR);
-    }       
-        
+    }
+
     public void eatObjectTerminator() throws IOException {
         eatObjectOrParentSeparator(OBJECT_TERMINATOR);
     }
-    
+
     protected void eatObjectOrParentSeparator(byte which) throws IOException {
         skipNulls();  // upwards compatibility: skip extra fields if they are blank.
         byte z = needToken();
         if (z == which)
             return;   // all good
-        
+
         // we have extra data and it is not null. Now the behavior depends on a parser setting
         ParseSkipNonNulls mySetting = getSkipNonNullsBehavior();
         switch (mySetting) {
         case ERROR:
-            throw new IOException("Extra fields found after object end. Outdated parser? " + currentClass);  
+            throw new IOException("Extra fields found after object end. Outdated parser? " + currentClass);
         case WARN:
             LOGGER.warn("Extra fields found after object end, parsing class {}. Parser outdated?", currentClass);
             // fall through
@@ -549,7 +549,7 @@ public final class ExternalizableParser extends ExternalizableConstants implemen
             skipUntilNext(which);
         }
     }
-    
+
     protected void skipUntilNext(byte which) throws IOException {
         byte c;
         while ((c = needToken()) != which) {

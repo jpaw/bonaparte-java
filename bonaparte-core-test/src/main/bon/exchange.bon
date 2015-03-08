@@ -5,11 +5,11 @@ package exchange {
         Unicode(4)      symbol;
         Unicode(80)     name;
     }
-    
+
     class Ratios {
-        (RatiosPerDay) Map<String>        forSrc; 
+        (RatiosPerDay) Map<String>        forSrc;
     }
-    
+
     class RatiosPerDay {
         Day                         ^day;
         Decimal(8,4) Map<String>    ratioToCurrency;

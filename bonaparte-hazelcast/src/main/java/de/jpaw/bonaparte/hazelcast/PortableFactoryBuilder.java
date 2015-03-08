@@ -11,17 +11,17 @@ import de.jpaw.bonaparte.core.BonaPortableClass;
 
 /** Class to scan the class path and create factories as required. */
 public class PortableFactoryBuilder extends AbstractScanner<BonapartePortable> {
-    
+
     static class BonapartePortableFactory implements PortableFactory {
         private final ConcurrentHashMap<Integer, BonaPortableClass<BonapartePortable>> bclasses
             = new ConcurrentHashMap<Integer, BonaPortableClass<BonapartePortable>>(256);
-        
+
         @Override
         public Portable create(int classId) {
             BonaPortableClass<BonapartePortable> bclass = bclasses.get(classId);
             return bclass == null ? null : bclass.newInstance();
         }
-        
+
         private void addClass(BonaPortableClass<BonapartePortable> bclass) {
             BonaPortableClass<BonapartePortable> old = bclasses.putIfAbsent(bclass.getId(), bclass);
             if (old != null && old != bclass) {
@@ -29,7 +29,7 @@ public class PortableFactoryBuilder extends AbstractScanner<BonapartePortable> {
                 throw new RuntimeException("Duplicate factory / class ID");
             }
         }
-        
+
         private int size() {
             return bclasses.size();
         }
@@ -48,11 +48,11 @@ public class PortableFactoryBuilder extends AbstractScanner<BonapartePortable> {
         }
         factoryMap.get(factoryId).addClass(bclass);
     }
-    
+
     public void scanPackage(String packageName) {
         scanPackage(packageName, BonapartePortable.class);
     }
-    
+
     public void registerFactories(SerializationConfig cfg) {
         for (Map.Entry<Integer, BonapartePortableFactory> e : factoryMap.entrySet()) {
             LOGGER.info("Registering PortableFactory for Id {} with {} classes", e.getKey(), e.getValue().size());

@@ -16,14 +16,14 @@ package adapters.tests {
         required Ascii(8)               hello;
         required (FpCurrency)           myCurrency;
     }
-    
+
     class CustomAmountsUsed {
         required (FpCurrencyStd)                                            currency;
         required (FpAmountExt) for "getCurrency().withMicrosPrecision()"    unitAmounts;
         required (Micros)                                                   quantity;
         required (FpAmountExt) for currency                                 amounts;
     }
-    
+
     /** Use single field classes. */
     class CustomAmountsUsed2 {
         required (FpCurrencyStd)                                                currency;

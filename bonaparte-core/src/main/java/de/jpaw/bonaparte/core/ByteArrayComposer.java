@@ -62,7 +62,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
 
     // variables for serialization
     private ByteBuilder work;
-    
+
     /** Quick conversion utility method, for use by code generators. (null safe) */
     public static byte [] marshal(ObjectReference di, BonaPortable x) {
         if (x == null)
@@ -71,7 +71,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
         bac.addField(di, x);
         return bac.getBytes();
     }
-    
+
     /** Creates a new ByteArrayComposer, using this classes static default Charset **/
     public ByteArrayComposer() {
         this(ObjectReuseStrategy.defaultStrategy);
@@ -97,11 +97,11 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
         numberOfObjectsSerialized = 0;
         numberOfObjectReuses = 0;
     }
-    
+
     protected int getNumberOfObjectsSerialized() {
         return numberOfObjectsSerialized;
     }
-    
+
     /** Sets the current length to 0, allowing reuse of the allocated output buffer for a new message. */
     @Override
     public void reset() {
@@ -161,7 +161,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
     public void writeNull(FieldDefinition di) {
         work.append(NULL_FIELD);
     }
-    
+
     @Override
     public void writeNullCollection(FieldDefinition di) {
         work.append(NULL_FIELD);
@@ -425,7 +425,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
             writeNull();
         }
     }
-    
+
     @Override
     public void addField(TemporalElementaryDataItem di, LocalTime t) {
         if (t != null) {
@@ -472,23 +472,23 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
     public void terminateMap() {
         work.append(ARRAY_TERMINATOR);
     }
-    
+
     @Override
     public void startObject(ObjectReference di, BonaCustom obj) {
         work.append(OBJECT_BEGIN);
         addField(OBJECT_CLASS, obj.get$PQON());
         addField(REVISION_META, obj.get$MetaData().getRevision());
     }
-    
+
     @Override
     public void terminateObject(ObjectReference di, BonaCustom obj) {
         work.append(OBJECT_TERMINATOR);
     }
-    
-    // hook for inherited classes 
+
+    // hook for inherited classes
     protected void notifyReuse(int referencedIndex) {
     }
-    
+
 
     @Override
     public void addField(ObjectReference di, BonaCustom obj) {
@@ -514,7 +514,7 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
 
             // do all fields (now includes terminator)
             obj.serializeSub(this);
-            
+
             // terminate the new object
             terminateObject(di, obj);
         }

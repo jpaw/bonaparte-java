@@ -28,21 +28,21 @@ import de.jpaw.util.IntegralLimits;
 
 /** Utility subroutines, to be used by various parsers.
  * This class performs the logical parsing, while leaving the splitting of fields to the callers.
- * 
+ *
  * All parameters are expected to be not-null, null checks must happen before.
  *
  */
 public class StringParserUtil {
     private final ParsePositionProvider parsePositionProvider;
-    
+
     public StringParserUtil() {
         parsePositionProvider = ParsePositionProvider.DEFAULT;
     }
-    
+
     public StringParserUtil(ParsePositionProvider parsePositionProvider) {
         this.parsePositionProvider = parsePositionProvider;
     }
-    
+
     public void ensureNotNull(FieldDefinition di, String data) throws MessageParserException {
         if (data == null)
             throw new MessageParserException(MessageParserException.ILLEGAL_EXPLICIT_NULL, di.getName(), null, parsePositionProvider);
@@ -71,13 +71,13 @@ public class StringParserUtil {
         }
         return data;
     }
-    
+
     public String readAscii(final AlphanumericElementaryDataItem di, String data) throws MessageParserException {
         if (data == null)
             return null;
         data = readStringSub(di, data);
         // ASCII checks
-        String type = di.getDataType().toLowerCase(); 
+        String type = di.getDataType().toLowerCase();
         if (type.equals("lower") && !CharTestsASCII.isLowerCase(data))
             throw new MessageParserException(MessageParserException.ILLEGAL_CHAR_LOWER, di.getName(), data, parsePositionProvider);
         else if (type.equals("upper") && !CharTestsASCII.isUpperCase(data))
@@ -100,7 +100,7 @@ public class StringParserUtil {
                 // escape or boom
                 if (!di.getAllowControlCharacters())
                     throw new MessageParserException(MessageParserException.ILLEGAL_CHAR_CTRL, di.getName(), data, parsePositionProvider);
-            }            
+            }
         }
         return data;
     }
@@ -137,7 +137,7 @@ public class StringParserUtil {
         }
         // return DatatypeConverter.parseHexBinary(data);
     }
-    
+
     public LocalDateTime readDayTime(TemporalElementaryDataItem di, String data) throws MessageParserException {
         if (data == null)
             return null;
@@ -207,7 +207,7 @@ public class StringParserUtil {
         }
         return result;
     }
-    
+
     public LocalDate readDay(TemporalElementaryDataItem di, String data) throws MessageParserException {
         if (data == null)
             return null;
@@ -325,7 +325,7 @@ public class StringParserUtil {
         }
         return Byte.valueOf(readPrimitiveByte(di, data));
     }
-    
+
     public Short readShort(final BasicNumericElementaryDataItem di, String data) throws MessageParserException {
         if (data == null) {
             return null;
@@ -374,7 +374,7 @@ public class StringParserUtil {
             throw new MessageParserException(MessageParserException.NUMBER_PARSING_ERROR, di.getName(), data, parsePositionProvider);
         }
     }
-    
+
     // parse the not-null String into a BigDecimal, and perform optional scaling
     public BigDecimal readBigDecimal(final NumericElementaryDataItem di, String data) throws MessageParserException {
         if (data == null)

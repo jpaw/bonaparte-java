@@ -65,7 +65,7 @@ public class DayTime {
         if (when == null) {
             return null;
         }
-        long millis = when.getMillisOfDay(); 
+        long millis = when.getMillisOfDay();
         GregorianCalendar then = new GregorianCalendar();
         then.setTimeInMillis(millis);
         return then;
@@ -77,7 +77,7 @@ public class DayTime {
         if (when == null) {
             return null;
         }
-        long millis = when.getMillis(); 
+        long millis = when.getMillis();
         GregorianCalendar then = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
         then.setTimeInMillis(millis);
         return then;
@@ -128,7 +128,7 @@ public class DayTime {
         }
         return (int)(t1 - t0);
     }
-    
+
     /** Converts the day portion of a LocalDate or localDateTime into a number in the format YYYYMMDD. */
     static public int dayAsInt(LocalDateTime when) {
         return when.getDayOfMonth() + 100 * when.getMonthOfYear() + 10000 * when.getYear();
@@ -137,7 +137,7 @@ public class DayTime {
     static public int dayAsInt(LocalDate when) {
         return when.getDayOfMonth() + 100 * when.getMonthOfYear() + 10000 * when.getYear();
     }
-    
+
     /** Converts the time portion of a LocalTime or localDateTime into a number in the format HHMMSSMMM. */
     static public int timeAsInt(LocalDateTime when) {
         return when.getMillisOfSecond() + 1000 * when.getSecondOfMinute() + 100000 * when.getMinuteOfHour() + 10000000 * when.getHourOfDay();

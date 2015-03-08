@@ -36,7 +36,7 @@ public class ListMetaComposer extends NoOpComposer<RuntimeException> implements 
     final protected boolean doDeepCopies;
     final protected boolean keepObjects;
     final protected boolean keepExternals;
-    
+
     /** Creates a new ListMetaComposer for a given preallocated external storage.
      * keepObjects = true replaces the prior ListObjMetaComposer */
     public ListMetaComposer(final List<DataAndMeta> storage, boolean doDeepCopies, boolean keepObjects, boolean keepExternals) {
@@ -45,23 +45,23 @@ public class ListMetaComposer extends NoOpComposer<RuntimeException> implements 
         this.keepObjects = keepObjects;
         this.keepExternals = keepExternals;
     }
-    
+
     /** Creates a new ListMetaComposer, creating an own internal storage. */
     public ListMetaComposer(boolean doDeepCopies, boolean keepObjects, boolean keepExternals) {
         this(new ArrayList<DataAndMeta>(), doDeepCopies, keepObjects, keepExternals);
     }
-    
+
     protected void add(FieldDefinition di, Object o) {
         storage.add(new DataAndMeta(di, o));
     }
-    
+
     public List<DataAndMeta> getStorage() {
         return storage;
     }
     public boolean getDoDeepCopies() {
         return doDeepCopies;
     }
-    
+
     public void reset() {
         storage.clear();
     }
@@ -191,7 +191,7 @@ public class ListMetaComposer extends NoOpComposer<RuntimeException> implements 
             }
         }
     }
-    
+
     @Override
     public void addEnum(EnumDataItem di, BasicNumericElementaryDataItem ord, BonaNonTokenizableEnum n) {
         add(di, n);
@@ -206,7 +206,7 @@ public class ListMetaComposer extends NoOpComposer<RuntimeException> implements 
     public void addEnum(XEnumDataItem di, AlphanumericElementaryDataItem token, XEnum<?> n) {
         add(di, n);
     }
-    
+
     @Override
     public boolean addExternal(ObjectReference di, Object obj) {
         if (keepExternals) {

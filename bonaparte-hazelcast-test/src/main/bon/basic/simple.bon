@@ -1,27 +1,27 @@
 package hazeltest factoryId 12 {
     default public;
-    
+
     class DSTest DataSer classId 3 {
         Unicode(40)     hello;
         int             num;
-        Ascii(8)        short1; 
+        Ascii(8)        short1;
         Ascii(8)        short2;
         Unicode(80)     hello2;
     }
-    
+
     class IDSTest IdDataSer classId 17 {
         Unicode(40)     hello;
         int             num;
-        Ascii(8)        short1; 
-        Ascii(8)        short2; 
+        Ascii(8)        short1;
+        Ascii(8)        short2;
         Unicode(80)     hello2;
     }
-    
+
     class PortableTest Portable classId 18 {
         Unicode(40)     hello;
         int             num;
-        Ascii(8)        short1; 
-        Ascii(8)        short2; 
+        Ascii(8)        short1;
+        Ascii(8)        short2;
         Unicode(80)     hello2;
     }
 }

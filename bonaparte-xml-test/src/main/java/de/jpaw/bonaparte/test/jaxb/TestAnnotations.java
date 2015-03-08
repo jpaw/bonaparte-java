@@ -14,7 +14,7 @@ public class TestAnnotations {
             System.out.println("TestXml is not annotated with @XmlRootElement");
         } else {
             System.out.println("TestXml has been annotated with @XmlRootElement");
-        }       
+        }
         Annotation [] xx = TestXml.class.getAnnotations();
         System.out.println("TestXml has " + xx.length + " annotations");
     }

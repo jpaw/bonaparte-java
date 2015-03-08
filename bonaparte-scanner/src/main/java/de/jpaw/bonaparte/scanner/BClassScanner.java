@@ -11,20 +11,20 @@ import de.jpaw.xenums.init.ReflectionsPackageCache;
 
 public class BClassScanner {
     private static final Logger LOGGER = LoggerFactory.getLogger(BClassScanner.class);
-    
+
     static {
         scanAndRegisterBonaPortables("de.jpaw.bonaparte");  // meta and ui might be referenced somewhere...
     }
-    
+
     /** Entry of no further packages need scanning. */
     public static void init() {
     }
-    
+
     /** Entry for separate packages. */
     public static void scanAndRegisterBonaPortables(String packageName) {
         scanAndRegisterBonaPortables(ReflectionsPackageCache.get(packageName));
     }
-    
+
     /** Scan a list of available reflections. */
     public static void scanAndRegisterBonaPortables(Reflections ... reflections) {
         for (int i = 0; i < reflections.length; ++i) {

@@ -15,7 +15,7 @@ import de.jpaw.bonaparte.pojos.meta.FoldingStrategy;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.ParsedFoldingComponent;
 
-/** Delegates most output to the delegateComposer, but uses a permutation/selection of fields for the object output. */ 
+/** Delegates most output to the delegateComposer, but uses a permutation/selection of fields for the object output. */
 public class FoldingComposer<E extends Exception> extends DelegatingBaseComposer<E> {
     private static final Logger LOGGER = LoggerFactory.getLogger(FoldingComposer.class);
     public static final Map<Class<? extends BonaCustom>, List<String>> EMPTY_MAPPING = ImmutableMap.of();
@@ -25,34 +25,34 @@ public class FoldingComposer<E extends Exception> extends DelegatingBaseComposer
     private final FoldingStrategy errorStrategy;
     private final List<String> bonaPortableMapping;
     private final List<String> bonaCustomMapping;
-    
+
     public FoldingComposer(MessageComposer<E> delegateComposer, Map<Class<? extends BonaCustom>, List<String>> mapping, FoldingStrategy errorStrategy) {
         super(delegateComposer);
         this.mapping = mapping;
         this.parsedMapping = new HashMap<Class<? extends BonaCustom>, List<ParsedFoldingComponent>>(20);
         this.errorStrategy = errorStrategy;
-        this.bonaPortableMapping = mapping.get(BonaPortable.class);  
-        this.bonaCustomMapping = mapping.get(BonaCustom.class);  
+        this.bonaPortableMapping = mapping.get(BonaPortable.class);
+        this.bonaCustomMapping = mapping.get(BonaCustom.class);
     }
-    
+
     /** Convenience method to write a list of fieldnames to some output. */
     public static <X extends Exception> void writeFieldsToDelegate(MessageComposer<X> writer, BonaCustom obj, List<String> fieldnames) throws X {
         Map<Class<? extends BonaCustom>, List<String>> mapping = Collections.<Class<? extends BonaCustom>, List<String>>singletonMap(BonaPortable.class, fieldnames);
         new FoldingComposer<X>(writer, mapping, FoldingStrategy.FORWARD_OBJECTS).writeRecord(obj);
     }
-    
+
 
     @Override
     public void writeSuperclassSeparator() throws E {
         // delegateComposer.writeSuperclassSeparator();   // the folded structure is flat
     }
 
-    
+
     private List<ParsedFoldingComponent> createParsedFieldList(ObjectReference di, BonaCustom obj, Class <? extends BonaCustom> objClass) throws E {
         // get the original mapping...
-        
+
         // if only one mapping entry has been provided, and that is for a BonaCustom in general, this is straightforward.
-        
+
         List<String> fieldList = mapping.get(objClass);
         if (fieldList == null) {
             switch (errorStrategy) {
@@ -110,7 +110,7 @@ public class FoldingComposer<E extends Exception> extends DelegatingBaseComposer
         LOGGER.debug("Created parsed mapping for class {}", obj.getClass().getCanonicalName());
         return pl;
     }
-    
+
     public static ParsedFoldingComponent createRecursiveFoldingComponent(String f) {
         ParsedFoldingComponent pfc = new ParsedFoldingComponent();
         int dotIndex = f.indexOf('.');
@@ -147,7 +147,7 @@ public class FoldingComposer<E extends Exception> extends DelegatingBaseComposer
         // pfc.setNumDescends(-1);
         return pfc;
     }
-    
+
     @Override
     public void addField(ObjectReference di, BonaCustom obj) throws E {
         if (obj == null) {

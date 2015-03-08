@@ -43,6 +43,6 @@ public abstract class StringBuilderConstants extends Settings {
     protected static final char ESCAPE_CHAR = '\005'; // ctrl-E
     protected static final char NULL_FIELD = '\016'; // ctrl-N
     protected static final char MAP_BEGIN = '\036';                 //
-    
+
     protected static final char BOM = 0xfeff;                 // possibly encountered at the beginning of a record
 }

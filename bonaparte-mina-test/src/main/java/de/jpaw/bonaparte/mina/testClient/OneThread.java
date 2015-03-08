@@ -12,8 +12,8 @@ import de.jpaw.bonaparte.pojos.rqrs.Response;
 public class OneThread implements Runnable {
     private final int threadIndex;
     private final int delay;
-    private final int callsPerThread; 
-    private final SimpleUnpooledClient conn; 
+    private final int callsPerThread;
+    private final SimpleUnpooledClient conn;
 
     private Date start;
     private Date stop;

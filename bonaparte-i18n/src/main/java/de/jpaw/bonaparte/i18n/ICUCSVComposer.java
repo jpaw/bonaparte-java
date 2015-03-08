@@ -57,7 +57,7 @@ public class ICUCSVComposer extends CSVComposer2 {
     }
 
     // override the methods using the CSVComposer numberFormats
-    
+
     // BigInteger(n)
     @Override
     public void addField(BasicNumericElementaryDataItem di, BigInteger n) throws IOException {
@@ -79,7 +79,7 @@ public class ICUCSVComposer extends CSVComposer2 {
             addRawData(bigDecimalFormat2.format(n));
         }
     }
-    
+
     @Override
     protected void outputFixedPointScaledInt(BasicNumericElementaryDataItem di, long n) throws IOException {
         writeSeparator();
@@ -105,5 +105,5 @@ public class ICUCSVComposer extends CSVComposer2 {
     public void addField(BasicNumericElementaryDataItem di, double d) throws IOException {
         writeSeparator();
         addRawData(numberFormat2.format(d));            // format using the locale's approach
-    }    
+    }
 }

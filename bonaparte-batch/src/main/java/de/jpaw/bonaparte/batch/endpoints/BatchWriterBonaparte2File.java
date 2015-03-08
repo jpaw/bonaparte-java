@@ -9,7 +9,7 @@ import de.jpaw.bonaparte.core.ByteArrayComposer;
  * It avoids some copying of data but may use more system calls. */
 public class BatchWriterBonaparte2File extends BatchWriterFile implements BatchWriter<BonaPortable> {
     private ByteArrayComposer bac = new ByteArrayComposer();    // share this across invocations
-    
+
     @Override
     public void accept(int no, BonaPortable response) throws Exception {
         bac.reset();

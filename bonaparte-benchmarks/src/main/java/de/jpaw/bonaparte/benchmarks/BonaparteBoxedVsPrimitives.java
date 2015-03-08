@@ -57,27 +57,27 @@ public class BonaparteBoxedVsPrimitives {
     public static byte [] dataAsciiPrimitives;
     public static byte [] dataCompactBoxed;
     public static byte [] dataAsciiBoxed;
-    
+
     @Setup
     public void init() {
         // create premanufactured data output
         cbac.addField(Primitives.meta$$this, primObj);
         dataCompactPrimitives = builder.getBytes();
         cbac.reset();
-        
+
         cbac.addField(BoxedTypes.meta$$this, boxedObj);
         dataCompactBoxed = builder.getBytes();
         cbac.reset();
-        
+
         bac.addField(Primitives.meta$$this, primObj);
         dataAsciiPrimitives = bac.getBytes();
         bac.reset();
-        
+
         bac.addField(BoxedTypes.meta$$this, boxedObj);
         dataAsciiBoxed = bac.getBytes();
         bac.reset();
     }
-    
+
     @Benchmark
     @Threads(1)
     public ByteBuilder serializeCompactPrimitives() {
@@ -93,7 +93,7 @@ public class BonaparteBoxedVsPrimitives {
         cbac.addField(BoxedTypes.meta$$this, boxedObj);
         return cbac.getBuilder();
     }
-    
+
     @Benchmark
     @Threads(1)
     public byte [] serializeAsciiPrimitives() {
@@ -109,7 +109,7 @@ public class BonaparteBoxedVsPrimitives {
         bac.addField(BoxedTypes.meta$$this, boxedObj);
         return bac.getBuffer();
     }
-    
+
     @Benchmark
     @Threads(1)
     public Primitives parseCompactPrimitives() throws MessageParserException {
@@ -123,7 +123,7 @@ public class BonaparteBoxedVsPrimitives {
         CompactByteArrayParser bap = new CompactByteArrayParser(dataCompactBoxed, 0, -1);
         return bap.readObject(BoxedTypes.meta$$this, BoxedTypes.class);
     }
-    
+
     @Benchmark
     @Threads(1)
     public Primitives parseAsciiPrimitives() throws MessageParserException {

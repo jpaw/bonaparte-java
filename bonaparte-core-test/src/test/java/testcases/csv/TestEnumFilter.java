@@ -31,7 +31,7 @@ public class TestEnumFilter {
         StringBuilder buffer = new StringBuilder(200);
         CSVComposer cmp = new CSVComposer(buffer, unixPasswdCfg);
         cmp.setWriteCRs(false);
-        
+
         MessageComposer<IOException> c1 = doEnumFilter ? new EnumAsTokenComposerFilter<IOException>(cmp) : cmp;
         MessageComposer<IOException> c2 = doFolding ? new FoldingComposer<IOException>(c1, map, FoldingStrategy.TRY_SUPERCLASS) : c1;
         try {
@@ -56,5 +56,5 @@ public class TestEnumFilter {
         runTest(testCase, "Hello:GREEN\n", true, false);
         runTest(testCase, "GREEN\n", true, true);
     }
-    
+
 }

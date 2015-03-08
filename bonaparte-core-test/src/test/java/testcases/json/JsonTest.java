@@ -34,7 +34,7 @@ public class JsonTest {
         array[2] = x;
         return array;
     }
-    
+
     @Test
     public void testEscaping() throws Exception {
         StringBuilder buff = new StringBuilder(4000);
@@ -44,32 +44,32 @@ public class JsonTest {
     }
 
 
-    
+
     @Test
     public void runBona() throws Exception {
         System.out.println("Bonaparte produces " + JsonComposer.toJsonString(getData()));
         // arrays not possible with Bonaparte. Must do multiple invocations
     }
-    
+
     @Test
     public void runGson() throws Exception {
         Gson gson = new Gson();
         System.out.println("Gson produces " + gson.toJson(getData()));
         System.out.println("Gson array produces " + gson.toJson(getArrayData()));
     }
-    
+
     @Test
     public void runJsonIO() throws Exception {
         System.out.println("Json-io produces " + JsonWriter.objectToJson(getData()));
         System.out.println("Json-io array produces " + JsonWriter.objectToJson(getArrayData()));
     }
-    
-    
-    
+
+
+
     // Jackson needs a bit more to work...
     @JsonFilter("regexFilter")
     private static class RegexFilterMixIn {}
-    
+
     private static class RegexBeanPropertyFilter extends SimpleBeanPropertyFilter {
         private String pattern;
 
@@ -98,14 +98,14 @@ public class JsonTest {
 
     @Test
     public void runJackson() throws Exception {
-        
+
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JodaModule());
         mapper.registerModule(new BonaparteModule());
         mapper.setSerializationInclusion(Include.NON_NULL);
 
         // mapped "regexFilter" ID to actual filter for filtering
-        FilterProvider filters = new SimpleFilterProvider().addFilter("regexFilter", new RegexBeanPropertyFilter("\\$.*"));        
+        FilterProvider filters = new SimpleFilterProvider().addFilter("regexFilter", new RegexBeanPropertyFilter("\\$.*"));
         System.out.println("Jackson produces " + mapper.writer(filters).writeValueAsString(getData()));
     }
 }

@@ -91,11 +91,11 @@ public interface MessageComposer<E extends Exception> {
     void addField(TemporalElementaryDataItem di, LocalDate t) throws E;
     void addField(TemporalElementaryDataItem di, LocalTime t) throws E;
     void addField(TemporalElementaryDataItem di, LocalDateTime t) throws E;
-    
+
     // Enums
     void addEnum(EnumDataItem di, BasicNumericElementaryDataItem ord, BonaNonTokenizableEnum n) throws E;
     void addEnum(EnumDataItem di, AlphanumericElementaryDataItem token, BonaTokenizableEnum n) throws E;
     void addEnum(XEnumDataItem di, AlphanumericElementaryDataItem token, XEnum<?> n) throws E;
-    
+
     boolean addExternal(ObjectReference di, Object obj) throws E;    // by default do nothing and return false, then the marshalled output will be performed
 }

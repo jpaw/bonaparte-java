@@ -34,7 +34,7 @@ public class TestFixedWidth {
 //        System.out.println("Expected  " + expectedOutput);
 //        System.out.println("Result is " + actualOutput);
         assert(expectedOutput.equals(actualOutput));
-        
+
         StringCSVParser p = new StringCSVParser(cfg, actualOutput);
         BonaPortable result = p.readObject(StaticMeta.OUTER_BONAPORTABLE_FOR_CSV, input.getClass());
         assert(input.equals(result));
@@ -45,7 +45,7 @@ public class TestFixedWidth {
         Test1 t1 = new Test1("Hello", 12, new BigDecimal("3.1"), new LocalDateTime(2013, 04, 01, 23, 55, 0), new LocalDate(2001, 11, 12), true, 1234567890123L);
 
         runTest(fixedWidthCfg1,  t1, "Hello      0000000012000000000003.10 201304012355002001111210000001234567890123\n");
-        
+
         CSVConfiguration fixedWidthCfg2 = CSVConfiguration.Builder.from(fixedWidthCfg1)
                 .booleanTokens("J", "N")
                 .setCustomDayFormat("dd.MM.YYYY")
@@ -59,7 +59,7 @@ public class TestFixedWidth {
     public void testFixedWidthWithImplicitScale() throws Exception {
         CSVConfiguration fixedWidthCfg2 = CSVConfiguration.Builder.from(fixedWidthCfg1).usingZeroPadding(false).build();
         CSVConfiguration fixedWidthCfg3 = CSVConfiguration.Builder.from(fixedWidthCfg1).removeDecimalPoint(true).build();
-        
+
         ScaledInts si1 = new ScaledInts(1, 1L, 1, 1L);
         ScaledInts si2 = new ScaledInts(1, 1L, -1, -1L);
         runTest(fixedWidthCfg1, si1, "00000.001000000000000.000001 00000.001 000000000000.000001\n");

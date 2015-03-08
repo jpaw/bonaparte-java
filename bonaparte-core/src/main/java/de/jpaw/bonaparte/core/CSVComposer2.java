@@ -72,7 +72,7 @@ public class CSVComposer2 extends CSVComposer {
             addRawData(bigDecimalFormat.format(BigDecimal.valueOf(n, scale)));
         }
     }
-    
+
     // BigInteger(n)
     @Override
     public void addField(BasicNumericElementaryDataItem di, BigInteger n) throws IOException {

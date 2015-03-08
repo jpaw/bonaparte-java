@@ -101,14 +101,14 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
         numberOfObjectReuses = 0;
         if (useCache)
             objectCache.clear();
-        
+
     }
-    
+
     // for statistics
     public int getNumberOfObjectReuses() {
         return numberOfObjectReuses;
     }
-    
+
     /**************************************************************************************************
      * Serialization goes here
      **************************************************************************************************/
@@ -126,12 +126,12 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
     protected void writeNull() throws IOException {
         work.append(NULL_FIELD);
     }
-    
+
     @Override
     public void writeNull(FieldDefinition di) throws IOException {
         work.append(NULL_FIELD);
     }
-    
+
     @Override
     public void writeNullCollection(FieldDefinition di) throws IOException {
         work.append(NULL_FIELD);
@@ -449,12 +449,12 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
         addField(OBJECT_CLASS, obj.get$PQON());
         addField(REVISION_META, obj.get$MetaData().getRevision());
     }
-    
+
     @Override
     public void terminateObject(ObjectReference di, BonaCustom obj) throws IOException {
         work.append(OBJECT_TERMINATOR);
     }
-    
+
     @Override
     public void addField(ObjectReference di, BonaCustom obj) throws IOException {
         if (obj == null) {
@@ -508,7 +508,7 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
         else
             addField(token, n.getToken());
     }
-    
+
     @Override
     public boolean addExternal(ObjectReference di, Object obj) throws IOException {
         return false;       // perform conversion by default

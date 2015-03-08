@@ -10,7 +10,7 @@ import de.jpaw.bonaparte.core.MessageComposer;
 import de.jpaw.bonaparte.core.StaticMeta;
 
 public class HazelcastComposer extends CompactComposer {
-    
+
     // entry called from generated objects:
     public static void serialize(BonaPortable obj, ObjectDataOutput _out, boolean recommendIdentifiable) throws IOException {
         MessageComposer<IOException> _w = new HazelcastComposer(_out, recommendIdentifiable);
@@ -19,7 +19,7 @@ public class HazelcastComposer extends CompactComposer {
     }
 
     protected final ObjectDataOutput out;
-    
+
     public HazelcastComposer(ObjectDataOutput out, boolean recommendIdentifiable) {
         super(out, recommendIdentifiable);
         this.out = out;

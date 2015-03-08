@@ -21,15 +21,15 @@ public class PathResolverTest {
     @Test
     public void testPathResolving1() throws Exception {
         ClassDefinition obj = XEnumSetDefinition.BClass.INSTANCE.getMetaData();
-        
+
         FieldDefinition f = FieldGetter.getFieldDefinitionForPathname(obj, "baseXEnum");
         Assert.assertEquals(f, XEnumSetDefinition.meta$$baseXEnum);
     }
-    
+
     @Test
     public void testPathResolving2() throws Exception {
         ClassDefinition obj = ClassDefinition.BClass.INSTANCE.getMetaData();
-        
+
         FieldDefinition f = FieldGetter.getFieldDefinitionForPathname(obj, "fields[2].dataCategory");
         Assert.assertEquals(f, FieldDefinition.meta$$dataCategory);
     }
@@ -40,9 +40,9 @@ public class PathResolverTest {
         ClassDefinition obj = XEnumSetDefinition.BClass.INSTANCE.getMetaData();
         FieldDefinition f = FieldGetter.getFieldDefinitionForPathname(obj, "baseXEnum");
         Assert.assertEquals(f, XEnumSetDefinition.meta$$baseXEnum);
-        
+
         ClassDefinition obj2 = ClassDefinition.BClass.INSTANCE.getMetaData();
-        
+
         FieldDefinition f2 = FieldGetter.getFieldDefinitionForPathname(obj2, "fields[2].dataCategory");
         Assert.assertEquals(f2, FieldDefinition.meta$$dataCategory);
     }

@@ -6,35 +6,35 @@ import de.jpaw.fixedpoint.money.*
  */
 package adapters.moneyfp factoryId 27 {
     properties unroll, prefix, suffix;
-    
+
     /** A currency class, derived from the ISO code literal and an explicit number of decimals. */
     final immutable class FpCurrency classId 1 is FPCurrency adapter de.jpaw.bonaparte.adapters.moneyfp.FpCurrencyAdapter withExceptionConverter {
         required uppercase(3)       currencyCode;
         required int                decimals;
     }
-    
+
     /** An amount class (gross, with optional net and tax breakdown), based on a currency class. */
     final immutable class FpAmount classId 2 is FPAmount adapter de.jpaw.bonaparte.adapters.moneyfp.FpAmountAdapter withExceptionConverter {
         required (FpCurrency)       currency;
         required long               gross;
         required Long List<>        amounts     properties unroll="Net,Tax1,Tax2,Tax3"; // with JPA persistence, have 4 fields...
     }
-    
+
     /** A currency class, derived from the ISO code literal, with fixed 6 decimals precision. single field version. */
     final immutable class FpCurrencyMicros is FPCurrency adapter de.jpaw.bonaparte.adapters.moneyfp.FpCurrencyMicrosAdapter singleField withExceptionConverter {
         optional Uppercase(3)       currencyCode;
     }
-    
+
     /** A currency class, derived from the ISO code literal, using the currency's default precision. single field version. */
     final immutable class FpCurrencyStd is FPCurrency adapter de.jpaw.bonaparte.adapters.moneyfp.FpCurrencyStdAdapter singleField withExceptionConverter {
         optional Uppercase(3)       currencyCode;
     }
-    
+
     /** An amount class with a single value (gross only), based on an externally supply currency. */
     final immutable class FpSingleAmountExt is FPAmount adapter de.jpaw.bonaparte.adapters.moneyfp.FpSingleAmountExtAdapter needExtraParam singleField withExceptionConverter {
         optional Long               gross;
     }
-    
+
     /** An amount class (gross, with optional net and tax breakdown), based on an externally supply currency. */
     final immutable class FpAmountExt classId 3 is FPAmount adapter de.jpaw.bonaparte.adapters.moneyfp.FpAmountExtAdapter needExtraParam withExceptionConverter {
         required long               gross;

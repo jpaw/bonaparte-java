@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 public class CSVConfiguration {
     private static final Logger LOGGER = LoggerFactory.getLogger(CSVConfiguration.class);
-    
+
     public final static String EMPTY_STRING = "";                           // used instead of null Strings
     public final static String DEFAULT_DAY_FORMAT = "yyyyMMdd";             // default pattern for LocalDate (bonaparte Day) outputs
     public final static String DEFAULT_TIME_FORMAT = "HHmmss";              // default pattern for LocalTime (bonaparte Time(0)) outputs
@@ -284,7 +284,7 @@ public class CSVConfiguration {
             return this;
         }
     }
-    
+
     // certain utility methods used by CSV parser / composers
 
     public DateTimeFormatter determineDayFormatter() {

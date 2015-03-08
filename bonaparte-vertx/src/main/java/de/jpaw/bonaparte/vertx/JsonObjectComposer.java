@@ -36,14 +36,14 @@ public class JsonObjectComposer implements MessageComposer<RuntimeException> {
     protected static final DateTimeFormatter LOCAL_DATE_ISO = ISODateTimeFormat.basicDate();
     protected static final DateTimeFormatter LOCAL_DATETIME_ISO = ISODateTimeFormat.basicDateTime();
     protected static final DateTimeFormatter LOCAL_TIME_ISO = ISODateTimeFormat.basicTime();
-    
+
     protected JsonObject obj = null;
     protected JsonArray arr = null;
     protected boolean inArray = false;
     protected boolean writeNulls = false;
     protected String rememberedArrayFieldName = null;
 
-    
+
     // static converter method for convenience
     public static JsonObject toJsonObject(BonaCustom o, boolean writeNulls) {
         JsonObjectComposer composer = new JsonObjectComposer(writeNulls);
@@ -53,7 +53,7 @@ public class JsonObjectComposer implements MessageComposer<RuntimeException> {
     public static JsonObject toJsonObject(BonaCustom o) {
         return toJsonObject(o, false);
     }
-    
+
     // retrieve the converted object
     public JsonObject getObject() {
         return obj;
@@ -61,12 +61,12 @@ public class JsonObjectComposer implements MessageComposer<RuntimeException> {
 
     public JsonObjectComposer() {
     }
-    
+
     public JsonObjectComposer(boolean writeNulls) {
         this.writeNulls = writeNulls;
     }
-    
-    
+
+
     @Override
     public void writeNull(FieldDefinition di) { // nulls are not written, unless we are in an array
         if (inArray) {
@@ -101,7 +101,7 @@ public class JsonObjectComposer implements MessageComposer<RuntimeException> {
     @Override
     public void terminateObject(ObjectReference di, BonaCustom o) {
     }
-    
+
     @Override
     public void startArray(FieldDefinition di, int currentMembers, int sizeOfElement) {
         if (inArray)
@@ -356,7 +356,7 @@ public class JsonObjectComposer implements MessageComposer<RuntimeException> {
         else
             writeNull(di);
     }
-    
+
     @Override
     public boolean addExternal(ObjectReference di, Object obj) {
         return false;       // perform conversion by default

@@ -16,14 +16,14 @@ import org.slf4j.LoggerFactory;
  */
 public enum ObjectReuseStrategy {
     NONE, BY_REFERENCE, BY_CONTENTS;
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ObjectReuseStrategy.class);
     static public ObjectReuseStrategy defaultStrategy = BY_REFERENCE;
     static {
         // read from properties file
         String path = "/META-INF/maven/de.jpaw/bonaparte-core/pom.properties";
         String version = "UNKNOWN";
-        
+
         Properties prop = new Properties();
         InputStream in = ObjectReuseStrategy.class.getResourceAsStream(path );
         try {
@@ -36,7 +36,7 @@ public enum ObjectReuseStrategy {
             try {
                 in.close();
             } catch (Exception ex) {
-                
+
             }
         }
 

@@ -8,7 +8,7 @@ import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 
 /** A composer which convertes the data into an immutable ByteArray.
  * Due to the possible self-similarity, child objects can participate in the parent's serialized form.
- * 
+ *
  * @author Michael Bischoff
  *
  */
@@ -23,15 +23,15 @@ public class ByteArrayComposerWithCache extends ByteArrayComposer {
     private OffsetInfo current = null;
     private Integer currentObjectIndex = -1;
     private List<OffsetInfo> mem = new ArrayList<OffsetInfo>(200);
-    private Stack<Integer> backtrack = new Stack<Integer>();  // nesting depth. The current 
-    
+    private Stack<Integer> backtrack = new Stack<Integer>();  // nesting depth. The current
+
     public ByteArrayComposerWithCache() {
         super();
     }
     public ByteArrayComposerWithCache(ObjectReuseStrategy reuseStrategy) {
         super(reuseStrategy);
     }
-    
+
     @Override
     public void writeRecord(BonaCustom o) {
         super.reset();
@@ -55,7 +55,7 @@ public class ByteArrayComposerWithCache extends ByteArrayComposer {
         mem.add(current);
         super.startObject(di, obj);
     }
-    
+
     @Override
     public void terminateObject(ObjectReference di, BonaCustom obj) {
         super.terminateObject(di, obj);
@@ -73,5 +73,5 @@ public class ByteArrayComposerWithCache extends ByteArrayComposer {
         if (referencedIndex < current.minReferencedObject)
             current.minReferencedObject = referencedIndex;
     }
-    
+
 }

@@ -61,7 +61,7 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
     public ExternalizableComposer(ObjectOutput out) {
         this.out = out;
     }
-    
+
     // entry called from generated objects: (Object header has been written already by internal methods (and unfortunately in some different fashion...))
     public static void serialize(BonaCustom obj, ObjectOutput _out) throws IOException {
         MessageComposer<IOException> _w = new ExternalizableComposer(_out);
@@ -380,7 +380,7 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
     public void terminateObject(ObjectReference di, BonaCustom obj) throws IOException {
         out.writeByte(OBJECT_TERMINATOR);
     }
-    
+
 
     @Override
     public void addField(ObjectReference di, BonaCustom obj) throws IOException {
@@ -429,7 +429,7 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
         else
             addField(token, n.getToken());
     }
-    
+
     @Override
     public boolean addExternal(ObjectReference di, Object obj) throws IOException {
         return false;       // perform conversion by default

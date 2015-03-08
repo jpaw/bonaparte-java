@@ -15,7 +15,7 @@ import net.openhft.chronicle.ExcerptAppender;
 import net.openhft.chronicle.IndexedChronicle;
 import net.openhft.chronicle.tools.ChronicleTools;
 
-// results HUGEly depend on disk write activity 
+// results HUGEly depend on disk write activity
 //
 //Result: 949.974 ±(99.9%) 22278.045 ops/ms
 //Statistics: (min, avg, max) = (78.735, 949.974, 2345.738), stdev = 1221.135
@@ -40,7 +40,7 @@ public class ChronicleBench {
 
     private IndexedChronicle chronicle;
     private ExcerptAppender appender;
-    
+
     @Setup
     public void setUp() throws IOException {
         chronicle = new IndexedChronicle(basePath);
@@ -48,12 +48,12 @@ public class ChronicleBench {
         // final Excerpt excerpt = chronicle.createExcerpt();
         appender = chronicle.createAppender();
     }
-    
+
     @TearDown
     public void tearDown() throws IOException {
         chronicle.close();
     }
-    
+
     @Benchmark
     public void writeWithCommit(Blackhole bh) {
         for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {

@@ -22,30 +22,30 @@ public class ColumnCollector {
     static {
         DEFAULTS.freeze();
     }
-    
+
     public final List<UIColumn> columns = new ArrayList<UIColumn>();
     private final UIDefaults prefs;
-    
+
     public ColumnCollector() {
         prefs = DEFAULTS;
     }
-    
+
     public ColumnCollector(UIDefaults preferences) {
         prefs = preferences;
     }
-    
+
     private int width(int chars) {
         int calculatedSize = prefs.getWidthOffset() + chars * prefs.getWidthPerCharacter();
-        return calculatedSize > prefs.getWidthMax() ? prefs.getWidthMax() : calculatedSize; 
-            
+        return calculatedSize > prefs.getWidthMax() ? prefs.getWidthMax() : calculatedSize;
+
     }
-    
+
     private void addFieldToColumns(String pathname, ClassDefinition cls, FieldDefinition f) {
         // create a preliminary column descriptor
         UIColumn d = new UIColumn();
         d.setFieldName(pathname);
         String type = f.getDataType().toLowerCase();
-        
+
         if (f instanceof ObjectReference) {
             // probability to descend further...
             ObjectReference o = (ObjectReference)f;
@@ -61,7 +61,7 @@ public class ColumnCollector {
             }
             return;
         }
-        
+
         if (f instanceof BasicNumericElementaryDataItem) {
             // all numerical fields
             BasicNumericElementaryDataItem b = (BasicNumericElementaryDataItem)f;
@@ -83,7 +83,7 @@ public class ColumnCollector {
         if (f instanceof TemporalElementaryDataItem) {
             // all date / time fields: size depends on type
             TemporalElementaryDataItem t = (TemporalElementaryDataItem)f;
-            int fractionalSecondsSize = t.getFractionalSeconds() > 0 ? 4 : 0; 
+            int fractionalSecondsSize = t.getFractionalSeconds() > 0 ? 4 : 0;
             if ("day".equals(type))
                 d.setWidth(width(10));
             else if ("time".equals(type))
@@ -108,7 +108,7 @@ public class ColumnCollector {
             columns.add(d);
             return;
         }
-        
+
         // enum or enumset...
         String category = f.getDataCategory().name();
         if (category.contains("ENUM")) {
@@ -118,10 +118,10 @@ public class ColumnCollector {
             columns.add(d);
             return;
         }
-        
+
         // anything else (binary for example) ignore
     }
-    
+
     private void addToColumnsNoRecursion(String prefix, ClassDefinition cls) {
         for (FieldDefinition f : cls.getFields()) {
             if (f.getMaxCount() != null && f.getMaxCount().intValue() > 0) {
@@ -137,7 +137,7 @@ public class ColumnCollector {
             }
         }
     }
-    
+
     private void addToColumns(String prefix, ClassDefinition cls) {
         if (cls != null) {
             // first the fields of any superclass...
@@ -147,7 +147,7 @@ public class ColumnCollector {
             addToColumnsNoRecursion(prefix, cls);
         }
     }
-    
+
     /** Main external entry. */
     public void addToColumns(ClassDefinition cls) {
         addToColumns("", cls);

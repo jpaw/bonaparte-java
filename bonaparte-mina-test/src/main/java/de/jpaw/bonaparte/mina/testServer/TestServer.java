@@ -21,7 +21,7 @@ public class TestServer {
 
   public void run() throws Exception {
       NioSocketAcceptor acceptor = new NioSocketAcceptor();
-      
+
       // Prepare the service configuration.
 
           acceptor.getFilterChain()
@@ -36,8 +36,8 @@ public class TestServer {
       acceptor.bind(new InetSocketAddress(port));
 
       System.out.println("Listening on port " + port);
-}    
-    
+}
+
     public static void main(String[] args) throws Exception {
         int port = 8078;
         if (args.length > 0) {

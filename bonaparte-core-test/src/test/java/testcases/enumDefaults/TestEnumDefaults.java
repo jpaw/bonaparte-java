@@ -15,7 +15,7 @@ public class TestEnumDefaults {
         assert (c1.getThisShouldBeRed() == Color.RED);
         assert (c1.getThisShouldAlsoBeRed() == Color2.RED);
     }
-    
+
     @Test
     public static void testEnumsWithoutDefaults() {
         ClassWithoutDefaults c1 = new ClassWithoutDefaults();

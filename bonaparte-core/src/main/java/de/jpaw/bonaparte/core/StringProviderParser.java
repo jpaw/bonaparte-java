@@ -33,7 +33,7 @@ public class StringProviderParser implements MessageParser<MessageParserExceptio
     private final StringParserUtil stringParser = new StringParserUtil();  // TODO; in the form with the provided classname, push it down to the Util
     private final String currentClass;
     private final StringGetter requestParameters;
-    
+
     public static interface StringGetter {
         /** Returns the contents of the field named by name, or null if that field has not been provided. */
         String get(String name) throws MessageParserException;
@@ -45,24 +45,24 @@ public class StringProviderParser implements MessageParser<MessageParserExceptio
     public static void unmarshal(BonaPortable obj, StringGetter getter) throws MessageParserException {
         obj.deserialize(new StringProviderParser(getter, obj.get$PQON()));
     }
-    
+
     public StringProviderParser(StringGetter requestParameters) {
         this.requestParameters = requestParameters;
         this.currentClass = "N/A";
     }
-    
+
     public StringProviderParser(StringGetter requestParameters, String classname) {
         this.requestParameters = requestParameters;
         this.currentClass = classname;
     }
-    
+
     private String getParameter(FieldDefinition di) throws MessageParserException {
         String  data = requestParameters.get(di.getName());
         if (data == null && di.getIsRequired())
             throw new MessageParserException(MessageParserException.EMPTY_BUT_REQUIRED_FIELD, di.getName(), -1, currentClass);
         return data;
     }
-    
+
     @Override
     public Character readCharacter(MiscElementaryDataItem di) throws MessageParserException {
         return stringParser.readCharacter(di, getParameter(di));
@@ -112,7 +112,7 @@ public class StringProviderParser implements MessageParser<MessageParserExceptio
     public BigInteger readBigInteger(BasicNumericElementaryDataItem di) throws MessageParserException {
         return stringParser.readBigInteger(di, getParameter(di));
     }
-    
+
     @Override
     public BigDecimal readBigDecimal(NumericElementaryDataItem di) throws MessageParserException {
         return stringParser.readBigDecimal(di, getParameter(di));

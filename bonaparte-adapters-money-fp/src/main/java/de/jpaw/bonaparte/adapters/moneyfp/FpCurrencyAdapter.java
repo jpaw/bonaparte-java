@@ -15,8 +15,8 @@ public class FpCurrencyAdapter {
     public static FpCurrency marshal(FPCurrency currency) {
         return new FpCurrency(currency.getCurrencyCode(), currency.getDecimals());
     }
-    
-    /** Convert a parsed adapter type into the custom type. 
+
+    /** Convert a parsed adapter type into the custom type.
      * @throws E */
     public static <E extends Exception> FPCurrency unmarshal(BonaPortable obj, MessageParser<E> p) throws E {
         if (obj instanceof FpCurrency) {

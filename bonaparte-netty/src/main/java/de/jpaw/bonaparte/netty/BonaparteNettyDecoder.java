@@ -27,7 +27,7 @@ public class BonaparteNettyDecoder extends ByteToMessageDecoder {
             logger.debug("Ignoring {} bytes of data - no NL at end of message", msg.readableBytes());
             return null;  // message not yet complete
         }
-        
+
         if (msg.hasArray()) {
             if ((msg.arrayOffset() == 0) && (msg.readableBytes() == msg.capacity())) {
                 // we have no offset and the length is the same as the capacity. Its safe to reuse
@@ -42,13 +42,13 @@ public class BonaparteNettyDecoder extends ByteToMessageDecoder {
         msg.readBytes(array);
         return array;
     }
-    
+
     @Override
     public void decode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
         byte[] array = getData(msg);
         if (array == null)
             return;  // no data yet...
-        
+
         logger.debug("Received {} bytes of data", array.length);
         try {
             ByteArrayParser p = new ByteArrayParser(array, 0, -1);

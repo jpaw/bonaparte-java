@@ -21,7 +21,7 @@ public class AbstractDynamicBonaPortable implements BonaPortable {
     public AbstractDynamicBonaPortable(BonaPortableClass<?> bClass) {
         _my$BClass = bClass;
     }
-    
+
     @Override
     public String get$PQON() {
         return _my$BClass.getPqon();
@@ -51,19 +51,19 @@ public class AbstractDynamicBonaPortable implements BonaPortable {
     @Override
     public <E extends Exception> void serializeSub(MessageComposer<E> w) throws E {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public <E extends Exception> void deserialize(MessageParser<E> p) throws E {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void validate() throws ObjectValidationException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
@@ -75,31 +75,31 @@ public class AbstractDynamicBonaPortable implements BonaPortable {
     @Override
     public <E extends Exception> void foldedOutput(MessageComposer<E> w, ParsedFoldingComponent pfc) throws E {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void treeWalkString(DataConverter<String, AlphanumericElementaryDataItem> _cvt, boolean descend) {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void treeWalkBigDecimal(DataConverter<BigDecimal, NumericElementaryDataItem> _cvt, boolean descend) {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void treeWalkObject(DataConverter<Object, FieldDefinition> _cvt, boolean descend) {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void treeWalkBonaPortable(DataConverter<BonaPortable, ObjectReference> _cvt, boolean descend) {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
@@ -111,7 +111,7 @@ public class AbstractDynamicBonaPortable implements BonaPortable {
     @Override
     public void freeze() {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
@@ -134,7 +134,7 @@ public class AbstractDynamicBonaPortable implements BonaPortable {
     @Override
     public void set$Active(boolean _a) throws ObjectValidationException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override

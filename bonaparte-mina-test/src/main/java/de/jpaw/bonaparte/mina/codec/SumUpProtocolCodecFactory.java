@@ -15,7 +15,7 @@ import de.jpaw.bonaparte.pojos.rqrs.Response;
 public class SumUpProtocolCodecFactory extends DemuxingProtocolCodecFactory {
 
     public SumUpProtocolCodecFactory(boolean server) {
-        if (server) { 
+        if (server) {
             super.addMessageDecoder(BonaparteDecoder.class);
             super.addMessageEncoder(Response.class, BonaparteEncoder.class);
         } else // Client

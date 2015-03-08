@@ -17,7 +17,7 @@ public class PersistenceException extends ApplicationException {
     static public final int NO_RECORD_FOR_INDEX          = (CL_PARAMETER_ERROR * CLASSIFICATION_FACTOR) + ERROR_CODE_OFFSET + 7;
     static public final int NO_PRIMARY_KEY               = OFFSET + 8;
     static public final int RECORD_DOES_NOT_EXIST_ILE    = (CL_INTERNAL_LOGIC_ERROR * CLASSIFICATION_FACTOR) + ERROR_CODE_OFFSET + 9;
-    
+
     static {
         codeToDescription.put(RECORD_DOES_NOT_EXIST     , "No record for primary key found");
         codeToDescription.put(RECORD_ALREADY_EXISTS     , "Value for primary key already exists");
@@ -29,16 +29,16 @@ public class PersistenceException extends ApplicationException {
         codeToDescription.put(NO_PRIMARY_KEY            , "No primary key provided for create or update operation");
         codeToDescription.put(RECORD_DOES_NOT_EXIST_ILE , "No record for primary key found, but this should not have happened");
     }
-    
+
     private final long key;
     private final String entityName;
     private final String indexName;
     private final String indexValue;
-    
+
     public PersistenceException(int errorCode, long key, String entityName) {
         this(errorCode, key, entityName, null, null);
     }
-    
+
     public PersistenceException(int errorCode, long key, String entityName, String indexName, String indexValue) {
         super(errorCode, "Entity " + entityName
                 + (key > 0L ? ", key " + key : "")

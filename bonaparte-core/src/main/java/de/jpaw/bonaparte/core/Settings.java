@@ -31,11 +31,11 @@ public abstract class Settings implements StaticMeta {
     static private ParseSkipNonNulls defaultSkipNonNullsBehavior = ParseSkipNonNulls.WARN;      // allow improved downwards compatibility
     static public final int COLLECTION_COUNT_NULL = -1;                                         // int returned by parseArrayStart and parseMapStart to indicate a null array / map (in contrast to one with 0 entries)
     static public final int COLLECTION_COUNT_REF = -2;                                          // int used internally in the compact format which indicates the content was some external one to many relationship.
-    
+
     private boolean writeCRs = defaultCRs;          // determines the record terminator sequence. Attempts to mimic text file line breaks of the OS
     private Charset charset = defaultCharset;       // usually UTF-8, can be explicitly set to some other encoding, if desired (usually some single-byte fixed width character set)
     private ParseSkipNonNulls skipNonNullsBehavior = defaultSkipNonNullsBehavior;
-    
+
     public static ParseSkipNonNulls getDefaultSkipNonNullsBehavior() {
         return defaultSkipNonNullsBehavior;
     }

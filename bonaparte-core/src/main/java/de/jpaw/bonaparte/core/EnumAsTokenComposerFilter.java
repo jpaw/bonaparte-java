@@ -9,7 +9,7 @@ import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.enums.XEnum;
 
 public class EnumAsTokenComposerFilter<E extends Exception> extends DelegatingBaseComposer<E> {
-    
+
     public EnumAsTokenComposerFilter(MessageComposer<E> delegateComposer) {
         super(delegateComposer);
     }

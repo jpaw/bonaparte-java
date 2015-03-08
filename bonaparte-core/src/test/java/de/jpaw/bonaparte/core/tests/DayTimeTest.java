@@ -9,7 +9,7 @@ public class DayTimeTest {
     @Test
     public void testTimeDifference() throws Exception {
         LocalDateTime start = new LocalDateTime();
-        
+
         Thread.sleep(155L);
         LocalDateTime end = LocalDateTime.now();
         int diff = DayTime.LocalDateTimeDifference(start, end);

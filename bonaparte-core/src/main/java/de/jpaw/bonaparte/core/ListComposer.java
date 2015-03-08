@@ -36,8 +36,8 @@ public class ListComposer extends NoOpComposer<RuntimeException> implements Mess
     final protected boolean doDeepCopies;
     final protected boolean keepObjects;
     final protected boolean keepExternals;
-    
-    
+
+
     /** Creates a new ListComposer for a given preallocated external storage.
      * keepObjects = true replaces the prior ListObjComposer */
     public ListComposer(final List<Object> storage, boolean doDeepCopies, boolean keepObjects, boolean keepExternals) {
@@ -46,20 +46,20 @@ public class ListComposer extends NoOpComposer<RuntimeException> implements Mess
         this.keepObjects = keepObjects;
         this.keepExternals = keepExternals;
     }
-    
+
     /** Creates a new ListComposer, creating an own internal storage. */
     public ListComposer(boolean doDeepCopies, boolean keepObjects, boolean keepExternals) {
         this(new ArrayList<Object>(), doDeepCopies, keepObjects, keepExternals);
     }
-    
-    
+
+
     public List<Object> getStorage() {
         return storage;
     }
     public boolean getDoDeepCopies() {
         return doDeepCopies;
     }
-    
+
     public void reset() {
         storage.clear();
     }
@@ -189,7 +189,7 @@ public class ListComposer extends NoOpComposer<RuntimeException> implements Mess
             }
         }
     }
-    
+
     @Override
     public void addEnum(EnumDataItem di, BasicNumericElementaryDataItem ord, BonaNonTokenizableEnum n) {
         storage.add(n);
@@ -204,7 +204,7 @@ public class ListComposer extends NoOpComposer<RuntimeException> implements Mess
     public void addEnum(XEnumDataItem di, AlphanumericElementaryDataItem token, XEnum<?> n) {
         storage.add(n);
     }
-    
+
     @Override
     public boolean addExternal(ObjectReference di, Object obj) {
         if (keepExternals) {

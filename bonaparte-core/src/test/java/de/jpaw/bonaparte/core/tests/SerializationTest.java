@@ -65,7 +65,7 @@ public class SerializationTest {
         System.out.println("Length with Kryo is " + output.position());
         output.close();
 
-        
+
         System.out.println("Test starting: composer Compact");
         ByteArrayOutputStream baos = new ByteArrayOutputStream(4000);
         DataOutputStream dataOut = new DataOutputStream(baos);
@@ -76,7 +76,7 @@ public class SerializationTest {
         byte [] ccResult = baos.toByteArray();
         System.out.println("Length with CompactComposer is " + dataOut.size());
         assert(dataOut.size() == ccResult.length);
-        
+
         System.out.println("Test starting: composer ByteArrayCompact");
         CompactByteArrayComposer cbac = new CompactByteArrayComposer(4000, false);
         cbac.writeRecord(obj1);
@@ -84,7 +84,7 @@ public class SerializationTest {
         System.out.println("Length with ByteArrayCompactComposer is " + cbacResult.length);
         assert(cbacResult.length == dataOut.size());
         assert Arrays.equals(ccResult, cbacResult) : "produced byte data should be identical";
-        
+
 
         System.out.println("Test starting: composer StringBuilder");
         StringBuilderComposer sbc = new StringBuilderComposer(new StringBuilder());
@@ -134,6 +134,6 @@ public class SerializationTest {
         assert resultCp instanceof ClassDefinition : "returned obj is of wrong type (CompactParser)";
         assert compareTest1(obj1, (ClassDefinition)resultCp) : "returned obj is not equal to original one (CompactParser)";
         assert obj1.equals(resultCp) : "returned obj is not equal to original one (CompactParser) (own test)";
-        
+
     }
 }

@@ -23,10 +23,10 @@ import de.jpaw.bonaparte.pojos.meta.ParsedFoldingComponent;
 /** Utility method to get a fields from BonaPortables via pathname. */
 public class FieldGetter {
     private static final Logger LOG = LoggerFactory.getLogger(FieldGetter.class);
-    
+
     // configuration constant
     final private static boolean DEFAULT_AUTOSKIP_ADAPTERS = true;      // do not return adapter classes but their contents
-    
+
     /** Retrieves the class instance for the previously static methods, the BClass.getInstance, for a given class.
      * Throws an exception if the provided class is not a BonaPortable or the BClass cannot be obtained. */
     public static BonaPortableClass<?> getBClass(Class<?> bonaPortableClass) {
@@ -54,12 +54,12 @@ public class FieldGetter {
         }
     }
 
-    
-    
+
+
     public static List<Object> getFields(BonaPortable obj, List<String> fieldnames) {
         return getFieldsOrObjects(obj, fieldnames, false, !DEFAULT_AUTOSKIP_ADAPTERS);
     }
-    
+
     /** Get a single field, reusing the get multiple implementation. */
     public static Object getField(BonaPortable obj, String fieldname) {
         List<Object> target = getFields(obj, Collections.singletonList(fieldname));     // the list with the result
@@ -69,28 +69,28 @@ public class FieldGetter {
     public static List<Object> getFieldsOrObjects(BonaPortable obj, List<String> fieldnames) {
         return getFieldsOrObjects(obj, fieldnames, true, !DEFAULT_AUTOSKIP_ADAPTERS);
     }
-    
+
     public static List<Object> getFieldsOrObjects(BonaPortable obj, List<String> fieldnames, boolean keepObjects, boolean keepExternals) {
         if (obj == null || fieldnames == null)
             return null;
-        
+
         // step 1: construct the output buffer
         List<Object> target = new ArrayList<Object>(fieldnames.size());     // the list to write the field into
-        
+
         // step 2: create and chain the message composers
         ListComposer writer = new ListComposer(target, false, keepObjects, keepExternals);
         FoldingComposer.writeFieldsToDelegate(writer, obj, fieldnames);
 
         return target;
     }
-    
+
     /** Get a single field, reusing the get multiple implementation. */
     public static Object getFieldOrObj(BonaPortable obj, String fieldname) {
         List<Object> target = getFieldsOrObjects(obj, Collections.singletonList(fieldname));        // the list with the result
         return (target.size() == 0) ? null : target.get(0);
     }
 
-    
+
     /** Get a single field, alternate implementation, going directly to ListComposer (should be faster, less object allocations). */
     public static Object getSingleField(BonaPortable obj, String fieldname) {
         ParsedFoldingComponent pfc = FoldingComposer.createRecursiveFoldingComponent(fieldname);
@@ -108,7 +108,7 @@ public class FieldGetter {
         obj.foldedOutput(delegate, pfc);
         return (target.size() == 0) ? null : target.get(0);
     }
-    
+
     /** Finds a field in a class or its parent. Returns null if not found. */
     public static FieldDefinition lookupField(ClassDefinition cls, String name) {
         while (cls != null) {
@@ -122,7 +122,7 @@ public class FieldGetter {
         // no more parent
         return null;
     }
-    
+
     /** Returns the first field defined in a superclass or this class, or null, if neither this class nor a superclass defines a field. */
     public static FieldDefinition getFirstField(ClassDefinition cls) {
         FieldDefinition f = cls.getParentMeta() == null ? null : getFirstField(cls.getParentMeta());
@@ -132,13 +132,13 @@ public class FieldGetter {
             return null;
         return cls.getFields().get(0);
     }
-    
+
     /** Retrieves just the meta data. Throws an exception if the path is invalid.
      * This is a static path resolver, pathnames must reference valid paths for any valid data. */
     public static FieldDefinition getFieldDefinitionForPathname(ClassDefinition cls, String pathname) throws UtilException {
         return getFieldDefinitionForPathname(cls, pathname, DEFAULT_AUTOSKIP_ADAPTERS);
     }
-    
+
     /** Retrieves just the meta data. Throws an exception if the path is invalid.
      * This is a static path resolver, pathnames must reference valid paths for any valid data. */
     public static FieldDefinition getFieldDefinitionForPathname(ClassDefinition cls, String pathname, final boolean autoSkipAdapters) throws UtilException {
@@ -147,7 +147,7 @@ public class FieldGetter {
         for (;;) {
             String currentElement;
             final int lastDot = pathname.indexOf('.');
-            if (lastDot < 0) {        
+            if (lastDot < 0) {
                 // this was the last component
                 currentElement = pathname;
             } else {
@@ -162,7 +162,7 @@ public class FieldGetter {
             FieldDefinition fld = lookupField(cls, currentElement);
             if (fld == null)
                 throw new UtilException(UtilException.PATH_COMPONENT_NOT_FOUND, currentElement + " in " + cls.get$PQON());
-            
+
             // check for adapters...
             ObjectReference oRef;
             if (autoSkipAdapters) {

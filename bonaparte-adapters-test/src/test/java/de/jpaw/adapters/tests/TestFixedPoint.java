@@ -18,13 +18,13 @@ import de.jpaw.fixedpoint.types.MilliUnits;
 import de.jpaw.util.StringSerializer;
 
 public class TestFixedPoint {
-    
+
     @Test
     public void testAdapterMilli() throws Exception {
         String expectedResult = StringSerializer.fromString(
                 "\\R\\N\\Sadapters.tests.CustomMillis\\F\\Nhello\\F12500\\F7.889\\F\\O\\J").toString();
         CustomMillis myMillis = new CustomMillis("hello", MilliUnits.valueOf(12.5), MilliUnits.of(BigDecimal.valueOf(7889, 3)));
-        
+
         System.out.println("Result is " + new StringBuilderTestRunner().serializationTest(myMillis, expectedResult));
         MultiTestRunner.serDeserMulti(myMillis, expectedResult);
     }
@@ -34,7 +34,7 @@ public class TestFixedPoint {
         String expectedResult = StringSerializer.fromString(
                 "\\R\\N\\Sadapters.tests.CustomCurrency\\F\\Nhello\\F\\Sadapters.moneyfp.FpCurrency\\F\\NEUR\\F2\\F\\O\\O\\J").toString();
         CustomCurrency myCurrency = new CustomCurrency("hello", new FPCurrency(JavaCurrencyDataProvider.instance.get("EUR")));
-        
+
         System.out.println("serialized currency is " + new StringBuilderTestRunner().serializationTest(myCurrency, expectedResult));
         MultiTestRunner.serDeserMulti(myCurrency, expectedResult);
     }
@@ -44,7 +44,7 @@ public class TestFixedPoint {
         String expectedResult = StringSerializer.altFromString(
                 "<R><N><S>adapters.tests.CustomMillis<F><N>hello<F>12500<F>7.889<F><O>\n").toString();
         CustomMillis myMillis = new CustomMillis("hello", MilliUnits.valueOf(12.5), MilliUnits.of(BigDecimal.valueOf(7889, 3)));
-        
+
         System.out.println("Result is " + new StringBuilderTestRunner().serializationTest(myMillis, expectedResult));
         MultiTestRunner.serDeserMulti(myMillis, expectedResult);
     }
@@ -54,11 +54,11 @@ public class TestFixedPoint {
         String expectedResult = StringSerializer.altFromString(
                 "<R><N><S>adapters.tests.CustomCurrency<F><N>hello<F><S>adapters.moneyfp.FpCurrency<F><N>EUR<F>2<F><O><O>\n").toString();
         CustomCurrency myCurrency = new CustomCurrency("hello", new FPCurrency(JavaCurrencyDataProvider.instance.get("EUR")));
-        
+
         System.out.println("serialized currency is " + new StringBuilderTestRunner().serializationTest(myCurrency, expectedResult));
         MultiTestRunner.serDeserMulti(myCurrency, expectedResult);
     }
-    
+
     @Test
     public void testAdapterCurrencyExt() throws Exception {
         FPCurrency stdEUR = new FPCurrency(JavaCurrencyDataProvider.instance.get("EUR"));
@@ -67,11 +67,11 @@ public class TestFixedPoint {
         long tax = net * 19 / 100;
         FPAmount units = new FPAmount(microsEUR, net + tax, net, tax);
         System.out.println("unit price is " + units);
-        
+
         MicroUnits quantity = new MicroUnits(3000000);
         FPAmount total = units.convert(quantity, stdEUR);
         System.out.println("3 items cost " + total);
-        
+
         CustomAmountsUsed item = new CustomAmountsUsed(stdEUR, units, quantity, total);
         String expectedResult = StringSerializer.altFromString(
                 "<R><N><S>adapters.tests.CustomAmountsUsed<F><N>"
@@ -83,7 +83,7 @@ public class TestFixedPoint {
         System.out.println("Result is " + new StringBuilderTestRunner().serializationTest(item, expectedResult));
         MultiTestRunner.serDeserMulti(item, expectedResult);
     }
-    
+
     @Test
     public void testAdapterCurrencyExt2() throws Exception {
         FPCurrency stdEUR = new FPCurrency(JavaCurrencyDataProvider.instance.get("EUR"));
@@ -92,11 +92,11 @@ public class TestFixedPoint {
         long tax = net * 19 / 100;
         FPAmount units = new FPAmount(microsEUR, net + tax);
         System.out.println("unit price is " + units);
-        
+
         MicroUnits quantity = new MicroUnits(3000000);
         FPAmount total = units.convert(quantity, stdEUR);
         System.out.println("3 items cost " + total);
-        
+
         CustomAmountsUsed2 item = new CustomAmountsUsed2(stdEUR, units, quantity, total);
         String expectedResult = StringSerializer.altFromString(
                 "<R><N><S>adapters.tests.CustomAmountsUsed2<F><N>"

@@ -1,6 +1,6 @@
 package sakTest {
     immutable class PropertyDefinition {
        required ascii(80)               id;
-       required Unicode(512)            value;    
+       required Unicode(512)            value;
     }
 }

@@ -12,13 +12,13 @@ import de.jpaw.money.MonetaryException;
 
 public class BonaMoneyAdapter {
     static private final BigDecimal [] EMPTY_ARRAY = new BigDecimal [0];
-    
+
     /** Convert the custom type into a serializable BonaPortable. */
     public static BAmount marshal(BonaMoney m) {
         List<BigDecimal> components = m.getComponentAmounts();
         return new BAmount(m.getCurrency(), m.getAmount(), components.size() == 0 ? null : components);
     }
-    
+
     /** Convert a parsed adapter type into the custom type. */
     public static <E extends Exception> BonaMoney unmarshal(BonaPortable obj, ExceptionConverter<E> p) throws E {
         if (obj instanceof BAmount) {

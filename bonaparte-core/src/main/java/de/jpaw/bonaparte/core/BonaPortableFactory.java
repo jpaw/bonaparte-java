@@ -28,18 +28,18 @@ import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
 
 public class BonaPortableFactory {
     private static final Logger logger = LoggerFactory.getLogger(BonaPortableFactory.class);
-    
+
     // Skip the next field and PathResolverTest may fail. Required to load the meta data classes in the correct order, required due to cyclic dependencies
     // of static fields and their initialization.
     public static Object UNUSED = ClassDefinition.class$MetaData();
     // it will definitely fail if for example FieldDefinition is loaded before ClassDefinition
-    
+
     /** Stub to call to force initialization, in case no other initialization is required. */
     public static void init() {
     }
-    
+
     static private ConcurrentMap<String, BonaPortableClass<BonaPortable>> newMap = new ConcurrentHashMap<String, BonaPortableClass<BonaPortable>>();
-    
+
     static private ConcurrentMap<String, Class<? extends BonaPortable>> map = new ConcurrentHashMap<String, Class<? extends BonaPortable>>();
     static private String bonaparteClassDefaultPackagePrefix = "de.jpaw.bonaparte.pojos";
     static private Map<String, String> packagePrefixMap = new ConcurrentHashMap<String,String>(10);
@@ -55,7 +55,7 @@ public class BonaPortableFactory {
     }
     static private class HiddenClass {
     }
-    static final private HiddenClass A_WAY_TO_GET_MY_CLASSLOADER = new HiddenClass(); 
+    static final private HiddenClass A_WAY_TO_GET_MY_CLASSLOADER = new HiddenClass();
     static public final String BONAPARTE_DEFAULT_PACKAGE_PREFIX = "bonapartePrefix"; // "BONAPARTE_DEFAULT_PACKAGE_PREFIX";  // system property name which can be used as a source
     static public boolean publishDefaultPrefix = true;          // required in environments which instantiate multiple classloaders for isolation (vert.x)
     static private boolean bonaparteClassDefaultPackagePrefixShouldBeRetrieved = true;
@@ -87,7 +87,7 @@ public class BonaPortableFactory {
         }
         return null;
     }
-    
+
     // generalized factory: create an instance of the requested type. Caches class types.
     // We receive PQCN (partially qualified class name) as parameter.
     // Anything before the last '.' is the Bonaparte package name (which is null is there is no '.').
@@ -97,11 +97,11 @@ public class BonaPortableFactory {
     // before actually loading the class. Therefore, bundle information must be fed in separately
     // and can only be consistency-checked afterwards.
     public static BonaPortable createObjectOLD(String name) throws MessageParserException {
-        
+
         BonaPortableClass<BonaPortable> bclass = newMap.get(name);
         if (bclass != null)
             return bclass.newInstance();  // shortcut!
-        
+
         String FQON = null;
         int lastDot = name.lastIndexOf('.');
         if ((lastDot == 0) || (lastDot >= (name.length() - 1))) {
@@ -110,7 +110,7 @@ public class BonaPortableFactory {
         if (packagePrefixMap != null && lastDot > 0) {
             FQON = mapPackage(name);
         }
-        
+
         if (FQON == null) {
             // prefix by fixed package
             FQON = getBonaparteClassDefaultPackagePrefix() + "." + name;
@@ -145,7 +145,7 @@ public class BonaPortableFactory {
         if (packagePrefixMap != null && lastDot > 0) {
             FQON = mapPackage(name);
         }
-        
+
         if (FQON == null) {
             // prefix by fixed package
             FQON = getBonaparteClassDefaultPackagePrefix() + "." + name;

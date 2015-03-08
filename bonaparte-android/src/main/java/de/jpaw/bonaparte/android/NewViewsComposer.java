@@ -22,14 +22,14 @@ import android.widget.TextView;
 public class NewViewsComposer extends LinearLayoutComposer {
     static private final Logger LOG = LoggerFactory.getLogger(NewViewsComposer.class);
     static private final int HEIGHT_IN_DP = 48;
-    
+
     protected LinearLayout rowWidget;
 
     private final Context context;
     private final List<UIColumn> columns;
     private final Density density;           // for scaling
     private final int height_in_px;
-    
+
     public NewViewsComposer(Context context, Density density, List<UIColumn> columns) {
         this.context = context;
         this.columns = columns;
@@ -39,9 +39,9 @@ public class NewViewsComposer extends LinearLayoutComposer {
         rownum = 0;
         height_in_px = density.dp2px(HEIGHT_IN_DP);
     }
-   
+
     // creates a new composer, with support of widget auto-creation
-    
+
     @Override
     public void newView(final LinearLayout rowWidget, int row) {
         LOG.debug("newView called");

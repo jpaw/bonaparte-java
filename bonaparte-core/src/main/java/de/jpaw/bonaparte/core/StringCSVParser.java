@@ -47,10 +47,10 @@ import de.jpaw.util.CharTestsASCII;
 import de.jpaw.util.IntegralLimits;
 /**
  * The StringCSVParser class.
- * 
+ *
  * @author Michael Bischoff
  * @version $Revision$
- * 
+ *
  *          Implements the deserialization of fixed width an quote-less CSV formats.
  *          Right now, only limited subsets are implemented. Especially date / time parsing is very limited.
  */
@@ -76,20 +76,20 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
     protected final int timestampFormatLength;      // day and time on second precision (Joda)
     protected final int timestamp3FormatLength;     // day and time on millisecond precision (Joda)
     protected CSVObjectTypeDetector objectTypeDetector = null;
-    
-    /** Define the method to guess the type of the record by inspecting its contents. */ 
+
+    /** Define the method to guess the type of the record by inspecting its contents. */
     public static interface CSVObjectTypeDetector {
-        Class<? extends BonaPortable> typeByContents(String msg) throws MessageParserException; 
+        Class<? extends BonaPortable> typeByContents(String msg) throws MessageParserException;
     }
-    
+
     public static abstract class AbstractCSVObjectTypeDetector implements CSVObjectTypeDetector {
         protected final Map<String, Class<? extends BonaPortable>> recordMap;
-        
+
         public AbstractCSVObjectTypeDetector(Map<String, Class<? extends BonaPortable>> recordMap) {
             this.recordMap = recordMap;
         }
     }
-        
+
     /** Determines the object type based on the contents of the first field, using a delimiter. */
     public static class DelimiterBasedObjectTypeDetector extends AbstractCSVObjectTypeDetector {
         protected final String delimiter;
@@ -121,7 +121,7 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
             return recordMap.get(key.trim());
         }
     }
-    
+
     /** Defines the portion of src from offset (inclusive) to length (exclusive) as parsing source, i.e. length - offset characters. */
     public final void setSource(String src, int offset, int length) {
         // auto-truncate CR/LF, if it exists
@@ -131,7 +131,7 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
         if (length > 0 && src.charAt(length-1) == '\r') {
             --length;
         }
-        if (length < src.length()) { 
+        if (length < src.length()) {
             // some truncation done: remove it from the buffer!
             work = src.substring(offset, length);
             parseIndex = 0;
@@ -143,12 +143,12 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
             messageLength = length;
         }
     }
-    
+
     /** Defines src as parsing source. */
     public final void setSource(String src) {
         setSource(src, 0, src.length());
     }
-    
+
     public StringCSVParser(CSVConfiguration cfg, String work) {
         // strip CR/LF from input, if existing
         setSource(work);
@@ -167,13 +167,13 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
         fixedLength = cfg.separator.length() == 0;
         currentClass = "N/A";
     }
-    
+
     public StringCSVParser(CSVConfiguration cfg, String work, CSVObjectTypeDetector objectTypeDetector) {
         this(cfg, work);
         this.objectTypeDetector = objectTypeDetector;
     }
-    
-    // setting this allows to use readRecord in subsequent calls 
+
+    // setting this allows to use readRecord in subsequent calls
     public void setMapping(CSVObjectTypeDetector objectTypeDetector) {
         this.objectTypeDetector = objectTypeDetector;
     }
@@ -181,7 +181,7 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
     /**************************************************************************************************
      * Deserialization goes here
      **************************************************************************************************/
-    
+
     protected String processTrailingSigns(String token) {
         token = token.trim();
         // check for trailing sign
@@ -190,7 +190,7 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
             token = "-" + token.substring(0, l-1);  // move sign to the start of the string
         return token;
     }
-    
+
     private String getField(String fieldname, boolean isRequired, int length) throws MessageParserException {
         // System.out.println("parsing " + fieldname + " for length " + length);
         String result = null;
@@ -213,7 +213,7 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
                 length = messageLength - parseIndex;
                 result = work.substring(parseIndex, messageLength);
                 parseIndex = messageLength;
-            }               
+            }
             // implicitly strip trailing spaces
             while (length > 0 && result.charAt(length - 1) == ' ') {
                 --length;
@@ -250,7 +250,7 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
         throw new MessageParserException(MessageParserException.ILLEGAL_BOOLEAN,
             String.format("(%s, expected %s or %s for %s)", token, cfg.booleanTrue, cfg.booleanFalse, di.getName()), parseIndex, currentClass);
     }
-    
+
 
     @Override
     public String readAscii(AlphanumericElementaryDataItem di) throws MessageParserException {
@@ -261,7 +261,7 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
     public String readString(AlphanumericElementaryDataItem di) throws MessageParserException {
         return readString(di.getName(), di.getIsRequired(), di.getLength(), di.getDoTrim(), di.getDoTruncate(), di.getAllowControlCharacters(), true);
     }
-    
+
     protected String readString(String fieldname, boolean isRequired, int length, boolean doTrim, boolean doTruncate, boolean allowCtrls, boolean allowUnicode) throws MessageParserException {
         String token = getField(fieldname, isRequired, length);
         if (token == null)
@@ -345,7 +345,7 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
         }
         // return DatatypeConverter.parseHexBinary(tmp);
     }
-    
+
     @Override
     public LocalDateTime readDayTime(TemporalElementaryDataItem di) throws MessageParserException {
         String token = getField(di.getName(), di.getIsRequired(), di.getFractionalSeconds() > 0 ? timestamp3FormatLength : timestampFormatLength);
@@ -419,7 +419,7 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
         return new Instant(1000L * seconds + millis);
     }
 
-    
+
     @Override
     public int parseMapStart(FieldDefinition di) throws MessageParserException {
         throw new MessageParserException(MessageParserException.UNSUPPORTED_DATA_TYPE, di.getName(), parseIndex, currentClass);
@@ -489,7 +489,7 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
             throw new MessageParserException(MessageParserException.NUMERIC_TOO_LONG, di.getName(), parseIndex, currentClass);
         return ltmp;
     }
-    
+
     @Override
     public Byte readByte(BasicNumericElementaryDataItem di) throws MessageParserException {
         String token = readBufferForInteger(di);
@@ -570,7 +570,7 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
         } catch (IllegalAccessException e) {
             throw new MessageParserException(MessageParserException.CLASS_NOT_FOUND, "Access exc on " + type.getCanonicalName(), parseIndex, currentClass);
         }
-        
+
         String previousClass = currentClass;
         currentClass = newObject.get$PQON();
         newObject.deserialize(this);
@@ -624,7 +624,7 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
         }
         return value;
     }
-    
+
     @Override
     public boolean readPrimitiveBoolean(MiscElementaryDataItem di) throws MessageParserException {
         String token = getField(di.getName(), true, lengthOfBoolean);

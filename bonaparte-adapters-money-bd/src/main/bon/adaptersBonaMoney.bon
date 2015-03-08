@@ -8,7 +8,7 @@ package adapters.moneybd factoryId 27 {
         required uppercase(3)           currencyCode;
         required int                    decimals;
     }
-    
+
     final immutable class BAmount classId 22 is BonaMoney adapter de.jpaw.bonaparte.adapters.moneybd.BonaMoneyAdapter withExceptionConverter {
         required (BCurrency)            currency;
         required Decimal(18,6)          gross;

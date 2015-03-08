@@ -20,7 +20,7 @@ public class TestCustomValidation {
             s.validate();
             throw new Exception("Expected a validation exception here");
         } catch (ObjectValidationException e) {
-            if (e.getErrorCode() != ObjectValidationException.CUSTOM_VALIDATION) 
+            if (e.getErrorCode() != ObjectValidationException.CUSTOM_VALIDATION)
                 throw e;
         }
     }

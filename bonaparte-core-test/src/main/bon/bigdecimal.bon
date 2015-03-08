@@ -1,28 +1,28 @@
 package bigdecimal {
     class BDTest BeanVal {
-        Decimal(18,6) amount;    
+        Decimal(18,6) amount;
     }
-    
+
     class BDTestWithAutoRounding BeanVal {
-        Decimal(18,6) round amount;    
-    }    
-    
+        Decimal(18,6) round amount;
+    }
+
     class BDTestWithAutoRounding2 BeanVal {
         default round;
-        Decimal(18,6) amount;    
-    }    
-    
-    class BDTestWithAutoRoundingAndScaling BeanVal {
-        Decimal(18,6) round autoScale amount;    
-    }    
-    
-    class BDTestUnsigned {
-        unsigned Decimal(18,6) amount;    
+        Decimal(18,6) amount;
     }
-    
+
+    class BDTestWithAutoRoundingAndScaling BeanVal {
+        Decimal(18,6) round autoScale amount;
+    }
+
+    class BDTestUnsigned {
+        unsigned Decimal(18,6) amount;
+    }
+
     class BDTestCollections {
-        Decimal(18,6) Map<String>   amount1;    
-        Decimal(18,6) Set<>         amount2;    
-        Decimal(18,6) List<>        amount3;    
+        Decimal(18,6) Map<String>   amount1;
+        Decimal(18,6) Set<>         amount2;
+        Decimal(18,6) List<>        amount3;
     }
 }

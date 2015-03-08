@@ -28,7 +28,7 @@ public class TestReuse {
     public void setDefaultStrategy() {
         ObjectReuseStrategy.defaultStrategy = ObjectReuseStrategy.NONE;
     }
-    
+
     private Body setup() {
         Body r = new Body();
         r.w1 = new Element("hello");
@@ -36,7 +36,7 @@ public class TestReuse {
         r.w3 = r.w1;                    // same object
         return r;
     }
-    
+
     private byte [] serializeByStrategyBAC(Body b, ObjectReuseStrategy strategy) {
         ByteArrayComposer bac;
         if (strategy == null) {
@@ -58,7 +58,7 @@ public class TestReuse {
         sbc.writeRecord(b);
         return sbc.getBytes();
     }
-    
+
     private Body roundtrip(Body b, ObjectReuseStrategy strategy, boolean useStringBuilderComposer, boolean useStringBuilderParser) throws MessageParserException {
         byte [] buffer;
         BonaPortable r;
@@ -76,7 +76,7 @@ public class TestReuse {
         }
         return (Body)r;
     }
-    
+
     @Test
     public void testLengthsBAC() throws Exception {
         Body b = setup();
@@ -89,7 +89,7 @@ public class TestReuse {
         assert(l1 > l2);
         assert(l2 > l3);
     }
-    
+
     @Test
     public void testLengthsSBC() throws Exception {
         Body b = setup();
@@ -102,7 +102,7 @@ public class TestReuse {
         assert(l1 > l2);
         assert(l2 > l3);
     }
-    
+
     @Test
     public void testObjectIdentitiesAfterDeserializationSBP() throws MessageParserException {
         Body b = setup();

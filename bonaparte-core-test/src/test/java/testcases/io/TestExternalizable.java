@@ -11,7 +11,7 @@ import de.jpaw.bonaparte.pojos.io.Key;
 import de.jpaw.bonaparte.pojos.io.MyObject;
 
 public class TestExternalizable {
-    
+
     private Object runIO(Externalizable org, Class<? extends Externalizable> type) throws Exception {
         // serialize
         ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -21,14 +21,14 @@ public class TestExternalizable {
         byte [] serializedData = os.toByteArray();
         @SuppressWarnings("unused")
         String dataForDebugging = new String(serializedData);
-        
+
         // deserialize
         Externalizable inst = type.newInstance();
         inst.readExternal(new ObjectInputStream(new ByteArrayInputStream(serializedData)));
         return inst;
     }
-    
-    
+
+
     @Test
     public void testExternalizable() throws Exception {
         MyObject org = new MyObject(new Key("bla!"), "Hello, world");

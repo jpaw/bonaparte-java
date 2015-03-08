@@ -42,7 +42,7 @@ public class CompactDumpTest {
         CompactByteArrayComposer cbac = new CompactByteArrayComposer(4000, true);
         cbac.writeRecord(obj1);
         System.out.println("Length with CompactByteArrayComposer (ID) is " + cbac.getBuilder().length());
-        
+
         System.out.println("Test starting: composer Compact");
         baos = new ByteArrayOutputStream(4000);
         dataOut = new DataOutputStream(baos);

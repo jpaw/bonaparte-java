@@ -48,7 +48,7 @@ abstract public class LinearLayoutComposer implements MessageComposer<RuntimeExc
     protected AndroidObjectClickListener onClickListener;
     protected Map<Integer,BonaCustom> buttonPayload;  // this stores the object for an ID
     protected boolean expandObjects = true;             // set to false if we sit behind a folding composer
-    
+
     static protected final int ROW_FACTOR = 10000;  // for the ID calculation, take the column + ROW_FACTOR * row
     protected boolean binaryAsBitmap = false;
     protected static final String [] BIGDECIMAL_FORMATS = {
@@ -72,7 +72,7 @@ abstract public class LinearLayoutComposer implements MessageComposer<RuntimeExc
         "#0.#################",
         "#0.##################"
     };
-    
+
     // methods required in superclass
     abstract CheckBox needCheckBox(FieldDefinition di);
     abstract TextView needTextView(FieldDefinition di);
@@ -83,7 +83,7 @@ abstract public class LinearLayoutComposer implements MessageComposer<RuntimeExc
     // creates a new composer, requires a subsequent newView() to set the rowWidget
     public LinearLayoutComposer() {
     }
-    
+
     public void setExpandObjects(boolean doIt) {
         expandObjects = doIt;
     }
@@ -113,7 +113,7 @@ abstract public class LinearLayoutComposer implements MessageComposer<RuntimeExc
             onClickListener.onClick(v, obj, id / ROW_FACTOR, id % ROW_FACTOR);
         }
     }
-    
+
     /**************************************************************************************************
      * Serialization goes here
      **************************************************************************************************/
@@ -182,7 +182,7 @@ abstract public class LinearLayoutComposer implements MessageComposer<RuntimeExc
         df.setGroupingUsed(true);
         newTextView(di, df.format(n));
     }
-    
+
     // decimal
     @Override
     public void addField(NumericElementaryDataItem di, BigDecimal n) {
@@ -362,7 +362,7 @@ abstract public class LinearLayoutComposer implements MessageComposer<RuntimeExc
         if (expandObjects) {
             if (obj != null) {
                 obj.serializeSub(this);
-            } 
+            }
         } else {
             // this is a single column. Display as a button, with onClickListener to set a callback
             Button b = needButton(di);
@@ -408,7 +408,7 @@ abstract public class LinearLayoutComposer implements MessageComposer<RuntimeExc
             addField(token, n.getToken());
         }
     }
-    
+
     @Override
     public boolean addExternal(ObjectReference di, Object obj) {
         if (obj != null) {

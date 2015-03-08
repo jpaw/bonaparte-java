@@ -12,7 +12,7 @@ public class TestTreewalkTrunc {
     private DataToFix getData () {
         return new DataToFix("  ID1toolong  ", "  ID2alsotoolong  ", null, null);
     }
-    
+
     private void checkTestCase(DataConverter<String,AlphanumericElementaryDataItem> converter, DataToFix expectedOutcome) {
         DataToFix data = getData();
         // check that data is NOT what we want before the conversion
@@ -21,7 +21,7 @@ public class TestTreewalkTrunc {
         data.treeWalkString(converter, true);
         assert(data.equals(expectedOutcome));
     }
-    
+
     @Test
     public void testTruncateSelected() throws Exception {
         checkTestCase(new StringConverterFixer(false, false, false), new DataToFix("ID1toolong", "  ID2als", null, null));

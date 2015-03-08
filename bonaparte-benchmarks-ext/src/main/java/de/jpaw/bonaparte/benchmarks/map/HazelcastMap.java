@@ -44,7 +44,7 @@ public class HazelcastMap {
         hz = Hazelcast.newHazelcastInstance(config);
         map = hz.getMap(mapConfig.getName());
     }
-    
+
     @TearDown
     public void tearDown() {
         Hazelcast.shutdownAll();

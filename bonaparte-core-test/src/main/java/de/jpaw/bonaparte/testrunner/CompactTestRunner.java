@@ -14,7 +14,7 @@ import de.jpaw.bonaparte.core.CompactParser;
 
 /** Compact composer, using the alternate output channel (Stream instead of buffer). */
 public class CompactTestRunner extends AbstractTestrunner<byte[]> {
-    
+
     @Override
     public byte[] serializationTest(BonaCustom src, byte[] expectedResult) throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream(4000);
@@ -27,7 +27,7 @@ public class CompactTestRunner extends AbstractTestrunner<byte[]> {
             Assert.assertEquals(result, expectedResult);
         return result;
     }
-    
+
     @Override
     public BonaPortable deserializationTest(byte[] src, BonaPortable expectedResult) throws Exception {
         ByteArrayInputStream bais = new ByteArrayInputStream(src);

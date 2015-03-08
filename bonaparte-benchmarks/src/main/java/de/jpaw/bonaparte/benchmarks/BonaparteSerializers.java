@@ -53,7 +53,7 @@ public class BonaparteSerializers {
             output.close();
         }
     }
-    
+
     @Benchmark
     public void serCompactId() throws IOException {
         ClassDefinition obj1 = ClassDefinition.class$MetaData();
@@ -87,7 +87,7 @@ public class BonaparteSerializers {
             cbac.writeRecord(obj1);
         }
     }
-    
+
     @Benchmark
     public void serByteArrayCompactPqon() {
         ClassDefinition obj1 = ClassDefinition.class$MetaData();

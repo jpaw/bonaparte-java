@@ -52,7 +52,7 @@ public class HashCode {
             bh.consume(m.hashCode());
         }
     }
-    
+
     @Benchmark
     public void hashCodeJavaEnum(Blackhole bh) throws IOException {
         java.lang.annotation.ElementType m = java.lang.annotation.ElementType.TYPE;

@@ -12,7 +12,7 @@ import de.jpaw.bonaparte.util.QuickConverter;
  * a single instance of this class can be shared across multiple threads.
  */
 public class ConverterBonaByte implements QuickConverter<byte []> {
-    
+
     /** Serializes an object using the "almost readable" notation into byte []. */
     @Override
     public byte [] marshal(BonaPortable obj) {

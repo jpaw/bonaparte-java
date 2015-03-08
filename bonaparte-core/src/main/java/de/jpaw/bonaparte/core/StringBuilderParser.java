@@ -47,10 +47,10 @@ import de.jpaw.util.CharTestsASCII;
 //import javax.xml.bind.DatatypeConverter;
 /**
  * The StringBuilderParser class.
- * 
+ *
  * @author Michael Bischoff
  * @version $Revision$
- * 
+ *
  *          Implements the deserialization for the bonaparte format using StringBuilder.
  */
 
@@ -62,7 +62,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
     private String currentClass;
     private final boolean useCache = true;
     private List<BonaPortable> objects;
-    
+
     protected final StringParserUtil stringParser = new StringParserUtil(new ParsePositionProvider() {
 
         @Override
@@ -91,7 +91,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
         if (useCache)
             objects.clear();
     }
-    
+
     /** Assigns a new source to subsequent parsing operations. */
     public final void setSource(CharSequence src) {
         work = src;
@@ -264,7 +264,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
     public String readString(AlphanumericElementaryDataItem di) throws MessageParserException {
         return readString(di.getName(), di.getIsRequired(), di.getLength(), di.getDoTrim(), di.getDoTruncate(), di.getAllowControlCharacters(), true);
     }
-    
+
     protected String readString(String fieldname, boolean isRequired, int length, boolean doTrim, boolean doTruncate, boolean allowCtrls, boolean allowUnicode) throws MessageParserException {
         if (checkForNull(fieldname, isRequired)) {
             return null;
@@ -413,7 +413,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
         return stringParser.readInstant(di, nextIndexParseAscii(di.getName(), false, true, false));  // parse an unsigned numeric string without exponent
     }
 
-    
+
     @Override
     public int parseMapStart(FieldDefinition di) throws MessageParserException {
         String fieldname = di.getName();
@@ -464,7 +464,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
             --parseIndex;  // uneat it
         } // else: skip it and expect RECORD_BEGIN
     }
-    
+
     @Override
     public BonaPortable readRecord() throws MessageParserException {
         BonaPortable result;
@@ -544,29 +544,29 @@ public final class StringBuilderParser extends StringBuilderConstants implements
     @Override
     public void eatParentSeparator() throws MessageParserException {
         eatObjectOrParentSeparator(PARENT_SEPARATOR);
-    }       
-        
+    }
+
     public void eatObjectTerminator() throws MessageParserException {
         eatObjectOrParentSeparator(OBJECT_TERMINATOR);
     }
-    
+
     protected void eatObjectOrParentSeparator(char which) throws MessageParserException {
         skipNulls();  // upwards compatibility: skip extra fields if they are blank.
         char z = needToken();
         if (z == which)
             return;   // all good
-        
+
         // temporarily provide compatibility to 1.7.9 and back...
         if (z == PARENT_SEPARATOR) {
             // implies we have been looking for OBJECT_TERMINATOR...
             return;
         }
-        
+
         // we have extra data and it is not null. Now the behavior depends on a parser setting
         ParseSkipNonNulls mySetting = getSkipNonNullsBehavior();
         switch (mySetting) {
         case ERROR:
-            throw new MessageParserException(MessageParserException.EXTRA_FIELDS, String.format("(found byte 0x%02x)", z), parseIndex, currentClass);  
+            throw new MessageParserException(MessageParserException.EXTRA_FIELDS, String.format("(found byte 0x%02x)", z), parseIndex, currentClass);
         case WARN:
             LOGGER.warn("{} at index {} parsing class {}", MessageParserException.codeToString(MessageParserException.EXTRA_FIELDS), parseIndex, currentClass);
             // fall through
@@ -575,7 +575,7 @@ public final class StringBuilderParser extends StringBuilderConstants implements
             skipUntilNext(which);
         }
     }
-    
+
     protected void skipUntilNext(char which) throws MessageParserException {
         char c;
         while ((c = needToken()) != which) {

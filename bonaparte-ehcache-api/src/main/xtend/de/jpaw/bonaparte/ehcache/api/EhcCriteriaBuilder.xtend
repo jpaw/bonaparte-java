@@ -41,25 +41,25 @@ public class EhcCriteriaBuilder {
         NotFilter:
             return buildPredicate(cache, filter.filter).not
         default:
-            throw new RuntimeException("Unrecognized filter type: " + filter.get$PQON) 
+            throw new RuntimeException("Unrecognized filter type: " + filter.get$PQON)
         }
     }
 }
 
 @Singleton
 public class EhcFilterImpl implements EhcFilter {
-    
+
     override public applyFilter(Cache cache, Attribute<?> field, FieldFilter filter) {
         switch (filter) {
         NullFilter:
-            return field.isNull() 
+            return field.isNull()
         BooleanFilter:
             return (field as Attribute<Boolean>).eq(Boolean.valueOf(filter.booleanValue))
         AsciiFilter:
             return if (filter.valueList !== null)
                         (field as Attribute<String>).in(filter.valueList)
                     else if (filter.likeValue !== null)
-                        throw new RuntimeException("Ehcache supports case insensitive like only") 
+                        throw new RuntimeException("Ehcache supports case insensitive like only")
                     else if (filter.lowerBound === null)
                         (field as Attribute<String>).le(filter.upperBound)
                     else if (filter.upperBound === null)
@@ -72,7 +72,7 @@ public class EhcFilterImpl implements EhcFilter {
             return if (filter.valueList !== null)
                         (field as Attribute<String>).in(filter.valueList)
                     else if (filter.likeValue !== null)
-                        throw new RuntimeException("Ehcache supports case insensitive like only") 
+                        throw new RuntimeException("Ehcache supports case insensitive like only")
                     else if (filter.lowerBound === null)
                         (field as Attribute<String>).le(filter.upperBound)
                     else if (filter.upperBound === null)
@@ -106,14 +106,14 @@ public class EhcFilterImpl implements EhcFilter {
         DayFilter:
             throw new RuntimeException("joda comparison not supported by Ehcache")   // TODO: write attributeExtractor and convert to integral number
         TimestampFilter:
-            throw new RuntimeException("joda comparison not supported by Ehcache") 
+            throw new RuntimeException("joda comparison not supported by Ehcache")
         InstantFilter:
-            throw new RuntimeException("joda comparison not supported by Ehcache") 
+            throw new RuntimeException("joda comparison not supported by Ehcache")
         TimeFilter:
-            throw new RuntimeException("joda comparison not supported by Ehcache") 
+            throw new RuntimeException("joda comparison not supported by Ehcache")
         default:
-            throw new RuntimeException("Unrecognized field filter type: " + filter.get$PQON) 
+            throw new RuntimeException("Unrecognized field filter type: " + filter.get$PQON)
         }
     }
-    
-}            
+
+}

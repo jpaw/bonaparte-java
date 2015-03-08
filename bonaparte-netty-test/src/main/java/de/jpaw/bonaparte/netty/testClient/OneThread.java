@@ -16,7 +16,7 @@ public class OneThread implements Runnable {
     private final int callsPerThread;
     private final SimpleTcpClient conn;
     private final boolean doRaw;
-    
+
     private Date start;
     private Date stop;
 

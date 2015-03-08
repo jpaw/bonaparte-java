@@ -19,7 +19,7 @@ public class BonaparteListItemRenderer implements ListitemRenderer<BonaPortable>
 
     protected final MessageComposer<IOException> foldingComposer;
     protected final Map<Class<? extends BonaCustom>, List<String>> map;
-    
+
     public BonaparteListItemRenderer(CSVConfiguration cfg, List<String> columns) {
         // map = Collections.singletonMap(BonaPortable.class, columns);  // Java does not like this... (in Eclipse)
         map = new HashMap<Class<? extends BonaCustom>, List<String>>(2);

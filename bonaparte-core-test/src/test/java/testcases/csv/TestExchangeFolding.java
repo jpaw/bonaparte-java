@@ -29,7 +29,7 @@ public class TestExchangeFolding {
         rpd.ratioToCurrency.put("GBP", factor.multiply(new BigDecimal("3.33")));
         return rpd;
     }
-    
+
     private Ratios setup() {
         Ratios r = new Ratios(new HashMap<String, RatiosPerDay>(10));
         r.forSrc.put("XCF", setupRpd(new BigDecimal("1.1")));
@@ -37,7 +37,7 @@ public class TestExchangeFolding {
         r.forSrc.put("MST", setupRpd(new BigDecimal("1.3")));
         return r;
     }
-    
+
     private static void runTest(CSVConfiguration cfg, BonaPortable input, String expectedOutput,
             Map<Class<? extends BonaCustom>, List<String>> map) {
         StringBuilder buffer = new StringBuilder(200);
@@ -54,8 +54,8 @@ public class TestExchangeFolding {
         System.out.println(actualOutput);
         assert(expectedOutput.equals(actualOutput));
     }
-    
-    
+
+
     @Test
     public void testMetaDataWithIndex() throws Exception {
         Ratios r = setup();

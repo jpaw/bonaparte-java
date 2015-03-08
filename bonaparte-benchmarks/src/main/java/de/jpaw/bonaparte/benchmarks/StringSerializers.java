@@ -36,7 +36,7 @@ public class StringSerializers {
             return null;
         }
     }
-    
+
     @Benchmark
     public void empty() {
     }

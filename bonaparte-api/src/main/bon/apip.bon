@@ -9,7 +9,7 @@ package apip factoryId 25 {
     /** Root class of reference objects. The field has been defined as a primitive in order to avoid type wrapping,
      * any value <= 0 should be treated as null (no (valid) reference).
      * Primitive long version.
-     */     
+     */
     class Ref classId 56 extends AbstractRef refp "objectRef" {
         required long                               objectRef;
     }
@@ -19,5 +19,5 @@ package apip factoryId 25 {
      */
     class TenantDiscriminator classId 57 {
         required long                               tenantRef;
-    }   
+    }
 }

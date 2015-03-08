@@ -33,7 +33,7 @@ public class TestCSV {
 //        System.out.println("Expected  " + expectedOutput);
 //        System.out.println("Result is " + actualOutput);
         assert(expectedOutput.equals(actualOutput));
-        
+
         StringCSVParser p = new StringCSVParser(cfg, actualOutput);
         BonaPortable result = p.readObject(StaticMeta.OUTER_BONAPORTABLE_FOR_CSV, input.getClass());
         assert(input.equals(result));
@@ -42,7 +42,7 @@ public class TestCSV {
     @Test
     public void testCSVWithImplicitScale() throws Exception {
         CSVConfiguration cfg2 = CSVConfiguration.Builder.from(cfg1).removeDecimalPoint(true).build();
-        
+
         ScaledInts si1 = new ScaledInts(1, 1L, 1, 1L);
         ScaledInts si2 = new ScaledInts(1, 1L, -1, -1L);
         runTest(cfg1, si1, "0.001;0.000001;0.001;0.000001\n");
@@ -51,25 +51,25 @@ public class TestCSV {
         runTest(cfg2, si2, "1;1;-1;-1\n");
     }
 
-    
+
     static private final Test1 testData = new Test1("Hello", -5, new BigDecimal("-3.14"), null, null, false, 12L);
-        
+
     private void parseCSVAndCompare(String input, BonaPortable output) throws Exception {
         StringCSVParser p = new StringCSVParser(cfg1, input);
         BonaPortable o = p.readObject(StaticMeta.OUTER_BONAPORTABLE_FOR_CSV, output.getClass());
         Assert.assertEquals(output, o);
     }
-    
+
     @Test
     public void testCSVLeadingSigns() throws Exception {
         String input = "Hello;-5;-3.14;;;0;12";
         parseCSVAndCompare(input, testData);
     }
-    
+
     @Test
     public void testCSVTrailingSigns() throws Exception {
         String input = "Hello;5-;3.14-;;;0;12";
         parseCSVAndCompare(input, testData);
     }
-    
+
 }

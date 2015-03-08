@@ -16,9 +16,9 @@ public class JsonConversionTest {
     public void testConversionMap() throws Exception {
         ClassDefinition cls = ClassDefinition.class$MetaData();
         JsonObject clsJ = JsonObjectComposer.toJsonObject(cls);
-        
+
         System.out.println(ToStringHelper.toStringML(cls));
-        
+
         System.out.println(clsJ.encodePrettily());
     }
 
@@ -26,9 +26,9 @@ public class JsonConversionTest {
     public void testConversionEnum() throws Exception {
         XEnumDefinition xc = XColor.xenum$MetaData();
         JsonObject xcJ = JsonObjectComposer.toJsonObject(xc);
-        
+
         System.out.println(ToStringHelper.toStringML(xc));
-        
+
         System.out.println(xcJ.encodePrettily());
     }
 }

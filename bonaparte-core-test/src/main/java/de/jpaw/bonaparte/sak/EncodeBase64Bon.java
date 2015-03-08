@@ -8,13 +8,13 @@ import de.jpaw.util.Base64;
 import de.jpaw.util.ByteBuilder;
 
 public class EncodeBase64Bon {
-    
+
     private static void output(ByteArrayComposer bac, String what) {
         ByteBuilder bb = new ByteBuilder();
         Base64.encodeToByte(bb, bac.getBuffer(), 0, bac.getLength());
         System.out.println("The encoded form of " + what + " is " + bb.toString());
     }
-    
+
     private static void encode(BonaPortable obj, String what) {
         ByteArrayComposer bac = new ByteArrayComposer();
         bac.addField(StaticMeta.OUTER_BONAPORTABLE, obj);
@@ -23,7 +23,7 @@ public class EncodeBase64Bon {
         bac.writeRecord(obj);
         output(bac, "RECORD(" + what + ")");
     }
-    
+
     public static void main(String [] args) {
         encode(null, "null");
         encode(new PropertyDefinition("hello", "world"), "PropertyDefinition");

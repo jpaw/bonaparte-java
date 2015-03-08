@@ -4,30 +4,30 @@
 package p1 {
     type IColor is Integer;
     enum SampleEnum { RED, GREEN, BLUE }
-    
+
     class OverAllSuperClass {
         int                 a;
     }
-    
+
     class MyDATAtest {
-        int                 aa;    
+        int                 aa;
     }
-    
+
     class Base1 <DATA extends OverAllSuperClass> {
         int                 b;
         (MyDATAtest...)     aaRef;
     }
-    
+
     class Base <DATA extends OverAllSuperClass> {
         int                 b;
         (!DATA...)          someDataReference;
         (MyDATAtest...)     aaRef;
     }
-    
+
     class Super1 extends OverAllSuperClass {
         int                 c;
     }
-    
+
     class Blurb {
         int                 blurb;
     }
@@ -46,7 +46,7 @@ package p3 {
         int                 dd;
         (!ZZ...)            anyObject2;
     }
-    
+
     class TwoGenerics<AA, BB extends Object> extends p2.MiddleLevel<!BB> {
         int                 inTwoLevel;
     }

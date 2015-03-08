@@ -26,7 +26,7 @@ public interface RefResolver<REF extends AbstractRef, DTO extends REF, TRACKING 
      * Removes the record referenced by the key. Does nothing if key = 0. Throws an exception if the key does not exist.
      */
     void remove(long key) throws ApplicationException;
-    
+
     /**
      * Creates a key object from a ref. Returns null for ref <= 0.
      */

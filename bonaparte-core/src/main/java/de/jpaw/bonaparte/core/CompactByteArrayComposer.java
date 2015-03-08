@@ -30,12 +30,12 @@ import de.jpaw.enums.XEnum;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.ByteBuilder;
 
-/** 
+/**
  * Composer intended for IMDGs.
- * Goals: 
+ * Goals:
  * 1) be as efficient as reasonable, to save memory (= allows to cache more objects in same amount of RAM = more speed)
  * 2) don't allocate temporary objects during serialization (avoid GC overhead), unless absolutely required
- *  
+ *
  * @author Michael Bischoff
  *
  */
@@ -59,7 +59,7 @@ public class CompactByteArrayComposer extends CompactConstants implements Messag
     protected final ByteBuilder out;
     protected final boolean recommendIdentifiable;              // if true, then factoryId and classId will be used to identify the object (requires prior registration of factories before parsing)
     protected boolean skipLowerBoundObjectDescription = true;   // if true and the object to serialize corresponds to its lower bound, then do not output the class description
-    
+
     public boolean isSkipLowerBoundObjectDescription() {
         return skipLowerBoundObjectDescription;
     }
@@ -80,7 +80,7 @@ public class CompactByteArrayComposer extends CompactConstants implements Messag
     public CompactByteArrayComposer(int bufferSize, boolean recommendIdentifiable) {
         this(new ByteBuilder(bufferSize, getDefaultCharset()), ObjectReuseStrategy.defaultStrategy, recommendIdentifiable);
     }
-    
+
     public CompactByteArrayComposer(ByteBuilder out, boolean recommendIdentifiable) {
         this(out, ObjectReuseStrategy.defaultStrategy, recommendIdentifiable);
     }
@@ -123,7 +123,7 @@ public class CompactByteArrayComposer extends CompactConstants implements Messag
     public int getNumberOfObjectReuses() {
         return numberOfObjectReuses;
     }
-    
+
     public ByteBuilder getBuilder() {
         return out;
     }
@@ -135,7 +135,7 @@ public class CompactByteArrayComposer extends CompactConstants implements Messag
     /**
      * allows to add raw data to the produced byte array. Use this for protocol
      * support at beginning or end of a message
-     * 
+     *
      */
 
     protected void writeNull() {
@@ -227,7 +227,7 @@ public class CompactByteArrayComposer extends CompactConstants implements Messag
                 out.append((short)s.charAt(i));
         }
     }
-    
+
     // write a non-empty string (using char[])
     protected void writeLongStringArray(String s) {
         char maxCode = 0;
@@ -272,7 +272,7 @@ public class CompactByteArrayComposer extends CompactConstants implements Messag
                 out.append((short)buff[i]);
         }
     }
-    
+
     // write a non-empty string (using char[])
     protected void writeLongStringStealArray(String s) {
         if (unsafeString == null) {
@@ -327,7 +327,7 @@ public class CompactByteArrayComposer extends CompactConstants implements Messag
                 out.append((short)buff[i]);
         }
     }
-    
+
     // output an integral value
     protected void intOut(int n) {
         if (n >= 0) {
@@ -374,7 +374,7 @@ public class CompactByteArrayComposer extends CompactConstants implements Messag
             }
         }
     }
-    
+
     protected void charOut(char c) {
         // if it is a displayable ASCII character, there is a short form
         if ((c & ~0x7f) == 0 && c >= 0x20) {
@@ -386,7 +386,7 @@ public class CompactByteArrayComposer extends CompactConstants implements Messag
             out.append((short)c);
         }
     }
-    
+
     // character
     @Override
     public void addField(MiscElementaryDataItem di, char c) {
@@ -425,7 +425,7 @@ public class CompactByteArrayComposer extends CompactConstants implements Messag
             out.append(tmp);
         }
     }
-    
+
     // decimal
     @Override
     public void addField(NumericElementaryDataItem di, BigDecimal n) {
@@ -483,7 +483,7 @@ public class CompactByteArrayComposer extends CompactConstants implements Messag
     }
 
     // entry which does not need a reference
-    protected void addLong(long n) { 
+    protected void addLong(long n) {
         int nn = (int)n;
         if (nn == n)
             intOut((int)n);
@@ -650,7 +650,7 @@ public class CompactByteArrayComposer extends CompactConstants implements Messag
         out.writeByte(ARRAY_BEGIN);
         intOut(currentMembers);
     }
-    
+
     // removed collections terminator because it conflicts with the intended use of parent / child serialization to separate tables
 
     @Override
@@ -746,7 +746,7 @@ public class CompactByteArrayComposer extends CompactConstants implements Messag
         else
             addField(token, n.getToken());
     }
-    
+
     @Override
     public boolean addExternal(ObjectReference di, Object obj) {
         return false;       // perform conversion by default

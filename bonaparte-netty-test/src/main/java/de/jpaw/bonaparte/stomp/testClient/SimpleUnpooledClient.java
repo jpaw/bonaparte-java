@@ -14,12 +14,12 @@ public class SimpleUnpooledClient {
     static private final byte [] STOMP_HEADER = ("SEND\ndestination:/queue/" + QUEUE_NAME + "\nreceipt:42\n\n").getBytes();
     static private final byte [] STOMP_FOOTER = ("\0").getBytes();
     static private final byte [] EXPECTED_RESPONSE = ("RECEIPT\nreceipt-id:42\n\n\0\n").getBytes();
-    
+
     private final InetAddress addr;
     private final Socket conn;
     private final ByteArrayComposer w;
     private byte [] responseBuffer;
-    
+
     public SimpleUnpooledClient(String hostname, int port) throws IOException {
         addr = InetAddress.getByName(hostname);
         conn = new Socket(addr, port);
@@ -27,7 +27,7 @@ public class SimpleUnpooledClient {
         responseBuffer = new byte [10000];
         connect();
     }
-    
+
     public void connect() throws IOException {
         byte [] connectString = "CONNECT\nlogin:admin\npasscode:password\n\n\0".getBytes();
         conn.getOutputStream().write(connectString);
@@ -38,7 +38,7 @@ public class SimpleUnpooledClient {
         ByteArray r = new ByteArray(responseBuffer, 0, numbytes);
         System.out.println("Received " + numbytes + " bytes response:\n" + new String(r.getBytes()) + "***");
     }
-    
+
     public void doIO(BonaPortable request) throws Exception {
         w.reset();
         // add STOMP protocol header
@@ -67,5 +67,5 @@ public class SimpleUnpooledClient {
         }
         throw new IOException("Did not get expected response");
     }
-    
+
 }

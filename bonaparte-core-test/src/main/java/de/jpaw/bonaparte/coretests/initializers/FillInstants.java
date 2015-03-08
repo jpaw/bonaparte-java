@@ -10,7 +10,7 @@ public class FillInstants {
         Instant now = new Instant();
         Instants s = new Instants();
         s.setI3(now);
-        
+
         long millis = now.getMillis();
         millis -= millis % 1000;
         now = new Instant(millis);

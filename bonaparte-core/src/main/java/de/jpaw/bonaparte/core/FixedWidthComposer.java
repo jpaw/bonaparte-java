@@ -40,7 +40,7 @@ import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
  *          There is no specific way to enforce writing nulls as zero or to use the COBOL "BLANK WHEN ZERO", if either of these is required,
  *          the caller must preprocess the data and either convert 0 to null values or null to 0 to achieve the desired effect.
  *          For configuration, the CSV configuration is used.
- *          
+ *
  *          Not all data types are supported. The supported types are:
  *          - all String types (Ascii/Unicode/Upper/Lower) (nullable)
  *          - Day/Timestamp (not null)
@@ -48,13 +48,13 @@ import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
  *          - Number (nullable)
  *          - long (not null, unsigned, assuming a length of 18 characters)
  *          - int (not null, signed, assuming a length of 9 digits)
- *          
+ *
  *          As we currently don't have all information about the fields passed as parameters, we have to make some assumptions.
  */
 
 public class FixedWidthComposer extends CSVComposer {
     private static final int MAX_SPACE_PADDING = 80;
-    
+
     // some cached static paddings (for speed)
     private static final String SPACES = "                                                                                "; // 80 characters
     private static final String ZEROES = "000000000000000000"; // 18 characters
@@ -86,12 +86,12 @@ public class FixedWidthComposer extends CSVComposer {
         if (digits > 0)
             addRawData(cfg.zeroPadNumbers ? ZERO_PADDINGS[digits] : getPadding(digits));
     }
-    
-    
+
+
     public FixedWidthComposer(Appendable work, CSVConfiguration cfg) {
         super(work, cfg);
     }
-    
+
 
     @Override
     public void writeNull(FieldDefinition di) throws IOException {
@@ -142,7 +142,7 @@ public class FixedWidthComposer extends CSVComposer {
             throw new RuntimeException("writeNull() for category " + di.getDataCategory() + " should be converted by specific methods such as addEnum() etc.");
         }
     }
-    
+
     @Override
     public void addField(TemporalElementaryDataItem di, Instant t) throws IOException {
         if (t != null) {
@@ -172,7 +172,7 @@ public class FixedWidthComposer extends CSVComposer {
             addRawData(getPadding(di.getLength()));
         }
     }
-    
+
     protected void outputPaddedNumber(String pattern, int totalLength) throws IOException {
         if (cfg.rightPadNumbers) {
             addRawData(pattern);
@@ -181,7 +181,7 @@ public class FixedWidthComposer extends CSVComposer {
             numericPad(totalLength - pattern.length());
             addRawData(pattern);
         }
-        
+
     }
 
     // decimal using TRAILING SIGN
@@ -210,7 +210,7 @@ public class FixedWidthComposer extends CSVComposer {
             addRawData(getPadding(getFieldWidth(di)));
         }
     }
-    
+
     // generic method for all integral types, also supports a fixed decimal point.
     // The point consumes another byte of space, unless it is at position zero.
     private void paddedFixedWidthString(BasicNumericElementaryDataItem di, String s) throws IOException {
@@ -240,7 +240,7 @@ public class FixedWidthComposer extends CSVComposer {
             }
         }
     }
-    
+
     // long (SIGNED, LEADING SIGN)
     @Override
     public void addField(BasicNumericElementaryDataItem di, long n) throws IOException {
@@ -257,7 +257,7 @@ public class FixedWidthComposer extends CSVComposer {
         }
         paddedFixedWidthString(di, Long.toString(n));
     }
-    
+
     // int (SIGNED, LEADING SIGN)
     @Override
     public void addField(BasicNumericElementaryDataItem di, int n) throws IOException {
@@ -274,7 +274,7 @@ public class FixedWidthComposer extends CSVComposer {
         }
         paddedFixedWidthString(di, Integer.toString(n));
     }
-    
+
     // int (SIGNED, LEADING SIGN)
     @Override
     public void addField(BasicNumericElementaryDataItem di, short n) throws IOException {
@@ -284,7 +284,7 @@ public class FixedWidthComposer extends CSVComposer {
         }
         paddedFixedWidthString(di, Integer.toString(n < 0 ? -(int)n : n));
     }
-    
+
     // int (SIGNED, LEADING SIGN)
     @Override
     public void addField(BasicNumericElementaryDataItem di, byte n) throws IOException {
@@ -294,7 +294,7 @@ public class FixedWidthComposer extends CSVComposer {
         }
         paddedFixedWidthString(di, Integer.toString(n < 0 ? -(int)n : n));
     }
-    
+
     // int(n) (SIGNED AND UNSIGNED; specific length, LEADING SIGN), null possible
     @Override
     public void addField(BasicNumericElementaryDataItem di, BigInteger n) throws IOException {
@@ -321,7 +321,7 @@ public class FixedWidthComposer extends CSVComposer {
             }
         }
     }
-    
+
     protected int getFieldWidth(BasicNumericElementaryDataItem di) {
         return di.getTotalDigits() + (di.getIsSigned() ? 1 : 0) + (di.getDecimalDigits() > 0  && !cfg.removePoint4BD ? 1 : 0);
     }

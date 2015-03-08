@@ -39,16 +39,16 @@ public class TestXEnumCompatibility {
     public void testEqualsAndHash() throws Exception {
         @SuppressWarnings("unused")
         Class<?> loadIt = MoreColors.class;  // ensure the inherited xenum class is loaded
-        
+
         SimpleSampleUsingEnum s1 = new SimpleSampleUsingEnum();
         SimpleSampleUsingXEnum s2 = new SimpleSampleUsingXEnum();
         SimpleSampleUsingInheritedXEnum s3 = new SimpleSampleUsingInheritedXEnum();
-        
+
         // assignments
         s1.setMyColor(Color.GREEN);
         s2.setMyColor(Color.GREEN);
         s3.setMyColor(Color.GREEN);
-        
+
         // check hash code
         assert(s1.getMyColor().hashCode() == s2.getMyColor().hashCode());
         assert(s1.getMyColor().hashCode() == s3.getMyColor().hashCode());

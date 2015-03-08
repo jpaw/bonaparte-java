@@ -10,7 +10,7 @@ public class BigHundredsAdapter {
     public static BigDecimal marshal(Hundreds obj) {
         return BigDecimal.valueOf(obj.getMantissa(), obj.getScale());
     }
-    
+
     public static <E extends Exception> Hundreds unmarshal(BigDecimal num, ExceptionConverter<E> p) throws E {
         return num == null ? null : Hundreds.of(num.unscaledValue().longValue());
     }

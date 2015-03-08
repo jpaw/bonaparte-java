@@ -25,9 +25,9 @@ public class BatchProcessorMarshallerBonaparte implements BatchProcessorMarshall
     public void marshal(BonaPortable request, OutputStream w) throws Exception {
         ByteArrayComposer bac = new ByteArrayComposer();
         bac.writeRecord(request);
-        w.write(bac.getBuffer(), 0, bac.getLength());       // this one avoids a byte [] copy 
+        w.write(bac.getBuffer(), 0, bac.getLength());       // this one avoids a byte [] copy
     }
-    
+
 
     @Override
     public BonaPortable unmarshal(byte[] response, int length) throws Exception {

@@ -16,23 +16,23 @@ public class TestWithIds {
     public void registerClasses() {
         BClassScanner.init();
     }
-    
+
     @Test
     public void testCompactWithIds() throws Exception {
         Complex x = new Complex("AA", 65535);
         Complex yAndZ = new Complex("aa", 170*256+170);
-        
+
         Vector org = new Vector(x, yAndZ, yAndZ);
-        
+
         CompactByteArrayComposer cbac = new CompactByteArrayComposer(1000, true);
         cbac.writeRecord(org);
         System.out.println("Length with CompactByteArrayComposer (ID) is " + cbac.getBuilder().length());
-        
+
         // dump the bytes
         byte [] data = cbac.getBuilder().getBytes();
         System.out.println(ByteUtil.dump(data, 100));
         assert(data.length == 24);  // outer object per PQON, first two complex components as base object, last as repeated.
-        
+
         // parse the result
         CompactByteArrayParser cbap = new CompactByteArrayParser(data, 0, data.length);
         BonaPortable copy = cbap.readRecord();

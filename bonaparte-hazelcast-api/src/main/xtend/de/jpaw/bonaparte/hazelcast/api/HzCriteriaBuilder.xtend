@@ -42,18 +42,18 @@ public class HzCriteriaBuilder {
         NotFilter:
             return Predicates.not(buildPredicate(filter.filter))
         default:
-            throw new RuntimeException("Unrecognized filter type: " + filter.get$PQON) 
+            throw new RuntimeException("Unrecognized filter type: " + filter.get$PQON)
         }
     }
 }
 
 @Singleton
 public class HzFilterImpl implements HzFilter {
-    
+
     override public applyFilter(EntryObject e, FieldFilter filter) {
         switch (filter) {
         NullFilter:
-            return e.isNull() 
+            return e.isNull()
         BooleanFilter:
             return e.equal(Boolean.valueOf(filter.booleanValue))
         AsciiFilter:
@@ -149,8 +149,8 @@ public class HzFilterImpl implements HzFilter {
                     else
                         e.between(filter.lowerBound, filter.upperBound)
         default:
-            throw new RuntimeException("Unrecognized field filter type: " + filter.get$PQON) 
+            throw new RuntimeException("Unrecognized field filter type: " + filter.get$PQON)
         }
     }
-    
-}            
+
+}

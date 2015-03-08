@@ -38,13 +38,13 @@ public class TestPrimitives {
     public void testPrimitives() throws Exception {
         SimpleTestRunner.run(FillPrimitives.test1(), false);
     }
-    
+
     @Test
     public void testPrimitiveLongFibonacci() throws Exception {
         final int n = 91;
-        // run the serialization and deserialization for various numeric magnitudes 
+        // run the serialization and deserialization for various numeric magnitudes
         long [] fibonacci = new long [n];
-        
+
         fibonacci[0] = 1;
         fibonacci[1] = 1;
         for (int i = 2; i < n; ++i) {
@@ -57,5 +57,5 @@ public class TestPrimitives {
             SimpleTestRunner.run(obj, false);
         }
     }
-    
+
 }

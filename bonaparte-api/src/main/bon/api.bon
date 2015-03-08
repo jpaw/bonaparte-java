@@ -2,35 +2,35 @@ import meta.*
 
 package api factoryId 25 {
     default private unsigned trim noControlChars;
-    
+
     /** Base class for all DTOs which can be stored in some key/value store and have a primitive or wrapped long
-     * primary key, either surrogate or derived by composing natural key fields. 
+     * primary key, either surrogate or derived by composing natural key fields.
      */
     abstract class AbstractRef refp "" {}
-    
+
     /** Class to indicate non existing References. */
     final class VoidRef classId 99 extends AbstractRef
        refp "0L"
        keyp "new VoidRef()" {
     }
-     
+
     /** Base class for all audit information. Any other audit data holding class should inherit this one.
      * If tracking is not present, the returned data should be null, therefore this class has been made abstract.
      */
     abstract class TrackingBase {}
-    
+
     /** A tracking class which only tracks creation time. */
     class WriteTracking classId 10 extends TrackingBase {
         required Instant                            whenCreated;
     }
-    
+
     /** A tracking class which tracks creation as well as update time. */
     class ReadWriteTracking classId 11 extends TrackingBase {
         required Instant                            whenCreated;
-        optional Instant                            whenUpdated;            // null if the record is in its initial state, or the modification time otherwise 
+        optional Instant                            whenUpdated;            // null if the record is in its initial state, or the modification time otherwise
     }
 
-    
+
     /** Class which contains the DTO component as well as the audit data. In addition, possible tenant information is provided.
      * The DTO part contains all information which is actively maintained by the application, the tracking part all data which
      * is updated automatically, such as timestamps and versions.
@@ -39,11 +39,11 @@ package api factoryId 25 {
         required (!DATA...)                         data;                   // the actual data
         optional (!TRACKING...)                     ^tracking;              // audit data, if it exists
     }
-    
+
     /**
      * Defines the various implementations of the persistence providers.
      * The main purpose of this enum is to ensure that the assigned IDs are unique within the application.
-     * The actual enum is only used by the implementations. 
+     * The actual enum is only used by the implementations.
      */
     enum PersistenceProviders {
         JPA, TERRACOTTA, HAZELCAST, INFINISPAN, MAPDB, MESSAGING, UNUSED, AEROSPIKE, OFFHEAPMAP, OPENHFT
@@ -59,29 +59,29 @@ package api factoryId 25 {
     /** Combines one or multiple field specific predicates. */
     abstract class SearchFilter {
     }
-    
+
     /** Combines multiple predicates by AND. */
     final class AndFilter classId 21 extends SearchFilter {
-        required (SearchFilter...)                  filter1;        
-        required (SearchFilter...)                  filter2;        
-    }    
-      
+        required (SearchFilter...)                  filter1;
+        required (SearchFilter...)                  filter2;
+    }
+
     /** Combines multiple predicates by OR. */
     final class OrFilter classId 23 extends SearchFilter {
-        required (SearchFilter...)                  filter1;        
-        required (SearchFilter...)                  filter2;        
+        required (SearchFilter...)                  filter1;
+        required (SearchFilter...)                  filter2;
     }
-      
+
     /** Negates a filter. */
     final class NotFilter classId 22 extends SearchFilter {
-        required (SearchFilter...)                  filter;        
-    }    
-      
+        required (SearchFilter...)                  filter;
+    }
+
     /** Base class for all field specific filters. */
     abstract class FieldFilter extends SearchFilter {
         required identifier                         fieldName;                              // the field name subject to comparison
     }
-    
+
     /** Provides filtering for NULL fields. The result set consists of all rows which have a NULL value for the specified column.
      * To select all rows with a NOT NULL value, set the "negateResult" field of the FieldFilter base class to true.
      */
@@ -92,7 +92,7 @@ package api factoryId 25 {
     final class BooleanFilter classId 25 extends FieldFilter {
         required boolean                            booleanValue;
     }
-    
+
     /** Provides filtering for ASCII text fields (IDs, tokens). Exactly one of the parameters equalsValue and likeValue must be provided, the other one must be null.
      * If both parameters are null or both are not equal to null, an "invalid search filter" parameter error is returned. */
     final class AsciiFilter classId 26 extends FieldFilter {
@@ -101,7 +101,7 @@ package api factoryId 25 {
         optional Ascii(80)                          likeValue;
         required Ascii(80) List<>                   valueList;
     }
-    
+
     /** Provides filtering for Unicode text fields (IDs, tokens). Exactly one of the parameters equalsValue and likeValue must be provided, the other one must be null.
      * If both parameters are null or both are not equal to null, an "invalid search filter" parameter error is returned. */
     final class UnicodeFilter classId 27 extends FieldFilter {
@@ -110,8 +110,8 @@ package api factoryId 25 {
         optional Unicode(80)                        likeValue;
         required Unicode(80) List<>                 valueList;
     }
-    
-    
+
+
     /** Provides filtering for integral values. At least one parameter must be provided. In order to search for exactly one value, both parameters must be set to the same value.
      */
     final class IntFilter classId 28 extends FieldFilter {
@@ -119,8 +119,8 @@ package api factoryId 25 {
         optional Integer                            upperBound;
         required Integer List<>                     valueList;
     }
-    
-    
+
+
     /** Provides filtering for integral values. At least one parameter must be provided. In order to search for exactly one value, both parameters must be set to the same value.
      */
     final class LongFilter classId 29 extends FieldFilter {
@@ -128,35 +128,35 @@ package api factoryId 25 {
         optional Long                               upperBound;
         required Long List<>                        valueList;
     }
-    /** Provides filtering for calendar dates (full days). 
+    /** Provides filtering for calendar dates (full days).
      */
     final class DayFilter classId 30 extends FieldFilter {
         optional Day                                lowerBound;
         optional Day                                upperBound;
         required Day List<>                         valueList;
     }
-    
-    /** Provides filtering for local date / time. All parameters are provided in UTC timezone. 
+
+    /** Provides filtering for local date / time. All parameters are provided in UTC timezone.
      */
     final class TimestampFilter classId 31 extends FieldFilter {
         optional Timestamp(0)                       lowerBound;
         optional Timestamp(0)                       upperBound;
-        required Timestamp(0) List<>                valueList;  
+        required Timestamp(0) List<>                valueList;
     }
-    
-    /** Provides filtering for time instants. All parameters are provided in UTC timezone. 
+
+    /** Provides filtering for time instants. All parameters are provided in UTC timezone.
      */
     final class InstantFilter classId 32 extends FieldFilter {
         optional Instant(3)                         lowerBound;
         optional Instant(3)                         upperBound;
-        required Instant(3) List<>                  valueList;  
+        required Instant(3) List<>                  valueList;
     }
-    
-    /** Provides filtering for time elements. All parameters are provided in local timezone. 
+
+    /** Provides filtering for time elements. All parameters are provided in local timezone.
      */
     final class TimeFilter classId 33 extends FieldFilter {
         optional Time(0)                            lowerBound;
         optional Time(0)                            upperBound;
-        required Time(0) List<>                     valueList;  
+        required Time(0) List<>                     valueList;
     }
 }

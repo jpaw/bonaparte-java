@@ -49,7 +49,7 @@ public class TestFolding {
         runTest(unixPasswdCfg, pwEntry, "System superuser:root:/bin/sh\n", map);
         runTest(unixPasswdCfg, pwEntry2, "Michael Bischoff:jpaw:/bin/bash\n",  map);
     }
-    
+
     @Test
     public void testMetaData() throws Exception {
         List<String> fields = Arrays.asList( "name", "fields.name", "numberOfFields");
@@ -57,7 +57,7 @@ public class TestFolding {
         map.put(ClassDefinition.class, fields);
         runTest(unixPasswdCfg, UnixPasswd.class$MetaData(), "csvTests.UnixPasswd:name:passwd:uid:gid:gecos:dir:shell:7\n",  map);
     }
-    
+
     @Test
     public void testMetaDataWithIndex() throws Exception {
         List<String> fields = Arrays.asList( "name", "fields[2].name", "numberOfFields");
@@ -65,7 +65,7 @@ public class TestFolding {
         map.put(ClassDefinition.class, fields);
         runTest(unixPasswdCfg, UnixPasswd.class$MetaData(), "csvTests.UnixPasswd:uid:7\n",  map);
     }
-    
+
     @Test
     public void testSingleFieldAccess() throws Exception {
         UnixPasswd pwEntry = new UnixPasswd("root", "x", 0, 0,"System superuser", "/root", "/bin/sh");

@@ -13,17 +13,17 @@ import de.jpaw.bonaparte.core.BonaPortableClass;
 
 /** Class to scan the class path and create factories as required. */
 public class IdentifiedDataSerializableFactoryBuilder extends AbstractScanner<BonaparteIdentifiedDataSerializable> {
-    
+
     static class BonaparteIdentifiedDataSerializableFactory implements DataSerializableFactory {
         private final ConcurrentHashMap<Integer, BonaPortableClass<BonaparteIdentifiedDataSerializable>> bclasses
             = new ConcurrentHashMap<Integer, BonaPortableClass<BonaparteIdentifiedDataSerializable>>(256);
-        
+
         @Override
         public IdentifiedDataSerializable create(int classId) {
             BonaPortableClass<BonaparteIdentifiedDataSerializable> bclass = bclasses.get(classId);
             return bclass == null ? null : bclass.newInstance();
         }
-        
+
         private void addClass(BonaPortableClass<BonaparteIdentifiedDataSerializable> bclass) {
             BonaPortableClass<BonaparteIdentifiedDataSerializable> old = bclasses.putIfAbsent(bclass.getId(), bclass);
             if (old != null && old != bclass) {
@@ -31,7 +31,7 @@ public class IdentifiedDataSerializableFactoryBuilder extends AbstractScanner<Bo
                 throw new RuntimeException("Duplicate factory / class ID");
             }
         }
-        
+
         private int size() {
             return bclasses.size();
         }
@@ -50,15 +50,15 @@ public class IdentifiedDataSerializableFactoryBuilder extends AbstractScanner<Bo
         }
         factoryMap.get(factoryId).addClass(bclass);
     }
-    
+
     public void scanPackage(String packageName) {
         scanPackage(packageName, BonaparteIdentifiedDataSerializable.class);
     }
-    
+
     public void scanPackage(Reflections ... reflections) {
         scanPackage(BonaparteIdentifiedDataSerializable.class, reflections);
     }
-    
+
     public void registerFactories(SerializationConfig cfg) {
         for (Map.Entry<Integer, BonaparteIdentifiedDataSerializableFactory> e : factoryMap.entrySet()) {
             LOGGER.info("Registering DataSerializableFactory for Id {} with {} classes", e.getKey(), e.getValue().size());

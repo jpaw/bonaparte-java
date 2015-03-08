@@ -2,7 +2,7 @@ package de.jpaw.bonaparte.core;
 
 public class RuntimeExceptionConverter implements ExceptionConverter<RuntimeException> {
     public static RuntimeExceptionConverter INSTANCE = new RuntimeExceptionConverter();
-    
+
     @Override
     public RuntimeException enumExceptionConverter(IllegalArgumentException e) {
         throw e;

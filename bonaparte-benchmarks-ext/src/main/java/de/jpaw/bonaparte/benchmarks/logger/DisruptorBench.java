@@ -47,7 +47,7 @@ public class DisruptorBench {
         public void setValue(String value) {
             this.value = value;
         }
-        
+
         public final static EventFactory<MyElement> EVENT_FACTORY = new EventFactory<MyElement>() {
             @Override
             public MyElement newInstance() {
@@ -58,7 +58,7 @@ public class DisruptorBench {
     private Disruptor<MyElement> disruptor;
     private ExecutorService exec;
     private RingBuffer<MyElement> ringBuffer;
-    
+
     @Setup
     public void setUp() throws IOException {
         exec = Executors.newCachedThreadPool();
@@ -72,13 +72,13 @@ public class DisruptorBench {
         disruptor.handleEventsWith(handler);
         ringBuffer = disruptor.start();
     }
-    
+
     @TearDown
     public void tearDown() throws IOException {
         disruptor.shutdown();
         exec.shutdown();
     }
-    
+
     @Benchmark
     public void processEvents(Blackhole bh) {
         for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {

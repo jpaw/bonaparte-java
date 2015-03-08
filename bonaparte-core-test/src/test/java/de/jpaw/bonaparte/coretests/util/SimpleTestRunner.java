@@ -213,8 +213,8 @@ public class SimpleTestRunner {
 //       System.out.println(ByteUtil.dump(cbacResult, 100));
        assert(ccResult.length == cbacResult.length);
        assert Arrays.equals(ccResult, cbacResult) : "produced byte data should be identical";
-       
-       
+
+
        /************************************************************************************
         *
         * Part IIIb: Java compact: deserialize

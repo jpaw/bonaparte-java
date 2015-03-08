@@ -45,7 +45,7 @@ public class TestXenumSerialization {
         assert obj.equals(r1);
         assert(obj.getClass().equals(r1.getClass()));
     }
-    
+
     @Test
     public void testEncodeDecodeBaseLow() throws Exception {
         SimpleSampleUsingXEnum obj = new SimpleSampleUsingXEnum();

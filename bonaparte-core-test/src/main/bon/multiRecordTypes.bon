@@ -1,22 +1,22 @@
 package multiRecordTypes {
-    
+
     abstract class RecordType {
         required uppercase(4)       recordType;
     }
-    
+
     class HeadRecord extends RecordType {
         // no contents
     }
-    
+
     class NodeRecord extends RecordType {
         required Unicode(20)   nodename;
     }
-    
+
     class EdgeRecord extends RecordType {
         int node1;
         int node2;
     }
-    
+
     class EofRecord extends RecordType {
         // no contents
     }

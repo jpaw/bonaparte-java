@@ -10,7 +10,7 @@ import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.util.ApplicationException;
 
 /** Common superinterface for refsp.RefResolver, refsw.RefResolver and refsc.RefResolver.
- * Defines common (not key type specific) methods. */ 
+ * Defines common (not key type specific) methods. */
 public interface BaseRefResolver<REF extends BonaPortable, DTO extends REF, TRACKING extends TrackingBase> {
     /**
      * Returns the DTO for a given unique index. Null-safe, returns null for a null index value. Throws an exception if the key does not exist.
@@ -36,7 +36,7 @@ public interface BaseRefResolver<REF extends BonaPortable, DTO extends REF, TRAC
      * Flushes all modified but not yet written data to the database.
      */
     void flush();
-    
+
     /**
      * Creates a key object from a ref. Returns null for ref <= 0.
      */
@@ -53,7 +53,7 @@ public interface BaseRefResolver<REF extends BonaPortable, DTO extends REF, TRAC
      * In this case, refsc will define an alternate query returning List<KEY>
      */
     List<Long> queryKeys(int limit, int offset, SearchFilter filter, List<SortColumn> sortColumns) throws ApplicationException;
-    
+
     /** Returns a number of records for a query.
      * Throws UnsupportedOperationException in case the persistence provider does not support searches.
      */

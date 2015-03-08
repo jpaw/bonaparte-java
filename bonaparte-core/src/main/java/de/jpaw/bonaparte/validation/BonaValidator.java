@@ -70,7 +70,7 @@ public interface BonaValidator {
     void check(BasicNumericElementaryDataItem di, short n) throws ObjectValidationException;
     void check(BasicNumericElementaryDataItem di, int n) throws ObjectValidationException;
     void check(BasicNumericElementaryDataItem di, long n) throws ObjectValidationException;
-    
+
     void check(BasicNumericElementaryDataItem di, BigInteger n) throws ObjectValidationException;
     void check(NumericElementaryDataItem di, BigDecimal n) throws ObjectValidationException;
     void check(MiscElementaryDataItem di, UUID n) throws ObjectValidationException;

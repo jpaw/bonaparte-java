@@ -23,7 +23,7 @@ public class BonaparteNettyPipelineFactory extends ChannelInitializer<SocketChan
         this.errorForwarder = errorForwarder;
         this.databaseWorkerThreadPool = new DefaultEventExecutorGroup(DEFAULT_NUM_THREADS);
     }
-    
+
     public BonaparteNettyPipelineFactory(int maximumMessageLength, SimpleChannelInboundHandler<BonaPortable> objectHandler,
             ErrorForwarder errorForwarder, int numThreads) {
         this.maximumMessageLength = maximumMessageLength;
@@ -35,11 +35,11 @@ public class BonaparteNettyPipelineFactory extends ChannelInitializer<SocketChan
             databaseWorkerThreadPool = null;
         }
     }
-    
+
     @Override
     public void initChannel(SocketChannel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();
-                
+
         // Add the text line codec combination first,
         pipeline.addLast("framer", new LineBasedFrameDecoder(maximumMessageLength, false, false));
         // transmission serialization format

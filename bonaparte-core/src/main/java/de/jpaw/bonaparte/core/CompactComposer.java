@@ -31,12 +31,12 @@ import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.enums.XEnum;
 import de.jpaw.util.ByteArray;
 
-/** 
+/**
  * Composer intended for IMDGs.
- * Goals: 
+ * Goals:
  * 1) be as efficient as reasonable, to save memory (= allows to cache more objects in same amount of RAM = more speed)
  * 2) don't allocate temporary objects during serialization (avoid GC overhead), unless absolutely required
- *  
+ *
  * @author Michael Bischoff
  *
  */
@@ -126,7 +126,7 @@ public class CompactComposer extends CompactConstants implements MessageComposer
     /**
      * allows to add raw data to the produced byte array. Use this for protocol
      * support at beginning or end of a message
-     * 
+     *
      * @throws IOException
      */
 
@@ -219,7 +219,7 @@ public class CompactComposer extends CompactConstants implements MessageComposer
                 out.writeChar(s.charAt(i));
         }
     }
-    
+
     // write a non-empty string (using char[])
     protected void writeLongStringArray(String s) throws IOException {
         char maxCode = 0;
@@ -264,7 +264,7 @@ public class CompactComposer extends CompactConstants implements MessageComposer
                 out.writeChar(buff[i]);
         }
     }
-    
+
     // write a non-empty string (using char[])
     protected void writeLongStringStealArray(String s) throws IOException {
         if (unsafeString == null) {
@@ -319,7 +319,7 @@ public class CompactComposer extends CompactConstants implements MessageComposer
                 out.writeChar(buff[i]);
         }
     }
-    
+
     // output an integral value
     protected void intOut(int n) throws IOException {
         if (n >= 0) {
@@ -366,7 +366,7 @@ public class CompactComposer extends CompactConstants implements MessageComposer
             }
         }
     }
-    
+
     protected void charOut(char c) throws IOException {
         // if it is a displayable ASCII character, there is a short form
         if ((c & ~0x7f) == 0 && c >= 0x20) {
@@ -378,7 +378,7 @@ public class CompactComposer extends CompactConstants implements MessageComposer
             out.writeShort(c);
         }
     }
-    
+
     // character
     @Override
     public void addField(MiscElementaryDataItem di, char c) throws IOException {
@@ -417,7 +417,7 @@ public class CompactComposer extends CompactConstants implements MessageComposer
             out.write(tmp);
         }
     }
-    
+
     // decimal
     @Override
     public void addField(NumericElementaryDataItem di, BigDecimal n) throws IOException {
@@ -475,7 +475,7 @@ public class CompactComposer extends CompactConstants implements MessageComposer
     }
 
     // entry which does not need a reference
-    protected void addLong(long n) throws IOException { 
+    protected void addLong(long n) throws IOException {
         int nn = (int)n;
         if (nn == n)
             intOut((int)n);
@@ -491,7 +491,7 @@ public class CompactComposer extends CompactConstants implements MessageComposer
             out.writeLong(n);
         }
     }
-    
+
     // long
     @Override
     public void addField(BasicNumericElementaryDataItem di, long n) throws IOException {
@@ -737,7 +737,7 @@ public class CompactComposer extends CompactConstants implements MessageComposer
         else
             addField(token, n.getToken());
     }
-    
+
     @Override
     public boolean addExternal(ObjectReference di, Object obj) throws IOException {
         return false;       // perform conversion by default

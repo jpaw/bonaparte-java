@@ -26,14 +26,14 @@ import de.jpaw.util.ByteArray;
 
 /** Represents some stub methods. */
 public class NoOpComposer<E extends Exception> implements MessageComposer<E> {
-    
+
     public NoOpComposer() {
     }
-    
+
     @Override
     public void writeNull(FieldDefinition di) throws E {
     }
-    
+
     @Override
     public void writeNullCollection(FieldDefinition di) throws E {
     }
@@ -69,7 +69,7 @@ public class NoOpComposer<E extends Exception> implements MessageComposer<E> {
     @Override
     public void terminateRecord() throws E {
     }
-    
+
     @Override
     public void terminateTransmission() throws E {
     }
@@ -77,7 +77,7 @@ public class NoOpComposer<E extends Exception> implements MessageComposer<E> {
     @Override
     public void writeRecord(BonaCustom o) throws E {
     }
-    
+
     @Override
     public void addField(AlphanumericElementaryDataItem di, String s) throws E {
     }

@@ -12,7 +12,7 @@ public class HazelcastPortableParser {
     // entry called from generated objects:
     public static void deserialize(BonaPortable obj, PortableReader _in) throws IOException {
         // ignore any specific fields, because the full data is in the appendix
-        
+
         ObjectDataInput in = _in.getRawDataInput();     // extends java.io.DataInput
         CompactParser.deserialize(obj, in);
     }

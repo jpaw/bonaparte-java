@@ -38,29 +38,29 @@ public class TestRegexp {
         }
         throw new Exception("Testcase " + pattern + " threw no exception, but expected " + errno);
     }
-    
-    
+
+
     @Test
     public void testRegexp() throws Exception {
         new RegexpTest("069/22223456").validate();
         new RegexpTest("+35387/12345").validate();
         shouldFailWith(ObjectValidationException.NO_PATTERN_MATCH, "nonono", 1);
     }
-    
+
     @Test
     public void testRegexp2() throws Exception {
         new RegexpTest2("069/22223456").validate();
         new RegexpTest2("+35387/12345").validate();
         shouldFailWith(ObjectValidationException.NO_PATTERN_MATCH, "nonono", 2);
     }
-    
+
     @Test   // with space
     public void testRegexp3() throws Exception {
         new RegexpTest3("069/22223456").validate();
         new RegexpTest3("+35387/12345").validate();
         shouldFailWith(ObjectValidationException.NO_PATTERN_MATCH, "nonono", 3);
     }
-    
+
     @Test  // with typedef
     public void testRegexp4() throws Exception {
         new RegexpTest4("069/22223456").validate();

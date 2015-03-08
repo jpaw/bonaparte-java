@@ -1,10 +1,10 @@
 package javadoc {
-    
+
     /** Javadoc on Class. */
     class ClassWithDeprecatedField {
         /** Javadoc on field. */
         int commentedField;         // more comments on field
-        
+
         @Deprecated
         long deprecatedField;
     }

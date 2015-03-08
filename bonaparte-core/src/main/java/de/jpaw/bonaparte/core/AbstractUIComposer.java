@@ -18,14 +18,14 @@ public abstract class AbstractUIComposer extends CSVComposer2 {
             .forLocale(Locale.getDefault())
             .forTimeZone(DateTimeZone.getDefault())
             .build();
-    
+
     protected final StringBuilder buffer;
 
     private AbstractUIComposer(StringBuilder buffer, CSVConfiguration cfg) {
         super(buffer, cfg);
         this.buffer = buffer;
     }
-    
+
     public AbstractUIComposer(CSVConfiguration cfg) {
         this(new StringBuilder(250), cfg);
     }
@@ -73,14 +73,14 @@ public abstract class AbstractUIComposer extends CSVComposer2 {
     @Override
     public void terminateRecord() throws RuntimeException {
     }
-    
+
     @Override
     public void startObject(ObjectReference di, BonaCustom obj) throws RuntimeException {
     }
     @Override
     public void terminateObject(ObjectReference di, BonaCustom obj) throws RuntimeException {
     }
-    
+
     // field type specific output functions
 
     // character: No escaping for UI output
@@ -91,7 +91,7 @@ public abstract class AbstractUIComposer extends CSVComposer2 {
         else
             emit(String.valueOf(c));
     }
-    
+
     // ascii only (unicode uses different method)
     @Override
     public void addField(AlphanumericElementaryDataItem di, String s) throws IOException {

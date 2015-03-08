@@ -11,7 +11,7 @@ public class BonaCurrencyAdapter {
     public static BCurrency marshal(BonaCurrency currency) {
         return new BCurrency(currency.getCurrencyCode(), currency.getDecimals());
     }
-    
+
     /** Convert a parsed adapter type into the custom type. */
     public static <E extends Exception> BonaCurrency unmarshal(BonaPortable obj, ExceptionConverter<E> p) throws E {
         if (obj instanceof BCurrency) {

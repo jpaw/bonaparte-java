@@ -34,13 +34,13 @@ import de.jpaw.util.ByteArray;
 public class CompactParser extends CompactConstants implements MessageParser<IOException> {
     private static final byte [] EMPTY_BYTE_ARRAY = new byte [0];
     private static final String EMPTY_STRING = "";
-    
+
     protected final DataInput in;
     protected final boolean useCache = true;
     protected List<BonaPortable> objects;
     private String currentClass;
     private int pushedBack = -1;
-    
+
     public static void deserialize(BonaPortable obj, DataInput _in) throws IOException {
         obj.deserialize(new CompactParser(_in));
     }
@@ -50,7 +50,7 @@ public class CompactParser extends CompactConstants implements MessageParser<IOE
         if (useCache)
             objects = new ArrayList<BonaPortable>(60);
     }
-    
+
     private int needToken() throws IOException {
         if (pushedBack >= 0) {
             int c = pushedBack;
@@ -73,7 +73,7 @@ public class CompactParser extends CompactConstants implements MessageParser<IOE
         }
         pushedBack = c;
     }
-    
+
     // check for Null called for field members inside a class
     private boolean checkForNullOrNeedToken(FieldDefinition di, int token) throws IOException {
         return checkForNullOrNeedToken(di.getName(), di.getIsRequired(), token);
@@ -127,15 +127,15 @@ public class CompactParser extends CompactConstants implements MessageParser<IOE
     private boolean checkForNull(FieldDefinition di) throws IOException {
         return checkForNull(di.getName(), di.getIsRequired());
     }
-    
+
     private void eNotNumeric(int n, String fieldname) throws IOException {
         throw new IOException("Numeric token expected but got " + (n & 0xff) + " for field " + currentClass + "." + fieldname);
     }
-    
+
     // upon entry, we know that firstByte is not null (0xa0)
     private int readInt(int firstByte, String fieldname) throws IOException {
         if (firstByte < 0xa0) {
-            // 1 positive byte numbers 
+            // 1 positive byte numbers
             if (firstByte <= 31)
                 return firstByte;
             if (firstByte >= 0x80)
@@ -170,7 +170,7 @@ public class CompactParser extends CompactConstants implements MessageParser<IOE
     private int readFixed4ByteInt() throws IOException {
         return in.readInt();
     }
-    
+
     private long readFixed6ByteLong() throws IOException {
         int nn1 = in.readShort();
         return (long)nn1 << 32 | (in.readInt() & 0xffffffffL);
@@ -185,7 +185,7 @@ public class CompactParser extends CompactConstants implements MessageParser<IOE
             return readFixed8ByteLong();
         return readInt(firstByte, fieldname);
     }
-    
+
     @Override
     public UUID readUUID(MiscElementaryDataItem di) throws IOException {
         if (checkForNullOrNeedToken(di, COMPACT_UUID))
@@ -212,7 +212,7 @@ public class CompactParser extends CompactConstants implements MessageParser<IOE
         currentClass = newClassName;
     }
 
-    
+
     @Override
     public <T extends AbstractXEnumBase<T>> T readXEnum(XEnumDataItem di, XEnumFactory<T> factory) throws IOException {
         XEnumDefinition spec = di.getBaseXEnum();
@@ -250,7 +250,7 @@ public class CompactParser extends CompactConstants implements MessageParser<IOE
         if (c == COMPACT_BIGINTEGER) {
             // length and mantissa
             int len = readInt(needToken(), fieldname);
-            
+
             byte [] mantissa = new byte [len];
             in.readFully(mantissa);
             r = new BigDecimal(new BigInteger(mantissa), scale);
@@ -357,12 +357,12 @@ public class CompactParser extends CompactConstants implements MessageParser<IOE
             data[i] = in.readChar();
         return new String(data);
     }
-    
+
     @Override
     public String readAscii(AlphanumericElementaryDataItem di) throws IOException {
         return readString(di.getName(), di.getIsRequired());
     }
-    
+
     protected String readString(String fieldname, boolean isRequired) throws IOException {
         if (checkForNull(fieldname, isRequired))
             return null;
@@ -579,7 +579,7 @@ public class CompactParser extends CompactConstants implements MessageParser<IOE
             // if we use the cache, make the object known even before the contents has been parsed, because it may be referenced if the structure is cyclic
             if (useCache)
                 objects.add(newObject);
-            
+
             currentClass = classname;
             newObject.deserialize(this);
             skipNulls();
@@ -642,7 +642,7 @@ public class CompactParser extends CompactConstants implements MessageParser<IOE
         skipNulls();  // upwards compatibility: skip extra fields if they are blank.
         needToken(PARENT_SEPARATOR);
     }
-    
+
     @Override
     public boolean readPrimitiveBoolean(MiscElementaryDataItem di) throws IOException {
         int c = needToken();

@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.ByteArrayParser;
 
- 
+
 
 public class BonaparteDecoder  implements MessageDecoder {
     private static final Logger logger = LoggerFactory.getLogger(BonaparteDecoder.class);
@@ -53,7 +53,7 @@ public class BonaparteDecoder  implements MessageDecoder {
         out.write(o);
         return MessageDecoderResult.OK;
 
-    }       
+    }
 
 
 

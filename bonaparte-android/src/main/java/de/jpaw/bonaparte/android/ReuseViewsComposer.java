@@ -17,9 +17,9 @@ public class ReuseViewsComposer extends LinearLayoutComposer {
         this.rowWidget = null;
         column = -1;
     }
-   
+
     // creates a new composer, with support of widget auto-creation
-    
+
     @Override
     public void newView(final LinearLayout rowWidget, int row) {
         this.rowWidget = rowWidget;

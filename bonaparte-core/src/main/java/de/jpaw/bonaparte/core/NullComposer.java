@@ -6,8 +6,8 @@ public class NullComposer extends NoOpComposer<RuntimeException> implements Buff
 
     public NullComposer() {
     }
-    
-    
+
+
     @Override
     public void reset() {
     }

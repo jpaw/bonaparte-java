@@ -13,7 +13,7 @@ public class FpAmountAdapter {
         List<Long> components = amount.getAmounts();
         return new FpAmount(amount.getCurrency(), amount.getGross(), components.size() == 0 ? null : components);
     }
-    
+
     /** Convert a parsed adapter type into the custom type. */
     public static <E extends Exception> FPAmount unmarshal(BonaPortable obj, ExceptionConverter<E> p) throws E {
         if (obj instanceof FpAmount) {

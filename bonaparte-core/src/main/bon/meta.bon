@@ -1,6 +1,6 @@
 /** Bonaparte metadata.
  * Assigned to factoryId 29, classIds 1-40
- * 
+ *
  * Other factory IDs:
  * 0: illegal
  * 1..24 reserved for other jpaw projects
@@ -9,7 +9,7 @@
  * 27: adapters
  * 28: framework "twentyeight"
  * 29: bonaparte-core
- * 30ff:  3rd parties 
+ * 30ff:  3rd parties
  */
 package meta factoryId 29 {
     default private unsigned trim noControlChars;
@@ -17,7 +17,7 @@ package meta factoryId 29 {
     type identifier             is Unicode(255);
     type enumIdType             is Unicode(63);
     type enumTokenType          is Unicode(63);
-  
+
     enum Visibility { DEFAULT, PRIVATE, PROTECTED, PUBLIC }
     enum BundleStatus { UNUSED, RESOLVED, INSTALLED, STARTING, SHUTTING_DOWN, MAINTENANCE }  // borrow OSGi statuses
     enum Multiplicity { SCALAR, ARRAY, LIST, SET, MAP }
@@ -25,7 +25,7 @@ package meta factoryId 29 {
     enum DataCategory { OBJECT, ENUM, NUMERIC, STRING, TEMPORAL, MISC, BINARY, BASICNUMERIC, XENUM, ENUMSET, XENUMSET, ENUMALPHA, ENUMSETALPHA }  // misc is boolean, char, uuid, ...
     enum FoldingStrategy { SKIP_UNMAPPED, TRY_SUPERCLASS, FULL_OUTPUT, SUPERCLASS_OR_FULL, FORWARD_OBJECTS }  // what to do if no folding mapping is found
     enum IndexType { ^NONE, STRING, INTEGER, LONG, SHORT, BYTE }   // index type for enum sets and maps. DO NOT CHANGE SEQUENCE AS ORDINALS ARE USED IN TRANSMISSION!
-    
+
     abstract immutable class FieldDefinition {
         required enum Visibility            visibility;
         required boolean                    isRequired;             // if the fields allow null (if collections: the collection elements)
@@ -34,20 +34,20 @@ package meta factoryId 29 {
         required enum IndexType             mapIndexType;
         optional Integer                    minCount;               // minimum number of occurrences, if a collection or array
         optional Integer                    maxCount;               // maximum number of occurrences, if a collection or array
-        required enum DataCategory          dataCategory;           // gives high level information about the data 
+        required enum DataCategory          dataCategory;           // gives high level information about the data
         required identifier                 dataType;               // the Bonaparte data type
         required boolean                    isPrimitive;            // true if the field is a primitive data type in Java
-        required boolean                    isAggregateRequired;    // field is an aggregate field (array, List, Set, Map) and the aggregate itself may not be null 
+        required boolean                    isAggregateRequired;    // field is an aggregate field (array, List, Set, Map) and the aggregate itself may not be null
     }
-    
+
     class ObjectReference classId 1 extends FieldDefinition {
-        required boolean                    allowSubclasses;    
-        required identifier                 objectName;     
+        required boolean                    allowSubclasses;
+        required identifier                 objectName;
         optional (ClassDefinition...)       lowerBound;             // if the object must inherit another object, specify it here. null for generic BonaPortables
         optional (ClassDefinition...)       secondaryLowerBound;    // if a secondary object has been provided, the lower bound of that one
         optional Boolean                    secondaryAllowSubclasses;    // if the secondary object type allows subclasses
     }
-    
+
     // ElementaryDataItem is used for some as well as for types which don't need a parameter
     // day, char, boolean
     class ElementaryDataItem classId 2 extends FieldDefinition {
@@ -68,7 +68,7 @@ package meta factoryId 29 {
         required int                        fractionalSeconds;      // decimals fraction of the second (-1 for day)
         required boolean                    ^hhmmss;
     }
-    
+
     // BinaryElementaryDataItem represents raw and binary
     class BinaryElementaryDataItem classId 6 extends ElementaryDataItem {
         required int                        length;
@@ -85,7 +85,7 @@ package meta factoryId 29 {
         required int                        decimalDigits;      // number of digits (max) behind the decimal point
         required boolean                    rounding;           // if true, parsing numbers with more decimals will result in rounding, if false, an error will be raised
     }
-    
+
     // NumericElementaryDataItem represents decimal
     class NumericElementaryDataItem classId 9 extends BasicNumericElementaryDataItem {
         required boolean                    ^autoScale;         // if true, any input will be scaled to the required number of decimal digits
@@ -102,9 +102,9 @@ package meta factoryId 29 {
         required int                        minLength;
         optional Ascii(500)                 ^regexp;
     }
-    
+
     // (X)EnumSet definitions
-    
+
     class AlphanumericEnumSetDataItem classId 18 extends AlphanumericElementaryDataItem {
         required (EnumSetDefinition)        baseEnumset;
     }
@@ -114,16 +114,16 @@ package meta factoryId 29 {
     class NumericEnumSetDataItem classId 20 extends BasicNumericElementaryDataItem {
         required (EnumSetDefinition)        baseEnumset;
     }
-    
-    
+
+
     final immutable class ClassAdapter is java.lang.Class adapter de.jpaw.bonaparte.core.ClassAdapter singleField withExceptionConverter {
         optional identifier                 canonicalName;      // fully qualified name
     }
-    
+
     final immutable class BonaClassAdapter is de.jpaw.bonaparte.core.BonaPortableClass adapter de.jpaw.bonaparte.core.BonaClassAdapter singleField withExceptionConverter {
         optional Long                       key;                // factoryId and classId baked into a single field
     }
-    
+
     // common superclass for class, enum and xenum, enumset, xenumset
     abstract immutable class AbstractObjectParent<E extends AbstractObjectParent<!E>> cacheHash {
         required (ClassAdapter)             classRef;
@@ -174,15 +174,15 @@ package meta factoryId 29 {
     class XEnumSetDefinition classId 22 extends AbstractObjectParent<XEnumSetDefinition> {
         required (XEnumDefinition)          baseXEnum;
     }
-    
+
     class BundleInformation classId 15 {
         required identifier                 name;
         required identifier required List<> packages;
         required unicode(2048)              classPath;
         required enum BundleStatus          bundleStatus;
-        optional Instant(3)                 whenStatusChanged; 
+        optional Instant(3)                 whenStatusChanged;
     }
-    
+
     /** Hold a parsed structure of name[index].subcomponentName[index] */
     class ParsedFoldingComponent classId 16 {
         default public;
@@ -192,8 +192,8 @@ package meta factoryId 29 {
         optional Unicode(255)               alphaIndex;     // alphanumeric index, or null if none exists
         optional (ParsedFoldingComponent)   component;      // optional specification of the substructure
     }
- 
-    /** Placeholder class to be used as a default template for a guessed description, used in bonaparte-batch. */   
+
+    /** Placeholder class to be used as a default template for a guessed description, used in bonaparte-batch. */
     abstract class CsvInput {
     }
 }

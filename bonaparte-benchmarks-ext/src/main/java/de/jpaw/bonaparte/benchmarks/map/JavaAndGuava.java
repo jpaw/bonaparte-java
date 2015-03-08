@@ -31,7 +31,7 @@ public class JavaAndGuava {
     static public final int OPERATIONS_PER_INVOCATION = 1000000;
     static public final String DATA = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet";
     static public final Long KEY = 437L;
-    
+
     @Benchmark
     public void javaHashMapGet(Blackhole bh) {
         final Map<Long,String> map = new HashMap<Long,String>(100);
@@ -54,7 +54,7 @@ public class JavaAndGuava {
     public void guavaCacheGetNoTO(Blackhole bh) {
         final Cache<Long,String> map = CacheBuilder
                 .newBuilder()
-                .build( 
+                .build(
                     new CacheLoader<Long, String>() {
                         public String load(Long key) {
                             return DATA;
@@ -71,7 +71,7 @@ public class JavaAndGuava {
         final Cache<Long,String> map = CacheBuilder
                 .newBuilder()
                 .expireAfterWrite(60, TimeUnit.SECONDS)
-                .build( 
+                .build(
                     new CacheLoader<Long, String>() {
                         public String load(Long key) {
                             return DATA;
@@ -88,7 +88,7 @@ public class JavaAndGuava {
         final Cache<Long,String> map = CacheBuilder
                 .newBuilder()
                 .expireAfterAccess(60, TimeUnit.SECONDS)
-                .build( 
+                .build(
                     new CacheLoader<Long, String>() {
                         public String load(Long key) {
                             return DATA;

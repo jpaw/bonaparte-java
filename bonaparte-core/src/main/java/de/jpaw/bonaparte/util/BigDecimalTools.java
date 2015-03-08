@@ -25,7 +25,7 @@ public class BigDecimalTools {
     private static final Logger LOG = LoggerFactory.getLogger(BigDecimalTools.class);
     private static final String DECIMALS_KEYWORD_MIN = "min";
     private static final String DECIMALS_KEYWORD_MAX = "max";
-    
+
 
     /** Scales the BigDecimal to some predefined scale */
     static public BigDecimal scale(BigDecimal a, int decimals) {
@@ -49,7 +49,7 @@ public class BigDecimalTools {
             return false;  // exactly one of them if null, the other not
         return scale(a, aDecimals).compareTo(scale(b, bDecimals)) == 0;
     }
-    
+
     /** Check a parsed BigDecimal for allowed digits, and perform (if desired) scaling. Use the second form with the metadata parameter instead. */
     static public BigDecimal checkAndScale(BigDecimal r, NumericElementaryDataItem di, int parseIndex, String currentClass) throws MessageParserException {
         String fieldname = di.getName();
@@ -69,7 +69,7 @@ public class BigDecimalTools {
             throw new MessageParserException(MessageParserException.TOO_MANY_DIGITS, fieldname, parseIndex, currentClass);
         return r;
     }
-    
+
     /** Check a BigDecimal for compliance of the spec. */
     static public void validate(BigDecimal r, NumericElementaryDataItem meta, String classname) throws ObjectValidationException {
         try {
@@ -84,7 +84,7 @@ public class BigDecimalTools {
         if (meta.getTotalDigits() - meta.getDecimalDigits() < r.precision() - r.scale())
             throw new ObjectValidationException(ObjectValidationException.TOO_MANY_DIGITS, meta.getName(), classname);
     }
-    
+
     /** Given an object tree and a pathname within this tree (which should point to some BigDecimal number),
      * retrieve the number and scale it to the desired precision, as indicated by the property "decimals".
      * The possible values are:
@@ -92,10 +92,10 @@ public class BigDecimalTools {
      * max: scale the number to the precision of the underlying field
      * (number): scale to the number of digits provided
      * (pathname): retrieve the object from the tree and use its value (if it is a string, it is interpreted as a currency)
-     * 
+     *
      * If no decimals property is found, the algorithm looks tree upwards (to the root).
      * If no decimals property can be found at any level, "min" is assumed.
-     * 
+     *
      * @param root
      * @param path the path of the field,, in dot notation. At least the field name must be here (indicating a field at the root level)
      * @returns the scaled number
@@ -104,15 +104,15 @@ public class BigDecimalTools {
         DataAndMeta value = FieldGetter.getSingleFieldWithMeta(root, path);
         if (value == null || value.data == null || !(value.data instanceof BigDecimal))
             return null;  // wrong type
-        BigDecimal numValue = (BigDecimal)value.data; 
+        BigDecimal numValue = (BigDecimal)value.data;
         NumericElementaryDataItem meta = (NumericElementaryDataItem)value.meta;
         StringRef prefix = new StringRef();
         prefix.prefix = path;
         String props = getFieldPropertyWithDescend(root, path, prefix, "decimals", DECIMALS_KEYWORD_MIN);
-        
+
         if (props.length() == 0)
             props = DECIMALS_KEYWORD_MIN;
-        
+
         if (DECIMALS_KEYWORD_MIN.equals(props)) {
             BigDecimal tmp = numValue.stripTrailingZeros();
             if (tmp.scale() < 0)
@@ -130,23 +130,23 @@ public class BigDecimalTools {
         if (precision == null) {
             LOG.warn("Did not find referenced precision field for root object {} and path {}", root.get$PQON(), path);
             return numValue;  // this should not happen, but fall back instead of throwing an NPE
-        }        
+        }
         if (precision instanceof Integer)
             return numValue.setScale(((Integer)precision).intValue(), RoundingMode.HALF_EVEN);
         // it's not an integer, assume it is a String
         int currencyPrecision = Currency.getInstance((String)precision).getDefaultFractionDigits();
         return numValue.setScale(currencyPrecision, RoundingMode.HALF_EVEN);
     }
-    
+
     // utility class to pass back a second return value
     static private class StringRef {
         private String prefix;
     }
-    
+
     static public String getFieldPropertyWithDescend(BonaPortable root, String path, StringRef prefix, String propertyName, String defaultProperty) {
         String workingPath = path;
         String props = null;
-        
+
         // if the pathname contains no dot, the only containing object is the root
         for (;;) {
             int lastDot = workingPath.lastIndexOf('.');
@@ -172,7 +172,7 @@ public class BigDecimalTools {
         }
         return props == null ? defaultProperty : props;
     }
-    
+
     /** Returns a path fragment without any array / index. */
     static private String naked(String path) {
         int indexBracket = path.indexOf('[');

@@ -56,14 +56,14 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
 //    private static final Logger LOGGER = LoggerFactory.getLogger(CompactByteArrayParser.class);
     private static final byte [] EMPTY_BYTE_ARRAY = new byte [0];
     private static final String EMPTY_STRING = "";
-    
+
     private int parseIndex;
     private int messageLength;
     private byte [] inputdata;
     protected String currentClass;
     private final boolean useCache = true;
     private List<BonaPortable> objects;
-    
+
     /** Quick conversion utility method, for use by code generators. (null safe) */
     public static <T extends BonaPortable> T unmarshal(byte [] x, ObjectReference di, Class<T> expectedClass) throws MessageParserException {
         if (x == null || x.length == 0)
@@ -79,7 +79,7 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
         if (useCache)
             objects.clear();
     }
-    
+
     /** Assigns a new source to subsequent parsing operations. */
     public final void setSource(byte [] src) {
         inputdata = src;
@@ -88,7 +88,7 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
         if (useCache)
             objects.clear();
     }
-    
+
     /** Create a processor for parsing a buffer. */
     public CompactByteArrayParser(byte [] buffer, int offset, int length) {
         inputdata = buffer;
@@ -109,7 +109,7 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
             throw newMPE(MessageParserException.PREMATURE_END, null);
         }
     }
-    
+
     protected int needToken() throws MessageParserException {
         if (parseIndex >= messageLength) {
             throw newMPE(MessageParserException.PREMATURE_END, null);
@@ -154,7 +154,7 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
         }
         throw newMPE(MessageParserException.UNEXPECTED_CHARACTER, String.format("(expected 0x%02x, got 0x%02x)", token, c));
     }
-    
+
     /** Check for Null. Returns true if null has been encountered and was allowed. Throws an exception in case it was not allowed. Returns false
      * if no null is next. (Called for field members inside a class.)
      */
@@ -184,11 +184,11 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
         --parseIndex;
         return false;
     }
-    
+
     // upon entry, we know that firstByte is not null (0xa0)
     protected int readInt(int firstByte, String fieldname) throws MessageParserException {
         if (firstByte < 0xa0) {
-            // 1 positive byte numbers 
+            // 1 positive byte numbers
             if (firstByte <= 31)
                 return firstByte;
             if (firstByte >= 0x80)
@@ -231,7 +231,7 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
         nn += inputdata[parseIndex++] & 0xff;
         return nn;
     }
-    
+
     protected long readFixed6ByteLong() throws MessageParserException {
         require(6);
         int nn1 = inputdata[parseIndex++] << 8;
@@ -251,7 +251,7 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
             return readFixed8ByteLong();
         return readInt(firstByte, fieldname);
     }
-    
+
     protected void skipNulls() {
         while (parseIndex < messageLength) {
             int c = inputdata[parseIndex] & 0xff;
@@ -287,7 +287,7 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
     protected MessageParserException newMPE(int errorCode, String msg) {
         return new MessageParserException(errorCode, msg, parseIndex, currentClass);
     }
-    
+
     @Override
     public void setClassName(String newClassName) {
         currentClass = newClassName;
@@ -432,12 +432,12 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
             data[i] = (char)(inputdata[parseIndex++] & 0xff);
         return new String(data);
     }
-    
+
     @Override
     public String readAscii(AlphanumericElementaryDataItem di) throws MessageParserException {
         return readString(di.getName(), di.getIsRequired());
     }
-    
+
     protected String readString(String fieldname, boolean isRequired) throws MessageParserException {
         if (checkForNull(fieldname, isRequired))
             return null;
@@ -662,7 +662,7 @@ public class CompactByteArrayParser extends CompactConstants implements MessageP
             // if we use the cache, make the object known even before the contents has been parsed, because it may be referenced if the structure is cyclic
             if (useCache)
                 objects.add(newObject);
-            
+
             currentClass = classname;
             newObject.deserialize(this);
             skipNulls();

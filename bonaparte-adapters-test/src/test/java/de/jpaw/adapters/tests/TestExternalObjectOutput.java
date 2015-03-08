@@ -17,7 +17,7 @@ import de.jpaw.util.StringSerializer;
 
 /** Test the output of externals as objects, compared to default marshalling. */
 public class TestExternalObjectOutput {
-    
+
     private static class ExternalStringBuilderComposer extends StringBuilderComposer {
 
         public ExternalStringBuilderComposer(StringBuilder work) {
@@ -33,21 +33,21 @@ public class TestExternalObjectOutput {
                 terminateField();
             }
             return true;       // internal conversion done!
-        }        
+        }
     }
     @Test
     public void testAdapterMilli() throws Exception {
         FPCurrency curr = new FPCurrency(JavaCurrencyDataProvider.instance.get("EUR")).withDefaultPrecision();
         FPAmount unitPrice = new FPAmount(curr.withMicrosPrecision(), 3141593);
         MicroUnits quantity = new MicroUnits(2500000L);
-        
+
         CustomAmountsUsed t = new CustomAmountsUsed(
                 curr,
                 unitPrice,
                 quantity,
                 unitPrice.convert(quantity, curr));
         System.out.println("amounts is " + t);
-        
+
         // test default output
         String defaultOut = StringBuilderComposer.marshal(StaticMeta.OUTER_BONAPORTABLE, t);
         String expectedResult = StringSerializer.altFromString(
@@ -58,8 +58,8 @@ public class TestExternalObjectOutput {
                 + "<S>adapters.moneyfp.FpAmountExt<F><N>785<F><N><O>"
                 + "<O>");
         Assert.assertEquals(defaultOut, expectedResult);
-        
-        
+
+
         // do the same with a customer serializer, taking objects
         StringBuilder buff = new StringBuilder();
         ExternalStringBuilderComposer composer = new ExternalStringBuilderComposer(buff);

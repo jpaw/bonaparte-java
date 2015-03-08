@@ -48,7 +48,7 @@ public class OneThread implements Runnable {
         StringBuilderComposer sbc = new StringBuilderComposer(new StringBuilder(initialBufferSize));
         sbc.writeRecord(src);
         srcdata = sbc.getBytes();
-        
+
         // create serialized object
         ByteArrayOutputStream fos = new ByteArrayOutputStream(1000);
         ObjectOutputStream o = new ObjectOutputStream(fos);
@@ -56,7 +56,7 @@ public class OneThread implements Runnable {
         o.flush();
         o.close();
         srcExternalized = fos.toByteArray();
-        
+
         // create serialized object (compact)
         fos = new ByteArrayOutputStream(1000);
         DataOutputStream o2 = new DataOutputStream(fos);
@@ -65,7 +65,7 @@ public class OneThread implements Runnable {
         o2.flush();
         o2.close();
         srcCompact = fos.toByteArray();
-        
+
         // create serialized JSON object for Gson
         Gson gson = new Gson();
         gsondata = gson.toJson(src);

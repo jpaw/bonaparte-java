@@ -10,7 +10,7 @@ public class BigMicroUnitsAdapter {
     public static BigDecimal marshal(MicroUnits obj) {
         return BigDecimal.valueOf(obj.getMantissa(), obj.getScale());
     }
-    
+
     public static <E extends Exception> MicroUnits unmarshal(BigDecimal num, ExceptionConverter<E> p) throws E {
         return num == null ? null : MicroUnits.of(num.unscaledValue().longValue());
     }

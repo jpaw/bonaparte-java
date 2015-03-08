@@ -1,16 +1,16 @@
 package pt {
     properties color, weight, unused;
-    
+
     class MyHouse {
         properties color="red", weight="heavy";
-        
+
         int a;
     }
 }
 
 package pt2 {
     properties inherited, color, price ;
-    
+
     class AnotherHouse {
         int b;
     }
@@ -25,7 +25,7 @@ package pt2 {
 
 package pt3 {
     properties permission ;
-    
+
     class TheBus {
         properties permission="forbidden";
         int c;

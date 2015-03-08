@@ -21,7 +21,7 @@ class BonaparteNewViewsAdapter<T extends BonaCustom> extends BaseAdapter {
     val Map<Class<? extends BonaCustom>, List<String>> mapper
     val NewViewsComposer delegateComposer
     val MessageComposer<RuntimeException> foldingComposer
-    
+
     new(Context context, List<T> data, List<String> columnNames, NewViewsComposer composer) {
         this.data = data
         this.context = context

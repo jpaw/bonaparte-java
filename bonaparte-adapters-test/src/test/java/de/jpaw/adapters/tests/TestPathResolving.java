@@ -18,24 +18,24 @@ public class TestPathResolving {
 
     @Test
     public void testPathResolvingAdapterSingleField() throws Exception {
-        
+
         ClassDefinition obj = CustomMillis.BClass.INSTANCE.getMetaData();
-        
+
         FieldDefinition f = FieldGetter.getFieldDefinitionForPathname(obj, "myIntegralMillis", true);
         Assert.assertEquals(f, Millis.meta$$mantissa);      // the adapter class should be skipped, as it's a single field adapter
-        
+
         FieldDefinition f2 = FieldGetter.getFieldDefinitionForPathname(obj, "myBigDecimalMillis", true);
         Assert.assertEquals(f2, BigMillis.meta$$mantissa);
     }
-    
+
     @Test
     public void testPathNoResolvingAdapterSingleField() throws Exception {
-        
+
         ClassDefinition obj = CustomMillis.BClass.INSTANCE.getMetaData();
-        
+
         FieldDefinition f = FieldGetter.getFieldDefinitionForPathname(obj, "myIntegralMillis.mantissa", false);
         Assert.assertEquals(f, Millis.meta$$mantissa);      // the adapter class should be skipped, as it's a single field adapter
-        
+
         FieldDefinition f2 = FieldGetter.getFieldDefinitionForPathname(obj, "myBigDecimalMillis.mantissa", false);
         Assert.assertEquals(f2, BigMillis.meta$$mantissa);
     }

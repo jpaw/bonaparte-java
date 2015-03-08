@@ -12,18 +12,18 @@ import de.jpaw.bonaparte.util.QuickConverter;
  */
 public class RecordConverterBonaString implements QuickConverter<String> {
     private final Boolean writeCRs;
-    
+
     /** Creates a record converter for default settings. */
     public RecordConverterBonaString() {
         this.writeCRs = null;
     }
-    
+
     /** Creates a record converter with the option to configure portable CR/LF settings. */
     public RecordConverterBonaString(Boolean writeCRs) {
         this.writeCRs = writeCRs;
     }
-    
-    
+
+
     /** Serializes an object using the "almost readable" notation into a String, including record terminators. */
     @Override
     public String marshal(BonaPortable obj) {

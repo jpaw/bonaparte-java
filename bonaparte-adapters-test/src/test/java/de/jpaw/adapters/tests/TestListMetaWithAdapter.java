@@ -21,7 +21,7 @@ public class TestListMetaWithAdapter {
         ListMetaComposer c1 = new ListMetaComposer(false, false, false);
         c1.writeRecord(m1);
         List<DataAndMeta> dwm = c1.getStorage();
-        
+
         Assert.assertEquals(dwm.size(), 3);
         Assert.assertEquals(dwm.get(1).data, Long.valueOf(2718));
         Assert.assertEquals(dwm.get(1).meta, Millis.meta$$mantissa);
@@ -36,7 +36,7 @@ public class TestListMetaWithAdapter {
         ListMetaComposer c1 = new ListMetaComposer(false, false, true);
         c1.writeRecord(m1);
         List<DataAndMeta> dwm = c1.getStorage();
-        
+
         Assert.assertEquals(dwm.size(), 3);
         Assert.assertEquals(dwm.get(1).data, new MilliUnits(2718));
         Assert.assertEquals(dwm.get(1).meta, CustomMillis.meta$$myIntegralMillis);

@@ -47,7 +47,7 @@ public class BonaparteNettySslPipelineFactory extends ChannelInitializer<SocketC
             databaseWorkerThreadPool = null;
         }
     }
-    
+
     @Override
     public void initChannel(SocketChannel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();

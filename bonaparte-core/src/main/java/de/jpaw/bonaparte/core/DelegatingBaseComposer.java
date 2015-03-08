@@ -25,10 +25,10 @@ import de.jpaw.enums.XEnum;
 import de.jpaw.util.ByteArray;
 
 /** Delegates output to the delegateComposer. This class is intended as a superclass for Composers which want to modify only certain aspects of a composer.
- * It is not declared abstract just in order to allow testing (as this class represents the idempotency delegator). */ 
+ * It is not declared abstract just in order to allow testing (as this class represents the idempotency delegator). */
 public class DelegatingBaseComposer<E extends Exception> implements MessageComposer<E> {
-    protected final MessageComposer<E> delegateComposer; 
-    
+    protected final MessageComposer<E> delegateComposer;
+
     public DelegatingBaseComposer(MessageComposer<E> delegateComposer) {
         this.delegateComposer = delegateComposer;
     }
@@ -42,7 +42,7 @@ public class DelegatingBaseComposer<E extends Exception> implements MessageCompo
     public void writeNullCollection(FieldDefinition di) throws E {
         delegateComposer.writeNullCollection(di);
     }
-    
+
     @Override
     public void startTransmission() throws E {
         delegateComposer.startTransmission();
@@ -175,28 +175,28 @@ public class DelegatingBaseComposer<E extends Exception> implements MessageCompo
     public void addField(TemporalElementaryDataItem di, LocalDateTime t) throws E {
         delegateComposer.addField(di, t);
     }
-    
+
     @Override
     public void addField(TemporalElementaryDataItem di, LocalTime t) throws E {
         delegateComposer.addField(di, t);
     }
-    
+
     @Override
     public void addField(TemporalElementaryDataItem di, Instant t) throws E {
         delegateComposer.addField(di, t);
     }
-    
+
     @Override
     public void startObject(ObjectReference di, BonaCustom obj) throws E {
         delegateComposer.startObject(di, obj);
     }
-    
+
     @Override
     public void terminateObject(ObjectReference di, BonaCustom obj) throws E {
         delegateComposer.terminateObject(di, obj);
     }
-    
-    
+
+
     // cannot delegate this, as it would give away control
     @Override
     public void addField(ObjectReference di, BonaCustom obj) throws E {
@@ -227,7 +227,7 @@ public class DelegatingBaseComposer<E extends Exception> implements MessageCompo
     public void addEnum(XEnumDataItem di, AlphanumericElementaryDataItem token, XEnum<?> n) throws E {
         delegateComposer.addEnum(di, token, n);
     }
-    
+
     @Override
     public boolean addExternal(ObjectReference di, Object obj) throws E {
         return delegateComposer.addExternal(di, obj);

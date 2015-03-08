@@ -36,24 +36,24 @@ public class MapDBBenchmarkInMem {
 
     private DB db;
     ConcurrentNavigableMap<Integer,Integer> map;
-    
+
     static public final Integer [] numbers = new Integer[OPERATIONS_PER_INVOCATION];
     static {
         Random rnd = new Random(2846284628L);
         for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i)
             numbers[i] = rnd.nextInt();
     }
-    
+
     private void fillCache() {
         for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i)
             map.put(numbers[i], i);
     }
-    
+
     private void readCache(Blackhole bh) {
         for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i)
             bh.consume(map.get(numbers[i]));
     }
-    
+
     @Setup
     public void setUp() {
         // configure and open database using builder pattern.
@@ -66,7 +66,7 @@ public class MapDBBenchmarkInMem {
         map = db.getTreeMap("jmhBench");
         db.commit();  //persist changes into disk
     }
-    
+
     @TearDown
     public void tearDown() {
         db.close();
@@ -76,13 +76,13 @@ public class MapDBBenchmarkInMem {
     public void writeNoCommit(Blackhole bh) {
         fillCache();
     }
-    
+
     @Benchmark
     public void writeWithCommit(Blackhole bh) {
         fillCache();
         db.commit();
     }
-    
+
     @Benchmark
     public void writeAnd4Reads(Blackhole bh) {
         fillCache();
@@ -92,7 +92,7 @@ public class MapDBBenchmarkInMem {
         readCache(bh);
         readCache(bh);
     }
-    
+
     @Benchmark
     public void readOnly(Blackhole bh) {
         readCache(bh);

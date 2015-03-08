@@ -60,7 +60,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
     private String currentClass;
     private final boolean useCache = true;
     private List<BonaPortable> objects;
-    
+
     protected final StringParserUtil stringParser = new StringParserUtil(new ParsePositionProvider() {
 
         @Override
@@ -74,14 +74,14 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
         }
     });
 
-    
+
     /** Quick conversion utility method, for use by code generators. (null safe) */
     public static <T extends BonaPortable> T unmarshal(byte [] x, ObjectReference di, Class<T> expectedClass) throws MessageParserException {
         if (x == null || x.length == 0)
             return null;
         return new ByteArrayParser(x, 0, -1).readObject(di, expectedClass);
     }
-    
+
     /** Assigns a new source to subsequent parsing operations. */
     public final void setSource(byte [] src, int offset, int length) {
         inputdata = src;
@@ -90,7 +90,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
         if (useCache)
             objects.clear();
     }
-    
+
     /** Assigns a new source to subsequent parsing operations. */
     public final void setSource(byte [] src) {
         inputdata = src;
@@ -99,7 +99,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
         if (useCache)
             objects.clear();
     }
-    
+
     /** Create a processor for parsing a buffer. */
     public ByteArrayParser(byte [] buffer, int offset, int length) {
         inputdata = buffer;
@@ -260,13 +260,13 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
         return stringParser.readCharacter(di, readString(di.getName(), di.getIsRequired(), 1, false, false, true, true));
     }
 
-    
+
     // readString does the job for Unicode as well as ASCII
     @Override
     public String readString(AlphanumericElementaryDataItem di) throws MessageParserException {
         return readString(di.getName(), di.getIsRequired(), di.getLength(), di.getDoTrim(), di.getDoTruncate(), di.getAllowControlCharacters(), true);
     }
-    
+
     // readString does the job for Unicode as well as ASCII, but only used for Unicode (have an optimized version for ASCII)
     protected String readString(String fieldname, boolean isRequired, int length, boolean doTrim, boolean doTruncate, boolean allowCtrls, boolean allowUnicode) throws MessageParserException {
         if (checkForNull(fieldname, isRequired)) {
@@ -356,7 +356,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
     public String readAscii(AlphanumericElementaryDataItem di) throws MessageParserException {
         return readAscii(di.getName(), di.getIsRequired(), di.getLength(), di.getDoTrim(), di.getDoTruncate());
     }
-    
+
     protected String readAscii(String fieldname, boolean isRequired, int length, boolean doTrim, boolean doTruncate) throws MessageParserException {
         if (checkForNull(fieldname, isRequired)) {
             return null;
@@ -415,7 +415,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
         if (checkForNull(di)) {
             return null;
         }
-        return Boolean.valueOf(readPrimitiveBoolean(di));        
+        return Boolean.valueOf(readPrimitiveBoolean(di));
     }
 
     @Override
@@ -494,7 +494,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
         }
         return stringParser.readDayTime(di, nextIndexParseAscii(di.getName(), false, di.getFractionalSeconds() >= 0, false));
     }
-    
+
     @Override
     public LocalDate readDay(TemporalElementaryDataItem di) throws MessageParserException {
         if (checkForNull(di)) {
@@ -566,14 +566,14 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
 
     protected void skipOptionalBom() throws MessageParserException {
         if (parseIndex + 3 <= messageLength) {
-            if (inputdata[parseIndex] == BOM1 
+            if (inputdata[parseIndex] == BOM1
              && inputdata[parseIndex+1] == BOM2
              && inputdata[parseIndex+2] == BOM3) {
                 parseIndex += 3;
             }
         }
     }
-    
+
     @Override
     public BonaPortable readRecord() throws MessageParserException {
         BonaPortable result;
@@ -653,29 +653,29 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
     @Override
     public void eatParentSeparator() throws MessageParserException {
         eatObjectOrParentSeparator(PARENT_SEPARATOR);
-    }       
-        
+    }
+
     public void eatObjectTerminator() throws MessageParserException {
         eatObjectOrParentSeparator(OBJECT_TERMINATOR);
     }
-    
+
     protected void eatObjectOrParentSeparator(byte which) throws MessageParserException {
         skipNulls();  // upwards compatibility: skip extra fields if they are blank.
         byte z = needToken();
         if (z == which)
             return;   // all good
-        
+
         // temporarily provide compatibility to 1.7.9 and back...
         if (z == PARENT_SEPARATOR) {
             // implies we have been looking for OBJECT_TERMINATOR...
             return;
         }
-        
+
         // we have extra data and it is not null. Now the behavior depends on a parser setting
         ParseSkipNonNulls mySetting = getSkipNonNullsBehavior();
         switch (mySetting) {
         case ERROR:
-            throw new MessageParserException(MessageParserException.EXTRA_FIELDS, String.format("(found byte 0x%02x)", z), parseIndex, currentClass);  
+            throw new MessageParserException(MessageParserException.EXTRA_FIELDS, String.format("(found byte 0x%02x)", z), parseIndex, currentClass);
         case WARN:
             LOGGER.warn("{} at index {} parsing class {}", MessageParserException.codeToString(MessageParserException.EXTRA_FIELDS), parseIndex, currentClass);
             // fall through
@@ -684,7 +684,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
             skipUntilNext(which);
         }
     }
-    
+
     protected void skipUntilNext(byte which) throws MessageParserException {
         byte c;
         while ((c = needToken()) != which) {
@@ -740,7 +740,7 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
             // if we use the cache, make the object known even before the contents has been parsed, because it may be referenced if the structure is cyclic
             if (useCache)
                 objects.add(newObject);
-            
+
             currentClass = classname;
             newObject.deserialize(this);
             eatObjectTerminator();

@@ -21,17 +21,17 @@ public class IdCounter {
 
 
 class DefaultViewProvider implements ViewProvider {
-    
+
     private final Context context
     private final List<UIColumn> columns
     private final extension Density density           // for scaling
-    
+
     new(Context context, Density density, List<UIColumn> columns) {
         this.context = context
         this.columns = columns
         this.density = density
     }
-    
+
     override public LinearLayout newView() {
         val ctr = new IdCounter
         val myView = new LinearLayout(context) => [

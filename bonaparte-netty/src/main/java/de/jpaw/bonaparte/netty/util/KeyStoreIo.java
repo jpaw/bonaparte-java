@@ -87,8 +87,8 @@ public class KeyStoreIo {
         return kmf;
     }
 
-    
-    
+
+
     static public KeyManagerFactory keyStoreFromFile(String keyFilename, String pwFilename, String type) {
         char[] keyPassword;
         String keyPwFilename = pwFilename;

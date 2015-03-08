@@ -36,23 +36,23 @@ public class Properties {
     // Java Annotations / reflections tests
     //
     //
-    
+
     private String getClassAnnotation(Object x) throws Exception {
         BenchAnnoClass anno = x.getClass().getAnnotation(BenchAnnoClass.class);
         return anno == null ? null : anno.value();
     }
-    
+
     @Benchmark
     public void getClassAnnotationValue(Blackhole bh) throws Exception {
         Object obj = new ClassWithAnnotations();
-        
+
         assert("Hello, class".equals(getClassAnnotation(obj)));
-        
+
         for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
             bh.consume(getClassAnnotation(obj));
         }
     }
-    
+
 
     private String getFieldAnnotation(Object x) throws Exception {
         Field f = x.getClass().getField("myField");
@@ -61,51 +61,51 @@ public class Properties {
         BenchAnnoField anno = f.getAnnotation(BenchAnnoField.class);
         return anno == null ? null : anno.value();
     }
-    
+
     @Benchmark
     public void getFieldAnnotationValue(Blackhole bh) throws Exception {
         Object obj = new ClassWithAnnotations();
-        
+
         assert("Hello, field".equals(getFieldAnnotation(obj)));
-        
+
         for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
             bh.consume(getFieldAnnotation(obj));
         }
     }
-    
-    
+
+
     //
     //
     // Bonaparte property tests
     //
     //
-    
+
     private String getClassProperty(BonaPortable obj) throws Exception {
         return obj.get$BonaPortableClass().getProperty("myClassProp");
     }
-    
+
     @Benchmark
     public void getClassPropertyValue(Blackhole bh) throws Exception {
         BonaPortable obj = new ClassWithProperties();
-        
+
         assert("Hello, class".equals(getClassProperty(obj)));
-        
+
         for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
             bh.consume(getClassProperty(obj));
         }
     }
 
-    
+
     private String getFieldProperty(BonaPortable obj) throws Exception {
         return obj.get$BonaPortableClass().getProperty("myField.myFieldProp");
     }
-    
+
     @Benchmark
     public void getFieldPropertyValue(Blackhole bh) throws Exception {
         BonaPortable obj = new ClassWithProperties();
-        
+
         assert("Hello, field".equals(getFieldProperty(obj)));
-        
+
         for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
             bh.consume(getFieldProperty(obj));
         }

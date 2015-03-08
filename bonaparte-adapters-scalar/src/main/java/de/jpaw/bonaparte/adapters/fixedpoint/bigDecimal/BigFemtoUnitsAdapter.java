@@ -10,7 +10,7 @@ public class BigFemtoUnitsAdapter {
     public static BigDecimal marshal(FemtoUnits obj) {
         return BigDecimal.valueOf(obj.getMantissa(), obj.getScale());
     }
-    
+
     public static <E extends Exception> FemtoUnits unmarshal(BigDecimal num, ExceptionConverter<E> p) throws E {
         return num == null ? null : FemtoUnits.of(num.unscaledValue().longValue());
     }

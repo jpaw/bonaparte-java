@@ -24,35 +24,35 @@ import org.openjdk.jmh.infra.Blackhole;
 @OperationsPerInvocation(HugeCollections.OPERATIONS_PER_INVOCATION)
 public class HugeCollections {
     static public final int OPERATIONS_PER_INVOCATION = 100000;
-    
+
     static public final Integer [] numbers = new Integer[OPERATIONS_PER_INVOCATION];
     static {
         Random rnd = new Random(2846284628L);
         for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i)
             numbers[i] = rnd.nextInt();
     }
-    
+
     private final HugeConfig config = HugeConfig.DEFAULT.clone()
             .setSegments(128)
             .setSmallEntrySize(128)
             .setCapacity(OPERATIONS_PER_INVOCATION);
     private final HugeHashMap<Integer,Integer> map = new HugeHashMap<Integer, Integer>(
             config, Integer.class, Integer.class);
-    
+
     @Setup
     public void setUp() {
     }
-    
+
     @TearDown
     public void tearDown() {
     }
 
-    
+
     private void fillCache() {
         for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i)
             map.put(numbers[i], i);
     }
-    
+
     private void readCache(Blackhole bh) {
         for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i)
             bh.consume(map.get(numbers[i]));
@@ -63,7 +63,7 @@ public class HugeCollections {
     public void write(Blackhole bh) {
         fillCache();
     }
-    
+
     @Benchmark
     public void writeReadRead(Blackhole bh) {
         fillCache();

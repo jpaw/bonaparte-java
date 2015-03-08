@@ -1,5 +1,5 @@
 package testXenum {
-    
+
     enum Color {
         RED="R", GREEN="G", BLUE="B"
     }
@@ -9,11 +9,11 @@ package testXenum {
     enum Abc {
         ALPHA="A", BRAVO="B", CHARLIE="C"
     }
-    
+
     xenum XColor is Color : 2;
     xenum MoreColors is BW extends XColor;
     xenum XAbc is Abc;
-    
+
     class SimpleSampleUsingEnum {
         enum Color          myColor;
     }
@@ -23,13 +23,13 @@ package testXenum {
     class SimpleSampleUsingInheritedXEnum {
         xenum MoreColors    myColor;
     }
-    
+
     class SampleUsingMultipleXEnums {
         Ascii(8)            id;
         enum Color          myColor;
         xenum XColor        myXColor;
         xenum MoreColors    myMoreColors;  // not yet working, typecast issue!
     }
-    
+
     xenumset MyXEnumSet is XAbc ;
 }

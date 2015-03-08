@@ -21,7 +21,7 @@ public class TestLists {
     public void testLists() throws Exception {
         SimpleTestRunner.run(FillLists.test1(), false);
     }
-    
+
     @Test
     public void testListsStd() throws Exception {
         MultiTestRunner.serDeserMulti(FillLists.test1(), null);

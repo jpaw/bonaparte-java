@@ -17,12 +17,12 @@ import de.jpaw.bonaparte.pojos.multiRecordTypes.RecordType;
 
 public class TestMultiRecordTypes {
     private static final CSVConfiguration cfg = new CSVConfiguration.Builder().usingSeparator(";").usingQuoteCharacter(null).usingZeroPadding(false).build();
-    
+
     private static final String RECORD_ID_HEAD = "HEAD";
     private static final String RECORD_ID_NODE = "NODE";
     private static final String RECORD_ID_EDGE = "EDGE";
     private static final String RECORD_ID_EOF = "EOF";
-    
+
     private static Map<String, Class<? extends BonaPortable>> typeMap = new HashMap<String, Class<? extends BonaPortable>>(4);
     static {
         typeMap.put(RECORD_ID_HEAD, HeadRecord.class);
@@ -30,18 +30,18 @@ public class TestMultiRecordTypes {
         typeMap.put(RECORD_ID_EDGE, EdgeRecord.class);
         typeMap.put(RECORD_ID_EOF, EofRecord.class);
     }
-    
-    
+
+
     private static final HeadRecord head = new HeadRecord(RECORD_ID_HEAD);
     private static final NodeRecord node1 = new NodeRecord(RECORD_ID_NODE, "Node 1");
     private static final NodeRecord node2 = new NodeRecord(RECORD_ID_NODE, "Node 2");
     private static final EdgeRecord edge = new EdgeRecord(RECORD_ID_EDGE, 1, 2);
     private static final EofRecord eof = new EofRecord(RECORD_ID_EOF);
-    
+
     private static final RecordType [] dataToSerialize = {
-        head, node1, node2, edge, eof 
+        head, node1, node2, edge, eof
     };
-    
+
     @Test
     public void testMultiRecord() throws Exception {
         // setup composer
@@ -56,7 +56,7 @@ public class TestMultiRecordTypes {
             results[i] = buffer.toString();
             // System.out.println("Created record " + results[i]);
         }
-        
+
         // setup parser
         StringCSVParser p = new StringCSVParser(cfg, "", new StringCSVParser.DelimiterBasedObjectTypeDetector(typeMap, cfg.separator));
         for (int i = 0; i < dataToSerialize.length; ++i) {

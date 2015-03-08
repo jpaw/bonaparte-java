@@ -12,11 +12,11 @@ public abstract class AbstractScanner<T extends BonaPortable> {
     protected static final Logger LOGGER = LoggerFactory.getLogger(AbstractScanner.class);
 
     abstract void addBClass(BonaPortableClass<T> bclass);
-    
+
     protected void scanPackage(String packageName, Class<T> interfaceType) {
         scanPackage(interfaceType, ReflectionsPackageCache.get(packageName));
     }
-    
+
     public void scanPackage(Class<T> interfaceType, Reflections ... reflections) {
         for (int i = 0; i < reflections.length; ++i) {
             for (Class<? extends T> cls : reflections[i].getSubTypesOf(interfaceType)) {

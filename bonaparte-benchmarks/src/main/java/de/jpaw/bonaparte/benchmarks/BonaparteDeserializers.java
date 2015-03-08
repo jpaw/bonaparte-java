@@ -60,11 +60,11 @@ public class BonaparteDeserializers {
         obj1.setAlignment(Alignment.CENTER);
         obj1.setLayoutHint(LayoutHint.TEXT);
         obj1.setWidth(42);
-        
+
         ByteArrayComposer bac = new ByteArrayComposer();
         bac.writeRecord(obj1);
         byte [] data = bac.getBytes();
-        
+
         for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i) {
             ByteArrayParser dst = new ByteArrayParser(data, 0, -1);
             bh.consume(dst.readRecord());

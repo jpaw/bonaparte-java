@@ -15,35 +15,35 @@ import de.jpaw.bonaparte.util.QuickConverter;
 public class RecordConverterBonaByte implements QuickConverter<byte []> {
     private final Boolean writeCRs;
     private final Charset charset;
-    
+
     // another good example where default parameters would be great to have!
-    
+
     /** Creates a record converter for default settings. */
     public RecordConverterBonaByte() {
         this.writeCRs = null;
         this.charset = null;
     }
-    
+
     /** Creates a record converter with the option to configure portable CR/LF settings. */
     public RecordConverterBonaByte(Boolean writeCRs) {
         this.writeCRs = writeCRs;
         this.charset = null;
     }
-    
+
     /** Creates a record converter with the option to configure a specific Charset. */
     public RecordConverterBonaByte(Charset charset) {
         this.writeCRs = null;
         this.charset = charset;
     }
-    
+
     /** Creates a record converter with the option to configure a specific Charset. */
     public RecordConverterBonaByte(Boolean writeCRs, Charset charset) {
         this.writeCRs = writeCRs;
         this.charset = charset;
     }
-    
-    
-    
+
+
+
     /** Serializes an object using the "almost readable" notation into byte [], including record terminators. */
     @Override
     public byte [] marshal(BonaPortable obj) {

@@ -4,7 +4,7 @@ package tests1 Ext {
     enum AlphaColor { RED="R", GREEN="G", BLUE="B" }
     enum VariableLength { ONE="1", NULL="", LONG = "This is a long text" }
     enum VariableLengthUnicode { UMLAUT="Jäh!", EURO="€" }
-     
+
     class Primitives orderedBy (int1, char1, boolean1) {
         byte byte1;
         short short1;
@@ -127,27 +127,27 @@ package tests1 Ext {
         Ascii(8) List <4>  optionalList;
         (Primitives) List<> listOfObjects;
     }
-    
+
 //  needs additional dependency bonaparte-xml
 //    class XmlTest XML FIELD {
 //        ascii(20)          name;
 //        int                age;
 //    }
-    
+
     class UnicodeTest {
-        Unicode(10) allowControlChars string1; 
-        Unicode(10) noControlChars    string2; 
+        Unicode(10) allowControlChars string1;
+        Unicode(10) noControlChars    string2;
     }
-    
+
     class NoRounding {
         signed Decimal(14,2) sum;
         signed Decimal(14,2) [] elements;
     }
-    
+
     class TestBigInteger {
         Number(38)      bignum;
     }
-    
+
     class Longtest {
         long l;
     }

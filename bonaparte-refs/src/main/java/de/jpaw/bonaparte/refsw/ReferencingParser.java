@@ -17,14 +17,14 @@ import de.jpaw.util.ApplicationException;
 public class ReferencingParser extends CompactByteArrayParser {
     private static final Logger LOGGER = LoggerFactory.getLogger(ReferencingParser.class);
     private final Map<ClassDefinition,RefResolver<AbstractRef, ?, ?>> resolvers;
-    private boolean doSkipNext;        // skip the resolving for the next object (required if the outer object is in the map itself) 
-    
+    private boolean doSkipNext;        // skip the resolving for the next object (required if the outer object is in the map itself)
+
     public ReferencingParser(byte[] buffer, int offset, int length, Map<ClassDefinition,RefResolver<AbstractRef, ?, ?>> resolvers, boolean skipFirst) {
         super(buffer, offset, length);
         this.resolvers = resolvers;
         this.doSkipNext = skipFirst;
     }
-    
+
     public void skipNext() {
         doSkipNext = true;
     }
@@ -32,7 +32,7 @@ public class ReferencingParser extends CompactByteArrayParser {
     protected RefResolver<AbstractRef, ?, ?> getReferencedResolver(ObjectReference di) {
         return di.getLowerBound() == null ? null : resolvers.get(di.getLowerBound());
     }
-    
+
     @Override
     public <R extends BonaPortable> R readObject (ObjectReference di, Class<R> type) throws MessageParserException {
         if (doSkipNext) {
@@ -48,7 +48,7 @@ public class ReferencingParser extends CompactByteArrayParser {
         long ref = readLong(needToken(), di.getName());
         if (ref <= 0L)
             return null;        // mapping 0 => null
-        
+
         try {
             BonaPortable newObject = r.getDTO(Long.valueOf(ref));
             if (newObject.getClass() != type) {
@@ -64,10 +64,10 @@ public class ReferencingParser extends CompactByteArrayParser {
             throw newMPE(MessageParserException.INVALID_REFERENCES, e.getMessage());
         }
     }
-    
+
     protected int collectionStart(FieldDefinition di, int storedCount) {
         if (storedCount != COLLECTION_COUNT_REF) {
-            return storedCount; 
+            return storedCount;
         } else {
             if (di instanceof ObjectReference) {
                 final RefResolver<AbstractRef, ?, ?> r = getReferencedResolver((ObjectReference)di);

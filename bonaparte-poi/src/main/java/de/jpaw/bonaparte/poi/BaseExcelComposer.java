@@ -143,12 +143,12 @@ public class BaseExcelComposer implements MessageComposer<RuntimeException> {
     protected void writeNull() {
         ++column;   // no output for empty cells, but ensure that everything goes nicely into the correct column
     }
-    
+
     @Override
     public void writeNull(FieldDefinition di) {
         ++column;   // no output for empty cells, but ensure that everything goes nicely into the correct column
     }
-    
+
     @Override
     public void writeNullCollection(FieldDefinition di) {
         ++column;   // no output for empty cells, but ensure that everything goes nicely into the correct column
@@ -226,7 +226,7 @@ public class BaseExcelComposer implements MessageComposer<RuntimeException> {
             writeNull();
         }
     }
-    
+
     // output a non-null number which was stored with possibly implicit fixed point
     private void addScaledNumber(BasicNumericElementaryDataItem di, double n) {
         int fractionalDigits = di.getDecimalDigits();
@@ -413,7 +413,7 @@ public class BaseExcelComposer implements MessageComposer<RuntimeException> {
         else
             addField(token, n.getToken());
     }
-    
+
     @Override
     public boolean addExternal(ObjectReference di, Object obj) {
         return false;       // perform conversion by default

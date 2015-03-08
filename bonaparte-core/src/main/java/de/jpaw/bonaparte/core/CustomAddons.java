@@ -6,18 +6,18 @@ package de.jpaw.bonaparte.core;
 public interface CustomAddons {
 
     /** Method which will be invoked before a validation. This can be used to auto-fix some issues, in case the object is known not to be frozen.
-     * 
+     *
      * @param obj
      * @throws ObjectValidationException - Either the default ObjectValidationException.CUSTOM_VALIDATION should be thrown,
-     * or better a specific exception defined in some class inherited from ObjectValidationException.  
+     * or better a specific exception defined in some class inherited from ObjectValidationException.
      */
     public void preprocess(BonaPortable obj) throws ObjectValidationException;
-    
+
     /** Invoked method after the default validation has been performed.
-     * 
+     *
      * @param obj
      * @throws ObjectValidationException - Either the default ObjectValidationException.CUSTOM_VALIDATION should be thrown,
-     * or better a specific exception defined in some class inherited from ObjectValidationException.  
+     * or better a specific exception defined in some class inherited from ObjectValidationException.
      */
     public void validate(BonaPortable obj) throws ObjectValidationException;
 }
