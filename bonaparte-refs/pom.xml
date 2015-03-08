@@ -23,6 +23,18 @@
             <artifactId>bonaparte-api</artifactId>
             <version>${project.version}</version>
         </dependency>
+        
+        <dependency>
+            <groupId>net.openhft</groupId>
+            <artifactId>koloboke-api-jdk8</artifactId>
+            <version>${koloboke.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.openhft</groupId>
+            <artifactId>koloboke-impl-jdk8</artifactId>
+            <version>${koloboke.version}</version>
+            <scope>runtime</scope>
+        </dependency>
 <!--         
         <dependency>
             <groupId>com.carrotsearch</groupId>

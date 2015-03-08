@@ -61,6 +61,7 @@
         <hazelcast.version>3.3.5</hazelcast.version>    <!-- 3.4.1 is out, but uses different API http://hazelcast.org/download/ UPTODATE 2015-01-22 -->
         <infinispan.version>7.1.1.Final</infinispan.version>  <!-- UPTODATE 2015-03-05 -->
         
+        <koloboke.version>0.6.6</koloboke.version>
         <aerospike.version>3.0.35</aerospike.version>   <!-- UPTODATE 2015-02-20 -->
         <hornetq.version>2.2.21.Final</hornetq.version> <!-- http://www.jboss.org/hornetq 2.2.14.Final is last tested one, 2.4.x required for AMQP, JMS 2.0 -->
         <mapdb.version>1.0.7</mapdb.version>
