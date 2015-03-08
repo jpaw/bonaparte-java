@@ -19,6 +19,7 @@ import de.jpaw.bonaparte.pojos.api.SearchFilter
 import de.jpaw.bonaparte.pojos.api.TimeFilter
 import de.jpaw.bonaparte.pojos.api.TimestampFilter
 import de.jpaw.bonaparte.pojos.api.UnicodeFilter
+import de.jpaw.bonaparte.pojos.api.DecimalFilter
 import de.jpaw.dp.Inject
 import de.jpaw.dp.Singleton
 
@@ -97,6 +98,17 @@ public class HzFilterImpl implements HzFilter {
                     else
                         e.between(filter.lowerBound, filter.upperBound)
         LongFilter:
+            return if (filter.valueList !== null)
+                        e.in(filter.valueList.toArray as Comparable<?>[])
+                    else if (filter.equalsValue !== null)
+                        e.equal(filter.equalsValue)
+                    else if (filter.lowerBound === null)
+                        e.lessEqual(filter.upperBound)
+                    else if (filter.upperBound === null)
+                        e.greaterEqual(filter.lowerBound)
+                    else
+                        e.between(filter.lowerBound, filter.upperBound)
+        DecimalFilter:
             return if (filter.valueList !== null)
                         e.in(filter.valueList.toArray as Comparable<?>[])
                     else if (filter.equalsValue !== null)

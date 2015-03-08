@@ -15,11 +15,13 @@ import de.jpaw.bonaparte.pojos.api.SearchFilter
 import de.jpaw.bonaparte.pojos.api.TimeFilter
 import de.jpaw.bonaparte.pojos.api.TimestampFilter
 import de.jpaw.bonaparte.pojos.api.UnicodeFilter
+import de.jpaw.bonaparte.pojos.api.DecimalFilter
 import de.jpaw.dp.Inject
 import de.jpaw.dp.Singleton
 import net.sf.ehcache.Cache
 import net.sf.ehcache.search.Attribute
 import net.sf.ehcache.search.expression.Criteria
+import java.math.BigDecimal
 
 public interface EhcFilter {
     def Criteria applyFilter(Cache cache, Attribute<?> field, FieldFilter f);
@@ -106,6 +108,17 @@ public class EhcFilterImpl implements EhcFilter {
                         (field as Attribute<Long>).ge(filter.lowerBound)
                     else
                         (field as Attribute<Long>).between(filter.lowerBound, filter.upperBound)
+        DecimalFilter:
+            return if (filter.valueList !== null)
+                        (field as Attribute<BigDecimal>).in(filter.valueList)
+                    else if (filter.equalsValue !== null)
+                        (field as Attribute<BigDecimal>).eq(filter.equalsValue)
+                    else if (filter.lowerBound === null)
+                        (field as Attribute<BigDecimal>).le(filter.upperBound)
+                    else if (filter.upperBound === null)
+                        (field as Attribute<BigDecimal>).ge(filter.lowerBound)
+                    else
+                        (field as Attribute<BigDecimal>).between(filter.lowerBound, filter.upperBound)
         DayFilter:
             throw new RuntimeException("joda comparison not supported by Ehcache")   // TODO: write attributeExtractor and convert to integral number
         TimestampFilter:
