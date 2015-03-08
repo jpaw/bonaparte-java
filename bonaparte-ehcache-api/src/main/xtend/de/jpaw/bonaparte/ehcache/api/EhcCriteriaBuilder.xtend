@@ -15,25 +15,28 @@ import de.jpaw.bonaparte.pojos.api.SearchFilter
 import de.jpaw.bonaparte.pojos.api.TimeFilter
 import de.jpaw.bonaparte.pojos.api.TimestampFilter
 import de.jpaw.bonaparte.pojos.api.UnicodeFilter
-import de.jpaw.dp.Jdp
+import de.jpaw.dp.Inject
 import de.jpaw.dp.Singleton
-import net.sf.ehcache.search.expression.Criteria
 import net.sf.ehcache.Cache
 import net.sf.ehcache.search.Attribute
+import net.sf.ehcache.search.expression.Criteria
 
 public interface EhcFilter {
     def Criteria applyFilter(Cache cache, Attribute<?> field, FieldFilter f);
 }
 
 public class EhcCriteriaBuilder {
-    def public static Criteria buildPredicate(Cache cache, SearchFilter filter) {
+    @Inject
+    var EhcFilter ehcFilter
+    
+    def public Criteria buildPredicate(Cache cache, SearchFilter filter) {
         if (filter === null)
             return null;
         switch (filter) {
 //        BooleanFilter:
 //            return if (filter.booleanValue) new PredicateBuilder().getEntryObject().is(filter.fieldName) else new PredicateBuilder().getEntryObject().isNot(filter.fieldName)
         FieldFilter:
-            return Jdp.getRequired(EhcFilter).applyFilter(cache, cache.getSearchAttribute(filter.fieldName), filter)
+            return ehcFilter.applyFilter(cache, cache.getSearchAttribute(filter.fieldName), filter)
         AndFilter:
             return buildPredicate(cache, filter.filter1).and(buildPredicate(cache, filter.filter2))
         OrFilter:

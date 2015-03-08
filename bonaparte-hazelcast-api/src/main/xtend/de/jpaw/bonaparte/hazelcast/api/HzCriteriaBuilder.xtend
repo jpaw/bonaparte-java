@@ -19,7 +19,7 @@ import de.jpaw.bonaparte.pojos.api.SearchFilter
 import de.jpaw.bonaparte.pojos.api.TimeFilter
 import de.jpaw.bonaparte.pojos.api.TimestampFilter
 import de.jpaw.bonaparte.pojos.api.UnicodeFilter
-import de.jpaw.dp.Jdp
+import de.jpaw.dp.Inject
 import de.jpaw.dp.Singleton
 
 public interface HzFilter {
@@ -27,14 +27,17 @@ public interface HzFilter {
 }
 
 public class HzCriteriaBuilder {
-    def public static Predicate<?,?> buildPredicate(SearchFilter filter) {
+    @Inject
+    var HzFilter hzFilter
+    
+    def public Predicate<?,?> buildPredicate(SearchFilter filter) {
         if (filter === null)
             return null;
         switch (filter) {
 //        BooleanFilter:
 //            return if (filter.booleanValue) new PredicateBuilder().getEntryObject().is(filter.fieldName) else new PredicateBuilder().getEntryObject().isNot(filter.fieldName)
         FieldFilter:
-            return Jdp.getRequired(HzFilter).applyFilter(new PredicateBuilder().getEntryObject().get(filter.fieldName), filter)
+            return hzFilter.applyFilter(new PredicateBuilder().getEntryObject().get(filter.fieldName), filter)
         AndFilter:
             return Predicates.and(buildPredicate(filter.filter1), buildPredicate(filter.filter2))
         OrFilter:
