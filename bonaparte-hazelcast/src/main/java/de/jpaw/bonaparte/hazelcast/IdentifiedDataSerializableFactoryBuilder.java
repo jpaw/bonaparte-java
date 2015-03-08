@@ -3,6 +3,8 @@ package de.jpaw.bonaparte.hazelcast;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.reflections.Reflections;
+
 import com.hazelcast.config.SerializationConfig;
 import com.hazelcast.nio.serialization.DataSerializableFactory;
 import com.hazelcast.nio.serialization.IdentifiedDataSerializable;
@@ -51,6 +53,10 @@ public class IdentifiedDataSerializableFactoryBuilder extends AbstractScanner<Bo
     
     public void scanPackage(String packageName) {
         scanPackage(packageName, BonaparteIdentifiedDataSerializable.class);
+    }
+    
+    public void scanPackage(Reflections ... reflections) {
+        scanPackage(BonaparteIdentifiedDataSerializable.class, reflections);
     }
     
     public void registerFactories(SerializationConfig cfg) {
