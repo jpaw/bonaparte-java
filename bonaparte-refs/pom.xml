@@ -26,12 +26,12 @@
         
         <dependency>
             <groupId>net.openhft</groupId>
-            <artifactId>koloboke-api-jdk8</artifactId>
+            <artifactId>koloboke-api-jdk6-7</artifactId>
             <version>${koloboke.version}</version>
         </dependency>
         <dependency>
             <groupId>net.openhft</groupId>
-            <artifactId>koloboke-impl-jdk8</artifactId>
+            <artifactId>koloboke-impl-jdk6-7</artifactId>
             <version>${koloboke.version}</version>
             <scope>runtime</scope>
         </dependency>
