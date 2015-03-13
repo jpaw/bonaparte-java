@@ -4,6 +4,7 @@ import org.joda.time.Instant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.pojos.api.PersistenceProviders;
 import de.jpaw.bonaparte.refs.PersistenceProvider;
 import de.jpaw.bonaparte.refsp.RequestContext;
 
@@ -16,7 +17,7 @@ import de.jpaw.bonaparte.refsp.RequestContext;
  */
 public class AbstractRequestContext implements RequestContext, AutoCloseable {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractRequestContext.class);
-    private static final int MAX_PERSISTENCE_PROVIDERS = 8;                     // how many different persistence providers may participate?
+    private static final int MAX_PERSISTENCE_PROVIDERS = PersistenceProviders.values().length;   // how many different persistence providers may participate?
 
     public final String userId;
     public final String tenantId;
