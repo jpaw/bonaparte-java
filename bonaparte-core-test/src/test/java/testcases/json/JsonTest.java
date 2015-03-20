@@ -8,7 +8,9 @@ import org.testng.annotations.Test;
 import com.cedarsoftware.util.io.JsonWriter;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationConfig;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.PropertyWriter;
@@ -108,4 +110,16 @@ public class JsonTest {
         FilterProvider filters = new SimpleFilterProvider().addFilter("regexFilter", new RegexBeanPropertyFilter("\\$.*"));
         System.out.println("Jackson produces " + mapper.writer(filters).writeValueAsString(getData()));
     }
+    
+    // alternate filter
+//    @Test
+//    public void runJackson2() throws Exception {
+//
+//        ObjectMapper mapper = new ObjectMapper();
+//        mapper.registerModule(new JodaModule());
+//        mapper.setSerializationInclusion(Include.NON_NULL);
+//        SerializationConfig newCfg = mapper.getSerializationConfig().with(MapperFeature.REQUIRE_SETTERS_FOR_GETTERS);
+//        ObjectMapper newMapper = mapper.setSerializationConfig(newCfg);  // does not exist any more
+//        System.out.println("Jackson2 produces " + mapper.writer().writeValueAsString(getData()));
+//    }
 }
