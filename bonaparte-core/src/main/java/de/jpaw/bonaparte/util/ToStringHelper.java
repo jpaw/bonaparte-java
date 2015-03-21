@@ -10,6 +10,7 @@ public class ToStringHelper {
     public static int maxSet = -1;
     public static int maxList = -1;
     public static int maxMap = -1;
+    public static boolean showTransientFields = false;
 
     public static String toStringML(Object obj) {
         StringBuilder _buffer = new StringBuilder(1000);
@@ -39,7 +40,7 @@ public class ToStringHelper {
         }
     }
 
-    // returns true if at leastone field has been printed
+    // returns true if at least one field has been printed
     private static boolean toStringHelperSub(StringBuilder _buffer, StringBuilder _currentIndent, boolean showNulls, Object obj,
             Class<?> thisClass) {
         boolean firstField = true;
@@ -53,6 +54,8 @@ public class ToStringHelper {
         for (Field field : thisClass.getDeclaredFields()) {
             if ((field.getModifiers() & Modifier.STATIC) != 0)
                 continue;           // skip static fields
+            if (!showTransientFields && (field.getModifiers() & Modifier.TRANSIENT) != 0)
+                continue;           // skip transient fields
             if (!firstField)
                 delimiter(_buffer, _currentIndent, false);
             field.setAccessible(true); // You might want to set modifier to public first.
