@@ -4,7 +4,7 @@ package xenumJaxb XML FIELD {
 
     xenum TestXmlXenumWithAdapter XML FIELD is TestEnum;
 
-    class XEnumUse XML PROPERTY {
+    class XEnumUse XML PROPERTY xmlRoot {
         xenum TestXmlXenumWithAdapter    daddel;
     }
 

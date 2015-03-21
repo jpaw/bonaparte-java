@@ -1,11 +1,11 @@
 package test.jaxb {
-    class TestXml XML FIELD {
+    class TestXml XML FIELD xmlRoot {
         default public;
 
         int         test;
         Ascii(10)   data;
     }
-    class TestXml2 XML FIELD {
+    class TestXml2 XML FIELD xmlRoot {
         default public;
 
         byte(2)     digits2;
