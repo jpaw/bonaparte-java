@@ -68,7 +68,7 @@ public class Bundle {
     }
 
     void addClass(ClassDefinition cl) {
-        loadedClasses.put(cl.get$PQON(), cl.get$MetaData());
+        loadedClasses.put(cl.ret$PQON(), cl.ret$MetaData());
     }
 
     ClassDefinition [] getAllClasses() {

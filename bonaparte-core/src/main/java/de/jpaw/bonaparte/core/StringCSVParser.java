@@ -572,7 +572,7 @@ public final class StringCSVParser extends StringBuilderConstants implements Mes
         }
 
         String previousClass = currentClass;
-        currentClass = newObject.get$PQON();
+        currentClass = newObject.ret$PQON();
         newObject.deserialize(this);
         currentClass = previousClass;
         return newObject;

@@ -79,7 +79,7 @@ public class Benchmark {
         stop = new Date();
         long millis = stop.getTime() - start.getTime();
         double callsPerMilliSecond = millionCallsPerThread * 1000000 * numberOfThreads / millis;
-        System.out.println("Overall result for object " + src.get$PQON() + ": "
+        System.out.println("Overall result for object " + src.ret$PQON() + ": "
                 + (int)callsPerMilliSecond + " k calls / second");
     }
 

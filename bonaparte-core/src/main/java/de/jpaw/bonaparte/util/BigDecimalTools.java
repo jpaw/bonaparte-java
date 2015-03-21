@@ -128,7 +128,7 @@ public class BigDecimalTools {
         // last resort: assume it is another pathname, retrieve that value
         Object precision = FieldGetter.getField(root, prefix.prefix + props);
         if (precision == null) {
-            LOG.warn("Did not find referenced precision field for root object {} and path {}", root.get$PQON(), path);
+            LOG.warn("Did not find referenced precision field for root object {} and path {}", root.ret$PQON(), path);
             return numValue;  // this should not happen, but fall back instead of throwing an NPE
         }
         if (precision instanceof Integer)
@@ -152,7 +152,7 @@ public class BigDecimalTools {
             int lastDot = workingPath.lastIndexOf('.');
             if (lastDot < 0) {
                 // no more component
-                props = root.get$BonaPortableClass().getProperty(naked(workingPath) + "." + propertyName);
+                props = root.ret$BonaPortableClass().getProperty(naked(workingPath) + "." + propertyName);
                 prefix.prefix = "";
                 break;  // must stop here!
             } else {
@@ -160,7 +160,7 @@ public class BigDecimalTools {
                 String container = workingPath.substring(0, lastDot);
                 String fieldname = workingPath.substring(lastDot+1);
                 Object parent = FieldGetter.getFieldOrObj(root, container);
-                props = ((BonaPortable)parent).get$BonaPortableClass().getProperty(naked(fieldname) + "." + propertyName);
+                props = ((BonaPortable)parent).ret$BonaPortableClass().getProperty(naked(fieldname) + "." + propertyName);
                 if (props != null) {
                     LOG.debug("found property " + props + " at path " + container);
                     prefix.prefix = container + ".";

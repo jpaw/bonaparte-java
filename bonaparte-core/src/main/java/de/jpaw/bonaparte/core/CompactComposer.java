@@ -656,7 +656,7 @@ public class CompactComposer extends CompactConstants implements MessageComposer
 
     @Override
     public void startObject(ObjectReference di, BonaCustom obj) throws IOException {
-        ClassDefinition meta = obj.get$MetaData();
+        ClassDefinition meta = obj.ret$MetaData();
         if (skipLowerBoundObjectDescription && di.getLowerBound() != null && di.getLowerBound().getName().equals(meta.getName())) {
             if (recommendIdentifiable) {
                 out.writeByte(OBJECT_BEGIN_BASE);

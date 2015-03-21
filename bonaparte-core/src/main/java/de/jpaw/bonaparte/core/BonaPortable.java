@@ -35,13 +35,13 @@ public interface BonaPortable extends BonaCustom {
      *
      * @returns
      */
-    public BonaPortableClass<? extends BonaPortable> get$BonaPortableClass();
+    public BonaPortableClass<? extends BonaPortable> ret$BonaPortableClass();
 
     /** Gets some optional RTTI (runtime type information). If no rtti has been supplied, the rtti of a parent class is returned.
      *
      * @return some numeric value defined in the DSL.
      */
-    public int get$rtti();
+    public int ret$rtti();
 
 
     /** Parses data from a stream or in-memory buffer into a preallocated object.
@@ -85,7 +85,7 @@ public interface BonaPortable extends BonaCustom {
      * An object, once frozen, cannot be "unfrozen" (that would defeat the purpose), therefore immutability is granted.
      * If mutable copies are desired, either shallow or deep copies can be created, which are created in unfrozen state.
      * The freeze() method transitions an object into immutable state. The method is not thread-safe, i.e. the freeze should
-     * always be performed on a private copy. Once frozen, the object may be shared with other threads. Use get$frozenClone() to
+     * always be performed on a private copy. Once frozen, the object may be shared with other threads. Use ret$frozenClone() to
      * get an immutable copy if the previous object was shared with other threads or has other references in this thread.
      */
     void freeze();
@@ -97,19 +97,19 @@ public interface BonaPortable extends BonaCustom {
      * @return true if the object and all its components are frozen, false otherwise.
      *
      */
-    boolean is$Frozen();
+    boolean was$Frozen();
 
     /** Obtain a mutable clone of a frozen object.
      * If deepCopy is set, he object will be recursively mutable, otherwise just the initial layer. */
-    BonaPortable get$MutableClone(boolean deepCopy, boolean unfreezeCollections) throws ObjectValidationException;
+    BonaPortable ret$MutableClone(boolean deepCopy, boolean unfreezeCollections) throws ObjectValidationException;
 
     /** Obtain an immutable clone of a (possibly) mutable object. */
-    BonaPortable get$FrozenClone() throws ObjectValidationException;
+    BonaPortable ret$FrozenClone() throws ObjectValidationException;
 
     /** Method to set an "active" flag on a data record, if it exists.
      * Throws an exception if no active field has been defined in this class or a superclass. */
-    public void set$Active(boolean _a) throws ObjectValidationException;
+    public void put$Active(boolean _a) throws ObjectValidationException;
 
     /** Returns the value of the "active" field, or "true" if no active field exists, i.e. all instances are regarded as active by default. */
-    public boolean get$Active();
+    public boolean ret$Active();
 }

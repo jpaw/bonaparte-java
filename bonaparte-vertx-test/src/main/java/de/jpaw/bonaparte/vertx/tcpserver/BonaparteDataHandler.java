@@ -24,7 +24,7 @@ public class BonaparteDataHandler implements Handler<Buffer> {
         try {
             BonaPortable objectIn;
             objectIn = p.readRecord();
-            System.out.println("Received an object of type " + objectIn.get$PQON());
+            System.out.println("Received an object of type " + objectIn.ret$PQON());
             System.out.println(objectIn.toString());
             // send something: just echo it!
             ByteArrayComposer bac = new ByteArrayComposer();

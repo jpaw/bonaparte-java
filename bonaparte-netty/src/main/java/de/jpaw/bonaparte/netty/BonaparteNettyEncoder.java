@@ -27,7 +27,7 @@ public class BonaparteNettyEncoder extends MessageToByteEncoder<BonaPortable> {
             out.writeBytes(w.getBuffer(), 0, w.getLength());
         } catch (Exception e) {
             // http://co-de-generation.blogspot.de/2012/09/slf4j-doesnt-log-exception-stacktrace.html
-            logger.error("Exception serializing object of type " + msg.get$PQON() + ": got exception {}", e);
+            logger.error("Exception serializing object of type " + msg.ret$PQON() + ": got exception {}", e);
         }
     }
 }

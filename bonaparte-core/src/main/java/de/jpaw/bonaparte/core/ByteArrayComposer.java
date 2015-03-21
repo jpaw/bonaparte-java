@@ -476,8 +476,8 @@ public class ByteArrayComposer extends ByteArrayConstants implements BufferedMes
     @Override
     public void startObject(ObjectReference di, BonaCustom obj) {
         work.append(OBJECT_BEGIN);
-        addField(OBJECT_CLASS, obj.get$PQON());
-        addField(REVISION_META, obj.get$MetaData().getRevision());
+        addField(OBJECT_CLASS, obj.ret$PQON());
+        addField(REVISION_META, obj.ret$MetaData().getRevision());
     }
 
     @Override

@@ -16,35 +16,35 @@ import de.jpaw.bonaparte.pojos.meta.ParsedFoldingComponent;
 public class AbstractDynamicBonaPortable implements BonaPortable {
     private static final long serialVersionUID = -5308388498938365844L;
     private final BonaPortableClass<?> _my$BClass;
-    private transient boolean _is$Frozen = false;      // current state of this instance
+    private transient boolean _was$Frozen = false;      // current state of this instance
 
     public AbstractDynamicBonaPortable(BonaPortableClass<?> bClass) {
         _my$BClass = bClass;
     }
 
     @Override
-    public String get$PQON() {
+    public String ret$PQON() {
         return _my$BClass.getPqon();
     }
 
     @Override
-    public String get$Parent() {
+    public String ret$Parent() {
         return _my$BClass.getParent().getPqon();
     }
 
     @Override
-    public String get$Bundle() {
+    public String ret$Bundle() {
         return _my$BClass.getBundle();
     }
 
     @Override
-    public BonaPortableClass<? extends BonaPortable> get$BonaPortableClass() {
+    public BonaPortableClass<? extends BonaPortable> ret$BonaPortableClass() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public int get$rtti() {
+    public int ret$rtti() {
         return _my$BClass.getRtti();
     }
 
@@ -103,7 +103,7 @@ public class AbstractDynamicBonaPortable implements BonaPortable {
     }
 
     @Override
-    public ClassDefinition get$MetaData() {
+    public ClassDefinition ret$MetaData() {
         // TODO Auto-generated method stub
         return null;
     }
@@ -115,30 +115,30 @@ public class AbstractDynamicBonaPortable implements BonaPortable {
     }
 
     @Override
-    public boolean is$Frozen() {
-        return _is$Frozen;
+    public boolean was$Frozen() {
+        return _was$Frozen;
     }
 
     @Override
-    public BonaPortable get$MutableClone(boolean deepCopy, boolean unfreezeCollections) throws ObjectValidationException {
+    public BonaPortable ret$MutableClone(boolean deepCopy, boolean unfreezeCollections) throws ObjectValidationException {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public BonaPortable get$FrozenClone() throws ObjectValidationException {
+    public BonaPortable ret$FrozenClone() throws ObjectValidationException {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public void set$Active(boolean _a) throws ObjectValidationException {
+    public void put$Active(boolean _a) throws ObjectValidationException {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public boolean get$Active() {
+    public boolean ret$Active() {
         // TODO Auto-generated method stub
         return false;
     }

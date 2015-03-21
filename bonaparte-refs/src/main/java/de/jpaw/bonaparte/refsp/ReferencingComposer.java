@@ -64,7 +64,7 @@ public class ReferencingComposer extends CompactByteArrayComposer {
             // this is an object to replace by its reference
             AbstractRef refobj = (AbstractRef)obj;
             // see if the reference is contained already
-            long ref = refobj.get$RefP();
+            long ref = refobj.ret$RefP();
             if (ref <= 0) {
                 // contained references we have to resolve first
                 try {

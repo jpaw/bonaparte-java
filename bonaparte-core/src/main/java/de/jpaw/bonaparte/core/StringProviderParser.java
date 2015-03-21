@@ -43,7 +43,7 @@ public class StringProviderParser implements MessageParser<MessageParserExceptio
      * Example for Xtend, using a val Map<String,String> m:   obj.unmarshal[m.get(it)].
      * Example for Java 8: unmarshal(obj, m::get) */
     public static void unmarshal(BonaPortable obj, StringGetter getter) throws MessageParserException {
-        obj.deserialize(new StringProviderParser(getter, obj.get$PQON()));
+        obj.deserialize(new StringProviderParser(getter, obj.ret$PQON()));
     }
 
     public StringProviderParser(StringGetter requestParameters) {

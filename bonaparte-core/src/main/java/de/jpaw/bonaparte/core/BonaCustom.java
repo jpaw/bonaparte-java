@@ -26,7 +26,7 @@ import de.jpaw.bonaparte.pojos.meta.ParsedFoldingComponent;
 public interface BonaCustom extends BonaMeta {
 
     /** Gets the Metadata of the BonaPortable (which is a BonaPortable itself). */
-    public ClassDefinition get$MetaData();  // name, revision etc as a class object. Use $ to avoid conflict with other getters
+    public ClassDefinition ret$MetaData();  // name, revision etc as a class object. Use $ to avoid conflict with other getters
 
     /** Serializes this object into the format implemented by the MessageComposer parameter. The method will invoke methods of the MessageComposer interface for every member field, and also for some metadata. Class headers itself are assumed to have been serialized before.
      *  Different implementations are provided with the bonaparte library, for ASCII-like formats (bonaparte) or binary formats plugging into the standard Java {@link java.io.Serializable}/{@link java.io.Externalizable} interface.

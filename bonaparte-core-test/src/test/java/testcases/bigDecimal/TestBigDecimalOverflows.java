@@ -32,21 +32,21 @@ public class TestBigDecimalOverflows {
             BonaPortable o = p.readRecord();
             if (parseException != 0) {
                 // we should have had an exception
-                throw new Exception("Expected a parsing exception for class " + testClass.get$PQON() + " and value " + num.toPlainString()
+                throw new Exception("Expected a parsing exception for class " + testClass.ret$PQON() + " and value " + num.toPlainString()
                         + " using " + p.getClass().getSimpleName());
             }
             // now the result should be the same as the input
             if (!testClass.equals(o))
-                throw new Exception("Record successfully parsed, but contents is not the same for class " + testClass.get$PQON() + " and value " + num.toPlainString());
+                throw new Exception("Record successfully parsed, but contents is not the same for class " + testClass.ret$PQON() + " and value " + num.toPlainString());
         } catch (MessageParserException mpe) {
             if (mpe.getErrorCode() != parseException)
                 if (parseException == 0)
                     throw new Exception("Parsing exception " + mpe.getErrorCode() + " thrown"
-                        + " for class " + testClass.get$PQON() + " and value " + num.toPlainString()
+                        + " for class " + testClass.ret$PQON() + " and value " + num.toPlainString()
                         + " using " + p.getClass().getSimpleName());
                 else
                     throw new Exception("Expected a parsing exception " + parseException
-                        + " for class " + testClass.get$PQON() + " and value " + num.toPlainString()
+                        + " for class " + testClass.ret$PQON() + " and value " + num.toPlainString()
                         + ", but got " + mpe.getErrorCode()
                         + " using " + p.getClass().getSimpleName());
         }
@@ -58,16 +58,16 @@ public class TestBigDecimalOverflows {
             testClass.validate();
             if (validationException != 0) {
                 // we should have had an exception
-                throw new Exception("Expected a validation exception for class " + testClass.get$PQON() + " and value " + num.toPlainString());
+                throw new Exception("Expected a validation exception for class " + testClass.ret$PQON() + " and value " + num.toPlainString());
             }
         } catch (ObjectValidationException ve) {
             if (ve.getErrorCode() != validationException)
                 if (validationException == 0)
                     throw new Exception("Validation exception " + ve.getErrorCode() + " thrown"
-                        + " for class " + testClass.get$PQON() + " and value " + num.toPlainString());
+                        + " for class " + testClass.ret$PQON() + " and value " + num.toPlainString());
                 else
                     throw new Exception("Expected a validation exception " + validationException
-                        + " for class " + testClass.get$PQON() + " and value " + num.toPlainString()
+                        + " for class " + testClass.ret$PQON() + " and value " + num.toPlainString()
                         + ", but got " + ve.getErrorCode());
         }
 

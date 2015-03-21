@@ -161,7 +161,7 @@ public class FieldGetter {
             // now look up the name in the field list
             FieldDefinition fld = lookupField(cls, currentElement);
             if (fld == null)
-                throw new UtilException(UtilException.PATH_COMPONENT_NOT_FOUND, currentElement + " in " + cls.get$PQON());
+                throw new UtilException(UtilException.PATH_COMPONENT_NOT_FOUND, currentElement + " in " + cls.ret$PQON());
 
             // check for adapters...
             ObjectReference oRef;
@@ -189,9 +189,9 @@ public class FieldGetter {
                 return fld;
             // otherwise, must descend further. For that, fld must be a class reference
             if (oRef == null)
-                throw new UtilException(UtilException.DESCEND_TO_NON_REFERENCE, currentElement + " in " + cls.get$PQON());
+                throw new UtilException(UtilException.DESCEND_TO_NON_REFERENCE, currentElement + " in " + cls.ret$PQON());
             if (oRef.getLowerBound() == null)
-                throw new UtilException(UtilException.DESCEND_TO_GENERIC_OBJECT, currentElement + " in " + cls.get$PQON());
+                throw new UtilException(UtilException.DESCEND_TO_GENERIC_OBJECT, currentElement + " in " + cls.ret$PQON());
             cls = oRef.getSecondaryLowerBound() == null ? oRef.getLowerBound() : oRef.getSecondaryLowerBound();
             // continue...
         }

@@ -95,7 +95,7 @@ public class JsonObjectComposer implements MessageComposer<RuntimeException> {
     @Override
     public void startObject(ObjectReference di, BonaCustom o) {
         obj = new JsonObject();
-        obj.putString("_PQON", o.get$PQON());  // insert the actual object type
+        obj.putString("_PQON", o.ret$PQON());  // insert the actual object type
     }
 
     @Override

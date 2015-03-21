@@ -17,7 +17,7 @@ public interface BonaMeta extends Serializable {
      *
      * @return the partially qualified object name as a not-null Java String.
      */
-    public String get$PQON();
+    public String ret$PQON();
 
     /** Gets the partially qualified object name of this object's parent, or null if the object does not extend another object.
      * This is a constant string (static final), but defined as a member function in order to be able to declare it in the interface.
@@ -25,7 +25,7 @@ public interface BonaMeta extends Serializable {
      *
      * @return the partially qualified object name of the parent class as a Java String, or null if the object has no explicit superclass.
      */
-    public String get$Parent();
+    public String ret$Parent();
 
     /** Gets the bundle information as defined in the DSL, or null. Bundles do not yet have any functional effect, they are reserved to allow the grouping into OSGi bundles in the future.
      * Therefore, do not yet use this feature.
@@ -33,5 +33,5 @@ public interface BonaMeta extends Serializable {
      *
      * @return the bundle as defined in the DSL as a Java String, or null, if no bundle has been defined for objects of this class.
      */
-    public String get$Bundle();
+    public String ret$Bundle();
 }

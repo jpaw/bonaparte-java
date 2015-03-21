@@ -368,7 +368,7 @@ abstract public class LinearLayoutComposer implements MessageComposer<RuntimeExc
             Button b = needButton(di);
             if (buttonPayload != null)
                 buttonPayload.put(b.getId(), obj);
-            LOG.info("   button id = {}, object is {}", b.getId(), obj == null ? "(null)" : obj.get$PQON());
+            LOG.info("   button id = {}, object is {}", b.getId(), obj == null ? "(null)" : obj.ret$PQON());
             if (obj == null) {
                 b.setText("null");
                 b.setEnabled(false);

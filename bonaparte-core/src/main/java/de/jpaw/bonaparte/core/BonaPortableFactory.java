@@ -121,7 +121,7 @@ public class BonaPortableFactory {
             try {
                 logger.debug("Factory: loading class {}", FQON);
                 f = Class.forName(FQON, true, Thread.currentThread().getContextClassLoader()).asSubclass(BonaPortable.class);
-                Method m = f.getDeclaredMethod("get$BonaPortableClass");
+                Method m = f.getDeclaredMethod("ret$BonaPortableClass");
                 BonaPortableClass<BonaPortable> x = (BonaPortableClass<BonaPortable>)m.invoke(null);
                 newMap.put(name, x);
                 return x.newInstance();

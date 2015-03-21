@@ -665,7 +665,7 @@ public class CompactByteArrayComposer extends CompactConstants implements Messag
 
     @Override
     public void startObject(ObjectReference di, BonaCustom obj) {
-        ClassDefinition meta = obj.get$MetaData();
+        ClassDefinition meta = obj.ret$MetaData();
         if (skipLowerBoundObjectDescription && di.getLowerBound() != null && di.getLowerBound().getName().equals(meta.getName())) {
             if (recommendIdentifiable) {
                 out.writeByte(OBJECT_BEGIN_BASE);

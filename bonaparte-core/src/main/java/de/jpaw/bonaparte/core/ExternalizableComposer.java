@@ -256,8 +256,8 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
             // do we really? (At the moment it's optional)
             out.writeByte(OBJECT_BEGIN);
             if (nestedObjectsInternally) {
-                out.writeUTF(obj.get$PQON());
-                out.writeLong(obj.get$MetaData().getSerialUID());
+                out.writeUTF(obj.ret$PQON());
+                out.writeLong(obj.ret$MetaData().getSerialUID());
                 ((Externalizable)obj).writeExternal(out);  // TODO: obj.deserialize(this);
             } else {
                 out.writeObject(obj);   // so fall back to normal behaviour!
@@ -392,8 +392,8 @@ public class ExternalizableComposer extends ExternalizableConstants implements M
             startObject(di, obj);
             out.writeByte(OBJECT_BEGIN);  // this logically belongs to the lines below, do not split here!
             if (nestedObjectsInternally) {
-                out.writeUTF(obj.get$PQON());
-                addField(REVISION_META, obj.get$MetaData().getRevision());
+                out.writeUTF(obj.ret$PQON());
+                addField(REVISION_META, obj.ret$MetaData().getRevision());
                 obj.serializeSub(this);
             } else {
                 out.writeObject(obj);   // so fall back to normal behaviour!

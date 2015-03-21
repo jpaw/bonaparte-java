@@ -81,7 +81,7 @@ public class Properties {
     //
 
     private String getClassProperty(BonaPortable obj) throws Exception {
-        return obj.get$BonaPortableClass().getProperty("myClassProp");
+        return obj.ret$BonaPortableClass().getProperty("myClassProp");
     }
 
     @Benchmark
@@ -97,7 +97,7 @@ public class Properties {
 
 
     private String getFieldProperty(BonaPortable obj) throws Exception {
-        return obj.get$BonaPortableClass().getProperty("myField.myFieldProp");
+        return obj.ret$BonaPortableClass().getProperty("myField.myFieldProp");
     }
 
     @Benchmark

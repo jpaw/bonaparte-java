@@ -100,7 +100,7 @@ public class SimpleTestRunner {
     static public void run(BonaPortable src, boolean doDumpToFile) throws Exception {
         int srcHash = src.hashCode();
         System.out.println("");
-        System.out.println("Test " + src.get$PQON() + " (hash " + srcHash + ") starting:");
+        System.out.println("Test " + src.ret$PQON() + " (hash " + srcHash + ") starting:");
 
         /************************************************************************************
          *
@@ -124,8 +124,8 @@ public class SimpleTestRunner {
 
         System.out.println("Length with SBC is " + sbcResult.length + ", length with BAC is " + bacResult.length);
         if (doDumpToFile) {
-            dumpToFile("/tmp/" + src.get$PQON() + "-dump-sbc.bin", sbcResult);
-            dumpToFile("/tmp/" + src.get$PQON() + "-dump-bac.bin", bacResult);
+            dumpToFile("/tmp/" + src.ret$PQON() + "-dump-sbc.bin", sbcResult);
+            dumpToFile("/tmp/" + src.ret$PQON() + "-dump-bac.bin", bacResult);
         }
 
         assert sbcResult.length == bacResult.length : "produced byte data should have the same length";
@@ -168,7 +168,7 @@ public class SimpleTestRunner {
         o.close();
         byte[] result = fos.toByteArray();
         if (doDumpToFile)
-            dumpToFile("/tmp/" + src.get$PQON() + "-dump-ext.bin", result);
+            dumpToFile("/tmp/" + src.ret$PQON() + "-dump-ext.bin", result);
         System.out.println("Externalization: Length of buffer is " + result.length);
 
         /************************************************************************************
@@ -198,7 +198,7 @@ public class SimpleTestRunner {
        cbac.writeRecord(src);
        byte[] cbacResult = cbac.getBuilder().getBytes();
        if (doDumpToFile)
-           dumpToFile("/tmp/" + src.get$PQON() + "-dump-compact.bin", cbacResult);
+           dumpToFile("/tmp/" + src.ret$PQON() + "-dump-compact.bin", cbacResult);
        System.out.println("compact: Length of buffer is " + cbacResult.length);
 
        System.out.println("compact2");

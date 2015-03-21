@@ -69,7 +69,7 @@ public abstract class AbstractRefResolver<REF extends AbstractRef, DTO extends R
     public final long getRef(REF refObject) throws PersistenceException {
         if (refObject == null)
             return 0;
-        long key = refObject.get$RefP();
+        long key = refObject.ret$RefP();
         if (key > 0)
             return key;
         // shortcuts not possible, try the local reverse cache
@@ -114,7 +114,7 @@ public abstract class AbstractRefResolver<REF extends AbstractRef, DTO extends R
 
     @Override
     public final void update(DTO obj) throws PersistenceException {
-        long key = obj.get$RefP();
+        long key = obj.ret$RefP();
         if (key <= 0)
             throw new PersistenceException(PersistenceException.NO_PRIMARY_KEY, 0L, entityName);
         DataWithTracking<DTO, TRACKING> dwt = getDTONoCacheUpd(key);
@@ -136,10 +136,10 @@ public abstract class AbstractRefResolver<REF extends AbstractRef, DTO extends R
 
     @Override
     public void create(DTO obj) throws PersistenceException {
-        if (obj.get$RefP() <= 0)
+        if (obj.ret$RefP() <= 0)
             throw new PersistenceException(PersistenceException.NO_PRIMARY_KEY, 0L, entityName);
         DataWithTracking<DTO, TRACKING> dwt = uncachedCreate(obj);
-        cache.put(obj.get$RefP(), dwt);
+        cache.put(obj.ret$RefP(), dwt);
     }
 
     @Override
@@ -148,7 +148,7 @@ public abstract class AbstractRefResolver<REF extends AbstractRef, DTO extends R
         if (dwt == null)
             throw new PersistenceException(PersistenceException.RECORD_DOES_NOT_EXIST, ref, entityName);
         try {
-            return (TRACKING) dwt.getTracking().get$FrozenClone();
+            return (TRACKING) dwt.getTracking().ret$FrozenClone();
         } catch (ObjectValidationException e) {
             throw new RuntimeException(e);
         }

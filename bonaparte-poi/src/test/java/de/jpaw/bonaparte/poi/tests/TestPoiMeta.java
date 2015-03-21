@@ -23,7 +23,7 @@ public class TestPoiMeta {
         ec.closeSheet();
 
         ec.startTransmission();
-        ec.writeRecord(cd.get$BonaPortableClass().getMetaData());
+        ec.writeRecord(cd.ret$BonaPortableClass().getMetaData());
         ec.closeSheet();
 
         ec.writeToFile("test.xls");

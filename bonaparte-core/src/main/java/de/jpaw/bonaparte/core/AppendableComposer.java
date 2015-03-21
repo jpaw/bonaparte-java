@@ -446,8 +446,8 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
     @Override
     public void startObject(ObjectReference di, BonaCustom obj) throws IOException {
         work.append(OBJECT_BEGIN);
-        addField(OBJECT_CLASS, obj.get$PQON());
-        addField(REVISION_META, obj.get$MetaData().getRevision());
+        addField(OBJECT_CLASS, obj.ret$PQON());
+        addField(REVISION_META, obj.ret$MetaData().getRevision());
     }
 
     @Override

@@ -46,7 +46,7 @@ public class EhcCriteriaBuilder {
         NotFilter:
             return buildPredicate(cache, filter.filter).not
         default:
-            throw new RuntimeException("Unrecognized filter type: " + filter.get$PQON)
+            throw new RuntimeException("Unrecognized filter type: " + filter.ret$PQON)
         }
     }
 }
@@ -128,7 +128,7 @@ public class EhcFilterImpl implements EhcFilter {
         TimeFilter:
             throw new RuntimeException("joda comparison not supported by Ehcache")
         default:
-            throw new RuntimeException("Unrecognized field filter type: " + filter.get$PQON)
+            throw new RuntimeException("Unrecognized field filter type: " + filter.ret$PQON)
         }
     }
 
