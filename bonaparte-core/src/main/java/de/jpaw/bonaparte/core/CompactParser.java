@@ -57,7 +57,7 @@ public class CompactParser extends CompactConstants implements MessageParser<IOE
             pushedBack = -1;
             return c;
         }
-        return in.readUnsignedByte();
+        return 0xff & in.readUnsignedByte();        // workaround hazelcast 3.4.0/1 bug
     }
 
     private void needToken(int c) throws IOException {
@@ -154,8 +154,8 @@ public class CompactParser extends CompactConstants implements MessageParser<IOE
         case INT_2BYTE:
             return in.readShort();
         case INT_3BYTE:
-            int nn = in.readUnsignedByte() << 16;
-            nn |= in.readUnsignedShort();
+            int nn = (0xff & in.readUnsignedByte()) << 16;  // workaround hazelcast 3.4.x bug
+            nn |= 0xffff & in.readUnsignedShort();          // workaround hazelcast 3.4.x bug
             if ((nn & 0x800000) != 0)
                 nn |= 0xff << 24;   // sign-extend
             return nn;
@@ -348,7 +348,7 @@ public class CompactParser extends CompactConstants implements MessageParser<IOE
     private String readAscii(int len, String fieldname) throws IOException {
         char data [] = new char [len];
         for (int i = 0; i < len; ++i)
-            data[i] = (char)(in.readUnsignedByte());
+            data[i] = (char)(0xff & in.readUnsignedByte());     // workaround hazelcast 3.4.x bug
         return new String(data);
     }
     private String readUTF16(int len, String fieldname) throws IOException {
