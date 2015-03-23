@@ -5,7 +5,7 @@
     <parent>
         <groupId>de.jpaw</groupId>
         <artifactId>jpaw-se-parent</artifactId>
-        <version>1.0.5-SNAPSHOT</version>
+        <version>1.0.3</version>
         <relativePath/>
     </parent>
 
@@ -20,21 +20,21 @@
             <dependency>
                 <groupId>de.jpaw</groupId>
                 <artifactId>jpaw-bom</artifactId>
-                <version>1.2.6-SNAPSHOT</version>
+                <version>1.2.6</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>de.jpaw</groupId>
                 <artifactId>fixedpoint-bom</artifactId>
-                <version>0.6.2-SNAPSHOT</version>
+                <version>0.6.1</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>de.jpaw</groupId>
                 <artifactId>jdp-bom</artifactId>
-                <version>0.2.2-SNAPSHOT</version>
+                <version>0.2.1</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
@@ -53,12 +53,12 @@
         <netty.version>4.0.26.Final</netty.version>     <!-- https://netty.io/news/ UPTODATE 2015-03-02 -->
         <poi.version>3.11</poi.version>                 <!-- http://poi.apache.org/ UPTODATE 2014-12-21 -->
         <mina.version>2.0.7</mina.version>              <!-- http://mina.apache.org/ 2.0.7 -->
-        <camel.version>2.14.1</camel.version>           <!-- http://camel.apache.org/ UPTODATE 2014-12-17 (2.14.0 is the first for Java8, but introduces a lot new dependencies)-->
+        <camel.version>2.14.2</camel.version>           <!-- http://camel.apache.org/ UPTODATE 2014-12-17 (2.14.0 is the first for Java8, but introduces a lot new dependencies)-->
         <vertx.version>2.1.5</vertx.version>            <!-- http://vertx.io/ UPTODATE 2014-11-13 -->
         
         <!-- distributed caches -->
         <ehcache.version>2.9.1</ehcache.version>        <!-- UPTODATE 2015-03-05 -->
-        <hazelcast.version>3.4.1</hazelcast.version>    <!-- http://hazelcast.org/download/ UPTODATE 2015-03-22   3.4.x has a bug in readUnsignedByte() which causes test failures, see CompactParser -->
+        <hazelcast.version>3.4.1</hazelcast.version>    <!-- http://hazelcast.org/download/ UPTODATE 2015-03-22 -->
         <infinispan.version>7.1.1.Final</infinispan.version>  <!-- UPTODATE 2015-03-05 -->
         
         <koloboke.version>0.6.6</koloboke.version>
