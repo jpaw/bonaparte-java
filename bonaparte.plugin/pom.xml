@@ -5,7 +5,7 @@
     <parent>
         <groupId>de.jpaw</groupId>
         <artifactId>bonaparte.allplugins</artifactId>
-        <version>3.4.0</version>
+        <version>3.4.1-SNAPSHOT</version>
         <relativePath>../bonaparte.allplugins/pom.xml</relativePath>
     </parent>
 
