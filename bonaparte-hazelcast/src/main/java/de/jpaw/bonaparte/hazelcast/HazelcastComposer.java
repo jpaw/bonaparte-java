@@ -14,6 +14,7 @@ public class HazelcastComposer extends CompactComposer {
     // entry called from generated objects:
     public static void serialize(BonaPortable obj, ObjectDataOutput _out, boolean recommendIdentifiable) throws IOException {
         MessageComposer<IOException> _w = new HazelcastComposer(_out, recommendIdentifiable);
+//        _w.startObject(OUTER_BONAPORTABLE, obj);
         obj.serializeSub(_w);
         _w.terminateObject(StaticMeta.OUTER_BONAPORTABLE, obj);
     }

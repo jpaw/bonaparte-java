@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import org.testng.annotations.Test;
 
+import com.hazelcast.config.SerializationConfig;
+import com.hazelcast.config.SerializerConfig;
 import com.hazelcast.nio.ObjectDataInput;
 import com.hazelcast.nio.ObjectDataOutput;
 import com.hazelcast.nio.serialization.Data;
@@ -12,15 +14,21 @@ import com.hazelcast.nio.serialization.DefaultSerializationServiceBuilder;
 import com.hazelcast.nio.serialization.IdentifiedDataSerializable;
 import com.hazelcast.nio.serialization.SerializationService;
 import com.hazelcast.nio.serialization.SerializationServiceBuilder;
+import com.hazelcast.nio.serialization.Serializer;
 
+import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.core.BonaPortableFactoryById;
+import de.jpaw.bonaparte.hazelcast.BonaparteByteArraySerializer;
+import de.jpaw.bonaparte.hazelcast.BonaparteStreamSerializer;
 import de.jpaw.bonaparte.pojos.hazeltest.DSTest;
 import de.jpaw.bonaparte.pojos.hazeltest.IDSTest;
+import de.jpaw.bonaparte.pojos.hazeltest.PojoTest;
 import de.jpaw.util.ByteUtil;
 
 @Test
 public class SerializationTest {
 
-    static void doTest(Object obj, String msg, DataSerializableFactory f) throws IOException {
+    private static void doTest(Object obj, String msg, DataSerializableFactory f, Serializer s) throws IOException {
         System.out.println(msg);
 
 //        Config cfg = new Config();
@@ -30,6 +38,11 @@ public class SerializationTest {
 
         // now obtain the raw data behind it
         SerializationServiceBuilder b = new DefaultSerializationServiceBuilder().setUseNativeByteOrder(true);
+        if (s != null) {
+            b.setConfig(new SerializationConfig().addSerializerConfig(new SerializerConfig()
+                                                    .setTypeClass(BonaPortable.class)
+                                                    .setImplementation(s)));
+        }
         final SerializationService ss = (f == null ? b : b.addDataSerializableFactory(12, f)).build();
         final Data data1              = ss.toData(obj);
         final Data data3              = ss.toData(obj);
@@ -39,7 +52,7 @@ public class SerializationTest {
         out3.writeData(data3);
         
         byte [] bytes1 = data1.getData();           // shortest
-        byte [] bytes2 = out2.toByteArray();        // 5 bytes more
+        byte [] bytes2 = out2.toByteArray();        // 5 bytes more     => this one is the recommended one to use
         byte [] bytes3 = out3.toByteArray();        // 17 bytes more
         
         System.out.println("Size 1 is " + bytes1.length + ", size 2 is " + bytes2.length + ", size 3 is " + bytes3.length);
@@ -59,7 +72,7 @@ public class SerializationTest {
 
     // simple String test
     public void testUTF() throws Exception {
-        doTest("Hello, world!", "Test UTF", null);
+        doTest("Hello, world!", "Test UTF", null, null);
     }
 
     // test data serializable
@@ -72,7 +85,7 @@ public class SerializationTest {
         tmp.short2 = "A";
         tmp.hello2 = "alallalallalong... alallalallalong... ding dong!";
 
-        doTest(tmp, "Test DS", null);
+        doTest(tmp, "Test DS", null, null);
     }
 
     // test identified data serializable
@@ -90,6 +103,32 @@ public class SerializationTest {
             public IdentifiedDataSerializable create(int id) {
                 return (id == 17) ? new IDSTest() : null;
             }
-        });
+        }, null);
+    }
+    
+    private static void runPojoSerializer(String what, Serializer s) throws Exception {
+        BonaPortableFactoryById.registerClass(PojoTest.BClass.INSTANCE);
+        
+        PojoTest tmp = new PojoTest();
+        tmp.hello = "Hello, world";
+        tmp.num = 18;
+        tmp.short1 = "0";
+        tmp.short2 = "A";
+        tmp.hello2 = "alallalallalong... alallalallalong... ding dong!";
+
+        doTest(tmp, what, null, s);
+    }
+
+    public void testByteArraySerializerCid() throws Exception {
+        runPojoSerializer("Test Pojo byte array CID", new BonaparteByteArraySerializer(true));
+    }
+    public void testByteArraySerializerPqon() throws Exception {
+        runPojoSerializer("Test Pojo byte array PQON", new BonaparteByteArraySerializer(false));
+    }
+    public void testStreamSerializerCid() throws Exception {
+        runPojoSerializer("Test Pojo stream CID", new BonaparteStreamSerializer(true));
+    }
+    public void testStreamSerializerPqon() throws Exception {
+        runPojoSerializer("Test Pojo stream PQON", new BonaparteStreamSerializer(false));
     }
 }

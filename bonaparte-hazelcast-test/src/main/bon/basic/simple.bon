@@ -24,4 +24,12 @@ package hazeltest factoryId 12 {
         Ascii(8)        short2;
         Unicode(80)     hello2;
     }
+    
+    class PojoTest classId 19 {
+        Unicode(40)     hello;
+        int             num;
+        Ascii(8)        short1;
+        Ascii(8)        short2;
+        Unicode(80)     hello2;
+    }
 }
