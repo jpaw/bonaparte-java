@@ -51,6 +51,7 @@ public class HzCriteriaBuilder {
     }
 }
 
+// implemented as a separate injection point to allow adding criteria on additional types via subclassing / specialization
 @Singleton
 public class HzFilterImpl implements HzFilter {
 
