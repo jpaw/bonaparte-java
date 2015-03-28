@@ -15,10 +15,6 @@
  */
 package de.jpaw.bonaparte.poi;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 /**
@@ -28,23 +24,9 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
  * @version $Revision$
  */
 
-public class ExcelComposer extends BaseExcelComposer implements ExcelWriter {
+public class ExcelComposer extends BaseExcelComposer {
 
     public ExcelComposer() {
         super(new HSSFWorkbook());
     }
-
-    /** Write the current state of the Workbook onto a stream. */
-    @Override
-    public void write(OutputStream os) throws IOException {
-        xls.write(os);
-    }
-
-    @Override
-    public void writeToFile(String filename) throws IOException {
-        FileOutputStream out = new FileOutputStream(filename);
-        write(out);
-        out.close();
-    }
-
 }

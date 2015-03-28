@@ -53,12 +53,12 @@
         <netty.version>4.0.26.Final</netty.version>     <!-- https://netty.io/news/ UPTODATE 2015-03-02 -->
         <poi.version>3.11</poi.version>                 <!-- http://poi.apache.org/ UPTODATE 2014-12-21 -->
         <mina.version>2.0.7</mina.version>              <!-- http://mina.apache.org/ 2.0.7 -->
-        <camel.version>2.14.1</camel.version>           <!-- http://camel.apache.org/ UPTODATE 2014-12-17 (2.14.0 is the first for Java8, but introduces a lot new dependencies)-->
+        <camel.version>2.15.0</camel.version>           <!-- http://camel.apache.org/ UPTODATE 2014-12-17 (2.14.0 is the first for Java8, but introduces a lot new dependencies)-->
         <vertx.version>2.1.5</vertx.version>            <!-- http://vertx.io/ UPTODATE 2014-11-13 -->
         
         <!-- distributed caches -->
         <ehcache.version>2.9.1</ehcache.version>        <!-- UPTODATE 2015-03-05 -->
-        <hazelcast.version>3.4.1</hazelcast.version>    <!-- http://hazelcast.org/download/ UPTODATE 2015-03-22   3.4.x has a bug in readUnsignedByte() which causes test failures, see CompactParser -->
+        <hazelcast.version>3.4.2</hazelcast.version>    <!-- http://hazelcast.org/download/ UPTODATE 2015-03-22   3.4.x has a bug in readUnsignedByte() which causes test failures, see CompactParser -->
         <infinispan.version>7.1.1.Final</infinispan.version>  <!-- UPTODATE 2015-03-05 -->
         
         <koloboke.version>0.6.6</koloboke.version>
@@ -253,6 +253,7 @@
         <module>../bonaparte-adapters-test/pom.xml</module>
         <module>../bonaparte-api/pom.xml</module>
         <module>../bonaparte-android/pom.xml</module>
+        <module>../bonaparte-xml/pom.xml</module>
         <module>../bonaparte-xml-test/pom.xml</module>
         <module>../bonaparte-hazelcast/pom.xml</module>
         <module>../bonaparte-hazelcast-api/pom.xml</module>

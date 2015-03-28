@@ -1,0 +1,13 @@
+package examples.jaxrs XML PROPERTY {
+    default private;
+    
+    type iso4217a3                  is Uppercase(3..3);
+     
+    class BonCurrency xmlRoot {
+        required iso4217a3          currencyCode;
+        required int                defaultFractionalDigits;
+        optional Unicode(80)        displayName;
+        required int(4)             numericCode;                
+        required Unicode(20)        symbol;
+    }
+}

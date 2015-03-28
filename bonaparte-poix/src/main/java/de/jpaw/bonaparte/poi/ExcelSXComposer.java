@@ -17,7 +17,7 @@ package de.jpaw.bonaparte.poi;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
+
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
 /**
@@ -31,12 +31,6 @@ public class ExcelSXComposer extends BaseExcelComposer implements ExcelWriter {
 
     public ExcelSXComposer() {
         super(new SXSSFWorkbook());
-    }
-
-    /** Write the current state of the Workbook onto a stream. */
-    @Override
-    public void write(OutputStream os) throws IOException {
-        xls.write(os);
     }
 
     @Override

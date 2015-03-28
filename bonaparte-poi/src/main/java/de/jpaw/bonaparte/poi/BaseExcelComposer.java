@@ -15,8 +15,13 @@
  */
 package de.jpaw.bonaparte.poi;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -64,7 +69,7 @@ import de.jpaw.util.IntegralLimits;
  * @version $Revision$
  */
 
-public class BaseExcelComposer implements MessageComposer<RuntimeException> {
+public class BaseExcelComposer implements MessageComposer<RuntimeException>, ExcelWriter {
     protected static final int MAX_DECIMALS = 18;
     protected final Workbook xls;
     protected final DataFormat xlsDataFormat;
@@ -136,6 +141,38 @@ public class BaseExcelComposer implements MessageComposer<RuntimeException> {
             return csBigDecimal[decimals];
         }
     }
+    
+    /** Write the current state of the Workbook onto a stream. */
+    @Override
+    public void write(OutputStream os) throws IOException {
+        xls.write(os);
+    }
+
+    @Override
+    public void writeToFile(String filename) throws IOException {
+        try (FileOutputStream out = new FileOutputStream(filename)) {
+            write(out);
+        }
+    }
+
+    @Override
+    public byte[] getBytes() throws IOException {
+        byte [] result = null;
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream(50000)) {
+            write(out);
+            out.flush();
+            result = out.toByteArray(); 
+        }
+        return result;
+    }
+    
+    public void writeList(List<? extends BonaCustom> objs) {
+        startTransmission();
+        for (BonaCustom b : objs)
+            writeRecord(b);
+        terminateTransmission();
+    }
+    
     /**************************************************************************************************
      * Serialization goes here
      **************************************************************************************************/
