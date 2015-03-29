@@ -17,6 +17,7 @@ package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -101,6 +102,13 @@ public class ByteArrayComposer extends AbstractMessageComposer<RuntimeException>
 
     protected int getNumberOfObjectsSerialized() {
         return numberOfObjectsSerialized;
+    }
+    
+    @Override
+    public void setCharset(Charset charset) {
+        super.setCharset(charset);
+        // also tell the ByteBuilder!
+        work.setCharset(charset);
     }
 
     /** Sets the current length to 0, allowing reuse of the allocated output buffer for a new message. */

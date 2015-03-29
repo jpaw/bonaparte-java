@@ -9,4 +9,9 @@ package jsonTest {
         Boolean     myBoolean;
         Uuid        myNull;
     }
+    
+    class TestSimple {
+        int         num;
+        Unicode(20) text;
+    }
 }

@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.camel.Exchange;
@@ -26,9 +27,12 @@ import org.apache.camel.spi.DataFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.jpaw.bonaparte.core.StringBuilderParser;
-import de.jpaw.bonaparte.core.StringBuilderComposer;
+import de.jpaw.bonaparte.core.BonaCustom;
 import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.core.ByteArrayConstants;
+import de.jpaw.bonaparte.core.StringBuilderComposer;
+import de.jpaw.bonaparte.core.StringBuilderConstants;
+import de.jpaw.bonaparte.core.StringBuilderParser;
 
 /**
  * The BonaparteCamelFormat class.
@@ -43,47 +47,45 @@ import de.jpaw.bonaparte.core.BonaPortable;
 public final class BonaparteCamelFormat implements DataFormat {
     private static final Logger logger = LoggerFactory.getLogger(BonaparteCamelFormat.class);
     // configuration
-    // private boolean multiRecord = false;   // do a full transmission? Expects an array of objects then!  NO, autodetect! 
     private boolean writeCRs = false;
-    private boolean writeEncoding = false;
     // the character set used for backend communication: UTF-8 or ISO-8859-something or windows-125x
     private Charset useCharset = Charset.forName("UTF-8"); // Charset.defaultCharset(); or "windows-1252"
-    private int initialBufferSize = 65500;  // start big to avoid frequent reallocation 
+    private int initialBufferSize = 16000;  // start big to avoid frequent reallocation 
     
     
-    private void writeOptions(OutputStream stream, StringBuilderComposer w) throws IOException {
-        String encoding = "\030E€\031"; 
-        if (writeEncoding)
-            stream.write(encoding.getBytes(w.getCharset()));
-    }
+//    private void writeOptions(OutputStream stream, StringBuilderComposer w) throws IOException {
+//        String encoding = "\030E€\031"; 
+//        if (writeEncoding)
+//            stream.write(encoding.getBytes(w.getCharset()));
+//    }
 
+    private void toStream(StringBuilderComposer w, OutputStream stream) throws IOException {
+        stream.write(w.getBuffer(), 0, w.getLength());
+        w.reset();
+    }
+    
+    
     @Override
     public void marshal(Exchange exchange, Object graph, OutputStream stream) throws Exception {
-        StringBuilder work;  // TODO: allocate during new()? Keeps it persistent, but may occupy too much space. Multithreading?
-        
-        work = new StringBuilder(initialBufferSize);
-
+        StringBuilder work = new StringBuilder(initialBufferSize);
         StringBuilderComposer w = new StringBuilderComposer(work);
-        if (java.util.List.class.isInstance(graph)) {
-            //w.startTransmission();
-            stream.write('T'-'@'); // transmission begin
-            stream.write('N'-'@'); // Null version
-            writeOptions(stream, w);
-            // TODO: w.writeOptions
-            for (Object o : (java.util.List)graph) {
-                w.reset();
-                w.writeRecord((BonaPortable) o);
-                stream.write(work.toString().getBytes(useCharset));
+        w.setCharset(useCharset);
+        w.setWriteCRs(writeCRs);
+        
+        if (Collection.class.isInstance(graph)) {
+            w.startTransmission();
+//            writeOptions(stream, w);
+            toStream(w, stream);
+            for (Object o : (Collection)graph) {
+                w.writeRecord((BonaCustom) o);
+                toStream(w, stream);
             }
-            //w.terminateTransmission();
-            stream.write('U'-'@'); // transmission end
-            stream.write('Z'-'@'); // transmission end
+            w.terminateTransmission();
+            toStream(w, stream);
         } else {
             // assume single record
-            writeOptions(stream, w);
-            w.reset();
-            w.writeRecord((BonaPortable) graph);
-            stream.write(work.toString().getBytes(useCharset));
+            w.writeRecord((BonaCustom) graph);
+            toStream(w, stream);
         }
     }
 
@@ -97,7 +99,7 @@ public final class BonaparteCamelFormat implements DataFormat {
         logger.debug("read {} bytes from the input stream", numbytes);
         if (numbytes == initialBufferSize)
             throw new Exception("multi-reads for big messages not yet supported");
-        if (byteBuffer[0] == '\024')   // multi record (transmission)
+        if (byteBuffer[0] == ByteArrayConstants.TRANSMISSION_BEGIN)   // multi record (transmission)
             isMultiRecord = true;
         
         StringBuilder work = new StringBuilder(new String (byteBuffer, useCharset)); 
@@ -115,21 +117,12 @@ public final class BonaparteCamelFormat implements DataFormat {
     }
 
     
-    
     public boolean isWriteCRs() {
         return writeCRs;
     }
 
     public void setWriteCRs(boolean writeCRs) {
         this.writeCRs = writeCRs;
-    }
-
-    public boolean isWriteEncoding() {
-        return writeEncoding;
-    }
-
-    public void setWriteEncoding(boolean writeEncoding) {
-        this.writeEncoding = writeEncoding;
     }
 
     public Charset getUseCharset() {
@@ -147,5 +140,4 @@ public final class BonaparteCamelFormat implements DataFormat {
     public void setInitialBufferSize(int initialBufferSize) {
         this.initialBufferSize = initialBufferSize;
     }
-
 }

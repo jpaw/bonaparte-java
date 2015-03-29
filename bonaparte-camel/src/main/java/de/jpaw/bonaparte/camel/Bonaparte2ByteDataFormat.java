@@ -15,8 +15,11 @@
   */
 package de.jpaw.bonaparte.camel;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.camel.Exchange;
@@ -24,10 +27,11 @@ import org.apache.camel.spi.DataFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.core.BonaCustom;
 import de.jpaw.bonaparte.core.ByteArrayComposer;
+import de.jpaw.bonaparte.core.ByteArrayConstants;
 import de.jpaw.bonaparte.core.ByteArrayParser;
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.extensions.ComposerExtensions;
 
 /**
  * The NewDataFormat class.
@@ -41,19 +45,37 @@ import de.jpaw.bonaparte.extensions.ComposerExtensions;
 
 public final class Bonaparte2ByteDataFormat implements DataFormat {
     private static final Logger logger = LoggerFactory.getLogger(Bonaparte2ByteDataFormat.class);
-    private int initialBufferSize = 65500;  // start big to avoid frequent reallocation
-
-    private ByteArrayComposer w = null;
+    private boolean writeCRs = false;
+    // the character set used for backend communication: UTF-8 or ISO-8859-something or windows-125x
+    private Charset useCharset = Charset.forName("UTF-8"); // Charset.defaultCharset(); or "windows-1252"
+    private int initialBufferSize = 16000;  // start big to avoid frequent reallocation 
+    
+    private void toStream(ByteArrayComposer w, OutputStream stream) throws IOException {
+        stream.write(w.getBuffer(), 0, w.getLength());
+        w.reset();
+    }
+    
 
     @Override
     public void marshal(Exchange exchange, Object graph, OutputStream stream) throws Exception {
-        if (w == null)
-            w = new ByteArrayComposer();  // create on demand
-        if (java.util.List.class.isInstance(graph))
-            ComposerExtensions.transmission(w, (List<BonaPortable>)graph);
-        else
-            w.writeRecord((BonaPortable) graph);
-        stream.write(w.getBuffer(), 0, w.getLength());
+        ByteArrayComposer w = new ByteArrayComposer();
+        w.setCharset(useCharset);
+        
+        if (Collection.class.isInstance(graph)) {
+            w.startTransmission();
+//            writeOptions(stream, w);
+            toStream(w, stream);
+            for (Object o : (Collection)graph) {
+                w.writeRecord((BonaCustom) o);
+                toStream(w, stream);
+            }
+            w.terminateTransmission();
+            toStream(w, stream);
+        } else {
+            // assume single record
+            w.writeRecord((BonaCustom) graph);
+            toStream(w, stream);
+        }
     }
 
     @Override
@@ -66,7 +88,7 @@ public final class Bonaparte2ByteDataFormat implements DataFormat {
         logger.debug("read {} bytes from the input stream", numbytes);
         if (numbytes == initialBufferSize)
             throw new Exception("multi-reads for big messages not yet supported");
-        if (byteBuffer[0] == '\024')   // multi record (transmission)
+        if (byteBuffer[0] == ByteArrayConstants.TRANSMISSION_BEGIN)   // multi record (transmission)
             isMultiRecord = true;
 
         ByteArrayParser p = new ByteArrayParser(byteBuffer, 0, numbytes);
@@ -82,6 +104,22 @@ public final class Bonaparte2ByteDataFormat implements DataFormat {
         }
     }
 
+    
+    public boolean isWriteCRs() {
+        return writeCRs;
+    }
+
+    public void setWriteCRs(boolean writeCRs) {
+        this.writeCRs = writeCRs;
+    }
+    
+    public Charset getUseCharset() {
+        return useCharset;
+    }
+
+    public void setUseCharset(Charset useCharset) {
+        this.useCharset = useCharset;
+    }
 
     public int getInitialBufferSize() {
         return initialBufferSize;
@@ -90,5 +128,4 @@ public final class Bonaparte2ByteDataFormat implements DataFormat {
     public void setInitialBufferSize(int initialBufferSize) {
         this.initialBufferSize = initialBufferSize;
     }
-
 }

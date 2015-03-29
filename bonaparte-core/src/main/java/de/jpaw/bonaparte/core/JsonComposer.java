@@ -280,7 +280,8 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
 
     @Override
     public void terminateRecord() throws IOException {
-        out.append('\r');       // clarify if we want this
+        if (doWriteCRs())
+            out.append('\r');
         out.append('\n');
     }
 

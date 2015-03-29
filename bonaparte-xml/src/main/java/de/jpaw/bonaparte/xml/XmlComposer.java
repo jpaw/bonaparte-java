@@ -10,7 +10,9 @@ import javax.xml.bind.Marshaller;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-public class XmlComposer {
+import de.jpaw.bonaparte.core.Settings;
+
+public class XmlComposer extends Settings {
 //    private static final byte [] XML_HEADER = "<?xml version=\"1.0\", encoding=\"UTF-8\", standalone=\"yes\"?>\r\n<data>\r\n".getBytes();
 //    private static final byte [] XML_FOOTER = "</data>\r\n".getBytes();
 
@@ -45,8 +47,11 @@ public class XmlComposer {
     }
     
     private void conditionalNewline(XMLStreamWriter sw) throws XMLStreamException {
-        if (formatted)
-            sw.writeCharacters("\r\n");
+        if (formatted) {
+            if (doWriteCRs())
+                sw.writeCharacters("\r");
+            sw.writeCharacters("\n");
+        }
     }
     
     public void startDocument(XMLStreamWriter sw, String dataTag) throws XMLStreamException {
