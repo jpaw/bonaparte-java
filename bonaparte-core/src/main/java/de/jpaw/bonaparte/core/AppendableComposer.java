@@ -61,7 +61,7 @@ import de.jpaw.util.ByteBuilder;
  *          however in this case it's not due to a language constraint but rather to poor definition of the interface Appendable.
  */
 
-public class AppendableComposer extends StringBuilderConstants implements MessageComposer<IOException> {
+public class AppendableComposer extends AbstractMessageComposer<IOException> implements StringBuilderConstants {
     //private static final Logger LOGGER = LoggerFactory.getLogger(ByteArrayComposer.class);
     private final boolean useCache;
     private final Map<BonaCustom,Integer> objectCache;
@@ -108,7 +108,7 @@ public class AppendableComposer extends StringBuilderConstants implements Messag
     public int getNumberOfObjectReuses() {
         return numberOfObjectReuses;
     }
-
+    
     /**************************************************************************************************
      * Serialization goes here
      **************************************************************************************************/

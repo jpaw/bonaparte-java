@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.List;
 import java.util.UUID;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -35,8 +34,8 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
 
+import de.jpaw.bonaparte.core.AbstractMessageComposer;
 import de.jpaw.bonaparte.core.BonaCustom;
-import de.jpaw.bonaparte.core.MessageComposer;
 import de.jpaw.bonaparte.core.StaticMeta;
 import de.jpaw.bonaparte.enums.BonaNonTokenizableEnum;
 import de.jpaw.bonaparte.enums.BonaTokenizableEnum;
@@ -69,7 +68,7 @@ import de.jpaw.util.IntegralLimits;
  * @version $Revision$
  */
 
-public class BaseExcelComposer implements MessageComposer<RuntimeException>, ExcelWriter {
+public class BaseExcelComposer extends AbstractMessageComposer<RuntimeException> implements ExcelWriter {
     protected static final int MAX_DECIMALS = 18;
     protected final Workbook xls;
     protected final DataFormat xlsDataFormat;
@@ -164,13 +163,6 @@ public class BaseExcelComposer implements MessageComposer<RuntimeException>, Exc
             result = out.toByteArray(); 
         }
         return result;
-    }
-    
-    public void writeList(List<? extends BonaCustom> objs) {
-        startTransmission();
-        for (BonaCustom b : objs)
-            writeRecord(b);
-        terminateTransmission();
     }
     
     /**************************************************************************************************

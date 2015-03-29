@@ -54,7 +54,7 @@ import de.jpaw.util.CharTestsASCII;
  *          Implements the deserialization for the bonaparte format using StringBuilder.
  */
 
-public final class StringBuilderParser extends StringBuilderConstants implements MessageParser<MessageParserException> {
+public final class StringBuilderParser extends Settings implements MessageParser<MessageParserException>, StringBuilderConstants {
     private static final Logger LOGGER = LoggerFactory.getLogger(StringBuilderParser.class);
     private CharSequence work;          // for parser
     private int parseIndex;             // for parser

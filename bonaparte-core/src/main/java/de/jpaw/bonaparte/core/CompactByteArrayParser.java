@@ -52,7 +52,7 @@ import de.jpaw.util.ByteArray;
  *          Implementation of the MessageParser for the binary compact protocol, using byte arrays.
  */
 
-public class CompactByteArrayParser extends CompactConstants implements MessageParser<MessageParserException> {
+public class CompactByteArrayParser extends Settings implements MessageParser<MessageParserException>, CompactConstants {
 //    private static final Logger LOGGER = LoggerFactory.getLogger(CompactByteArrayParser.class);
     private static final byte [] EMPTY_BYTE_ARRAY = new byte [0];
     private static final String EMPTY_STRING = "";

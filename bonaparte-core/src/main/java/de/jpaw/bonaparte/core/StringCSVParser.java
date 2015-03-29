@@ -57,7 +57,7 @@ import de.jpaw.util.IntegralLimits;
 
 
 // TODO: should we convert "work" from String to CharSequence to make it more general?
-public final class StringCSVParser extends StringBuilderConstants implements MessageParser<MessageParserException> {
+public final class StringCSVParser extends Settings implements MessageParser<MessageParserException>, StringBuilderConstants {
     protected final CSVConfiguration cfg;
     private final boolean fixedLength;
     private final int lengthOfBoolean;

@@ -29,7 +29,7 @@ import de.jpaw.util.ByteArray;
 
 /** A parser which takes data through a provided functional interface, any implementation which provides a String get(String).
  * Mainly intended for use from Java 8 applications. */
-public class StringProviderParser implements MessageParser<MessageParserException> {
+public class StringProviderParser extends Settings implements MessageParser<MessageParserException> {
     private final StringParserUtil stringParser = new StringParserUtil();  // TODO; in the form with the provided classname, push it down to the Util
     private final String currentClass;
     private final StringGetter requestParameters;

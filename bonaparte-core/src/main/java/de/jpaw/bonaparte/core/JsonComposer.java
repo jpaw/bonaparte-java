@@ -3,6 +3,7 @@ package de.jpaw.bonaparte.core;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Collection;
 import java.util.UUID;
 
 import org.joda.time.Instant;
@@ -38,7 +39,7 @@ import de.jpaw.util.JsonEscaper;
  * @author Michael Bischoff (jpaw.de)
  *
  */
-public class JsonComposer implements MessageComposer<IOException> {
+public class JsonComposer extends AbstractMessageComposer<IOException> {
     protected static final DateTimeFormatter LOCAL_DATE_ISO = DateTimeFormat.forPattern("yyyy-MM-dd"); // ISODateTimeFormat.basicDate();
     protected static final DateTimeFormatter LOCAL_DATETIME_ISO = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss"); // ISODateTimeFormat.basicDateTime();
     protected static final DateTimeFormatter LOCAL_TIME_ISO = DateTimeFormat.forPattern("HH:mm:ss"); // ISODateTimeFormat.basicTime();
@@ -49,7 +50,7 @@ public class JsonComposer implements MessageComposer<IOException> {
 
     protected boolean needFieldSeparator = false;
 
-    public static String toJsonString(BonaPortable obj) {
+    public static String toJsonString(BonaCustom obj) {
         StringBuilder buff = new StringBuilder(4000);
         JsonComposer bjc = new JsonComposer(buff);
         try {
@@ -59,6 +60,34 @@ public class JsonComposer implements MessageComposer<IOException> {
             throw new RuntimeException(e);
         }
         return buff.toString();
+    }
+    public static String toJsonString(Collection<? extends BonaCustom> obj) {
+        StringBuilder buff = new StringBuilder(4000);
+        JsonComposer bjc = new JsonComposer(buff);
+        try {
+            bjc.writeTransmission(obj);
+        } catch (IOException e) {
+            // oh yes, sure, StringBuilder throws IOException!
+            throw new RuntimeException(e);
+        }
+        return buff.toString();
+    }
+    public static String toJsonString(Iterable<? extends BonaCustom> obj) {
+        StringBuilder buff = new StringBuilder(4000);
+        JsonComposer bjc = new JsonComposer(buff);
+        try {
+            bjc.writeTransmission(obj);
+        } catch (IOException e) {
+            // oh yes, sure, StringBuilder throws IOException!
+            throw new RuntimeException(e);
+        }
+        return buff.toString();
+    }
+    
+    
+    @Override
+    public void writeRecordSeparator() throws IOException {
+        out.append(',');
     }
 
     public JsonComposer(Appendable out) {
@@ -191,6 +220,7 @@ public class JsonComposer implements MessageComposer<IOException> {
 
     @Override
     public void startTransmission() throws IOException {
+        out.append('[');
     }
 
     @Override
@@ -256,6 +286,7 @@ public class JsonComposer implements MessageComposer<IOException> {
 
     @Override
     public void terminateTransmission() throws IOException {
+        out.append(']');
     }
 
     @Override

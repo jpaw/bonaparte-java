@@ -53,7 +53,8 @@ import de.jpaw.util.ByteBuilder;
  *
  */
 
-public class ByteArrayComposer extends ByteArrayConstants implements BufferedMessageComposer<RuntimeException> {
+public class ByteArrayComposer extends AbstractMessageComposer<RuntimeException> implements BufferedMessageComposer<RuntimeException>, ByteArrayConstants {
+    public static final String MIME_TYPE = "application/bonaparte";
     private static final Logger LOGGER = LoggerFactory.getLogger(ByteArrayComposer.class);
     private final boolean useCache;
     private final Map<BonaCustom,Integer> objectCache;

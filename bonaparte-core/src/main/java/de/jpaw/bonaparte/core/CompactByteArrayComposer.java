@@ -39,7 +39,7 @@ import de.jpaw.util.ByteBuilder;
  * @author Michael Bischoff
  *
  */
-public class CompactByteArrayComposer extends CompactConstants implements MessageComposer<RuntimeException> {
+public class CompactByteArrayComposer extends AbstractMessageComposer<RuntimeException> implements CompactConstants {
     private static Field unsafeString = calculateUnsafe();
     static private Field calculateUnsafe() {
         try {

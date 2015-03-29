@@ -2,6 +2,7 @@ package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Collection;
 import java.util.UUID;
 
 import org.joda.time.Instant;
@@ -231,5 +232,21 @@ public class DelegatingBaseComposer<E extends Exception> implements MessageCompo
     @Override
     public boolean addExternal(ObjectReference di, Object obj) throws E {
         return delegateComposer.addExternal(di, obj);
+    }
+
+    @Override
+    public void writeRecordSeparator() throws E {
+        delegateComposer.writeRecordSeparator();
+        
+    }
+
+    @Override
+    public void writeTransmission(Collection<? extends BonaCustom> coll) throws E {
+        delegateComposer.writeTransmission(coll);
+    }
+
+    @Override
+    public void writeTransmission(Iterable<? extends BonaCustom> coll) throws E {
+        delegateComposer.writeTransmission(coll);
     }
 }

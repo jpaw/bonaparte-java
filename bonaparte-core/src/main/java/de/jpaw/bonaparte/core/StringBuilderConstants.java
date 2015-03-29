@@ -24,25 +24,25 @@ package de.jpaw.bonaparte.core;
  *          Defines some constants which are used by both the StringBuilder parser and composer.
  */
 
-public abstract class StringBuilderConstants extends Settings {
-    protected static final String EMPTY_STRING = new String("");
+public interface StringBuilderConstants {
+    public static final String EMPTY_STRING = new String("");
 
-    protected static final char FIELD_TERMINATOR = '\006'; // ctrl-F
-    protected static final char TRANSMISSION_TERMINATOR = '\025'; // ctrl-U
-    protected static final char TRANSMISSION_TERMINATOR2 = '\032'; // ctrl-Z
-    protected static final char ARRAY_TERMINATOR = '\001'; // ctrl-A
-    protected static final char ARRAY_BEGIN = '\002'; // ctrl-B
-    protected static final char TRANSMISSION_BEGIN = '\024'; // ctrl-T
-    protected static final char RECORD_BEGIN = '\022'; // ctrl-R
-    protected static final char RECORD_OPT_TERMINATOR = '\015'; // ctrl-M
-    protected static final char RECORD_TERMINATOR = '\012'; // ctrl-J
-    protected static final char PARENT_SEPARATOR = '\020'; // ctrl-P
-    protected static final char OBJECT_BEGIN = '\023'; // ctrl-S
-    protected static final char OBJECT_TERMINATOR = '\017';         // ctrl-O
-    protected static final char OBJECT_AGAIN = '\007';              // ctrl-G
-    protected static final char ESCAPE_CHAR = '\005'; // ctrl-E
-    protected static final char NULL_FIELD = '\016'; // ctrl-N
-    protected static final char MAP_BEGIN = '\036';                 //
+    public static final char FIELD_TERMINATOR = '\006'; // ctrl-F
+    public static final char TRANSMISSION_TERMINATOR = '\025'; // ctrl-U
+    public static final char TRANSMISSION_TERMINATOR2 = '\032'; // ctrl-Z
+    public static final char ARRAY_TERMINATOR = '\001'; // ctrl-A
+    public static final char ARRAY_BEGIN = '\002'; // ctrl-B
+    public static final char TRANSMISSION_BEGIN = '\024'; // ctrl-T
+    public static final char RECORD_BEGIN = '\022'; // ctrl-R
+    public static final char RECORD_OPT_TERMINATOR = '\015'; // ctrl-M
+    public static final char RECORD_TERMINATOR = '\012'; // ctrl-J
+    public static final char PARENT_SEPARATOR = '\020'; // ctrl-P
+    public static final char OBJECT_BEGIN = '\023'; // ctrl-S
+    public static final char OBJECT_TERMINATOR = '\017';         // ctrl-O
+    public static final char OBJECT_AGAIN = '\007';              // ctrl-G
+    public static final char ESCAPE_CHAR = '\005'; // ctrl-E
+    public static final char NULL_FIELD = '\016'; // ctrl-N
+    public static final char MAP_BEGIN = '\036';                 //
 
-    protected static final char BOM = 0xfeff;                 // possibly encountered at the beginning of a record
+    public static final char BOM = 0xfeff;                 // possibly encountered at the beginning of a record
 }

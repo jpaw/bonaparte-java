@@ -1,6 +1,7 @@
 package de.jpaw.bonaparte.examples.jaxrs
 
 import de.jpaw.bonaparte.core.BonaCustom
+import de.jpaw.bonaparte.core.ByteArrayComposer
 import de.jpaw.bonaparte.core.CSVComposer
 import de.jpaw.bonaparte.core.CSVConfiguration
 import de.jpaw.bonaparte.poi.ExcelComposer
@@ -22,11 +23,12 @@ import javax.ws.rs.core.Application
 import javax.ws.rs.core.MediaType
 import javax.ws.rs.core.Response
 import javax.xml.bind.JAXBContext
+import de.jpaw.bonaparte.core.JsonComposer
 
 /**
- * REST Service to provice currency data is various formats.
+ * REST Service to provide currency data is various formats.
  * 
- * access via http://localhost:8080/bonaparte-examples-jaxrs-3.5.0-SNAPSHOT/jaxrs/currency/xls, for example
+ * access via http://localhost:8080/bonaparte-examples-jaxrs-3.5.0-SNAPSHOT/jaxrs/format/xls, for example
  *
  */
 @Stateless
@@ -47,17 +49,25 @@ class CurrencyService extends Application {
         switch (format) {
             case 'xls': {
                 val ec = new ExcelComposer
-                ec.writeList(objs)
+                ec.writeTransmission(objs)
                 Response.ok(ec.bytes, MIME_TYPE_XLS).build
             }
             case 'xlsx': {
                 val ec = new ExcelXComposer
-                ec.writeList(objs)
+                ec.writeTransmission(objs)
                 Response.ok(ec.bytes, MIME_TYPE_XLSX).build
             }
             case 'xml': {
                 val ec = new XmlComposer(context, true, false)
-                Response.ok(ec.marshal(new XmlListWrapper(objs)), "text/xml").build
+                Response.ok(ec.marshal(new XmlListWrapper(objs)), MediaType.TEXT_XML).build
+            }
+            case 'bon': {
+                val bac = new ByteArrayComposer();
+                bac.writeTransmission(objs)
+                Response.ok(bac.bytes, ByteArrayComposer.MIME_TYPE).build
+            }
+            case 'json': {
+                Response.ok(JsonComposer.toJsonString(objs), MediaType.APPLICATION_JSON).build
             }
             case 'csv': {
                 val cfg = new CSVConfiguration.Builder => [
@@ -75,7 +85,7 @@ class CurrencyService extends Application {
         }
     }
     
-    
+    // explicit format as a parameter
     @GET
     @Path("format/{format}")
     def public allInFormat(@PathParam("format") String format) {
@@ -90,7 +100,8 @@ class CurrencyService extends Application {
             throw new WebApplicationException("Unknown currency code " + code, Response.Status.BAD_REQUEST);
         return #[ currency.toBon ].inFormat(format)
     }
-    
+
+    // traditional JAX RS formats (single type)
     @GET
     @Path("json")
     @Produces(MediaType.APPLICATION_JSON)
@@ -111,17 +122,36 @@ class CurrencyService extends Application {
     @GET
     @Path("xml")
     @Produces(MediaType.TEXT_XML)
-    def public allAsXls() {
-        return Currency.availableCurrencies.map[toBon]
+    def public allAsXml() {
+        return Currency.availableCurrencies.map[toBon].toList
     }
 
     @GET
     @Path("xml/{code}")
     @Produces(MediaType.TEXT_XML)
-    def public asXls(@PathParam("code") String code) {
+    def public asXml(@PathParam("code") String code) {
         val currency = Currency.getInstance(code)
         if (currency === null)
             throw new WebApplicationException("Unknown currency code " + code, Response.Status.BAD_REQUEST);
         return currency.toBon
     }
+    
+    // showcase for the jaxrs converter
+    @GET
+    @Path("bon")
+    @Produces(ByteArrayComposer.MIME_TYPE)
+    def public allAsBonaPortable() {
+        return Currency.availableCurrencies.map[toBon]
+    }
+
+    @GET
+    @Path("bon/{code}")
+    @Produces(ByteArrayComposer.MIME_TYPE)
+    def public asBonaPortable(@PathParam("code") String code) {
+        val currency = Currency.getInstance(code)
+        if (currency === null)
+            throw new WebApplicationException("Unknown currency code " + code, Response.Status.BAD_REQUEST);
+        return currency.toBon
+    }
+
 }

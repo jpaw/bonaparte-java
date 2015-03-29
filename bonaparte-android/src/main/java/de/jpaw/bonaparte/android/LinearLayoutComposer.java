@@ -20,8 +20,8 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
+import de.jpaw.bonaparte.core.AbstractMessageComposer;
 import de.jpaw.bonaparte.core.BonaCustom;
-import de.jpaw.bonaparte.core.MessageComposer;
 import de.jpaw.bonaparte.core.StaticMeta;
 import de.jpaw.bonaparte.enums.BonaNonTokenizableEnum;
 import de.jpaw.bonaparte.enums.BonaTokenizableEnum;
@@ -41,7 +41,7 @@ import de.jpaw.util.ByteArray;
 /** Composer which is designed to work as a delegate for a foldingComposer.
  * Therefore object output itself is not supported. */
 
-abstract public class LinearLayoutComposer implements MessageComposer<RuntimeException>, AndroidViewComposer, View.OnClickListener {
+abstract public class LinearLayoutComposer extends AbstractMessageComposer<RuntimeException> implements AndroidViewComposer, View.OnClickListener {
     static private final Logger LOG = LoggerFactory.getLogger(LinearLayoutComposer.class);
     protected int rownum = -1;
     protected int column = 0;

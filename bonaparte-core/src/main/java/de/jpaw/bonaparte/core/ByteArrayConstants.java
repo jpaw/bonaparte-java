@@ -25,31 +25,31 @@ package de.jpaw.bonaparte.core;
  *          Defines some constants which are used by Byte(Array) based parsers and composers.
  */
 
-public abstract class ByteArrayConstants extends Settings {
-    protected static final String EMPTY_STRING = new String("");
+public interface ByteArrayConstants {
+    public static final String EMPTY_STRING = new String("");
     // constants
-    protected static final byte PLUS_SIGN = '+';
-    protected static final byte MINUS_SIGN = '-';
-    protected static final byte DECIMAL_POINT = '.';
+    public static final byte PLUS_SIGN = '+';
+    public static final byte MINUS_SIGN = '-';
+    public static final byte DECIMAL_POINT = '.';
 
-    protected static final byte FIELD_TERMINATOR = '\006';          // ctrl-F
-    protected static final byte TRANSMISSION_TERMINATOR = '\025';   // ctrl-U
-    protected static final byte TRANSMISSION_TERMINATOR2 = '\032';  // ctrl-Z
-    protected static final byte ARRAY_TERMINATOR = '\001';          // ctrl-A
-    protected static final byte ARRAY_BEGIN = '\002';               // ctrl-B
-    protected static final byte TRANSMISSION_BEGIN = '\024';        // ctrl-T
-    protected static final byte RECORD_BEGIN = '\022';              // ctrl-R
-    protected static final byte RECORD_OPT_TERMINATOR = '\015';     // ctrl-M
-    protected static final byte RECORD_TERMINATOR = '\012';         // ctrl-J
-    protected static final byte PARENT_SEPARATOR = '\020';          // ctrl-P
-    protected static final byte OBJECT_BEGIN = '\023';              // ctrl-S
-    protected static final byte OBJECT_TERMINATOR = '\017';         // ctrl-O
-    protected static final byte OBJECT_AGAIN = '\007';              // ctrl-G
-    protected static final byte ESCAPE_CHAR = '\005';               // ctrl-E
-    protected static final byte NULL_FIELD = '\016';                // ctrl-N
-    protected static final byte MAP_BEGIN = '\036';                 //
+    public static final byte FIELD_TERMINATOR = '\006';          // ctrl-F
+    public static final byte TRANSMISSION_TERMINATOR = '\025';   // ctrl-U
+    public static final byte TRANSMISSION_TERMINATOR2 = '\032';  // ctrl-Z
+    public static final byte ARRAY_TERMINATOR = '\001';          // ctrl-A
+    public static final byte ARRAY_BEGIN = '\002';               // ctrl-B
+    public static final byte TRANSMISSION_BEGIN = '\024';        // ctrl-T
+    public static final byte RECORD_BEGIN = '\022';              // ctrl-R
+    public static final byte RECORD_OPT_TERMINATOR = '\015';     // ctrl-M
+    public static final byte RECORD_TERMINATOR = '\012';         // ctrl-J
+    public static final byte PARENT_SEPARATOR = '\020';          // ctrl-P
+    public static final byte OBJECT_BEGIN = '\023';              // ctrl-S
+    public static final byte OBJECT_TERMINATOR = '\017';         // ctrl-O
+    public static final byte OBJECT_AGAIN = '\007';              // ctrl-G
+    public static final byte ESCAPE_CHAR = '\005';               // ctrl-E
+    public static final byte NULL_FIELD = '\016';                // ctrl-N
+    public static final byte MAP_BEGIN = '\036';                 //
 
-    protected static final byte BOM1 = (byte)0xef;                 // optional first byte of UTF-8 encoded byte order mark
-    protected static final byte BOM2 = (byte)0xbb;                 //
-    protected static final byte BOM3 = (byte)0xbf;                 //
+    public static final byte BOM1 = (byte)0xef;                 // optional first byte of UTF-8 encoded byte order mark
+    public static final byte BOM2 = (byte)0xbb;                 //
+    public static final byte BOM3 = (byte)0xbf;                 //
 }

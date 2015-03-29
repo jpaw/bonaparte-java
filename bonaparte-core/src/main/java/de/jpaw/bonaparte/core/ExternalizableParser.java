@@ -54,7 +54,7 @@ import de.jpaw.util.ByteArray;
  *          Implements the deserialization for the internal format using the Externalizable interface.
  */
 
-public final class ExternalizableParser extends ExternalizableConstants implements MessageParser<IOException> {
+public final class ExternalizableParser extends Settings implements MessageParser<IOException>, ExternalizableConstants {
     private static final Logger LOGGER = LoggerFactory.getLogger(ExternalizableParser.class);
     private final ObjectInput in;
     private String currentClass = "N/A";

@@ -25,7 +25,7 @@ import de.jpaw.enums.XEnum;
 import de.jpaw.util.ByteArray;
 
 /** Represents some stub methods. */
-public class NoOpComposer<E extends Exception> implements MessageComposer<E> {
+public class NoOpComposer<E extends Exception> extends AbstractMessageComposer<E> {
 
     public NoOpComposer() {
     }

@@ -52,7 +52,7 @@ import de.jpaw.util.ByteTestsASCII;
  *          Implementation of the MessageParser, using byte arrays.
  */
 
-public class ByteArrayParser extends ByteArrayConstants implements MessageParser<MessageParserException> {
+public class ByteArrayParser extends Settings implements MessageParser<MessageParserException>, ByteArrayConstants {
     private static final Logger LOGGER = LoggerFactory.getLogger(ByteArrayParser.class);
     private int parseIndex;
     private int messageLength;
@@ -411,7 +411,6 @@ public class ByteArrayParser extends ByteArrayConstants implements MessageParser
 
     @Override
     public Boolean readBoolean(MiscElementaryDataItem di) throws MessageParserException {
-        boolean result;
         if (checkForNull(di)) {
             return null;
         }

@@ -100,51 +100,51 @@ package de.jpaw.bonaparte.core;
  *    are likely to be written always as 2 bytes, because the likelyhood of year numbers in the range 00..63 is very low.
  */
 
-public abstract class CompactConstants extends Settings {
-    protected static final String EMPTY_STRING = new String("");
+public interface CompactConstants {
+    public static final String EMPTY_STRING = new String("");
 
-    protected static final int PARENT_SEPARATOR = 0xae;
-    protected static final int OBJECT_BEGIN_ID = 0xde;
-    protected static final int OBJECT_BEGIN_PQON = 0xdf;
-    protected static final int OBJECT_BEGIN_BASE = 0xac;
-    protected static final int OBJECT_TERMINATOR = 0xad;
-    protected static final int OBJECT_AGAIN = 0xdd;
+    public static final int PARENT_SEPARATOR = 0xae;
+    public static final int OBJECT_BEGIN_ID = 0xde;
+    public static final int OBJECT_BEGIN_PQON = 0xdf;
+    public static final int OBJECT_BEGIN_BASE = 0xac;
+    public static final int OBJECT_TERMINATOR = 0xad;
+    public static final int OBJECT_AGAIN = 0xdd;
 
-    protected static final int NULL_FIELD = 0xa0;
-    protected static final int EMPTY_FIELD = 0xaf;
-    protected static final int MAP_BEGIN = 0xfa;
-//    protected static final int COLLECTIONS_TERMINATOR = 0xfb;  // array / set / list / map terminator
-    protected static final int ARRAY_BEGIN = 0xfc;
+    public static final int NULL_FIELD = 0xa0;
+    public static final int EMPTY_FIELD = 0xaf;
+    public static final int MAP_BEGIN = 0xfa;
+//    public static final int COLLECTIONS_TERMINATOR = 0xfb;  // array / set / list / map terminator
+    public static final int ARRAY_BEGIN = 0xfc;
 
-    protected static final int INT_2BYTE = 0xe2;
-    protected static final int INT_3BYTE = 0xe3;
-    protected static final int INT_4BYTE = 0xe4;
-    protected static final int INT_6BYTE = 0xe6;
-    protected static final int INT_8BYTE = 0xe8;
-    protected static final int UNICODE_CHAR = 0xd6;
-    protected static final int SHORT_ASCII_STRING = 0xb0;  // 16 consequtive
-    protected static final int COMPACT_FLOAT = 0xd1;
-    protected static final int COMPACT_DOUBLE = 0xd2;
-    protected static final int COMPACT_UUID = 0xd7;
-    protected static final int COMPACT_BIGDECIMAL = 0xf0;
-    protected static final int COMPACT_BIGINTEGER = 0xe0;
-    protected static final int COMPACT_BINARY = 0xfe;
+    public static final int INT_2BYTE = 0xe2;
+    public static final int INT_3BYTE = 0xe3;
+    public static final int INT_4BYTE = 0xe4;
+    public static final int INT_6BYTE = 0xe6;
+    public static final int INT_8BYTE = 0xe8;
+    public static final int UNICODE_CHAR = 0xd6;
+    public static final int SHORT_ASCII_STRING = 0xb0;  // 16 consequtive
+    public static final int COMPACT_FLOAT = 0xd1;
+    public static final int COMPACT_DOUBLE = 0xd2;
+    public static final int COMPACT_UUID = 0xd7;
+    public static final int COMPACT_BIGDECIMAL = 0xf0;
+    public static final int COMPACT_BIGINTEGER = 0xe0;
+    public static final int COMPACT_BINARY = 0xfe;
 
-    protected static final int COMPACT_DATE = 0xd8;
-    protected static final int COMPACT_TIME = 0xd9;
-    protected static final int COMPACT_TIME_MILLIS = 0xda;
-    protected static final int COMPACT_DATETIME = 0xdb;
-    protected static final int COMPACT_DATETIME_MILLIS = 0xdc;
+    public static final int COMPACT_DATE = 0xd8;
+    public static final int COMPACT_TIME = 0xd9;
+    public static final int COMPACT_TIME_MILLIS = 0xda;
+    public static final int COMPACT_DATETIME = 0xdb;
+    public static final int COMPACT_DATETIME_MILLIS = 0xdc;
 
-    protected static final int ASCII_STRING = 0xe1;
-    protected static final int UTF16_STRING = 0xfd;
-    protected static final int UTF8_STRING = 0xff;
+    public static final int ASCII_STRING = 0xe1;
+    public static final int UTF16_STRING = 0xfd;
+    public static final int UTF8_STRING = 0xff;
 
-    protected static final String CHARSET_ASCII = "ISO-8859-1"; // US-ASCII
-    protected static final String CHARSET_UTF8 = "UTF-8";
-    protected static final String CHARSET_UTF16 = "UTF-16BE";
+    public static final String CHARSET_ASCII = "ISO-8859-1"; // US-ASCII
+    public static final String CHARSET_UTF8 = "UTF-8";
+    public static final String CHARSET_UTF16 = "UTF-16BE";
 
-    protected static final int COMPRESSED = 0xd5;
-    protected static final int COMPRESSED_LZ4 = 0;  // first type
+    public static final int COMPRESSED = 0xd5;
+    public static final int COMPRESSED_LZ4 = 0;  // first type
 
 }

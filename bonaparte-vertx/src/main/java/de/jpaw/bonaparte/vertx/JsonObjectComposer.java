@@ -13,8 +13,8 @@ import org.joda.time.format.ISODateTimeFormat;
 import org.vertx.java.core.json.JsonArray;
 import org.vertx.java.core.json.JsonObject;
 
+import de.jpaw.bonaparte.core.AbstractMessageComposer;
 import de.jpaw.bonaparte.core.BonaCustom;
-import de.jpaw.bonaparte.core.MessageComposer;
 import de.jpaw.bonaparte.core.StaticMeta;
 import de.jpaw.bonaparte.enums.BonaNonTokenizableEnum;
 import de.jpaw.bonaparte.enums.BonaTokenizableEnum;
@@ -32,7 +32,7 @@ import de.jpaw.enums.XEnum;
 import de.jpaw.util.ByteArray;
 
 /** Composer which serializes all data into a vertx JsonObject */
-public class JsonObjectComposer implements MessageComposer<RuntimeException> {
+public class JsonObjectComposer extends AbstractMessageComposer<RuntimeException> {
     protected static final DateTimeFormatter LOCAL_DATE_ISO = ISODateTimeFormat.basicDate();
     protected static final DateTimeFormatter LOCAL_DATETIME_ISO = ISODateTimeFormat.basicDateTime();
     protected static final DateTimeFormatter LOCAL_TIME_ISO = ISODateTimeFormat.basicTime();

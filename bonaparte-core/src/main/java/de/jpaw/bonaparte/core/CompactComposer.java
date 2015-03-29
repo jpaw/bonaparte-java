@@ -40,7 +40,7 @@ import de.jpaw.util.ByteArray;
  * @author Michael Bischoff
  *
  */
-public class CompactComposer extends CompactConstants implements MessageComposer<IOException> {
+public class CompactComposer extends AbstractMessageComposer<IOException> implements CompactConstants {
     private static Field unsafeString = calculateUnsafe();
     static private Field calculateUnsafe() {
         try {

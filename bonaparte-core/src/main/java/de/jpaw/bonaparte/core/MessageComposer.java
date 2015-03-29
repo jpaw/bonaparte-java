@@ -17,6 +17,7 @@ package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Collection;
 import java.util.UUID;
 
 import org.joda.time.Instant;
@@ -51,22 +52,25 @@ import de.jpaw.util.ByteArray;
 public interface MessageComposer<E extends Exception> {
 
     // serialization methods: structure
-    public void writeNull(FieldDefinition di) throws E;             // write a null field
-    public void writeNullCollection(FieldDefinition di) throws E;   // the whole collection is null
-    public void startTransmission() throws E;
-    public void startRecord() throws E;
-    public void startArray(FieldDefinition di, int currentMembers, int sizeOfElement) throws E;
-    public void startMap  (FieldDefinition di, int currentMembers) throws E;
-    public void writeSuperclassSeparator() throws E;  // this is bad. It should be transparent to the classes if the message format contains separators or not.
-    public void terminateMap() throws E;
-    public void terminateArray() throws E;
-    public void terminateRecord() throws E;
-    public void terminateTransmission() throws E;
-    public void writeRecord(BonaCustom o) throws E;
-
+    void writeNull(FieldDefinition di) throws E;             // write a null field
+    void writeNullCollection(FieldDefinition di) throws E;   // the whole collection is null
+    void startTransmission() throws E;
+    void startRecord() throws E;
+    void startArray(FieldDefinition di, int currentMembers, int sizeOfElement) throws E;
+    void startMap  (FieldDefinition di, int currentMembers) throws E;
+    void writeSuperclassSeparator() throws E;  // this is bad. It should be transparent to the classes if the message format contains separators or not.
+    void terminateMap() throws E;
+    void terminateArray() throws E;
+    void terminateRecord() throws E;
+    void terminateTransmission() throws E;
+    void writeRecord(BonaCustom o) throws E;
+    void writeRecordSeparator() throws E;                                   // outputs data which must be sent between records (if any) 
+    void writeTransmission(Collection<? extends BonaCustom> coll) throws E; // write a list of messages
+    void writeTransmission(Iterable<? extends BonaCustom> coll) throws E;   // write a list of messages (different parameter type)
+    
     // the following methods are not required by the bonaportables directly, but for delegating composer operation
-    public void startObject(ObjectReference di, BonaCustom o) throws E;  // write the name and the revision  (only used internally in composers)
-    public void terminateObject(ObjectReference di, BonaCustom o) throws E;  // write the name and the revision  (only used internally in composers)
+    void startObject(ObjectReference di, BonaCustom o) throws E;  // write the name and the revision  (only used internally in composers)
+    void terminateObject(ObjectReference di, BonaCustom o) throws E;  // write the name and the revision  (only used internally in composers)
 
     // serialization methods: field type specific
 

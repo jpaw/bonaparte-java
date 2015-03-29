@@ -255,6 +255,7 @@
         <module>../bonaparte-android/pom.xml</module>
         <module>../bonaparte-xml/pom.xml</module>
         <module>../bonaparte-xml-test/pom.xml</module>
+        <module>../bonaparte-jaxrs/pom.xml</module>
         <module>../bonaparte-hazelcast/pom.xml</module>
         <module>../bonaparte-hazelcast-api/pom.xml</module>
         <module>../bonaparte-hazelcast-test/pom.xml</module>
@@ -275,6 +276,7 @@
         <module>../bonaparte-zk/pom.xml</module>
         <module>../bonaparte-i18n/pom.xml</module>
         <module>../bonaparte-repackage/pom.xml</module>
+        <module>../bonaparte-examples-jaxrs/pom.xml</module>
     </modules>
 
 </project>

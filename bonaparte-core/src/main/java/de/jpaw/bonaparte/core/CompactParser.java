@@ -31,7 +31,7 @@ import de.jpaw.enums.AbstractXEnumBase;
 import de.jpaw.enums.XEnumFactory;
 import de.jpaw.util.ByteArray;
 
-public class CompactParser extends CompactConstants implements MessageParser<IOException> {
+public class CompactParser extends Settings implements MessageParser<IOException>, CompactConstants {
     private static final byte [] EMPTY_BYTE_ARRAY = new byte [0];
     private static final String EMPTY_STRING = "";
 

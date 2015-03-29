@@ -54,7 +54,7 @@ import de.jpaw.util.ByteArray;
  *          the class itself (the caller), but any object which does not exist in primitive form has its null check here.
  */
 
-public class ExternalizableComposer extends ExternalizableConstants implements MessageComposer<IOException> {
+public class ExternalizableComposer extends AbstractMessageComposer<IOException> implements ExternalizableConstants {
 
     private final ObjectOutput out;
 
