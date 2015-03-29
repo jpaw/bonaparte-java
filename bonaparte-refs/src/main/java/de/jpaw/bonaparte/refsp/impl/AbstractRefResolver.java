@@ -2,8 +2,8 @@ package de.jpaw.bonaparte.refsp.impl;
 
 import java.util.List;
 
-import net.openhft.koloboke.collect.map.hash.HashLongObjMap;
-import net.openhft.koloboke.collect.map.hash.HashLongObjMaps;
+//import net.openhft.koloboke.collect.map.hash.HashLongObjMap;
+//import net.openhft.koloboke.collect.map.hash.HashLongObjMaps;
 import de.jpaw.bonaparte.core.ObjectValidationException;
 import de.jpaw.bonaparte.pojos.api.AbstractRef;
 import de.jpaw.bonaparte.pojos.api.DataWithTracking;
@@ -12,6 +12,7 @@ import de.jpaw.bonaparte.pojos.api.SortColumn;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
 import de.jpaw.bonaparte.refs.PersistenceException;
 import de.jpaw.bonaparte.refsp.RefResolver;
+import de.jpaw.primitivecollections.HashMapPrimitiveLongObject;
 import de.jpaw.util.ApplicationException;
 import de.jpaw.util.ByteBuilder;
 
@@ -36,8 +37,8 @@ import de.jpaw.util.ByteBuilder;
  * @param <TRACKING>
  */
 public abstract class AbstractRefResolver<REF extends AbstractRef, DTO extends REF, TRACKING extends TrackingBase> implements RefResolver<REF, DTO, TRACKING> {
-    private HashLongObjMap<DataWithTracking<DTO, TRACKING>> cache = HashLongObjMaps.newMutableMap(1024 * 1024);
-
+    // private HashLongObjMap<DataWithTracking<DTO, TRACKING>> cache = HashLongObjMaps.newMutableMap(1024 * 1024);
+    private HashMapPrimitiveLongObject<DataWithTracking<DTO, TRACKING>> cache = new HashMapPrimitiveLongObject<DataWithTracking<DTO, TRACKING>>(1024);
     protected ByteBuilder builder;
     protected String entityName;
 

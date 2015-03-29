@@ -5,9 +5,9 @@ package examples.jaxrs XML PROPERTY {
      
     class BonCurrency xmlRoot {
         required iso4217a3          currencyCode;
-        required int                defaultFractionalDigits;
+        required signed int(1)      defaultFractionalDigits;        // -1 for artificial currencies 
         optional Unicode(80)        displayName;
-        required int(4)             numericCode;                
-        required Unicode(20)        symbol;
+        required unsigned int(3)    numericCode;                
+        required Unicode(3)         symbol;
     }
 }

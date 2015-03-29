@@ -25,29 +25,10 @@
         </dependency>
         
         <dependency>
-            <groupId>net.openhft</groupId>
-            <artifactId>koloboke-api-jdk6-7</artifactId>
-            <version>${koloboke.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.openhft</groupId>
-            <artifactId>koloboke-impl-jdk6-7</artifactId>
-            <version>${koloboke.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-<!--         
-        <dependency>
-            <groupId>com.carrotsearch</groupId>
-            <artifactId>hppc</artifactId>
-            <version>0.6.1</version>
-        </dependency>
- -->        
-        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <version>${slf4j.version}</version>
             <scope>runtime</scope>
         </dependency>
     </dependencies>
-
 </project>

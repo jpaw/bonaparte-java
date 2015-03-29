@@ -33,9 +33,12 @@ import org.joda.time.Instant;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.jpaw.bonaparte.core.AbstractMessageComposer;
 import de.jpaw.bonaparte.core.BonaCustom;
+import de.jpaw.bonaparte.core.BonaPortableFactory;
 import de.jpaw.bonaparte.core.StaticMeta;
 import de.jpaw.bonaparte.enums.BonaNonTokenizableEnum;
 import de.jpaw.bonaparte.enums.BonaTokenizableEnum;
@@ -69,6 +72,7 @@ import de.jpaw.util.IntegralLimits;
  */
 
 public class BaseExcelComposer extends AbstractMessageComposer<RuntimeException> implements ExcelWriter {
+    private static final Logger LOGGER = LoggerFactory.getLogger(BaseExcelComposer.class);
     protected static final int MAX_DECIMALS = 18;
     protected final Workbook xls;
     protected final DataFormat xlsDataFormat;
@@ -165,17 +169,63 @@ public class BaseExcelComposer extends AbstractMessageComposer<RuntimeException>
         return result;
     }
     
+    protected void setFieldWidth(FieldDefinition di) {
+        int gap = 3;        // addon for graphical reasons (border dist)
+        int width = 8;  // this is the xls default
+        switch (di.getDataCategory()) {
+        case BASICNUMERIC:
+        case NUMERIC:
+            BasicNumericElementaryDataItem ni = (BasicNumericElementaryDataItem)di;
+            width = ni.getTotalDigits() + (ni.getIsSigned() ? 1 : 0) + (ni.getDecimalDigits() > 0 ? 1 : 0);  // allow 1 for sign and decimal point)
+            break;
+        case BINARY:
+            break;
+        case ENUM:
+            width = 3;      // small number
+            break;
+        case ENUMALPHA:
+            width = ((XEnumDataItem)di).getBaseXEnum().getBaseEnum().getMaxTokenLength();
+            break;
+        case ENUMSET:
+            break;
+        case ENUMSETALPHA:
+            break;
+        case MISC:
+            break;
+        case OBJECT:
+            break;
+        case STRING:
+            int len = ((AlphanumericElementaryDataItem)di).getLength();
+            width = len > 32 ? 32 : len;
+            break;
+        case TEMPORAL:
+            width = 20; // 10 for date, 8 for time
+            break;
+        case XENUM:
+            width = ((XEnumDataItem)di).getBaseXEnum().getBaseEnum().getMaxTokenLength();
+            break;
+        case XENUMSET:
+            break;
+        default:
+            break;
+        }
+        LOGGER.debug("Setting width of column {} ({}); to {}", column, di.getName(), width); 
+        sheet.setColumnWidth(column, (width + gap) * 256);
+    }
+    
     /**************************************************************************************************
      * Serialization goes here
      **************************************************************************************************/
 
-    protected void writeNull() {
-        ++column;   // no output for empty cells, but ensure that everything goes nicely into the correct column
-    }
+//    protected void writeNull() {
+//        ++column;   // no output for empty cells, but ensure that everything goes nicely into the correct column
+//    }
 
     @Override
     public void writeNull(FieldDefinition di) {
         ++column;   // no output for empty cells, but ensure that everything goes nicely into the correct column
+        if (rownum == 0)
+            setFieldWidth(di);
     }
 
     @Override
@@ -214,23 +264,19 @@ public class BaseExcelComposer extends AbstractMessageComposer<RuntimeException>
         terminateRecord();
     }
 
-    private Cell newCell() {
+    private Cell newCell(FieldDefinition di) {
         ++column;
+        if (rownum == 0)
+            setFieldWidth(di);
         return row.createCell(column);
     }
 
     // create a new cell and apply an existng cell style to it
-    private Cell newCell(CellStyle cs) {
-        Cell cell = newCell();
+    private Cell newCell(FieldDefinition di, CellStyle cs) {
+        Cell cell = newCell(di);
         if (cs != null)
             cell.setCellStyle(cs);
         return cell;
-    }
-
-    private void newStringCell(String s) {
-        ++column;
-        if (s != null)
-            row.createCell(column).setCellValue(s);
     }
 
     // field type specific output functions
@@ -238,21 +284,24 @@ public class BaseExcelComposer extends AbstractMessageComposer<RuntimeException>
     // character
     @Override
     public void addField(MiscElementaryDataItem di, char c) {
-        newCell().setCellValue(String.valueOf(c));
+        newCell(di).setCellValue(String.valueOf(c));
     }
     // ascii only (unicode uses different method)
     @Override
     public void addField(AlphanumericElementaryDataItem di, String s) {
-        newStringCell(s);
+        if (s != null)
+            newCell(di).setCellValue(s);
+        else
+            writeNull(di);
     }
 
     // decimal
     @Override
     public void addField(NumericElementaryDataItem di, BigDecimal n) {
         if (n != null) {
-            newCell(getCachedCellStyle(n.scale())).setCellValue(n.doubleValue());
+            newCell(di, getCachedCellStyle(n.scale())).setCellValue(n.doubleValue());
         } else {
-            writeNull();
+            writeNull(di);
         }
     }
 
@@ -260,9 +309,9 @@ public class BaseExcelComposer extends AbstractMessageComposer<RuntimeException>
     private void addScaledNumber(BasicNumericElementaryDataItem di, double n) {
         int fractionalDigits = di.getDecimalDigits();
         if (fractionalDigits > 0)
-            newCell(getCachedCellStyle(fractionalDigits)).setCellValue(n * IntegralLimits.IMPLICIT_SCALES[fractionalDigits]);
+            newCell(di, getCachedCellStyle(fractionalDigits)).setCellValue(n * IntegralLimits.IMPLICIT_SCALES[fractionalDigits]);
         else
-            newCell(csLong).setCellValue(n);
+            newCell(di, csLong).setCellValue(n);
     }
 
     // byte
@@ -285,9 +334,9 @@ public class BaseExcelComposer extends AbstractMessageComposer<RuntimeException>
     @Override
     public void addField(BasicNumericElementaryDataItem di, BigInteger n) {
         if (n != null) {
-            newCell().setCellValue(n.doubleValue());
+            newCell(di).setCellValue(n.doubleValue());
         } else {
-            writeNull();
+            writeNull(di);
         }
     }
 
@@ -300,28 +349,28 @@ public class BaseExcelComposer extends AbstractMessageComposer<RuntimeException>
     // boolean
     @Override
     public void addField(MiscElementaryDataItem di, boolean b) {
-        newCell().setCellValue(b);
+        newCell(di).setCellValue(b);
     }
 
     // float
     @Override
     public void addField(BasicNumericElementaryDataItem di, float f) {
-        newCell().setCellValue(f);
+        newCell(di).setCellValue(f);
     }
 
     // double
     @Override
     public void addField(BasicNumericElementaryDataItem di, double d) {
-        newCell().setCellValue(d);
+        newCell(di).setCellValue(d);
     }
 
     // UUID
     @Override
     public void addField(MiscElementaryDataItem di, UUID n) {
         if (n != null) {
-            newCell().setCellValue(n.toString());
+            newCell(di).setCellValue(n.toString());
         } else {
-            writeNull();
+            writeNull(di);
         }
     }
 
@@ -331,9 +380,9 @@ public class BaseExcelComposer extends AbstractMessageComposer<RuntimeException>
         if (b != null) {
             ByteBuilder tmp = new ByteBuilder((b.length() * 2) + 4, null);
             Base64.encodeToByte(tmp, b.getBytes(), 0, b.length());
-            newCell().setCellValue(new String(tmp.getCurrentBuffer(), 0, tmp.length()));
+            newCell(di).setCellValue(new String(tmp.getCurrentBuffer(), 0, tmp.length()));
         } else {
-            writeNull();
+            writeNull(di);
         }
     }
 
@@ -343,9 +392,9 @@ public class BaseExcelComposer extends AbstractMessageComposer<RuntimeException>
         if (b != null) {
             ByteBuilder tmp = new ByteBuilder((b.length * 2) + 4, null);
             Base64.encodeToByte(tmp, b, 0, b.length);
-            newCell().setCellValue(new String(tmp.getCurrentBuffer(), 0, tmp.length()));
+            newCell(di).setCellValue(new String(tmp.getCurrentBuffer(), 0, tmp.length()));
         } else {
-            writeNull();
+            writeNull(di);
         }
     }
 
@@ -353,36 +402,36 @@ public class BaseExcelComposer extends AbstractMessageComposer<RuntimeException>
     @Override
     public void addField(TemporalElementaryDataItem di, LocalDate t) {
         if (t != null) {
-            newCell(csDay).setCellValue(t.toDate());
+            newCell(di, csDay).setCellValue(t.toDate());
         } else {
-            writeNull();
+            writeNull(di);
         }
     }
 
     @Override
     public void addField(TemporalElementaryDataItem di, LocalDateTime t) {
         if (t != null) {
-            newCell(csTimestamp).setCellValue(t.toDate());
+            newCell(di, csTimestamp).setCellValue(t.toDate());
         } else {
-            writeNull();
+            writeNull(di);
         }
     }
 
     @Override
     public void addField(TemporalElementaryDataItem di, LocalTime t) {
         if (t != null) {
-            newCell(csTime).setCellValue(DayTime.toDate(t));
+            newCell(di, csTime).setCellValue(DayTime.toDate(t));
         } else {
-            writeNull();
+            writeNull(di);
         }
     }
 
     @Override
     public void addField(TemporalElementaryDataItem di, Instant t) {
         if (t != null) {
-            newCell(csTimestamp).setCellValue(t.toDate());
+            newCell(di, csTimestamp).setCellValue(t.toDate());
         } else {
-            writeNull();
+            writeNull(di);
         }
     }
 
