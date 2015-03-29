@@ -39,7 +39,7 @@ import de.jpaw.util.ByteBuilder;
  * @author Michael Bischoff
  *
  */
-public class CompactByteArrayComposer extends AbstractMessageComposer<RuntimeException> implements CompactConstants {
+public class CompactByteArrayComposer extends AbstractMessageComposer<RuntimeException> implements CompactConstants, BufferedMessageComposer<RuntimeException> {
     private static Field unsafeString = calculateUnsafe();
     static private Field calculateUnsafe() {
         try {
@@ -51,6 +51,8 @@ public class CompactByteArrayComposer extends AbstractMessageComposer<RuntimeExc
         }
     }
 
+    private static final int DEFAULT_BUFFER_SIZE = 8000;
+    
     private final boolean useCache;
     private final Map<BonaCustom, Integer> objectCache;
     private int numberOfObjectsSerialized;
@@ -77,6 +79,10 @@ public class CompactByteArrayComposer extends AbstractMessageComposer<RuntimeExc
         return b.getBytes();
     }
 
+    public CompactByteArrayComposer() {
+        this(new ByteBuilder(DEFAULT_BUFFER_SIZE, getDefaultCharset()), ObjectReuseStrategy.defaultStrategy, false);
+    }
+    
     public CompactByteArrayComposer(int bufferSize, boolean recommendIdentifiable) {
         this(new ByteBuilder(bufferSize, getDefaultCharset()), ObjectReuseStrategy.defaultStrategy, recommendIdentifiable);
     }
@@ -111,6 +117,7 @@ public class CompactByteArrayComposer extends AbstractMessageComposer<RuntimeExc
     }
 
     // must be overridden / called if caching / reuse is active!
+    @Override
     public void reset() {
         numberOfObjectsSerialized = 0;
         numberOfObjectReuses = 0;
@@ -126,6 +133,21 @@ public class CompactByteArrayComposer extends AbstractMessageComposer<RuntimeExc
 
     public ByteBuilder getBuilder() {
         return out;
+    }
+
+    @Override
+    public byte [] getBuffer() {
+        return out.getCurrentBuffer();
+    }
+
+    @Override
+    public int getLength() {
+        return out.length();
+    }
+
+    @Override
+    public byte [] getBytes() {
+        return out.getBytes();
     }
 
     /**************************************************************************************************
@@ -675,7 +697,7 @@ public class CompactByteArrayComposer extends AbstractMessageComposer<RuntimeExc
                 addField(REVISION_META, meta.getRevision());
             }
         } else {
-            if (recommendIdentifiable) {
+            if (recommendIdentifiable && meta.getFactoryId() > 0 && meta.getId() > 0) {
                 out.writeByte(OBJECT_BEGIN_ID);
                 intOut(meta.getFactoryId());
                 intOut(meta.getId());

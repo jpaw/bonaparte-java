@@ -26,6 +26,7 @@ package de.jpaw.bonaparte.core;
  */
 
 public interface ByteArrayConstants {
+    public static final String MIME_TYPE = "application/bonaparte";     // same in StringBuilderConstants!
     public static final String EMPTY_STRING = new String("");
     // constants
     public static final byte PLUS_SIGN = '+';

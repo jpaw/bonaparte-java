@@ -101,6 +101,7 @@ package de.jpaw.bonaparte.core;
  */
 
 public interface CompactConstants {
+    public static final String MIME_TYPE = "application/compact";
     public static final String EMPTY_STRING = new String("");
 
     public static final int PARENT_SEPARATOR = 0xae;

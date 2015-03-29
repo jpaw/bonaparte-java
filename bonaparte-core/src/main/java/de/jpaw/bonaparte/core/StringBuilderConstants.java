@@ -25,6 +25,7 @@ package de.jpaw.bonaparte.core;
  */
 
 public interface StringBuilderConstants {
+    public static final String MIME_TYPE = "application/bonaparte";     // same in ByteArrayConstants!
     public static final String EMPTY_STRING = new String("");
 
     public static final char FIELD_TERMINATOR = '\006'; // ctrl-F

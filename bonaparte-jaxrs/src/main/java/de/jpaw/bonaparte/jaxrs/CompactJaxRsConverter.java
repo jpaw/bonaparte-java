@@ -5,27 +5,27 @@ import javax.ws.rs.ext.Provider;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.BufferedMessageComposer;
-import de.jpaw.bonaparte.core.ByteArrayComposer;
-import de.jpaw.bonaparte.core.ByteArrayParser;
+import de.jpaw.bonaparte.core.CompactByteArrayComposer;
+import de.jpaw.bonaparte.core.CompactByteArrayParser;
 import de.jpaw.bonaparte.core.MessageParser;
 import de.jpaw.bonaparte.core.MessageParserException;
 
 @Provider
-@Produces(ByteArrayComposer.MIME_TYPE)
-public class BonaparteJaxRsConverter extends AbstractBonaparteConverters {
+@Produces(CompactByteArrayComposer.MIME_TYPE)
+public class CompactJaxRsConverter extends AbstractBonaparteConverters {
 
-    public BonaparteJaxRsConverter() {
-        super(ByteArrayComposer.MIME_TYPE);
+    public CompactJaxRsConverter() {
+        super(CompactByteArrayComposer.MIME_TYPE);
     }
 
     @Override
     protected MessageParser<MessageParserException> newParser(byte[] buffer, int offset, int len) {
-        return new ByteArrayParser(buffer, offset, len);
+        return new CompactByteArrayParser(buffer, offset, len);
     }
 
     @Override
     protected BufferedMessageComposer<RuntimeException> newComposerWithData(BonaPortable obj) {
-        ByteArrayComposer bac = new ByteArrayComposer();
+        CompactByteArrayComposer bac = new CompactByteArrayComposer();
         bac.writeRecord(obj);
         return bac;
     }

@@ -666,7 +666,7 @@ public class CompactComposer extends AbstractMessageComposer<IOException> implem
                 addField(REVISION_META, meta.getRevision());
             }
         } else {
-            if (recommendIdentifiable) {
+            if (recommendIdentifiable && meta.getFactoryId() > 0 && meta.getId() > 0) {
                 out.writeByte(OBJECT_BEGIN_ID);
                 intOut(meta.getFactoryId());
                 intOut(meta.getId());
