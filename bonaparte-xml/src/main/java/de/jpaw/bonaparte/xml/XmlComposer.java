@@ -13,7 +13,7 @@ import javax.xml.stream.XMLStreamWriter;
 import de.jpaw.bonaparte.core.Settings;
 
 public class XmlComposer extends Settings {
-//    private static final byte [] XML_HEADER = "<?xml version=\"1.0\", encoding=\"UTF-8\", standalone=\"yes\"?>\r\n<data>\r\n".getBytes();
+//    private static final byte [] XML_HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\", standalone=\"yes\"?>\r\n<data>\r\n".getBytes();
 //    private static final byte [] XML_FOOTER = "</data>\r\n".getBytes();
 
 //    private final JAXBContext ctx;

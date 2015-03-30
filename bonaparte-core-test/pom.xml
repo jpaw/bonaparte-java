@@ -57,7 +57,7 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>4.3.0.Final</version>
+            <version>${hibernate-validator.version}</version>
         </dependency>
         <!-- Gson: Java to Json conversion (not required by bonaparte, just for performance comparison) -->
         <dependency>
