@@ -331,13 +331,6 @@ public class ExternalizableComposer extends AbstractMessageComposer<IOException>
     }
 
     @Override
-    public void writeRecord(BonaCustom o) throws IOException {
-        startRecord();
-        addField(StaticMeta.OUTER_BONAPORTABLE, o);
-        terminateRecord();
-    }
-
-    @Override
     public void addField(BasicNumericElementaryDataItem di, byte n) throws IOException {
         writeVarInt(n);
     }

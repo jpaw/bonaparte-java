@@ -54,7 +54,7 @@ public abstract class Settings implements StaticMeta {
 
     /** Returns information about how an end-of-record is encoded. Only relevant for serializers, not for deserializers.
      * @return true - if the current serializer writes a "carriage return / linefeed" end-of-record sequence (MS-WIN style), false if just a linefeed (UNIX / LINUX style). */
-    public boolean doWriteCRs() {
+    public boolean getWriteCRs() {
         return writeCRs;
     }
 

@@ -150,7 +150,7 @@ public class AppendableComposer extends AbstractMessageComposer<IOException> imp
 
     @Override
     public void terminateRecord() throws IOException {
-        if (doWriteCRs()) {
+        if (getWriteCRs()) {
             work.append(RECORD_OPT_TERMINATOR);
         }
         work.append(RECORD_TERMINATOR);
@@ -165,13 +165,6 @@ public class AppendableComposer extends AbstractMessageComposer<IOException> imp
     public void startRecord() throws IOException {
         work.append(RECORD_BEGIN);
         writeNull();  // blank version number
-    }
-
-    @Override
-    public void writeRecord(BonaCustom o) throws IOException {
-        startRecord();
-        addField(StaticMeta.OUTER_BONAPORTABLE, o);
-        terminateRecord();
     }
 
     private void addCharSub(char c) throws IOException {

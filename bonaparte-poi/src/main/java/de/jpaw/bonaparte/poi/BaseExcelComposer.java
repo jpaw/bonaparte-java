@@ -38,8 +38,6 @@ import org.slf4j.LoggerFactory;
 
 import de.jpaw.bonaparte.core.AbstractMessageComposer;
 import de.jpaw.bonaparte.core.BonaCustom;
-import de.jpaw.bonaparte.core.BonaPortableFactory;
-import de.jpaw.bonaparte.core.StaticMeta;
 import de.jpaw.bonaparte.enums.BonaNonTokenizableEnum;
 import de.jpaw.bonaparte.enums.BonaTokenizableEnum;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
@@ -255,13 +253,6 @@ public class BaseExcelComposer extends AbstractMessageComposer<RuntimeException>
         ++rownum;
         column = -1;
         row = sheet.createRow(rownum);
-    }
-
-    @Override
-    public void writeRecord(BonaCustom o) {
-        startRecord();
-        addField(StaticMeta.OUTER_BONAPORTABLE, o);
-        terminateRecord();
     }
 
     private Cell newCell(FieldDefinition di) {

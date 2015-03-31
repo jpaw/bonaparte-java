@@ -76,14 +76,6 @@ public class ListMetaComposer extends NoOpComposer<RuntimeException> implements 
         add(di,null);
     }
 
-
-    @Override
-    public void writeRecord(BonaCustom o) {
-        startRecord();  // noop in the base implementation
-        addField(StaticMeta.OUTER_BONAPORTABLE, o);
-        terminateRecord();  // noop in the base implementation
-    }
-
     @Override
     public void addField(AlphanumericElementaryDataItem di, String s) {
         add(di, s);

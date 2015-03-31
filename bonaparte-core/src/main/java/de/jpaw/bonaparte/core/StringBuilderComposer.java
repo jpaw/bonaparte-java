@@ -96,6 +96,20 @@ public class StringBuilderComposer extends AppendableComposer implements Buffere
         }
     }
 
+    /** Refine the main entry in order to relieve callers catching an Exception which is never thrown. */
+    @Override
+    public void writeObject(BonaCustom obj) {
+        try {
+            super.writeObject(obj);
+        } catch (IOException e) {
+            // StringBuilder.append does not throw an IOException.
+            LOGGER.error("Got an IOException from within StringBuilder, which should not happen, really!", e);
+            // to throw or not to throw (i.e. to ignore), that is the question...
+            // Decision: By assumption, this cannot happen, so if it does, we should know about it!
+            throw new RuntimeException("Got an IOException from within StringBuilder, which should not happen, really!", e);
+        }
+    }
+
     /** Refine the secondary entry in order to relieve callers catching an Exception which is never thrown. */
     @Override
     public void addField(ObjectReference di, BonaCustom obj) {

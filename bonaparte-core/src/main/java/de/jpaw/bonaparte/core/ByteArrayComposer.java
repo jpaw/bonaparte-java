@@ -188,7 +188,7 @@ public class ByteArrayComposer extends AbstractMessageComposer<RuntimeException>
 
     @Override
     public void terminateRecord() {
-        if (doWriteCRs()) {
+        if (getWriteCRs()) {
             work.append(RECORD_OPT_TERMINATOR);
         }
         work.append(RECORD_TERMINATOR);
@@ -203,13 +203,6 @@ public class ByteArrayComposer extends AbstractMessageComposer<RuntimeException>
     public void startRecord() {
         work.append(RECORD_BEGIN);
         writeNull();  // blank version number
-    }
-
-    @Override
-    public void writeRecord(BonaCustom o) {
-        startRecord();
-        addField(StaticMeta.OUTER_BONAPORTABLE, o);
-        terminateRecord();
     }
 
     private void addCharSub(int c) {

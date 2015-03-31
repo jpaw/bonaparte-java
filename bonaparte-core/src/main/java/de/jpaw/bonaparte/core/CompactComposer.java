@@ -169,13 +169,6 @@ public class CompactComposer extends AbstractMessageComposer<IOException> implem
     public void startRecord() throws IOException {
     }
 
-    @Override
-    public void writeRecord(BonaCustom o) throws IOException {
-        startRecord();
-        addField(StaticMeta.OUTER_BONAPORTABLE, o);
-        terminateRecord();
-    }
-
     // write a non-empty string (using charAt())
     protected void writeLongString(String s) throws IOException {
         char maxCode = 0;

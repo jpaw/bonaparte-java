@@ -199,13 +199,6 @@ public class CompactByteArrayComposer extends AbstractMessageComposer<RuntimeExc
     public void startRecord() {
     }
 
-    @Override
-    public void writeRecord(BonaCustom o) {
-        startRecord();
-        addField(StaticMeta.OUTER_BONAPORTABLE, o);
-        terminateRecord();
-    }
-
     // write a non-empty string (using charAt())
     protected void writeLongString(String s) {
         char maxCode = 0;

@@ -75,10 +75,6 @@ public class NoOpComposer<E extends Exception> extends AbstractMessageComposer<E
     }
 
     @Override
-    public void writeRecord(BonaCustom o) throws E {
-    }
-
-    @Override
     public void addField(AlphanumericElementaryDataItem di, String s) throws E {
     }
 

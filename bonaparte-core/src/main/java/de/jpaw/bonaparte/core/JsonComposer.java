@@ -49,6 +49,7 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
     protected final JsonEscaper jsonEscaper;
 
     protected boolean needFieldSeparator = false;
+    protected boolean needRecordSeparator = false;
 
     public static String toJsonString(BonaCustom obj) {
         StringBuilder buff = new StringBuilder(4000);
@@ -84,11 +85,6 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
         return buff.toString();
     }
     
-    
-    @Override
-    public void writeRecordSeparator() throws IOException {
-        out.append(',');
-    }
 
     public JsonComposer(Appendable out) {
         this.out = out;
@@ -221,6 +217,7 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
     @Override
     public void startTransmission() throws IOException {
         out.append('[');
+        needRecordSeparator = false;
     }
 
     @Override
@@ -280,7 +277,7 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
 
     @Override
     public void terminateRecord() throws IOException {
-        if (doWriteCRs())
+        if (getWriteCRs())
             out.append('\r');
         out.append('\n');
     }
@@ -290,11 +287,14 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
         out.append(']');
     }
 
+    // if required, insert a separator character between records.
     @Override
     public void writeRecord(BonaCustom o) throws IOException {
-        startRecord();
-        addField(StaticMeta.OUTER_BONAPORTABLE_FOR_JSON, o);
-        terminateRecord();
+        if (needRecordSeparator)
+            out.append(',');
+        else
+            needRecordSeparator = true;  // next time, I'll need it
+        super.writeRecord(o);
     }
 
     @Override

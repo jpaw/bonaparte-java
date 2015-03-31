@@ -1,5 +1,6 @@
 package de.jpaw.bonaparte.core;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
@@ -235,12 +236,6 @@ public class DelegatingBaseComposer<E extends Exception> implements MessageCompo
     }
 
     @Override
-    public void writeRecordSeparator() throws E {
-        delegateComposer.writeRecordSeparator();
-        
-    }
-
-    @Override
     public void writeTransmission(Collection<? extends BonaCustom> coll) throws E {
         delegateComposer.writeTransmission(coll);
     }
@@ -248,5 +243,15 @@ public class DelegatingBaseComposer<E extends Exception> implements MessageCompo
     @Override
     public void writeTransmission(Iterable<? extends BonaCustom> coll) throws E {
         delegateComposer.writeTransmission(coll);
+    }
+
+    @Override
+    public void writeObject(BonaCustom o) throws E {
+        delegateComposer.writeObject(o);
+    }
+
+    @Override
+    public void close() throws IOException {
+        delegateComposer.close();
     }
 }

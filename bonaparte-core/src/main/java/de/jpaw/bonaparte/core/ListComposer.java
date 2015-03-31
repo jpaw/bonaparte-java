@@ -74,14 +74,6 @@ public class ListComposer extends NoOpComposer<RuntimeException> implements Mess
         storage.add(null);
     }
 
-
-    @Override
-    public void writeRecord(BonaCustom o) {
-        startRecord();  // noop in the base implementation
-        addField(StaticMeta.OUTER_BONAPORTABLE, o);
-        terminateRecord();
-    }
-
     @Override
     public void addField(AlphanumericElementaryDataItem di, String s) {
         storage.add(s);
