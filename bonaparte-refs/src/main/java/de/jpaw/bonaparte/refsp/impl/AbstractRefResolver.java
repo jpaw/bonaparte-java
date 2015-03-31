@@ -79,11 +79,14 @@ public abstract class AbstractRefResolver<REF extends AbstractRef, DTO extends R
         // return key;
         // not in cache either, consult second level (in-memory DB)
         key = getUncachedKey(refObject);
+        if (key == 0L)
+            throw new PersistenceException(PersistenceException.NO_RECORD_FOR_INDEX, 0L, entityName, refObject.ret$PQON(), refObject.toString());
         // if (key > 0)
         // indexCache.put(refObject, key);
         return key;
     }
 
+    /** return data for a key. Returns null if no record exists. */
     protected final DataWithTracking<DTO, TRACKING> getDTONoCacheUpd(long ref) {
         // first, try to retrieve a value from the cache, in order to be identity-safe
         DataWithTracking<DTO, TRACKING> value = cache.get(ref);
@@ -102,15 +105,16 @@ public abstract class AbstractRefResolver<REF extends AbstractRef, DTO extends R
     }
 
     @Override
-    public final DTO getDTO(long ref) {
+    public final DTO getDTO(long ref) throws PersistenceException {
         if (ref <= 0L)
             return null;
         DataWithTracking<DTO, TRACKING> value = getDTONoCacheUpd(ref);
         if (value != null) {
             cache.put(ref, value);
             return value.getData();
+        } else {
+            throw new PersistenceException(PersistenceException.RECORD_DOES_NOT_EXIST, ref, entityName);
         }
-        return null;
     }
 
     @Override

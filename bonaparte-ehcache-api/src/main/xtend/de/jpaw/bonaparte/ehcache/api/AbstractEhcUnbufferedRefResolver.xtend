@@ -48,13 +48,19 @@ abstract class AbstractEhcUnbufferedRefResolver<REF extends Ref, DTO extends REF
     }
     
     override getDTO(Long key) throws ApplicationException {
+        if (key === null)
+            return null
         val entry = map.get(key)
-        return (entry?.objectValue as DataWithTracking<DTO, TRACKING>).data
+        if (entry !== null)
+            return (entry.objectValue as DataWithTracking<DTO, TRACKING>).data
+        throw new PersistenceException(PersistenceException.RECORD_DOES_NOT_EXIST, key.longValue, name)
     }
     
     override getTracking(Long key) throws ApplicationException {
         val entry = map.get(key)
-        return (entry?.objectValue as DataWithTracking<DTO, TRACKING>).tracking
+        if (entry === null)
+            throw new PersistenceException(PersistenceException.RECORD_DOES_NOT_EXIST, key.longValue, name)
+        return (entry.objectValue as DataWithTracking<DTO, TRACKING>).tracking
     }
     
     override remove(Long key) throws ApplicationException {
@@ -72,6 +78,8 @@ abstract class AbstractEhcUnbufferedRefResolver<REF extends Ref, DTO extends REF
     }
     
     override getDTO(REF ref) throws ApplicationException {
+        if (ref === null)
+            return null
         val key = getRef(ref)
         val dwt = map.get(key)
         if (dwt === null)
