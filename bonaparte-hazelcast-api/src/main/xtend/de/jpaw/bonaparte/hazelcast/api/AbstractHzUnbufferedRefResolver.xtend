@@ -15,10 +15,9 @@ import de.jpaw.dp.Provider
 import de.jpaw.util.ApplicationException
 import java.util.List
 
-abstract class AbstractHzSurrogateKeyResolver<REF extends Ref, DTO extends REF, TRACKING extends TrackingBase>
-    implements RefResolver<REF, DTO, TRACKING> {
+abstract class AbstractHzUnbufferedRefResolver<REF extends Ref, DTO extends REF, TRACKING extends TrackingBase> implements RefResolver<REF, DTO, TRACKING> {
         
-     private HzCriteriaBuilder hzQueryBuilder
+    private HzCriteriaBuilder hzQueryBuilder
     
     protected IMap<Long,DataWithTracking<DTO, TRACKING>> map;
     protected TrackingUpdater<TRACKING> trackingUpdater;
@@ -98,7 +97,9 @@ abstract class AbstractHzSurrogateKeyResolver<REF extends Ref, DTO extends REF, 
         if (dwt === null)
             throw new PersistenceException(PersistenceException.RECORD_DOES_NOT_EXIST, newDTO.ref.longValue, name)
         dwt.data = newDTO
-        // write back the update
+        // update the tracking columns
         trackingUpdater.preUpdate(contextProvider.get, dwt.tracking)
+        // write back the update
+        map.set(newDTO.objectRef, dwt)
     }
 }

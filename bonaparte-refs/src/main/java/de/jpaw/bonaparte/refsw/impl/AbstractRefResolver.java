@@ -153,6 +153,8 @@ public abstract class AbstractRefResolver<REF extends AbstractRef, DTO extends R
         }
     }
 
+    /** Clears the cache (but not any underlying data storage!).
+     * Used to achieve transaction based caching. */
     @Override
     public final void clear() {
         cache.clear();
