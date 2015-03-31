@@ -20,11 +20,11 @@ public class TemporalXMLMarshallerTest {
     private static final String PACKAGE = "de.jpaw.bonaparte.pojos.test.jaxbtemporal";   // package name where jaxb.index sits
     private static final String EXPECTED_XML =
             "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-            "<testFieldXml>\n" +
+            "<ns2:testFieldXml xmlns:ns2=\"http://www.jpaw.de/schema/test_jaxbtemporal.xsd\">\n" +
             "    <myDate>2015-03-07</myDate>\n" +
             "    <myDateTime>2015-03-07T18:14:55.000</myDateTime>\n" +
             "    <myTime>18:34:55.000</myTime>\n" +
-            "</testFieldXml>\n";
+            "</ns2:testFieldXml>\n";
 
     public void marshallTemporal() throws Exception {
         TestFieldXml obj = new TestFieldXml();
