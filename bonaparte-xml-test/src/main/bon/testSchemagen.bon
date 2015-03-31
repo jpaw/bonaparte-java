@@ -40,4 +40,22 @@ package (com.foo) test.jaxb.schema XML PROPERTY BeanVal {
         optional Enum MyAlphaEnum       myOptAlphaEnum;
         required enumset MyEnumSet      myEnumSet;    
     }
+    
+    class SubExtended extends TestSub {
+        int                             extraObject;
+    }
+    
+    class MapExtended xmlRoot extends TestXmlMap {
+        int                             afterTheMap;
+    }
+    
+    class TestTemporal xmlRoot=records {
+        Day                             myDay;
+        Time                            myTime;
+        Timestamp(0)                    wallClock;
+        Instant                         event;
+        boolean                         isIt;
+        Uuid                            myUUID;
+        binary(20)                      rawData;        // check: is the XSD size the encoded length or the resulting binary length?
+    }
 }
