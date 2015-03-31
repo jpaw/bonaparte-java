@@ -27,6 +27,7 @@ public interface HzFilter {
     def Predicate<?,?> applyFilter(EntryObject e, FieldFilter f);
 }
 
+@Singleton
 public class HzCriteriaBuilder {
     @Inject
     var HzFilter hzFilter

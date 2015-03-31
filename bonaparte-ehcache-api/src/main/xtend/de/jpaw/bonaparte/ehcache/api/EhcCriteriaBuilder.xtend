@@ -27,6 +27,7 @@ public interface EhcFilter {
     def Criteria applyFilter(Cache cache, Attribute<?> field, FieldFilter f);
 }
 
+@Singleton
 public class EhcCriteriaBuilder {
     @Inject
     var EhcFilter ehcFilter
