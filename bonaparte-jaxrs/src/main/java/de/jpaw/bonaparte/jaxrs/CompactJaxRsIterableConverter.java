@@ -4,7 +4,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.ext.Provider;
 
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.core.BufferedMessageComposer;
+import de.jpaw.bonaparte.core.BufferedMessageWriter;
 import de.jpaw.bonaparte.core.CompactByteArrayComposer;
 
 // converter for a list or set of BonaPortables. Unfortunately, due to type erasure, we cannot really verify the element types by the class reference
@@ -17,7 +17,7 @@ public class CompactJaxRsIterableConverter extends AbstractBonaparteConverter<It
     }
 
     @Override
-    protected BufferedMessageComposer<RuntimeException> newComposerWithData(Iterable<BonaPortable> obj) {
+    protected BufferedMessageWriter<RuntimeException> newComposerWithData(Iterable<BonaPortable> obj) {
         CompactByteArrayComposer bac = new CompactByteArrayComposer();
         bac.writeTransmission(obj);
         return bac;

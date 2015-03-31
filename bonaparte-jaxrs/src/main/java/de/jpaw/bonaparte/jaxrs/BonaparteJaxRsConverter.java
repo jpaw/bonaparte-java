@@ -4,7 +4,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.ext.Provider;
 
 import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.core.BufferedMessageComposer;
+import de.jpaw.bonaparte.core.BufferedMessageWriter;
 import de.jpaw.bonaparte.core.ByteArrayComposer;
 import de.jpaw.bonaparte.core.ByteArrayParser;
 import de.jpaw.bonaparte.core.MessageParser;
@@ -24,7 +24,7 @@ public class BonaparteJaxRsConverter extends AbstractBonaparteConverters {
     }
 
     @Override
-    protected BufferedMessageComposer<RuntimeException> newComposerWithData(BonaPortable obj) {
+    protected BufferedMessageWriter<RuntimeException> newComposerWithData(BonaPortable obj) {
         ByteArrayComposer bac = new ByteArrayComposer();
         bac.writeRecord(obj);
         return bac;
