@@ -59,6 +59,14 @@
             <artifactId>hibernate-validator</artifactId>
             <version>${hibernate-validator.version}</version>
         </dependency>
+        <!-- dependency for validator >= 5.0 -->
+        <dependency>
+           <groupId>javax.el</groupId>
+            <artifactId>javax.el-api</artifactId>
+            <version>${javax-el-api.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        
         <!-- Gson: Java to Json conversion (not required by bonaparte, just for performance comparison) -->
         <dependency>
             <groupId>com.google.code.gson</groupId>

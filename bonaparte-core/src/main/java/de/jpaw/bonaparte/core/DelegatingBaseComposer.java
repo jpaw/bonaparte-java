@@ -3,6 +3,7 @@ package de.jpaw.bonaparte.core;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -253,5 +254,25 @@ public class DelegatingBaseComposer<E extends Exception> implements MessageCompo
     @Override
     public void close() throws IOException {
         delegateComposer.close();
+    }
+
+    @Override
+    public boolean getWriteCRs() {
+        return delegateComposer.getWriteCRs();
+    }
+
+    @Override
+    public void setWriteCRs(boolean writeCRs) {
+        delegateComposer.setWriteCRs(writeCRs);
+    }
+
+    @Override
+    public Charset getCharset() {
+        return delegateComposer.getCharset();
+    }
+
+    @Override
+    public void setCharset(Charset charset) {
+        delegateComposer.setCharset(charset);
     }
 }

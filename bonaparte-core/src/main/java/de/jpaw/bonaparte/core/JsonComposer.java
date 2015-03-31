@@ -294,7 +294,10 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
             out.append(',');
         else
             needRecordSeparator = true;  // next time, I'll need it
-        super.writeRecord(o);
+        // super.writeRecord(o);  // not working, need a different meta data reference
+        startRecord();
+        addField(StaticMeta.OUTER_BONAPORTABLE_FOR_JSON, o);
+        terminateRecord();
     }
 
     @Override
