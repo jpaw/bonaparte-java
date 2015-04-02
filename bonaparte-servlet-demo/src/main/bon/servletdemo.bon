@@ -1,0 +1,17 @@
+package demo.servlet {
+    
+    class HdrParams {
+        optional Unicode(80) truncate           host;
+        optional Unicode(80) truncate           accept_encoding;
+        optional Unicode(80) truncate           accept_charset;
+        optional Unicode(80) truncate           user_agent;
+        optional Unicode(80) truncate           accept_language;
+        optional Unicode(80) truncate           my_dummy_field;
+    }
+
+    class ReqParams {
+        optional Unicode(10)                    q;
+        optional Unicode(10)                    hello;
+        optional Integer                        value;
+    }
+}

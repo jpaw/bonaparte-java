@@ -1,30 +1,30 @@
-package de.jpaw.bonaparte.vertx;
+package de.jpaw.bonaparte.servlet;
 
-import org.vertx.java.core.MultiMap;
+import javax.servlet.http.HttpServletRequest;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.MessageParserException;
 import de.jpaw.bonaparte.core.StringProviderParser;
 
-/** A parser which takes data from a provided vert.x MultiMap. This is a simple application of the generic StringProviderParser. */
+/** Parser which parses parameters from headers of a HttpRequest. */ 
 public class HttpRequestParameterParser extends StringProviderParser {
 
-    public static StringProviderParser.StringGetter createGetter(final MultiMap requestParameters) {
+    public static StringProviderParser.StringGetter createGetter(final HttpServletRequest request) {
         return new StringProviderParser.StringGetter() {
             @Override
             public String get(String name) {
-                return requestParameters.get(name);
+                return request.getParameter(name);
             }
         };
     }
     
-    public HttpRequestParameterParser(final MultiMap request) {
+    public HttpRequestParameterParser(final HttpServletRequest request) {
         super(createGetter(request));
     }
-    
+
     /** unmarshals request parameters into a preallocated object.
      * @throws MessageParserException */
-    public static void unmarshal(MultiMap request, BonaPortable obj) throws MessageParserException {
+    public static void unmarshal(HttpServletRequest request, BonaPortable obj) throws MessageParserException {
         StringProviderParser.unmarshal(obj, createGetter(request));
     }
 }

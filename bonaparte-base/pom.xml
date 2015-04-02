@@ -274,6 +274,7 @@
         <module>../bonaparte-batch/pom.xml</module>
         <module>../bonaparte-akka/pom.xml</module>
         <module>../bonaparte-camel/pom.xml</module>
+        <module>../bonaparte-servlet/pom.xml</module>
         <module>../bonaparte-mina-test/pom.xml</module>
         <module>../bonaparte-hornetq-test/pom.xml</module>
         <module>../bonaparte-vertx/pom.xml</module>
