@@ -20,6 +20,7 @@ import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
+import de.jpaw.bonaparte.pojos.meta.IndexType;
 import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.Multiplicity;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
@@ -43,10 +44,17 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
     protected static final DateTimeFormatter LOCAL_DATE_ISO = DateTimeFormat.forPattern("yyyy-MM-dd"); // ISODateTimeFormat.basicDate();
     protected static final DateTimeFormatter LOCAL_DATETIME_ISO = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss"); // ISODateTimeFormat.basicDateTime();
     protected static final DateTimeFormatter LOCAL_TIME_ISO = DateTimeFormat.forPattern("HH:mm:ss"); // ISODateTimeFormat.basicTime();
+    protected String currentClass = "N/A";
+    protected String remFieldName = null;
     protected final Appendable out;
     protected final boolean writeNulls;
     protected final boolean writeTypeInfo;
     protected final JsonEscaper jsonEscaper;
+    
+    protected enum MapMode {
+        NO_MAP, EXPECT_KEY, EXPECT_VALUE
+    }
+    protected MapMode currentMapMode = MapMode.NO_MAP;
 
     protected boolean needFieldSeparator = false;
     protected boolean needRecordSeparator = false;
@@ -240,6 +248,10 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
     }
 
     @Override
+    public void writeSuperclassSeparator() throws IOException {
+    }
+
+    @Override
     public void terminateObject(ObjectReference di, BonaCustom obj) throws IOException {
         out.append('}');
         needFieldSeparator = true;
@@ -255,18 +267,25 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
 
     @Override
     public void startMap(FieldDefinition di, int currentMembers) throws IOException {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void writeSuperclassSeparator() throws IOException {
+        // A map does not exist in JSON. The map is however used to model types with variable field names, such as in Swagger 2.0.
+        // A map of String type keys is used here.
+        // Here, the keys reflect the field names and the value their contents.
+        // In order to allow a mixture of fixed names and variable names, and a mixture of variable names with different types,
+        // the map does not start a new sub object, but rather is serialized into the current object.
+        if (di.getMapIndexType() != IndexType.STRING)
+            throw new IOException(new ObjectValidationException(ObjectValidationException.UNSUPPORTED_MAP_KEY_TYPE, di.getName(), currentClass));
+        if (/* !(di instanceof ObjectReference) && */ !(di instanceof AlphanumericElementaryDataItem))
+            throw new IOException(new ObjectValidationException(ObjectValidationException.UNSUPPORTED_MAP_VALUE_TYPE, di.getName(), currentClass));
+        if (currentMapMode != MapMode.NO_MAP)
+            throw new IOException(new ObjectValidationException(ObjectValidationException.INVALID_SEQUENCE, di.getName(), currentClass));
+        currentMapMode = MapMode.EXPECT_KEY;
     }
 
     @Override
     public void terminateMap() throws IOException {
-        // TODO Auto-generated method stub
-
+        if (currentMapMode != MapMode.EXPECT_KEY)
+            throw new IOException(new ObjectValidationException(ObjectValidationException.INVALID_SEQUENCE, "?", currentClass));
+        currentMapMode = MapMode.NO_MAP;
     }
 
     @Override
@@ -351,12 +370,33 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
     @Override
     public void addField(AlphanumericElementaryDataItem di, String s) throws IOException {
         if (di.getMultiplicity() != Multiplicity.SCALAR) {
-            // must write a null without a name
-            writeSeparator();
-            if (s == null)
-                out.append("null");
-            else
-                jsonEscaper.outputUnicodeWithControls(s);
+            // in array or map
+            switch (currentMapMode) {
+            case NO_MAP:        // array
+                // must write a null without a name
+                writeSeparator();
+                if (s == null)
+                    out.append("null");
+                else
+                    jsonEscaper.outputUnicodeWithControls(s);
+                break;
+            case EXPECT_KEY:
+                remFieldName = s;
+                currentMapMode = MapMode.EXPECT_VALUE;
+                break;
+            case EXPECT_VALUE:
+                currentMapMode = MapMode.EXPECT_KEY;
+                if (s != null || writeNulls) {
+                    writeSeparator();
+                    jsonEscaper.outputUnicodeNoControls(remFieldName);
+                    out.append(':');
+                    if (s != null)
+                        jsonEscaper.outputUnicodeWithControls(s);
+                    else
+                        out.append("null");
+                }
+                break;
+            }
         } else if (s != null) {
             writeFieldName(di);
             jsonEscaper.outputUnicodeWithControls(s);
@@ -366,6 +406,15 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
         } // else don't write at all
     }
 
+    protected void objectOutSub(ObjectReference di, BonaCustom obj) throws IOException {
+        String previousClass = currentClass;
+        currentClass = di.getName();
+        startObject(di, obj);
+        obj.serializeSub(this);
+        terminateObject(di, obj);
+        currentClass = previousClass;
+    }
+    
     @Override
     public void addField(ObjectReference di, BonaCustom obj) throws IOException {
         if (di.getMultiplicity() != Multiplicity.SCALAR) {
@@ -374,15 +423,11 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
             if (obj == null) {
                 out.append("null");
             } else {
-                startObject(di, obj);
-                obj.serializeSub(this);
-                terminateObject(di, obj);
+                objectOutSub(di, obj);
             }
         } else if (obj != null) {
             writeFieldName(di);
-            startObject(di, obj);
-            obj.serializeSub(this);
-            terminateObject(di, obj);
+            objectOutSub(di, obj);
         } else if (writeNulls) {
             writeFieldName(di);
             out.append("null");

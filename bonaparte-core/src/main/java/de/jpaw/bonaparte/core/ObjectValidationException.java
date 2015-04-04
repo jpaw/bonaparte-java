@@ -32,6 +32,7 @@ public class ObjectValidationException extends ApplicationException {
 //    private static final Logger logger = LoggerFactory.getLogger(MessageParserException.class);
 
     private static final int OFFSET = CL_VALIDATION_ERROR * CLASSIFICATION_FACTOR + 16000;  // offset for all codes in this class
+    private static final int ILE_OFFSET = CL_INTERNAL_LOGIC_ERROR * CLASSIFICATION_FACTOR + 16000;  // offset for all codes in this class
 
     private final String fieldName;   // if known, the name of the field where the error occurred
     private final String className;   // if known, the name of the class which contained the field
@@ -54,6 +55,12 @@ public class ObjectValidationException extends ApplicationException {
     static public final int OBJECT_IS_FROZEN            = OFFSET + 22;
     static public final int IS_IMMUTABLE                = OFFSET + 23;
 
+    // JSON composer codes
+    static public final int UNSUPPORTED_MAP_KEY_TYPE    = ILE_OFFSET + 51;
+    static public final int UNSUPPORTED_MAP_VALUE_TYPE  = ILE_OFFSET + 52;
+    static public final int INVALID_SEQUENCE            = ILE_OFFSET + 53;
+    static public final int MAP_NOT_UNSUPPORTED         = ILE_OFFSET + 54;
+    
     static {
         codeToDescription.put(MAY_NOT_BE_BLANK          , "Empty, but required field");
         codeToDescription.put(NO_PATTERN_MATCH          , "Field contents does not match required pattern");
@@ -71,6 +78,12 @@ public class ObjectValidationException extends ApplicationException {
         codeToDescription.put(NOT_FREEZABLE             , "This object cannot be turned into immutable state");
         codeToDescription.put(OBJECT_IS_FROZEN          , "Object instance is frozen and cannot be modified");
         codeToDescription.put(IS_IMMUTABLE              , "This object cannot be turned into mutable state");
+        
+        // JSON map codes
+        codeToDescription.put(UNSUPPORTED_MAP_KEY_TYPE  , "This map key type is currently not supported");
+        codeToDescription.put(UNSUPPORTED_MAP_VALUE_TYPE, "This map key type is currently not supported");
+        codeToDescription.put(INVALID_SEQUENCE          , "Invalid sequence of map output");
+        codeToDescription.put(MAP_NOT_UNSUPPORTED       , "A map data type is not supported for this composer");
     }
 
     public ObjectValidationException(int errorCode, String fieldName, String className) {
