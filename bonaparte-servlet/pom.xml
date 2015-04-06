@@ -6,6 +6,7 @@
         <groupId>de.jpaw</groupId>
         <artifactId>bonaparte-base</artifactId>
         <version>3.5.1</version>
+        <relativePath>../bonaparte-base/pom.xml</relativePath>
     </parent>
 
     <artifactId>bonaparte-servlet</artifactId>
