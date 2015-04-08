@@ -22,6 +22,10 @@
                 <directory>src/main/bon</directory>
                 <filtering>false</filtering>
             </resource>
+            <resource>
+                <directory>src/generated/resources</directory>
+                <filtering>false</filtering>
+            </resource>
         </resources>
 
         <plugins>
