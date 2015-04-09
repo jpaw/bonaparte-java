@@ -15,18 +15,20 @@ import de.jpaw.bonaparte.core.BonaCustom;
 import de.jpaw.bonaparte.core.BonaPortable;
 
 /** Via XmlWriter, elements can be written sequentially, avoiding to keep everything in memory at once. */
-public class XmlWriter extends AbstractMessageWriter<XMLStreamException> {
+public class XmlWriter<T extends BonaPortable> extends AbstractMessageWriter<XMLStreamException> {
 
     private final boolean formatted;
     private final boolean fragment;
     private Marshaller m;
     private String dataTag;
     private XMLStreamWriter sw;
+    private final Class<T> cls;
     
-    public XmlWriter(Marshaller m, OutputStream os, boolean formatted, boolean fragment, String outerElementName) throws Exception {
+    public XmlWriter(Marshaller m, OutputStream os, boolean formatted, boolean fragment, Class<T> cls, String outerElementName) throws Exception {
         this.m = m;
         this.formatted = formatted;
         this.fragment = fragment;
+        this.cls = cls;
         this.dataTag = outerElementName == null ? "data" : outerElementName;
         this.sw = XMLOutputFactory.newFactory().createXMLStreamWriter(os);
         m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.valueOf(formatted));
@@ -51,7 +53,7 @@ public class XmlWriter extends AbstractMessageWriter<XMLStreamException> {
 
     @Override
     public void writeRecord(BonaCustom o) throws XMLStreamException {
-        JAXBElement<BonaPortable> element = new JAXBElement<BonaPortable>(QName.valueOf(o.getClass().getSimpleName()), BonaPortable.class, (BonaPortable) o);
+        JAXBElement<T> element = new JAXBElement<T>(QName.valueOf(o.getClass().getSimpleName()), cls, (T) o);
         try {
             m.marshal(element, sw);
         } catch (JAXBException e) {
