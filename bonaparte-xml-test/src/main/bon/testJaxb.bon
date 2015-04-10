@@ -12,4 +12,16 @@ package test.jaxb {
         Long(18,6)  microUnits;
         Int (6,3) round roundedMillis;
     }
+    
+    
+    
+    class TestXml3a XML PROPERTY xmlRoot {
+        int             mData;
+    }
+    class TestXml3b XML PROPERTY xmlRoot noJavaBeanNames {
+        int             mData;
+    }
+    class TestXml3c XML PROPERTY xmlRoot onlyJavaBeanNames {
+        int             mData;
+    }
 }
