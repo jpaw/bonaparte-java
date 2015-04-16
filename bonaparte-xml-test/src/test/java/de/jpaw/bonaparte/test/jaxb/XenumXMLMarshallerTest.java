@@ -18,9 +18,9 @@ public class XenumXMLMarshallerTest {
     private static final String PACKAGE = "de.jpaw.bonaparte.pojos.xenumJaxb";   // package name where jaxb.index sits
     private static final String EXPECTED_XML =
             "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-            "<ns2:xEnumUse xmlns:ns2=\"http://www.jpaw.de/schema/xenumJaxb.xsd\">\n" +
-            "    <daddel>G</daddel>\n" +
-            "</ns2:xEnumUse>\n";
+            "<xenumJaxb:XEnumUse xmlns:xenumJaxb=\"http://www.jpaw.de/schema/xenumJaxb.xsd\">\n" +
+            "    <xenumJaxb:daddel>G</xenumJaxb:daddel>\n" +
+            "</xenumJaxb:XEnumUse>\n";
 
     public void marshallXenum() throws Exception {
         XEnumUse obj = new XEnumUse();

@@ -17,11 +17,11 @@ public class ImplicitDecimalsMarshallerTest {
     private static final String PACKAGE = "de.jpaw.bonaparte.pojos.test.jaxb";   // package name where jaxb.index sits
     private static final String EXPECTED_XML =
             "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"
-          + "<ns2:testXml2 xmlns:ns2=\"http://www.jpaw.de/schema/test_jaxb.xsd\">\n"
+          + "<TestXml2>\n"
           + "    <digits2>42</digits2>\n"
           + "    <microUnits>42.123456</microUnits>\n"
           + "    <roundedMillis>333.666</roundedMillis>\n"
-          + "</ns2:testXml2>\n";
+          + "</TestXml2>\n";
 
     public void marshallTestXml() throws Exception {
         TestXml2 obj = new TestXml2((byte)42, 42123456L, 333666);

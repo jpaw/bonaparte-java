@@ -16,18 +16,18 @@ public class ImplicitDecimalsRoundingTest {
     private static final String PACKAGE = "de.jpaw.bonaparte.pojos.test.jaxb";   // package name where jaxb.index sits
     private static final String ROUNDED_XML =
             "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"
-          + "<ns2:testXml2 xmlns:ns2=\"http://www.jpaw.de/schema/test_jaxb.xsd\">\n"
+          + "<TestXml2>\n"
           + "    <digits2>42</digits2>\n"
           + "    <microUnits>42.123456000000</microUnits>\n"
           + "    <roundedMillis>333.66688</roundedMillis>\n"
-          + "</ns2:testXml2>\n";
+          + "</TestXml2>\n";
     private static final String NOTROUNDED_XML =
             "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"
-          + "<ns2:testXml2 xmlns:ns2=\"http://www.jpaw.de/schema/test_jaxb.xsd\">\n"
+          + "<TestXml2>\n"
           + "    <digits2>42</digits2>\n"
           + "    <microUnits>42.1234562</microUnits>\n"
           + "    <roundedMillis>333.666</roundedMillis>\n"
-          + "</ns2:testXml2>\n";
+          + "</TestXml2>\n";
 
     public void unmarshallXenumWithRounding() throws Exception {
         // create the XML for this
