@@ -50,16 +50,17 @@
         <!-- define releases (mostly of 3rd party dependencies) we want to use, to ensure consistency -->
         <!-- Some more versions, used by specific dependent projects -->
         <lucene.version>4.10.4</lucene.version>         <!-- 5.0.0 is out 2015-02-20 -->
-        <netty.version>4.0.28.Final</netty.version>     <!-- https://netty.io/news/ UPTODATE 2015-04-02 -->
+        <netty.version>4.0.29.Final</netty.version>     <!-- https://netty.io/news/ UPTODATE 2015-04-02 -->
         <poi.version>3.12</poi.version>                 <!-- http://poi.apache.org/ UPTODATE 2014-12-21 -->
         <mina.version>2.0.7</mina.version>              <!-- http://mina.apache.org/ 2.0.7 -->
         <camel.version>2.15.2</camel.version>           <!-- http://camel.apache.org/ UPTODATE 2014-12-17 (2.14.0 is the first for Java8, but introduces a lot new dependencies)-->
         <vertx.version>2.1.5</vertx.version>            <!-- http://vertx.io/ UPTODATE 2014-11-13 -->
+        <vertx3.version>3.0.0</vertx3.version>
         
         <!-- distributed caches -->
         <ehcache.version>2.9.1</ehcache.version>        <!-- UPTODATE 2015-03-05 -->
         <ehcache3.version>3.0.0.m1</ehcache3.version>   <!-- UPTODATE 2015-03-24 -->
-        <hazelcast.version>3.4.2</hazelcast.version>    <!-- http://hazelcast.org/download/ UPTODATE 2015-03-22 -->
+        <hazelcast.version>3.4.4</hazelcast.version>    <!-- http://hazelcast.org/download/ UPTODATE 2015-03-22 -->
         <infinispan.version>7.1.1.Final</infinispan.version>  <!-- UPTODATE 2015-03-05 -->
         
         <koloboke.version>0.6.7</koloboke.version>
