@@ -34,3 +34,11 @@ package pt3 {
         int c;
     }
 }
+
+package pt4 {
+    properties myAnno is de.jpaw.bonaparte.annotation.KeyClass[];
+    
+    class Ex1 {
+        properties myAnno="ClassDefinition.class";
+    }
+}
