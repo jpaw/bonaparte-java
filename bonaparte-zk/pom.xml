@@ -5,7 +5,11 @@
     <parent>
         <groupId>de.jpaw</groupId>
         <artifactId>bonaparte-base</artifactId>
+<<<<<<< HEAD
         <version>3.5.5-SNAPSHOT</version>
+=======
+        <version>3.5.4</version>
+>>>>>>> master
         <relativePath>../bonaparte-base/pom.xml</relativePath>
     </parent>
 
