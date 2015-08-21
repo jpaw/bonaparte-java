@@ -231,7 +231,7 @@ public class ByteArrayComposer extends AbstractMessageComposer<RuntimeException>
         if (s != null) {
             if (di.getRestrictToAscii()) {
                 // don't trust them!
-                work.append(FixASCII.checkAsciiAndFixIfRequired(s, di.getLength()));
+                work.append(FixASCII.checkAsciiAndFixIfRequired(s, di.getLength(), di.getName()));
             } else {
                 // tak care not to break multi-Sequences
                 for (int i = 0; i < s.length();) {

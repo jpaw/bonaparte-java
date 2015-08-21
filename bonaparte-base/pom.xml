@@ -20,7 +20,7 @@
             <dependency>
                 <groupId>de.jpaw</groupId>
                 <artifactId>jpaw-bom</artifactId>
-                <version>1.2.10-SNAPSHOT</version>
+                <version>1.2.11-SNAPSHOT</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
@@ -50,7 +50,7 @@
         <!-- define releases (mostly of 3rd party dependencies) we want to use, to ensure consistency -->
         <!-- Some more versions, used by specific dependent projects -->
         <lucene.version>4.10.4</lucene.version>         <!-- 5.0.0 is out 2015-02-20 -->
-        <netty.version>4.0.29.Final</netty.version>     <!-- https://netty.io/news/ UPTODATE 2015-04-02 -->
+        <netty.version>4.0.30.Final</netty.version>     <!-- https://netty.io/news/ UPTODATE 2015-04-02 -->
         <poi.version>3.12</poi.version>                 <!-- http://poi.apache.org/ UPTODATE 2014-12-21 -->
         <mina.version>2.0.7</mina.version>              <!-- http://mina.apache.org/ 2.0.7 -->
         <camel.version>2.15.2</camel.version>           <!-- http://camel.apache.org/ UPTODATE 2014-12-17 (2.14.0 is the first for Java8, but introduces a lot new dependencies)-->

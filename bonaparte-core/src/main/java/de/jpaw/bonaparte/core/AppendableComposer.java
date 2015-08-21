@@ -189,7 +189,7 @@ public class AppendableComposer extends AbstractMessageComposer<IOException> imp
     public void addField(AlphanumericElementaryDataItem di, String s) throws IOException {
         if (s != null) {
             if (di.getRestrictToAscii()) {
-                work.append(FixASCII.checkAsciiAndFixIfRequired(s, di.getLength()));
+                work.append(FixASCII.checkAsciiAndFixIfRequired(s, di.getLength(), di.getName()));
             } else {
                 for (int i = 0; i < s.length(); ++i) {
                     addCharSub(s.charAt(i));
