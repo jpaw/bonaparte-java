@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>bonaparte-base</artifactId>
-    <version>3.5.3</version>
+    <version>3.5.4</version>
     <packaging>pom</packaging>
     
     <description>build master for BONAPARTE based projects</description>
@@ -20,7 +20,7 @@
             <dependency>
                 <groupId>de.jpaw</groupId>
                 <artifactId>jpaw-bom</artifactId>
-                <version>1.2.9</version>
+                <version>1.2.10</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
@@ -44,13 +44,13 @@
 
     <properties>
         <!-- define revisions of other jpaw.de projects, not covered by plugin management -->
-        <bonaparte-plugin.version>3.5.3</bonaparte-plugin.version>
+        <bonaparte-plugin.version>3.5.4</bonaparte-plugin.version>
         <bonaparte-plugin-commons-lang.version>2.6</bonaparte-plugin-commons-lang.version>      <!-- currently needed by the plugins -->
         
         <!-- define releases (mostly of 3rd party dependencies) we want to use, to ensure consistency -->
         <!-- Some more versions, used by specific dependent projects -->
         <lucene.version>4.10.4</lucene.version>         <!-- 5.0.0 is out 2015-02-20 -->
-        <netty.version>4.0.29.Final</netty.version>     <!-- https://netty.io/news/ UPTODATE 2015-04-02 -->
+        <netty.version>4.0.30.Final</netty.version>     <!-- https://netty.io/news/ UPTODATE 2015-04-02 -->
         <poi.version>3.12</poi.version>                 <!-- http://poi.apache.org/ UPTODATE 2014-12-21 -->
         <mina.version>2.0.7</mina.version>              <!-- http://mina.apache.org/ 2.0.7 -->
         <camel.version>2.15.2</camel.version>           <!-- http://camel.apache.org/ UPTODATE 2014-12-17 (2.14.0 is the first for Java8, but introduces a lot new dependencies)-->
