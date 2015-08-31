@@ -664,12 +664,6 @@ public class ByteArrayParser extends Settings implements MessageParser<MessagePa
         if (z == which)
             return;   // all good
 
-        // temporarily provide compatibility to 1.7.9 and back...
-        if (z == PARENT_SEPARATOR) {
-            // implies we have been looking for OBJECT_TERMINATOR...
-            return;
-        }
-
         // we have extra data and it is not null. Now the behavior depends on a parser setting
         ParseSkipNonNulls mySetting = getSkipNonNullsBehavior();
         switch (mySetting) {
