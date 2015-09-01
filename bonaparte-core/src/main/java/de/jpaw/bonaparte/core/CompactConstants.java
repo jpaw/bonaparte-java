@@ -72,6 +72,8 @@ package de.jpaw.bonaparte.core;
  *          e1  long String ASCII (next is length, then bytes)
  *          e2..e8  integer (short, int, long) with 2..8 bytes, next is mantissa, in 2's complement  (5 and 7 currently unused)
  *
+ *          e9..ef  RESERVED
+ *
  *          f0  long fractional, next is scale, then big integer of mantissa
  *          f1..f9  fractional, with 1..9 decimal places, next is big integer of mantissa
  *
@@ -147,5 +149,14 @@ public interface CompactConstants {
 
     public static final int COMPRESSED = 0xd5;
     public static final int COMPRESSED_LZ4 = 0;  // first type
-
+    
+    // declares the number of bytes following a token which are not to be interpreted but must be skipped
+    public static final int [] SKIP_BYTES = {
+        -1, 0, 0, 0,        // 0xa?
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,   // 0xb?: ASCII strings of length 1..16
+        1,1,1,1,       1,1,1,1,         1,1,1,1,     1,1,1,1, /* 0xc?: 2 byte integers */
+        2,4,8,16,      10, -1, 2, 8,    4, 0, 0, 4,  4, 0, -1, 0,   // 0xd?: date fields have 4 fixed fields, time is always treated as separate field.
+        -1, -1, 2, 3,  4, 5, 6, 7,      8, -2,-2,-2, -2,-2,-2,-2,
+        0, 0,0,0, 0,0,0,0,   0, 0,  0,0,   0, -1, -1, -1
+    };
 }

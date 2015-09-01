@@ -91,6 +91,8 @@ public class MessageParserException extends ApplicationException {
     static public final int NUMBER_PARSING_ERROR         = OFFSET + 52;
     static public final int BAD_CLASS_IDS                = OFFSET + 53;
     static public final int INVALID_REFERENCES           = OFFSET + 54;
+    static public final int UNSUPPORTED_TOKEN            = OFFSET + 55;
+    static public final int UNSUPPORTED_COMPRESSED       = OFFSET + 56;
 
     static {
         codeToDescription.put(MISSING_FIELD_TERMINATOR     , "Missing field terminator");
@@ -147,6 +149,8 @@ public class MessageParserException extends ApplicationException {
         codeToDescription.put(NUMBER_PARSING_ERROR         , "Cannot parse number");
         codeToDescription.put(BAD_CLASS_IDS                , "No class registered for factoryId/ClassId");
         codeToDescription.put(INVALID_REFERENCES           , "Could not resolve recursive references (record for index not found)");    // mapped PersistenceException
+        codeToDescription.put(UNSUPPORTED_TOKEN            , "Token not yet supported (while skipping unknown data)");
+        codeToDescription.put(UNSUPPORTED_COMPRESSED       , "Attempt to skip compressed data (not yet supported by parser version)");
     }
 
     /** Creates a parser exception with an explicitly defined position and class name. */

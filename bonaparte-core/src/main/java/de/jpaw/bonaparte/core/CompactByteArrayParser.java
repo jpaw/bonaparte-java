@@ -27,6 +27,8 @@ import org.joda.time.Instant;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
@@ -53,7 +55,7 @@ import de.jpaw.util.ByteArray;
  */
 
 public class CompactByteArrayParser extends Settings implements MessageParser<MessageParserException>, CompactConstants {
-//    private static final Logger LOGGER = LoggerFactory.getLogger(CompactByteArrayParser.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CompactByteArrayParser.class);
     private static final byte [] EMPTY_BYTE_ARRAY = new byte [0];
     private static final String EMPTY_STRING = "";
 
@@ -596,6 +598,80 @@ public class CompactByteArrayParser extends Settings implements MessageParser<Me
         return new Instant(readLong(needToken(), di.getName()));
     }
 
+    @Override
+    public void eatParentSeparator() throws MessageParserException {
+        eatObjectOrParentSeparator(PARENT_SEPARATOR);
+    }
+
+    public void eatObjectTerminator() throws MessageParserException {
+        eatObjectOrParentSeparator(OBJECT_TERMINATOR);
+    }
+
+    protected void eatObjectOrParentSeparator(int which) throws MessageParserException {
+        skipNulls();  // upwards compatibility: skip extra fields if they are blank.
+        int z = needToken();
+        if (z == which)
+            return;   // all good
+
+        // we have extra data and it is not null. Now the behavior depends on a parser setting
+        ParseSkipNonNulls mySetting = getSkipNonNullsBehavior();
+        switch (mySetting) {
+        case ERROR:
+            throw new MessageParserException(MessageParserException.EXTRA_FIELDS, String.format("(found byte 0x%02x)", z), parseIndex, currentClass);
+        case WARN:
+            LOGGER.warn("{} at index {} parsing class {}", MessageParserException.codeToString(MessageParserException.EXTRA_FIELDS), parseIndex, currentClass);
+            // fall through
+        case IGNORE:
+            // the byte encountered next (z) is not what we wanted. Skip non-null fields (or sub objects, even nested) until we find the desired terminator.
+            // skip bytes until we are at end of record (bad!) (thrown by needToken()) or find the terminator
+            --parseIndex;   // ensure that the byte z is read again!
+            skipUntilNext(which);
+        }
+    }
+
+    /** Skips over the data until we find the expected token (usually a record terminator or object terminator or parent separator).
+     * When the method returns, the parser is just behind the expected character. */
+    protected void skipUntilNext(int which) throws MessageParserException {
+        int c;
+        while ((c = needToken()) != which) {
+            // skip one element
+            if (c < OBJECT_BEGIN_BASE)
+                continue;  // single byte elements
+            int skipBytes = SKIP_BYTES[c - OBJECT_BEGIN_BASE];
+            if (skipBytes > 0) {
+                skipBytes(skipBytes);
+            }
+            if (skipBytes < 0) {
+                // special treatment bytes. These are cases where the length is dynamically determined, or which require recursive processing
+                switch (c) {
+                case OBJECT_BEGIN_BASE:  // 0xac: new object (by string
+                case OBJECT_BEGIN_ID:  // 0xde: 2 numeric, recurse!
+                    skipUntilNext(OBJECT_TERMINATOR);
+                    break;
+                case COMPRESSED:
+                    throw new MessageParserException(MessageParserException.UNSUPPORTED_COMPRESSED); // TODO: compressed object not yet supported
+                case COMPACT_BIGINTEGER:
+                case ASCII_STRING:
+                case COMPACT_BINARY:
+                case UTF8_STRING:
+                    skipBytes(readInt(needToken(), "(skipping)"));
+                    break;
+                case UTF16_STRING:
+                    skipBytes(2 * readInt(needToken(), "(skipping UTF16)"));
+                    break;
+                default:
+                    throw new MessageParserException(MessageParserException.UNSUPPORTED_TOKEN); // TODO (-2 values...)
+                }
+            }
+        }
+    }
+    
+    protected void skipBytes(int howMany) throws MessageParserException {
+        if (parseIndex + howMany >= messageLength) {
+            throw newMPE(MessageParserException.PREMATURE_END, String.format("(while skipping  %d characters)", howMany));
+        }
+    }
+
 
     @Override
     public <R extends BonaPortable> R readObject (ObjectReference di, Class<R> type) throws MessageParserException {
@@ -665,8 +741,7 @@ public class CompactByteArrayParser extends Settings implements MessageParser<Me
 
             currentClass = classname;
             newObject.deserialize(this);
-            skipNulls();
-            needToken(OBJECT_TERMINATOR);
+            eatObjectTerminator();
             currentClass = previousClass;
             return type.cast(newObject);
         } else {
@@ -711,12 +786,6 @@ public class CompactByteArrayParser extends Settings implements MessageParser<Me
         return results;
     }
 
-
-    @Override
-    public void eatParentSeparator() throws MessageParserException {
-        skipNulls();  // upwards compatibility: skip extra fields if they are blank.
-        needToken(PARENT_SEPARATOR);
-    }
 
     @Override
     public boolean readPrimitiveBoolean(MiscElementaryDataItem di) throws MessageParserException {

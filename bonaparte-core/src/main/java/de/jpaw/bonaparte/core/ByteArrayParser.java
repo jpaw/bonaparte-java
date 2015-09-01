@@ -673,9 +673,9 @@ public class ByteArrayParser extends Settings implements MessageParser<MessagePa
             LOGGER.warn("{} at index {} parsing class {}", MessageParserException.codeToString(MessageParserException.EXTRA_FIELDS), parseIndex, currentClass);
             // fall through
         case IGNORE:
-        	// the byte encountered next (z) is not what we wanted. Skip non-null fields (or sub objects, even nested) until we find the desired terminator.
+            // the byte encountered next (z) is not what we wanted. Skip non-null fields (or sub objects, even nested) until we find the desired terminator.
             // skip bytes until we are at end of record (bad!) (thrown by needToken()) or find the terminator
-        	--parseIndex;   // ensure that the byte z is read again!
+            --parseIndex;   // ensure that the byte z is read again!
             skipUntilNext(which);
         }
     }

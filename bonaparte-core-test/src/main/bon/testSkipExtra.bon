@@ -2,14 +2,14 @@ package mytest {
     class NewObj {
         required int daddel;
     }
-    
+
     class Inner {
         required int zzz;
         optional (NewObj...)    newField;
     }
-    
+
     class Outer {
         (Inner...)      first;
-        required int    last;    
+        required int    last;
     }
 }

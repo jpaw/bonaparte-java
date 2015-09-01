@@ -1,4 +1,4 @@
-package de.jpaw.bonaparte.core.tests2;
+package testcases.conversion;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -10,7 +10,7 @@ import de.jpaw.bonaparte.pojos.mytest.Inner;
 import de.jpaw.bonaparte.pojos.mytest.Outer;
 import de.jpaw.util.ByteUtil;
 
-public class ByteArraySerializationTest {
+public class SkipExtraBytesTest {
 
     
     static final String data = "\u0012\u000e\u0013mytest.Outer\u0006\u000e\u0013mytest.Inner\u0006\u000e3333\u0006\u000e\u000f66\u0006\u000f\r\n";
@@ -19,7 +19,7 @@ public class ByteArraySerializationTest {
 
     @Test
     public void testEncode() throws Exception {
-    	Outer x = new Outer(new Inner(3333, null), 66);
+        Outer x = new Outer(new Inner(3333, null), 66);
         ByteArrayComposer bac = new ByteArrayComposer();
         bac.writeRecord(x);
         byte [] result = bac.getBytes();
@@ -30,7 +30,7 @@ public class ByteArraySerializationTest {
     
     @Test
     public void testDecode() throws Exception {
-    	Outer x = new Outer(new Inner(3333, null), 66);
+        Outer x = new Outer(new Inner(3333, null), 66);
         ByteArrayParser bap = new ByteArrayParser(data.getBytes(), 0, -1);
         BonaPortable xx = bap.readRecord();
         Assert.assertEquals(xx, x);
@@ -38,7 +38,7 @@ public class ByteArraySerializationTest {
     
     @Test
     public void testDecodeLess() throws Exception {
-    	Outer x = new Outer(new Inner(3333, null), 66);
+        Outer x = new Outer(new Inner(3333, null), 66);
         ByteArrayParser bap = new ByteArrayParser(dataLess.getBytes(), 0, -1);
         BonaPortable xx = bap.readRecord();
         Assert.assertEquals(xx, x);
@@ -46,7 +46,7 @@ public class ByteArraySerializationTest {
     
     @Test
     public void testDecodeMore() throws Exception {
-    	Outer x = new Outer(new Inner(3333, null), 66);
+        Outer x = new Outer(new Inner(3333, null), 66);
         ByteArrayParser bap = new ByteArrayParser(dataMore.getBytes(), 0, -1);
         BonaPortable xx = bap.readRecord();
         Assert.assertEquals(xx, x);
