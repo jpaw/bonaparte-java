@@ -664,12 +664,6 @@ public class ByteArrayParser extends Settings implements MessageParser<MessagePa
         if (z == which)
             return;   // all good
 
-        // temporarily provide compatibility to 1.7.9 and back...
-        if (z == PARENT_SEPARATOR) {
-            // implies we have been looking for OBJECT_TERMINATOR...
-            return;
-        }
-
         // we have extra data and it is not null. Now the behavior depends on a parser setting
         ParseSkipNonNulls mySetting = getSkipNonNullsBehavior();
         switch (mySetting) {
@@ -679,11 +673,15 @@ public class ByteArrayParser extends Settings implements MessageParser<MessagePa
             LOGGER.warn("{} at index {} parsing class {}", MessageParserException.codeToString(MessageParserException.EXTRA_FIELDS), parseIndex, currentClass);
             // fall through
         case IGNORE:
+            // the byte encountered next (z) is not what we wanted. Skip non-null fields (or sub objects, even nested) until we find the desired terminator.
             // skip bytes until we are at end of record (bad!) (thrown by needToken()) or find the terminator
+            --parseIndex;   // ensure that the byte z is read again!
             skipUntilNext(which);
         }
     }
 
+    /** Skips over the data until we find the expected token (usually a record terminator or object terminator or parent separator).
+     * When the method returns, the parser is just behind the expected character. */
     protected void skipUntilNext(byte which) throws MessageParserException {
         byte c;
         while ((c = needToken()) != which) {

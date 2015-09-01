@@ -27,6 +27,8 @@ import org.joda.time.Instant;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
@@ -53,7 +55,7 @@ import de.jpaw.util.ByteArray;
  */
 
 public class CompactByteArrayParser extends Settings implements MessageParser<MessageParserException>, CompactConstants {
-//    private static final Logger LOGGER = LoggerFactory.getLogger(CompactByteArrayParser.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CompactByteArrayParser.class);
     private static final byte [] EMPTY_BYTE_ARRAY = new byte [0];
     private static final String EMPTY_STRING = "";
 
@@ -63,6 +65,7 @@ public class CompactByteArrayParser extends Settings implements MessageParser<Me
     protected String currentClass;
     private final boolean useCache = true;
     private List<BonaPortable> objects;
+    private int skipDepth = 0;
 
     /** Quick conversion utility method, for use by code generators. (null safe) */
     public static <T extends BonaPortable> T unmarshal(byte [] x, ObjectReference di, Class<T> expectedClass) throws MessageParserException {
@@ -75,7 +78,7 @@ public class CompactByteArrayParser extends Settings implements MessageParser<Me
     public final void setSource(byte [] src, int offset, int length) {
         inputdata = src;
         parseIndex = offset;
-        messageLength = length;
+        messageLength = length < 0 ? src.length : length;
         if (useCache)
             objects.clear();
     }
@@ -93,7 +96,7 @@ public class CompactByteArrayParser extends Settings implements MessageParser<Me
     public CompactByteArrayParser(byte [] buffer, int offset, int length) {
         inputdata = buffer;
         parseIndex = offset;
-        messageLength = length < 0 ? inputdata.length : length; // -1 means full array size
+        messageLength = length < 0 ? inputdata.length : length; // -1 means full array size / until end of data
         currentClass = "N/A";
         if (useCache)
             objects = new ArrayList<BonaPortable>(60);
@@ -596,6 +599,94 @@ public class CompactByteArrayParser extends Settings implements MessageParser<Me
         return new Instant(readLong(needToken(), di.getName()));
     }
 
+    @Override
+    public void eatParentSeparator() throws MessageParserException {
+        eatObjectOrParentSeparator(PARENT_SEPARATOR);
+    }
+
+    public void eatObjectTerminator() throws MessageParserException {
+        eatObjectOrParentSeparator(OBJECT_TERMINATOR);
+    }
+
+    protected void eatObjectOrParentSeparator(int which) throws MessageParserException {
+        skipNulls();  // upwards compatibility: skip extra fields if they are blank.
+        int z = needToken();
+        if (z == which)
+            return;   // all good
+
+        // we have extra data and it is not null. Now the behavior depends on a parser setting
+        ParseSkipNonNulls mySetting = getSkipNonNullsBehavior();
+        switch (mySetting) {
+        case ERROR:
+            throw new MessageParserException(MessageParserException.EXTRA_FIELDS, String.format("(found byte 0x%02x)", z), parseIndex, currentClass);
+        case WARN:
+            LOGGER.warn("{} at index {} parsing class {}", MessageParserException.codeToString(MessageParserException.EXTRA_FIELDS), parseIndex, currentClass);
+            // fall through
+        case IGNORE:
+            // the byte encountered next (z) is not what we wanted. Skip non-null fields (or sub objects, even nested) until we find the desired terminator.
+            // skip bytes until we are at end of record (bad!) (thrown by needToken()) or find the terminator
+            --parseIndex;   // ensure that the byte z is read again!
+            skipDepth = 0;
+            skipUntilNext(which);
+        }
+    }
+
+    /** Skips over the data until we find the expected token (usually a record terminator or object terminator or parent separator).
+     * When the method returns, the parser is just behind the expected character. */
+    protected void skipUntilNext(int which) throws MessageParserException {
+        int c;
+        // System.out.println(String.format("Descend for skip depth %d for %02x", skipDepth, which));
+        ++skipDepth;
+        while ((c = needToken()) != which) {
+            // skip one element, unless the expected one has been found
+            if (c < OBJECT_BEGIN_BASE)
+                continue;  // single byte elements
+            int skipBytes = SKIP_BYTES[c - OBJECT_BEGIN_BASE];
+            if (skipBytes > 0) {
+//                System.out.println(String.format("At pos %04x: ", parseIndex-1) + "skipping " + skipBytes + " bytes for token " + String.format("%02x", c));
+//                if (c >= 0xb0 && c < 0xc0)
+//                    System.out.println("    String is " + new String(inputdata, parseIndex, c - 0xb0 + 1));
+                skipBytes(skipBytes);
+            }
+            if (skipBytes < 0) {
+//                System.out.println(String.format("At pos %04x: ", parseIndex-1) + "special for token " + String.format("%02x", c));
+                // special treatment bytes. These are cases where the length is dynamically determined, or which require recursive processing
+                switch (c) {
+                case OBJECT_BEGIN_BASE: // 0xac: new object (by string
+                case OBJECT_BEGIN_ID:   // 0xde: 2 numeric, recurse!
+                case OBJECT_BEGIN_PQON: // 0xdf: object / PQON
+                    skipUntilNext(OBJECT_TERMINATOR);
+                    break;
+                case COMPRESSED:
+                    throw new MessageParserException(MessageParserException.UNSUPPORTED_COMPRESSED); // TODO: compressed object not yet supported
+                case COMPACT_BIGINTEGER:
+                case ASCII_STRING:
+                case COMPACT_BINARY:
+                case UTF8_STRING:
+//                        int len = readInt(needToken(), "(skipping)");
+//                        System.out.println("    String is " + new String(inputdata, parseIndex, len));
+//                        skipBytes(len);
+                    skipBytes(readInt(needToken(), "(skipping)"));
+                    break;
+                case UTF16_STRING:
+                    skipBytes(2 * readInt(needToken(), "(skipping UTF16)"));
+                    break;
+                default:
+                    throw new MessageParserException(MessageParserException.UNSUPPORTED_TOKEN); // TODO (-2 values...)
+                }
+            }
+        }
+        --skipDepth;
+        // System.out.println(String.format("Return at skip depth %d for %02x", skipDepth, which));
+    }
+    
+    protected void skipBytes(int howMany) throws MessageParserException {
+        if (parseIndex + howMany >= messageLength) {
+            throw newMPE(MessageParserException.PREMATURE_END, String.format("(while skipping  %d characters from pos %d (0x%04x))", howMany, parseIndex, parseIndex));
+        }
+        parseIndex += howMany;
+    }
+
 
     @Override
     public <R extends BonaPortable> R readObject (ObjectReference di, Class<R> type) throws MessageParserException {
@@ -665,8 +756,7 @@ public class CompactByteArrayParser extends Settings implements MessageParser<Me
 
             currentClass = classname;
             newObject.deserialize(this);
-            skipNulls();
-            needToken(OBJECT_TERMINATOR);
+            eatObjectTerminator();
             currentClass = previousClass;
             return type.cast(newObject);
         } else {
@@ -711,12 +801,6 @@ public class CompactByteArrayParser extends Settings implements MessageParser<Me
         return results;
     }
 
-
-    @Override
-    public void eatParentSeparator() throws MessageParserException {
-        skipNulls();  // upwards compatibility: skip extra fields if they are blank.
-        needToken(PARENT_SEPARATOR);
-    }
 
     @Override
     public boolean readPrimitiveBoolean(MiscElementaryDataItem di) throws MessageParserException {
