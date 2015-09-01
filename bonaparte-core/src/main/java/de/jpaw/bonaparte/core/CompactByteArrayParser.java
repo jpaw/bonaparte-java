@@ -65,6 +65,7 @@ public class CompactByteArrayParser extends Settings implements MessageParser<Me
     protected String currentClass;
     private final boolean useCache = true;
     private List<BonaPortable> objects;
+    private int skipDepth = 0;
 
     /** Quick conversion utility method, for use by code generators. (null safe) */
     public static <T extends BonaPortable> T unmarshal(byte [] x, ObjectReference di, Class<T> expectedClass) throws MessageParserException {
@@ -77,7 +78,7 @@ public class CompactByteArrayParser extends Settings implements MessageParser<Me
     public final void setSource(byte [] src, int offset, int length) {
         inputdata = src;
         parseIndex = offset;
-        messageLength = length;
+        messageLength = length < 0 ? src.length : length;
         if (useCache)
             objects.clear();
     }
@@ -95,7 +96,7 @@ public class CompactByteArrayParser extends Settings implements MessageParser<Me
     public CompactByteArrayParser(byte [] buffer, int offset, int length) {
         inputdata = buffer;
         parseIndex = offset;
-        messageLength = length < 0 ? inputdata.length : length; // -1 means full array size
+        messageLength = length < 0 ? inputdata.length : length; // -1 means full array size / until end of data
         currentClass = "N/A";
         if (useCache)
             objects = new ArrayList<BonaPortable>(60);
@@ -625,6 +626,7 @@ public class CompactByteArrayParser extends Settings implements MessageParser<Me
             // the byte encountered next (z) is not what we wanted. Skip non-null fields (or sub objects, even nested) until we find the desired terminator.
             // skip bytes until we are at end of record (bad!) (thrown by needToken()) or find the terminator
             --parseIndex;   // ensure that the byte z is read again!
+            skipDepth = 0;
             skipUntilNext(which);
         }
     }
@@ -633,19 +635,26 @@ public class CompactByteArrayParser extends Settings implements MessageParser<Me
      * When the method returns, the parser is just behind the expected character. */
     protected void skipUntilNext(int which) throws MessageParserException {
         int c;
+        // System.out.println(String.format("Descend for skip depth %d for %02x", skipDepth, which));
+        ++skipDepth;
         while ((c = needToken()) != which) {
-            // skip one element
+            // skip one element, unless the expected one has been found
             if (c < OBJECT_BEGIN_BASE)
                 continue;  // single byte elements
             int skipBytes = SKIP_BYTES[c - OBJECT_BEGIN_BASE];
             if (skipBytes > 0) {
+//                System.out.println(String.format("At pos %04x: ", parseIndex-1) + "skipping " + skipBytes + " bytes for token " + String.format("%02x", c));
+//                if (c >= 0xb0 && c < 0xc0)
+//                    System.out.println("    String is " + new String(inputdata, parseIndex, c - 0xb0 + 1));
                 skipBytes(skipBytes);
             }
             if (skipBytes < 0) {
+//                System.out.println(String.format("At pos %04x: ", parseIndex-1) + "special for token " + String.format("%02x", c));
                 // special treatment bytes. These are cases where the length is dynamically determined, or which require recursive processing
                 switch (c) {
-                case OBJECT_BEGIN_BASE:  // 0xac: new object (by string
-                case OBJECT_BEGIN_ID:  // 0xde: 2 numeric, recurse!
+                case OBJECT_BEGIN_BASE: // 0xac: new object (by string
+                case OBJECT_BEGIN_ID:   // 0xde: 2 numeric, recurse!
+                case OBJECT_BEGIN_PQON: // 0xdf: object / PQON
                     skipUntilNext(OBJECT_TERMINATOR);
                     break;
                 case COMPRESSED:
@@ -654,6 +663,9 @@ public class CompactByteArrayParser extends Settings implements MessageParser<Me
                 case ASCII_STRING:
                 case COMPACT_BINARY:
                 case UTF8_STRING:
+//                        int len = readInt(needToken(), "(skipping)");
+//                        System.out.println("    String is " + new String(inputdata, parseIndex, len));
+//                        skipBytes(len);
                     skipBytes(readInt(needToken(), "(skipping)"));
                     break;
                 case UTF16_STRING:
@@ -664,12 +676,15 @@ public class CompactByteArrayParser extends Settings implements MessageParser<Me
                 }
             }
         }
+        --skipDepth;
+        // System.out.println(String.format("Return at skip depth %d for %02x", skipDepth, which));
     }
     
     protected void skipBytes(int howMany) throws MessageParserException {
         if (parseIndex + howMany >= messageLength) {
-            throw newMPE(MessageParserException.PREMATURE_END, String.format("(while skipping  %d characters)", howMany));
+            throw newMPE(MessageParserException.PREMATURE_END, String.format("(while skipping  %d characters from pos %d (0x%04x))", howMany, parseIndex, parseIndex));
         }
+        parseIndex += howMany;
     }
 
 

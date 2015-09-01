@@ -155,7 +155,7 @@ public interface CompactConstants {
         -1, 0, 0, 0,        // 0xa?
         1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,   // 0xb?: ASCII strings of length 1..16
         1,1,1,1,       1,1,1,1,         1,1,1,1,     1,1,1,1, /* 0xc?: 2 byte integers */
-        2,4,8,16,      10, -1, 2, 8,    4, 0, 0, 4,  4, 0, -1, 0,   // 0xd?: date fields have 4 fixed fields, time is always treated as separate field.
+        2,4,8,16,      10, -1, 2, 8,    4, 0, 0, 4,  4, 0, -1, -1,   // 0xd?: date fields have 4 fixed fields, time is always treated as separate field.
         -1, -1, 2, 3,  4, 5, 6, 7,      8, -2,-2,-2, -2,-2,-2,-2,
         0, 0,0,0, 0,0,0,0,   0, 0,  0,0,   0, -1, -1, -1
     };
