@@ -59,6 +59,8 @@ public class ByteArrayParser extends Settings implements MessageParser<MessagePa
     private byte [] inputdata;
     private String currentClass;
     private final boolean useCache = true;
+    private final boolean compatibility179;
+    private static final boolean DEFAULT_COMPATIBILITY179 = true;
     private List<BonaPortable> objects;
 
     protected final StringParserUtil stringParser = new StringParserUtil(new ParsePositionProvider() {
@@ -79,7 +81,7 @@ public class ByteArrayParser extends Settings implements MessageParser<MessagePa
     public static <T extends BonaPortable> T unmarshal(byte [] x, ObjectReference di, Class<T> expectedClass) throws MessageParserException {
         if (x == null || x.length == 0)
             return null;
-        return new ByteArrayParser(x, 0, -1).readObject(di, expectedClass);
+        return new ByteArrayParser(x).readObject(di, expectedClass);
     }
 
     /** Assigns a new source to subsequent parsing operations. */
@@ -101,16 +103,24 @@ public class ByteArrayParser extends Settings implements MessageParser<MessagePa
     }
 
     /** Create a processor for parsing a buffer. */
-    public ByteArrayParser(byte [] buffer, int offset, int length) {
+    public ByteArrayParser(byte [] buffer, int offset, int length, boolean compatibility179) {
         inputdata = buffer;
         parseIndex = offset;
         messageLength = length < 0 ? inputdata.length : length; // -1 means full array size
         currentClass = "N/A";
         if (useCache)
             objects = new ArrayList<BonaPortable>(60);
+        this.compatibility179 = compatibility179;
     }
 
+    public ByteArrayParser(byte [] buffer, int offset, int length) {
+        this(buffer, offset, length, DEFAULT_COMPATIBILITY179);
+    }
 
+    public ByteArrayParser(byte [] buffer) {
+        this(buffer, 0, -1, DEFAULT_COMPATIBILITY179);
+    }
+    
     /**************************************************************************************************
      * Deserialization goes here. Code below does not use the ByteBuilder class,
      * but reads from the byte[] directly
@@ -664,6 +674,11 @@ public class ByteArrayParser extends Settings implements MessageParser<MessagePa
         if (z == which)
             return;   // all good
 
+        if (compatibility179 && z == PARENT_SEPARATOR) {
+            // 1.7.9 and before had this token assigned for two meanings: parent separator but also object separator
+            return;
+        }
+        
         // we have extra data and it is not null. Now the behavior depends on a parser setting
         ParseSkipNonNulls mySetting = getSkipNonNullsBehavior();
         switch (mySetting) {
