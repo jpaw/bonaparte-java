@@ -50,21 +50,21 @@
         <!-- define releases (mostly of 3rd party dependencies) we want to use, to ensure consistency -->
         <!-- Some more versions, used by specific dependent projects -->
         <lucene.version>4.10.4</lucene.version>         <!-- 5.0.0 is out 2015-02-20 -->
-        <netty.version>4.0.30.Final</netty.version>     <!-- https://netty.io/news/ UPTODATE 2015-04-02 -->
+        <netty.version>4.0.31.Final</netty.version>     <!-- https://netty.io/news/ --> <!-- UPTODATE 2015-04-10 -->
         <poi.version>3.12</poi.version>                 <!-- http://poi.apache.org/ UPTODATE 2014-12-21 -->
         <mina.version>2.0.7</mina.version>              <!-- http://mina.apache.org/ 2.0.7 -->
-        <camel.version>2.15.2</camel.version>           <!-- http://camel.apache.org/ UPTODATE 2014-12-17 (2.14.0 is the first for Java8, but introduces a lot new dependencies)-->
+        <camel.version>2.15.3</camel.version>           <!-- http://camel.apache.org/ --> <!-- UPTODATE 2015-04-10 -->
         <vertx.version>2.1.5</vertx.version>            <!-- http://vertx.io/ UPTODATE 2014-11-13 -->
-        <vertx3.version>3.0.0</vertx3.version>
+        <vertx3.version>3.0.0</vertx3.version>          <!-- UPTODATE 2015-04-10 -->
         
         <!-- distributed caches -->
         <ehcache.version>2.9.1</ehcache.version>        <!-- UPTODATE 2015-03-05 -->
-        <ehcache3.version>3.0.0.m1</ehcache3.version>   <!-- UPTODATE 2015-03-24 -->
-        <hazelcast.version>3.4.4</hazelcast.version>    <!-- http://hazelcast.org/download/ UPTODATE 2015-03-22 -->
+        <ehcache3.version>3.0.0.m3</ehcache3.version>   <!-- UPTODATE 2015-03-24 -->
+        <hazelcast.version>3.4.6</hazelcast.version>    <!-- http://hazelcast.org/download/ UPTODATE 2015-03-22 -->
         <infinispan.version>7.1.1.Final</infinispan.version>  <!-- UPTODATE 2015-03-05 -->
         
-        <koloboke.version>0.6.7</koloboke.version>
-        <aerospike.version>3.0.35</aerospike.version>   <!-- UPTODATE 2015-02-20 -->
+        <koloboke.version>0.6.7</koloboke.version>      <!-- UPTODATE 2015-04-10 -->
+        <aerospike.version>3.1.5</aerospike.version>    <!-- UPTODATE 2015-04-10 -->
         <hornetq.version>2.2.21.Final</hornetq.version> <!-- http://www.jboss.org/hornetq 2.2.14.Final is last tested one, 2.4.x required for AMQP, JMS 2.0 -->
         <mapdb.version>1.0.7</mapdb.version>
         <lz4.version>1.3.0</lz4.version>                <!-- 1.2.0 was the last for Java 1.6, 1.3.0 UPDATE 2014-11-26 but SLOWER -->
