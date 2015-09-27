@@ -263,6 +263,7 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
     public void startArray(FieldDefinition di, int currentMembers, int sizeOfElement) throws IOException {
         writeFieldName(di);
         out.append('[');
+        needFieldSeparator = false;
     }
 
     @Override

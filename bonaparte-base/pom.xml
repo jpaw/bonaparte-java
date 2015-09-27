@@ -40,7 +40,6 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-  
 
     <properties>
         <!-- define revisions of other jpaw.de projects, not covered by plugin management -->
