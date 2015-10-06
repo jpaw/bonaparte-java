@@ -8,6 +8,7 @@ Bundle-Vendor: Michael Bischoff
 Require-Bundle: bonaparte.core,
  fixedpoint.core,
  guava
-Export-Package: de.jpaw.bonaparte.adapters.moneyfp
+Export-Package: de.jpaw.bonaparte.adapters.moneyfp,
+ de.jpaw.bonaparte.pojos.adapters.moneyfp
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6 

@@ -2,6 +2,7 @@ import de.jpaw.money.*
 import adapters.fixedpoint.*
 import adapters.fixedpointToBigDecimal.*
 import adapters.moneyfp.*
+import adapters.gson.*
 
 /** Test classes for the adapters
  */
@@ -30,5 +31,17 @@ package adapters.tests {
         required (FpSingleAmountExt) for "getCurrency().withMicrosPrecision()"  unitAmount;
         required (Micros)                                                       quantity;
         required (FpSingleAmountExt) for currency                               amount;
+    }
+    
+    /** GSON Element test */
+    class DataWithJsonElem {
+        required Unicode(80)            text;
+        optional (GsonElement)          z;
+    }
+    
+    /** GSON Element test */
+    class DataWithJsonObj {
+        required Unicode(80)            text;
+        optional (GsonObject)           z;
     }
 }

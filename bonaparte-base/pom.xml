@@ -48,6 +48,8 @@
         
         <!-- define releases (mostly of 3rd party dependencies) we want to use, to ensure consistency -->
         <!-- Some more versions, used by specific dependent projects -->
+        <gson.version>2.4</gson.version>                <!-- UPTODATE 2015-10-04 -->
+        
         <lucene.version>4.10.4</lucene.version>         <!-- 5.0.0 is out 2015-02-20 -->
         <netty.version>4.0.31.Final</netty.version>     <!-- https://netty.io/news/ --> <!-- UPTODATE 2015-04-10 -->
         <poi.version>3.12</poi.version>                 <!-- http://poi.apache.org/ UPTODATE 2014-12-21 -->
@@ -63,7 +65,7 @@
         <infinispan.version>7.1.1.Final</infinispan.version>  <!-- UPTODATE 2015-03-05 -->
         
         <koloboke.version>0.6.7</koloboke.version>      <!-- UPTODATE 2015-04-10 -->
-        <aerospike.version>3.1.5</aerospike.version>    <!-- UPTODATE 2015-04-10 -->
+        <aerospike.version>3.1.6</aerospike.version>    <!-- UPTODATE 2015-10-05 -->
         <hornetq.version>2.2.21.Final</hornetq.version> <!-- http://www.jboss.org/hornetq 2.2.14.Final is last tested one, 2.4.x required for AMQP, JMS 2.0 -->
         <mapdb.version>1.0.7</mapdb.version>
         <lz4.version>1.3.0</lz4.version>                <!-- 1.2.0 was the last for Java 1.6, 1.3.0 UPDATE 2014-11-26 but SLOWER -->
@@ -251,6 +253,7 @@
         <module>../bonaparte-core/pom.xml</module>
         <module>../bonaparte-scanner/pom.xml</module>
         <module>../bonaparte-core-test/pom.xml</module>
+        <module>../bonaparte-adapters-gson/pom.xml</module>
         <module>../bonaparte-adapters-scalar/pom.xml</module>
         <module>../bonaparte-adapters-money-bd/pom.xml</module>
         <module>../bonaparte-adapters-money-fp/pom.xml</module>

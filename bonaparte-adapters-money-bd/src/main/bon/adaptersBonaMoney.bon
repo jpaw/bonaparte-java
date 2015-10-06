@@ -1,7 +1,7 @@
 import de.jpaw.money.*
 
 /** BigDecimal based monetary data.
- * Assigned to factoryId 29
+ * Assigned to factoryId 27
  */
 package adapters.moneybd factoryId 27 {
     final immutable class BCurrency classId 21 is BonaCurrency adapter de.jpaw.bonaparte.adapters.moneybd.BonaCurrencyAdapter withExceptionConverter {

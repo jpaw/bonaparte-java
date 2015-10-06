@@ -9,10 +9,12 @@
         <relativePath>../bonaparte-base/pom.xml</relativePath>
     </parent>
 
-    <artifactId>bonaparte-adapters-test</artifactId>
+    <artifactId>bonaparte-adapters-gson</artifactId>
     <packaging>jar</packaging>
 
-    <description>BONAPARTE external class adapters tests</description>
+    <description>
+        BONAPARTE external class adapters for JSON using the GSON library
+    </description>
 
     <build>
         <resources>
@@ -25,7 +27,7 @@
                 <filtering>false</filtering>
             </resource>
         </resources>
-        
+
         <plugins>
             <plugin>
                 <groupId>org.eclipse.xtext</groupId>
@@ -44,28 +46,14 @@
     <dependencies>
         <dependency>
             <groupId>de.jpaw</groupId>
-            <artifactId>bonaparte-adapters-scalar</artifactId>
+            <artifactId>bonaparte-core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>de.jpaw</groupId>
-            <artifactId>bonaparte-adapters-gson</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>de.jpaw</groupId>
-            <artifactId>bonaparte-adapters-money-fp</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>de.jpaw</groupId>
-            <artifactId>bonaparte-adapters-money-bd</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>de.jpaw</groupId>
-            <artifactId>bonaparte-core-test</artifactId>
-            <version>${project.version}</version>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>${gson.version}</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

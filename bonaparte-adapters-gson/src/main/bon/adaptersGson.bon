@@ -1,0 +1,14 @@
+import com.google.gson.JsonObject
+import com.google.gson.JsonElement
+
+/** JSON adaper, using the GSON library.
+ */
+package adapters.gson factoryId 27 {
+    final immutable class GsonObject is JsonObject adapter de.jpaw.bonaparte.adapters.gson.GsonObjectAdapter singleField withExceptionConverter {
+        optional Unicode(16000000)      obj;
+    }
+
+    final immutable class GsonElement is JsonElement adapter de.jpaw.bonaparte.adapters.gson.GsonElementAdapter singleField withExceptionConverter {
+        optional Unicode(16000000)      obj;
+    }
+}
