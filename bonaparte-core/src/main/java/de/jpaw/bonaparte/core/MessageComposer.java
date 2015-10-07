@@ -17,6 +17,7 @@ package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Map;
 import java.util.UUID;
 
 import org.joda.time.Instant;
@@ -69,26 +70,28 @@ public interface MessageComposer<E extends Exception> extends MessageWriter<E> {
     // serialization methods: field type specific
 
     // primitives
-    void addField(MiscElementaryDataItem di, boolean b) throws E;
-    void addField(MiscElementaryDataItem di, char c) throws E;
-    void addField(BasicNumericElementaryDataItem di, double d) throws E;
-    void addField(BasicNumericElementaryDataItem di, float f) throws E;
-    void addField(BasicNumericElementaryDataItem di, byte n) throws E;
-    void addField(BasicNumericElementaryDataItem di, short n) throws E;
-    void addField(BasicNumericElementaryDataItem di, int n) throws E;
-    void addField(BasicNumericElementaryDataItem di, long n) throws E;
+    void addField(MiscElementaryDataItem di, boolean b)             throws E;
+    void addField(MiscElementaryDataItem di, char c)                throws E;
+    void addField(BasicNumericElementaryDataItem di, double d)      throws E;
+    void addField(BasicNumericElementaryDataItem di, float f)       throws E;
+    void addField(BasicNumericElementaryDataItem di, byte n)        throws E;
+    void addField(BasicNumericElementaryDataItem di, short n)       throws E;
+    void addField(BasicNumericElementaryDataItem di, int n)         throws E;
+    void addField(BasicNumericElementaryDataItem di, long n)        throws E;
 
-    void addField(AlphanumericElementaryDataItem di, String s) throws E;    // Ascii, Upper, Lower, Unicode
-    void addField(ObjectReference di, BonaCustom obj) throws E;
-    void addField(MiscElementaryDataItem di, UUID n) throws E;
-    void addField(BinaryElementaryDataItem di, ByteArray b) throws E;
-    void addField(BinaryElementaryDataItem di, byte [] b) throws E;
-    void addField(BasicNumericElementaryDataItem di, BigInteger n) throws E;
-    void addField(NumericElementaryDataItem di, BigDecimal n) throws E;
-    void addField(TemporalElementaryDataItem di, Instant t) throws E;
-    void addField(TemporalElementaryDataItem di, LocalDate t) throws E;
-    void addField(TemporalElementaryDataItem di, LocalTime t) throws E;
-    void addField(TemporalElementaryDataItem di, LocalDateTime t) throws E;
+    void addField(AlphanumericElementaryDataItem di, String s)      throws E;    // Ascii, Upper, Lower, Unicode
+    void addField(ObjectReference di, BonaCustom obj)               throws E;
+    void addField(ObjectReference di, Map<String, Object> obj)      throws E;
+    void addField(ObjectReference di, Object obj)                   throws E;
+    void addField(MiscElementaryDataItem di, UUID n)                throws E;
+    void addField(BinaryElementaryDataItem di, ByteArray b)         throws E;
+    void addField(BinaryElementaryDataItem di, byte [] b)           throws E;
+    void addField(BasicNumericElementaryDataItem di, BigInteger n)  throws E;
+    void addField(NumericElementaryDataItem di, BigDecimal n)       throws E;
+    void addField(TemporalElementaryDataItem di, Instant t)         throws E;
+    void addField(TemporalElementaryDataItem di, LocalDate t)       throws E;
+    void addField(TemporalElementaryDataItem di, LocalTime t)       throws E;
+    void addField(TemporalElementaryDataItem di, LocalDateTime t)   throws E;
 
     // Enums
     void addEnum(EnumDataItem di, BasicNumericElementaryDataItem ord, BonaNonTokenizableEnum n) throws E;

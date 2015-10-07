@@ -1,9 +1,11 @@
 package de.jpaw.bonaparte.android;
 
 import java.util.List;
+import java.util.Map;
 
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
+import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.ui.UIColumn;
 
 import org.slf4j.Logger;
@@ -133,5 +135,4 @@ public class NewViewsComposer extends LinearLayoutComposer {
             return needTextView(di);
         }
     }
-
 }

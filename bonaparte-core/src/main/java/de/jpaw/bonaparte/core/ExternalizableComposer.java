@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.ObjectOutput;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Map;
 import java.util.UUID;
 
 import org.joda.time.Instant;
@@ -426,5 +427,25 @@ public class ExternalizableComposer extends AbstractMessageComposer<IOException>
     @Override
     public boolean addExternal(ObjectReference di, Object obj) throws IOException {
         return false;       // perform conversion by default
+    }
+
+    @Override
+    public void addField(ObjectReference di, Map<String, Object> obj) throws IOException {
+        if (obj == null)
+            writeNull(di);
+        else {
+            out.writeByte(TEXT);
+            out.writeUTF(BonaparteJsonEscaper.asJson(obj));
+        }
+    }
+
+    @Override
+    public void addField(ObjectReference di, Object obj) throws IOException {
+        if (obj == null)
+            writeNull(di);
+        else {
+            out.writeByte(TEXT);
+            out.writeUTF(BonaparteJsonEscaper.asJson(obj));
+        }
     }
 }

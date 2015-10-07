@@ -45,6 +45,7 @@ import de.jpaw.enums.XEnum;
 import de.jpaw.util.Base64;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.ByteBuilder;
+import de.jpaw.util.JsonEscaper;
 // according to http://stackoverflow.com/questions/469695/decode-base64-data-in-java , xml.bind is included in Java 6 SE
 //import javax.xml.bind.DatatypeConverter;  // but not in Android, so don't use it!
 /**
@@ -69,6 +70,7 @@ public class AppendableComposer extends AbstractMessageComposer<IOException> imp
     private int numberOfObjectReuses;
     // variables set by constructor
     private final Appendable work;
+    private JsonEscaper jsonEscaper = null;
 
     public AppendableComposer(Appendable work) {
         this(work, ObjectReuseStrategy.defaultStrategy);
@@ -505,5 +507,31 @@ public class AppendableComposer extends AbstractMessageComposer<IOException> imp
     @Override
     public boolean addExternal(ObjectReference di, Object obj) throws IOException {
         return false;       // perform conversion by default
+    }
+
+    @Override
+    public void addField(ObjectReference di, Map<String, Object> obj) throws IOException {
+        if (obj == null) {
+            writeNull();
+            return;
+        }
+        // not null, compose a string and write it!
+        if (jsonEscaper == null)
+            jsonEscaper = new BonaparteJsonEscaper(work);
+        jsonEscaper.outputJsonObject(obj);      // the JSON string is known not to contain escape characters and needs no quoting
+        terminateField();
+    }
+
+    @Override
+    public void addField(ObjectReference di, Object obj) throws IOException {
+        if (obj == null) {
+            writeNull();
+            return;
+        }
+        // not null, compose a string and write it!
+        if (jsonEscaper == null)
+            jsonEscaper = new BonaparteJsonEscaper(work);
+        jsonEscaper.outputJsonElement(obj);      // the JSON string is known not to contain escape characters and needs no quoting
+        terminateField();
     }
 }

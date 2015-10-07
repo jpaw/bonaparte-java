@@ -5,6 +5,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.joda.time.Instant;
@@ -205,5 +206,15 @@ public class ListMetaComposer extends NoOpComposer<RuntimeException> implements 
             add(di, obj);
         }
         return keepExternals;
+    }
+
+    @Override
+    public void addField(ObjectReference di, Map<String, Object> obj) {
+        add(di, obj);
+    }
+
+    @Override
+    public void addField(ObjectReference di, Object obj) {
+        add(di, obj);
     }
 }

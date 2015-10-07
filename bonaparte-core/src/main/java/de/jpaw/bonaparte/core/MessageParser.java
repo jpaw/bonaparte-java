@@ -18,6 +18,7 @@ package de.jpaw.bonaparte.core;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.joda.time.Instant;
@@ -70,7 +71,9 @@ public interface MessageParser<E extends Exception> extends ExceptionConverter<E
     public LocalDate  readDay       (TemporalElementaryDataItem di) throws E;
     public LocalTime  readTime      (TemporalElementaryDataItem di) throws E;
     public LocalDateTime readDayTime(TemporalElementaryDataItem di) throws E;
-    public <R extends BonaPortable> R readObject (ObjectReference di, Class<R> type) throws E; // parser factory
+    public <R extends BonaPortable> R   readObject (ObjectReference di, Class<R> type) throws E; // parser factory
+    public Map<String, Object>          readJson   (ObjectReference di) throws E;
+    public Object                       readElement(ObjectReference di) throws E;
     // composite methods
     public int parseMapStart        (FieldDefinition di) throws E;
     public int parseArrayStart      (FieldDefinition di, int sizeOfElement) throws E;

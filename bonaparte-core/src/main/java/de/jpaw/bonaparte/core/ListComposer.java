@@ -5,6 +5,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.joda.time.Instant;
@@ -203,5 +204,15 @@ public class ListComposer extends NoOpComposer<RuntimeException> implements Mess
             storage.add(obj);
         }
         return keepExternals;
+    }
+
+    @Override
+    public void addField(ObjectReference di, Map<String, Object> obj) {
+        storage.add(obj);
+    }
+
+    @Override
+    public void addField(ObjectReference di, Object obj) {
+        storage.add(obj);
     }
 }

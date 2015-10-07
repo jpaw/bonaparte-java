@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
+import java.util.Map;
 import java.util.UUID;
 
 import org.joda.time.Instant;
@@ -31,7 +32,6 @@ import de.jpaw.enums.XEnum;
 import de.jpaw.util.Base64;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.ByteBuilder;
-import de.jpaw.util.DefaultJsonEscaperForAppendables;
 import de.jpaw.util.JsonEscaper;
 
 /** This class natively generates JSON output. It aims for compatibility with the extensions used by the json-io library (@Type class information).
@@ -95,22 +95,16 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
     
 
     public JsonComposer(Appendable out) {
-        this.out = out;
-        this.writeNulls = false;
-        this.writeTypeInfo = false;
-        this.jsonEscaper = new DefaultJsonEscaperForAppendables(out);
+        this(out, false);
     }
     public JsonComposer(Appendable out, boolean writeNulls) {
         this.out = out;
         this.writeNulls = writeNulls;
         this.writeTypeInfo = false;
-        this.jsonEscaper = new DefaultJsonEscaperForAppendables(out);
+        this.jsonEscaper = new BonaparteJsonEscaper(out, this);
     }
     public JsonComposer(Appendable out, boolean writeNulls, JsonEscaper jsonEscaper) {
-        this.out = out;
-        this.writeNulls = writeNulls;
-        this.writeTypeInfo = false;
-        this.jsonEscaper = jsonEscaper;
+        this(out, writeNulls, false, jsonEscaper);
     }
     public JsonComposer(Appendable out, boolean writeNulls, boolean writeTypeInfo, JsonEscaper jsonEscaper) {
         this.out = out;
@@ -510,5 +504,24 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
     @Override
     public boolean addExternal(ObjectReference di, Object obj) throws IOException {
         return false;       // perform conversion by default
+    }
+    
+    @Override
+    public void addField(ObjectReference di, Map<String, Object> obj) throws IOException {
+        if (obj == null) {
+            writeNull(di);
+        } else {
+            writeOptionalFieldName(di);
+            jsonEscaper.outputJsonObject(obj);
+        }
+    }
+    @Override
+    public void addField(ObjectReference di, Object obj) throws IOException {
+        if (obj == null) {
+            writeNull(di);
+        } else {
+            writeOptionalFieldName(di);
+            jsonEscaper.outputJsonElement(obj);
+        }
     }
 }

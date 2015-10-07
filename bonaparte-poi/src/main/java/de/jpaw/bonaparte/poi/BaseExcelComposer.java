@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Map;
 import java.util.UUID;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -38,6 +39,7 @@ import org.slf4j.LoggerFactory;
 
 import de.jpaw.bonaparte.core.AbstractMessageComposer;
 import de.jpaw.bonaparte.core.BonaCustom;
+import de.jpaw.bonaparte.core.BonaparteJsonEscaper;
 import de.jpaw.bonaparte.enums.BonaNonTokenizableEnum;
 import de.jpaw.bonaparte.enums.BonaTokenizableEnum;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
@@ -486,5 +488,21 @@ public class BaseExcelComposer extends AbstractMessageComposer<RuntimeException>
     @Override
     public boolean addExternal(ObjectReference di, Object obj) {
         return false;       // perform conversion by default
+    }
+
+    @Override
+    public void addField(ObjectReference di, Map<String, Object> obj) {
+        if (obj == null)
+            writeNull(di);
+        else
+            newCell(di).setCellValue(BonaparteJsonEscaper.asJson(obj));
+    }
+
+    @Override
+    public void addField(ObjectReference di, Object obj) {
+        if (obj == null)
+            writeNull(di);
+        else
+            newCell(di).setCellValue(BonaparteJsonEscaper.asJson(obj));
     }
 }

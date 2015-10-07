@@ -224,6 +224,16 @@ public class ByteArrayComposer extends AbstractMessageComposer<RuntimeException>
         addCharSub(c);
         terminateField();
     }
+    
+    protected void unicodeOut(String s) {
+        // take care not to break multi-Sequences
+        for (int i = 0; i < s.length();) {
+            int c = s.codePointAt(i);
+            addCharSub(c);
+            i += Character.charCount(c);
+        }
+        terminateField();
+    }
 
     // ascii only (unicode uses different method). This one does a validity check now.
     @Override
@@ -232,15 +242,10 @@ public class ByteArrayComposer extends AbstractMessageComposer<RuntimeException>
             if (di.getRestrictToAscii()) {
                 // don't trust them!
                 work.append(FixASCII.checkAsciiAndFixIfRequired(s, di.getLength(), di.getName()));
+                terminateField();
             } else {
-                // tak care not to break multi-Sequences
-                for (int i = 0; i < s.length();) {
-                    int c = s.codePointAt(i);
-                    addCharSub(c);
-                    i += Character.charCount(c);
-                }
+                unicodeOut(s);
             }
-            terminateField();
         } else {
             writeNull();
         }
@@ -551,5 +556,21 @@ public class ByteArrayComposer extends AbstractMessageComposer<RuntimeException>
     @Override
     public boolean addExternal(ObjectReference di, Object obj) {
         return false;       // perform conversion by default
+    }
+    
+    @Override
+    public void addField(ObjectReference di, Map<String, Object> obj) {
+        if (obj == null)
+            writeNull(di);
+        else
+            unicodeOut(BonaparteJsonEscaper.asJson(obj));
+    }
+
+    @Override
+    public void addField(ObjectReference di, Object obj) {
+        if (obj == null)
+            writeNull(di);
+        else
+            unicodeOut(BonaparteJsonEscaper.asJson(obj));
     }
 }

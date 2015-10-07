@@ -2,6 +2,7 @@ package de.jpaw.bonaparte.vertx;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Map;
 import java.util.UUID;
 
 import org.joda.time.Instant;
@@ -174,10 +175,7 @@ public class JsonObjectComposer extends AbstractMessageComposer<RuntimeException
 
     @Override
     public void addField(MiscElementaryDataItem di, char c) {
-        if (inArray)
-            arr.addString(String.valueOf(c));
-        else
-            obj.putString(di.getName(), String.valueOf(c));
+        writeNonNull(di, String.valueOf(c));
     }
 
     @Override
@@ -227,24 +225,30 @@ public class JsonObjectComposer extends AbstractMessageComposer<RuntimeException
         else
             obj.putNumber(di.getName(), n);
     }
+    
+    protected void writeNonNull(FieldDefinition di, String s) {
+        if (inArray)
+            arr.add(s);
+        else
+            obj.putString(di.getName(), s);
+    }
 
     @Override
     public void addField(AlphanumericElementaryDataItem di, String s) {
-        if (inArray)
-            arr.addString(s);
-        else
-            if (s != null || writeNulls)
-                obj.putString(di.getName(), s);
+        if (s == null) {
+            writeNull(di);
+        } else {
+            writeNonNull(di, s);
+        }
     }
 
     @Override
     public void addField(MiscElementaryDataItem di, UUID n) {
-        if (inArray)
-            arr.addString(n != null ? n.toString() : null);
-        else if (n != null)
-            obj.putString(di.getName(), n.toString());
-        else
+        if (n == null) {
             writeNull(di);
+        } else {
+            writeNonNull(di, n.toString());
+        }
     }
 
     @Override
@@ -289,76 +293,89 @@ public class JsonObjectComposer extends AbstractMessageComposer<RuntimeException
 
     @Override
     public void addField(TemporalElementaryDataItem di, LocalDate t) {
-        if (inArray)
-            arr.addString(t == null ? null : LOCAL_DATE_ISO.print(t));
-        else if (t != null)
-            obj.putString(di.getName(), LOCAL_DATE_ISO.print(t));
-        else
+        if (t == null) {
             writeNull(di);
+        } else {
+            writeNonNull(di, LOCAL_DATE_ISO.print(t));
+        }
     }
 
     @Override
     public void addField(TemporalElementaryDataItem di, LocalDateTime t) {
-        if (inArray)
-            arr.addString(t == null ? null : LOCAL_DATETIME_ISO.print(t));
-        else if (t != null)
-            obj.putString(di.getName(), LOCAL_DATETIME_ISO.print(t));
-        else
+        if (t == null) {
             writeNull(di);
+        } else {
+            writeNonNull(di, LOCAL_DATETIME_ISO.print(t));
+        }
     }
 
     @Override
     public void addField(TemporalElementaryDataItem di, LocalTime t) {
-        if (inArray)
-            arr.addString(t == null ? null : LOCAL_TIME_ISO.print(t));
-        else if (t != null)
-            obj.putString(di.getName(), LOCAL_TIME_ISO.print(t));
-        else
+        if (t == null) {
             writeNull(di);
+        } else {
+            writeNonNull(di, LOCAL_TIME_ISO.print(t));
+        }
     }
 
     @Override
     public void addField(TemporalElementaryDataItem di, Instant t) {
-        if (inArray)
-            arr.addString(t == null ? null : LOCAL_DATETIME_ISO.print(t));
-        else if (t != null)
-            obj.putString(di.getName(), LOCAL_DATETIME_ISO.print(t));
-        else
+        if (t == null) {
             writeNull(di);
+        } else {
+            writeNonNull(di, LOCAL_DATETIME_ISO.print(t));
+        }
     }
 
     @Override
     public void addEnum(EnumDataItem di, BasicNumericElementaryDataItem ord, BonaNonTokenizableEnum n) {
-        if (inArray)
-            arr.addNumber(n == null ? null : n.ordinal());
-        else if (n != null)
-            obj.putNumber(di.getName(), n.ordinal());
-        else
+        if (n == null) {
             writeNull(di);
+        } else {
+            if (inArray)
+                arr.addNumber(n.ordinal());
+            else
+                obj.putNumber(di.getName(), n.ordinal());
+        }
     }
 
     @Override
     public void addEnum(EnumDataItem di, AlphanumericElementaryDataItem token, BonaTokenizableEnum n) {
-        if (inArray)
-            arr.addString(n == null ? null : n.getToken());
-        else if (n != null)
-            obj.putString(di.getName(), n.getToken());
-        else
+        if (n == null) {
             writeNull(di);
+        } else {
+            writeNonNull(di, n.getToken());
+        }
     }
 
     @Override
     public void addEnum(XEnumDataItem di, AlphanumericElementaryDataItem token, XEnum<?> n) {
-        if (inArray)
-            arr.addString(n == null ? null : n.getToken());
-        else if (n != null)
-            obj.putString(di.getName(), n.getToken());
-        else
+        if (n == null) {
             writeNull(di);
+        } else {
+            writeNonNull(di, n.getToken());
+        }
     }
 
     @Override
-    public boolean addExternal(ObjectReference di, Object obj) {
+    public boolean addExternal(ObjectReference di, Object o) {
         return false;       // perform conversion by default
+    }
+
+    @Override
+    public void addField(ObjectReference di, Map<String, Object> o) {
+        JsonObject ob = o == null ? null : new JsonObject(o);
+        if (inArray)
+            arr.addObject(ob);
+        else
+            obj.putObject(di.getName(), ob);
+    }
+
+    @Override
+    public void addField(ObjectReference di, Object o) {
+        if (inArray)
+            arr.add(o);
+        else
+            obj.putValue(di.getName(), o);
     }
 }

@@ -2,6 +2,7 @@ package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Map;
 import java.util.UUID;
 
 import org.joda.time.Instant;
@@ -174,5 +175,13 @@ public class NoOpComposer<E extends Exception> extends AbstractMessageComposer<E
     @Override
     public boolean addExternal(ObjectReference di, Object obj) throws E {
         return false;       // perform conversion by default
+    }
+
+    @Override
+    public void addField(ObjectReference di, Map<String, Object> obj) throws E {
+    }
+
+    @Override
+    public void addField(ObjectReference di, Object obj) throws E {
     }
 }

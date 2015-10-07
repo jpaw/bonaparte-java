@@ -58,6 +58,10 @@
         </dependency>
         <dependency>
             <groupId>de.jpaw</groupId>
+            <artifactId>jpaw-json</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.jpaw</groupId>
             <artifactId>jpaw-socket</artifactId>
         </dependency>
         <dependency>

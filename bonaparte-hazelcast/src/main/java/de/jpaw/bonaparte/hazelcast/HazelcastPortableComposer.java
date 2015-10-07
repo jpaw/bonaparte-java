@@ -2,12 +2,14 @@ package de.jpaw.bonaparte.hazelcast;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import com.hazelcast.nio.ObjectDataOutput;
 import com.hazelcast.nio.serialization.PortableWriter;
 
 import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.core.BonaparteJsonEscaper;
 import de.jpaw.bonaparte.core.CompactComposer;
 import de.jpaw.bonaparte.core.FoldingComposer;
 import de.jpaw.bonaparte.core.MessageComposer;
@@ -128,5 +130,17 @@ public class HazelcastPortableComposer extends NoOpComposer<IOException> impleme
     @Override
     public boolean addExternal(ObjectReference di, Object obj) throws IOException {
         return false;
+    }
+
+    @Override
+    public void addField(ObjectReference di, Map<String, Object> obj) throws IOException {
+        if (obj != null)
+            w.writeUTF(di.getName(), BonaparteJsonEscaper.asJson(obj));
+    }
+
+    @Override
+    public void addField(ObjectReference di, Object obj) throws IOException {
+        if (obj != null)
+            w.writeUTF(di.getName(), BonaparteJsonEscaper.asJson(obj));
     }
 }

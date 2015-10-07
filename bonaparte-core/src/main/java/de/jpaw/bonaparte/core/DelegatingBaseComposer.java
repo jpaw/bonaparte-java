@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.Collection;
+import java.util.Map;
 import java.util.UUID;
 
 import org.joda.time.Instant;
@@ -274,5 +275,15 @@ public class DelegatingBaseComposer<E extends Exception> implements MessageCompo
     @Override
     public void setCharset(Charset charset) {
         delegateComposer.setCharset(charset);
+    }
+
+    @Override
+    public void addField(ObjectReference di, Map<String, Object> obj) throws E {
+        delegateComposer.addField(di, obj);
+    }
+
+    @Override
+    public void addField(ObjectReference di, Object obj) throws E {
+        delegateComposer.addField(di, obj);
     }
 }

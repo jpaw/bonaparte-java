@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import de.jpaw.bonaparte.core.AbstractMessageComposer;
 import de.jpaw.bonaparte.core.BonaCustom;
+import de.jpaw.bonaparte.core.BonaparteJsonEscaper;
 import de.jpaw.bonaparte.enums.BonaNonTokenizableEnum;
 import de.jpaw.bonaparte.enums.BonaTokenizableEnum;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
@@ -410,5 +411,21 @@ abstract public class LinearLayoutComposer extends AbstractMessageComposer<Runti
             writeNull(di);
         }
         return true;       // for the UI display, use the string representation by default
+    }
+
+    @Override
+    public void addField(ObjectReference di, Map<String, Object> obj) {
+        if (obj == null)
+            writeNull(di);
+        else
+            newTextView(di, BonaparteJsonEscaper.asJson(obj));
+    }
+
+    @Override
+    public void addField(ObjectReference di, Object obj) {
+        if (obj == null)
+            writeNull(di);
+        else
+            newTextView(di, BonaparteJsonEscaper.asJson(obj));
     }
 }
