@@ -76,8 +76,8 @@ public class CSVComposer2 extends CSVComposer {
     // BigInteger(n)
     @Override
     public void addField(BasicNumericElementaryDataItem di, BigInteger n) throws IOException {
-        writeSeparator();
         if (n != null) {
+            writeSeparator();
             addRawData(numberFormat.format(n));
         } else {
             writeNull();

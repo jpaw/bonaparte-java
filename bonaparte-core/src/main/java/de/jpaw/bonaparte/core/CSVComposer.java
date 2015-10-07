@@ -98,10 +98,12 @@ public class CSVComposer extends AppendableComposer {
 
     @Override
     public void writeNull(FieldDefinition di) throws IOException {
+        writeSeparator();
     }
 
     @Override
     public void writeNullCollection(FieldDefinition di) throws IOException {
+        writeSeparator();
     }
 
     @Override
@@ -133,9 +135,8 @@ public class CSVComposer extends AppendableComposer {
         writeSeparator();
         addCharSub(c);
     }
-    // ascii only (unicode uses different method)
-    @Override
-    public void addField(AlphanumericElementaryDataItem di, String s) throws IOException {
+
+    protected void writeString(String s) throws IOException {
         writeSeparator();
         if (s != null) {
             addRawData(stringQuote);
@@ -144,6 +145,11 @@ public class CSVComposer extends AppendableComposer {
             }
             addRawData(stringQuote);
         }
+    }
+    
+    @Override
+    public void addField(AlphanumericElementaryDataItem di, String s) throws IOException {
+        writeString(s);
     }
 
 
@@ -251,8 +257,6 @@ public class CSVComposer extends AppendableComposer {
             addRawData(stringQuote);
             super.addField(di, b);
             addRawData(stringQuote);
-        } else {
-            writeNull(di);
         }
     }
 
@@ -264,8 +268,6 @@ public class CSVComposer extends AppendableComposer {
             addRawData(stringQuote);
             super.addField(di, b);
             addRawData(stringQuote);
-        } else {
-            writeNull(di);
         }
     }
 
@@ -279,8 +281,6 @@ public class CSVComposer extends AppendableComposer {
             addRawData(dayFormat.print(t));
             if (cfg.datesQuoted)
                 addRawData(stringQuote);
-        } else {
-            writeNull(di);
         }
     }
 
@@ -296,8 +296,6 @@ public class CSVComposer extends AppendableComposer {
                 addRawData(time3Format.print(t));  // millisecond precision
             if (cfg.datesQuoted)
                 addRawData(stringQuote);
-        } else {
-            writeNull(di);
         }
     }
 
@@ -313,8 +311,6 @@ public class CSVComposer extends AppendableComposer {
                 addRawData(timestamp3Format.print(t));  // millisecond precision
             if (cfg.datesQuoted)
                 addRawData(stringQuote);
-        } else {
-            writeNull(di);
         }
     }
 
@@ -323,8 +319,6 @@ public class CSVComposer extends AppendableComposer {
         writeSeparator();
         if (t != null) {
             addRawData(Long.toString(t.getMillis()));
-        } else {
-            writeNull(di);
         }
     }
 
