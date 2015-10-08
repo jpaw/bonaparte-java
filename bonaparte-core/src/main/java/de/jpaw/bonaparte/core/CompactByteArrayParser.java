@@ -814,11 +814,11 @@ public class CompactByteArrayParser extends Settings implements MessageParser<Me
     @Override
     public boolean readPrimitiveBoolean(MiscElementaryDataItem di) throws MessageParserException {
         int c = needToken();
-        if (c == 0)
+        if (c == 0 || c == COMPACT_BOOLEAN_FALSE)
             return false;
-        if (c != 1)
-            throw newMPE(MessageParserException.UNEXPECTED_CHARACTER, String.format("(expected BOOLEAN 0/1, got 0x%02x)", c));
-        return true;
+        if (c == 1 || c == COMPACT_BOOLEAN_TRUE)
+            return true;
+        throw newMPE(MessageParserException.UNEXPECTED_CHARACTER, String.format("(expected BOOLEAN 0/1 or false/true, got 0x%02x)", c));
     }
 
     // default implementations for the next ones...

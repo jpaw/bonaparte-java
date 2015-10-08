@@ -161,6 +161,10 @@ public class CompactParser extends Settings implements MessageParser<IOException
             return nn;
         case INT_4BYTE:
             return readFixed4ByteInt();
+        case COMPACT_BOOLEAN_FALSE:
+            return 0;               // boolean => int upgrade
+        case COMPACT_BOOLEAN_TRUE:
+            return 1;               // boolean => int upgrade
         default:
             eNotNumeric(firstByte, fieldname);
         }
@@ -279,11 +283,11 @@ public class CompactParser extends Settings implements MessageParser<IOException
         if (checkForNull(di))
             return null;
         int c = needToken();
-        if (c == 0)
+        if (c == 0 || c == COMPACT_BOOLEAN_FALSE)
             return Boolean.FALSE;
-        if (c == 1)
+        if (c == 1 || c == COMPACT_BOOLEAN_TRUE)
             return Boolean.TRUE;
-        throw new IOException(String.format("Unexpected character: (expected BOOLEAN 0/1, got 0x%02x) in %s.%s", c, currentClass, di.getName()));
+        throw new IOException(String.format("Unexpected character: (expected BOOLEAN 0/1 or false/true, got 0x%02x) in %s.%s", c, currentClass, di.getName()));
     }
 
     @Override
@@ -415,9 +419,11 @@ public class CompactParser extends Settings implements MessageParser<IOException
         int c = needToken();
         switch (c) {
         case EMPTY_FIELD:
-            return ByteArray.ZERO_BYTE_ARRAY;
+            return ByteArray.ZERO_BYTE_ARRAY;       // pre 3.6.0 compatibility
         case COMPACT_BINARY:
             int len = readInt(needToken(), di.getName());
+            if (len == 0)
+                return ByteArray.ZERO_BYTE_ARRAY;
             return ByteArray.fromDataInput(in, len);
         default:
             throw new IOException(String.format("expected BINARY*, got 0x%02x in %s.%s", c, currentClass, di.getName()));
@@ -436,7 +442,8 @@ public class CompactParser extends Settings implements MessageParser<IOException
         case COMPACT_BINARY:
             int len = readInt(needToken(), di.getName());
             byte [] data = new byte [len];
-            in.readFully(data);
+            if (len > 0)
+                in.readFully(data);
             return data;
         default:
             throw new IOException(String.format("expected BINARY*, got 0x%02x in %s.%s", c, currentClass, di.getName()));
@@ -646,11 +653,11 @@ public class CompactParser extends Settings implements MessageParser<IOException
     @Override
     public boolean readPrimitiveBoolean(MiscElementaryDataItem di) throws IOException {
         int c = needToken();
-        if (c == 0)
+        if (c == 0 || c == COMPACT_BOOLEAN_FALSE)
             return false;
-        if (c == 1)
+        if (c == 1 || c == COMPACT_BOOLEAN_TRUE)
             return true;
-        throw new IOException(String.format("Unexpected character: (expected BOOLEAN 0/1, got 0x%02x) in %s.%s", c, currentClass, di.getName()));
+        throw new IOException(String.format("Unexpected character: (expected BOOLEAN 0/1 or false/true, got 0x%02x) in %s.%s", c, currentClass, di.getName()));
     }
 
     // default implementations for the next ones...
