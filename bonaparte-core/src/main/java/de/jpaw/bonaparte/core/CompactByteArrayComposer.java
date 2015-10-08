@@ -12,6 +12,7 @@ import org.joda.time.Instant;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
+import org.joda.time.ReadablePartial;
 
 import de.jpaw.bonaparte.enums.BonaNonTokenizableEnum;
 import de.jpaw.bonaparte.enums.BonaTokenizableEnum;
@@ -26,6 +27,14 @@ import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
+import de.jpaw.enums.AbstractByteEnumSet;
+import de.jpaw.enums.AbstractIntEnumSet;
+import de.jpaw.enums.AbstractLongEnumSet;
+import de.jpaw.enums.AbstractShortEnumSet;
+import de.jpaw.enums.AbstractStringEnumSet;
+import de.jpaw.enums.AbstractStringXEnumSet;
+import de.jpaw.enums.EnumSetMarker;
+import de.jpaw.enums.TokenizableEnum;
 import de.jpaw.enums.XEnum;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.ByteBuilder;
@@ -162,10 +171,6 @@ public class CompactByteArrayComposer extends AbstractMessageComposer<RuntimeExc
 
     protected void writeNull() {
         out.writeByte(NULL_FIELD);
-    }
-
-    protected void writeEmpty() {
-        out.writeByte(EMPTY_FIELD);
     }
 
     @Override
@@ -408,25 +413,28 @@ public class CompactByteArrayComposer extends AbstractMessageComposer<RuntimeExc
         charOut(c);
     }
 
-    // ASCII only (unicode uses different method)
+    protected void stringOut(String s) {
+        if (s.length() == 0) {
+            out.writeByte(EMPTY_FIELD);
+        } else if (s.length() == 1) {
+            charOut(s.charAt(0));
+        } else if (s.length() > 8) {
+            writeLongStringStealArray(s);
+        } else {
+            writeLongString(s);
+        }
+    }
+    
     @Override
     public void addField(AlphanumericElementaryDataItem di, String s) {
         if (s == null) {
             writeNull();
         } else {
-            if (s.length() == 0) {
-                writeEmpty();
-            } else if (s.length() == 1) {
-                charOut(s.charAt(0));
-            } else if (s.length() > 8) {
-                writeLongStringStealArray(s);
-            } else {
-                writeLongString(s);
-            }
+            stringOut(s);
         }
     }
 
-    // n is not null and not 0
+    // n is not null
     protected void bigintOut(BigInteger n) {
         int l = n.bitLength();
         // see if we fit into an int
@@ -440,30 +448,35 @@ public class CompactByteArrayComposer extends AbstractMessageComposer<RuntimeExc
             out.append(tmp);
         }
     }
-
+    
+    // n is not null
+    protected void bigdecimalOut(BigDecimal n) {
+        int sgn = n.signum();
+        if (sgn == 0) {
+            out.writeByte(0);
+        } else {
+            int scale = n.scale();
+            if (scale > 0) {
+                // is a fractional number
+                if (scale <= 9) {
+                    out.writeByte(COMPACT_BIGDECIMAL + scale);
+                } else {
+                    out.writeByte(COMPACT_BIGDECIMAL);
+                    intOut(scale);
+                }
+                bigintOut(n.unscaledValue());
+            } else {
+                // number is integral
+                bigintOut(n.toBigInteger());
+            }
+        }
+    }
+    
     // decimal
     @Override
     public void addField(NumericElementaryDataItem di, BigDecimal n) {
         if (n != null) {
-            int sgn = n.signum();
-            if (sgn == 0) {
-                out.writeByte(0);
-            } else {
-                int scale = n.scale();
-                if (scale > 0) {
-                    // is a fractional number
-                    if (scale <= 9) {
-                        out.writeByte(COMPACT_BIGDECIMAL + scale);
-                    } else {
-                        out.writeByte(COMPACT_BIGDECIMAL);
-                        intOut(scale);
-                    }
-                    bigintOut(n.unscaledValue());
-                } else {
-                    // number is integral
-                    bigintOut(n.toBigInteger());
-                }
-            }
+            bigdecimalOut(n);
         } else {
             writeNull();
         }
@@ -498,7 +511,7 @@ public class CompactByteArrayComposer extends AbstractMessageComposer<RuntimeExc
     }
 
     // entry which does not need a reference
-    protected void addLong(long n) {
+    protected void longOut(long n) {
         int nn = (int)n;
         if (nn == n)
             intOut((int)n);
@@ -518,13 +531,13 @@ public class CompactByteArrayComposer extends AbstractMessageComposer<RuntimeExc
     // long
     @Override
     public void addField(BasicNumericElementaryDataItem di, long n) {
-        addLong(n);
+        longOut(n);
     }
 
     // boolean
     @Override
     public void addField(MiscElementaryDataItem di, boolean b) {
-        out.writeByte(b ? 1 : 0);
+        out.writeByte(b ? COMPACT_BOOLEAN_TRUE : COMPACT_BOOLEAN_FALSE);
     }
 
     // float
@@ -553,15 +566,27 @@ public class CompactByteArrayComposer extends AbstractMessageComposer<RuntimeExc
         }
     }
 
+    protected void uuidOut(UUID n) {
+        out.writeByte(COMPACT_UUID);
+        out.append(n.getMostSignificantBits());
+        out.append(n.getLeastSignificantBits());
+    }
+    
     // UUID
     @Override
     public void addField(MiscElementaryDataItem di, UUID n) {
         if (n != null) {
-            out.writeByte(COMPACT_UUID);
-            out.append(n.getMostSignificantBits());
-            out.append(n.getLeastSignificantBits());
+            uuidOut(n);
         } else {
             writeNull();
+        }
+    }
+    
+    protected void bytearrayOut(ByteArray b) {
+        out.writeByte(COMPACT_BINARY);
+        intOut(b.length());
+        if (b.length() > 0) {
+            b.appendToRaw(out);
         }
     }
 
@@ -569,77 +594,84 @@ public class CompactByteArrayComposer extends AbstractMessageComposer<RuntimeExc
     @Override
     public void addField(BinaryElementaryDataItem di, ByteArray b) {
         if (b != null) {
-            if (b.length() == 0) {
-                out.writeByte(EMPTY_FIELD);
-            } else {
-                out.writeByte(COMPACT_BINARY);
-                intOut(b.length());
-                b.appendToRaw(out);
-            }
+            bytearrayOut(b);
         } else {
             writeNull();
         }
     }
 
+    protected void bytesOut(byte [] b) {
+        out.writeByte(COMPACT_BINARY);
+        intOut(b.length);
+        if (b.length > 0) {
+            out.append(b);
+        }
+    }
+    
     // raw. Almost the same as ByteArray...
     @Override
     public void addField(BinaryElementaryDataItem di, byte[] b) {
         if (b != null) {
-            if (b.length == 0) {
-                out.writeByte(EMPTY_FIELD);
-            } else {
-                out.writeByte(COMPACT_BINARY);
-                intOut(b.length);
-                out.append(b);
-            }
+            bytesOut(b);
         } else {
             writeNull();
         }
     }
 
-
+    protected void localdateOut(LocalDate t) {
+        out.writeByte(COMPACT_DATE);
+        intOut(t.getYear());
+        intOut(t.getMonthOfYear());
+        intOut(t.getDayOfMonth());
+    }
+    
     // converters for DAY und TIMESTAMP
     @Override
     public void addField(TemporalElementaryDataItem di, LocalDate t) {
         if (t != null) {
-            out.writeByte(COMPACT_DATE);
-            intOut(t.getYear());
-            intOut(t.getMonthOfYear());
-            intOut(t.getDayOfMonth());
+            localdateOut(t);
         } else {
             writeNull();
         }
     }
 
+    protected void localdatetimeOut(LocalDateTime t) {
+        int millis = t.getMillisOfSecond();
+        boolean fractional = millis != 0;
+        out.writeByte(!fractional ? COMPACT_DATETIME : COMPACT_DATETIME_MILLIS);
+        intOut(t.getYear());
+        intOut(t.getMonthOfYear());
+        intOut(t.getDayOfMonth());
+        if (fractional)
+            intOut(t.getMillisOfDay());
+        else
+            intOut(t.getMillisOfDay() / 1000);
+    }
+    
     @Override
     public void addField(TemporalElementaryDataItem di, LocalDateTime t) {
         if (t != null) {
-            int millis = t.getMillisOfSecond();
-            boolean fractional = millis != 0;
-            out.writeByte(!fractional ? COMPACT_DATETIME : COMPACT_DATETIME_MILLIS);
-            intOut(t.getYear());
-            intOut(t.getMonthOfYear());
-            intOut(t.getDayOfMonth());
-            if (fractional)
-                intOut(t.getMillisOfDay());
-            else
-                intOut(t.getMillisOfDay() / 1000);
+            localdatetimeOut(t);
         } else {
             writeNull();
+        }
+    }
+
+    protected void localtimeOut(LocalTime t) {
+        int millis = t.getMillisOfSecond();
+        if (millis != 0) {
+            out.writeByte(COMPACT_TIME_MILLIS);
+            intOut(t.getMillisOfDay());
+        } else {
+            out.writeByte(COMPACT_TIME);
+            intOut(t.getMillisOfDay() / 1000);
         }
     }
 
     @Override
     public void addField(TemporalElementaryDataItem di, LocalTime t) {
         if (t != null) {
-            int millis = t.getMillisOfSecond();
-            if (millis != 0) {
-                out.writeByte(COMPACT_TIME_MILLIS);
-                intOut(t.getMillisOfDay());
-            } else {
-                out.writeByte(COMPACT_TIME);
-                intOut(t.getMillisOfDay() / 1000);
-            }
+            localtimeOut(t);
         } else {
             writeNull();
         }
@@ -648,7 +680,7 @@ public class CompactByteArrayComposer extends AbstractMessageComposer<RuntimeExc
     @Override
     public void addField(TemporalElementaryDataItem di, Instant t) {
         if (t != null) {
-            addLong(t.getMillis());
+            longOut(t.getMillis());
         } else {
             writeNull();
         }
@@ -765,5 +797,138 @@ public class CompactByteArrayComposer extends AbstractMessageComposer<RuntimeExc
     @Override
     public boolean addExternal(ObjectReference di, Object obj) {
         return false;       // perform conversion by default
+    }
+
+    @Override
+    public void addField(ObjectReference di, Map<String, Object> obj) {
+        if (obj == null) {
+            writeNull(di);
+            return;
+        }
+        out.writeByte(MAP_BEGIN);
+        intOut(obj.size());  // number of members.  Note: this implies we cannot skip nulls!
+        
+        for (Map.Entry<String, Object> elem: obj.entrySet()) {
+            stringOut(elem.getKey());
+            addField(null, elem.getValue());
+        }
+        // appendable.append('}');  // no terminator currently
+    }
+
+    @Override
+    public void addField(ObjectReference di, Object obj) {
+        if (obj == null) {
+            writeNull(di);
+            return;
+        }
+        // check for types. here, we do not have primitive types
+        if (obj instanceof Number) {
+            // check numeric types
+            if (obj instanceof Integer) {
+                intOut(((Integer)obj).intValue());
+                return;
+            }
+            if (obj instanceof Long) {
+                longOut(((Long)obj).longValue());
+                return;
+            }
+            if (obj instanceof Byte) {
+                intOut(((Byte)obj).intValue());
+                return;
+            }
+            if (obj instanceof Short) {
+                intOut(((Short)obj).intValue());
+                return;
+            }
+            if (obj instanceof BigInteger) {
+                bigintOut((BigInteger)obj);
+                return;
+            }
+            if (obj instanceof BigDecimal) {
+                bigdecimalOut((BigDecimal)obj);
+                return;
+            }
+            if (obj instanceof Double) {
+                addField(null, ((Double)obj).doubleValue());
+                return;
+            }
+            if (obj instanceof Float) {
+                addField(null, ((Float)obj).floatValue());
+                return;
+            }
+            throw new RuntimeException("Unrecognized type " + obj.getClass().getSimpleName() + " for compact number");
+        }
+        if (obj instanceof String) {
+            stringOut((String)obj);
+            return;
+        }
+        if (obj instanceof UUID) {
+            uuidOut((UUID)obj);
+            return;
+        }
+        if (obj instanceof Character) {
+            charOut(((Character)obj).charValue());
+            return;
+        }
+        if (obj instanceof ByteArray) {
+            bytearrayOut((ByteArray)obj);
+            return;
+        }
+        if (obj instanceof Boolean) {
+            intOut((Boolean)obj ? COMPACT_BOOLEAN_TRUE : COMPACT_BOOLEAN_FALSE);
+            return;
+        }
+
+        if (obj instanceof Enum) {
+            // distinguish Tokenizable
+            if (obj instanceof TokenizableEnum) {
+                stringOut(((TokenizableEnum)obj).getToken()); // this includes Xenum
+            } else {
+                intOut(((Enum<?>)obj).ordinal());
+            }
+            return;
+        }
+        if (obj instanceof EnumSetMarker) {
+            if (obj instanceof AbstractStringEnumSet<?>) {
+                stringOut(((AbstractStringEnumSet<?>)obj).getBitmap());
+            } else if (obj instanceof AbstractStringXEnumSet<?>) {
+                stringOut(((AbstractStringXEnumSet<?>)obj).getBitmap());
+            } else if (obj instanceof AbstractIntEnumSet<?>) {
+                intOut(((AbstractIntEnumSet<?>)obj).getBitmap());
+            } else if (obj instanceof AbstractLongEnumSet<?>) {
+                longOut(((AbstractLongEnumSet<?>)obj).getBitmap());
+            } else if (obj instanceof AbstractByteEnumSet<?>) {
+                intOut(((AbstractByteEnumSet<?>)obj).getBitmap());
+            } else if (obj instanceof AbstractShortEnumSet<?>) {
+                intOut(((AbstractShortEnumSet<?>)obj).getBitmap());
+            } else {
+                throw new RuntimeException("Cannot transform enum set of type " + obj.getClass().getSimpleName() + " to JSON");
+            }
+            return;
+        }
+        if (obj instanceof Instant) {
+            longOut(((Instant)obj).getMillis());
+            return;
+        }
+        if (obj instanceof ReadablePartial) {
+            if (obj instanceof LocalDate) {
+                localdateOut((LocalDate)obj);
+                return;
+            }
+            if (obj instanceof LocalTime) {
+                localtimeOut((LocalTime)obj);
+                return;
+            }
+            if (obj instanceof LocalDateTime) {
+                localdatetimeOut((LocalDateTime)obj);
+                return;
+            }
+            throw new RuntimeException("Cannot transform joda readable partial of type " + obj.getClass().getSimpleName() + " to JSON");
+        }
+        if (obj instanceof Integer) {
+            intOut(((Integer)obj).intValue());
+            return;
+        }
+        
     }
 }

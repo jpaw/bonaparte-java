@@ -17,7 +17,7 @@
 package de.jpaw.bonaparte.core;
 
 /**
- * The CompactConstants class.
+ * The CompactConstants interface (it does constants definition only).
  *
  * @author Michael Bischoff
  * @version $Revision$
@@ -33,8 +33,8 @@ package de.jpaw.bonaparte.core;
  *          8x  integers 32..47
  *          9x  integers 48..60
  *          9d          RESERVED for future expansion
- *          9e          RESERVED for future expansion
- *          9f          RESERVED for future expansion
+ *          9e          since 3.6.0: false
+ *          9f          since 3.6.0: true
  *
  *          a0          null (any data type)
  *          a1 - aa     -1 to -10
@@ -42,7 +42,7 @@ package de.jpaw.bonaparte.core;
  *          ac          object begin (lower bound as specified)
  *          ad          object end
  *          ae          subobject end
- *          af          empty (zero character String, empty Map, Set, List, array with 0 elements)
+ *          af          empty (zero character String)    before 3.6.0 also: empty byte [] or empty ByteArray
  *
  *          bx    ASCII string, 1..16 characters length
  *          cx  positive 2 byte integer:    x(nn) 0..4095
@@ -100,12 +100,25 @@ package de.jpaw.bonaparte.core;
  *
  *    The implementation makes no guarantees that always the short possible form is used. Year numbers for example
  *    are likely to be written always as 2 bytes, because the likelyhood of year numbers in the range 00..63 is very low.
+ *    
+ *    The format carries partial type information, i.e. certain data types can be recovered, such as
+ *    - float, double, UUID, time realted types.
+ *    Some types will be different after deserialization (unless type information is provided to the deserializer):
+ *    - all primitives will be deserialized to their boxed equivalents
+ *    - boolean         => integer (before 3.6.0)
+ *    - Sets / Arrays   => List
+ *    - byte []         => ByteArray
+ *    - Integral types: long => int, if the value fits, short, byte => int (always)
+ *    - empty types (string / set etc) ????
  */
 
 public interface CompactConstants {
     public static final String MIME_TYPE = "application/compact";
     public static final String EMPTY_STRING = new String("");
 
+    public static final int COMPACT_BOOLEAN_FALSE = 0x9e;
+    public static final int COMPACT_BOOLEAN_TRUE  = 0x9f;
+    
     public static final int PARENT_SEPARATOR = 0xae;
     public static final int OBJECT_BEGIN_ID = 0xde;
     public static final int OBJECT_BEGIN_PQON = 0xdf;
@@ -114,7 +127,6 @@ public interface CompactConstants {
     public static final int OBJECT_AGAIN = 0xdd;
 
     public static final int NULL_FIELD = 0xa0;
-    public static final int EMPTY_FIELD = 0xaf;
     public static final int MAP_BEGIN = 0xfa;
 //    public static final int COLLECTIONS_TERMINATOR = 0xfb;  // array / set / list / map terminator
     public static final int ARRAY_BEGIN = 0xfc;
@@ -125,7 +137,8 @@ public interface CompactConstants {
     public static final int INT_6BYTE = 0xe6;
     public static final int INT_8BYTE = 0xe8;
     public static final int UNICODE_CHAR = 0xd6;
-    public static final int SHORT_ASCII_STRING = 0xb0;  // 16 consequtive
+    public static final int EMPTY_FIELD         = 0xaf;     // used for strings only, now
+    public static final int SHORT_ASCII_STRING  = 0xb0;     // 16 consequtive (17 with EMPTY_FIELD)
     public static final int COMPACT_FLOAT = 0xd1;
     public static final int COMPACT_DOUBLE = 0xd2;
     public static final int COMPACT_UUID = 0xd7;

@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.NumberFormat;
+import java.util.Map;
 import java.util.UUID;
 
 import org.joda.time.Instant;
@@ -377,6 +378,25 @@ public class CSVComposer extends AppendableComposer {
             // do all fields
             obj.serializeSub(this);
             terminateObject(di, obj);
+        }
+    }
+    @Override
+    public void addField(ObjectReference di, Map<String, Object> obj) throws IOException {
+        writeSeparator();
+        if (obj != null) {
+            addRawData(stringQuote);
+            super.addField(di, obj);
+            addRawData(stringQuote);
+        }
+    }
+
+    @Override
+    public void addField(ObjectReference di, Object obj) throws IOException {
+        writeSeparator();
+        if (obj != null) {
+            addRawData(stringQuote);
+            super.addField(di, obj);
+            addRawData(stringQuote);
         }
     }
 }
