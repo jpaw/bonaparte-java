@@ -73,7 +73,7 @@ public class ReferencingComposer extends CompactByteArrayComposer {
                     throw new RuntimeException(e);
                 }
             }
-            addLong(ref);
+            longOut(ref);
         }
     }
 }
