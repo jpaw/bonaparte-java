@@ -134,10 +134,6 @@ public class CompactComposer extends AbstractMessageComposer<IOException> implem
         out.writeByte(NULL_FIELD);
     }
 
-    protected void writeEmpty() throws IOException {
-        out.writeByte(EMPTY_FIELD);
-    }
-
     @Override
     public void writeNull(FieldDefinition di) throws IOException {
         out.writeByte(NULL_FIELD);
@@ -385,7 +381,7 @@ public class CompactComposer extends AbstractMessageComposer<IOException> implem
             writeNull();
         } else {
             if (s.length() == 0) {
-                writeEmpty();
+                out.writeByte(EMPTY_FIELD);
             } else if (s.length() == 1) {
                 charOut(s.charAt(0));
             } else if (s.length() > 8) {
@@ -494,7 +490,7 @@ public class CompactComposer extends AbstractMessageComposer<IOException> implem
     // boolean
     @Override
     public void addField(MiscElementaryDataItem di, boolean b) throws IOException {
-        out.writeByte(b ? 1 : 0);
+        out.writeByte(b ? COMPACT_BOOLEAN_TRUE : COMPACT_BOOLEAN_FALSE);
     }
 
     // float
@@ -539,11 +535,9 @@ public class CompactComposer extends AbstractMessageComposer<IOException> implem
     @Override
     public void addField(BinaryElementaryDataItem di, ByteArray b) throws IOException {
         if (b != null) {
-            if (b.length() == 0) {
-                out.writeByte(EMPTY_FIELD);
-            } else {
-                out.writeByte(COMPACT_BINARY);
-                intOut(b.length());
+            out.writeByte(COMPACT_BINARY);
+            intOut(b.length());
+            if (b.length() > 0) {
                 b.writeToDataOutput(out);
             }
         } else {
@@ -555,11 +549,9 @@ public class CompactComposer extends AbstractMessageComposer<IOException> implem
     @Override
     public void addField(BinaryElementaryDataItem di, byte[] b) throws IOException {
         if (b != null) {
-            if (b.length == 0) {
-                out.writeByte(EMPTY_FIELD);
-            } else {
-                out.writeByte(COMPACT_BINARY);
-                intOut(b.length);
+            out.writeByte(COMPACT_BINARY);
+            intOut(b.length);
+            if (b.length > 0) {
                 out.write(b);
             }
         } else {

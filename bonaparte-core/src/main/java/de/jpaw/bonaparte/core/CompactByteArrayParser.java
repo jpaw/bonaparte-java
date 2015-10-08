@@ -221,6 +221,10 @@ public class CompactByteArrayParser extends Settings implements MessageParser<Me
             return nn;
         case INT_4BYTE:
             return readFixed4ByteInt();
+        case COMPACT_BOOLEAN_FALSE:
+            return 0;               // boolean => int upgrade
+        case COMPACT_BOOLEAN_TRUE:
+            return 1;               // boolean => int upgrade
         default:
             throw newMPE(MessageParserException.ILLEGAL_CHAR_NOT_NUMERIC, fieldname);
         }
@@ -360,11 +364,11 @@ public class CompactByteArrayParser extends Settings implements MessageParser<Me
         if (checkForNull(di))
             return null;
         int c = needToken();
-        if (c == 0)
+        if (c == 0 || c == COMPACT_BOOLEAN_FALSE)
             return Boolean.FALSE;
-        if (c != 1)
-            throw newMPE(MessageParserException.UNEXPECTED_CHARACTER, String.format("(expected BOOLEAN 0/1, got 0x%02x)", c));
-        return Boolean.TRUE;
+        if (c == 1 || c == COMPACT_BOOLEAN_TRUE)
+            return Boolean.TRUE;
+        throw newMPE(MessageParserException.UNEXPECTED_CHARACTER, String.format("(expected BOOLEAN 0/1 or false/true, got 0x%02x)", c));
     }
 
     @Override
@@ -503,12 +507,15 @@ public class CompactByteArrayParser extends Settings implements MessageParser<Me
         int c = needToken();
         switch (c) {
         case EMPTY_FIELD:
-            return ByteArray.ZERO_BYTE_ARRAY;
+            return ByteArray.ZERO_BYTE_ARRAY;       // pre 3.6.0 compatibility
         case COMPACT_BINARY:
             int len = readInt(needToken(), di.getName());
-            ByteArray result = new ByteArray(inputdata, parseIndex, len);
-            parseIndex += len;
-            return result;
+            if (len > 0) {
+                ByteArray result = new ByteArray(inputdata, parseIndex, len);
+                parseIndex += len;
+                return result;
+            }
+            return ByteArray.ZERO_BYTE_ARRAY;
         default:
             throw newMPE(MessageParserException.UNEXPECTED_CHARACTER, String.format("(expected BINARY*, got 0x%02x)", c));
         }
@@ -522,12 +529,14 @@ public class CompactByteArrayParser extends Settings implements MessageParser<Me
         int c = needToken();
         switch (c) {
         case EMPTY_FIELD:
-            return EMPTY_BYTE_ARRAY;
+            return EMPTY_BYTE_ARRAY;            // pre 3.6.0 compatibility
         case COMPACT_BINARY:
             int len = readInt(needToken(), di.getName());
             byte [] data = new byte [len];
-            System.arraycopy(inputdata, parseIndex, data, 0, len);
-            parseIndex += len;
+            if (len > 0) {
+                System.arraycopy(inputdata, parseIndex, data, 0, len);
+                parseIndex += len;
+            }
             return data;
         default:
             throw newMPE(MessageParserException.UNEXPECTED_CHARACTER, String.format("(expected BINARY*, got 0x%02x)", c));

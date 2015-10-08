@@ -164,10 +164,6 @@ public class CompactByteArrayComposer extends AbstractMessageComposer<RuntimeExc
         out.writeByte(NULL_FIELD);
     }
 
-    protected void writeEmpty() {
-        out.writeByte(EMPTY_FIELD);
-    }
-
     @Override
     public void writeNull(FieldDefinition di) {
         out.writeByte(NULL_FIELD);
@@ -415,7 +411,7 @@ public class CompactByteArrayComposer extends AbstractMessageComposer<RuntimeExc
             writeNull();
         } else {
             if (s.length() == 0) {
-                writeEmpty();
+                out.writeByte(EMPTY_FIELD);
             } else if (s.length() == 1) {
                 charOut(s.charAt(0));
             } else if (s.length() > 8) {
@@ -426,7 +422,7 @@ public class CompactByteArrayComposer extends AbstractMessageComposer<RuntimeExc
         }
     }
 
-    // n is not null and not 0
+    // n is not null
     protected void bigintOut(BigInteger n) {
         int l = n.bitLength();
         // see if we fit into an int
@@ -498,7 +494,7 @@ public class CompactByteArrayComposer extends AbstractMessageComposer<RuntimeExc
     }
 
     // entry which does not need a reference
-    protected void addLong(long n) {
+    protected void longOut(long n) {
         int nn = (int)n;
         if (nn == n)
             intOut((int)n);
@@ -518,13 +514,13 @@ public class CompactByteArrayComposer extends AbstractMessageComposer<RuntimeExc
     // long
     @Override
     public void addField(BasicNumericElementaryDataItem di, long n) {
-        addLong(n);
+        longOut(n);
     }
 
     // boolean
     @Override
     public void addField(MiscElementaryDataItem di, boolean b) {
-        out.writeByte(b ? 1 : 0);
+        out.writeByte(b ? COMPACT_BOOLEAN_TRUE : COMPACT_BOOLEAN_FALSE);
     }
 
     // float
@@ -569,11 +565,9 @@ public class CompactByteArrayComposer extends AbstractMessageComposer<RuntimeExc
     @Override
     public void addField(BinaryElementaryDataItem di, ByteArray b) {
         if (b != null) {
-            if (b.length() == 0) {
-                out.writeByte(EMPTY_FIELD);
-            } else {
-                out.writeByte(COMPACT_BINARY);
-                intOut(b.length());
+            out.writeByte(COMPACT_BINARY);
+            intOut(b.length());
+            if (b.length() > 0) {
                 b.appendToRaw(out);
             }
         } else {
@@ -585,11 +579,9 @@ public class CompactByteArrayComposer extends AbstractMessageComposer<RuntimeExc
     @Override
     public void addField(BinaryElementaryDataItem di, byte[] b) {
         if (b != null) {
-            if (b.length == 0) {
-                out.writeByte(EMPTY_FIELD);
-            } else {
-                out.writeByte(COMPACT_BINARY);
-                intOut(b.length);
+            out.writeByte(COMPACT_BINARY);
+            intOut(b.length);
+            if (b.length > 0) {
                 out.append(b);
             }
         } else {
@@ -648,7 +640,7 @@ public class CompactByteArrayComposer extends AbstractMessageComposer<RuntimeExc
     @Override
     public void addField(TemporalElementaryDataItem di, Instant t) {
         if (t != null) {
-            addLong(t.getMillis());
+            longOut(t.getMillis());
         } else {
             writeNull();
         }
