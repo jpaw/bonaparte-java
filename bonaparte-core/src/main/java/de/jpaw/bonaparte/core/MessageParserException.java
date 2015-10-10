@@ -93,6 +93,8 @@ public class MessageParserException extends ApplicationException {
     static public final int INVALID_REFERENCES           = OFFSET + 54;
     static public final int UNSUPPORTED_TOKEN            = OFFSET + 55;
     static public final int UNSUPPORTED_COMPRESSED       = OFFSET + 56;
+    static public final int JSON_EXCEPTION               = OFFSET + 57;
+    
 
     static {
         codeToDescription.put(MISSING_FIELD_TERMINATOR     , "Missing field terminator");
@@ -151,6 +153,7 @@ public class MessageParserException extends ApplicationException {
         codeToDescription.put(INVALID_REFERENCES           , "Could not resolve recursive references (record for index not found)");    // mapped PersistenceException
         codeToDescription.put(UNSUPPORTED_TOKEN            , "Token not yet supported (while skipping unknown data)");
         codeToDescription.put(UNSUPPORTED_COMPRESSED       , "Attempt to skip compressed data (not yet supported by parser version)");
+        codeToDescription.put(JSON_EXCEPTION               , "JSON parsing exception");
     }
 
     /** Creates a parser exception with an explicitly defined position and class name. */

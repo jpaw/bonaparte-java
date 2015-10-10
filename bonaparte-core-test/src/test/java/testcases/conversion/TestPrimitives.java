@@ -16,11 +16,19 @@
 
 package testcases.conversion;
 
+import java.util.Arrays;
+
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import de.jpaw.bonaparte.core.CompactByteArrayComposer;
 import de.jpaw.bonaparte.coretests.initializers.FillPrimitives;
 import de.jpaw.bonaparte.coretests.util.SimpleTestRunner;
+import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.tests1.Longtest;
+import de.jpaw.bonaparte.pojos.tests1.Primitives;
+import de.jpaw.util.ByteBuilder;
+import de.jpaw.util.ByteUtil;
 
 /**
  * The TestPrimitives class.
@@ -57,5 +65,96 @@ public class TestPrimitives {
             SimpleTestRunner.run(obj, false);
         }
     }
+    
+    @Test
+    public void testPrimitiveIntegralsFibonacci() throws Exception {
+        final int n = 91;
+        // run the serialization and deserialization for various numeric magnitudes
+        long [] fibonacci = new long [n];
 
+        fibonacci[0] = 1;
+        fibonacci[1] = 1;
+        for (int i = 2; i < n; ++i) {
+            fibonacci[i] = fibonacci[i-1] + fibonacci[i-2];
+            if (fibonacci[i] < 0)
+                System.out.println("Fibonacci[" + i + "] is negative");
+        }
+        
+        ByteBuilder bb = new ByteBuilder();
+        CompactByteArrayComposer cbac = new CompactByteArrayComposer(bb, false);
+        Primitives p = new Primitives();
+        for (int i = 0; i < n; ++i) {
+            p.setBoolean1(false);
+            p.setByte1((byte)fibonacci[i]);
+            p.setShort1((short)fibonacci[i]);
+            p.setInt1((int)fibonacci[i]);
+            p.setLong1(fibonacci[i]);
+            p.setChar1((char)fibonacci[i]);
+            cbac.addField(Primitives.meta$$this, p);
+        }
+        byte [] result = cbac.getBytes();
+        int hash = Arrays.hashCode(result);
+        System.out.println("Length is " + result.length + ", hash code of result is " + hash);
+        Assert.assertEquals(result.length, 198);
+        Assert.assertEquals(hash, -509876399);
+    }
+
+    @Test
+    public void testStrings() throws Exception {
+        String [] tests = {
+            "Z", "hello", "hello world with more than 16",          // 1, 6, 29 chars (+1) (+2)
+            "ü", "grün",  "gräßlich und auch sehr lang",            // 1, 5, 27 chars (+2), 27 chars (+4) => all stored as UTF-8 with 2 byte prefix
+            "€", "€€",    "jksdfksdfh€lsdfjsdlfj sdlfj sldfj jsld " // 1, 2, 39 chars (+2) (+4) (+41) => all stored as UTF-16 with 1/2/2 byte prefix (first is a char)
+        };
+        
+        ByteBuilder bb = new ByteBuilder();
+        CompactByteArrayComposer cbac = new CompactByteArrayComposer(bb, false);
+        for (int i = 0; i < tests.length; ++i) {
+            cbac.addField((AlphanumericElementaryDataItem)null, tests[i]);
+        }
+        byte [] result = cbac.getBytes();
+        int hash = Arrays.hashCode(result);
+        System.out.println("Length is " + result.length + ", hash code of result is " + hash);
+        Assert.assertEquals(result.length, 168);
+        Assert.assertEquals(hash, -383568210);
+    }
+
+    @Test
+    public void testStrings2() throws Exception {
+        String [] tests = {
+            "Z", "hello", "hello world with more than 16",          // 1, 6, 29 chars (+1) (+2)
+            "ü", "grün",  "gräßlich und auch sehr lang",            // 1, 5, 27 chars (+2), 27 chars (+4) => all stored as UTF-8 with 2 byte prefix
+            "€", "€€",    "jksdfksdfh€lsdfjsdlfj sdlfj sldfj jsld " // 1, 2, 39 chars (+2) (+4) (+41) => all stored as UTF-16 with 1/2/2 byte prefix (first is a char)
+        };
+        int lengths [] = {
+            1, 6, 31,
+            3, 7, 31,
+            3, 6, 80
+        };
+        int hashes [] = {
+            121, -1189149473, -899288326,
+            -10575, 1096910627, -2082039049,
+            -9663, 804336766, -785021038
+        };
+        ByteBuilder bb = new ByteBuilder();
+        CompactByteArrayComposer cbac = new CompactByteArrayComposer(bb, false);
+        for (int i = 0; i < tests.length; ++i) {
+            cbac.reset();
+            cbac.addField((AlphanumericElementaryDataItem)null, tests[i]);
+            byte [] result = cbac.getBytes();
+            int hash = Arrays.hashCode(result);
+            System.out.println("Length is " + result.length + ", hash code of result is " + hash);
+            Assert.assertEquals(result.length, lengths[i], "length for run " + i);
+            Assert.assertEquals(hash, hashes[i], "hash for run " + i);
+        }
+    }
+    
+    @Test
+    public void testStrings1() throws Exception {
+        ByteBuilder bb = new ByteBuilder();
+        CompactByteArrayComposer cbac = new CompactByteArrayComposer(bb, false);
+        cbac.addField((AlphanumericElementaryDataItem)null, "Xü");
+        System.out.println(String.format("Chars are 0x%04x 0x%04x", (int)'X', (int)'ü'));
+        System.out.println(ByteUtil.dump(cbac.getBytes(), 100));
+    }
 }

@@ -12,7 +12,7 @@ import de.jpaw.bonaparte.core.MessageParserException;
 
 @Provider
 @Produces(ByteArrayComposer.MIME_TYPE)
-public class BonaparteJaxRsConverter extends AbstractBonaparteConverters {
+public class BonaparteJaxRsConverter extends AbstractBonaparteConverters<RuntimeException> {
 
     public BonaparteJaxRsConverter() {
         super(ByteArrayComposer.MIME_TYPE);

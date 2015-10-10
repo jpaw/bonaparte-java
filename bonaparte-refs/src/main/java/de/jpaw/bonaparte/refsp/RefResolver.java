@@ -27,9 +27,4 @@ public interface RefResolver<REF extends AbstractRef, DTO extends REF, TRACKING 
      */
     void remove(long key) throws ApplicationException;
 
-    /**
-     * Creates a key object from a ref. Returns null for ref <= 0.
-     */
-    REF createKey(long ref);
-
 }

@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import de.jpaw.bonaparte.core.BufferedMessageWriter;
 
-public abstract class AbstractBonaparteConverter<T> implements MessageBodyWriter<T> {
+public abstract class AbstractBonaparteConverter<T, E extends Exception> implements MessageBodyWriter<T> {
     protected final Logger LOGGER = LoggerFactory.getLogger(AbstractBonaparteConverter.class);
     protected final String supportedMimeType;
     protected final Class<?> supportedClass;
@@ -25,7 +25,7 @@ public abstract class AbstractBonaparteConverter<T> implements MessageBodyWriter
         this.supportedClass = supportedClass;
     }
 
-    protected abstract BufferedMessageWriter<RuntimeException> newComposerWithData(T obj);
+    protected abstract BufferedMessageWriter<E> newComposerWithData(T obj);
     
     @Override
     public long getSize(T obj, Class<?> cls, Type type, Annotation[] anno, MediaType mediaType) {
@@ -41,7 +41,7 @@ public abstract class AbstractBonaparteConverter<T> implements MessageBodyWriter
     @Override
     public void writeTo(T obj, Class<?> cls, Type type, Annotation[] anno, MediaType mediaType, MultivaluedMap<String, Object> args,
             OutputStream os) throws IOException, WebApplicationException {
-        BufferedMessageWriter<RuntimeException> mc = newComposerWithData(obj);
+        BufferedMessageWriter<E> mc = newComposerWithData(obj);
         os.write(mc.getBuffer(), 0, mc.getLength());
         LOGGER.trace("{}: Serialized instance of {} as {} bytes", this.getClass().getSimpleName(), obj.getClass().getCanonicalName(), mc.getLength());
     }

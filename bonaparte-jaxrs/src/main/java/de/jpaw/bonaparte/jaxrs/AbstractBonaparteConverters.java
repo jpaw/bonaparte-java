@@ -17,7 +17,7 @@ import de.jpaw.bonaparte.core.MessageParserException;
 import de.jpaw.bonaparte.core.Settings;
 import de.jpaw.util.ByteBuilder;
 
-public abstract class AbstractBonaparteConverters extends AbstractBonaparteConverter<BonaPortable> implements MessageBodyReader<BonaPortable> {
+public abstract class AbstractBonaparteConverters<E extends Exception> extends AbstractBonaparteConverter<BonaPortable, E> implements MessageBodyReader<BonaPortable> {
     public static int MAXIMUM_MESSAGE_LENGTH    = -1;               // tunable constant (-1 = disabled)
     public static int READ_CHUNK_SIZE           = 4000;             // tunable constant
 
@@ -52,7 +52,7 @@ public abstract class AbstractBonaparteConverters extends AbstractBonaparteConve
                         throw new WebApplicationException("message length exceeds maximum allowed size of " + MAXIMUM_MESSAGE_LENGTH + " byte",
                                 Response.Status.BAD_REQUEST);
                 }
-                buffer.append(tmp, 0, lastRead);
+                buffer.write(tmp, 0, lastRead);
                 if (tmp[lastRead - 1] == '\n') {
                     LOGGER.trace("got NL as last character");
                     break;

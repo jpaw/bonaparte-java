@@ -1,5 +1,6 @@
 package de.jpaw.bonaparte.refsw;
 
+import java.io.IOException;
 import java.util.Map;
 
 import de.jpaw.bonaparte.core.BonaCustom;
@@ -34,24 +35,34 @@ public class ReferencingComposer extends CompactByteArrayComposer {
     @Override
     public void startMap(FieldDefinition di, int currentMembers) {
         out.writeByte(MAP_BEGIN);
-        // write the map count or an indicator if the object is external (because size could change independently then)
-        // important: the provided map must be identical for composing and parsing
-        if (di instanceof ObjectReference && getReferencedResolver((ObjectReference)di) != null) {
-            intOut(COLLECTION_COUNT_REF);
-        } else {
-            intOut(currentMembers);
+        try {
+            // write the map count or an indicator if the object is external (because size could change independently then)
+            // important: the provided map must be identical for composing and parsing
+            if (di instanceof ObjectReference && getReferencedResolver((ObjectReference)di) != null) {
+                intOut(COLLECTION_COUNT_REF);
+            } else {
+                intOut(currentMembers);
+            }
+        } catch (IOException e) {
+            // IOException from ByteArray operation???
+            throw new RuntimeException(e);
         }
     }
 
     @Override
     public void startArray(FieldDefinition di, int currentMembers, int sizeOfElement) {
         out.writeByte(ARRAY_BEGIN);
-        // write the array count or an indicator if the object is external (because size could change independently then)
-        // important: the provided map must be identical for composing and parsing
-        if (di instanceof ObjectReference && getReferencedResolver((ObjectReference)di) != null) {
-            intOut(COLLECTION_COUNT_REF);
-        } else {
-            intOut(currentMembers);
+        try {
+            // write the array count or an indicator if the object is external (because size could change independently then)
+            // important: the provided map must be identical for composing and parsing
+            if (di instanceof ObjectReference && getReferencedResolver((ObjectReference)di) != null) {
+                intOut(COLLECTION_COUNT_REF);
+            } else {
+                intOut(currentMembers);
+            }
+        } catch (IOException e) {
+            // IOException from ByteArray operation???
+            throw new RuntimeException(e);
         }
     }
 
@@ -73,7 +84,12 @@ public class ReferencingComposer extends CompactByteArrayComposer {
                     throw new RuntimeException(e);
                 }
             }
-            longOut(ref);
+            try {
+                longOut(ref);
+            } catch (IOException e) {
+                // IOException from ByteArray operation???
+                throw new RuntimeException(e);
+            }
         }
     }
 }
