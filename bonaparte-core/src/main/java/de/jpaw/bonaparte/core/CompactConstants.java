@@ -38,7 +38,7 @@ package de.jpaw.bonaparte.core;
  *
  *          a0          null (any data type)
  *          a1 - aa     -1 to -10
- *          ab          RESERVED for future expansion
+ *          ab          JSON object (key / Object) begin (data serialized from BonaPortable into JSON)
  *          ac          object begin (lower bound as specified)
  *          ad          object end
  *          ae          subobject end
@@ -108,8 +108,19 @@ package de.jpaw.bonaparte.core;
  *    - boolean         => integer (before 3.6.0)
  *    - Sets / Arrays   => List
  *    - byte []         => ByteArray
+ *    - enums           => integer or String (TokenizableEnum / Xenum)
+ *    - enumsets        => integer, long or String
  *    - Integral types: long => int, if the value fits, short, byte => int (always)
- *    - empty types (string / set etc) ????
+ *    - Instant         => long
+ *    - BonaPortables   => Map<String, Object>  (reason is that the receiving application probably does not know the specific type)
+ *    
+ *    JSON null value policy:
+ *    If a Map<> is output, then null values will be exported. The reason is that a map could be cleard of null values before output, if desired.
+ *    Also, it would require a 2 pass approach otherwise, as the map outputs the number of entries before.
+ *    On the other hand, if a BonaPortable is output as JSON, then null values will not be generated.
+ *    The reason is that objects typically contain a high number of optional fields, which are only needed if filled, and there is no other way
+ *    to clear them. For objects, a different token is used ("variable map") and the object's PQON is output as well. This allows optional reconstruction
+ *    of the class.
  */
 
 public interface CompactConstants {
@@ -122,6 +133,7 @@ public interface CompactConstants {
     public static final int PARENT_SEPARATOR = 0xae;
     public static final int OBJECT_BEGIN_ID = 0xde;
     public static final int OBJECT_BEGIN_PQON = 0xdf;
+    public static final int OBJECT_BEGIN_JSON = 0xab;
     public static final int OBJECT_BEGIN_BASE = 0xac;
     public static final int OBJECT_TERMINATOR = 0xad;
     public static final int OBJECT_AGAIN = 0xdd;
@@ -138,7 +150,7 @@ public interface CompactConstants {
     public static final int INT_8BYTE = 0xe8;
     public static final int UNICODE_CHAR = 0xd6;
     public static final int EMPTY_FIELD         = 0xaf;     // used for strings only, now
-    public static final int SHORT_ASCII_STRING  = 0xb0;     // 16 consequtive (17 with EMPTY_FIELD)
+    public static final int SHORT_ASCII_STRING  = 0xb0;     // 16 consecutive (17 with EMPTY_FIELD)
     public static final int COMPACT_FLOAT = 0xd1;
     public static final int COMPACT_DOUBLE = 0xd2;
     public static final int COMPACT_UUID = 0xd7;
