@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.joda.time.DateTimeZone;
@@ -44,6 +45,8 @@ import de.jpaw.bonaparte.pojos.meta.XEnumDefinition;
 import de.jpaw.bonaparte.util.BigDecimalTools;
 import de.jpaw.enums.AbstractXEnumBase;
 import de.jpaw.enums.XEnumFactory;
+import de.jpaw.json.JsonException;
+import de.jpaw.json.JsonParser;
 import de.jpaw.util.ByteArray;
 /**
  * The StringBuilderParser class.
@@ -746,6 +749,30 @@ public final class ExternalizableParser extends Settings implements MessageParse
     @Override
     public byte readPrimitiveByte(BasicNumericElementaryDataItem di) throws IOException {
         return (byte)readVarInt(di.getName(), 8);
+    }
+    
+    @Override
+    public Map<String, Object> readJson(ObjectReference di) throws IOException {
+        String tmp = readString(di.getName(), di.getIsRequired(), Integer.MAX_VALUE, true, false, true, true);
+        if (tmp == null)
+            return null;
+        try {
+            return new JsonParser(tmp, false).parseObject();
+        } catch (JsonException e) {
+            throw new IOException(String.format("Invalid JSON for field %s.%s: %s", currentClass, di.getName(), e.getMessage()));
+        }
+    }
+
+    @Override
+    public Object readElement(ObjectReference di) throws IOException {
+        String tmp = readString(di.getName(), di.getIsRequired(), Integer.MAX_VALUE, true, false, true, true);
+        if (tmp == null)
+            return null;
+        try {
+            return new JsonParser(tmp, false).parseElement();
+        } catch (JsonException e) {
+            throw new IOException(String.format("Invalid JSON for field %s.%s: %s", currentClass, di.getName(), e.getMessage()));
+        }
     }
 }
 

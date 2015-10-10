@@ -121,6 +121,11 @@ package de.jpaw.bonaparte.core;
  *    The reason is that objects typically contain a high number of optional fields, which are only needed if filled, and there is no other way
  *    to clear them. For objects, a different token is used ("variable map") and the object's PQON is output as well. This allows optional reconstruction
  *    of the class.
+ *    
+ *    For the compact format, the serialized form of any Java object added via addElement is identical to the form when added with the specific method (i.e.
+ *    as part of a BonaPortable), because there is sufficient type information in the serialized form. For other formats (the bonaparte ASCII format for example,
+ *    the serialized forms will differ in order to be able to distinguish numbers from strings (as element, a string would be output including quotes, when
+ *    added directly, then without. 
  */
 
 public interface CompactConstants {

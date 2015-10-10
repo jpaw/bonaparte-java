@@ -41,6 +41,8 @@ import de.jpaw.bonaparte.pojos.meta.XEnumDefinition;
 import de.jpaw.bonaparte.util.BigDecimalTools;
 import de.jpaw.enums.AbstractXEnumBase;
 import de.jpaw.enums.XEnumFactory;
+import de.jpaw.json.JsonException;
+import de.jpaw.json.JsonParser;
 import de.jpaw.util.Base64;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.CharTestsASCII;
@@ -687,6 +689,30 @@ public final class StringCSVParser extends Settings implements MessageParser<Mes
         if (cfg.removePoint4BD || di.getDecimalDigits() == 0)
             return Byte.parseByte(processTrailingSigns(token));
         return (byte) postProcessForImplicitDecimals(di, token);
+    }
+
+    @Override
+    public Map<String, Object> readJson(ObjectReference di) throws MessageParserException {
+        String tmp = readString(di.getName(), di.getIsRequired(), Integer.MAX_VALUE, true, false, true, true);
+        if (tmp == null)
+            return null;
+        try {
+            return new JsonParser(tmp, false).parseObject();
+        } catch (JsonException e) {
+            throw new MessageParserException(MessageParserException.JSON_EXCEPTION, di.getName(), parseIndex, currentClass, e.getMessage());
+        }
+    }
+
+    @Override
+    public Object readElement(ObjectReference di) throws MessageParserException {
+        String tmp = readString(di.getName(), di.getIsRequired(), Integer.MAX_VALUE, true, false, true, true);
+        if (tmp == null)
+            return null;
+        try {
+            return new JsonParser(tmp, false).parseElement();
+        } catch (JsonException e) {
+            throw new MessageParserException(MessageParserException.JSON_EXCEPTION, di.getName(), parseIndex, currentClass, e.getMessage());
+        }
     }
 }
 

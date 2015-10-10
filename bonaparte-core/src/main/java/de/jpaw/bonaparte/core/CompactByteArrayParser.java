@@ -19,7 +19,9 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.joda.time.DateTimeZone;
@@ -29,6 +31,8 @@ import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.net.InetAddresses.TeredoInfo;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
@@ -43,6 +47,8 @@ import de.jpaw.bonaparte.pojos.meta.XEnumDefinition;
 import de.jpaw.bonaparte.util.BigDecimalTools;
 import de.jpaw.enums.AbstractXEnumBase;
 import de.jpaw.enums.XEnumFactory;
+import de.jpaw.json.JsonException;
+import de.jpaw.json.JsonParser;
 import de.jpaw.util.ByteArray;
 
 /**
@@ -130,10 +136,6 @@ public class CompactByteArrayParser extends Settings implements MessageParser<Me
         }
     }
 
-    // check for Null called for field members inside a class
-    protected boolean checkForNullOrNeedToken(FieldDefinition di, int token) throws MessageParserException {
-        return checkForNullOrNeedToken(di.getName(), di.getIsRequired(), token);
-    }
     // check for Null called for field members inside a class
     protected boolean checkForNullOrNeedToken(String fieldname, boolean isRequired, int token) throws MessageParserException {
         int c = needToken();
@@ -273,7 +275,7 @@ public class CompactByteArrayParser extends Settings implements MessageParser<Me
 
     @Override
     public UUID readUUID(MiscElementaryDataItem di) throws MessageParserException {
-        if (checkForNullOrNeedToken(di, COMPACT_UUID))
+        if (checkForNullOrNeedToken(di.getName(), di.getIsRequired(), COMPACT_UUID))
             return null;
         long msl = readFixed8ByteLong();
         long lsl = readFixed8ByteLong();
@@ -304,9 +306,9 @@ public class CompactByteArrayParser extends Settings implements MessageParser<Me
     @Override
     public <T extends AbstractXEnumBase<T>> T readXEnum(XEnumDataItem di, XEnumFactory<T> factory) throws MessageParserException {
         XEnumDefinition spec = di.getBaseXEnum();
-        String scannedToken = readString(di.getName(), di.getIsRequired() && !spec.getHasNullToken());
-        if (scannedToken == null)
+        if (checkForNull(di.getName(), di.getIsRequired() && !spec.getHasNullToken()))
             return factory.getNullToken();
+        String scannedToken = readString(di.getName());
         T value = factory.getByToken(scannedToken);
         if (value == null) {
             throw newMPE(MessageParserException.INVALID_ENUM_TOKEN, scannedToken);
@@ -442,12 +444,13 @@ public class CompactByteArrayParser extends Settings implements MessageParser<Me
 
     @Override
     public String readAscii(AlphanumericElementaryDataItem di) throws MessageParserException {
-        return readString(di.getName(), di.getIsRequired());
+        if (checkForNull(di.getName(), di.getIsRequired()))
+            return null;
+        return readString(di.getName());
     }
 
-    protected String readString(String fieldname, boolean isRequired) throws MessageParserException {
-        if (checkForNull(fieldname, isRequired))
-            return null;
+    // read a non-null string
+    protected String readString(String fieldname) throws MessageParserException {
         int len;
         String result;
         int c = needToken();
@@ -496,7 +499,9 @@ public class CompactByteArrayParser extends Settings implements MessageParser<Me
 
     @Override
     public String readString(AlphanumericElementaryDataItem di) throws MessageParserException {
-        return readString(di.getName(), di.getIsRequired());
+        if (checkForNull(di.getName(), di.getIsRequired()))
+            return null;
+        return readString(di.getName());
     }
 
 
@@ -546,7 +551,7 @@ public class CompactByteArrayParser extends Settings implements MessageParser<Me
 
     @Override
     public LocalDate readDay(TemporalElementaryDataItem di) throws MessageParserException {
-        if (checkForNullOrNeedToken(di, COMPACT_DATE))
+        if (checkForNullOrNeedToken(di.getName(), di.getIsRequired(), COMPACT_DATE))
             return null;
         String fieldname = di.getName();
         int year = readInt(needToken(), fieldname);
@@ -738,7 +743,7 @@ public class CompactByteArrayParser extends Settings implements MessageParser<Me
                         throw newMPE(MessageParserException.INVALID_BASE_CLASS_REFERENCE, "");
                     classname = di.getLowerBound().getName();
                 } else {
-                    classname = readString(fieldname, false);
+                    classname = readString(fieldname);
                     if (classname == null || classname.length() == 0) {
                         if (di.getLowerBound() == null)
                             throw newMPE(MessageParserException.INVALID_BASE_CLASS_REFERENCE, "");
@@ -873,5 +878,50 @@ public class CompactByteArrayParser extends Settings implements MessageParser<Me
     @Override
     public byte readPrimitiveByte(BasicNumericElementaryDataItem di) throws MessageParserException {
         return (byte)readInt(needToken(), di.getName());
+    }
+    
+    // read a JSON object: Either a flex map or a null is expected here  
+    @Override
+    public Map<String, Object> readJson(ObjectReference di) throws MessageParserException {
+        if (checkForNullOrNeedToken(di.getName(), di.getIsRequired(), OBJECT_BEGIN_JSON))
+            return null;
+        // not null, therefore JSON begin
+        final Map<String, Object> map = new HashMap<String, Object>();
+        // now iterate until JSON end is found
+        for (;;) {
+            if (parseIndex >= messageLength) {
+                throw newMPE(MessageParserException.PREMATURE_END, null);
+            }
+            int c = inputdata[parseIndex] & 0xff;
+            if (c == OBJECT_TERMINATOR) {
+                ++parseIndex;
+                return map;
+            }
+            
+            
+            
+            // TODO: error on explicit or implicit null
+            
+            
+            
+            // parse field name, then value
+            String key = readString("jsonkey");
+            // TODO: check for valid JSON name
+            // now read value
+            Object value = readElementSub();
+            if (map.put(key, value) != null)
+                throw new MessageParserException(MessageParserException.JSON_EXCEPTION, di.getName(), -1, currentClass, "duplicate defined key " + key);
+        }
+    }
+
+    // read an optional element
+    protected Object readElementSub() throws MessageParserException {
+        return null;
+    }
+    
+    // reads a single element
+    @Override
+    public Object readElement(ObjectReference di) throws MessageParserException {
+        return readElementSub();
     }
 }

@@ -746,7 +746,6 @@ public final class StringBuilderParser extends Settings implements MessageParser
         return stringParser.readPrimitiveByte(di, nextIndexParseAscii(di.getName(), di.getIsSigned(), false, false));
     }
 
-    // XYZZY: JSON TODO. readElement is not really supported here, because everything would be a string
     @Override
     public Map<String, Object> readJson(ObjectReference di) throws MessageParserException {
         String tmp = readString(di.getName(), di.getIsRequired(), Integer.MAX_VALUE, true, false, true, true);

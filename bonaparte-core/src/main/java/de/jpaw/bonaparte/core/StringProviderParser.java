@@ -3,6 +3,7 @@ package de.jpaw.bonaparte.core;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.joda.time.Instant;
@@ -25,6 +26,8 @@ import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.enums.AbstractXEnumBase;
 import de.jpaw.enums.XEnumFactory;
+import de.jpaw.json.JsonException;
+import de.jpaw.json.JsonParser;
 import de.jpaw.util.ByteArray;
 
 /** A parser which takes data through a provided functional interface, any implementation which provides a String get(String).
@@ -250,5 +253,29 @@ public class StringProviderParser extends Settings implements MessageParser<Mess
     @Override
     public byte readPrimitiveByte(BasicNumericElementaryDataItem di) throws MessageParserException {
         return stringParser.readPrimitiveByte(di, getParameter(di));
+    }
+    
+    @Override
+    public Map<String, Object> readJson(ObjectReference di) throws MessageParserException {
+        String tmp = getParameter(di);
+        if (tmp == null)
+            return null;
+        try {
+            return new JsonParser(tmp, false).parseObject();
+        } catch (JsonException e) {
+            throw new MessageParserException(MessageParserException.JSON_EXCEPTION, di.getName(), -1, currentClass, e.getMessage());
+        }
+    }
+
+    @Override
+    public Object readElement(ObjectReference di) throws MessageParserException {
+        String tmp = getParameter(di);
+        if (tmp == null)
+            return null;
+        try {
+            return new JsonParser(tmp, false).parseElement();
+        } catch (JsonException e) {
+            throw new MessageParserException(MessageParserException.JSON_EXCEPTION, di.getName(), -1, currentClass, e.getMessage());
+        }
     }
 }

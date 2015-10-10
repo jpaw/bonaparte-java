@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.joda.time.Instant;
@@ -40,6 +41,8 @@ import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDefinition;
 import de.jpaw.enums.AbstractXEnumBase;
 import de.jpaw.enums.XEnumFactory;
+import de.jpaw.json.JsonException;
+import de.jpaw.json.JsonParser;
 import de.jpaw.util.Base64;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.ByteTestsASCII;
@@ -869,5 +872,29 @@ public class ByteArrayParser extends Settings implements MessageParser<MessagePa
     @Override
     public byte readPrimitiveByte(BasicNumericElementaryDataItem di) throws MessageParserException {
         return readByte(di).byteValue();
+    }
+    
+    @Override
+    public Map<String, Object> readJson(ObjectReference di) throws MessageParserException {
+        String tmp = readString(di.getName(), di.getIsRequired(), Integer.MAX_VALUE, true, false, true, true);
+        if (tmp == null)
+            return null;
+        try {
+            return new JsonParser(tmp, false).parseObject();
+        } catch (JsonException e) {
+            throw new MessageParserException(MessageParserException.JSON_EXCEPTION, di.getName(), parseIndex, currentClass, e.getMessage());
+        }
+    }
+
+    @Override
+    public Object readElement(ObjectReference di) throws MessageParserException {
+        String tmp = readString(di.getName(), di.getIsRequired(), Integer.MAX_VALUE, true, false, true, true);
+        if (tmp == null)
+            return null;
+        try {
+            return new JsonParser(tmp, false).parseElement();
+        } catch (JsonException e) {
+            throw new MessageParserException(MessageParserException.JSON_EXCEPTION, di.getName(), parseIndex, currentClass, e.getMessage());
+        }
     }
 }
