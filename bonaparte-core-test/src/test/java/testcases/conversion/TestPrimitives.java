@@ -115,26 +115,29 @@ public class TestPrimitives {
         byte [] result = cbac.getBytes();
         int hash = Arrays.hashCode(result);
         System.out.println("Length is " + result.length + ", hash code of result is " + hash);
-        Assert.assertEquals(result.length, 168);
-        Assert.assertEquals(hash, -383568210);
+        Assert.assertEquals(result.length, 164);
+        Assert.assertEquals(hash, -299523436);
     }
 
     @Test
     public void testStrings2() throws Exception {
         String [] tests = {
             "Z", "hello", "hello world with more than 16",          // 1, 6, 29 chars (+1) (+2)
-            "ü", "grün",  "gräßlich und auch sehr lang",            // 1, 5, 27 chars (+2), 27 chars (+4) => all stored as UTF-8 with 2 byte prefix
-            "€", "€€",    "jksdfksdfh€lsdfjsdlfj sdlfj sldfj jsld " // 1, 2, 39 chars (+2) (+4) (+41) => all stored as UTF-16 with 1/2/2 byte prefix (first is a char)
+            "ü", "grün",  "gräßlich und auch sehr lang",            // 1, 5, 27 chars (+2) (+1) (+2) => using ISO
+            "€", "€€",    "jksdfksdfh€lsdfjsdlfj sdlfj sldfj jsld ", // 1, 2, 39 chars (+2) (+4) (+41) => all stored as UTF-16 with 1/2/2 byte prefix (first is a char)
+            "\u03B1\u03B2\u03B3 ..."                                // UTF8: UTF-String + length byte + 10 bytes for the string
         };
         int lengths [] = {
             1, 6, 31,
-            3, 7, 31,
-            3, 6, 80
+            3, 5, 29,
+            3, 6, 80,
+            12
         };
         int hashes [] = {
             121, -1189149473, -899288326,
-            -10575, 1096910627, -2082039049,
-            -9663, 804336766, -785021038
+            -10575, -39303953, -967932771,
+            -9663, 804336766, -785021038,
+            2125008742
         };
         ByteBuilder bb = new ByteBuilder();
         CompactByteArrayComposer cbac = new CompactByteArrayComposer(bb, false);
@@ -155,6 +158,25 @@ public class TestPrimitives {
         CompactByteArrayComposer cbac = new CompactByteArrayComposer(bb, false);
         cbac.addField((AlphanumericElementaryDataItem)null, "Xü");
         System.out.println(String.format("Chars are 0x%04x 0x%04x", (int)'X', (int)'ü'));
+        System.out.println(ByteUtil.dump(cbac.getBytes(), 100));
+    }
+    
+    @Test
+    public void testStrings1a() throws Exception {
+        ByteBuilder bb = new ByteBuilder();
+        CompactByteArrayComposer cbac = new CompactByteArrayComposer(bb, false);
+        cbac.addField((AlphanumericElementaryDataItem)null, "grün");
+        System.out.println(String.format("Chars are 0x%04x 0x%04x", (int)'X', (int)'ü'));
+        System.out.println(ByteUtil.dump(cbac.getBytes(), 100));
+    }
+    
+    @Test
+    public void testStrings1Greek() throws Exception {
+        ByteBuilder bb = new ByteBuilder();
+        CompactByteArrayComposer cbac = new CompactByteArrayComposer(bb, false);
+        String test = "\u03B1\u03B2\u03B3 ...";
+        cbac.addField((AlphanumericElementaryDataItem)null, test);  // 7 characters, 7+3 = 10 bytes in UTF-8
+        System.out.println(String.format("String length is %d for %s", test.length(), test));
         System.out.println(ByteUtil.dump(cbac.getBytes(), 100));
     }
 }
