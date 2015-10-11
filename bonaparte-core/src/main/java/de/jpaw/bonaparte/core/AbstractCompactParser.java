@@ -1,0 +1,772 @@
+package de.jpaw.bonaparte.core;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import org.joda.time.DateTimeZone;
+import org.joda.time.Instant;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
+import org.joda.time.LocalTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
+import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.ObjectReference;
+import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
+import de.jpaw.bonaparte.pojos.meta.XEnumDefinition;
+import de.jpaw.enums.AbstractXEnumBase;
+import de.jpaw.enums.XEnumFactory;
+import de.jpaw.util.ByteArray;
+import de.jpaw.util.CharTestsASCII;
+
+
+public abstract class AbstractCompactParser<E extends Exception>  extends Settings implements MessageParser<E>, CompactConstants {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractCompactParser.class);
+    protected static final byte [] EMPTY_BYTE_ARRAY = new byte [0];
+
+    // most of these are available from DataInput, but need an Exception mapper
+    abstract protected boolean atEnd() throws E;                // test for end of input - can be slow (using exceptions for some implementations, therefore only use if no other method exists)
+    abstract protected void pushback(int c);                    // push back a single token, which must be the last byte read, and can only be consumed by a subsequent needToken() (both flavours) 
+    abstract protected E newMPE(int n, String msg);             // construct a suitable exception
+    abstract protected BonaPortable createObject(String classname) throws E;             // same method - overloading required for possible exception mapping
+    abstract protected BigDecimal checkAndScale(BigDecimal num, NumericElementaryDataItem di) throws E;       // exception mapper
+    
+    // basic methods to read data from the stream - all of them will throw an exception if the end of the input has been reached
+    abstract protected int needToken() throws E;                // single byte as unsigned (or pushed back character)
+    abstract protected void needToken(int c) throws E;          // single byte as unsigned (or pushed back character)
+    abstract protected void skipBytes(int n) throws E;
+    abstract protected long readFixed8ByteLong() throws E;
+    abstract protected long readFixed6ByteLong() throws E;
+    abstract protected int readFixed4ByteInt() throws E;
+    abstract protected int readFixed3ByteInt() throws E;
+    abstract protected int readFixed2ByteInt() throws E;
+    abstract protected char readChar() throws E;
+    abstract protected byte [] readBytes(int n) throws E;       // read exactly n bytes and return them in some new byte array
+    abstract protected ByteArray readByteArray(int n) throws E; // read exactly n bytes and return them in some new byte array (avoids array copy)
+    abstract protected String readISO(int len) throws E;        // could be coded in general, but provided for performance
+    abstract protected String readUTF16(int len) throws E;      // could be coded in general, but provided for performance
+    abstract protected String readUTF8(int len) throws E;       // could be coded in general, but provided for performance
+    
+    protected String currentClass;
+    private final boolean useCache = true;
+    private List<BonaPortable> objects;
+    private int skipDepth = 0;
+
+    protected AbstractCompactParser() {
+        if (useCache)
+            objects = new ArrayList<BonaPortable>(60);
+    }
+
+    protected void clearCache() {
+        if (useCache)
+            objects.clear();
+    }
+    
+    // provide a parser position, if possible. Only used for diagnostic output, return -1 if not available
+    protected int getParseIndex() {
+        return -1;
+    }
+    
+    @Override
+    public void setClassName(String newClassName) {
+        currentClass = newClassName;
+    }
+
+    
+    @Override
+    public E enumExceptionConverter(IllegalArgumentException e) {
+        return newMPE(MessageParserException.INVALID_ENUM_TOKEN, e.getMessage());
+    }
+
+    @Override
+    public E customExceptionConverter(String msg, Exception e) {
+        return newMPE(MessageParserException.CUSTOM_OBJECT_EXCEPTION, e != null ? msg + e.toString() : msg);
+    }
+    
+    private E eNotNumeric(int n, String fieldname) {
+        return newMPE(MessageParserException.NUMBER_PARSING_ERROR, "Numeric token expected but got " + (n & 0xff) + " for field " + currentClass + "." + fieldname);
+    }
+
+    /** Check for Null. Returns true if null has been encountered and was allowed. Throws an exception in case it was not allowed. Returns false
+     * if no null is next. (Called for field members inside a class.)
+     */
+    protected boolean checkForNull(FieldDefinition di) throws E {
+        return checkForNull(di.getName(), di.getIsRequired());
+    }
+
+    // check for Null called for field members inside a class
+    protected boolean checkForNull(String fieldname, boolean isRequired) throws E {
+        int c = needToken();
+        if (c == NULL_FIELD) {
+            if (!isRequired) {
+                return true;
+            } else {
+                throw newMPE(MessageParserException.ILLEGAL_EXPLICIT_NULL, fieldname);
+            }
+        }
+        if ((c == PARENT_SEPARATOR) || (c == OBJECT_TERMINATOR)) {
+            if (!isRequired) {
+                // uneat it
+                pushback(c);
+                return true;
+            } else {
+                throw newMPE(MessageParserException.ILLEGAL_IMPLICIT_NULL, fieldname);
+            }
+        }
+        pushback(c);
+        return false;
+    }
+    
+    // check for Null called for field members inside a class
+    protected boolean checkForNullOrNeedToken(String fieldname, boolean isRequired, int token) throws E {
+        int c = needToken();
+        if (c == token)
+            return false;
+        if (c == NULL_FIELD) {
+            if (!isRequired) {
+                return true;
+            } else {
+                throw newMPE(MessageParserException.ILLEGAL_EXPLICIT_NULL, fieldname);
+            }
+        }
+        if ((c == PARENT_SEPARATOR) || (c == OBJECT_TERMINATOR)) {
+            if (!isRequired) {
+                // uneat it
+                pushback(c);
+                return true;
+            } else {
+                throw newMPE(MessageParserException.ILLEGAL_IMPLICIT_NULL, fieldname);
+            }
+        }
+        throw newMPE(MessageParserException.UNEXPECTED_CHARACTER, String.format("(expected 0x%02x, got 0x%02x)", token, c));
+    }
+
+    // differs to previous implementation: this method does not end if EOF is reached, is does require a subsequent token (for example object end or record end)
+    protected void skipExplicitNulls() throws E {
+        int c;
+        while ((c = needToken()) == NULL_FIELD) {
+        }
+        pushback(c);
+    }
+
+    @Override
+    public void eatParentSeparator() throws E {
+        eatObjectOrParentSeparator(PARENT_SEPARATOR);
+    }
+
+    public void eatObjectTerminator() throws E {
+        eatObjectOrParentSeparator(OBJECT_TERMINATOR);
+    }
+
+    protected void eatObjectOrParentSeparator(int which) throws E {
+        skipExplicitNulls();  // upwards compatibility: skip extra fields if they are blank.
+        int z = needToken();
+        if (z == which)
+            return;   // all good
+
+        // we have extra data and it is not null. Now the behavior depends on a parser setting
+        ParseSkipNonNulls mySetting = getSkipNonNullsBehavior();
+        switch (mySetting) {
+        case ERROR:
+            throw newMPE(MessageParserException.EXTRA_FIELDS, String.format("(found byte 0x%02x)", z));
+        case WARN:
+            LOGGER.warn("{} at index {} parsing class {}", MessageParserException.codeToString(MessageParserException.EXTRA_FIELDS), getParseIndex(), currentClass);
+            // fall through
+        case IGNORE:
+            // the byte encountered next (z) is not what we wanted. Skip non-null fields (or sub objects, even nested) until we find the desired terminator.
+            // skip bytes until we are at end of record (bad!) (thrown by needToken()) or find the terminator
+            pushback(z);   // ensure that the byte z is read again!
+            skipDepth = 0;
+            skipUntilNext(which);
+        }
+    }
+
+    /** Skips over the data until we find the expected token (usually a record terminator or object terminator or parent separator).
+     * When the method returns, the parser is just behind the expected character. */
+    protected void skipUntilNext(int which) throws E {
+        int c;
+        // System.out.println(String.format("Descend for skip depth %d for %02x", skipDepth, which));
+        ++skipDepth;
+        while ((c = needToken()) != which) {
+            // skip one element, unless the expected one has been found
+            if (c < OBJECT_BEGIN_BASE)
+                continue;  // single byte elements
+            int skipBytes = SKIP_BYTES[c - OBJECT_BEGIN_BASE];
+            if (skipBytes > 0) {
+//                System.out.println(String.format("At pos %04x: ", parseIndex-1) + "skipping " + skipBytes + " bytes for token " + String.format("%02x", c));
+//                if (c >= 0xb0 && c < 0xc0)
+//                    System.out.println("    String is " + new String(inputdata, parseIndex, c - 0xb0 + 1));
+                skipBytes(skipBytes);
+            }
+            if (skipBytes < 0) {
+//                System.out.println(String.format("At pos %04x: ", parseIndex-1) + "special for token " + String.format("%02x", c));
+                // special treatment bytes. These are cases where the length is dynamically determined, or which require recursive processing
+                switch (c) {
+                case OBJECT_BEGIN_JSON: // 0xab: new object (by string
+                case OBJECT_BEGIN_BASE: // 0xac: new object (by string
+                case OBJECT_BEGIN_ID:   // 0xde: 2 numeric, recurse!
+                case OBJECT_BEGIN_PQON: // 0xdf: object / PQON
+                    skipUntilNext(OBJECT_TERMINATOR);
+                    break;
+                case COMPRESSED:
+                    throw newMPE(MessageParserException.UNSUPPORTED_COMPRESSED, null); // TODO: compressed object not yet supported
+                case COMPACT_BIGINTEGER:
+                case ASCII_STRING:
+                case COMPACT_BINARY:
+                case UTF8_STRING:
+//                        int len = readInt(needToken(), "(skipping)");
+//                        System.out.println("    String is " + new String(inputdata, parseIndex, len));
+//                        skipBytes(len);
+                    skipBytes(readInt(needToken(), "(skipping)"));
+                    break;
+                case UTF16_STRING:
+                    skipBytes(2 * readInt(needToken(), "(skipping UTF16)"));
+                    break;
+                default:
+                    throw newMPE(MessageParserException.UNSUPPORTED_TOKEN, null); // TODO (-2 values...)
+                }
+            }
+        }
+        --skipDepth;
+        // System.out.println(String.format("Return at skip depth %d for %02x", skipDepth, which));
+    }
+
+    // upon entry, we know that firstByte is not null (0xa0)
+    protected int readInt(int firstByte, String fieldname) throws E {
+        if (firstByte < 0xa0) {
+            // 1 positive byte numbers
+            if (firstByte <= 31)
+                return firstByte;
+            if (firstByte >= 0x80)
+                return firstByte - 0x60;  // 0x20..0x3f
+            throw eNotNumeric(firstByte, fieldname);
+        }
+        if (firstByte <= 0xd0) {
+            if (firstByte <= 0xaa)
+                return 0xa0 - firstByte;  // -1 .. -10
+            if (firstByte < 0xc0)
+                throw eNotNumeric(firstByte, fieldname);
+            // 2 byte number 0...2047
+            return needToken() + ((firstByte & 0x0f) << 8);
+        }
+        switch (firstByte) {
+        case INT_2BYTE:
+            return readFixed2ByteInt();
+        case INT_3BYTE:
+            return readFixed3ByteInt();
+        case INT_4BYTE:
+            return readFixed4ByteInt();
+        case COMPACT_BOOLEAN_FALSE:
+            return 0;               // boolean => int upgrade
+        case COMPACT_BOOLEAN_TRUE:
+            return 1;               // boolean => int upgrade
+        default:
+            throw eNotNumeric(firstByte, fieldname);
+        }
+    }
+
+    protected long readLong(int firstByte, String fieldname) throws E {
+        if (firstByte == INT_6BYTE)
+            return readFixed6ByteLong();
+        if (firstByte == INT_8BYTE)
+            return readFixed8ByteLong();
+        return readInt(firstByte, fieldname);
+    }
+    
+    @Override
+    public String readAscii(AlphanumericElementaryDataItem di) throws E {
+        if (checkForNull(di.getName(), di.getIsRequired()))
+            return null;
+        return readString(di.getName());
+    }
+
+    // read a non-null string
+    protected String readString(String fieldname) throws E {
+        int len;
+        int c = needToken();
+        if (c >= 0x20 && c < 0x80)
+            return String.valueOf((char)c);  // single ASCII byte string
+        if (c >= EMPTY_FIELD && c <= SHORT_ASCII_STRING + 15) {
+            len = c - EMPTY_FIELD;
+            return len > 0 ? readISO(len) : "";
+        }
+        switch (c) {
+        case UNICODE_CHAR:
+            return String.valueOf(readChar()); // single Unicode char string
+        case ASCII_STRING:
+            len = readInt(needToken(), fieldname);
+            return readISO(len);
+        case UTF8_STRING:
+            len = readInt(needToken(), fieldname);
+            return readUTF8(len);
+        case UTF16_STRING:
+            len = readInt(needToken(), fieldname);
+            return readUTF16(len);
+        default:
+            throw newMPE(MessageParserException.UNEXPECTED_CHARACTER, String.format("(expected STRING*, got 0x%02x)", c));
+        }
+    }
+
+
+    @Override
+    public String readString(AlphanumericElementaryDataItem di) throws E {
+        if (checkForNull(di.getName(), di.getIsRequired()))
+            return null;
+        return readString(di.getName());
+    }
+
+
+    @Override
+    public ByteArray readByteArray(BinaryElementaryDataItem di) throws E {
+        if (checkForNull(di))
+            return null;
+        int c = needToken();
+        switch (c) {
+        case EMPTY_FIELD:
+            return ByteArray.ZERO_BYTE_ARRAY;       // pre 3.6.0 compatibility
+        case COMPACT_BINARY:
+            int len = readInt(needToken(), di.getName());
+            return readByteArray(len);
+        default:
+            throw newMPE(MessageParserException.UNEXPECTED_CHARACTER, String.format("(expected BINARY*, got 0x%02x)", c));
+        }
+    }
+
+
+    @Override
+    public byte[] readRaw(BinaryElementaryDataItem di) throws E {
+        if (checkForNull(di))
+            return null;
+        int c = needToken();
+        switch (c) {
+        case EMPTY_FIELD:
+            return EMPTY_BYTE_ARRAY;            // pre 3.6.0 compatibility
+        case COMPACT_BINARY:
+            int len = readInt(needToken(), di.getName());
+            return readBytes(len);
+        default:
+            throw newMPE(MessageParserException.UNEXPECTED_CHARACTER, String.format("(expected BINARY*, got 0x%02x)", c));
+        }
+    }
+    
+    @Override
+    public BigDecimal readBigDecimal(NumericElementaryDataItem di) throws E {
+        if (checkForNull(di))
+            return null;
+        String fieldname = di.getName();
+        int scale = 0;
+        int c = needToken();
+        if (c == 0)
+            return BigDecimal.ZERO;
+        if (c >= COMPACT_BIGDECIMAL && c <= COMPACT_BIGDECIMAL + 9) {
+            // BigDecimal with scale
+            if (c != COMPACT_BIGDECIMAL) {
+                scale = c - COMPACT_BIGDECIMAL;
+            } else {
+                scale = readInt(needToken(), fieldname);
+            }
+        }
+        // now read mantissa. Either length  + digits, or an integer
+        BigDecimal r;
+        c = needToken();
+        if (c == COMPACT_BIGINTEGER) {
+            // length and mantissa
+            int len = readInt(needToken(), fieldname);
+            r = new BigDecimal(new BigInteger(readBytes(len)), scale);
+        } else {
+            c = readInt(c, fieldname);
+            r = BigDecimal.valueOf(c, scale);
+        }
+        return checkAndScale(r, di);
+    }
+
+
+    @Override
+    public Character readCharacter(MiscElementaryDataItem di) throws E {
+        if (checkForNull(di))
+            return null;
+        return Character.valueOf(readPrimitiveCharacter(di));
+    }
+
+
+    @Override
+    public Boolean readBoolean(MiscElementaryDataItem di) throws E {
+        if (checkForNull(di))
+            return null;
+        int c = needToken();
+        if (c == 0 || c == COMPACT_BOOLEAN_FALSE)
+            return Boolean.FALSE;
+        if (c == 1 || c == COMPACT_BOOLEAN_TRUE)
+            return Boolean.TRUE;
+        throw newMPE(MessageParserException.UNEXPECTED_CHARACTER, String.format("(expected BOOLEAN 0/1 or false/true, got 0x%02x)", c));
+    }
+
+    @Override
+    public Double readDouble(BasicNumericElementaryDataItem di) throws E {
+        if (checkForNull(di))
+            return null;
+        return Double.valueOf(readPrimitiveDouble(di));
+    }
+
+    @Override
+    public Float readFloat(BasicNumericElementaryDataItem di) throws E {
+        if (checkForNull(di))
+            return null;
+        return Float.valueOf(readPrimitiveFloat(di));
+    }
+
+    @Override
+    public Long readLong(BasicNumericElementaryDataItem di) throws E {
+        if (checkForNull(di))
+            return null;
+        return readLong(needToken(), di.getName());
+    }
+
+    @Override
+    public Integer readInteger(BasicNumericElementaryDataItem di) throws E {
+        if (checkForNull(di))
+            return null;
+        return readInt(needToken(), di.getName());
+    }
+
+    @Override
+    public Short readShort(BasicNumericElementaryDataItem di) throws E {
+        if (checkForNull(di))
+            return null;
+        return (short)readInt(needToken(), di.getName());
+    }
+
+    @Override
+    public Byte readByte(BasicNumericElementaryDataItem di) throws E {
+        if (checkForNull(di))
+            return null;
+        return (byte)readInt(needToken(), di.getName());
+    }
+
+    @Override
+    public BigInteger readBigInteger(BasicNumericElementaryDataItem di) throws E {
+        if (checkForNull(di))
+            return null;
+        int c = needToken();
+        if (c == COMPACT_BIGINTEGER) {
+            // length and mantissa
+            int len = readInt(needToken(), di.getName());
+            return new BigInteger(readBytes(len));
+        } else {
+            c = readInt(c, di.getName());
+            return BigInteger.valueOf(c);
+        }
+    }
+
+    @Override
+    public LocalDate readDay(TemporalElementaryDataItem di) throws E {
+        if (checkForNullOrNeedToken(di.getName(), di.getIsRequired(), COMPACT_DATE))
+            return null;
+        String fieldname = di.getName();
+        int year = readInt(needToken(), fieldname);
+        int month = readInt(needToken(), fieldname);
+        int day = readInt(needToken(), fieldname);
+        return new LocalDate(year, month, day);
+    }
+
+
+    @Override
+    public LocalTime readTime(TemporalElementaryDataItem di) throws E {
+        if (checkForNull(di))
+            return null;
+        int c = needToken();
+        switch (c) {
+        case COMPACT_TIME_MILLIS:
+            return new LocalTime(readInt(needToken(), di.getName()), DateTimeZone.UTC);
+        case COMPACT_TIME:
+            return new LocalTime(readInt(needToken(), di.getName()) * 1000L, DateTimeZone.UTC);
+        default:
+            throw newMPE(MessageParserException.UNEXPECTED_CHARACTER, String.format("(expected COMPACT_TIME_*, got 0x%02x)", c));
+        }
+    }
+
+
+    @Override
+    public LocalDateTime readDayTime(TemporalElementaryDataItem di) throws E {
+        if (checkForNull(di))
+            return null;
+        boolean fractional = false;
+        int c = needToken();
+        switch (c) {
+        case COMPACT_DATETIME:
+            break;
+        case COMPACT_DATETIME_MILLIS:
+            fractional = true;
+            break;
+        default:
+            throw newMPE(MessageParserException.UNEXPECTED_CHARACTER, String.format("(expected COMPACT_DATETIME_*, got 0x%02x)", c));
+        }
+        String fieldname = di.getName();
+        int year = readInt(needToken(), fieldname);
+        int month = readInt(needToken(), fieldname);
+        int day = readInt(needToken(), fieldname);
+        int secondsOfDay = readInt(needToken(), fieldname);
+        int millis = 0;
+        if (fractional) {
+            millis = secondsOfDay % 1000;
+            secondsOfDay /= 1000;
+        }
+        return new LocalDateTime(year, month, day, secondsOfDay / 3600, (secondsOfDay % 3600) / 60, secondsOfDay % 60, millis);
+    }
+
+
+    @Override
+    public Instant readInstant(TemporalElementaryDataItem di) throws E {
+        if (checkForNull(di))
+            return null;
+        return new Instant(readLong(needToken(), di.getName()));
+    }
+
+    @Override
+    public <T extends AbstractXEnumBase<T>> T readXEnum(XEnumDataItem di, XEnumFactory<T> factory) throws E {
+        XEnumDefinition spec = di.getBaseXEnum();
+        if (checkForNull(di.getName(), di.getIsRequired() && !spec.getHasNullToken()))
+            return factory.getNullToken();
+        String scannedToken = readString(di.getName());
+        T value = factory.getByToken(scannedToken);
+        if (value == null) {
+            throw newMPE(MessageParserException.INVALID_ENUM_TOKEN, scannedToken);
+        }
+        return value;
+    }
+    
+    @Override
+    public UUID readUUID(MiscElementaryDataItem di) throws E {
+        if (checkForNullOrNeedToken(di.getName(), di.getIsRequired(), COMPACT_UUID))
+            return null;
+        long msl = readFixed8ByteLong();
+        long lsl = readFixed8ByteLong();
+        return new UUID(msl, lsl);
+    }
+
+    @Override
+    public double readPrimitiveDouble(BasicNumericElementaryDataItem di) throws E {
+        int c = needToken();
+        if (c == COMPACT_DOUBLE) {
+            return Double.longBitsToDouble(readFixed8ByteLong());
+        }
+        // not a float, try upgrade of int to double (doubles of value 0 or 1 are explicitly written as int)
+        return readInt(c, di.getName());
+    }
+
+    @Override
+    public float readPrimitiveFloat(BasicNumericElementaryDataItem di) throws E {
+        int c = needToken();
+        if (c == COMPACT_FLOAT) {
+            return Float.intBitsToFloat(readFixed4ByteInt());
+        }
+        // not a float, try upgrade of int to float (floats of value 0 or 1 are explicitly written as int)
+        return readInt(c, di.getName());
+    }
+
+    @Override
+    public long readPrimitiveLong(BasicNumericElementaryDataItem di) throws E {
+        return readLong(needToken(), di.getName());
+    }
+
+    @Override
+    public int readPrimitiveInteger(BasicNumericElementaryDataItem di) throws E {
+        return readInt(needToken(), di.getName());
+    }
+
+    @Override
+    public short readPrimitiveShort(BasicNumericElementaryDataItem di) throws E {
+        return (short)readInt(needToken(), di.getName());
+    }
+
+    @Override
+    public byte readPrimitiveByte(BasicNumericElementaryDataItem di) throws E {
+        return (byte)readInt(needToken(), di.getName());
+    }
+
+    @Override
+    public <R extends BonaPortable> R readObject (ObjectReference di, Class<R> type) throws E {
+        if (checkForNull(di)) {
+            return null;
+        }
+        boolean allowSubtypes = di.getAllowSubclasses();
+        String fieldname = di.getName();
+        int c = needToken();
+        if (useCache && c == OBJECT_AGAIN) {
+            // we reuse an object
+            int objectIndex = readInt(needToken(), fieldname);
+            if (objectIndex >= objects.size())
+                throw newMPE(MessageParserException.INVALID_BACKREFERENCE, String.format("at %s: requested object %d of only %d available", fieldname, objectIndex, objects.size()));
+            BonaPortable newObject = objects.get(objects.size() - 1 - objectIndex);  // 0 is the last one put in, 1 the one before last etc...
+            // check if the object is of expected type
+            if (newObject.getClass() != type) {
+                // check if it is a superclass
+                if (!allowSubtypes || !type.isAssignableFrom(newObject.getClass())) {
+                    throw newMPE(MessageParserException.BAD_CLASS, String.format("(got %s, expected %s for %s, subclassing = %b)",
+                            newObject.getClass().getSimpleName(), type.getSimpleName(), fieldname, allowSubtypes));
+                }
+            }
+            return type.cast(newObject);
+        } else if (c == OBJECT_BEGIN_PQON || c == OBJECT_BEGIN_ID || c == OBJECT_BEGIN_BASE) {
+            String previousClass = currentClass;
+            BonaPortable newObject;
+            String classname;
+            if (c == OBJECT_BEGIN_ID) {
+                int factoryId = readInt(needToken(), "$factoryId");
+                int classId = readInt(needToken(), "$classId");
+                BonaPortableClass<?> bclass = BonaPortableFactoryById.getByIds(factoryId, classId);
+                if (bclass == null)
+                    throw newMPE(MessageParserException.BAD_CLASS_IDS, factoryId + "/" + classId);
+                classname = bclass.getPqon();
+                newObject = bclass.newInstance();
+            } else {
+                if (c == OBJECT_BEGIN_BASE) {
+                    if (di.getLowerBound() == null)
+                        throw newMPE(MessageParserException.INVALID_BASE_CLASS_REFERENCE, "");
+                    classname = di.getLowerBound().getName();
+                } else {
+                    classname = readString(fieldname);
+                    if (classname == null || classname.length() == 0) {
+                        if (di.getLowerBound() == null)
+                            throw newMPE(MessageParserException.INVALID_BASE_CLASS_REFERENCE, "");
+                        // the base class name is referred to, which is contained in the meta data
+                        classname = di.getLowerBound().getName();
+                    }
+                    needToken(NULL_FIELD); // version not yet allowed
+                }
+                newObject = createObject(classname);
+            }
+            // System.out.println("Creating new obj " + classname + " gave me " + newObject);
+            // check if the object is of expected type
+            if (newObject.getClass() != type) {
+                // check if it is a superclass
+                if (!allowSubtypes || !type.isAssignableFrom(newObject.getClass())) {
+                    throw newMPE(MessageParserException.BAD_CLASS, String.format("(got %s, expected %s for %s, subclassing = %b)",
+                            newObject.getClass().getSimpleName(), type.getSimpleName(), fieldname, allowSubtypes));
+                }
+            }
+            // all good here. Parse the contents
+            // if we use the cache, make the object known even before the contents has been parsed, because it may be referenced if the structure is cyclic
+            if (useCache)
+                objects.add(newObject);
+
+            currentClass = classname;
+            newObject.deserialize(this);
+            eatObjectTerminator();
+            currentClass = previousClass;
+            return type.cast(newObject);
+        } else {
+            throw newMPE(MessageParserException.UNEXPECTED_CHARACTER, String.format("(expected OBJECT_START*, got 0x%02x)", c));
+        }
+    }
+
+
+    @Override
+    public int parseMapStart(FieldDefinition di) throws E {
+        if (checkForNullOrNeedToken(di.getName(), di.getIsAggregateRequired(), MAP_BEGIN))
+            return COLLECTION_COUNT_NULL;
+        return readInt(needToken(), di.getName());
+    }
+
+
+    @Override
+    public int parseArrayStart(FieldDefinition di, int sizeOfElement) throws E {
+        if (checkForNullOrNeedToken(di.getName(), di.getIsAggregateRequired(), ARRAY_BEGIN))
+            return COLLECTION_COUNT_NULL;
+        return readInt(needToken(), di.getName());
+    }
+
+
+    @Override
+    public void parseArrayEnd() throws E {
+    }
+
+
+    @Override
+    public BonaPortable readRecord() throws E {
+        // there are no record start/end markers in this format
+        return readObject(StaticMeta.OUTER_BONAPORTABLE, BonaPortable.class);
+    }
+
+
+    @Override
+    public List<BonaPortable> readTransmission() throws E {
+        List<BonaPortable> results = new ArrayList<BonaPortable>();
+        while (!atEnd())
+            results.add(readRecord());
+        return results;
+    }
+
+
+    @Override
+    public boolean readPrimitiveBoolean(MiscElementaryDataItem di) throws E {
+        int c = needToken();
+        if (c == 0 || c == COMPACT_BOOLEAN_FALSE)
+            return false;
+        if (c == 1 || c == COMPACT_BOOLEAN_TRUE)
+            return true;
+        throw newMPE(MessageParserException.UNEXPECTED_CHARACTER, String.format("(expected BOOLEAN 0/1 or false/true, got 0x%02x)", c));
+    }
+
+    // default implementations for the next ones...
+    @Override
+    public char readPrimitiveCharacter(MiscElementaryDataItem di) throws E {
+        int c = needToken();
+        if (c >= 0x20 && c < 0x80)
+            return (char)c;      // single byte char
+        if (c != UNICODE_CHAR)
+            throw newMPE(MessageParserException.UNEXPECTED_CHARACTER, String.format("(expected UNICODE_CHAR, got 0x%02x)", c));
+        return readChar();
+    }
+
+    
+    // read a JSON object: Either a flex map or a null is expected here  
+    @Override
+    public Map<String, Object> readJson(ObjectReference di) throws E {
+        if (checkForNullOrNeedToken(di.getName(), di.getIsRequired(), OBJECT_BEGIN_JSON))
+            return null;
+        // not null, therefore JSON begin
+        final Map<String, Object> map = new HashMap<String, Object>();
+        // now iterate until JSON end is found
+        for (;;) {
+            int c = needToken();
+            if (c == OBJECT_TERMINATOR) {
+                return map;
+            }
+            pushback(c);
+            // parse field name, then value
+            String key = readString("jsonkey"); // an explicitor implicit null will cause an exception
+            if (!CharTestsASCII. isJavascriptId(key))
+                throw newMPE(MessageParserException.JSON_ID, di.getName() + ": " + key);
+            // now read value
+            Object value = readElementSub();
+            if (map.put(key, value) != null)
+                throw newMPE(MessageParserException.JSON_DUPLICATE_KEY, di.getName() + ": " + key);
+        }
+    }
+
+    // read an optional element
+    protected Object readElementSub() throws E {
+        
+        // TODO!
+        return null;
+    }
+    
+    // reads a single element
+    @Override
+    public Object readElement(ObjectReference di) throws E {
+        return readElementSub();
+    }
+}

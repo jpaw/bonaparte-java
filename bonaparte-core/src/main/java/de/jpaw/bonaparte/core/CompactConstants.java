@@ -173,7 +173,7 @@ public interface CompactConstants {
     public static final int UTF16_STRING = 0xfd;
     public static final int UTF8_STRING = 0xff;
 
-    public static final String CHARSET_ASCII = "ISO-8859-1"; // US-ASCII
+    public static final String CHARSET_ASCII = "ISO-8859-1"; // US-ASCII: replaced by ISO because ISO allows for more characters
     public static final String CHARSET_UTF8 = "UTF-8";
     public static final String CHARSET_UTF16 = "UTF-16BE";
 
