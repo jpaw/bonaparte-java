@@ -320,10 +320,14 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
         // if it is a displayable ASCII character, there is a short form
         if ((c & ~0x7f) == 0 && c >= 0x20) {
             // 1:1 mapping! write it as a byte!
+            out.writeByte(c);                       // 1 byte
+        } else if ((c & 0xff00) == 0) {
+            // ISO char
+            out.writeByte(SHORT_ISO_STRING);        // 2 byte
             out.writeByte(c);
         } else {
             // something else. Write a single char
-            out.writeByte(UNICODE_CHAR);
+            out.writeByte(UNICODE_CHAR);            // 3 byte
             out.writeShort((short)c);
         }
     }
@@ -374,12 +378,12 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
     protected void bigdecimalOut(BigDecimal n) throws IOException {
         int sgn = n.signum();
         if (sgn == 0) {
-            out.writeByte(0);
+            out.writeByte(0);       // special case, but no need to treat it separately while parsing, as general integers are accepted
         } else {
             int scale = n.scale();
-            if (scale > 0) {
+            if (scale > 0 || scale < -3) {
                 // is a fractional number
-                if (scale <= 9) {
+                if (scale > 0 && scale <= 9) {
                     out.writeByte(COMPACT_BIGDECIMAL + scale);
                 } else {
                     out.writeByte(COMPACT_BIGDECIMAL);
@@ -387,7 +391,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
                 }
                 bigintOut(n.unscaledValue());
             } else {
-                // number is integral
+                // number is integral (and not with exponent HUGE)
                 bigintOut(n.toBigInteger());
             }
         }

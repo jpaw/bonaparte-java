@@ -62,7 +62,7 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
     protected String currentClass;
     private final boolean useCache = true;
     private List<BonaPortable> objects;
-    private int skipDepth = 0;
+//    private int skipDepth = 0;
 
     protected AbstractCompactParser() {
         if (useCache)
@@ -188,7 +188,7 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
             // the byte encountered next (z) is not what we wanted. Skip non-null fields (or sub objects, even nested) until we find the desired terminator.
             // skip bytes until we are at end of record (bad!) (thrown by needToken()) or find the terminator
             pushback(z);   // ensure that the byte z is read again!
-            skipDepth = 0;
+//            skipDepth = 0;
             skipUntilNext(which);
         }
     }
@@ -198,7 +198,7 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
     protected void skipUntilNext(int which) throws E {
         int c;
         // System.out.println(String.format("Descend for skip depth %d for %02x", skipDepth, which));
-        ++skipDepth;
+//        ++skipDepth;
         while ((c = needToken()) != which) {
             // skip one element, unless the expected one has been found
             if (c < OBJECT_BEGIN_BASE)
@@ -239,7 +239,7 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
                 }
             }
         }
-        --skipDepth;
+//        --skipDepth;
         // System.out.println(String.format("Return at skip depth %d for %02x", skipDepth, which));
     }
 
@@ -360,6 +360,18 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
             throw newMPE(MessageParserException.UNEXPECTED_CHARACTER, String.format("(expected BINARY*, got 0x%02x)", c));
         }
     }
+
+    // have the scale already
+    protected BigDecimal readBigdec(int scale, String fieldname) throws E {
+        int c = needToken();
+        if (c == COMPACT_BIGINTEGER) {
+            // length and mantissa
+            int len = readInt(needToken(), fieldname);
+            return new BigDecimal(new BigInteger(readBytes(len)), scale);
+        } else {
+            return BigDecimal.valueOf(readLong(c, fieldname), scale);
+        }
+    }
     
     @Override
     public BigDecimal readBigDecimal(NumericElementaryDataItem di) throws E {
@@ -377,19 +389,11 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
             } else {
                 scale = readInt(needToken(), fieldname);
             }
+        } else {
+            pushback(c);
         }
         // now read mantissa. Either length  + digits, or an integer
-        BigDecimal r;
-        c = needToken();
-        if (c == COMPACT_BIGINTEGER) {
-            // length and mantissa
-            int len = readInt(needToken(), fieldname);
-            r = new BigDecimal(new BigInteger(readBytes(len)), scale);
-        } else {
-            c = readInt(c, fieldname);
-            r = BigDecimal.valueOf(c, scale);
-        }
-        return checkAndScale(r, di);
+        return checkAndScale(readBigdec(scale, fieldname), di);
     }
 
 
@@ -465,20 +469,24 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
             int len = readInt(needToken(), di.getName());
             return new BigInteger(readBytes(len));
         } else {
-            c = readInt(c, di.getName());
-            return BigInteger.valueOf(c);
+            if (c == 0)
+                return BigInteger.ZERO;
+            return BigInteger.valueOf(readLong(c, di.getName()));
         }
     }
 
-    @Override
-    public LocalDate readDay(TemporalElementaryDataItem di) throws E {
-        if (checkForNullOrNeedToken(di.getName(), di.getIsRequired(), COMPACT_DATE))
-            return null;
-        String fieldname = di.getName();
+    protected LocalDate readDate(String fieldname) throws E {
         int year = readInt(needToken(), fieldname);
         int month = readInt(needToken(), fieldname);
         int day = readInt(needToken(), fieldname);
         return new LocalDate(year, month, day);
+    }
+    
+    @Override
+    public LocalDate readDay(TemporalElementaryDataItem di) throws E {
+        if (checkForNullOrNeedToken(di.getName(), di.getIsRequired(), COMPACT_DATE))
+            return null;
+        return readDate(di.getName());
     }
 
 
@@ -497,23 +505,7 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
         }
     }
 
-
-    @Override
-    public LocalDateTime readDayTime(TemporalElementaryDataItem di) throws E {
-        if (checkForNull(di))
-            return null;
-        boolean fractional = false;
-        int c = needToken();
-        switch (c) {
-        case COMPACT_DATETIME:
-            break;
-        case COMPACT_DATETIME_MILLIS:
-            fractional = true;
-            break;
-        default:
-            throw newMPE(MessageParserException.UNEXPECTED_CHARACTER, String.format("(expected COMPACT_DATETIME_*, got 0x%02x)", c));
-        }
-        String fieldname = di.getName();
+    protected LocalDateTime readDateTime(String fieldname, boolean fractional) throws E {
         int year = readInt(needToken(), fieldname);
         int month = readInt(needToken(), fieldname);
         int day = readInt(needToken(), fieldname);
@@ -524,6 +516,21 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
             secondsOfDay /= 1000;
         }
         return new LocalDateTime(year, month, day, secondsOfDay / 3600, (secondsOfDay % 3600) / 60, secondsOfDay % 60, millis);
+    }
+    
+    @Override
+    public LocalDateTime readDayTime(TemporalElementaryDataItem di) throws E {
+        if (checkForNull(di))
+            return null;
+        int c = needToken();
+        switch (c) {
+        case COMPACT_DATETIME:
+            return readDateTime(di.getName(), false);
+        case COMPACT_DATETIME_MILLIS:
+            return readDateTime(di.getName(), true);
+        default:
+            throw newMPE(MessageParserException.UNEXPECTED_CHARACTER, String.format("(expected COMPACT_DATETIME_*, got 0x%02x)", c));
+        }
     }
 
 
@@ -547,13 +554,17 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
         return value;
     }
     
+    protected UUID readUUID() throws E {
+        long msl = readFixed8ByteLong();
+        long lsl = readFixed8ByteLong();
+        return new UUID(msl, lsl);
+    }
+    
     @Override
     public UUID readUUID(MiscElementaryDataItem di) throws E {
         if (checkForNullOrNeedToken(di.getName(), di.getIsRequired(), COMPACT_UUID))
             return null;
-        long msl = readFixed8ByteLong();
-        long lsl = readFixed8ByteLong();
-        return new UUID(msl, lsl);
+        return readUUID();
     }
 
     @Override
@@ -725,19 +736,27 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
     public char readPrimitiveCharacter(MiscElementaryDataItem di) throws E {
         int c = needToken();
         if (c >= 0x20 && c < 0x80)
-            return (char)c;      // single byte char
+            return (char)c;         // single byte char (ASCII printable)
+        if (c == SHORT_ISO_STRING)  // 1 char ISO string 
+            return (char)needToken();
         if (c != UNICODE_CHAR)
             throw newMPE(MessageParserException.UNEXPECTED_CHARACTER, String.format("(expected UNICODE_CHAR, got 0x%02x)", c));
         return readChar();
     }
 
+    protected void addMapElem(Map<String, Object> map) throws E {
+        // parse field name, then value
+        String key = readString("$jsonObjKey"); // an explicitor implicit null will cause an exception
+        if (!CharTestsASCII. isJavascriptId(key))
+            throw newMPE(MessageParserException.JSON_ID, key);
+        // now read value
+        Object value = readElementSub();
+        if (map.put(key, value) != null)
+            throw newMPE(MessageParserException.JSON_DUPLICATE_KEY, key);
+    }
     
-    // read a JSON object: Either a flex map or a null is expected here  
-    @Override
-    public Map<String, Object> readJson(ObjectReference di) throws E {
-        if (checkForNullOrNeedToken(di.getName(), di.getIsRequired(), OBJECT_BEGIN_JSON))
-            return null;
-        // not null, therefore JSON begin
+    // read a non-null map with the start character already parsed
+    protected Map<String, Object> readJsonMapSub() throws E {
         final Map<String, Object> map = new HashMap<String, Object>();
         // now iterate until JSON end is found
         for (;;) {
@@ -746,22 +765,170 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
                 return map;
             }
             pushback(c);
-            // parse field name, then value
-            String key = readString("jsonkey"); // an explicitor implicit null will cause an exception
-            if (!CharTestsASCII. isJavascriptId(key))
-                throw newMPE(MessageParserException.JSON_ID, di.getName() + ": " + key);
-            // now read value
-            Object value = readElementSub();
-            if (map.put(key, value) != null)
-                throw newMPE(MessageParserException.JSON_DUPLICATE_KEY, di.getName() + ": " + key);
+            addMapElem(map);
         }
+    }
+    
+    // read a JSON object: Either a flex map or a null is expected here  
+    @Override
+    public Map<String, Object> readJson(ObjectReference di) throws E {
+        if (checkForNullOrNeedToken(di.getName(), di.getIsRequired(), OBJECT_BEGIN_JSON))
+            return null;
+        // not null, therefore JSON begin
+        return readJsonMapSub();
+    }
+    
+    private static final Object [] CONSTANT_OBJECTS = new Object[0xab];
+    static {
+        int i;
+        for (i = 0; i < 32; ++i)
+            CONSTANT_OBJECTS[i] = Integer.valueOf(i);
+        for (i = 32; i < 128; ++i)
+            CONSTANT_OBJECTS[i] = String.valueOf((char)i);
+        for (i = 0x80; i <= 0x9c; ++i)
+            CONSTANT_OBJECTS[i] = Integer.valueOf(i - 96); // 128 - 32;
+        CONSTANT_OBJECTS[0x9d]  = null;   // RESERVED
+        CONSTANT_OBJECTS[0x9e]  = Boolean.FALSE;
+        CONSTANT_OBJECTS[0x9f]  = Boolean.TRUE;
+        CONSTANT_OBJECTS[0xa0]  = null;
+        for (i = 0xa1; i <= 0xaa; ++i)
+            CONSTANT_OBJECTS[i] = Integer.valueOf(-(i - 0xa0)); // -1..-10
+        
     }
 
     // read an optional element
     protected Object readElementSub() throws E {
+        int c = needToken();
+        if (c <= 0xaa) {
+            // single byte items
+            return CONSTANT_OBJECTS[c];
+        }
+        if (c <= 0xcf) {
+            if (c >= 0xb0) {
+                if (c <= 0xbf) {
+                    // short single byte string
+                    return readISO(c - 0xaf);
+                } else {
+                    // 2 byte positive integer: 4 bits + 8
+                    return new Integer(((c & 15) << 8) | needToken());
+                }
+            }
+            switch (c) {
+            case OBJECT_BEGIN_JSON:         //0xab
+                return readJsonMapSub();
+            case OBJECT_BEGIN_BASE:         //0xac
+                // cannot happen within JSON, except if the structure has been redeclared.
+                throw newMPE(MessageParserException.INVALID_BACKREFERENCE, "in JSON element");
+            case OBJECT_TERMINATOR:         //0xad
+                // treat as implicit null: fall through
+            case PARENT_SEPARATOR:          //0xae
+                // treat as implicit null
+                pushback(c);
+                return null;
+            case EMPTY_FIELD:               //0xaf
+                return EMPTY_STRING;
+            }
+        }
         
-        // TODO!
-        return null;
+        // remaining tokens are 0xd0 .. 0xff
+        // hope the compiler converts it to a jump table
+        switch (c) {
+        case COMPACT_FLOAT:                 //0xd1
+            return Float.intBitsToFloat(readFixed4ByteInt());
+        case COMPACT_DOUBLE:                //0xd2
+            return Double.longBitsToDouble(readFixed8ByteLong());
+        case UNICODE_CHAR:                  //0xd6
+            return String.valueOf(readChar());
+        case COMPACT_UUID:                  //0xd7
+            return readUUID();
+        case COMPACT_DATE:                  //0xd8
+            return readDate("$jsonElemDate");
+        case COMPACT_TIME:                  //0xd9
+            return new LocalTime(readInt(needToken(), "$jsonElemTime") * 1000L, DateTimeZone.UTC);
+        case COMPACT_TIME_MILLIS:           //0xda
+            return new LocalTime(readInt(needToken(), "$jsonElemTimeMs"), DateTimeZone.UTC);
+        case COMPACT_DATETIME:              //0xdb
+            return readDateTime("$jsonElemDateTime", false);
+        case COMPACT_DATETIME_MILLIS:       //0xdc
+            return readDateTime("$jsonElemDateTimeMs", true);
+        case OBJECT_AGAIN:                  //0xdd 
+        case OBJECT_BEGIN_ID:               //0xde
+        case OBJECT_BEGIN_PQON:             //0xdf
+            // cannot happen within JSON, except if the structure has been redeclared.
+            throw newMPE(MessageParserException.INVALID_BACKREFERENCE, "in JSON element");
+            
+        case COMPACT_BIGINTEGER:            //0xe0
+            {
+                int len = readInt(needToken(), "$jsonElemBigintLen");
+                return new BigInteger(readBytes(len));
+            }
+        case ISO_STRING:                    //0xe1
+            {
+                int len = readInt(needToken(), "$jsonLenISO");
+                return readISO(len);
+            }
+        case INT_2BYTE:                     //0xe2
+            return new Integer(readFixed2ByteInt());
+        case INT_3BYTE:                     //0xe3
+            return new Integer(readFixed3ByteInt());
+        case INT_4BYTE:                     //0xe4
+            return new Integer(readFixed4ByteInt());
+        case INT_6BYTE:                     //0xe6
+            return new Long(readFixed6ByteLong());
+        case INT_8BYTE:                     //0xe8
+            return new Long(readFixed8ByteLong());
+
+        case COMPACT_BIGDECIMAL:            //0xf0
+            {
+                int scale = readInt(needToken(), "$jsonBigdecScale");
+                return readBigdec(scale, "$jsonBigdecMant");
+            }
+        case 0xf1:
+        case 0xf2:
+        case 0xf3:
+        case 0xf4:
+        case 0xf5:
+        case 0xf6:
+        case 0xf7:
+        case 0xf8:
+        case 0xf9:
+            return readBigdec(c - 0xf0, "$jsonBigdecMant");
+        case MAP_BEGIN:                     //0xfa
+            {
+                final int numElem = readInt(needToken(), "$jsonMapNumElem");
+                final Map<String, Object> map = new HashMap<String, Object>();
+                for (int i = 0; i < numElem; ++i) {
+                    addMapElem(map);
+                }
+                return map;
+            }
+        case ARRAY_BEGIN:                   //0xfc
+            {
+                final int numElem = readInt(needToken(), "$jsonArrayNumElem");
+                final List<Object> l = new ArrayList<Object>(numElem);
+                for (int i = 0; i < numElem; ++i)
+                    l.add(readElementSub());
+                return l;
+            }
+        case UTF16_STRING:                  //0xfd
+            {
+                int len = readInt(needToken(), "$jsonLenUTF16");
+                return readUTF16(len);
+            }
+        case COMPACT_BINARY:                //0xfe
+            {
+                int len = readInt(needToken(), "$jsonByteArray");
+                return readByteArray(len);      // or readBytes.... / Q: return as [] or ByteArray?
+            }
+        case UTF8_STRING :                  //0xff
+            {
+                int len = readInt(needToken(), "$jsonLenUTF8");
+                return readUTF8(len);
+            }
+
+        default:  // compressed, unsupported float types etc...
+            throw newMPE(MessageParserException.UNEXPECTED_CHARACTER, String.format("0x%02x in JSON element", c));
+        }
     }
     
     // reads a single element

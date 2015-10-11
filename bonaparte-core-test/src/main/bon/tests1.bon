@@ -148,6 +148,10 @@ package tests1 Ext {
         Number(38)      bignum;
     }
 
+    class TestBigDecimal {
+        Decimal(18,9)   bigdecnum;
+    }
+
     class Longtest {
         long l;
     }

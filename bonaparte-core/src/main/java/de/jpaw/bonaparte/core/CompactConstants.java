@@ -32,7 +32,7 @@ package de.jpaw.bonaparte.core;
  *
  *          8x  integers 32..47
  *          9x  integers 48..60
- *          9d          RESERVED for future expansion
+ *          9d          RESERVED for future expansion (will expand to some constant value)
  *          9e          since 3.6.0: false
  *          9f          since 3.6.0: true
  *
@@ -69,7 +69,7 @@ package de.jpaw.bonaparte.core;
  *              Revision currently must always be null.
  *
  *          e0  big integer, next is length in bytes, then mantissa, in 2s complement, with MSB first
- *          e1  long String ASCII (next is length, then bytes)
+ *          e1  long String ISO (next is length, then bytes)
  *          e2..e8  integer (short, int, long) with 2..8 bytes, next is mantissa, in 2's complement  (5 and 7 currently unused)
  *
  *          e9..ef  RESERVED
@@ -85,11 +85,6 @@ package de.jpaw.bonaparte.core;
  *
  *          fe   Binary (next: length, then bytes)
  *          ff   any length String UTF-8 (next: length in bytes, then chars, in modified UTF-8)
- *
- *          TODO: String should actually distinguish by the number of bytes / char and use a different encoding then, to approximate
- *          the number of characters needed. US-only strings should be encoded as single byte strings, if we find at least one
- *          3-byte sequence, let's use UTF-16, otherwise we use UTF8 (slow).
- *          This will slow down some international strings, but be faster and more compact for English, Chinese, and Japanese texts.
  *
  *          enum: no special token. stored as integer (ordinal) or string
  *
@@ -146,7 +141,7 @@ public interface CompactConstants {
 
     public static final int NULL_FIELD = 0xa0;
     public static final int MAP_BEGIN = 0xfa;
-//    public static final int COLLECTIONS_TERMINATOR = 0xfb;  // array / set / list / map terminator
+//    public static final int COLLECTIONS_TERMINATOR = 0xfb;  // array / set / list / map terminator  => fb is free! RESERVED
     public static final int ARRAY_BEGIN = 0xfc;
 
     public static final int INT_2BYTE = 0xe2;
