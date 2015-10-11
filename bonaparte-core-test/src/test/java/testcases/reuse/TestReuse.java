@@ -11,7 +11,7 @@ import de.jpaw.bonaparte.core.ObjectReuseStrategy;
 import de.jpaw.bonaparte.core.StringBuilderComposer;
 import de.jpaw.bonaparte.core.StringBuilderParser;
 import de.jpaw.bonaparte.pojos.reuse.Body;
-import de.jpaw.bonaparte.pojos.reuse.Element;
+import de.jpaw.bonaparte.pojos.reuse.OneElement;
 
 /**
  * The TestLists class.
@@ -31,8 +31,8 @@ public class TestReuse {
 
     private Body setup() {
         Body r = new Body();
-        r.w1 = new Element("hello");
-        r.w2 = new Element("hello");    // same content
+        r.w1 = new OneElement("hello");
+        r.w2 = new OneElement("hello");    // same content
         r.w3 = r.w1;                    // same object
         return r;
     }
