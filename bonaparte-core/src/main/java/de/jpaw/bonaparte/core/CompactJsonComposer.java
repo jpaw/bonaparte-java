@@ -27,32 +27,48 @@ import de.jpaw.util.ByteArray;
 
 // composer which does the same as the standard compact composer, but adds field names
 public class CompactJsonComposer extends AbstractCompactComposer {
+    private int arrayDepth = 0;
     
     protected CompactJsonComposer(DataOutput out) {
         super(out, ObjectReuseStrategy.NONE, false);
     }
 
+    protected void resetArrayDepth() {      // arrayDepth counts the level how deep we are in nested arrays / maps, which determines if field name output is required
+        arrayDepth = 0;
+    }
+
+    protected void optFieldNameOut(FieldDefinition di) throws IOException {
+        if (arrayDepth == 0)
+            super.stringOut(di.getName());
+    }
+    
     @Override
     public void writeNull(FieldDefinition di) throws IOException {
-        // skip nulls
+        // skip nulls, but only if not in array
+        if (arrayDepth != 0)
+            super.writeNull(di);
     }
 
     @Override
     public void writeNullCollection(FieldDefinition di) throws IOException {
-        // skip nulls
+        // skip nulls, but only if not in array
+        if (arrayDepth != 0)
+            super.writeNull(di);
     }
 
 
     @Override
     public void startArray(FieldDefinition di, int currentMembers, int sizeOfElement) throws IOException {
-        super.stringOut(di.getName());
+        optFieldNameOut(di);
         super.startArray(di, currentMembers, sizeOfElement);
+        ++arrayDepth;
     }
 
     @Override
     public void startMap(FieldDefinition di, int currentMembers) throws IOException {
-        super.stringOut(di.getName());
+        optFieldNameOut(di);
         super.startMap(di, currentMembers);
+        ++arrayDepth;
     }
 
     @Override
@@ -60,15 +76,17 @@ public class CompactJsonComposer extends AbstractCompactComposer {
         // not contained in output
     }
 
-//    @Override
-//    public void terminateMap() throws IOException {
-//        super.terminateMap();
-//    }
-//
-//    @Override
-//    public void terminateArray() throws IOException {
-//    }
-//
+    @Override
+    public void terminateMap() throws IOException {
+        super.terminateMap();
+        --arrayDepth;
+    }
+
+    @Override
+    public void terminateArray() throws IOException {
+        --arrayDepth;
+    }
+
 //    @Override
 //    public void terminateRecord() throws IOException {
 //    }
@@ -80,138 +98,149 @@ public class CompactJsonComposer extends AbstractCompactComposer {
     @Override
     public void addField(AlphanumericElementaryDataItem di, String s) throws IOException {
         if (s != null) {
-            super.stringOut(di.getName());
+            optFieldNameOut(di);
             super.stringOut(s);
-        }
+        } else if (arrayDepth != 0)
+            writeNull();
     }
 
     @Override
     public void addField(MiscElementaryDataItem di, boolean b) throws IOException {
-        super.stringOut(di.getName());
+        optFieldNameOut(di);
         super.addField(di, b);
     }
 
     @Override
     public void addField(MiscElementaryDataItem di, char c) throws IOException {
-        super.stringOut(di.getName());
+        optFieldNameOut(di);
         super.addField(di, c);
     }
 
     @Override
     public void addField(BasicNumericElementaryDataItem di, double d) throws IOException {
-        super.stringOut(di.getName());
+        optFieldNameOut(di);
         super.addField(di, d);
     }
 
     @Override
     public void addField(BasicNumericElementaryDataItem di, float f) throws IOException {
-        super.stringOut(di.getName());
+        optFieldNameOut(di);
         super.addField(di, f);
     }
 
     @Override
     public void addField(BasicNumericElementaryDataItem di, byte n) throws IOException {
-        super.stringOut(di.getName());
+        optFieldNameOut(di);
         super.addField(di, n);
     }
 
     @Override
     public void addField(BasicNumericElementaryDataItem di, short n) throws IOException {
-        super.stringOut(di.getName());
+        optFieldNameOut(di);
         super.intOut(n);
     }
 
     @Override
     public void addField(BasicNumericElementaryDataItem di, int n) throws IOException {
-        super.stringOut(di.getName());
+        optFieldNameOut(di);
         super.intOut(n);
     }
 
     @Override
     public void addField(BasicNumericElementaryDataItem di, long n) throws IOException {
-        super.stringOut(di.getName());
+        optFieldNameOut(di);
         super.longOut(n);
     }
 
     @Override
     public void addField(BasicNumericElementaryDataItem di, BigInteger n) throws IOException {
         if (n != null) {
-            super.stringOut(di.getName());
+            optFieldNameOut(di);
             super.bigintOut(n);
-        }
+        } else if (arrayDepth != 0)
+            writeNull();
     }
 
     @Override
     public void addField(NumericElementaryDataItem di, BigDecimal n) throws IOException {
         if (n != null) {
-            super.stringOut(di.getName());
+            optFieldNameOut(di);
             super.bigdecimalOut(n);
-        }
+        } else if (arrayDepth != 0)
+            writeNull();
     }
 
     @Override
     public void addField(MiscElementaryDataItem di, UUID n) throws IOException {
         if (n != null) {
-            super.stringOut(di.getName());
+            optFieldNameOut(di);
             super.uuidOut(n);
-        }
+        } else if (arrayDepth != 0)
+            writeNull();
     }
 
     @Override
     public void addField(BinaryElementaryDataItem di, ByteArray b) throws IOException {
         if (b != null) {
-            stringOut(di.getName());
+            optFieldNameOut(di);
             super.bytearrayOut(b);
-        }
+        } else if (arrayDepth != 0)
+            writeNull();
     }
 
     @Override
     public void addField(BinaryElementaryDataItem di, byte[] b) throws IOException {
         if (b != null) {
-            super.stringOut(di.getName());
+            optFieldNameOut(di);
             super.bytesOut(b);
-        }
+        } else if (arrayDepth != 0)
+            writeNull();
     }
 
     @Override
     public void addField(TemporalElementaryDataItem di, LocalDate t) throws IOException {
         if (t != null) {
-            super.stringOut(di.getName());
+            optFieldNameOut(di);
             super.localdateOut(t);
-        }
+        } else if (arrayDepth != 0)
+            writeNull();
     }
 
     @Override
     public void addField(TemporalElementaryDataItem di, LocalDateTime t) throws IOException {
         if (t != null) {
-            super.stringOut(di.getName());
+            optFieldNameOut(di);
             super.localdatetimeOut(t);
-        }
+        } else if (arrayDepth != 0)
+            writeNull();
     }
 
     @Override
     public void addField(TemporalElementaryDataItem di, LocalTime t) throws IOException {
         if (t != null) {
-            super.stringOut(di.getName());
+            optFieldNameOut(di);
             super.localtimeOut(t);
-        }
+        } else if (arrayDepth != 0)
+            writeNull();
     }
 
     @Override
     public void addField(TemporalElementaryDataItem di, Instant t) throws IOException {
         if (t != null) {
-            super.stringOut(di.getName());
+            optFieldNameOut(di);
             super.longOut(t.getMillis());
-        }
+        } else if (arrayDepth != 0)
+            writeNull();
     }
 
     @Override
     public void addField(ObjectReference di, BonaCustom obj) throws IOException {
         // nested objects are output as maps as well
         if (obj != null) {
-            super.stringOut(di.getName());
+            optFieldNameOut(di);
             writeObject(obj);
-        }
+        } else if (arrayDepth != 0)
+            writeNull();
     }
 
     @Override
@@ -224,6 +253,7 @@ public class CompactJsonComposer extends AbstractCompactComposer {
         // no op
     }
 
+    //  the enum methods will forward to one of the existing output methods, the decision logic stays the same
 //    @Override
 //    public void addEnum(EnumDataItem di, BasicNumericElementaryDataItem ord, BonaNonTokenizableEnum n) throws IOException {
 //    }
@@ -244,17 +274,19 @@ public class CompactJsonComposer extends AbstractCompactComposer {
     @Override
     public void addField(ObjectReference di, Map<String, Object> obj) throws IOException {
         if (obj != null) {
-            super.stringOut(di.getName());
+            optFieldNameOut(di);
             super.addField(di, obj);
-        }
+        } else if (arrayDepth != 0)
+            writeNull();
     }
 
     @Override
     public void addField(ObjectReference di, Object obj) throws IOException {
         if (obj != null) {
-            super.stringOut(di.getName());
+            optFieldNameOut(di);
             super.addField(di, obj);
-        }
+        } else if (arrayDepth != 0)
+            writeNull();
     }
     
     @Override
@@ -271,9 +303,13 @@ public class CompactJsonComposer extends AbstractCompactComposer {
             out.write(OBJECT_BEGIN_JSON);
             super.stringOut("$PQON");
             super.stringOut(o.ret$PQON());
+            // push array nesting
+            final int savedArrayDepth = arrayDepth;
+            arrayDepth = 0;
             o.serializeSub(this);
+            arrayDepth = savedArrayDepth;
             out.write(OBJECT_TERMINATOR);       // terminate object....
-        }
+        } else if (arrayDepth != 0)
+            writeNull();
     }
-    
 }

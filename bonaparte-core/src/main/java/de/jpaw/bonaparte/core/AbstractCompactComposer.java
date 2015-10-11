@@ -751,15 +751,23 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
         
         for (Map.Entry<String, Object> elem: obj.entrySet()) {
             stringOut(elem.getKey());
-            addField(null, elem.getValue());
+            elementOut(elem.getValue());
         }
-        // appendable.append('}');  // no terminator currently
     }
 
     @Override
     public void addField(ObjectReference di, Object obj) throws IOException {
         if (obj == null) {
             writeNull(di);
+            return;
+        }
+        elementOut(obj);
+    }
+    
+    // output a non-null object
+    protected void elementOut(Object obj) throws IOException {
+        if (obj == null) {
+            out.writeByte(NULL_FIELD);
             return;
         }
         // check for types. here, we do not have primitive types
@@ -822,7 +830,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
             return;
         }
         if (obj instanceof Map<?,?>) {
-            addField(di, (Map<String, Object>)obj);
+            elementOut((Map<String, Object>)obj);
             return;
         }
         if (obj instanceof List<?>) {
@@ -830,7 +838,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
             out.writeByte(ARRAY_BEGIN);
             intOut(l.size());
             for (Object o : l)
-                addField(di, o);
+                elementOut(o);
             return;
         }
         if (obj instanceof Set<?>) {
@@ -838,7 +846,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
             out.writeByte(ARRAY_BEGIN);
             intOut(l.size());
             for (Object o : l)
-                addField(di, o);
+                elementOut(o);
             return;
         }
 

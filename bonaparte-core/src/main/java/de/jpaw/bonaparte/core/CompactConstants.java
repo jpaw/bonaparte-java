@@ -103,11 +103,12 @@ package de.jpaw.bonaparte.core;
  *    
  *    The format carries partial type information, i.e. certain data types can be recovered, such as
  *    - float, double, UUID, time realted types.
- *    Some types will be different after deserialization (unless type information is provided to the deserializer):
+ *    Some types (but only types which are not specified by JSON) will be different after deserialization (unless type information is provided to the deserializer):
  *    - all primitives will be deserialized to their boxed equivalents
  *    - boolean         => integer (before 3.6.0)
  *    - Sets / Arrays   => List
  *    - byte []         => ByteArray
+ *    - char []         => String
  *    - enums           => integer or String (TokenizableEnum / Xenum)
  *    - enumsets        => integer, long or String
  *    - Integral types: long => int, if the value fits, short, byte => int (always)
