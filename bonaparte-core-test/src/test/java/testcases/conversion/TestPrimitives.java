@@ -95,8 +95,8 @@ public class TestPrimitives {
         byte [] result = cbac.getBytes();
         int hash = Arrays.hashCode(result);
         System.out.println("Length is " + result.length + ", hash code of result is " + hash);
-        Assert.assertEquals(result.length, 198);
-        Assert.assertEquals(hash, -509876399);
+        Assert.assertEquals(result.length, 196);
+        Assert.assertEquals(hash, -1661784561);
     }
 
     @Test
@@ -115,8 +115,8 @@ public class TestPrimitives {
         byte [] result = cbac.getBytes();
         int hash = Arrays.hashCode(result);
         System.out.println("Length is " + result.length + ", hash code of result is " + hash);
-        Assert.assertEquals(result.length, 164);
-        Assert.assertEquals(hash, -299523436);
+        Assert.assertEquals(result.length, 163);
+        Assert.assertEquals(hash, -1332968942);
     }
 
     @Test
@@ -129,13 +129,13 @@ public class TestPrimitives {
         };
         int lengths [] = {
             1, 6, 31,
-            3, 5, 29,
+            2, 5, 29,
             3, 6, 80,
             12
         };
         int hashes [] = {
             121, -1189149473, -899288326,
-            -10575, -39303953, -967932771,
+            -1523, -39303953, -967932771,
             -9663, 804336766, -785021038,
             2125008742
         };
