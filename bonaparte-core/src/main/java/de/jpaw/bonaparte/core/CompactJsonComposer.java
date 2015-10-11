@@ -25,6 +25,7 @@ import de.jpaw.util.ByteArray;
 
 // improvement idea: in the constructor, a map (or lambda expression) could be passed which says which classes should be serialized as Map and which as object.
 
+// composer which does the same as the standard compact composer, but adds field names
 public class CompactJsonComposer extends AbstractCompactComposer {
     
     protected CompactJsonComposer(DataOutput out) {

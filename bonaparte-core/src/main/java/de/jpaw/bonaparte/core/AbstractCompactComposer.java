@@ -7,7 +7,9 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.joda.time.Instant;
@@ -788,17 +790,23 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
                 return;
             }
             if (obj instanceof Double) {
-                addField(null, ((Double)obj).doubleValue());
+                out.writeByte(COMPACT_DOUBLE);          // no check for integral type here, as we have no type information
+                out.writeDouble(((Double)obj).doubleValue());
                 return;
             }
             if (obj instanceof Float) {
-                addField(null, ((Float)obj).floatValue());
+                out.writeByte(COMPACT_FLOAT);          // no check for integral type here, as we have no type information
+                out.writeFloat(((Float)obj).floatValue());
                 return;
             }
             throw new RuntimeException("Unrecognized type " + obj.getClass().getSimpleName() + " for compact number");
         }
         if (obj instanceof String) {
             stringOut((String)obj);
+            return;
+        }
+        if (obj instanceof Boolean) {
+            intOut((Boolean)obj ? COMPACT_BOOLEAN_TRUE : COMPACT_BOOLEAN_FALSE);
             return;
         }
         if (obj instanceof UUID) {
@@ -813,8 +821,24 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
             bytearrayOut((ByteArray)obj);
             return;
         }
-        if (obj instanceof Boolean) {
-            intOut((Boolean)obj ? COMPACT_BOOLEAN_TRUE : COMPACT_BOOLEAN_FALSE);
+        if (obj instanceof Map<?,?>) {
+            addField(di, (Map<String, Object>)obj);
+            return;
+        }
+        if (obj instanceof List<?>) {
+            final List<?> l = (List<?>)obj;
+            out.writeByte(ARRAY_BEGIN);
+            intOut(l.size());
+            for (Object o : l)
+                addField(di, o);
+            return;
+        }
+        if (obj instanceof Set<?>) {
+            final Set<?> l = (Set<?>)obj;
+            out.writeByte(ARRAY_BEGIN);
+            intOut(l.size());
+            for (Object o : l)
+                addField(di, o);
             return;
         }
 
@@ -868,9 +892,89 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
             // addField(di, (BonaCustom)obj);      // output objects as object, even within JSON! (catch issues during deserialize)
             // create a special JSON composer on demand
             if (jsonComposer == null)
-                jsonComposer = new CompactJsonComposer(out);
+                jsonComposer = new CompactJsonComposer(out);        // composer which adds ability to output field names
             jsonComposer.writeObject((BonaCustom)obj);
             return;
         }
+        if (obj.getClass().isArray()) {
+            outputPrimitiveArrays(obj);
+            return;
+        }
+        throw new RuntimeException("Cannot transform type " + obj.getClass().getSimpleName() + " to JSON");
+    }
+    
+    // code moved out due to excessive length
+    private void outputPrimitiveArrays(Object obj) throws IOException {
+        if (obj instanceof byte []) {
+            bytesOut((byte [])obj);
+            return;
+        }
+        out.writeByte(ARRAY_BEGIN);
+        if (obj instanceof int []) {
+            final int [] array = (int [])obj;
+            final int len = array.length;
+            intOut(len);
+            for (int i = 0; i < len; ++i) {
+                intOut(array[i]);
+            }
+            return;
+        }
+        if (obj instanceof boolean []) {
+            final boolean [] array = (boolean [])obj;
+            final int len = array.length;
+            intOut(len);
+            for (int i = 0; i < len; ++i) {
+                out.writeByte(array[i] ? COMPACT_BOOLEAN_TRUE : COMPACT_BOOLEAN_FALSE);
+            }
+            return;
+        }
+        if (obj instanceof char []) {
+            final char [] array = (char [])obj;
+            final int len = array.length;
+            intOut(len);
+            for (int i = 0; i < len; ++i) {
+                stringOut(Character.toString(array[i]));        // converts char [] to a string
+            }
+            return;
+        }
+        if (obj instanceof long []) {
+            final long [] array = (long [])obj;
+            final int len = array.length;
+            intOut(len);
+            for (int i = 0; i < len; ++i) {
+                longOut(array[i]);
+            }
+            return;
+        }
+        if (obj instanceof short []) {
+            final short [] array = (short [])obj;
+            final int len = array.length;
+            intOut(len);
+            for (int i = 0; i < len; ++i) {
+                intOut(array[i]);
+            }
+            return;
+        }
+        if (obj instanceof double []) {
+            final double [] array = (double [])obj;
+            final int len = array.length;
+            intOut(len);
+            for (int i = 0; i < len; ++i) {
+                out.writeByte(COMPACT_DOUBLE);          // no check for integral type here, as we have no type information
+                out.writeDouble(array[i]);
+            }
+            return;
+        }
+        if (obj instanceof float []) {
+            final float [] array = (float [])obj;
+            final int len = array.length;
+            intOut(len);
+            for (int i = 0; i < len; ++i) {
+                out.writeByte(COMPACT_FLOAT);          // no check for integral type here, as we have no type information
+                out.writeFloat(array[i]);
+            }
+            return;
+        }
+        throw new RuntimeException("Not yet supported: primitive array " + obj.getClass().getSimpleName());
     }
 }
