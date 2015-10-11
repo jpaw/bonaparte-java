@@ -331,10 +331,10 @@ public class CompactByteArrayParser extends Settings implements MessageParser<Me
             } else {
                 scale = readInt(needToken(), fieldname);
             }
+            c = needToken();
         }
         // now read mantissa. Either length  + digits, or an integer
         BigDecimal r;
-        c = needToken();
         if (c == COMPACT_BIGINTEGER) {
             // length and mantissa
             int len = readInt(needToken(), fieldname);

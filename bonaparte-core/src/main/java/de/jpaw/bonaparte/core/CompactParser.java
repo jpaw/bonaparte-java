@@ -247,10 +247,10 @@ public class CompactParser extends Settings implements MessageParser<IOException
             } else {
                 scale = readInt(needToken(), fieldname);
             }
+            c = needToken();
         }
         // now read mantissa. Either length  + digits, or an integer
         BigDecimal r;
-        c = needToken();
         if (c == COMPACT_BIGINTEGER) {
             // length and mantissa
             int len = readInt(needToken(), fieldname);
