@@ -134,12 +134,12 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
             if (c > 127)
                 ++numWith2Byte;
         }
-        if (maxCode <= 127) {
+        if (maxCode <= 255) {       // no reason not to support a full 8 bit character set - this may save a bit of space for some west european texts 
             // pure ASCII String
             if (len <= 16) {
-                out.writeByte(SHORT_ASCII_STRING + len - 1);
+                out.writeByte(SHORT_ISO_STRING + len - 1);
             } else {
-                out.writeByte(ASCII_STRING);
+                out.writeByte(ISO_STRING);
                 intOut(len);
             }
             out.writeBytes(s);
@@ -177,12 +177,12 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
             if (c > 127)
                 ++numWith2Byte;
         }
-        if (maxCode <= 127) {
+        if (maxCode <= 255) {
             // pure ASCII String
             if (len <= 16) {
-                out.writeByte(SHORT_ASCII_STRING + len - 1);
+                out.writeByte(SHORT_ISO_STRING + len - 1);
             } else {
-                out.writeByte(ASCII_STRING);
+                out.writeByte(ISO_STRING);
                 intOut(len);
             }
             for (int i = 0; i < len; ++i)
@@ -232,12 +232,12 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
             if (c > 127)
                 ++numWith2Byte;
         }
-        if (maxCode <= 127) {
+        if (maxCode <= 255) {
             // pure ASCII String
             if (len <= 16) {
-                out.writeByte(SHORT_ASCII_STRING + len - 1);
+                out.writeByte(SHORT_ISO_STRING + len - 1);
             } else {
-                out.writeByte(ASCII_STRING);
+                out.writeByte(ISO_STRING);
                 intOut(len);
             }
             for (int i = 0; i < len; ++i)

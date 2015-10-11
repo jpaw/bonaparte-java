@@ -44,7 +44,7 @@ package de.jpaw.bonaparte.core;
  *          ae          subobject end
  *          af          empty (zero character String)    before 3.6.0 also: empty byte [] or empty ByteArray
  *
- *          bx    ASCII string, 1..16 characters length
+ *          bx    ISO8859-1 string, 1..16 characters length (formerly restricted to ASCII)
  *          cx  positive 2 byte integer:    x(nn) 0..4095
  *
  *          dx   reserved for floating point formats:
@@ -155,6 +155,8 @@ public interface CompactConstants {
     public static final int INT_8BYTE = 0xe8;
     public static final int UNICODE_CHAR = 0xd6;
     public static final int EMPTY_FIELD         = 0xaf;     // used for strings only, now
+    public static final int SHORT_ISO_STRING    = 0xb0;     // 16 consecutive (17 with EMPTY_FIELD)
+    @Deprecated
     public static final int SHORT_ASCII_STRING  = 0xb0;     // 16 consecutive (17 with EMPTY_FIELD)
     public static final int COMPACT_FLOAT = 0xd1;
     public static final int COMPACT_DOUBLE = 0xd2;
@@ -169,13 +171,17 @@ public interface CompactConstants {
     public static final int COMPACT_DATETIME = 0xdb;
     public static final int COMPACT_DATETIME_MILLIS = 0xdc;
 
+    @Deprecated
     public static final int ASCII_STRING = 0xe1;
+    public static final int ISO_STRING   = 0xe1;            
     public static final int UTF16_STRING = 0xfd;
-    public static final int UTF8_STRING = 0xff;
+    public static final int UTF8_STRING  = 0xff;
 
+    @Deprecated
     public static final String CHARSET_ASCII = "ISO-8859-1"; // US-ASCII: replaced by ISO because ISO allows for more characters
-    public static final String CHARSET_UTF8 = "UTF-8";
-    public static final String CHARSET_UTF16 = "UTF-16BE";
+    public static final String CHARSET_ISO   = "ISO-8859-1"; // ISO-8859-1 characters
+    public static final String CHARSET_UTF8  = "UTF-8";      // UTF-8 variable length encoding
+    public static final String CHARSET_UTF16 = "UTF-16BE";   // UTF-16 encoding
 
     public static final int COMPRESSED = 0xd5;
     public static final int COMPRESSED_LZ4 = 0;  // first type

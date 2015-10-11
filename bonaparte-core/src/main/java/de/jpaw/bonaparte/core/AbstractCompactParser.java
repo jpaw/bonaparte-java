@@ -223,7 +223,7 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
                 case COMPRESSED:
                     throw newMPE(MessageParserException.UNSUPPORTED_COMPRESSED, null); // TODO: compressed object not yet supported
                 case COMPACT_BIGINTEGER:
-                case ASCII_STRING:
+                case ISO_STRING:
                 case COMPACT_BINARY:
                 case UTF8_STRING:
 //                        int len = readInt(needToken(), "(skipping)");
@@ -297,15 +297,15 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
         int len;
         int c = needToken();
         if (c >= 0x20 && c < 0x80)
-            return String.valueOf((char)c);  // single ASCII byte string
-        if (c >= EMPTY_FIELD && c <= SHORT_ASCII_STRING + 15) {
+            return String.valueOf((char)c);  // single byte string
+        if (c >= EMPTY_FIELD && c <= SHORT_ISO_STRING + 15) {
             len = c - EMPTY_FIELD;
             return len > 0 ? readISO(len) : "";
         }
         switch (c) {
         case UNICODE_CHAR:
             return String.valueOf(readChar()); // single Unicode char string
-        case ASCII_STRING:
+        case ISO_STRING:
             len = readInt(needToken(), fieldname);
             return readISO(len);
         case UTF8_STRING:
