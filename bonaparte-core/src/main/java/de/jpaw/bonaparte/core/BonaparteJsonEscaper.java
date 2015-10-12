@@ -3,7 +3,7 @@ package de.jpaw.bonaparte.core;
 import java.io.IOException;
 import java.util.Map;
 
-import de.jpaw.json.ExtendedJsonEscaperForAppendables;
+import de.jpaw.jsonext.ExtendedJsonEscaperForAppendables;
 
 public class BonaparteJsonEscaper extends ExtendedJsonEscaperForAppendables {
 

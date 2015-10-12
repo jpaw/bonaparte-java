@@ -1,17 +1,24 @@
 package jsonTest {
 
     class TestObj {
-        int         primitiveInt;
-        Long        wrappedLong;
-        Day         myDay;
-        Instant     myInstant;
-        Unicode(20) myText;
-        Boolean     myBoolean;
-        Uuid        myNull;
+        int                 primitiveInt;
+        Long                wrappedLong;
+        Day                 myDay;
+        Instant             myInstant;
+        Unicode(20)         myText;
+        Boolean             myBoolean;
+        Uuid                myNull;
     }
     
     class TestSimple {
-        int         num;
-        Unicode(20) text;
+        int                 num;
+        Unicode(20)         text;
+    }
+    
+    class JsonFieldTest {
+        Unicode(20)         text;
+        Json                varStuff;
+        Element             varField;
+        element List<>      varList;
     }
 }

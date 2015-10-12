@@ -29,10 +29,10 @@ import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.enums.XEnum;
+import de.jpaw.json.JsonEscaper;
 import de.jpaw.util.Base64;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.ByteBuilder;
-import de.jpaw.util.JsonEscaper;
 
 /** This class natively generates JSON output. It aims for compatibility with the extensions used by the json-io library (@Type class information).
  * See https://github.com/jdereg/json-io and http://code.google.com/p/json-io/ for json-io source and documentation.
