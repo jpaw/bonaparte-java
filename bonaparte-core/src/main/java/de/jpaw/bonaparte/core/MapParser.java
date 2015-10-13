@@ -30,6 +30,7 @@ import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.enums.AbstractXEnumBase;
 import de.jpaw.enums.XEnumFactory;
 import de.jpaw.util.ByteArray;
+import de.jpaw.util.MapIterator;
 
 // this parser will accept a subset of all possible convertable input types
 // the following types can be assumed to be accepted:
@@ -470,17 +471,31 @@ public class MapParser  extends Settings implements MessageParser<MessageParserE
 
     @Override
     public int parseMapStart(FieldDefinition di) throws MessageParserException {
-        throw new UnsupportedOperationException();                                      // TODO FIXME! need a nested parser which provides keys and values alternatively
+        if (iter != null)
+            throw new RuntimeException("Nested collection should not happen, but occurred for Map " + currentClass + "." + di.getName());
+        Object z = getNext(di);
+        if (z == null) {
+            if (di.getIsAggregateRequired())
+                throw err(MessageParserException.NULL_COLLECTION_NOT_ALLOWED, di);
+            return -1;
+        }
+        if (z instanceof Map<?,?>) {
+            Map<Object,Object> m = (Map<Object,Object>)z;
+            iter = new MapIterator<Object>(m);
+            return m.size();
+        }
+        throw err(MessageParserException.UNSUPPORTED_CONVERSION, di);
     }
 
     @Override
     public int parseArrayStart(FieldDefinition di, int sizeOfElement) throws MessageParserException {
-        if (iter != null) {
-            throw new RuntimeException("Nested collection should not happen, but occurred for " + currentClass + "." + di.getName());
-        }
+        if (iter != null)
+            throw new RuntimeException("Nested collection should not happen, but occurred for Collection " + currentClass + "." + di.getName());
         Object z = getNext(di);
-        if (z == null && di.getIsAggregateRequired()) {
-            throw err(MessageParserException.NULL_COLLECTION_NOT_ALLOWED, di);
+        if (z == null) {
+            if (di.getIsAggregateRequired())
+                throw err(MessageParserException.NULL_COLLECTION_NOT_ALLOWED, di);
+            return -1;
         }
         if (z instanceof List<?>) {
             List<Object> l = (List<Object>)z;
