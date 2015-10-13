@@ -135,6 +135,7 @@ public class BonaPortableFactory {
     }
 
     // new method, caches the BClass, to avoid reflection to create a new instance
+    // parameter name is the PQON of the desired class
     public static BonaPortable createObject(String name) throws MessageParserException {
         String FQON = null;
         BonaPortable instance = null;
