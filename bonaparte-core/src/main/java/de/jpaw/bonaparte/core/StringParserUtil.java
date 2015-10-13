@@ -34,13 +34,21 @@ import de.jpaw.util.IntegralLimits;
  */
 public class StringParserUtil {
     private final ParsePositionProvider parsePositionProvider;
+    private final boolean instantInMillis;
 
     public StringParserUtil() {
         parsePositionProvider = ParsePositionProvider.DEFAULT;
+        instantInMillis = false;
     }
 
     public StringParserUtil(ParsePositionProvider parsePositionProvider) {
         this.parsePositionProvider = parsePositionProvider;
+        instantInMillis = false;
+    }
+
+    public StringParserUtil(ParsePositionProvider parsePositionProvider, boolean instantInMillis) {
+        this.parsePositionProvider = parsePositionProvider;
+        this.instantInMillis = instantInMillis;
     }
 
     protected MessageParserException err(int errno, FieldDefinition di, String data) {
@@ -293,9 +301,13 @@ public class StringParserUtil {
         return new LocalTime(1000 * seconds + millis, DateTimeZone.UTC);
     }
 
+    // see ExtendedJsonEscaperForAppendables.instantInMillis: this variant assumes "false", i.e. instant in seconds.
     public Instant readInstant(TemporalElementaryDataItem di, String data) throws MessageParserException {
         if (data == null)
             return null;
+        if (instantInMillis) {
+            return new Instant(Long.parseLong(data));
+        }
         int millis = 0;
         long seconds = 0;
         int dpoint;
@@ -420,8 +432,12 @@ public class StringParserUtil {
     }
 
     public <T extends AbstractXEnumBase<T>> T readXEnum(final XEnumDataItem di, final XEnumFactory<T> factory, String data) throws MessageParserException {
-        if (data == null)
-            return factory.getNullToken();
+        if (data == null) {
+            T result = factory.getNullToken();
+            if (result == null && di.getIsRequired())
+                throw err(MessageParserException.EMPTY_BUT_REQUIRED_FIELD, di, data);
+            return result;
+        }
         final T value = factory.getByToken(data);
         if (value == null)
             throw err(MessageParserException.INVALID_ENUM_TOKEN, di, data);
