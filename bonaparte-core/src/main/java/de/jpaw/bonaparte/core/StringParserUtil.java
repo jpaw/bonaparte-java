@@ -43,6 +43,10 @@ public class StringParserUtil {
         this.parsePositionProvider = parsePositionProvider;
     }
 
+    protected MessageParserException err(int errno, FieldDefinition di, String data) {
+        return new MessageParserException(errno, di.getName(), data, parsePositionProvider);
+    }
+    
     public void ensureNotNull(FieldDefinition di, String data) throws MessageParserException {
         if (data == null)
             throw new MessageParserException(MessageParserException.ILLEGAL_EXPLICIT_NULL, di.getName(), null, parsePositionProvider);
@@ -52,9 +56,9 @@ public class StringParserUtil {
         if (data == null)
             return null;
         if (data.length() == 0) {
-            throw new MessageParserException(MessageParserException.EMPTY_CHAR, di.getName(), data, parsePositionProvider);
+            throw err(MessageParserException.EMPTY_CHAR, di, data);
         } else if (data.length() > 1) {
-            throw new MessageParserException(MessageParserException.CHAR_TOO_LONG, di.getName(), data, parsePositionProvider);
+            throw err(MessageParserException.CHAR_TOO_LONG, di, data);
         }
         return Character.valueOf(data.charAt(0));
     }
@@ -67,7 +71,7 @@ public class StringParserUtil {
             if (di.getDoTruncate())
                 data = data.substring(0, di.getLength());
             else
-                throw new MessageParserException(MessageParserException.STRING_TOO_LONG, di.getName(), data, parsePositionProvider);
+                throw err(MessageParserException.STRING_TOO_LONG, di, data);
         }
         return data;
     }
@@ -79,12 +83,12 @@ public class StringParserUtil {
         // ASCII checks
         String type = di.getDataType().toLowerCase();
         if (type.equals("lower") && !CharTestsASCII.isLowerCase(data))
-            throw new MessageParserException(MessageParserException.ILLEGAL_CHAR_LOWER, di.getName(), data, parsePositionProvider);
+            throw err(MessageParserException.ILLEGAL_CHAR_LOWER, di, data);
         else if (type.equals("upper") && !CharTestsASCII.isUpperCase(data))
-            throw new MessageParserException(MessageParserException.ILLEGAL_CHAR_UPPER, di.getName(), data, parsePositionProvider);
+            throw err(MessageParserException.ILLEGAL_CHAR_UPPER, di, data);
         else {
             if (!CharTestsASCII.isPrintable(data))
-                throw new MessageParserException(MessageParserException.ILLEGAL_CHAR_ASCII, di.getName(), data, parsePositionProvider);
+                throw err(MessageParserException.ILLEGAL_CHAR_ASCII, di, data);
         }
         return data;
     }
@@ -96,11 +100,8 @@ public class StringParserUtil {
         // check for escape chars (unescaping is done before calling this method, as it is protocol dependent!
         for (int i = 0; i < data.length(); ++i) {
             char c = data.charAt(i);
-            if (c < ' ' && c != '\t') {
-                // escape or boom
-                if (!di.getAllowControlCharacters())
-                    throw new MessageParserException(MessageParserException.ILLEGAL_CHAR_CTRL, di.getName(), data, parsePositionProvider);
-            }
+            if (c < ' ' && c != '\t' && !di.getAllowControlCharacters())
+                throw err(MessageParserException.ILLEGAL_CHAR_CTRL, di, data);
         }
         return data;
     }
@@ -108,21 +109,29 @@ public class StringParserUtil {
     public Boolean readBoolean(final MiscElementaryDataItem di, String data) throws MessageParserException {
         if (data == null)
             return null;
+        if (data.equals("false"))
+            return Boolean.FALSE;
+        if (data.equals("true"))
+            return Boolean.TRUE;
         if (data.length() != 1)
-            throw new MessageParserException(MessageParserException.ILLEGAL_BOOLEAN, di.getName(), data, parsePositionProvider);
+            throw err(MessageParserException.ILLEGAL_BOOLEAN, di, data);
         final char c = data.charAt(0);
         if (c == '0') {
             return Boolean.FALSE;
         } else if (c == '1') {
             return Boolean.TRUE;
         } else {
-            throw new MessageParserException(MessageParserException.ILLEGAL_BOOLEAN, di.getName(), data, parsePositionProvider);
+            throw err(MessageParserException.ILLEGAL_BOOLEAN, di, data);
         }
     }
 
     public ByteArray readByteArray(BinaryElementaryDataItem di, String data) throws MessageParserException {
         if (data == null)
             return null;
+        if (data.length() % 4 != 0)
+            throw err(MessageParserException.BASE64_PARSING_ERROR, di, data);
+        if ((data.length() / 4) * 3 > di.getLength())
+            throw err(MessageParserException.BINARY_TOO_LONG, di, data);
         return new ByteArray(readRaw(di, data)); // TODO: this call does an unnecessary copy
     }
 
@@ -131,9 +140,13 @@ public class StringParserUtil {
             return null;
         try {
             byte [] btmp = data.getBytes();
+            if (btmp.length % 4 != 0)
+                throw err(MessageParserException.BASE64_PARSING_ERROR, di, data);
+            if ((btmp.length / 4) * 3 > di.getLength())
+                throw err(MessageParserException.BINARY_TOO_LONG, di, data);
             return Base64.decode(btmp, 0, btmp.length);
         } catch (IllegalArgumentException e) {
-            throw new MessageParserException(MessageParserException.BASE64_PARSING_ERROR, di.getName(), data, parsePositionProvider);
+            throw err(MessageParserException.BASE64_PARSING_ERROR, di, data);
         }
         // return DatatypeConverter.parseHexBinary(data);
     }
@@ -164,9 +177,8 @@ public class StringParserUtil {
             case 9:
                 break; // maximum resolution (milliseconds)
             default: // something weird
-                throw new MessageParserException(MessageParserException.BAD_TIMESTAMP_FRACTIONALS,
-                                String.format("(found %d for %s)", data.length() - dpoint - 1,
-                                di.getName()), data, parsePositionProvider);
+                throw err(MessageParserException.BAD_TIMESTAMP_FRACTIONALS, di,
+                          String.format("(found %d for %s)", data.length() - dpoint - 1, data));
             }
         }
         // set the date and time
@@ -187,13 +199,12 @@ public class StringParserUtil {
         // first checks
         if ((year < 1601) || (year > 2399) || (month == 0) || (month > 12) || (day == 0)
                 || (day > 31)) {
-            throw new MessageParserException(MessageParserException.ILLEGAL_DAY,
-                    String.format("(found %d for %s)", year*10000+month*100+day, di.getName()), data, parsePositionProvider);
+            throw err(MessageParserException.ILLEGAL_DAY, di,
+                      String.format("(found %d for %s)", year*10000+month*100+day, data));
         }
         if ((hour > 23) || (minute > 59) || (second > 59)) {
-            throw new MessageParserException(MessageParserException.ILLEGAL_TIME,
-                            String.format("(found %d for %s)", (hour * 10000) + (minute * 100) + second,
-                            di.getName()), data, parsePositionProvider);
+            throw err(MessageParserException.ILLEGAL_TIME, di,
+                      String.format("(found %d for %s)", (hour * 10000) + (minute * 100) + second, data));
         }
         // now set the return value
         LocalDateTime result;
@@ -203,7 +214,7 @@ public class StringParserUtil {
             // and year
             result = new LocalDateTime(year, month, day, hour, minute, second, fractional);
         } catch (Exception e) {
-            throw new MessageParserException(MessageParserException.ILLEGAL_CALENDAR_VALUE, di.getName(), data, parsePositionProvider);
+            throw err(MessageParserException.ILLEGAL_CALENDAR_VALUE, di, data);
         }
         return result;
     }
@@ -220,9 +231,8 @@ public class StringParserUtil {
         // first checks
         if ((year < 1601) || (year > 2399) || (month == 0) || (month > 12) || (day == 0)
                 || (day > 31)) {
-            throw new MessageParserException(MessageParserException.ILLEGAL_DAY,
-                            String.format("(found %d for %s)", year*10000+month*100+day,
-                            di.getName()), data, parsePositionProvider);
+            throw err(MessageParserException.ILLEGAL_DAY, di,
+                      String.format("(found %d for %s)", year*10000+month*100+day, data));
         }
         // now set the return value
         LocalDate result;
@@ -232,7 +242,7 @@ public class StringParserUtil {
             // and year
             result = new LocalDate(year, month, day);
         } catch (Exception e) {
-            throw new MessageParserException(MessageParserException.ILLEGAL_CALENDAR_VALUE, di.getName(), data, parsePositionProvider);
+            throw err(MessageParserException.ILLEGAL_CALENDAR_VALUE, di, data);
         }
         return result;
     }
@@ -259,9 +269,8 @@ public class StringParserUtil {
             case 3:
                 break; // maximum resolution (milliseconds)
             default: // something weird
-                throw new MessageParserException(MessageParserException.BAD_TIMESTAMP_FRACTIONALS,
-                                String.format("(found %d for %s)", data.length() - dpoint - 1,
-                                di.getName()), data, parsePositionProvider);
+                throw err(MessageParserException.BAD_TIMESTAMP_FRACTIONALS, di,
+                          String.format("(found %d for %s)", data.length() - dpoint - 1, data));
             }
         }
         // set the date and time
@@ -278,9 +287,8 @@ public class StringParserUtil {
         }
         // first checks
         if ((hour > 23) || (minute > 59) || (second > 59)) {
-            throw new MessageParserException(MessageParserException.ILLEGAL_TIME,
-                            String.format("(found %d for %s)", (hour * 10000) + (minute * 100) + second,
-                            di.getName()), data, parsePositionProvider);
+            throw err(MessageParserException.ILLEGAL_TIME, di,
+                      String.format("(found %d for %s)", (hour * 10000) + (minute * 100) + second, data));
         }
         return new LocalTime(1000 * seconds + millis, DateTimeZone.UTC);
     }
@@ -307,9 +315,8 @@ public class StringParserUtil {
             case 3:
                 break; // maximum resolution (milliseconds)
             default: // something weird
-                throw new MessageParserException(MessageParserException.BAD_TIMESTAMP_FRACTIONALS,
-                                String.format("(found %d for %s)", data.length() - dpoint - 1,
-                                di.getName()), data, parsePositionProvider);
+                throw err(MessageParserException.BAD_TIMESTAMP_FRACTIONALS, di,
+                          String.format("(found %d for %s)", data.length() - dpoint - 1, data));
             }
         }
         if (di.getFractionalSeconds() == 0) {
@@ -364,14 +371,14 @@ public class StringParserUtil {
             return null;
         }
         if (data.length() > (di.getTotalDigits() + (((data.charAt(0) == '-') || (data.charAt(0) == '+')) ? 1 : 0)))
-            throw new MessageParserException(MessageParserException.NUMERIC_TOO_LONG, di.getName(), data, parsePositionProvider);
+            throw err(MessageParserException.NUMERIC_TOO_LONG, di, data);
         try {
             final BigInteger r = new BigInteger(data);
             if (!di.getIsSigned() && r.signum() < 0)
-                throw new MessageParserException(MessageParserException.SUPERFLUOUS_SIGN, di.getName(), data, parsePositionProvider);
+                throw err(MessageParserException.SUPERFLUOUS_SIGN, di, data);
             return r;
         } catch (NumberFormatException e) {
-            throw new MessageParserException(MessageParserException.NUMBER_PARSING_ERROR, di.getName(), data, parsePositionProvider);
+            throw err(MessageParserException.NUMBER_PARSING_ERROR, di, data);
         }
     }
 
@@ -382,7 +389,7 @@ public class StringParserUtil {
         try {
             BigDecimal r = new BigDecimal(data);
             if (!di.getIsSigned() && r.signum() < 0)
-                throw new MessageParserException(MessageParserException.SUPERFLUOUS_SIGN, di.getName(), data, parsePositionProvider);
+                throw err(MessageParserException.SUPERFLUOUS_SIGN, di, data);
             int decimals = di.getDecimalDigits();
             try {
                 if (r.scale() > decimals)
@@ -390,14 +397,14 @@ public class StringParserUtil {
                 if (di.getAutoScale() && r.scale() < decimals) // round for smaller as well!
                     r = r.setScale(decimals, RoundingMode.UNNECESSARY);
             } catch (ArithmeticException a) {
-                throw new MessageParserException(MessageParserException.TOO_MANY_DECIMALS, di.getName(), data, parsePositionProvider);
+                throw err(MessageParserException.TOO_MANY_DECIMALS, di, data);
             }
             // check for overflow
             if (di.getTotalDigits() - decimals < r.precision() - r.scale())
-                throw new MessageParserException(MessageParserException.TOO_MANY_DIGITS, di.getName(), data, parsePositionProvider);
+                throw err(MessageParserException.TOO_MANY_DIGITS, di, data);
             return r;
         } catch (NumberFormatException e) {
-            throw new MessageParserException(MessageParserException.NUMBER_PARSING_ERROR, di.getName(), data, parsePositionProvider);
+            throw err(MessageParserException.NUMBER_PARSING_ERROR, di, data);
         }
     }
 
@@ -408,7 +415,7 @@ public class StringParserUtil {
         try {
             return UUID.fromString(data);
         } catch (IllegalArgumentException e) {
-            throw new MessageParserException(MessageParserException.BAD_UUID_FORMAT, di.getName(), data, parsePositionProvider);
+            throw err(MessageParserException.BAD_UUID_FORMAT, di, data);
         }
     }
 
@@ -417,30 +424,34 @@ public class StringParserUtil {
             return factory.getNullToken();
         final T value = factory.getByToken(data);
         if (value == null)
-            throw new MessageParserException(MessageParserException.INVALID_ENUM_TOKEN, di.getName(), data, parsePositionProvider);
+            throw err(MessageParserException.INVALID_ENUM_TOKEN, di, data);
         return value;
     }
 
     public boolean readPrimitiveBoolean(MiscElementaryDataItem di, String data) throws MessageParserException {
         ensureNotNull(di, data);
+        if (data.equals("false"))
+            return false;
+        if (data.equals("true"))
+            return true;
         if (data.length() != 1)
-            throw new MessageParserException(MessageParserException.ILLEGAL_BOOLEAN, di.getName(), data, parsePositionProvider);
+            throw err(MessageParserException.ILLEGAL_BOOLEAN, di, data);
         final char c = data.charAt(0);
         if (c == '0') {
             return false;
         } else if (c == '1') {
             return true;
         } else {
-            throw new MessageParserException(MessageParserException.ILLEGAL_BOOLEAN, di.getName(), data, parsePositionProvider);
+            throw err(MessageParserException.ILLEGAL_BOOLEAN, di, data);
         }
     }
 
     public char readPrimitiveCharacter(MiscElementaryDataItem di, String data) throws MessageParserException {
         ensureNotNull(di, data);
         if (data.length() == 0) {
-            throw new MessageParserException(MessageParserException.EMPTY_CHAR, di.getName(), data, parsePositionProvider);
+            throw err(MessageParserException.EMPTY_CHAR, di, data);
         } else if (data.length() > 1) {
-            throw new MessageParserException(MessageParserException.CHAR_TOO_LONG, di.getName(), data, parsePositionProvider);
+            throw err(MessageParserException.CHAR_TOO_LONG, di, data);
         }
         return data.charAt(0);
     }
@@ -450,10 +461,10 @@ public class StringParserUtil {
         try {
             final double r = Double.parseDouble(data);
             if (!di.getIsSigned() && r < 0)
-                throw new MessageParserException(MessageParserException.SUPERFLUOUS_SIGN, di.getName(), data, parsePositionProvider);
+                throw err(MessageParserException.SUPERFLUOUS_SIGN, di, data);
             return r;
         } catch (NumberFormatException e) {
-            throw new MessageParserException(MessageParserException.NUMBER_PARSING_ERROR, di.getName(), data, parsePositionProvider);
+            throw err(MessageParserException.NUMBER_PARSING_ERROR, di, data);
         }
     }
 
@@ -462,10 +473,10 @@ public class StringParserUtil {
         try {
             final float r = Float.parseFloat(data);
             if (!di.getIsSigned() && r < 0)
-                throw new MessageParserException(MessageParserException.SUPERFLUOUS_SIGN, di.getName(), data, parsePositionProvider);
+                throw err(MessageParserException.SUPERFLUOUS_SIGN, di, data);
             return r;
         } catch (NumberFormatException e) {
-            throw new MessageParserException(MessageParserException.NUMBER_PARSING_ERROR, di.getName(), data, parsePositionProvider);
+            throw err(MessageParserException.NUMBER_PARSING_ERROR, di, data);
         }
     }
 
@@ -474,16 +485,16 @@ public class StringParserUtil {
         try {
             final long r = Long.parseLong(data);
             if (r < 0 && !di.getIsSigned())
-                throw new MessageParserException(MessageParserException.SUPERFLUOUS_SIGN, di.getName(), data, parsePositionProvider);
+                throw err(MessageParserException.SUPERFLUOUS_SIGN, di, data);
             final int maxDigits = di.getTotalDigits();
             if (maxDigits > 0) {
                 // make sure that the parsed value does not exceed the configured number of digits
                 if (r < IntegralLimits.LONG_MIN_VALUES[maxDigits] || r > IntegralLimits.LONG_MAX_VALUES[maxDigits])
-                    throw new MessageParserException(MessageParserException.NUMERIC_TOO_MANY_DIGITS, di.getName(), data, parsePositionProvider);
+                    throw err(MessageParserException.NUMERIC_TOO_MANY_DIGITS, di, data);
             }
             return r;
         } catch (NumberFormatException e) {
-            throw new MessageParserException(MessageParserException.NUMBER_PARSING_ERROR, di.getName(), data, parsePositionProvider);
+            throw err(MessageParserException.NUMBER_PARSING_ERROR, di, data);
         }
     }
 
@@ -492,16 +503,16 @@ public class StringParserUtil {
         try {
             final int r = Integer.parseInt(data);
             if (r < 0 && !di.getIsSigned())
-                throw new MessageParserException(MessageParserException.SUPERFLUOUS_SIGN, di.getName(), data, parsePositionProvider);
+                throw err(MessageParserException.SUPERFLUOUS_SIGN, di, data);
             final int maxDigits = di.getTotalDigits();
             if (maxDigits > 0) {
                 // make sure that the parsed value does not exceed the configured number of digits
                 if (r < IntegralLimits.INT_MIN_VALUES[maxDigits] || r > IntegralLimits.INT_MAX_VALUES[maxDigits])
-                    throw new MessageParserException(MessageParserException.NUMERIC_TOO_MANY_DIGITS, di.getName(), data, parsePositionProvider);
+                    throw err(MessageParserException.NUMERIC_TOO_MANY_DIGITS, di, data);
             }
             return r;
         } catch (NumberFormatException e) {
-            throw new MessageParserException(MessageParserException.NUMBER_PARSING_ERROR, di.getName(), data, parsePositionProvider);
+            throw err(MessageParserException.NUMBER_PARSING_ERROR, di, data);
         }
     }
 
@@ -510,16 +521,16 @@ public class StringParserUtil {
         try {
             final short r = Short.parseShort(data);
             if (r < 0 && !di.getIsSigned())
-                throw new MessageParserException(MessageParserException.SUPERFLUOUS_SIGN, di.getName(), data, parsePositionProvider);
+                throw err(MessageParserException.SUPERFLUOUS_SIGN, di, data);
             final int maxDigits = di.getTotalDigits();
             if (maxDigits > 0) {
                 // make sure that the parsed value does not exceed the configured number of digits
                 if (r < IntegralLimits.SHORT_MIN_VALUES[maxDigits] || r > IntegralLimits.SHORT_MAX_VALUES[maxDigits])
-                    throw new MessageParserException(MessageParserException.NUMERIC_TOO_MANY_DIGITS, di.getName(), data, parsePositionProvider);
+                    throw err(MessageParserException.NUMERIC_TOO_MANY_DIGITS, di, data);
             }
             return r;
         } catch (NumberFormatException e) {
-            throw new MessageParserException(MessageParserException.NUMBER_PARSING_ERROR, di.getName(), data, parsePositionProvider);
+            throw err(MessageParserException.NUMBER_PARSING_ERROR, di, data);
         }
     }
 
@@ -528,16 +539,16 @@ public class StringParserUtil {
         try {
             final byte r = Byte.parseByte(data);
             if (r < 0 && !di.getIsSigned())
-                throw new MessageParserException(MessageParserException.SUPERFLUOUS_SIGN, di.getName(), data, parsePositionProvider);
+                throw err(MessageParserException.SUPERFLUOUS_SIGN, di, data);
             final int maxDigits = di.getTotalDigits();
             if (maxDigits > 0) {
                 // make sure that the parsed value does not exceed the configured number of digits
                 if (r < IntegralLimits.BYTE_MIN_VALUES[maxDigits] || r > IntegralLimits.BYTE_MAX_VALUES[maxDigits])
-                    throw new MessageParserException(MessageParserException.NUMERIC_TOO_MANY_DIGITS, di.getName(), data, parsePositionProvider);
+                    throw err(MessageParserException.NUMERIC_TOO_MANY_DIGITS, di, data);
             }
             return r;
         } catch (NumberFormatException e) {
-            throw new MessageParserException(MessageParserException.NUMBER_PARSING_ERROR, di.getName(), data, parsePositionProvider);
+            throw err(MessageParserException.NUMBER_PARSING_ERROR, di, data);
         }
     }
 }

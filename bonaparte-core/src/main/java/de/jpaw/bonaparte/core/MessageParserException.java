@@ -96,6 +96,10 @@ public class MessageParserException extends ApplicationException {
     static public final int JSON_EXCEPTION               = OFFSET + 57;
     static public final int JSON_ID                      = OFFSET + 58;
     static public final int JSON_DUPLICATE_KEY           = OFFSET + 59;
+    static public final int JSON_NO_PQON                 = OFFSET + 60;
+    static public final int INVALID_CHAR                 = OFFSET + 61;
+    static public final int UNSUPPORTED_CONVERSION       = OFFSET + 62;
+    static public final int BINARY_TOO_LONG              = OFFSET + 63;
     
 
     static {
@@ -158,6 +162,10 @@ public class MessageParserException extends ApplicationException {
         codeToDescription.put(JSON_EXCEPTION               , "JSON parsing exception");
         codeToDescription.put(JSON_ID                      , "Map key is not a valid JSON identifier");
         codeToDescription.put(JSON_DUPLICATE_KEY           , "Map key of JSON map occurs multiple times");
+        codeToDescription.put(JSON_NO_PQON                 , "No map entry $PQON of type String found");
+        codeToDescription.put(INVALID_CHAR                 , "Invalid Character: must be String type and of length 1");
+        codeToDescription.put(UNSUPPORTED_CONVERSION       , "Unsupported conversion between types");
+        codeToDescription.put(BINARY_TOO_LONG              , "Binary data type too long");
     }
 
     /** Creates a parser exception with an explicitly defined position and class name. */
