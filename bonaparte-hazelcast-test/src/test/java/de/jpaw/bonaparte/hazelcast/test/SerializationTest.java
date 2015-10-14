@@ -23,7 +23,6 @@ import de.jpaw.bonaparte.hazelcast.BonaparteStreamSerializer;
 import de.jpaw.bonaparte.pojos.hazeltest.DSTest;
 import de.jpaw.bonaparte.pojos.hazeltest.IDSTest;
 import de.jpaw.bonaparte.pojos.hazeltest.PojoTest;
-import de.jpaw.util.ByteUtil;
 
 @Test
 public class SerializationTest {
@@ -44,18 +43,18 @@ public class SerializationTest {
                                                     .setImplementation(s)));
         }
         final SerializationService ss = (f == null ? b : b.addDataSerializableFactory(12, f)).build();
-        final Data data1              = ss.toData(obj);
+        //final Data data1              = ss.toData(obj);
         final Data data3              = ss.toData(obj);
         final ObjectDataOutput out2   = ss.createObjectDataOutput(1024);
         final ObjectDataOutput out3   = ss.createObjectDataOutput(1024);
         out2.writeObject(obj);
         out3.writeData(data3);
         
-        byte [] bytes1 = data1.getData();           // shortest
+        //byte [] bytes1 = data1.getData();           // shortest => existed with 3.4.x, no longer in 3.5.x
         byte [] bytes2 = out2.toByteArray();        // 5 bytes more     => this one is the recommended one to use
         byte [] bytes3 = out3.toByteArray();        // 17 bytes more
         
-        System.out.println("Size 1 is " + bytes1.length + ", size 2 is " + bytes2.length + ", size 3 is " + bytes3.length);
+        System.out.println("Size 1 is " + 0 /* bytes1.length */ + ", size 2 is " + bytes2.length + ", size 3 is " + bytes3.length);
 //        System.out.println("buff 1 is\n" + ByteUtil.dump(bytes1, 0));
 //        System.out.println("buff 2 is\n" + ByteUtil.dump(bytes2, 0));
 //        System.out.println("buff 3 is\n" + ByteUtil.dump(bytes3, 0));

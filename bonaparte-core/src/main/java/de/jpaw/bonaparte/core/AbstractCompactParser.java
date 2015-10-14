@@ -747,7 +747,7 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
     protected void addMapElem(Map<String, Object> map) throws E {
         // parse field name, then value
         String key = readString("$jsonObjKey"); // an explicitor implicit null will cause an exception
-        if (!CharTestsASCII. isJavascriptId(key))
+        if (!CharTestsASCII.isJavascriptId(key))
             throw newMPE(MessageParserException.JSON_ID, key);
         // now read value
         Object value = readElementSub();
