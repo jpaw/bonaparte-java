@@ -2,7 +2,6 @@ package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -14,8 +13,6 @@ import org.joda.time.Instant;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
-import org.joda.time.ReadablePartial;
-import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
@@ -38,7 +35,7 @@ import de.jpaw.util.MapIterator;
 // - a string
 // - the possible types created by the JsonParser for input originating from the corresponding type
 
-public class MapParser  extends Settings implements MessageParser<MessageParserException> {
+public class MapParser extends Settings implements MessageParser<MessageParserException> {
 
     private final Map<String, Object> map;
     private Iterator<Object> iter = null;
@@ -75,16 +72,20 @@ public class MapParser  extends Settings implements MessageParser<MessageParserE
         obj.deserialize(new MapParser(map, false));
     }
     
-    private static BonaPortable allocObject(Map<String, Object> map) throws MessageParserException {
+    private static BonaPortable allocObject(Map<String, Object> map, ObjectReference di) throws MessageParserException {
         Object pqon = map.get("$PQON");
-        if (pqon == null || !(pqon instanceof String))
-            throw new MessageParserException(MessageParserException.JSON_NO_PQON);
+        if (pqon == null || !(pqon instanceof String)) {
+            // fallback: use the lower bound of di, if provided
+            if (di.getLowerBound() == null)
+                throw new MessageParserException(MessageParserException.JSON_NO_PQON);
+            pqon = di.getLowerBound().getName();
+        }
         return BonaPortableFactory.createObject((String)pqon);
     }
     
     // convert a map to BonaPortable, read class info from the Map ($PQON entries)
-    public static BonaPortable asBonaPortable(Map<String, Object> map) throws MessageParserException {
-        BonaPortable obj = allocObject(map);
+    public static BonaPortable asBonaPortable(Map<String, Object> map, ObjectReference di) throws MessageParserException {
+        BonaPortable obj = allocObject(map, di);
         populateFrom(obj, map);
         return obj;
     }
@@ -434,7 +435,7 @@ public class MapParser  extends Settings implements MessageParser<MessageParserE
         
         BonaCustom obj;
         if (z instanceof Map<?,?>) {
-             obj = asBonaPortable((Map<String, Object>)z);      // recursive invocation
+             obj = asBonaPortable((Map<String, Object>)z, di);      // recursive invocation
         } else if (z instanceof BonaCustom) {
             obj = (BonaCustom)z;
         } else {
@@ -526,7 +527,7 @@ public class MapParser  extends Settings implements MessageParser<MessageParserE
 
     @Override
     public BonaPortable readRecord() throws MessageParserException {
-        BonaPortable obj = allocObject(map);
+        BonaPortable obj = allocObject(map, null);
         obj.deserialize(this);
         return obj;
     }

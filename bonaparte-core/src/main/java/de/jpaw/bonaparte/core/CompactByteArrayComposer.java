@@ -30,6 +30,20 @@ public class CompactByteArrayComposer extends AbstractCompactComposer implements
         return b.getBytes();
     }
 
+    /** Quick conversion utility method, for use by code generators. (null safe) */
+    public static byte [] marshalAsElement(ObjectReference di, Object x) {
+        if (x == null)
+            return null;
+        ByteBuilder b = new ByteBuilder();
+        try {
+            new CompactByteArrayComposer(b, false).addField(di, x);
+        } catch (IOException e) {
+            // NOT POSSIBLE
+            throw new RuntimeException(e);
+        }
+        return b.getBytes();
+    }
+
     public CompactByteArrayComposer() {
         this(new ByteBuilder(DEFAULT_BUFFER_SIZE, getDefaultCharset()), ObjectReuseStrategy.defaultStrategy, false);
     }

@@ -44,6 +44,13 @@ public class CompactByteArrayParser extends AbstractCompactParser<MessageParserE
         return new CompactByteArrayParser(x, 0, -1).readObject(di, expectedClass);
     }
 
+    /** Quick conversion utility method, for use by code generators. (null safe) */
+    public static Object unmarshalElement(byte [] x, ObjectReference di) throws MessageParserException {
+        if (x == null || x.length == 0)
+            return null;
+        return new CompactByteArrayParser(x, 0, -1).readElement(di);
+    }
+
     /** Assigns a new source to subsequent parsing operations. */
     public final void setSource(byte [] src, int offset, int length) {
         inputdata = src;
