@@ -64,14 +64,14 @@
         <hazelcast.version>3.5.3</hazelcast.version>    <!-- http://hazelcast.org/download/ UPTODATE 2015-03-22 -->
         <infinispan.version>7.1.1.Final</infinispan.version>  <!-- UPTODATE 2015-03-05 -->
         
-        <koloboke.version>0.6.7</koloboke.version>      <!-- UPTODATE 2015-04-10 -->
+        <koloboke.version>0.6.8</koloboke.version>      <!-- UPTODATE 2015-04-10 -->
         <aerospike.version>3.1.6</aerospike.version>    <!-- UPTODATE 2015-10-05 -->
-        <hornetq.version>2.2.21.Final</hornetq.version> <!-- http://www.jboss.org/hornetq 2.2.14.Final is last tested one, 2.4.x required for AMQP, JMS 2.0 -->
-        <mapdb.version>1.0.7</mapdb.version>
+        <hornetq.version>2.2.21.Final</hornetq.version> <!-- http://www.jboss.org/hornetq 2.2.14.Final is last tested one, 2.4.x required for AMQP, JMS 2.0, last is 2.4.7 -->
+        <mapdb.version>1.0.8</mapdb.version>
         <lz4.version>1.3.0</lz4.version>                <!-- 1.2.0 was the last for Java 1.6, 1.3.0 UPDATE 2014-11-26 but SLOWER -->
-        <kryo.version>2.24.0</kryo.version>
+        <kryo.version>2.24.0</kryo.version>             <!-- kryo3 exists, with different groupId -->
         
-        <hibernate-validator.version>5.1.3.Final</hibernate-validator.version>      <!-- validator >= 5.0 need javax.el-api as well! -->
+        <hibernate-validator.version>5.2.2.Final</hibernate-validator.version>      <!-- validator >= 5.0 need javax.el-api as well! -->
         <javax-el-api.version>2.2.5</javax-el-api.version>
         
         <zk.version>6.5.4</zk.version>                  <!-- ZK 8 released Oct 14 -->
@@ -80,6 +80,16 @@
     <build>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${compiler.plugin.version}</version>
+                    <configuration>
+                        <source>1.6</source>
+                        <target>1.6</target>
+                        <encoding>${project.build.sourceEncoding}</encoding>
+                    </configuration>
+                </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>build-helper-maven-plugin</artifactId>

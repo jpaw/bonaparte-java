@@ -2,6 +2,7 @@ package de.jpaw.bonaparte.core;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Map;
 
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.util.ByteBuilder;
@@ -32,6 +33,20 @@ public class CompactByteArrayComposer extends AbstractCompactComposer implements
 
     /** Quick conversion utility method, for use by code generators. (null safe) */
     public static byte [] marshalAsElement(ObjectReference di, Object x) {
+        if (x == null)
+            return null;
+        ByteBuilder b = new ByteBuilder();
+        try {
+            new CompactByteArrayComposer(b, false).addField(di, x);
+        } catch (IOException e) {
+            // NOT POSSIBLE
+            throw new RuntimeException(e);
+        }
+        return b.getBytes();
+    }
+
+    /** Quick conversion utility method, for use by code generators. (null safe) */
+    public static byte [] marshalAsJson(ObjectReference di, Map<String, Object> x) {
         if (x == null)
             return null;
         ByteBuilder b = new ByteBuilder();

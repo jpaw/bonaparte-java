@@ -22,7 +22,9 @@ public interface StaticMeta {
             Multiplicity.SCALAR, IndexType.NONE, 0, 0, DataCategory.OBJECT, "BonaPortable", false, false, false, "BonaPortable", null, null, null);
     // JSON special: keep the name of the outer record secret! Due to missing type info, also here no subclasses are possible
     public static final ObjectReference OUTER_BONAPORTABLE_FOR_JSON = new ObjectReference(Visibility.PRIVATE, false, "",
-            Multiplicity.SCALAR, IndexType.NONE, 0, 0, DataCategory.OBJECT, "BonaPortable", false, false, false, "BonaPortable", null, null, null);
+            Multiplicity.SCALAR, IndexType.NONE, 0, 0, DataCategory.OBJECT, "Json", false, false, false, "Map", null, null, null);
+    public static final ObjectReference OUTER_BONAPORTABLE_FOR_ELEMENT = new ObjectReference(Visibility.PRIVATE, false, "",
+            Multiplicity.SCALAR, IndexType.NONE, 0, 0, DataCategory.OBJECT, "Element", false, false, false, "Object", null, null, null);
 
     public static final AlphanumericElementaryDataItem MAP_INDEX_META_STRING = new AlphanumericElementaryDataItem(Visibility.PRIVATE, false, "map$Index",
             Multiplicity.SCALAR, IndexType.NONE, 0, 0, DataCategory.STRING, "Unicode", false, true, false, false, false, false, 255, 0, null);

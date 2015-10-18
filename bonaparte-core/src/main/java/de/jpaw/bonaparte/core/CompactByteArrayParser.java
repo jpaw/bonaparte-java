@@ -17,6 +17,7 @@ package de.jpaw.bonaparte.core;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.util.Map;
 
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
@@ -49,6 +50,13 @@ public class CompactByteArrayParser extends AbstractCompactParser<MessageParserE
         if (x == null || x.length == 0)
             return null;
         return new CompactByteArrayParser(x, 0, -1).readElement(di);
+    }
+
+    /** Quick conversion utility method, for use by code generators. (null safe) */
+    public static Map<String, Object> unmarshalJson(byte [] x, ObjectReference di) throws MessageParserException {
+        if (x == null || x.length == 0)
+            return null;
+        return new CompactByteArrayParser(x, 0, -1).readJson(di);
     }
 
     /** Assigns a new source to subsequent parsing operations. */
