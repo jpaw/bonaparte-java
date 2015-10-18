@@ -17,11 +17,13 @@ public class MapToBonaPortableTest {
     /** Demonstrates how a JSON String can be converted back to a BonaPortable. This is effectively a 2 step process. */
     @Test
     public void testJsonToBonaPortable() throws Exception {
-        String json = "{ \"$PQON\": \"meta.ParsedFoldingComponent\", \"fieldname\":\"foo¸\"   ,  \"index\": 42 }";
+        String json = "{ \"$PQON\": \"meta.ParsedFoldingComponent\", \"fieldname\":\"foo\"   ,  \"index\": 42 }";
         Map<String,Object> testMap = new JsonParser(json, false).parseObject();
         BonaPortable test = MapParser.asBonaPortable(testMap, StaticMeta.OUTER_BONAPORTABLE_FOR_JSON);
         Assert.assertNotNull(test);
         Assert.assertEquals(test.getClass().getSimpleName(), "ParsedFoldingComponent");
+        Assert.assertEquals(testMap.get("fieldname"), "foo");
+        Assert.assertEquals(testMap.get("index"), Integer.valueOf(42));
     }
 
     private void testNumber(Map<String,Object> testMap, String expected) {
@@ -46,8 +48,8 @@ public class MapToBonaPortableTest {
         Map<String,Object> testMap = new HashMap<String,Object>(10);
         
         testMap.put("$PQON",     "meta.ParsedFoldingComponent");
-        testMap.put("fieldname", "\"foo¸\"");
-        testMap.put("index",     "42");
+        testMap.put("fieldname", "foo");
+        testMap.put("index",     "42");     // show that converter also maps Strings to Integer where required!
         
         BonaPortable test = MapParser.asBonaPortable(testMap, StaticMeta.OUTER_BONAPORTABLE_FOR_JSON);
         Assert.assertNotNull(test);
@@ -61,13 +63,13 @@ public class MapToBonaPortableTest {
         Map<String,Object> testMap2 = new HashMap<String,Object>(10);
         
         testMap2.put("$PQON",     "meta.ParsedFoldingComponent");
-        testMap2.put("fieldname", "\"bar¸\"");
-        testMap2.put("index",     "999");
+        testMap2.put("fieldname", "bar");
+        testMap2.put("index",     999);
         
         testMap.put("$PQON",     "meta.ParsedFoldingComponent");
-        testMap.put("fieldname", "\"foo¸\"");
-        testMap.put("index",     "42");
-        testMap.put("alphaIndex", "\"EUR\"");
+        testMap.put("fieldname", "foo");
+        testMap.put("index",     42);
+        testMap.put("alphaIndex", "EUR");
         testMap.put("component", testMap2);
         
         System.out.println(ToStringHelper.toStringML(testMap));
