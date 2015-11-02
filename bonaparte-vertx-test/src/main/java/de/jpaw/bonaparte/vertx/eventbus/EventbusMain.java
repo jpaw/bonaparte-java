@@ -17,6 +17,7 @@ public class EventbusMain {
         final Date start = new Date();
 
         Handler<Message<String>> echoHandler = new Handler<Message<String>>() {
+            @Override
             public void handle(Message<String> message) {
                 String body = message.body();
                 //message.reply("Meh");
@@ -24,6 +25,7 @@ public class EventbusMain {
             }
         };
         Handler<Message<String>> pingPongHandler = new Handler<Message<String>>() {
+            @Override
             public void handle(Message<String> message) {
                 String body = message.body();
                 //message.reply("Meh");

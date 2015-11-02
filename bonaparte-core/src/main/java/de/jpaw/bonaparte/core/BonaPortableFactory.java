@@ -71,10 +71,11 @@ public class BonaPortableFactory {
     private BonaPortableFactory() {
     }
 
-    // map the object name into a full package name
-    // returns null if no mapping specific for this package is found
-    // examines the map packagePrefixMap, looking for specific packages first
-    // this means it is possible to map test.zzz.* to another package than test.*
+    /** Maps the partially qualified object name (PQON) into a fully qualified name / canonical name.
+    * Returns null if no mapping specific for this package is found.
+    * Examines the map packagePrefixMap, looking for specific packages first.
+    * This means it is possible to map test.zzz.* to another package than test.*.
+    * */
     public static String mapPackage(String name) {
         int lastDot = name.lastIndexOf('.');  // duplicate evaluation accepted for sake of API simplicity
         while (lastDot > 0) {
@@ -107,12 +108,13 @@ public class BonaPortableFactory {
         if ((lastDot == 0) || (lastDot >= (name.length() - 1))) {
             throw new MessageParserException(MessageParserException.BAD_OBJECT_NAME, null, -1, name);
         }
+        // the case lastDot < 0 is possible (classes without a package name)
         if (packagePrefixMap != null && lastDot > 0) {
             FQON = mapPackage(name);
         }
 
         if (FQON == null) {
-            // prefix by fixed package
+            // prefix by fixed package or no package at all (lastDot < 0)
             FQON = getBonaparteClassDefaultPackagePrefix() + "." + name;
         }
 

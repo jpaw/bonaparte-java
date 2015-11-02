@@ -37,6 +37,7 @@ import de.jpaw.enums.AbstractLongEnumSet;
 import de.jpaw.enums.AbstractShortEnumSet;
 import de.jpaw.enums.AbstractStringEnumSet;
 import de.jpaw.enums.AbstractStringXEnumSet;
+import de.jpaw.enums.AbstractXEnumBase;
 import de.jpaw.enums.EnumSetMarker;
 import de.jpaw.enums.TokenizableEnum;
 import de.jpaw.enums.XEnum;
@@ -845,24 +846,6 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
                 elementOut(o);
             return;
         }
-        if (obj instanceof Set<?>) {
-            final Set<?> l = (Set<?>)obj;
-            out.writeByte(ARRAY_BEGIN);
-            intOut(l.size());
-            for (Object o : l)
-                elementOut(o);
-            return;
-        }
-
-        if (obj instanceof Enum) {
-            // distinguish Tokenizable
-            if (obj instanceof TokenizableEnum) {
-                stringOut(((TokenizableEnum)obj).getToken()); // this includes Xenum
-            } else {
-                intOut(((Enum<?>)obj).ordinal());
-            }
-            return;
-        }
         if (obj instanceof EnumSetMarker) {
             if (obj instanceof AbstractStringEnumSet<?>) {
                 stringOut(((AbstractStringEnumSet<?>)obj).getBitmap());
@@ -879,6 +862,28 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
             } else {
                 throw new RuntimeException("Cannot transform enum set of type " + obj.getClass().getSimpleName() + " to JSON");
             }
+            return;
+        }
+        if (obj instanceof Set<?>) {
+            final Set<?> l = (Set<?>)obj;
+            out.writeByte(ARRAY_BEGIN);
+            intOut(l.size());
+            for (Object o : l)
+                elementOut(o);
+            return;
+        }
+
+        if (obj instanceof Enum) {
+            // distinguish Tokenizable
+            if (obj instanceof TokenizableEnum) {
+                stringOut(((TokenizableEnum)obj).getToken());
+            } else {
+                intOut(((Enum<?>)obj).ordinal());
+            }
+            return;
+        }
+        if (obj instanceof AbstractXEnumBase<?>) {
+            stringOut(((AbstractXEnumBase)obj).getToken());
             return;
         }
         if (obj instanceof Instant) {
