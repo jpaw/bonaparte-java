@@ -18,6 +18,10 @@ package api factoryId 25 {
      * If tracking is not present, the returned data should be null, therefore this class has been made abstract.
      */
     abstract class TrackingBase {}
+    
+    /** Indicates non existing tracking data. */
+    final class NoTracking classId 13 extends TrackingBase {
+    }
 
     /** A tracking class which only tracks creation time. */
     class WriteTracking classId 10 extends TrackingBase {

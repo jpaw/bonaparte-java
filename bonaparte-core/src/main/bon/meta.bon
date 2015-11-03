@@ -120,6 +120,13 @@ package meta factoryId 29 {
         optional identifier                 canonicalName;      // fully qualified name
     }
 
+    final immutable class LocaleAdapter is java.util.Locale adapter de.jpaw.bonaparte.core.LocaleAdapterImpl withExceptionConverter {
+        optional Ascii(7)                   language;           // ISO 639 language code, typically 2 lowercase letters
+        optional Ascii(3)                   country;            // ISO 3166 country code (A2 or N3)
+        optional Ascii(16)                  variant;            // variant code
+        optional Ascii(4)                   script;             // script extension 
+    }
+
     final immutable class BonaClassAdapter is de.jpaw.bonaparte.core.BonaPortableClass adapter de.jpaw.bonaparte.core.BonaClassAdapter singleField withExceptionConverter {
         optional Long                       key;                // factoryId and classId baked into a single field
     }
