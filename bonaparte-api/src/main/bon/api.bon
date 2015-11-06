@@ -38,8 +38,9 @@ package api factoryId 25 {
     /** Class which contains the DTO component as well as the audit data. In addition, possible tenant information is provided.
      * The DTO part contains all information which is actively maintained by the application, the tracking part all data which
      * is updated automatically, such as timestamps and versions.
+     * Possible extensions of this class hold tenant references.
      */
-    final class DataWithTracking<DATA, TRACKING extends TrackingBase> classId 12 {
+    class DataWithTracking<DATA, TRACKING extends TrackingBase> classId 12 {
         required (!DATA...)                         data;                   // the actual data
         optional (!TRACKING...)                     ^tracking;              // audit data, if it exists
     }
