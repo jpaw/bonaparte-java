@@ -366,6 +366,10 @@ public class MapParser extends Settings implements MessageParser<MessageParserEx
         if (z instanceof String) {
             return spu.readInstant(di, (String)z);      // assumes precision = 1 second, with fractionals if ms
         }
+        if (z instanceof Number) {
+            // convert number of seconds to Instant
+            return new Instant((long)(((Number)z).doubleValue() * 1000.0));
+        }
         throw err(MessageParserException.UNSUPPORTED_CONVERSION, di);
     }
 
