@@ -2,21 +2,6 @@ import api.*
 
 package api.auth factoryId 25 {
 
-    enum OperationType {
-        EXECUTE     = "X",  // execute is used in the context of permissions
-        SEARCH      = "S",  // search using criteria
-        LOOKUP      = "L",  // resolve the primary key by specifying an alternate key, also, checking the existence of a record
-        CREATE      = "C",  // create a new record
-        READ        = "R",  // read an existing record by one of its unique keys
-        UPDATE      = "U",  // update an existing record
-        DELETE      = "D",  // delete record
-        INACTIVATE  = "I",  // deactivate a record
-        ACTIVATE    = "A",  // (re)activate a record
-        VERIFY      = "V",  // verify that the primary and a provided alternate key refer to the same resource 
-        MERGE       = "M",  // create or update (unkown prior state)
-        PATCH       = "P"   // field wise integration (update all non-null fields, or all fields by bitmap)
-    }
-    
     enumset<int>    Permissionset       is OperationType;   // compact storage (2 bytes in Bonaparte compact format)
     enumset<String> PermissionsetAlpha  is OperationType;   // readable format
     

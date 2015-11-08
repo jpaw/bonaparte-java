@@ -6,6 +6,21 @@ package api factoryId 25 {
     type genericId              is Unicode(16);     // any identifier
     type languageTag            is Ascii(8);        // BCP47 language tag, restricted to what Java currenty understands
     
+    enum OperationType {
+        EXECUTE     = "X",  // execute is used in the context of permissions
+        SEARCH      = "S",  // search using criteria
+        LOOKUP      = "L",  // resolve the primary key by specifying an alternate key, also, checking the existence of a record
+        CREATE      = "C",  // create a new record
+        READ        = "R",  // read an existing record by one of its unique keys
+        UPDATE      = "U",  // update an existing record
+        DELETE      = "D",  // delete record
+        INACTIVATE  = "I",  // deactivate a record
+        ACTIVATE    = "A",  // (re)activate a record
+        VERIFY      = "V",  // verify that the primary and a provided alternate key refer to the same resource 
+        MERGE       = "M",  // create or update (unkown prior state)
+        PATCH       = "P"   // field wise integration (update all non-null fields, or all fields by bitmap)
+    }
+    
     /** Base class for all DTOs which can be stored in some key/value store and have a primitive or wrapped long
      * primary key, either surrogate or derived by composing natural key fields.
      */
