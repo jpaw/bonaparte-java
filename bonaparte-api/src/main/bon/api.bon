@@ -3,6 +3,9 @@ import meta.*
 package api factoryId 25 {
     default private unsigned trim noControlChars;
 
+    type genericId              is Unicode(16);     // any identifier
+    type languageTag            is Ascii(8);        // BCP47 language tag, restricted to what Java currenty understands
+    
     /** Base class for all DTOs which can be stored in some key/value store and have a primitive or wrapped long
      * primary key, either surrogate or derived by composing natural key fields.
      */
@@ -34,17 +37,27 @@ package api factoryId 25 {
         optional Instant                            whenUpdated;            // null if the record is in its initial state, or the modification time otherwise
     }
 
-
-    /** Class which contains the DTO component as well as the audit data. In addition, possible tenant information is provided.
+    /** A class which allows the separation of multiple tenants.
+     * String version.
+     */
+    class TenantDiscriminatorS classId 14 {
+        required genericId                          tenantId;
+    }
+    /** Class which contains the DTO component as well as the audit data.
      * The DTO part contains all information which is actively maintained by the application, the tracking part all data which
      * is updated automatically, such as timestamps and versions.
-     * Possible extensions of this class hold tenant references.
+     * Possible extensions of this class hold tenant discriminators.
      */
     class DataWithTracking<DATA, TRACKING extends TrackingBase> classId 12 {
         required (!DATA...)                         data;                   // the actual data
         optional (!TRACKING...)                     ^tracking;              // audit data, if it exists
     }
 
+    /** Data with tracking info and a string type tenant discriminator. */
+    class DataWithTrackingS<DATA, TRACKING extends TrackingBase> classId 15 extends DataWithTracking<!DATA, !TRACKING> {
+        optional genericId                          tenantId;
+    }
+    
     /**
      * Defines the various implementations of the persistence providers.
      * The main purpose of this enum is to ensure that the assigned IDs are unique within the application.

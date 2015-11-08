@@ -1,3 +1,5 @@
+import api.*
+
 package api.auth factoryId 25 {
 
     enum OperationType {
@@ -73,7 +75,7 @@ package api.auth factoryId 25 {
         
         // commonly used fields...
         optional Unicode(255)           name;       // user name (user real world name)
-        optional Ascii(8)               locale;     // IETF BCP47 language tag (ISO639-A2, plus optional "-" and then ISO3166-A2)
+        optional languageTag            locale;     // IETF BCP47 language tag (ISO639-A2, plus optional "-" and then ISO3166-A2)
         optional Ascii(64)              zoneinfo;   // IANA 2015g or later time zone info string
 
         // fields used by this implementation... (references are internal numeric keys)

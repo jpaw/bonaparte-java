@@ -19,4 +19,9 @@ package apiw factoryId 25 {
     class TenantDiscriminator classId 52 {
         required Long                               tenantRef;
     }
+
+    /** Data with tracking info and a wrapped Long type tenant discriminator. */
+    class DataWithTrackingW<DATA, TRACKING extends TrackingBase> classId 53 extends DataWithTracking<!DATA, !TRACKING> {
+        optional Long                               tenantRef;
+    }
 }

@@ -20,4 +20,9 @@ package apip factoryId 25 {
     class TenantDiscriminator classId 57 {
         required long                               tenantRef;
     }
+
+    /** Data with tracking info and a primitive long type tenant discriminator. */
+    class DataWithTrackingP<DATA, TRACKING extends TrackingBase> classId 58 extends DataWithTracking<!DATA, !TRACKING> {
+        required long                               tenantRef;
+    }
 }
