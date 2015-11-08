@@ -2,9 +2,10 @@ package api.auth factoryId 25 {
 
     enum OperationType {
         EXECUTE     = "X",  // execute is used in the context of permissions
+        SEARCH      = "S",  // search using criteria
         LOOKUP      = "L",  // resolve the primary key by specifying an alternate key, also, checking the existence of a record
         CREATE      = "C",  // create a new record
-        READ        = "R",  // read an existing record
+        READ        = "R",  // read an existing record by one of its unique keys
         UPDATE      = "U",  // update an existing record
         DELETE      = "D",  // delete record
         INACTIVATE  = "I",  // deactivate a record
@@ -14,11 +15,40 @@ package api.auth factoryId 25 {
         PATCH       = "P"   // field wise integration (update all non-null fields, or all fields by bitmap)
     }
     
-    enumset<short>  PermissionSet       is OperationType;   // compact storage (2 bytes in Bonaparte compact format)
-    enumset<String> PermissionSetAlpha  is OperationType;   // readable format
+    enumset<int>    Permissionset       is OperationType;   // compact storage (2 bytes in Bonaparte compact format)
+    enumset<String> PermissionsetAlpha  is OperationType;   // readable format
     
+    enum UserLogLevelType {
+        STEALTH,                // neither session nor any request
+        SESSION_ONLY,           // only session statistics
+        SESSION_WITH_COUNTS,    // sessions and updated access counts
+        MESSAGE_ENTRY,          // message, but without serialized request and response
+        REQUESTS,               // message, with serialized requests, but no responses
+        FULL                    // requests and responses
+    }
     
-
+    /** A useful enum to access the map entries of a JWT token by instance.name(). */
+    enum JwtFieldName {
+        ISSUER                  = "iss",
+        SUBJECT                 = "sub",        // user ID
+        EXPIRATION              = "exp",
+        NOT_BEFORE              = "nbf",
+        ISSUED_AT               = "iat",
+        JSON_TOKEN_IDENTIFIER   = "jti",
+        NAME                    = "name",       // real name of the subject
+        LOCALE                  = "locale",     // IETF BCP 47 language tag
+        ZONEINFO                = "zoneinfo",   // time zone
+        SESSION_REF             = "s",
+        TENANT_REF              = "t",
+        USER_REF                = "u",
+        ROLE_REF                = "r",
+        LOG_LEVEL_OK            = "l",
+        LOG_LEVEL_ERR           = "e",
+        PERMISSION_FILTER       = "p",
+        PERMISSION_MIN          = "pl",
+        PERMISSION_MAX          = "pu"
+    }
+    
     // JSON Web Token as per https://tools.ietf.org/html/rfc7519
     final class Jwt classId 17 {
         required (Alg)                  alg;
@@ -43,7 +73,7 @@ package api.auth factoryId 25 {
         
         // commonly used fields...
         optional Unicode(255)           name;       // user name (user real world name)
-        optional Ascii(6)               locale;     // BCP47 locale (ISO639-A2, plus optional "-" or "_" and then ISO3166-A2) 6 characters to allow for 3 letter language
+        optional Ascii(8)               locale;     // IETF BCP47 language tag (ISO639-A2, plus optional "-" and then ISO3166-A2)
         optional Ascii(64)              zoneinfo;   // IANA 2015g or later time zone info string
 
         // fields used by this implementation... (references are internal numeric keys)
@@ -51,9 +81,10 @@ package api.auth factoryId 25 {
         optional Long                   t;          // tenant reference
         optional Long                   u;          // user reference
         optional Long                   r;          // role restriction / reference
-        optional Long                   o;          // extension (org unit reference)
-        optional Long                   l;          // extension (location reference)
-        optional Enumset PermissionSet  pl;         // minimum permissions (lower bound, set always allowed)
-        optional Enumset PermissionSet  pu;         // maximum permissions (upper bound, permissions not in this set are never allowed)
+        optional Enum UserLogLevelType  l;          // log level for messages processed OK
+        optional Enum UserLogLevelType  e;          // log level for messages processed with error return (if different)
+        optional Unicode(255)           p;          // permission resource restriction. If defined, then only access to this resource is allowed.
+        optional Enumset Permissionset  pl;         // minimum permissions (lower bound, set always allowed)
+        optional Enumset Permissionset  pu;         // maximum permissions (upper bound, permissions not in this set are never allowed)
     }
 }
