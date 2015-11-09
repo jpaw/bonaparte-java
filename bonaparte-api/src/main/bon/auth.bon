@@ -38,18 +38,18 @@ package api.auth factoryId 25 {
     
     // JSON Web Token as per https://tools.ietf.org/html/rfc7519
     final class Jwt classId 17 {
-        required (Alg)                  alg;
-        required (Payload...)           payload;
+        required (JwtAlg)               alg;
+        required (JwtPayload...)        payload;
         required Binary(32)             sig;        // use a zero byte length signature for alg = none
     }
     
-    final class Alg classId 18 {
+    final class JwtAlg classId 18 {
         required Ascii(3)               typ;        // "JWT"
         required Ascii(16)              alg;        // usually not more than 5 ("HS256"...), but more in case of encrpyted JWTs
         optional Ascii(3)               cty;        // content type
     }
     
-    class Payload classId 19 {
+    class JwtPayload classId 19 {
         optional Unicode(255)           iss;        // issuer
         optional Unicode(255)           sub;        // subject (user ID)
         optional Unicode(255)           aud;        // audience

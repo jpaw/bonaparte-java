@@ -4,9 +4,9 @@ import java.util.Map;
 
 import de.jpaw.bonaparte.core.JsonComposer;
 import de.jpaw.bonaparte.core.MapParser;
-import de.jpaw.bonaparte.pojos.api.auth.Alg;
+import de.jpaw.bonaparte.pojos.api.auth.JwtAlg;
 import de.jpaw.bonaparte.pojos.api.auth.Jwt;
-import de.jpaw.bonaparte.pojos.api.auth.Payload;
+import de.jpaw.bonaparte.pojos.api.auth.JwtPayload;
 import de.jpaw.json.JsonException;
 import de.jpaw.json.JsonParser;
 import de.jpaw.util.ApplicationException;
@@ -18,23 +18,23 @@ public class JwtConverter {
         return new JsonParser(json, true).parseObject();
     }
     
-    public static Alg parseAlg(String json) throws ApplicationException {
-        final Alg alg = (Alg) MapParser.asBonaPortable(new JsonParser(json, true).parseObject(), Jwt.meta$$alg);
+    public static JwtAlg parseAlg(String json) throws ApplicationException {
+        final JwtAlg alg = (JwtAlg) MapParser.asBonaPortable(new JsonParser(json, true).parseObject(), Jwt.meta$$alg);
         alg.freeze();
         return alg;
     }
     
-    public static Payload parsePayload(String json) throws ApplicationException {
-        final Payload payload = (Payload) MapParser.asBonaPortable(new JsonParser(json, true).parseObject(), Jwt.meta$$payload);
+    public static JwtPayload parsePayload(String json) throws ApplicationException {
+        final JwtPayload payload = (JwtPayload) MapParser.asBonaPortable(new JsonParser(json, true).parseObject(), Jwt.meta$$payload);
         payload.freeze();
         return payload;
     }
     
-    public static String toJson(Alg alg) {
+    public static String toJson(JwtAlg alg) {
         return JsonComposer.toJsonString(alg);
     }
     
-    public static String toJson(Payload payload) {
+    public static String toJson(JwtPayload payload) {
         return JsonComposer.toJsonString(payload);
     }
 }
