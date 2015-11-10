@@ -1,7 +1,8 @@
 import api.*
 
 package api.auth factoryId 25 {
-
+    properties tag;
+    
     enumset<int>    Permissionset       is OperationType;   // compact storage (2 bytes in Bonaparte compact format)
     enumset<String> PermissionsetAlpha  is OperationType;   // readable format
     
@@ -25,8 +26,9 @@ package api.auth factoryId 25 {
         NAME                    = "name",       // real name of the subject
         LOCALE                  = "locale",     // IETF BCP 47 language tag
         ZONEINFO                = "zoneinfo",   // time zone
+        TENANT_ID               = "i",          // alphanumeric ID of the tenant
+        TENANT_REF              = "t",          // numeric ID of the tenant (internal key)
         SESSION_REF             = "s",
-        TENANT_REF              = "t",
         USER_REF                = "u",
         ROLE_REF                = "r",
         LOG_LEVEL_OK            = "l",
@@ -49,7 +51,35 @@ package api.auth factoryId 25 {
         optional Ascii(3)               cty;        // content type
     }
     
-    class JwtPayload classId 19 {
+    class JwtInfo classId 19 {
+        optional Unicode(255)           issuer              properties tag = "iss";         // issuer
+        optional Unicode(255)           userId              properties tag = "sub";         // subject (user ID)
+        optional Unicode(255)           audience            properties tag = "aud";         // audience
+        optional Instant                expiresAt           properties tag = "exp";         // expiration (time)
+        optional Instant                notBefore           properties tag = "nbf";         // not before
+        optional Instant                issuedAt            properties tag = "iat";         // issued at
+        optional Unicode(40)            jsonTokenIdentifier properties tag = "jti";         // JSON token identifier (unique ID)
+        
+        // commonly used fields...
+        optional Unicode(255)           name                properties tag = "name";        // user name (user real world name)
+        optional languageTag            locale              properties tag = "locale";      // IETF BCP47 language tag (ISO639-A2, plus optional "-" and then ISO3166-A2)
+        optional Ascii(64)              zoneinfo            properties tag = "zoneinfo";    // IANA 2015g or later time zone info string
+
+        // fields used by this implementation... (references are internal numeric keys)
+        optional genericId              tenantId            properties tag = "i";          // tenant ID
+        optional Long                   tenantRef           properties tag = "t";          // tenant reference
+        optional Long                   sessionRef          properties tag = "s";          // session reference
+        optional Long                   userRef             properties tag = "u";          // user reference
+        optional Long                   roleRef             properties tag = "r";          // role restriction / reference
+        optional Enum UserLogLevelType  logLevel            properties tag = "l";          // log level for messages processed OK
+        optional Enum UserLogLevelType  logLevelErrors      properties tag = "e";          // log level for messages processed with error return (if different)
+        optional Unicode(255)           resource            properties tag = "p";          // permission resource restriction. If defined, then only access to this resource is allowed.
+        optional Enumset Permissionset  permissionsMin      properties tag = "pl";         // minimum permissions (lower bound, set always allowed)
+        optional Enumset Permissionset  permissionsMax      properties tag = "pu";         // maximum permissions (upper bound, permissions not in this set are never allowed)
+    }
+    
+    // technical mapping
+    class JwtPayload classId 16 {
         optional Unicode(255)           iss;        // issuer
         optional Unicode(255)           sub;        // subject (user ID)
         optional Unicode(255)           aud;        // audience
@@ -64,8 +94,9 @@ package api.auth factoryId 25 {
         optional Ascii(64)              zoneinfo;   // IANA 2015g or later time zone info string
 
         // fields used by this implementation... (references are internal numeric keys)
-        optional Long                   s;          // session reference
+        optional genericId              i;          // tenant ID
         optional Long                   t;          // tenant reference
+        optional Long                   s;          // session reference
         optional Long                   u;          // user reference
         optional Long                   r;          // role restriction / reference
         optional Enum UserLogLevelType  l;          // log level for messages processed OK
