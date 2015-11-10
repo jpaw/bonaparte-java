@@ -1,6 +1,6 @@
 import api.*
 
-package api.auth factoryId 25 {
+package api.auth XML PROPERTY factoryId 25 {
     properties tag;
     
     enumset<int>    Permissionset       is OperationType;   // compact storage (2 bytes in Bonaparte compact format)
@@ -39,19 +39,19 @@ package api.auth factoryId 25 {
     }
     
     // JSON Web Token as per https://tools.ietf.org/html/rfc7519
-    final class Jwt classId 17 {
+    final class Jwt classId 200 {
         required (JwtAlg)               alg;
         required (JwtPayload...)        payload;
         required Binary(32)             sig;        // use a zero byte length signature for alg = none
     }
     
-    final class JwtAlg classId 18 {
+    final class JwtAlg classId 201 {
         required Ascii(3)               typ;        // "JWT"
         required Ascii(16)              alg;        // usually not more than 5 ("HS256"...), but more in case of encrpyted JWTs
         optional Ascii(3)               cty;        // content type
     }
     
-    class JwtInfo classId 19 {
+    class JwtInfo classId 202 {
         optional Unicode(255)           issuer              properties tag = "iss";         // issuer
         optional Unicode(255)           userId              properties tag = "sub";         // subject (user ID)
         optional Unicode(255)           audience            properties tag = "aud";         // audience
@@ -79,7 +79,7 @@ package api.auth factoryId 25 {
     }
     
     // technical mapping
-    class JwtPayload classId 16 {
+    class JwtPayload classId 203 {
         optional Unicode(255)           iss;        // issuer
         optional Unicode(255)           sub;        // subject (user ID)
         optional Unicode(255)           aud;        // audience

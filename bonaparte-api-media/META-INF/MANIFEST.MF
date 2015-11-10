@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-ManifestVersion: 2
+Bundle-Name: bonaparte api MEDIA definitions
+Bundle-SymbolicName: bonaparte.api.media
+Bundle-Version: 3.7.0.qualifier
+Bundle-Vendor: Michael Bischoff
+Require-Bundle: joda-time;bundle-version="2.6";visibility:=reexport,
+ com.google.guava;bundle-version="18.0";visibility:=reexport
+Export-Package: de.jpaw.bonaparte.api.media,
+ de.jpaw.bonaparte.pojos.api.media
+Bundle-ActivationPolicy: lazy
+Import-Package: org.slf4j; version="1.7.9",
+ de.jpaw.enums,
+ de.jpaw.util
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6 

@@ -272,6 +272,8 @@
         <module>../bonaparte-android/pom.xml</module>
         <module>../bonaparte-xml/pom.xml</module>
         <module>../bonaparte-xml-test/pom.xml</module>
+        <module>../bonaparte-api-auth/pom.xml</module>
+        <module>../bonaparte-api-media/pom.xml</module>
         <module>../bonaparte-jaxrs/pom.xml</module>
         <module>../bonaparte-hazelcast/pom.xml</module>
         <module>../bonaparte-hazelcast-api/pom.xml</module>

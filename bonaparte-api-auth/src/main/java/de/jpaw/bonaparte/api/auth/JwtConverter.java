@@ -1,4 +1,4 @@
-package de.jpaw.bonaparte.api;
+package de.jpaw.bonaparte.api.auth;
 
 import java.util.Map;
 
