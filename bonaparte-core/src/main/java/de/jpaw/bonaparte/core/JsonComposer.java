@@ -488,7 +488,7 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
 
     @Override
     public void addEnum(EnumDataItem di, BasicNumericElementaryDataItem ord, BonaNonTokenizableEnum n) throws IOException {
-        writeOptionalQuotedUnicodeNoControls(di, n == null ? null : n.toString());
+        writeOptionalUnquotedString(di, n == null ? null : Integer.toString(n.ordinal()));
     }
 
     @Override

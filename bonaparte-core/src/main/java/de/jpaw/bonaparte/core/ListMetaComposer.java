@@ -37,16 +37,24 @@ public class ListMetaComposer extends NoOpComposer<RuntimeException> implements 
     final protected boolean doDeepCopies;
     final protected boolean keepObjects;
     final protected boolean keepExternals;
+    final protected boolean convertEnums;
 
     /** Creates a new ListMetaComposer for a given preallocated external storage.
      * keepObjects = true replaces the prior ListObjMetaComposer */
-    public ListMetaComposer(final List<DataAndMeta> storage, boolean doDeepCopies, boolean keepObjects, boolean keepExternals) {
+    public ListMetaComposer(final List<DataAndMeta> storage, boolean doDeepCopies, boolean keepObjects, boolean keepExternals, boolean convertEnums) {
         this.storage = storage;
         this.doDeepCopies = doDeepCopies;
         this.keepObjects = keepObjects;
         this.keepExternals = keepExternals;
+        this.convertEnums = convertEnums;
     }
 
+    /** Creates a new ListMetaComposer for a given preallocated external storage.
+     * keepObjects = true replaces the prior ListObjMetaComposer */
+    public ListMetaComposer(final List<DataAndMeta> storage, boolean doDeepCopies, boolean keepObjects, boolean keepExternals) {
+        this(storage, doDeepCopies, keepObjects, keepExternals, false);
+    }
+    
     /** Creates a new ListMetaComposer, creating an own internal storage. */
     public ListMetaComposer(boolean doDeepCopies, boolean keepObjects, boolean keepExternals) {
         this(new ArrayList<DataAndMeta>(), doDeepCopies, keepObjects, keepExternals);
@@ -187,17 +195,26 @@ public class ListMetaComposer extends NoOpComposer<RuntimeException> implements 
 
     @Override
     public void addEnum(EnumDataItem di, BasicNumericElementaryDataItem ord, BonaNonTokenizableEnum n) {
-        add(di, n);
+        if (convertEnums)
+            add(di, n == null ? null : Integer.valueOf(n.ordinal()));
+        else
+            add(di, n);
     }
 
     @Override
     public void addEnum(EnumDataItem di, AlphanumericElementaryDataItem token, BonaTokenizableEnum n) {
-        add(di, n);
+        if (convertEnums)
+            add(di, n == null ? null : n.getToken());
+        else
+            add(di, n);
     }
 
     @Override
     public void addEnum(XEnumDataItem di, AlphanumericElementaryDataItem token, XEnum<?> n) {
-        add(di, n);
+        if (convertEnums)
+            add(di, n == null ? null : n.getToken());
+        else
+            add(di, n);
     }
 
     @Override
