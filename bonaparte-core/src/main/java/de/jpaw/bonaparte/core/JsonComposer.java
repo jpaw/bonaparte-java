@@ -93,6 +93,10 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
         return buff.toString();
     }
     
+    @Override
+    public void writeObject(BonaCustom o) throws IOException {
+        objectOutSub(StaticMeta.OUTER_BONAPORTABLE, o);
+    }
 
     public JsonComposer(Appendable out) {
         this(out, false);
