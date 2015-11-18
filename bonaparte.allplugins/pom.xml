@@ -10,13 +10,13 @@
     </parent>
 
     <artifactId>bonaparte.allplugins</artifactId>
-    <version>3.7.0</version>
+    <version>3.7.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     
     <properties>
         <!-- define releases we want to use, to ensure consistency -->
         <jpaw.version>1.2.14-SNAPSHOT</jpaw.version>
-        <bonaparte.version>3.7.0</bonaparte.version>
+        <bonaparte.version>3.7.1-SNAPSHOT</bonaparte.version>
     </properties>    
     
     <repositories>
