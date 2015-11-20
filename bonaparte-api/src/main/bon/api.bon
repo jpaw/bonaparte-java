@@ -4,7 +4,7 @@ package api factoryId 25 {
     default private unsigned trim noControlChars;
 
     type genericId              is Unicode(16);     // any identifier
-    type languageTag            is Ascii(8);        // BCP47 language tag, restricted to what Java currenty understands
+    type languageTag            is Ascii(32);       // BCP47 language tag, restricted to what Java currenty understands
     
     enum OperationType {
         EXECUTE     = "X",  // execute is used in the context of permissions

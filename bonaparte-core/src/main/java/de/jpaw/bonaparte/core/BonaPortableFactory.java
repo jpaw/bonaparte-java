@@ -42,7 +42,7 @@ public class BonaPortableFactory {
 
     static private ConcurrentMap<String, Class<? extends BonaPortable>> map = new ConcurrentHashMap<String, Class<? extends BonaPortable>>();
     static private String bonaparteClassDefaultPackagePrefix = "de.jpaw.bonaparte.pojos";
-    static private Map<String, String> packagePrefixMap = new ConcurrentHashMap<String,String>(10);
+    static private Map<String, String> packagePrefixMap = new ConcurrentHashMap<String,String>(16);
     static {
         // mappings for bonaparte-core. Install a fresh map if you don't want these. Otherwise, add single mappings to them, or overwrite these
         packagePrefixMap.put("bonaparte", "de.jpaw.bonaparte");                                 // bonaparte-core, sub-packages core, meta, ui

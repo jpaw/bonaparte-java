@@ -30,6 +30,7 @@ import de.jpaw.enums.AbstractXEnumBase;
 import de.jpaw.enums.XEnumFactory;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.CharTestsASCII;
+import de.jpaw.util.CollectionUtil;
 
 
 public abstract class AbstractCompactParser<E extends Exception>  extends Settings implements MessageParser<E>, CompactConstants {
@@ -151,6 +152,28 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
             }
         }
         throw newMPE(MessageParserException.UNEXPECTED_CHARACTER, String.format("(expected 0x%02x, got 0x%02x)", token, c));
+    }
+    
+    // get the next token, or -1 for explicit null or -2 for implicit null
+    protected int nextToken(String fieldname, boolean isRequired) throws E {
+        int c = needToken();
+        if (c == NULL_FIELD) {
+            if (!isRequired) {
+                return -1;
+            } else {
+                throw newMPE(MessageParserException.ILLEGAL_EXPLICIT_NULL, fieldname);
+            }
+        }
+        if ((c == PARENT_SEPARATOR) || (c == OBJECT_TERMINATOR)) {
+            if (!isRequired) {
+                // uneat it
+                pushback(c);
+                return -2;
+            } else {
+                throw newMPE(MessageParserException.ILLEGAL_IMPLICIT_NULL, fieldname);
+            }
+        }
+        return c;
     }
 
     // differs to previous implementation: this method does not end if EOF is reached, is does require a subsequent token (for example object end or record end)
@@ -287,7 +310,7 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
     
     @Override
     public String readAscii(AlphanumericElementaryDataItem di) throws E {
-        if (checkForNull(di.getName(), di.getIsRequired()))
+        if (checkForNull(di))
             return null;
         return readString(di.getName());
     }
@@ -322,7 +345,7 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
 
     @Override
     public String readString(AlphanumericElementaryDataItem di) throws E {
-        if (checkForNull(di.getName(), di.getIsRequired()))
+        if (checkForNull(di))
             return null;
         return readString(di.getName());
     }
@@ -756,7 +779,7 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
     }
     
     // read a non-null map with the start character already parsed
-    protected Map<String, Object> readJsonMapSub() throws E {
+    protected Map<String, Object> readJsonMapFlexSizeSub() throws E {
         final Map<String, Object> map = new HashMap<String, Object>();
         // now iterate until JSON end is found
         for (;;) {
@@ -772,12 +795,46 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
     // read a JSON object: Either a flex map or a null is expected here  
     @Override
     public Map<String, Object> readJson(ObjectReference di) throws E {
-        if (checkForNullOrNeedToken(di.getName(), di.getIsRequired(), OBJECT_BEGIN_JSON))
+        int c = nextToken(di.getName(), di.getIsRequired());
+        switch (c) {
+        case -1:
+        case -2:
             return null;
-        // not null, therefore JSON begin
-        return readJsonMapSub();
+        case OBJECT_BEGIN_JSON:
+            return readJsonMapFlexSizeSub();
+        case MAP_BEGIN:
+            return readMapFixedSizeSub();
+        default:
+            throw newMPE(MessageParserException.UNEXPECTED_CHARACTER, String.format("(expected object start 0xab or 0xfa, got 0x%02x)", c));
+        }
     }
     
+    // read a JSON array: Either an array or a null is expected here  
+    @Override
+    public List<Object> readArray(ObjectReference di) throws E {
+        if (checkForNullOrNeedToken(di.getName(), di.getIsRequired(),  ARRAY_BEGIN))
+            return null;
+        // not null, therefore JSON begin
+        return readArraySub();
+    }
+    
+    protected List<Object> readArraySub() throws E {
+        final int numElem = readInt(needToken(), "$jsonArrayNumElem");
+        final List<Object> l = new ArrayList<Object>(numElem);
+        for (int i = 0; i < numElem; ++i)
+            l.add(readElementSub());
+        return l;
+    }
+    
+    protected Map<String, Object> readMapFixedSizeSub() throws E {
+        final int numElem = readInt(needToken(), "$jsonMapNumElem");
+        final Map<String, Object> map = new HashMap<String, Object>(CollectionUtil.mapInitialSize(numElem));
+        for (int i = 0; i < numElem; ++i) {
+            addMapElem(map);
+        }
+        return map;
+    }
+
     private static final Object [] CONSTANT_OBJECTS = new Object[0xab];
     static {
         int i;
@@ -795,7 +852,7 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
             CONSTANT_OBJECTS[i] = Integer.valueOf(-(i - 0xa0)); // -1..-10
         
     }
-
+    
     // read an optional element
     protected Object readElementSub() throws E {
         int c = needToken();
@@ -815,7 +872,7 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
             }
             switch (c) {
             case OBJECT_BEGIN_JSON:         //0xab
-                return readJsonMapSub();
+                return readJsonMapFlexSizeSub();
             case OBJECT_BEGIN_BASE:         //0xac
                 // cannot happen within JSON, except if the structure has been redeclared.
                 throw newMPE(MessageParserException.INVALID_BACKREFERENCE, "in JSON element");
@@ -894,22 +951,9 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
         case 0xf9:
             return readBigdec(c - 0xf0, "$jsonBigdecMant");
         case MAP_BEGIN:                     //0xfa
-            {
-                final int numElem = readInt(needToken(), "$jsonMapNumElem");
-                final Map<String, Object> map = new HashMap<String, Object>();
-                for (int i = 0; i < numElem; ++i) {
-                    addMapElem(map);
-                }
-                return map;
-            }
+            return readMapFixedSizeSub();
         case ARRAY_BEGIN:                   //0xfc
-            {
-                final int numElem = readInt(needToken(), "$jsonArrayNumElem");
-                final List<Object> l = new ArrayList<Object>(numElem);
-                for (int i = 0; i < numElem; ++i)
-                    l.add(readElementSub());
-                return l;
-            }
+            return readArraySub();
         case UTF16_STRING:                  //0xfd
             {
                 int len = readInt(needToken(), "$jsonLenUTF16");

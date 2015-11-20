@@ -3,7 +3,6 @@ package de.jpaw.bonaparte.core;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import org.joda.time.Instant;
@@ -11,10 +10,6 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
 
-import de.jpaw.bonaparte.core.BonaPortable;
-import de.jpaw.bonaparte.core.MessageParser;
-import de.jpaw.bonaparte.core.MessageParserException;
-import de.jpaw.bonaparte.core.StringParserUtil;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
@@ -26,13 +21,11 @@ import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.enums.AbstractXEnumBase;
 import de.jpaw.enums.XEnumFactory;
-import de.jpaw.json.JsonException;
-import de.jpaw.json.JsonParser;
 import de.jpaw.util.ByteArray;
 
 /** A parser which takes data through a provided functional interface, any implementation which provides a String get(String).
  * Mainly intended for use from Java 8 applications. */
-public class StringProviderParser extends Settings implements MessageParser<MessageParserException> {
+public class StringProviderParser extends AbstractPartialJsonStringParser implements MessageParser<MessageParserException> {
     private final StringParserUtil stringParser = new StringParserUtil();  // TODO; in the form with the provided classname, push it down to the Util
     private final String currentClass;
     private final StringGetter requestParameters;
@@ -41,6 +34,12 @@ public class StringProviderParser extends Settings implements MessageParser<Mess
         /** Returns the contents of the field named by name, or null if that field has not been provided. */
         String get(String name) throws MessageParserException;
     }
+    
+    @Override
+    protected MessageParserException newMPE(int errorCode, FieldDefinition di, String msg) {
+        return new MessageParserException(errorCode, di.getName(), -1, currentClass, msg);
+    }
+
 
     /** Utility method: populate BonaPortable from provided getter.
      * Example for Xtend, using a val Map<String,String> m:   obj.unmarshal[m.get(it)].
@@ -254,28 +253,9 @@ public class StringProviderParser extends Settings implements MessageParser<Mess
     public byte readPrimitiveByte(BasicNumericElementaryDataItem di) throws MessageParserException {
         return stringParser.readPrimitiveByte(di, getParameter(di));
     }
-    
-    @Override
-    public Map<String, Object> readJson(ObjectReference di) throws MessageParserException {
-        String tmp = getParameter(di);
-        if (tmp == null)
-            return null;
-        try {
-            return new JsonParser(tmp, false).parseObject();
-        } catch (JsonException e) {
-            throw new MessageParserException(MessageParserException.JSON_EXCEPTION, di.getName(), -1, currentClass, e.getMessage());
-        }
-    }
 
     @Override
-    public Object readElement(ObjectReference di) throws MessageParserException {
-        String tmp = getParameter(di);
-        if (tmp == null)
-            return null;
-        try {
-            return new JsonParser(tmp, false).parseElement();
-        } catch (JsonException e) {
-            throw new MessageParserException(MessageParserException.JSON_EXCEPTION, di.getName(), -1, currentClass, e.getMessage());
-        }
+    protected String getString(FieldDefinition di) throws MessageParserException {
+        return getParameter(di);
     }
 }

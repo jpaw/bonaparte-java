@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -517,6 +518,15 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
         } else {
             writeOptionalFieldName(di);
             jsonEscaper.outputJsonObject(obj);
+        }
+    }
+    @Override
+    public void addField(ObjectReference di, List<Object> obj) throws IOException {
+        if (obj == null) {
+            writeNull(di);
+        } else {
+            writeOptionalFieldName(di);
+            jsonEscaper.outputJsonArray(obj);
         }
     }
     @Override

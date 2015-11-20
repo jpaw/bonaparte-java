@@ -17,6 +17,7 @@ package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -79,10 +80,11 @@ public interface MessageComposer<E extends Exception> extends MessageWriter<E> {
     void addField(BasicNumericElementaryDataItem di, int n)         throws E;
     void addField(BasicNumericElementaryDataItem di, long n)        throws E;
 
-    void addField(AlphanumericElementaryDataItem di, String s)      throws E;    // Ascii, Upper, Lower, Unicode
-    void addField(ObjectReference di, BonaCustom obj)               throws E;
-    void addField(ObjectReference di, Map<String, Object> obj)      throws E;
-    void addField(ObjectReference di, Object obj)                   throws E;
+    void addField(AlphanumericElementaryDataItem di, String s)      throws E;   // any String type: Ascii, Upper, Lower, Unicode
+    void addField(ObjectReference di, BonaCustom obj)               throws E;   // Bonaparte object
+    void addField(ObjectReference di, Map<String, Object> obj)      throws E;   // JSON: restricted to Javascript Object (Java Map)
+    void addField(ObjectReference di, List<Object> obj)             throws E;   // JSON: restricted to Javascript Array (Java List)
+    void addField(ObjectReference di, Object obj)                   throws E;   // JSON: any content (scalar, object, array)
     void addField(MiscElementaryDataItem di, UUID n)                throws E;
     void addField(BinaryElementaryDataItem di, ByteArray b)         throws E;
     void addField(BinaryElementaryDataItem di, byte [] b)           throws E;

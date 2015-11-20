@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -492,6 +493,14 @@ public class BaseExcelComposer extends AbstractMessageComposer<RuntimeException>
 
     @Override
     public void addField(ObjectReference di, Map<String, Object> obj) {
+        if (obj == null)
+            writeNull(di);
+        else
+            newCell(di).setCellValue(BonaparteJsonEscaper.asJson(obj));
+    }
+
+    @Override
+    public void addField(ObjectReference di, List<Object> obj) throws RuntimeException {
         if (obj == null)
             writeNull(di);
         else

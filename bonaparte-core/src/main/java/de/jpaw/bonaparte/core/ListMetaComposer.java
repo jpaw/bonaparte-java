@@ -231,6 +231,11 @@ public class ListMetaComposer extends NoOpComposer<RuntimeException> implements 
     }
 
     @Override
+    public void addField(ObjectReference di, List<Object> obj) {
+        add(di, obj);
+    }
+
+    @Override
     public void addField(ObjectReference di, Object obj) {
         add(di, obj);
     }

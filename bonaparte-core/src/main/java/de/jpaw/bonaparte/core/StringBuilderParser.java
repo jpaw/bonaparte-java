@@ -19,7 +19,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import org.joda.time.Instant;
@@ -41,8 +40,6 @@ import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDefinition;
 import de.jpaw.enums.AbstractXEnumBase;
 import de.jpaw.enums.XEnumFactory;
-import de.jpaw.json.JsonException;
-import de.jpaw.json.JsonParser;
 import de.jpaw.util.Base64;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.CharTestsASCII;
@@ -57,7 +54,7 @@ import de.jpaw.util.CharTestsASCII;
  *          Implements the deserialization for the bonaparte format using StringBuilder.
  */
 
-public final class StringBuilderParser extends Settings implements MessageParser<MessageParserException>, StringBuilderConstants {
+public final class StringBuilderParser extends AbstractPartialJsonStringParser implements MessageParser<MessageParserException>, StringBuilderConstants {
     private static final Logger LOGGER = LoggerFactory.getLogger(StringBuilderParser.class);
     private CharSequence work;          // for parser
     private int parseIndex;             // for parser
@@ -78,6 +75,11 @@ public final class StringBuilderParser extends Settings implements MessageParser
             return currentClass;
         }
     });
+    
+    @Override
+    protected MessageParserException newMPE(int errorCode, FieldDefinition di, String msg) {
+        return new MessageParserException(errorCode, di.getName(), parseIndex, currentClass, msg);
+    }
 
     /** Quick conversion utility method, for use by code generators. (null safe) */
     public static <T extends BonaPortable> T unmarshal(String x, ObjectReference di, Class<T> expectedClass) throws MessageParserException {
@@ -745,28 +747,9 @@ public final class StringBuilderParser extends Settings implements MessageParser
     public byte readPrimitiveByte(BasicNumericElementaryDataItem di) throws MessageParserException {
         return stringParser.readPrimitiveByte(di, nextIndexParseAscii(di.getName(), di.getIsSigned(), false, false));
     }
-
+    
     @Override
-    public Map<String, Object> readJson(ObjectReference di) throws MessageParserException {
-        String tmp = readString(di.getName(), di.getIsRequired(), Integer.MAX_VALUE, true, false, true, true);
-        if (tmp == null)
-            return null;
-        try {
-            return new JsonParser(tmp, false).parseObject();
-        } catch (JsonException e) {
-            throw new MessageParserException(MessageParserException.JSON_EXCEPTION, di.getName(), parseIndex, currentClass, e.getMessage());
-        }
-    }
-
-    @Override
-    public Object readElement(ObjectReference di) throws MessageParserException {
-        String tmp = readString(di.getName(), di.getIsRequired(), Integer.MAX_VALUE, true, false, true, true);
-        if (tmp == null)
-            return null;
-        try {
-            return new JsonParser(tmp, false).parseElement();
-        } catch (JsonException e) {
-            throw new MessageParserException(MessageParserException.JSON_EXCEPTION, di.getName(), parseIndex, currentClass, e.getMessage());
-        }
+    protected String getString(FieldDefinition di) throws MessageParserException {
+        return readString(di.getName(), di.getIsRequired(), Integer.MAX_VALUE, true, false, true, true);
     }
 }

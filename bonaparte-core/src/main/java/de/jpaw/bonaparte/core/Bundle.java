@@ -39,8 +39,8 @@ import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
  *
  */
 public class Bundle {
-    private static ConcurrentMap<String,BundleInformation> bundleMap = new ConcurrentHashMap<String,BundleInformation>(20);
-    private static ConcurrentMap<String,Bundle> packageToBundle = new ConcurrentHashMap<String,Bundle>(20);;
+    private static ConcurrentMap<String,BundleInformation> bundleMap = new ConcurrentHashMap<String,BundleInformation>(32);
+    private static ConcurrentMap<String,Bundle> packageToBundle = new ConcurrentHashMap<String,Bundle>(32);
 
     private BundleInformation staticBundleData;
     private ConcurrentMap<String,ClassDefinition> loadedClasses;

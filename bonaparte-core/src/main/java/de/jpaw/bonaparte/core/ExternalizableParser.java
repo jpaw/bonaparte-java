@@ -764,6 +764,18 @@ public final class ExternalizableParser extends Settings implements MessageParse
     }
 
     @Override
+    public List<Object> readArray(ObjectReference di) throws IOException {
+        String tmp = readString(di.getName(), di.getIsRequired(), Integer.MAX_VALUE, true, false, true, true);
+        if (tmp == null)
+            return null;
+        try {
+            return new JsonParser(tmp, false).parseArray();
+        } catch (JsonException e) {
+            throw new IOException(String.format("Invalid JSON for field %s.%s: %s", currentClass, di.getName(), e.getMessage()));
+        }
+    }
+
+    @Override
     public Object readElement(ObjectReference di) throws IOException {
         String tmp = readString(di.getName(), di.getIsRequired(), Integer.MAX_VALUE, true, false, true, true);
         if (tmp == null)

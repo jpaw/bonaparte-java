@@ -73,6 +73,7 @@ public interface MessageParser<E extends Exception> extends ExceptionConverter<E
     public LocalDateTime readDayTime(TemporalElementaryDataItem di) throws E;
     public <R extends BonaPortable> R   readObject (ObjectReference di, Class<R> type) throws E; // parser factory
     public Map<String, Object>          readJson   (ObjectReference di) throws E;
+    public List<Object>                 readArray  (ObjectReference di) throws E;
     public Object                       readElement(ObjectReference di) throws E;
     // composite methods
     public int parseMapStart        (FieldDefinition di) throws E;

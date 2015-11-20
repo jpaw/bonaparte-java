@@ -41,8 +41,6 @@ import de.jpaw.bonaparte.pojos.meta.XEnumDefinition;
 import de.jpaw.bonaparte.util.BigDecimalTools;
 import de.jpaw.enums.AbstractXEnumBase;
 import de.jpaw.enums.XEnumFactory;
-import de.jpaw.json.JsonException;
-import de.jpaw.json.JsonParser;
 import de.jpaw.util.Base64;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.CharTestsASCII;
@@ -59,7 +57,7 @@ import de.jpaw.util.IntegralLimits;
 
 
 // TODO: should we convert "work" from String to CharSequence to make it more general?
-public final class StringCSVParser extends Settings implements MessageParser<MessageParserException>, StringBuilderConstants {
+public final class StringCSVParser extends AbstractPartialJsonStringParser implements MessageParser<MessageParserException>, StringBuilderConstants {
     protected final CSVConfiguration cfg;
     private final boolean fixedLength;
     private final int lengthOfBoolean;
@@ -179,6 +177,12 @@ public final class StringCSVParser extends Settings implements MessageParser<Mes
     public void setMapping(CSVObjectTypeDetector objectTypeDetector) {
         this.objectTypeDetector = objectTypeDetector;
     }
+    
+    @Override
+    protected MessageParserException newMPE(int errorCode, FieldDefinition di, String msg) {
+        return new MessageParserException(errorCode, di.getName(), parseIndex, currentClass, msg);
+    }
+
 
     /**************************************************************************************************
      * Deserialization goes here
@@ -690,29 +694,10 @@ public final class StringCSVParser extends Settings implements MessageParser<Mes
             return Byte.parseByte(processTrailingSigns(token));
         return (byte) postProcessForImplicitDecimals(di, token);
     }
-
+    
     @Override
-    public Map<String, Object> readJson(ObjectReference di) throws MessageParserException {
-        String tmp = readString(di.getName(), di.getIsRequired(), Integer.MAX_VALUE, true, false, true, true);
-        if (tmp == null)
-            return null;
-        try {
-            return new JsonParser(tmp, false).parseObject();
-        } catch (JsonException e) {
-            throw new MessageParserException(MessageParserException.JSON_EXCEPTION, di.getName(), parseIndex, currentClass, e.getMessage());
-        }
-    }
-
-    @Override
-    public Object readElement(ObjectReference di) throws MessageParserException {
-        String tmp = readString(di.getName(), di.getIsRequired(), Integer.MAX_VALUE, true, false, true, true);
-        if (tmp == null)
-            return null;
-        try {
-            return new JsonParser(tmp, false).parseElement();
-        } catch (JsonException e) {
-            throw new MessageParserException(MessageParserException.JSON_EXCEPTION, di.getName(), parseIndex, currentClass, e.getMessage());
-        }
+    protected String getString(FieldDefinition di) throws MessageParserException {
+        return readString(di.getName(), di.getIsRequired(), Integer.MAX_VALUE, true, false, true, true);
     }
 }
 

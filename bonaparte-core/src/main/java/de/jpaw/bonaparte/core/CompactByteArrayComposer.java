@@ -2,6 +2,7 @@ package de.jpaw.bonaparte.core;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;

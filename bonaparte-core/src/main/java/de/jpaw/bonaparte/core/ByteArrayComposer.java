@@ -20,6 +20,7 @@ import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -560,6 +561,14 @@ public class ByteArrayComposer extends AbstractMessageComposer<RuntimeException>
     
     @Override
     public void addField(ObjectReference di, Map<String, Object> obj) {
+        if (obj == null)
+            writeNull(di);
+        else
+            unicodeOut(BonaparteJsonEscaper.asJson(obj));
+    }
+
+    @Override
+    public void addField(ObjectReference di, List<Object> obj) throws RuntimeException {
         if (obj == null)
             writeNull(di);
         else

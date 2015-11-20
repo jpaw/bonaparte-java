@@ -2,6 +2,7 @@ package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -469,6 +470,20 @@ public class MapParser extends Settings implements MessageParser<MessageParserEx
         throw err(MessageParserException.UNSUPPORTED_CONVERSION, di);
     }
 
+    @Override
+    public List<Object> readArray(ObjectReference di) throws MessageParserException {
+        Object z = get(di);
+        if (z == null)
+            return null;
+        if (z instanceof List<?>) {
+            return (List<Object>)z;      // no check possible due to Java type erasure
+        }
+        if (z instanceof Object []) {
+            return new ArrayList<Object>(Arrays.asList((Object [])z));
+        }
+        throw err(MessageParserException.UNSUPPORTED_CONVERSION, di);
+    }
+    
     @Override
     public Object readElement(ObjectReference di) throws MessageParserException {
         return get(di);

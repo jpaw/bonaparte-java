@@ -2,6 +2,7 @@ package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -179,6 +180,10 @@ public class NoOpComposer<E extends Exception> extends AbstractMessageComposer<E
 
     @Override
     public void addField(ObjectReference di, Map<String, Object> obj) throws E {
+    }
+
+    @Override
+    public void addField(ObjectReference di, List<Object> obj) throws E {
     }
 
     @Override

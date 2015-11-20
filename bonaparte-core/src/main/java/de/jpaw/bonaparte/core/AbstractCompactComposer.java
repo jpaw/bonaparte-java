@@ -751,13 +751,16 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
             writeNull(di);
             return;
         }
-        out.writeByte(MAP_BEGIN);
-        intOut(obj.size());  // number of members.  Note: this implies we cannot skip nulls! OK as we assume they would have been cleared before if it was the intention to do so.
-        
-        for (Map.Entry<String, Object> elem: obj.entrySet()) {
-            stringOut(elem.getKey());
-            elementOut(elem.getValue());
+        elementOut(obj);
+    }
+
+    @Override
+    public void addField(ObjectReference di, List<Object> l) throws IOException {
+        if (l == null) {
+            writeNull(di);
+            return;
         }
+        elementOut(l);
     }
 
     @Override
@@ -769,10 +772,51 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
         elementOut(obj);
     }
     
-    // output a non-null object
+    
+    
+    // output an Object array - anonymous subroutine
+    protected void elementOut(Object [] l) throws IOException {
+        if (l == null) {
+            writeNull();
+            return;
+        }
+        out.writeByte(ARRAY_BEGIN);
+        intOut(l.length);
+        for (Object o : l)
+            elementOut(o);
+    }
+    
+    // output a list - anonymous subroutine
+    protected void elementOut(List<Object> l) throws IOException {
+        if (l == null) {
+            writeNull();
+            return;
+        }
+        out.writeByte(ARRAY_BEGIN);
+        intOut(l.size());
+        for (Object o : l)
+            elementOut(o);
+    }
+    
+    // output a map - anonymous subroutine
+    protected void elementOut(Map<String, Object> obj) throws IOException {
+        if (obj == null) {
+            writeNull();
+            return;
+        }
+        out.writeByte(MAP_BEGIN);
+        intOut(obj.size());  // number of members.  Note: this implies we cannot skip nulls! OK as we assume they would have been cleared before if it was the intention to do so.
+        
+        for (Map.Entry<String, Object> elem: obj.entrySet()) {
+            stringOut(elem.getKey());
+            elementOut(elem.getValue());
+        }
+    }
+    
+    // output a generic object - anonymous subroutine
     protected void elementOut(Object obj) throws IOException {
         if (obj == null) {
-            out.writeByte(NULL_FIELD);
+            writeNull();
             return;
         }
         // check for types. here, we do not have primitive types
@@ -839,11 +883,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
             return;
         }
         if (obj instanceof List<?>) {
-            final List<?> l = (List<?>)obj;
-            out.writeByte(ARRAY_BEGIN);
-            intOut(l.size());
-            for (Object o : l)
-                elementOut(o);
+            elementOut((List<Object>)obj);
             return;
         }
         if (obj instanceof EnumSetMarker) {
@@ -911,6 +951,11 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
             if (jsonComposer == null)
                 jsonComposer = new CompactJsonComposer(out);        // composer which adds ability to output field names
             jsonComposer.writeObject((BonaCustom)obj);
+            return;
+        }
+        if (obj instanceof Object []) {
+            // any array of an object type (String, Boolean whatever...) except primitive arrays
+            elementOut((Object [])obj);
             return;
         }
         if (obj.getClass().isArray()) {

@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -522,6 +523,19 @@ public class AppendableComposer extends AbstractMessageComposer<IOException> imp
         terminateField();
     }
 
+    @Override
+    public void addField(ObjectReference di, List<Object> obj) throws IOException {
+        if (obj == null) {
+            writeNull();
+            return;
+        }
+        // not null, compose a string and write it!
+        if (jsonEscaper == null)
+            jsonEscaper = new BonaparteJsonEscaper(work);
+        jsonEscaper.outputJsonArray(obj);      // the JSON string is known not to contain escape characters and needs no quoting
+        terminateField();
+    }
+    
     @Override
     public void addField(ObjectReference di, Object obj) throws IOException {
         if (obj == null) {

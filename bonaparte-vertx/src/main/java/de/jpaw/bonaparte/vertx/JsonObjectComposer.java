@@ -2,6 +2,7 @@ package de.jpaw.bonaparte.vertx;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -371,6 +372,15 @@ public class JsonObjectComposer extends AbstractMessageComposer<RuntimeException
             obj.putObject(di.getName(), ob);
     }
 
+    @Override
+    public void addField(ObjectReference di, List<Object> o) throws RuntimeException {
+        JsonArray ob = obj == null ? null : new JsonArray(o);
+        if (inArray)
+            arr.addArray(ob);
+        else
+            obj.putArray(di.getName(), ob);
+    }
+    
     @Override
     public void addField(ObjectReference di, Object o) {
         if (inArray)

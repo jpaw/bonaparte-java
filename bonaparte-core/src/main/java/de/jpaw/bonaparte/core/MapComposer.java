@@ -3,6 +3,7 @@ package de.jpaw.bonaparte.core;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -227,6 +228,11 @@ public class MapComposer extends NoOpComposer<RuntimeException> implements Messa
 
     @Override
     public void addField(ObjectReference di, Map<String, Object> obj) {
+        store(di, obj);
+    }
+
+    @Override
+    public void addField(ObjectReference di, List<Object> obj) {
         store(di, obj);
     }
 

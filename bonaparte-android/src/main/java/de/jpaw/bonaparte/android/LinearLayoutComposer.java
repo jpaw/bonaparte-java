@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -415,6 +416,14 @@ abstract public class LinearLayoutComposer extends AbstractMessageComposer<Runti
 
     @Override
     public void addField(ObjectReference di, Map<String, Object> obj) {
+        if (obj == null)
+            writeNull(di);
+        else
+            newTextView(di, BonaparteJsonEscaper.asJson(obj));
+    }
+
+    @Override
+    public void addField(ObjectReference di, List<Object> obj) {
         if (obj == null)
             writeNull(di);
         else

@@ -1,6 +1,7 @@
 package de.jpaw.bonaparte.core;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import de.jpaw.jsonext.ExtendedJsonEscaperForAppendables;
@@ -23,6 +24,17 @@ public class BonaparteJsonEscaper extends ExtendedJsonEscaperForAppendables {
         StringBuilder buff = new StringBuilder(100);
         try {
             new BonaparteJsonEscaper(buff).outputJsonObject(obj);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return buff.toString();
+    }
+
+    // static utility method: serialize Object (array)
+    public static String asJson(List<Object> obj) {
+        StringBuilder buff = new StringBuilder(100);
+        try {
+            new BonaparteJsonEscaper(buff).outputJsonArray(obj);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

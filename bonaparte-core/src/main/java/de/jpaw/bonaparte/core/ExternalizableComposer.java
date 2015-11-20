@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.ObjectOutput;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -431,6 +432,16 @@ public class ExternalizableComposer extends AbstractMessageComposer<IOException>
 
     @Override
     public void addField(ObjectReference di, Map<String, Object> obj) throws IOException {
+        if (obj == null)
+            writeNull(di);
+        else {
+            out.writeByte(TEXT);
+            out.writeUTF(BonaparteJsonEscaper.asJson(obj));
+        }
+    }
+
+    @Override
+    public void addField(ObjectReference di, List<Object> obj) throws IOException {
         if (obj == null)
             writeNull(di);
         else {

@@ -29,7 +29,7 @@ public class FoldingComposer<E extends Exception> extends DelegatingBaseComposer
     public FoldingComposer(MessageComposer<E> delegateComposer, Map<Class<? extends BonaCustom>, List<String>> mapping, FoldingStrategy errorStrategy) {
         super(delegateComposer);
         this.mapping = mapping;
-        this.parsedMapping = new HashMap<Class<? extends BonaCustom>, List<ParsedFoldingComponent>>(20);
+        this.parsedMapping = new HashMap<Class<? extends BonaCustom>, List<ParsedFoldingComponent>>(32);
         this.errorStrategy = errorStrategy;
         this.bonaPortableMapping = mapping.get(BonaPortable.class);
         this.bonaCustomMapping = mapping.get(BonaCustom.class);

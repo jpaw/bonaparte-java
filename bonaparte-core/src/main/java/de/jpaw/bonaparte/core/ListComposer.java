@@ -219,6 +219,11 @@ public class ListComposer extends NoOpComposer<RuntimeException> implements Mess
     }
 
     @Override
+    public void addField(ObjectReference di, List<Object> obj) {
+        storage.add(obj);
+    }
+
+    @Override
     public void addField(ObjectReference di, Object obj) {
         storage.add(obj);
     }
