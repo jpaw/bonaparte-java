@@ -2,7 +2,7 @@
 <feature
       id="bonaparte.sdk"
       label="BonScript runtime SDK Feature "
-      version="3.7.1">
+      version="3.7.2.qualifier">
 
    <copyright>
       Copyright 2014 Michael Bischoff
