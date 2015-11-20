@@ -16,6 +16,13 @@ import de.jpaw.bonaparte.util.ToStringHelper;
 import de.jpaw.util.ByteUtil;
 
 public class JsonComposerTest {
+    static private List<Object> MY_VAR_LIST = new ArrayList<Object>(3);
+    static {
+        MY_VAR_LIST.add(42);
+        MY_VAR_LIST.add("Hello");
+        MY_VAR_LIST.add(true);
+    }
+    
     
     @Test
     public void runBonaTest1() throws Exception {
@@ -30,6 +37,8 @@ public class JsonComposerTest {
         l.add(3.14);
         l.add('x');
         l.add("Hello, world");
+        
+        t.setVarList2(MY_VAR_LIST);
         
         StringBuilder sb = new StringBuilder();
         StringBuilderComposer sbc = new StringBuilderComposer(sb);
@@ -55,6 +64,7 @@ public class JsonComposerTest {
         l.add(3.14);
         l.add('x');
         l.add("Hello, world");
+        t.setVarList2(MY_VAR_LIST);
         
         CompactByteArrayComposer cbac = new CompactByteArrayComposer();
         cbac.writeRecord(t);

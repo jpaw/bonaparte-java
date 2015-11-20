@@ -20,5 +20,8 @@ package jsonTest {
         Json                varStuff;
         Element             varField;
         element List<>      varList;
+        array               varList2;
+        Array               optList2;
+        Array List<>        listOfList2;
     }
 }
