@@ -47,6 +47,20 @@ public class CompactByteArrayComposer extends AbstractCompactComposer implements
     }
 
     /** Quick conversion utility method, for use by code generators. (null safe) */
+    public static byte [] marshalAsArray(ObjectReference di, List<Object> x) {
+        if (x == null)
+            return null;
+        ByteBuilder b = new ByteBuilder();
+        try {
+            new CompactByteArrayComposer(b, false).addField(di, x);
+        } catch (IOException e) {
+            // NOT POSSIBLE
+            throw new RuntimeException(e);
+        }
+        return b.getBytes();
+    }
+
+    /** Quick conversion utility method, for use by code generators. (null safe) */
     public static byte [] marshalAsJson(ObjectReference di, Map<String, Object> x) {
         if (x == null)
             return null;

@@ -31,7 +31,7 @@ public class BonaparteJsonEscaper extends ExtendedJsonEscaperForAppendables {
     }
 
     // static utility method: serialize Object (array)
-    public static String asJson(List<Object> obj) {
+    public static String asJson(List<?> obj) {
         StringBuilder buff = new StringBuilder(100);
         try {
             new BonaparteJsonEscaper(buff).outputJsonArray(obj);

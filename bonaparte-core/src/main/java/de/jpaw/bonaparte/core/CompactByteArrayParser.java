@@ -17,6 +17,7 @@ package de.jpaw.bonaparte.core;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
@@ -50,6 +51,13 @@ public class CompactByteArrayParser extends AbstractCompactParser<MessageParserE
         if (x == null || x.length == 0)
             return null;
         return new CompactByteArrayParser(x, 0, -1).readElement(di);
+    }
+
+    /** Quick conversion utility method, for use by code generators. (null safe) */
+    public static List<Object> unmarshalArray(byte [] x, ObjectReference di) throws MessageParserException {
+        if (x == null || x.length == 0)
+            return null;
+        return new CompactByteArrayParser(x, 0, -1).readArray(di);
     }
 
     /** Quick conversion utility method, for use by code generators. (null safe) */
