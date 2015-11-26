@@ -1,6 +1,6 @@
 package de.jpaw.bonaparte.ehcache3.api
 
-import de.jpaw.bonaparte.pojos.api.DataWithTracking
+import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW
 import de.jpaw.bonaparte.pojos.api.SearchFilter
 import de.jpaw.bonaparte.pojos.api.SortColumn
 import de.jpaw.bonaparte.pojos.api.TrackingBase
@@ -17,7 +17,7 @@ import org.ehcache.Cache
 /** Implementation of the RefResolver for ehCache / terracotta without an additional on heap near cache. */
 abstract class AbstractEhcUnbufferedRefResolver<REF extends Ref, DTO extends REF, TRACKING extends TrackingBase> implements RefResolver<REF, DTO, TRACKING> {
         
-    protected Cache<Long, DataWithTracking<DTO, TRACKING>> map;
+    protected Cache<Long, DataWithTrackingW<DTO, TRACKING>> map;
     protected TrackingUpdater<TRACKING> trackingUpdater;
     protected Provider<RequestContext> contextProvider;
     protected String name;
@@ -25,7 +25,7 @@ abstract class AbstractEhcUnbufferedRefResolver<REF extends Ref, DTO extends REF
     def abstract protected TRACKING createTracking();
     
     new(String name,
-        Cache<Long, DataWithTracking<DTO, TRACKING>> map,
+        Cache<Long, DataWithTrackingW<DTO, TRACKING>> map,
         TrackingUpdater<TRACKING> trackingUpdater,
         Provider<RequestContext> contextProvider
     ) {
@@ -56,7 +56,7 @@ abstract class AbstractEhcUnbufferedRefResolver<REF extends Ref, DTO extends REF
     }
     
     override create(DTO dto) throws ApplicationException {
-        val dwt = new DataWithTracking(dto, createTracking)
+        val dwt = new DataWithTrackingW(dto, createTracking, contextProvider.get().tenantRef)
         trackingUpdater.preCreate(contextProvider.get, dwt.tracking)
         map.put(dto.objectRef, dwt)
     }

@@ -1,9 +1,9 @@
 package de.jpaw.bonaparte.ehcache.api;
 
-import de.jpaw.bonaparte.pojos.api.DataWithTracking
 import de.jpaw.bonaparte.pojos.api.SearchFilter
 import de.jpaw.bonaparte.pojos.api.SortColumn
 import de.jpaw.bonaparte.pojos.api.TrackingBase
+import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW
 import de.jpaw.bonaparte.pojos.apiw.Ref
 import de.jpaw.bonaparte.refs.PersistenceException
 import de.jpaw.bonaparte.refsw.RefResolver
@@ -14,9 +14,9 @@ import de.jpaw.dp.Provider
 import de.jpaw.util.ApplicationException
 import java.util.List
 import net.sf.ehcache.Cache
+import net.sf.ehcache.Element
 import net.sf.ehcache.search.Attribute
 import net.sf.ehcache.search.Direction
-import net.sf.ehcache.Element
 
 /** Implementation of the RefResolver for ehCache / terracotta without an additional on heap near cache. */
 abstract class AbstractEhcUnbufferedRefResolver<REF extends Ref, DTO extends REF, TRACKING extends TrackingBase> implements RefResolver<REF, DTO, TRACKING> {
@@ -52,7 +52,7 @@ abstract class AbstractEhcUnbufferedRefResolver<REF extends Ref, DTO extends REF
             return null
         val entry = map.get(key)
         if (entry !== null)
-            return (entry.objectValue as DataWithTracking<DTO, TRACKING>).data
+            return (entry.objectValue as DataWithTrackingW<DTO, TRACKING>).data
         throw new PersistenceException(PersistenceException.RECORD_DOES_NOT_EXIST, key.longValue, name)
     }
     
@@ -60,7 +60,7 @@ abstract class AbstractEhcUnbufferedRefResolver<REF extends Ref, DTO extends REF
         val entry = map.get(key)
         if (entry === null)
             throw new PersistenceException(PersistenceException.RECORD_DOES_NOT_EXIST, key.longValue, name)
-        return (entry.objectValue as DataWithTracking<DTO, TRACKING>).tracking
+        return (entry.objectValue as DataWithTrackingW<DTO, TRACKING>).tracking
     }
     
     override remove(Long key) throws ApplicationException {
@@ -68,7 +68,7 @@ abstract class AbstractEhcUnbufferedRefResolver<REF extends Ref, DTO extends REF
     }
     
     override create(DTO dto) throws ApplicationException {
-        val dwt = new DataWithTracking(dto, createTracking)
+        val dwt = new DataWithTrackingW(dto, createTracking, contextProvider.get().tenantRef)
         trackingUpdater.preCreate(contextProvider.get, dwt.tracking)
         map.put(new Element(dto.objectRef, dwt))
     }
@@ -84,7 +84,7 @@ abstract class AbstractEhcUnbufferedRefResolver<REF extends Ref, DTO extends REF
         val dwt = map.get(key)
         if (dwt === null)
             throw new PersistenceException(PersistenceException.RECORD_DOES_NOT_EXIST, key.longValue, name)
-        return (dwt.objectValue as DataWithTracking<DTO, TRACKING>).data
+        return (dwt.objectValue as DataWithTrackingW<DTO, TRACKING>).data
     }
     
     override update(DTO newDTO) throws ApplicationException {
@@ -92,7 +92,7 @@ abstract class AbstractEhcUnbufferedRefResolver<REF extends Ref, DTO extends REF
         val e = map.get(newDTO.ref)
         if (e === null)
             throw new PersistenceException(PersistenceException.RECORD_DOES_NOT_EXIST, newDTO.ref.longValue, name)
-        val dwt = e.objectValue as DataWithTracking<DTO, TRACKING>
+        val dwt = e.objectValue as DataWithTrackingW<DTO, TRACKING>
         dwt.data = newDTO
         // update the tracking columns
         trackingUpdater.preUpdate(contextProvider.get, dwt.tracking)
@@ -128,7 +128,7 @@ abstract class AbstractEhcUnbufferedRefResolver<REF extends Ref, DTO extends REF
     override query(int limit, int offset, SearchFilter filters, List<SortColumn> sortColumns) throws ApplicationException {
         val results = querySub(limit, offset, filters, sortColumns).includeValues.execute
         val resultSet = if (offset == 0) results.all else results.range(offset, limit)   
-        val r = resultSet.map[value as DataWithTracking<DTO, TRACKING>].toList
+        val r = resultSet.map[value as DataWithTrackingW<DTO, TRACKING>].toList
         results.discard  // free memory
         return r
     }

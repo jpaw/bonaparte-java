@@ -1,9 +1,9 @@
 package de.jpaw.bonaparte.ehcache.api;
 
-import de.jpaw.bonaparte.pojos.api.DataWithTracking
 import de.jpaw.bonaparte.pojos.api.SearchFilter
 import de.jpaw.bonaparte.pojos.api.SortColumn
 import de.jpaw.bonaparte.pojos.api.TrackingBase
+import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW
 import de.jpaw.bonaparte.pojos.apiw.Ref
 import de.jpaw.bonaparte.refs.PersistenceException
 import de.jpaw.bonaparte.refsw.RequestContext
@@ -49,7 +49,7 @@ abstract class AbstractEhcBufferedRefResolver<REF extends Ref, DTO extends REF, 
     
     override protected getUncached(Long key) {
         val entry = map.get(key)
-        return entry?.objectValue as DataWithTracking<DTO, TRACKING>
+        return entry?.objectValue as DataWithTrackingW<DTO, TRACKING>
     }
     
     override protected getUncachedKey(REF refObject) throws PersistenceException {
@@ -58,17 +58,17 @@ abstract class AbstractEhcBufferedRefResolver<REF extends Ref, DTO extends REF, 
     }
     
     override protected uncachedCreate(DTO obj) throws PersistenceException {
-        val dwt = new DataWithTracking(obj, createTracking)
+        val dwt = new DataWithTrackingW(obj, createTracking, contextProvider.get().tenantRef);
         trackingUpdater.preCreate(contextProvider.get, dwt.tracking)
         map.put(new Element(obj.objectRef, dwt))
         return dwt
     }
     
-    override protected uncachedRemove(DataWithTracking<DTO, TRACKING> previous) {
+    override protected uncachedRemove(DataWithTrackingW<DTO, TRACKING> previous) {
         map.remove(previous.data.objectRef)
     }
     
-    override protected uncachedUpdate(DataWithTracking<DTO, TRACKING> dwt, DTO obj) throws PersistenceException {
+    override protected uncachedUpdate(DataWithTrackingW<DTO, TRACKING> dwt, DTO obj) throws PersistenceException {
         dwt.data = obj
         // update the tracking columns
         trackingUpdater.preUpdate(contextProvider.get, dwt.tracking)
@@ -104,7 +104,7 @@ abstract class AbstractEhcBufferedRefResolver<REF extends Ref, DTO extends REF, 
     override query(int limit, int offset, SearchFilter filters, List<SortColumn> sortColumns) throws ApplicationException {
         val results = querySub(limit, offset, filters, sortColumns).includeValues.execute
         val resultSet = if (offset == 0) results.all else results.range(offset, limit)   
-        val r = resultSet.map[value as DataWithTracking<DTO, TRACKING>].toList
+        val r = resultSet.map[value as DataWithTrackingW<DTO, TRACKING>].toList
         results.discard  // free memory
         return r
     }

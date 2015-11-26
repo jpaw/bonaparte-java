@@ -1,6 +1,6 @@
 package de.jpaw.bonaparte.ehcache3.api;
 
-import de.jpaw.bonaparte.pojos.api.DataWithTracking
+import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW
 import de.jpaw.bonaparte.pojos.api.TrackingBase
 import de.jpaw.bonaparte.pojos.apiw.Ref
 import de.jpaw.bonaparte.refs.PersistenceException
@@ -13,7 +13,7 @@ import org.ehcache.Cache
 /** Implementation of the RefResolver for ehCache / terracotta using an additional on heap near cache. */
 abstract class AbstractEhcBufferedRefResolver<REF extends Ref, DTO extends REF, TRACKING extends TrackingBase> extends AbstractRefResolver<REF, DTO, TRACKING> {
         
-    protected Cache<Long, DataWithTracking<DTO, TRACKING>> map;
+    protected Cache<Long, DataWithTrackingW<DTO, TRACKING>> map;
     protected TrackingUpdater<TRACKING> trackingUpdater;
     protected Provider<RequestContext> contextProvider;
     protected String name;
@@ -21,7 +21,7 @@ abstract class AbstractEhcBufferedRefResolver<REF extends Ref, DTO extends REF, 
     def abstract protected TRACKING createTracking();
     
     new(String name,
-        Cache<Long, DataWithTracking<DTO, TRACKING>> map,
+        Cache<Long, DataWithTrackingW<DTO, TRACKING>> map,
         TrackingUpdater<TRACKING> trackingUpdater,
         Provider<RequestContext> contextProvider
     ) {
@@ -41,17 +41,17 @@ abstract class AbstractEhcBufferedRefResolver<REF extends Ref, DTO extends REF, 
     }
     
     override protected uncachedCreate(DTO obj) throws PersistenceException {
-        val dwt = new DataWithTracking(obj, createTracking)
+        val dwt = new DataWithTrackingW(obj, createTracking, contextProvider.get().tenantRef)
         trackingUpdater.preCreate(contextProvider.get, dwt.tracking)
         map.put(obj.objectRef, dwt)
         return dwt
     }
     
-    override protected uncachedRemove(DataWithTracking<DTO, TRACKING> previous) {
+    override protected uncachedRemove(DataWithTrackingW<DTO, TRACKING> previous) {
         map.remove(previous.data.objectRef)
     }
     
-    override protected uncachedUpdate(DataWithTracking<DTO, TRACKING> dwt, DTO obj) throws PersistenceException {
+    override protected uncachedUpdate(DataWithTrackingW<DTO, TRACKING> dwt, DTO obj) throws PersistenceException {
         dwt.data = obj
         // update the tracking columns
         trackingUpdater.preUpdate(contextProvider.get, dwt.tracking)

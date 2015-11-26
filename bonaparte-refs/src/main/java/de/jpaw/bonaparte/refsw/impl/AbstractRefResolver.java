@@ -6,10 +6,10 @@ import java.util.concurrent.ConcurrentMap;
 
 import de.jpaw.bonaparte.core.ObjectValidationException;
 import de.jpaw.bonaparte.pojos.api.AbstractRef;
-import de.jpaw.bonaparte.pojos.api.DataWithTracking;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.SortColumn;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
+import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW;
 import de.jpaw.bonaparte.refs.PersistenceException;
 import de.jpaw.bonaparte.refsw.RefResolver;
 import de.jpaw.util.ApplicationException;
@@ -36,7 +36,7 @@ import de.jpaw.util.ByteBuilder;
  * @param <TRACKING>
  */
 public abstract class AbstractRefResolver<REF extends AbstractRef, DTO extends REF, TRACKING extends TrackingBase> implements RefResolver<REF, DTO, TRACKING> {
-    private ConcurrentMap<Long,DataWithTracking<DTO, TRACKING>> cache = new ConcurrentHashMap<Long, DataWithTracking<DTO, TRACKING>>(1024 * 1024);
+    private ConcurrentMap<Long,DataWithTrackingW<DTO, TRACKING>> cache = new ConcurrentHashMap<Long, DataWithTrackingW<DTO, TRACKING>>(1024 * 1024);
 
     protected ByteBuilder builder;
     protected String entityName;
@@ -54,16 +54,16 @@ public abstract class AbstractRefResolver<REF extends AbstractRef, DTO extends R
     protected abstract Long getUncachedKey(REF refObject) throws PersistenceException;
 
     /** Return an object stored in the DB by its primary key. */
-    protected abstract DataWithTracking<DTO, TRACKING> getUncached(Long ref);
+    protected abstract DataWithTrackingW<DTO, TRACKING> getUncached(Long ref);
 
     /** Update some object fwt to have obj as the data portion. (Update tracking and then update the DB and possibly indexes.) */
-    protected abstract void uncachedUpdate(DataWithTracking<DTO, TRACKING> dwt, DTO obj) throws PersistenceException;
+    protected abstract void uncachedUpdate(DataWithTrackingW<DTO, TRACKING> dwt, DTO obj) throws PersistenceException;
 
     /** Removes an object if it exists. */
-    protected abstract void uncachedRemove(DataWithTracking<DTO, TRACKING> previous);
+    protected abstract void uncachedRemove(DataWithTrackingW<DTO, TRACKING> previous);
 
     /** Create some object. Returns the object including tracking data, or throws an exception, if the object already exists. */
-    protected abstract DataWithTracking<DTO, TRACKING> uncachedCreate(DTO obj) throws PersistenceException;
+    protected abstract DataWithTrackingW<DTO, TRACKING> uncachedCreate(DTO obj) throws PersistenceException;
 
     @Override
     public final Long getRef(REF refObject) throws PersistenceException {
@@ -86,9 +86,9 @@ public abstract class AbstractRefResolver<REF extends AbstractRef, DTO extends R
     }
 
     /** return data for a key. Returns null if no record exists. */
-    protected final DataWithTracking<DTO, TRACKING> getDTONoCacheUpd(Long ref) {
+    protected final DataWithTrackingW<DTO, TRACKING> getDTONoCacheUpd(Long ref) {
         // first, try to retrieve a value from the cache, in order to be identity-safe
-        DataWithTracking<DTO, TRACKING> value = cache.get(ref);
+        DataWithTrackingW<DTO, TRACKING> value = cache.get(ref);
         if (value != null)
             return value;
         // not here, consult second level (in-memory DB)
@@ -106,7 +106,7 @@ public abstract class AbstractRefResolver<REF extends AbstractRef, DTO extends R
     public final DTO getDTO(Long ref) throws PersistenceException {
         if (ref == null)
             return null;
-        DataWithTracking<DTO, TRACKING> value = getDTONoCacheUpd(ref);
+        DataWithTrackingW<DTO, TRACKING> value = getDTONoCacheUpd(ref);
         if (value != null) {
             cache.put(ref, value);
             return value.getData();
@@ -120,7 +120,7 @@ public abstract class AbstractRefResolver<REF extends AbstractRef, DTO extends R
         Long key = obj.ret$RefW();
         if (key == null)
             throw new PersistenceException(PersistenceException.NO_PRIMARY_KEY, 0L, entityName);
-        DataWithTracking<DTO, TRACKING> dwt = getDTONoCacheUpd(key);
+        DataWithTrackingW<DTO, TRACKING> dwt = getDTONoCacheUpd(key);
         if (dwt == null)
             throw new PersistenceException(PersistenceException.RECORD_DOES_NOT_EXIST, key, entityName);
         uncachedUpdate(dwt, obj);
@@ -129,7 +129,7 @@ public abstract class AbstractRefResolver<REF extends AbstractRef, DTO extends R
 
     @Override
     public final void remove(Long key) throws PersistenceException {
-        DataWithTracking<DTO, TRACKING> value = getDTONoCacheUpd(key);
+        DataWithTrackingW<DTO, TRACKING> value = getDTONoCacheUpd(key);
         if (value != null) {
             // must remove it
             cache.remove(key);
@@ -141,13 +141,13 @@ public abstract class AbstractRefResolver<REF extends AbstractRef, DTO extends R
     public void create(DTO obj) throws PersistenceException {
         if (obj.ret$RefW() == null)
             throw new PersistenceException(PersistenceException.NO_PRIMARY_KEY, 0L, entityName);
-        DataWithTracking<DTO, TRACKING> dwt = uncachedCreate(obj);
+        DataWithTrackingW<DTO, TRACKING> dwt = uncachedCreate(obj);
         cache.put(obj.ret$RefW(), dwt);
     }
 
     @Override
     public TRACKING getTracking(Long ref) throws PersistenceException {
-        DataWithTracking<DTO, TRACKING> dwt = getDTONoCacheUpd(ref);
+        DataWithTrackingW<DTO, TRACKING> dwt = getDTONoCacheUpd(ref);
         if (dwt == null)
             throw new PersistenceException(PersistenceException.RECORD_DOES_NOT_EXIST, ref, entityName);
         try {
@@ -170,7 +170,7 @@ public abstract class AbstractRefResolver<REF extends AbstractRef, DTO extends R
     }
 
     @Override
-    public List<DataWithTracking<DTO, TRACKING>> query(int limit, int offset, SearchFilter filter, List<SortColumn> sortColumns)
+    public List<DataWithTrackingW<DTO, TRACKING>> query(int limit, int offset, SearchFilter filter, List<SortColumn> sortColumns)
             throws ApplicationException {
         throw new UnsupportedOperationException();
     }

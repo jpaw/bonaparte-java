@@ -1,7 +1,12 @@
 package de.jpaw.bonaparte.refsw;
 
+import java.util.List;
+
 import de.jpaw.bonaparte.pojos.api.AbstractRef;
+import de.jpaw.bonaparte.pojos.api.SearchFilter;
+import de.jpaw.bonaparte.pojos.api.SortColumn;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
+import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW;
 import de.jpaw.bonaparte.refs.BaseRefResolver;
 import de.jpaw.util.ApplicationException;
 
@@ -27,4 +32,8 @@ public interface RefResolver<REF extends AbstractRef, DTO extends REF, TRACKING 
      */
     void remove(Long key) throws ApplicationException;
 
+    /** Returns a number of records for a query.
+     * Throws UnsupportedOperationException in case the persistence provider does not support searches.
+     */
+    List<DataWithTrackingW<DTO,TRACKING>> query(int limit, int offset, SearchFilter filter, List<SortColumn> sortColumns) throws ApplicationException;
 }

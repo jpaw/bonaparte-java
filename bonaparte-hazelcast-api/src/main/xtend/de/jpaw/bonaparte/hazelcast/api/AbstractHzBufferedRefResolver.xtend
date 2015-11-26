@@ -2,10 +2,10 @@ package de.jpaw.bonaparte.hazelcast.api;
 
 import com.hazelcast.core.IMap
 import com.hazelcast.query.PagingPredicate
-import de.jpaw.bonaparte.pojos.api.DataWithTracking
 import de.jpaw.bonaparte.pojos.api.SearchFilter
 import de.jpaw.bonaparte.pojos.api.SortColumn
 import de.jpaw.bonaparte.pojos.api.TrackingBase
+import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW
 import de.jpaw.bonaparte.pojos.apiw.Ref
 import de.jpaw.bonaparte.refs.PersistenceException
 import de.jpaw.bonaparte.refsw.RequestContext
@@ -22,7 +22,7 @@ abstract class AbstractHzBufferedRefResolver<REF extends Ref, DTO extends REF, T
     @Inject        
     private HzCriteriaBuilder queryBuilder
     
-    protected IMap<Long,DataWithTracking<DTO, TRACKING>> map;
+    protected IMap<Long,DataWithTrackingW<DTO, TRACKING>> map;
     protected TrackingUpdater<TRACKING> trackingUpdater;
     protected Provider<RequestContext> contextProvider;
     protected String name;
@@ -30,7 +30,7 @@ abstract class AbstractHzBufferedRefResolver<REF extends Ref, DTO extends REF, T
     def abstract protected TRACKING createTracking();
     
     new(String name,
-        IMap<Long, DataWithTracking<DTO, TRACKING>> map,
+        IMap<Long, DataWithTrackingW<DTO, TRACKING>> map,
         TrackingUpdater<TRACKING> trackingUpdater,
         Provider<RequestContext> contextProvider
     ) {
@@ -50,17 +50,17 @@ abstract class AbstractHzBufferedRefResolver<REF extends Ref, DTO extends REF, T
     }
     
     override protected uncachedCreate(DTO obj) throws PersistenceException {
-        val dwt = new DataWithTracking(obj, createTracking)
+        val dwt = new DataWithTrackingW(obj, createTracking, contextProvider.get().tenantRef)
         trackingUpdater.preCreate(contextProvider.get, dwt.tracking)
         if (map.put(obj.objectRef, dwt) !== null)
             throw new PersistenceException(PersistenceException.RECORD_ALREADY_EXISTS, obj.ref.longValue, name)
     }
     
-    override protected uncachedRemove(DataWithTracking<DTO, TRACKING> previous) {
+    override protected uncachedRemove(DataWithTrackingW<DTO, TRACKING> previous) {
         map.remove(previous.data.objectRef)
     }
     
-    override protected uncachedUpdate(DataWithTracking<DTO, TRACKING> dwt, DTO obj) throws PersistenceException {
+    override protected uncachedUpdate(DataWithTrackingW<DTO, TRACKING> dwt, DTO obj) throws PersistenceException {
         dwt.data = obj
         // update the tracking columns
         trackingUpdater.preUpdate(contextProvider.get, dwt.tracking)

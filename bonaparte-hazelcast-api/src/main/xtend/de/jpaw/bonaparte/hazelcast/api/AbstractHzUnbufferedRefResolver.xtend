@@ -2,10 +2,10 @@ package de.jpaw.bonaparte.hazelcast.api;
 
 import com.hazelcast.core.IMap
 import com.hazelcast.query.PagingPredicate
-import de.jpaw.bonaparte.pojos.api.DataWithTracking
 import de.jpaw.bonaparte.pojos.api.SearchFilter
 import de.jpaw.bonaparte.pojos.api.SortColumn
 import de.jpaw.bonaparte.pojos.api.TrackingBase
+import de.jpaw.bonaparte.pojos.apiw.DataWithTrackingW
 import de.jpaw.bonaparte.pojos.apiw.Ref
 import de.jpaw.bonaparte.refs.PersistenceException
 import de.jpaw.bonaparte.refsw.RefResolver
@@ -22,7 +22,7 @@ abstract class AbstractHzUnbufferedRefResolver<REF extends Ref, DTO extends REF,
     @Inject        
     private HzCriteriaBuilder queryBuilder
     
-    protected IMap<Long,DataWithTracking<DTO, TRACKING>> map;
+    protected IMap<Long,DataWithTrackingW<DTO, TRACKING>> map;
     protected TrackingUpdater<TRACKING> trackingUpdater;
     protected Provider<RequestContext> contextProvider;
     protected String name;
@@ -30,7 +30,7 @@ abstract class AbstractHzUnbufferedRefResolver<REF extends Ref, DTO extends REF,
     def abstract protected TRACKING createTracking();
     
     new(String name,
-        IMap<Long, DataWithTracking<DTO, TRACKING>> map,
+        IMap<Long, DataWithTrackingW<DTO, TRACKING>> map,
         TrackingUpdater<TRACKING> trackingUpdater,
         Provider<RequestContext> contextProvider
     ) {
@@ -61,7 +61,7 @@ abstract class AbstractHzUnbufferedRefResolver<REF extends Ref, DTO extends REF,
     }
     
     override create(DTO dto) throws ApplicationException {
-        val dwt = new DataWithTracking(dto, createTracking)
+        val dwt = new DataWithTrackingW(dto, createTracking, contextProvider.get().tenantRef)
         trackingUpdater.preCreate(contextProvider.get, dwt.tracking)
         if (map.put(dto.objectRef, dwt) !== null)
             throw new PersistenceException(PersistenceException.RECORD_ALREADY_EXISTS, dto.ref.longValue, name)
