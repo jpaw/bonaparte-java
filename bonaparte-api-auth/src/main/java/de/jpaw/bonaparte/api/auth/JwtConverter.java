@@ -71,6 +71,7 @@ public class JwtConverter {
         info.setLogLevel            (payload.getL());
         info.setLogLevelErrors      (payload.getE());
         info.setResource            (payload.getP());
+        info.setResourceIsWildcard  (payload.getW());
         info.setPermissionsMin      (payload.getPl());
         info.setPermissionsMax      (payload.getPu());
         info.freeze();
