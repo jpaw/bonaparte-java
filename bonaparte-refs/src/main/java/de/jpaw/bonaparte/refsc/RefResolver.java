@@ -3,7 +3,7 @@ package de.jpaw.bonaparte.refsc;
 import java.util.List;
 
 import de.jpaw.bonaparte.core.BonaPortableRef;
-import de.jpaw.bonaparte.pojos.api.DataWithTrackingS;
+import de.jpaw.bonaparte.pojos.api.DataWithTracking;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.SortColumn;
 import de.jpaw.bonaparte.pojos.api.TrackingBase;
@@ -30,6 +30,6 @@ public interface RefResolver<REF extends BonaPortableRef, KEY extends REF, DTO e
     /** Returns a number of records for a query.
      * Throws UnsupportedOperationException in case the persistence provider does not support searches.
      */
-    List<DataWithTrackingS<DTO,TRACKING>> query(int limit, int offset, SearchFilter filter, List<SortColumn> sortColumns) throws ApplicationException;
+    List<DataWithTracking<DTO,TRACKING>> query(int limit, int offset, SearchFilter filter, List<SortColumn> sortColumns) throws ApplicationException;
 
 }
