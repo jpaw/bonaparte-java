@@ -8,7 +8,7 @@ import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.json.JsonException;
 import de.jpaw.json.JsonParser;
 
-public abstract class AbstractPartialJsonStringParser extends Settings implements MessageParser<MessageParserException> {
+public abstract class AbstractPartialJsonStringParser extends AbstractMessageParser<MessageParserException> implements MessageParser<MessageParserException> {
 
     abstract protected String getString(FieldDefinition di)throws MessageParserException;
     abstract protected MessageParserException newMPE(int errorCode, FieldDefinition di, String msg);             // construct a suitable exception

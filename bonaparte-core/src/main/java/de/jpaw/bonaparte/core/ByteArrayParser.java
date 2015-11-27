@@ -55,7 +55,7 @@ import de.jpaw.util.ByteTestsASCII;
  *          Implementation of the MessageParser, using byte arrays.
  */
 
-public class ByteArrayParser extends Settings implements MessageParser<MessageParserException>, ByteArrayConstants {
+public class ByteArrayParser extends AbstractMessageParser<MessageParserException> implements MessageParser<MessageParserException>, ByteArrayConstants {
     private static final Logger LOGGER = LoggerFactory.getLogger(ByteArrayParser.class);
     private int parseIndex;
     private int messageLength;
@@ -838,42 +838,6 @@ public class ByteArrayParser extends Settings implements MessageParser<MessagePa
         return result;
     }
 
-    // default implementations for the next ones...
-    @Override
-    public char readPrimitiveCharacter(MiscElementaryDataItem di) throws MessageParserException {
-        return readCharacter(di).charValue();
-    }
-
-    @Override
-    public double readPrimitiveDouble(BasicNumericElementaryDataItem di) throws MessageParserException {
-        return readDouble(di).doubleValue();
-    }
-
-    @Override
-    public float readPrimitiveFloat(BasicNumericElementaryDataItem di) throws MessageParserException {
-        return readFloat(di).floatValue();
-    }
-
-    @Override
-    public long readPrimitiveLong(BasicNumericElementaryDataItem di) throws MessageParserException {
-        return readLong(di).longValue();
-    }
-
-    @Override
-    public int readPrimitiveInteger(BasicNumericElementaryDataItem di) throws MessageParserException {
-        return readInteger(di).intValue();
-    }
-
-    @Override
-    public short readPrimitiveShort(BasicNumericElementaryDataItem di) throws MessageParserException {
-        return readShort(di).shortValue();
-    }
-
-    @Override
-    public byte readPrimitiveByte(BasicNumericElementaryDataItem di) throws MessageParserException {
-        return readByte(di).byteValue();
-    }
-    
     @Override
     public Map<String, Object> readJson(ObjectReference di) throws MessageParserException {
         String tmp = readString(di.getName(), di.getIsRequired(), Integer.MAX_VALUE, true, false, true, true);

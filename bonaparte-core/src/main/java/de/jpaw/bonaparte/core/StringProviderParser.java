@@ -13,6 +13,7 @@ import org.joda.time.LocalTime;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
@@ -254,8 +255,21 @@ public class StringProviderParser extends AbstractPartialJsonStringParser implem
         return stringParser.readPrimitiveByte(di, getParameter(di));
     }
 
+    // special internal method for AbstractPartialJsonStringParser
     @Override
     protected String getString(FieldDefinition di) throws MessageParserException {
         return getParameter(di);
+    }
+    
+    // special handling of enums: access the original name, not the one with $token suffix: take care when di and when edi is used!
+    @Override
+    public Integer readEnum(EnumDataItem edi, BasicNumericElementaryDataItem di) throws MessageParserException {
+        return stringParser.readInteger(di, getParameter(edi));
+    }
+    
+    // special handling of enums: access the original name, not the one with $token suffix: take care when di and when edi is used!
+    @Override
+    public String readEnum(EnumDataItem edi, AlphanumericElementaryDataItem di) throws MessageParserException {
+        return stringParser.readString(di, getParameter(edi));
     }
 }

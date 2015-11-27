@@ -29,6 +29,7 @@ import org.joda.time.LocalTime;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
@@ -84,7 +85,9 @@ public interface MessageParser<E extends Exception> extends ExceptionConverter<E
     // helper functions
     public void setClassName(String newClassName); // returns the previously active class name
     public void eatParentSeparator() throws E;  // restores the previous class name
-    public <T extends AbstractXEnumBase<T>> T readXEnum(XEnumDataItem di, XEnumFactory<T> factory) throws E;
+    public Integer                              readEnum(EnumDataItem edi, BasicNumericElementaryDataItem di) throws E;
+    public String                               readEnum(EnumDataItem edi, AlphanumericElementaryDataItem di) throws E;
+    public <T extends AbstractXEnumBase<T>> T   readXEnum(XEnumDataItem di, XEnumFactory<T> factory) throws E;
 
     // add the primitive types
     public char       readPrimitiveCharacter (MiscElementaryDataItem di) throws E;

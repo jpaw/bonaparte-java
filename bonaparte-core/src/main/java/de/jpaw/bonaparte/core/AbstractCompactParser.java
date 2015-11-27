@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
@@ -979,5 +980,15 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
     @Override
     public Object readElement(ObjectReference di) throws E {
         return readElementSub();
+    }
+
+    @Override
+    public Integer readEnum(EnumDataItem edi, BasicNumericElementaryDataItem di) throws E {
+        return readInteger(di);
+    }
+    
+    @Override
+    public String readEnum(EnumDataItem edi, AlphanumericElementaryDataItem di) throws E {
+        return readString(di);
     }
 }

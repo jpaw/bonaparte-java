@@ -712,41 +712,6 @@ public final class StringBuilderParser extends AbstractPartialJsonStringParser i
         needToken(FIELD_TERMINATOR);
         return result;
     }
-
-    @Override
-    public char readPrimitiveCharacter(MiscElementaryDataItem di) throws MessageParserException {
-        return stringParser.readPrimitiveCharacter(di, readString(di.getName(), di.getIsRequired(), 1, false, false, true, true));
-    }
-
-    @Override
-    public double readPrimitiveDouble(BasicNumericElementaryDataItem di) throws MessageParserException {
-        return stringParser.readPrimitiveDouble(di, nextIndexParseAscii(di.getName(), di.getIsSigned(), true, true));
-    }
-
-    @Override
-    public float readPrimitiveFloat(BasicNumericElementaryDataItem di) throws MessageParserException {
-        return stringParser.readPrimitiveFloat(di, nextIndexParseAscii(di.getName(), di.getIsSigned(), true, true));
-    }
-
-    @Override
-    public long readPrimitiveLong(BasicNumericElementaryDataItem di) throws MessageParserException {
-        return stringParser.readPrimitiveLong(di, nextIndexParseAscii(di.getName(), di.getIsSigned(), false, false));
-    }
-
-    @Override
-    public int readPrimitiveInteger(BasicNumericElementaryDataItem di) throws MessageParserException {
-        return stringParser.readPrimitiveInteger(di, nextIndexParseAscii(di.getName(), di.getIsSigned(), false, false));
-    }
-
-    @Override
-    public short readPrimitiveShort(BasicNumericElementaryDataItem di) throws MessageParserException {
-        return stringParser.readPrimitiveShort(di, nextIndexParseAscii(di.getName(), di.getIsSigned(), false, false));
-    }
-
-    @Override
-    public byte readPrimitiveByte(BasicNumericElementaryDataItem di) throws MessageParserException {
-        return stringParser.readPrimitiveByte(di, nextIndexParseAscii(di.getName(), di.getIsSigned(), false, false));
-    }
     
     @Override
     protected String getString(FieldDefinition di) throws MessageParserException {

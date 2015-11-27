@@ -33,9 +33,11 @@ package api.auth XML PROPERTY factoryId 25 {
         SESSION_REF             = "s",
         USER_REF                = "u",
         ROLE_REF                = "r",
+        SESSION_ID              = "o",
         LOG_LEVEL_OK            = "l",
         LOG_LEVEL_ERR           = "e",
-        PERMISSION_FILTER       = "p",
+        RESOURCE_FILTER         = "p",
+        RESOURCE_IS_WILDCARD    = "w",
         PERMISSION_MIN          = "pl",
         PERMISSION_MAX          = "pu"
     }
@@ -73,6 +75,7 @@ package api.auth XML PROPERTY factoryId 25 {
         optional Long                   sessionRef          properties tag = "s";          // session reference
         optional Long                   userRef             properties tag = "u";          // user reference
         optional Long                   roleRef             properties tag = "r";          // role restriction / reference
+        optional Uuid                   sessionId           properties tag = "o";          // alphanumeric (UUID type) session ID
         optional Enum UserLogLevelType  logLevel            properties tag = "l";          // log level for messages processed OK
         optional Enum UserLogLevelType  logLevelErrors      properties tag = "e";          // log level for messages processed with error return (if different)
         optional resourceId             resource            properties tag = "p";          // permission resource restriction. If defined, then only access within / beneath this resource is allowed (if at all).
@@ -102,6 +105,7 @@ package api.auth XML PROPERTY factoryId 25 {
         optional Long                   s;          // session reference
         optional Long                   u;          // user reference
         optional Long                   r;          // role restriction / reference
+        optional Uuid                   o;          // alphanumeric (UUID type) session ID
         optional Enum UserLogLevelType  l;          // log level for messages processed OK
         optional Enum UserLogLevelType  e;          // log level for messages processed with error return (if different)
         optional resourceId             p;          // permission resource restriction. If defined, then only access within / beneath this resource is allowed (if at all).

@@ -19,6 +19,7 @@ import org.joda.time.format.ISODateTimeFormat;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
@@ -36,7 +37,7 @@ import de.jpaw.util.MapIterator;
 // - a string
 // - the possible types created by the JsonParser for input originating from the corresponding type
 
-public class MapParser extends Settings implements MessageParser<MessageParserException> {
+public class MapParser extends AbstractMessageParser<MessageParserException> implements MessageParser<MessageParserException> {
 
     private final Map<String, Object> map;
     private Iterator<Object> iter = null;
@@ -578,43 +579,30 @@ public class MapParser extends Settings implements MessageParser<MessageParserEx
         throw err(MessageParserException.UNSUPPORTED_CONVERSION, di);
     }
 
+    // special handling of enums: access the original name, not the one with $token suffix: take care when di and when edi is used!
     @Override
-    public char readPrimitiveCharacter(MiscElementaryDataItem di) throws MessageParserException {
-        return readCharacter(di).charValue();
+    public Integer readEnum(EnumDataItem edi, BasicNumericElementaryDataItem di) throws MessageParserException {
+        Object z = get(edi);
+        if (z == null)
+            return null;
+        if (z instanceof Number) {
+            return Integer.valueOf(((Number)z).intValue());
+        }
+        if (z instanceof String) {
+            return Integer.valueOf(spu.readPrimitiveInteger(di, (String)z));
+        }
+        throw err(MessageParserException.UNSUPPORTED_CONVERSION, edi);
     }
 
+    // special handling of enums: access the original name, not the one with $token suffix
     @Override
-    public boolean readPrimitiveBoolean(MiscElementaryDataItem di) throws MessageParserException {
-        return readBoolean(di).booleanValue();
-    }
-
-    @Override
-    public double readPrimitiveDouble(BasicNumericElementaryDataItem di) throws MessageParserException {
-        return readDouble(di).doubleValue();
-    }
-
-    @Override
-    public float readPrimitiveFloat(BasicNumericElementaryDataItem di) throws MessageParserException {
-        return readFloat(di).floatValue();
-    }
-
-    @Override
-    public long readPrimitiveLong(BasicNumericElementaryDataItem di) throws MessageParserException {
-        return readLong(di).longValue();
-    }
-
-    @Override
-    public int readPrimitiveInteger(BasicNumericElementaryDataItem di) throws MessageParserException {
-        return readInteger(di).intValue();
-    }
-
-    @Override
-    public short readPrimitiveShort(BasicNumericElementaryDataItem di) throws MessageParserException {
-        return readShort(di).shortValue();
-    }
-
-    @Override
-    public byte readPrimitiveByte(BasicNumericElementaryDataItem di) throws MessageParserException {
-        return readByte(di).byteValue();
+    public String readEnum(EnumDataItem edi, AlphanumericElementaryDataItem di) throws MessageParserException {
+        Object z = get(edi);
+        if (z == null)
+            return null;
+        if (z instanceof String) {
+            return spu.readString(di, (String)z);
+        }
+        throw err(MessageParserException.UNSUPPORTED_CONVERSION, edi);
     }
 }

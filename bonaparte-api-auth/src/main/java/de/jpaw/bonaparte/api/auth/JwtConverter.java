@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.joda.time.Instant;
+
 import de.jpaw.bonaparte.core.DataAndMeta;
 import de.jpaw.bonaparte.core.JsonComposer;
 import de.jpaw.bonaparte.core.ListMetaComposer;
@@ -20,6 +22,12 @@ import de.jpaw.util.ApplicationException;
 /** Conversions between JSON strings and Bonaparte classes for parts of the JWT. */
 public class JwtConverter {
 
+    /** returns the current time, rounded down to the previous full second. */
+    public static Instant lastFullSecond() {
+        long now = System.currentTimeMillis();
+        return new Instant(now - now % 1000L);
+    }
+    
     public static Map<String,Object> asMap(String json) throws JsonException {
         return new JsonParser(json, true).parseObject();
     }
@@ -28,6 +36,12 @@ public class JwtConverter {
         final JwtAlg alg = (JwtAlg) MapParser.asBonaPortable(new JsonParser(json, true).parseObject(), Jwt.meta$$alg);
         alg.freeze();
         return alg;
+    }
+    
+    public static JwtPayload parsePayload(Map<String,Object> map) throws ApplicationException {
+        final JwtPayload payload = (JwtPayload) MapParser.asBonaPortable(map, Jwt.meta$$payload);
+        payload.freeze();
+        return payload;
     }
     
     public static JwtPayload parsePayload(String json) throws ApplicationException {
@@ -68,6 +82,7 @@ public class JwtConverter {
         info.setSessionRef          (payload.getS());
         info.setUserRef             (payload.getU());
         info.setRoleRef             (payload.getR());
+        info.setSessionId           (payload.getO());
         info.setLogLevel            (payload.getL());
         info.setLogLevelErrors      (payload.getE());
         info.setResource            (payload.getP());
@@ -102,6 +117,7 @@ public class JwtConverter {
         }
     }
     
+    /** Returns the JwtInfo as a Payload map. */
     public static Map<String,Object> asMap(JwtInfo info) {
         final Map<String, Object> jsonMap = new HashMap<String, Object>(16);
         new MapWithTagKeysComposer(jsonMap, JwtInfo.class$MetaData().getProperties()).writeObject(info);
