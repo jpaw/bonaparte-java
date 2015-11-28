@@ -42,6 +42,7 @@ package api.media XML PROPERTY factoryId 25 {
         required xenum MediaXType                   mediaType;
         required Ascii(6)                           defaultFileExtension;           // file extension (without a dot)
         required enum MediaCategory                 formatCategory;                 // which type of data is it?
+        required boolean                            isText;                         // false = raw data, true = text
         required Ascii(64)                          mimeType;                       // MIME type
     }
     

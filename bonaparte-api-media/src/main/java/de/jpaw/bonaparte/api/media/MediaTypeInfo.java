@@ -24,30 +24,30 @@ public class MediaTypeInfo {
     // static initializations
     static {
         final XEnumFactory<MediaXType> fct = MediaXType.myFactory;  // fileExt, isImage. isAudio, isRecord, isText, isBinary, mimeType
-        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.BONAPARTE),          "bon",  MediaCategory.RECORDS, "application/bonaparte"));
-        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.XML),                "xml",  MediaCategory.RECORDS, "application/xml"));
-        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.JSON),               "json", MediaCategory.RECORDS, "application/json"));
-        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.COMPACT_BONAPARTE),  "cb",   MediaCategory.RECORDS, "application/combo"));
-        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.XLSX),               "xlsx", MediaCategory.RECORDS, "application/vnd.ms-excel"));
-        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.XLS),                "xls",  MediaCategory.RECORDS, "application/vnd.ms-excel"));
-        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.CSV),                "csv",  MediaCategory.RECORDS, "text/csv"));
-        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.TEXT),               "txt",  MediaCategory.TEXT,    "text/plain"));
-        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.HTML),               "html", MediaCategory.TEXT,    "text/html"));
-        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.CSS),                "css",  MediaCategory.TEXT,    "text/css"));
-        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.MARKDOWN),           "md",   MediaCategory.TEXT,    "text/markdown"));
-        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.TEX),                "tex",  MediaCategory.TEXT,    "application/x-tex"));
-        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.LATEX),              "latex",MediaCategory.TEXT,    "application/x-latex"));
-        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.PDF),                "pdf",  MediaCategory.DOCUMENT,"application/pdf"));
-        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.DVI),                "dvi",  MediaCategory.DOCUMENT,"application/x-dvi"));
-        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.POSTSCRIPT),         "ps",   MediaCategory.DOCUMENT,"application/postscript"));
-        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.GIF),                "gif",  MediaCategory.IMAGE,   "image/gif"));
-        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.JPG),                "jpg",  MediaCategory.IMAGE,   "image/jpeg"));
-        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.PNG),                "png",  MediaCategory.IMAGE,   "image/png"));
-        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.WAV),                "wav",  MediaCategory.AUDIO,   "audio/x-wav"));
-        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.MP3),                "mp3",  MediaCategory.AUDIO,   "audio/mpeg"));
-        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.MP4),                "mp4",  MediaCategory.VIDEO,   "video/mpeg"));
-        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.MPG),                "mpg",  MediaCategory.VIDEO,   "video/mpeg"));
-        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.RAW),                "dat",  MediaCategory.OTHER,   "application/octet-stream"));
+        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.BONAPARTE),          "bon",  MediaCategory.RECORDS, true,  "application/bonaparte"));
+        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.XML),                "xml",  MediaCategory.RECORDS, true,  "application/xml"));
+        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.JSON),               "json", MediaCategory.RECORDS, true,  "application/json"));
+        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.COMPACT_BONAPARTE),  "cb",   MediaCategory.RECORDS, false, "application/combo"));
+        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.XLSX),               "xlsx", MediaCategory.RECORDS, false, "application/vnd.ms-excel"));
+        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.XLS),                "xls",  MediaCategory.RECORDS, false, "application/vnd.ms-excel"));
+        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.CSV),                "csv",  MediaCategory.RECORDS, true,  "text/csv"));
+        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.TEXT),               "txt",  MediaCategory.TEXT,    true,  "text/plain"));
+        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.HTML),               "html", MediaCategory.TEXT,    true,  "text/html"));
+        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.CSS),                "css",  MediaCategory.TEXT,    true,  "text/css"));
+        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.MARKDOWN),           "md",   MediaCategory.TEXT,    true,  "text/markdown"));
+        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.TEX),                "tex",  MediaCategory.TEXT,    true,  "application/x-tex"));
+        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.LATEX),              "latex",MediaCategory.TEXT,    true,  "application/x-latex"));
+        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.PDF),                "pdf",  MediaCategory.DOCUMENT,false, "application/pdf"));
+        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.DVI),                "dvi",  MediaCategory.DOCUMENT,false, "application/x-dvi"));
+        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.POSTSCRIPT),         "ps",   MediaCategory.DOCUMENT,true,  "application/postscript"));
+        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.GIF),                "gif",  MediaCategory.IMAGE,   false, "image/gif"));
+        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.JPG),                "jpg",  MediaCategory.IMAGE,   false, "image/jpeg"));
+        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.PNG),                "png",  MediaCategory.IMAGE,   false, "image/png"));
+        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.WAV),                "wav",  MediaCategory.AUDIO,   false, "audio/x-wav"));
+        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.MP3),                "mp3",  MediaCategory.AUDIO,   false, "audio/mpeg"));
+        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.MP4),                "mp4",  MediaCategory.VIDEO,   false, "video/mpeg"));
+        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.MPG),                "mpg",  MediaCategory.VIDEO,   false, "video/mpeg"));
+        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.RAW),                "dat",  MediaCategory.OTHER,   false, "application/octet-stream"));
     }
 
     public static MediaTypeDescriptor getFormatByMimeType(String mimeType) {
@@ -55,6 +55,6 @@ public class MediaTypeInfo {
     }
     
     public static MediaTypeDescriptor getFormatByType(MediaXType formatType) {
-        return mimeMap.get(formatType);
+        return reverseMimeMap.get(formatType);
     }
 }
