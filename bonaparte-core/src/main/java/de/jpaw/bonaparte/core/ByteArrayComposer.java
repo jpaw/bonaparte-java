@@ -74,6 +74,15 @@ public class ByteArrayComposer extends AbstractMessageComposer<RuntimeException>
         return bac.getBytes();
     }
 
+    /** Quick conversion utility method, for use by code generators. (null safe, avoids double copying of the result) */
+    public ByteArray marshalAsByteArray(ObjectReference di, BonaPortable x) {
+        if (x == null)
+            return ByteArray.ZERO_BYTE_ARRAY;
+        ByteArrayComposer bac = new ByteArrayComposer();
+        bac.addField(di, x);
+        return new ByteArray(bac.getBuffer(), 0, bac.getLength());
+    }
+
     /** Creates a new ByteArrayComposer, using this classes static default Charset **/
     public ByteArrayComposer() {
         this(ObjectReuseStrategy.defaultStrategy);
@@ -145,7 +154,7 @@ public class ByteArrayComposer extends AbstractMessageComposer<RuntimeException>
 
     /** allows to add raw data to the produced byte array. Use this for protocol support at beginning or end of a message */
     public void addRawData(byte [] data) {
-        work.append(data);
+        work.write(data);
     }
 
     /* *************************************************************************************************
