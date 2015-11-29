@@ -47,9 +47,10 @@ package api.media XML PROPERTY factoryId 25 {
     }
     
     class MediaData classId 101 {
-        required xenum MediaXType                   mediaType;
-        optional Unicode(8000000) allowControlChars text;
-        optional Binary(8000000)                    rawData;
+        required xenum MediaXType                   mediaType;                      // defines the content type
+        optional Unicode(8000000) allowControlChars text;                           // textual data stored here
+        optional Binary(8000000)                    rawData;                        // binary data
+        optional Json                               z;                              // variable attributes like encoding / charset, image width / height etc
     }
     
     class Image classId 102 extends MediaData {
