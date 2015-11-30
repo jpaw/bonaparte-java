@@ -17,6 +17,7 @@ public interface MediaTypes {
     public static final MediaXType MEDIA_XTYPE_MARKDOWN          = MediaXType.myFactory.getByEnum(MediaType.MARKDOWN);
     public static final MediaXType MEDIA_XTYPE_TEX               = MediaXType.myFactory.getByEnum(MediaType.TEX);
     public static final MediaXType MEDIA_XTYPE_LATEX             = MediaXType.myFactory.getByEnum(MediaType.LATEX);
+    public static final MediaXType MEDIA_XTYPE_URL               = MediaXType.myFactory.getByEnum(MediaType.URL);
     public static final MediaXType MEDIA_XTYPE_PDF               = MediaXType.myFactory.getByEnum(MediaType.PDF);
     public static final MediaXType MEDIA_XTYPE_DVI               = MediaXType.myFactory.getByEnum(MediaType.DVI);
     public static final MediaXType MEDIA_XTYPE_POSTSCRIPT        = MediaXType.myFactory.getByEnum(MediaType.POSTSCRIPT);
@@ -28,4 +29,5 @@ public interface MediaTypes {
     public static final MediaXType MEDIA_XTYPE_MP4               = MediaXType.myFactory.getByEnum(MediaType.MP4);
     public static final MediaXType MEDIA_XTYPE_MPG               = MediaXType.myFactory.getByEnum(MediaType.MPG);
     public static final MediaXType MEDIA_XTYPE_RAW               = MediaXType.myFactory.getByEnum(MediaType.RAW);
+    public static final MediaXType MEDIA_XTYPE_UNDEFINED         = MediaXType.myFactory.getByEnum(MediaType.UNDEFINED);
 }

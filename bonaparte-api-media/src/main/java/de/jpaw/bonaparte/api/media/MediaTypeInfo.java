@@ -37,6 +37,7 @@ public class MediaTypeInfo {
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.MARKDOWN),           "md",   MediaCategory.TEXT,    true,  "text/markdown"));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.TEX),                "tex",  MediaCategory.TEXT,    true,  "application/x-tex"));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.LATEX),              "latex",MediaCategory.TEXT,    true,  "application/x-latex"));
+        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.URL),                "url",  MediaCategory.TEXT,    true,  "application/x-uri"));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.PDF),                "pdf",  MediaCategory.DOCUMENT,false, "application/pdf"));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.DVI),                "dvi",  MediaCategory.DOCUMENT,false, "application/x-dvi"));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.POSTSCRIPT),         "ps",   MediaCategory.DOCUMENT,true,  "application/postscript"));

@@ -30,10 +30,11 @@ package api.auth XML PROPERTY factoryId 25 {
         ZONEINFO                = "zoneinfo",   // time zone
         TENANT_ID               = "i",          // alphanumeric ID of the tenant
         TENANT_REF              = "t",          // numeric ID of the tenant (internal key)
-        SESSION_REF             = "s",
+        SESSION_REF             = "s",          // a unique reference for all contents of this token except iat, jti, exp (i.e. same for refreshes) 
         USER_REF                = "u",
-        ROLE_REF                = "r",
-        SESSION_ID              = "o",
+        ROLE_REF                = "r",          // restriction to role
+        SESSION_ID              = "o",          // constant for a sequence of sessions, i.e. multiple tokens of same session_id but different session_ref may have language or tenant changes
+        QUOTA                   = "q",          // some (application specific) resource limitation, for example number of parallel requests, or total allowed CPU time
         LOG_LEVEL_OK            = "l",
         LOG_LEVEL_ERR           = "e",
         RESOURCE_FILTER         = "p",
@@ -76,6 +77,7 @@ package api.auth XML PROPERTY factoryId 25 {
         optional Long                   userRef             properties tag = "u";          // user reference
         optional Long                   roleRef             properties tag = "r";          // role restriction / reference
         optional Uuid                   sessionId           properties tag = "o";          // alphanumeric (UUID type) session ID
+        optional Integer                quota               properties tag = "q";          // resource quota
         optional Enum UserLogLevelType  logLevel            properties tag = "l";          // log level for messages processed OK
         optional Enum UserLogLevelType  logLevelErrors      properties tag = "e";          // log level for messages processed with error return (if different)
         optional resourceId             resource            properties tag = "p";          // permission resource restriction. If defined, then only access within / beneath this resource is allowed (if at all).
@@ -106,6 +108,7 @@ package api.auth XML PROPERTY factoryId 25 {
         optional Long                   u;          // user reference
         optional Long                   r;          // role restriction / reference
         optional Uuid                   o;          // alphanumeric (UUID type) session ID
+        optional Integer                q;          // resource quota
         optional Enum UserLogLevelType  l;          // log level for messages processed OK
         optional Enum UserLogLevelType  e;          // log level for messages processed with error return (if different)
         optional resourceId             p;          // permission resource restriction. If defined, then only access within / beneath this resource is allowed (if at all).
