@@ -83,6 +83,7 @@ public class JwtConverter {
         info.setUserRef             (payload.getU());
         info.setRoleRef             (payload.getR());
         info.setSessionId           (payload.getO());
+        info.setQuota               (payload.getQ());
         info.setLogLevel            (payload.getL());
         info.setLogLevelErrors      (payload.getE());
         info.setResource            (payload.getP());
