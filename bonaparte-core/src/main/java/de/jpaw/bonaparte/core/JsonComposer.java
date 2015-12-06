@@ -49,7 +49,9 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
     protected String remFieldName = null;
     protected final Appendable out;
     protected final boolean writeNulls;
-    protected final boolean writeTypeInfo;
+    protected final boolean writeTypeInfo;      // for every class, also output "@type" and the fully qualified name
+    protected final boolean writePqonInfo;      // for every class, also output "@PQON" and the partially qualified name
+    protected final boolean maybeWritePqonInfo; // for every class, also output "@PQON" and the partially qualified name, if the containing record allows subclassing
     protected final JsonEscaper jsonEscaper;
     
     protected enum MapMode {
@@ -103,19 +105,24 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
         this(out, false);
     }
     public JsonComposer(Appendable out, boolean writeNulls) {
-        this.out = out;
-        this.writeNulls = writeNulls;
-        this.writeTypeInfo = false;
-        this.jsonEscaper = new BonaparteJsonEscaper(out, this);
+        //this(out, writeNulls, false, true, new BonaparteJsonEscaper(out, this)); // this cannot be referenced
+        this.out                = out;
+        this.writeNulls         = writeNulls;
+        this.writeTypeInfo      = false;
+        this.writePqonInfo      = false;
+        this.maybeWritePqonInfo = true;
+        this.jsonEscaper        = new BonaparteJsonEscaper(out, this);
     }
     public JsonComposer(Appendable out, boolean writeNulls, JsonEscaper jsonEscaper) {
-        this(out, writeNulls, false, jsonEscaper);
+        this(out, writeNulls, false, false, true, jsonEscaper);
     }
-    public JsonComposer(Appendable out, boolean writeNulls, boolean writeTypeInfo, JsonEscaper jsonEscaper) {
-        this.out = out;
-        this.writeNulls = writeNulls;
-        this.writeTypeInfo = writeTypeInfo;
-        this.jsonEscaper = jsonEscaper;
+    public JsonComposer(Appendable out, boolean writeNulls, boolean writeTypeInfo, boolean writePqonInfo, boolean maybeWritePqonInfo, JsonEscaper jsonEscaper) {
+        this.out                = out;
+        this.writeNulls         = writeNulls;
+        this.writeTypeInfo      = writeTypeInfo;
+        this.writePqonInfo      = writePqonInfo;
+        this.maybeWritePqonInfo = maybeWritePqonInfo;
+        this.jsonEscaper        = jsonEscaper;
     }
 
     /** Checks if a field separator (',') must be written, and does so if required. Sets the separator to required for the next field. */
@@ -145,13 +152,6 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
             writeFieldName(di);
         }
     }
-
-//  /** Write output for a field. The contents is not null and has been converted to Json format already.
-//   * @throws IOException */
-//  protected void writeStringifiedPrimitive(FieldDefinition di, String encoded) throws IOException {
-//      writeOptionalFieldName(di);
-//      out.append(encoded);
-//  }
 
     protected void writeOptionalUnquotedString(FieldDefinition di, String s) throws IOException {
         if (di.getMultiplicity() != Multiplicity.SCALAR) {
@@ -235,14 +235,21 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
     @Override
     public void startObject(ObjectReference di, BonaCustom obj) throws IOException {
         out.append('{');
+        needFieldSeparator = false;
         if (writeTypeInfo) {
-            // create the class canonical name as a special field , to be compatible to json-io
+            // create the class canonical name as a special field, to be compatible to json-io
             jsonEscaper.outputAscii("@type");
             out.append(':');
             jsonEscaper.outputUnicodeNoControls(obj.getClass().getCanonicalName());
             needFieldSeparator = true;
-        } else {
-            needFieldSeparator = false;
+        }
+        if (writePqonInfo || (maybeWritePqonInfo && di.getAllowSubclasses())) {
+            // create the class partially qualified name as a special field, if required
+            writeSeparator();
+            jsonEscaper.outputAscii("@PQON");
+            out.append(':');
+            jsonEscaper.outputUnicodeNoControls(obj.ret$PQON());
+            needFieldSeparator = true;
         }
     }
 

@@ -30,8 +30,9 @@ import de.jpaw.util.ApplicationException;
 public class MessageParserException extends ApplicationException {
     private static final long serialVersionUID = 6578705245543364726L;
 
-    private static final int OFFSET = (CL_PARSER_ERROR * CLASSIFICATION_FACTOR) + 17000; // offset for all codes in this class
-    private static final int OFFSET3 = (CL_PARAMETER_ERROR * CLASSIFICATION_FACTOR) + 17000; // offset for all codes in this class
+    private static final int OFFSET  = (CL_PARSER_ERROR         * CLASSIFICATION_FACTOR) + 17000;
+    private static final int OFFSET3 = (CL_PARAMETER_ERROR      * CLASSIFICATION_FACTOR) + 17000;
+    private static final int OFFSET8 = (CL_INTERNAL_LOGIC_ERROR * CLASSIFICATION_FACTOR) + 17000;
 
     private final int characterIndex; // the byte count of the message at which the error occured
     private final String fieldName;   // if known, the name of the field where the error occured
@@ -100,6 +101,7 @@ public class MessageParserException extends ApplicationException {
     static public final int INVALID_CHAR                 = OFFSET + 61;
     static public final int UNSUPPORTED_CONVERSION       = OFFSET + 62;
     static public final int BINARY_TOO_LONG              = OFFSET + 63;
+    static public final int JSON_BAD_OBJECTREF           = OFFSET8 + 64;
     
 
     static {
@@ -166,6 +168,7 @@ public class MessageParserException extends ApplicationException {
         codeToDescription.put(INVALID_CHAR                 , "Invalid Character: must be String type and of length 1");
         codeToDescription.put(UNSUPPORTED_CONVERSION       , "Unsupported conversion between types");
         codeToDescription.put(BINARY_TOO_LONG              , "Binary data type too long");
+        codeToDescription.put(JSON_BAD_OBJECTREF           , "Invalid object reference definition (no subclassing allowed and no base type)");
     }
 
     /** Creates a parser exception with an explicitly defined position and class name. */

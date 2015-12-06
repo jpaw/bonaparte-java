@@ -15,7 +15,6 @@
  */
 package de.jpaw.bonaparte.core;
 
-import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -27,7 +26,7 @@ import org.slf4j.LoggerFactory;
 import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
 
 public class BonaPortableFactory {
-    private static final Logger logger = LoggerFactory.getLogger(BonaPortableFactory.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BonaPortableFactory.class);
 
     // Skip the next field and PathResolverTest may fail. Required to load the meta data classes in the correct order, required due to cyclic dependencies
     // of static fields and their initialization.
@@ -38,9 +37,9 @@ public class BonaPortableFactory {
     public static void init() {
     }
 
-    static private ConcurrentMap<String, BonaPortableClass<BonaPortable>> newMap = new ConcurrentHashMap<String, BonaPortableClass<BonaPortable>>();
+    static private ConcurrentMap<String, BonaPortableClass<? extends BonaPortable>> mapByPQON = new ConcurrentHashMap<String, BonaPortableClass<? extends BonaPortable>>(2048);
+    static private ConcurrentMap<String, BonaPortableClass<? extends BonaPortable>> mapByFQON = new ConcurrentHashMap<String, BonaPortableClass<? extends BonaPortable>>(1024);
 
-    static private ConcurrentMap<String, Class<? extends BonaPortable>> map = new ConcurrentHashMap<String, Class<? extends BonaPortable>>();
     static private String bonaparteClassDefaultPackagePrefix = "de.jpaw.bonaparte.pojos";
     static private Map<String, String> packagePrefixMap = new ConcurrentHashMap<String,String>(16);
     static {
@@ -60,12 +59,6 @@ public class BonaPortableFactory {
     static public boolean publishDefaultPrefix = true;          // required in environments which instantiate multiple classloaders for isolation (vert.x)
     static private boolean bonaparteClassDefaultPackagePrefixShouldBeRetrieved = true;
     static private final AtomicInteger initializationCounter = new AtomicInteger();
-
-    private static void registerClass(String name, Class<? extends BonaPortable> clatz) {
-        Class<? extends BonaPortable> oldClatz = map.putIfAbsent(name, clatz);
-        logger.debug("Factory: registered class {} {}", name,
-                (oldClatz == null ? "(was null before)" : oldClatz != clatz ? "(was different before!!!)" : "(same as before)"));
-    }
 
     // prevent instance creation
     private BonaPortableFactory() {
@@ -89,7 +82,25 @@ public class BonaPortableFactory {
         return null;
     }
 
-    // generalized factory: create an instance of the requested type. Caches class types.
+    /** For a partially qualified name, return the fully qualified name of the class.
+     * Uses the default prefix no no specific mapping has been found. */
+    public static String mapPqonToFqon(String name) throws MessageParserException {
+        String FQON = null;
+        int lastDot = name.lastIndexOf('.');
+        if ((lastDot == 0) || (lastDot >= (name.length() - 1))) {
+            throw new MessageParserException(MessageParserException.BAD_OBJECT_NAME, null, -1, name);
+        }
+        if (packagePrefixMap != null && lastDot > 0) {
+            FQON = mapPackage(name);  // attempt, perhaps returns null
+        }
+
+        if (FQON != null)
+            return FQON;
+        else
+            return getBonaparteClassDefaultPackagePrefix() + "." + name;
+    }
+    
+    // generalized factory: create an instance of the requested type, which is specified by partially qualified name.
     // We receive PQCN (partially qualified class name) as parameter.
     // Anything before the last '.' is the Bonaparte package name (which is null is there is no '.').
     // The package determines the possible bundle specification, not-null bundles are loaded in their
@@ -97,89 +108,74 @@ public class BonaPortableFactory {
     // Package to bundle mapping is contained in the static class data, however we cannot known that
     // before actually loading the class. Therefore, bundle information must be fed in separately
     // and can only be consistency-checked afterwards.
-    public static BonaPortable createObjectOLD(String name) throws MessageParserException {
 
-        BonaPortableClass<BonaPortable> bclass = newMap.get(name);
+    
+    // new method, caches the BClass, to avoid reflection to create a new instance
+    // parameter name is the PQON of the desired class
+    public static BonaPortable createObject(String pqon) throws MessageParserException {
+        BonaPortableClass<? extends BonaPortable> bclass = mapByPQON.get(pqon);
         if (bclass != null)
-            return bclass.newInstance();  // shortcut!
-
-        String FQON = null;
-        int lastDot = name.lastIndexOf('.');
-        if ((lastDot == 0) || (lastDot >= (name.length() - 1))) {
-            throw new MessageParserException(MessageParserException.BAD_OBJECT_NAME, null, -1, name);
-        }
-        // the case lastDot < 0 is possible (classes without a package name)
-        if (packagePrefixMap != null && lastDot > 0) {
-            FQON = mapPackage(name);
-        }
-
-        if (FQON == null) {
-            // prefix by fixed package or no package at all (lastDot < 0)
-            FQON = getBonaparteClassDefaultPackagePrefix() + "." + name;
-        }
-
-        Class<? extends BonaPortable> f = map.get(FQON);
-        if (f == null) {
-            try {
-                logger.debug("Factory: loading class {}", FQON);
-                f = Class.forName(FQON, true, Thread.currentThread().getContextClassLoader()).asSubclass(BonaPortable.class);
-                Method m = f.getDeclaredMethod("ret$BonaPortableClass");
-                BonaPortableClass<BonaPortable> x = (BonaPortableClass<BonaPortable>)m.invoke(null);
-                newMap.put(name, x);
-                return x.newInstance();
-            } catch (Exception e) {
-                logger.error("exception {} for {}, my CL = {}, OCCL = {}", e.getMessage(),
-                        FQON, A_WAY_TO_GET_MY_CLASSLOADER.getClass().getClassLoader().toString(),
-                        Thread.currentThread().getContextClassLoader().toString());
-            }
+            return bclass.newInstance();  // new instance without reflection
+        
+        // determine fully qualified pqon of class and use reflection to retrieve an instance the first time
+        BonaPortable instance = createObjectSub(mapPqonToFqon(pqon));
+        
+        // store it in the cache for next time
+        mapByPQON.putIfAbsent(pqon, instance.ret$BonaPortableClass());
+        return instance;
+    }
+    
+    public static BonaPortable createObjectByFqon(String fqon) throws MessageParserException {
+        BonaPortableClass<? extends BonaPortable> bclass = mapByFQON.get(fqon);
+        if (bclass != null)
+            return bclass.newInstance();  // new instance without reflection
+        
+        // determine fully qualified pqon of class and use reflection to retrieve an instance the first time
+        BonaPortable instance = createObjectSub(fqon);
+        
+        // store it in the cache for next time
+        mapByFQON.putIfAbsent(fqon, instance.ret$BonaPortableClass());
+        return instance;
+    }
+    
+    private static BonaPortable createObjectSub(String FQON) throws MessageParserException {
+        try {
+            LOGGER.debug("Factory: loading class {}", FQON);
+            Class<? extends BonaPortable> f = Class.forName(FQON, true, Thread.currentThread().getContextClassLoader()).asSubclass(BonaPortable.class);
+            return f.newInstance();
+        } catch (ClassNotFoundException e) {
+            LOGGER.error("ClassNotFound exception for {}, my CL = {}, OCCL = {}",
+                    FQON, A_WAY_TO_GET_MY_CLASSLOADER.getClass().getClassLoader().toString(),
+                    Thread.currentThread().getContextClassLoader().toString());
+        } catch (InstantiationException e) {
+            LOGGER.error("Instantiation exception for {}", FQON);
+        } catch (IllegalAccessException e) {
+            LOGGER.error("IllegalAccess exception for {}", FQON);
         }
         throw new MessageParserException(MessageParserException.CLASS_NOT_FOUND, "class", 0, FQON);
     }
 
-    // new method, caches the BClass, to avoid reflection to create a new instance
-    // parameter name is the PQON of the desired class
-    public static BonaPortable createObject(String name) throws MessageParserException {
-        String FQON = null;
-        BonaPortable instance = null;
-        int lastDot = name.lastIndexOf('.');
-        if ((lastDot == 0) || (lastDot >= (name.length() - 1))) {
-            throw new MessageParserException(MessageParserException.BAD_OBJECT_NAME, null, -1, name);
+    
+    public static BonaPortableClass<? extends BonaPortable> getBClassForPqon(String pqon) throws MessageParserException {
+        BonaPortableClass<? extends BonaPortable> bclass = mapByPQON.get(pqon);
+        if (bclass == null) {
+            bclass = createObjectSub(mapPqonToFqon(pqon)).ret$BonaPortableClass();
+            // also cache it now
+            mapByPQON.putIfAbsent(pqon, bclass);
         }
-        if (packagePrefixMap != null && lastDot > 0) {
-            FQON = mapPackage(name);
-        }
-
-        if (FQON == null) {
-            // prefix by fixed package
-            FQON = getBonaparteClassDefaultPackagePrefix() + "." + name;
-        }
-
-        Class<? extends BonaPortable> f = map.get(FQON);
-        if (f == null) {
-            try {
-                logger.debug("Factory: loading class {}", FQON);
-                f = Class.forName(FQON, true, Thread.currentThread().getContextClassLoader()).asSubclass(BonaPortable.class);
-                registerClass(FQON, f);
-            } catch (ClassNotFoundException e) {
-                logger.error("ClassNotFound exception for {}, my CL = {}, OCCL = {}",
-                        FQON, A_WAY_TO_GET_MY_CLASSLOADER.getClass().getClassLoader().toString(),
-                        Thread.currentThread().getContextClassLoader().toString());
-            }
-        }
-        if (f != null) {
-            try {
-                instance = f.newInstance();
-            } catch (InstantiationException e) {
-                logger.error("Instantiation exception for {}", name);
-            } catch (IllegalAccessException e) {
-                logger.error("IllegalAccess exception for {}", name);
-            }
-        }
-        if (instance == null)
-            throw new MessageParserException(MessageParserException.CLASS_NOT_FOUND, "class", 0, FQON);
-        return instance;
+        return bclass;
     }
-
+    
+    public static BonaPortableClass<? extends BonaPortable> getBClassForFqon(String fqon) throws MessageParserException {
+        BonaPortableClass<? extends BonaPortable> bclass = mapByFQON.get(fqon);
+        if (bclass == null) {
+            bclass = createObjectSub(fqon).ret$BonaPortableClass();
+            // also cache it now
+            mapByFQON.putIfAbsent(fqon, bclass);
+        }
+        return bclass;
+    }
+    
     // auto getters and setters only following
     public static Map<String, String> getPackagePrefixMap() {
         return packagePrefixMap;
@@ -195,7 +191,7 @@ public class BonaPortableFactory {
             // bonaparteClassDefaultPackagePrefix = System.getProperty(BONAPARTE_DEFAULT_PACKAGE_PREFIX, bonaparteClassDefaultPackagePrefix);
             if (possibleOverride != null) {
                 bonaparteClassDefaultPackagePrefix = possibleOverride;
-                logger.info("setting default package prefix to {} from system property, my CL is {}, OCCL is {}",
+                LOGGER.info("setting default package prefix to {} from system property, my CL is {}, OCCL is {}",
                         bonaparteClassDefaultPackagePrefix,
                         A_WAY_TO_GET_MY_CLASSLOADER.getClass().getClassLoader().toString(),
                         Thread.currentThread().getContextClassLoader().toString());
@@ -210,7 +206,7 @@ public class BonaPortableFactory {
         BonaPortableFactory.bonaparteClassDefaultPackagePrefix = bonaparteClassDefaultPackagePrefix;
         bonaparteClassDefaultPackagePrefixShouldBeRetrieved = false;   // I got it from the application now
         if (publishDefaultPrefix) {
-            logger.info("publishing new default package prefix {}, my CL is {}, OCCL is {}, cnt = {}",
+            LOGGER.info("publishing new default package prefix {}, my CL is {}, OCCL is {}, cnt = {}",
                     bonaparteClassDefaultPackagePrefix,
                     A_WAY_TO_GET_MY_CLASSLOADER.getClass().getClassLoader().toString(),
                     Thread.currentThread().getContextClassLoader().toString(),
