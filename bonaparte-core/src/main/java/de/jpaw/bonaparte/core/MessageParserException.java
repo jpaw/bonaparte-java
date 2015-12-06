@@ -102,6 +102,7 @@ public class MessageParserException extends ApplicationException {
     static public final int UNSUPPORTED_CONVERSION       = OFFSET + 62;
     static public final int BINARY_TOO_LONG              = OFFSET + 63;
     static public final int JSON_BAD_OBJECTREF           = OFFSET8 + 64;
+    static public final int WRONG_CLASS                  = OFFSET + 65;
     
 
     static {
@@ -169,6 +170,7 @@ public class MessageParserException extends ApplicationException {
         codeToDescription.put(UNSUPPORTED_CONVERSION       , "Unsupported conversion between types");
         codeToDescription.put(BINARY_TOO_LONG              , "Binary data type too long");
         codeToDescription.put(JSON_BAD_OBJECTREF           , "Invalid object reference definition (no subclassing allowed and no base type)");
+        codeToDescription.put(WRONG_CLASS                  , "Got an object of a different class");
     }
 
     /** Creates a parser exception with an explicitly defined position and class name. */

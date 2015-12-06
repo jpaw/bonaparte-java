@@ -106,11 +106,10 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
         // fallback: use the lower bound of di, if provided
         if (lowerBound == null) {
             // also no lower bound? Cannot work around that!
-            throw new MessageParserException(MessageParserException.JSON_NO_PQON);
+            throw new MessageParserException(MessageParserException.JSON_NO_PQON, di.getName(), -1, null);
         }
         // issue a warning, at least
-        LOGGER.warn("Parsed object cannot be determined uniquely, no type information provided and subclasses allowed for {}",
-                lowerBound.getName());
+        LOGGER.warn("Parsed object cannot be determined uniquely, no type information provided and subclasses allowed for {}: ({}...)", di.getName(), lowerBound.getName());
         return BonaPortableFactory.createObject(lowerBound.getName());
     }
     

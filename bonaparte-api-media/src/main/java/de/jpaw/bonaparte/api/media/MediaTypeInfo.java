@@ -3,6 +3,7 @@ package de.jpaw.bonaparte.api.media;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import de.jpaw.bonaparte.core.MimeTypes;
 import de.jpaw.bonaparte.pojos.api.media.MediaCategory;
 import de.jpaw.bonaparte.pojos.api.media.MediaType;
 import de.jpaw.bonaparte.pojos.api.media.MediaTypeDescriptor;
@@ -24,10 +25,10 @@ public class MediaTypeInfo {
     // static initializations
     static {
         final XEnumFactory<MediaXType> fct = MediaXType.myFactory;  // fileExt, isImage. isAudio, isRecord, isText, isBinary, mimeType
-        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.BONAPARTE),          "bon",  MediaCategory.RECORDS, true,  "application/bonaparte"));
-        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.XML),                "xml",  MediaCategory.RECORDS, true,  "application/xml"));
-        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.JSON),               "json", MediaCategory.RECORDS, true,  "application/json"));
-        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.COMPACT_BONAPARTE),  "cb",   MediaCategory.RECORDS, false, "application/combo"));
+        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.BONAPARTE),          "bon",  MediaCategory.RECORDS, true,  MimeTypes.MIME_TYPE_BONAPARTE));
+        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.XML),                "xml",  MediaCategory.RECORDS, true,  MimeTypes.MIME_TYPE_XML));
+        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.JSON),               "json", MediaCategory.RECORDS, true,  MimeTypes.MIME_TYPE_JSON));
+        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.COMPACT_BONAPARTE),  "cb",   MediaCategory.RECORDS, false, MimeTypes.MIME_TYPE_COMPACT_BONAPARTE));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.XLSX),               "xlsx", MediaCategory.RECORDS, false, "application/vnd.ms-excel"));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.XLS),                "xls",  MediaCategory.RECORDS, false, "application/vnd.ms-excel"));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.CSV),                "csv",  MediaCategory.RECORDS, true,  "text/csv"));

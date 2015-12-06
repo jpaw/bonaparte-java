@@ -8,6 +8,8 @@ Bundle-Vendor: Michael Bischoff
 Require-Bundle: joda-time;bundle-version="2.6";visibility:=reexport,
  com.google.guava;bundle-version="18.0";visibility:=reexport
 Export-Package: de.jpaw.bonaparte.api,
+ de.jpaw.bonaparte.api.codecs,
+ de.jpaw.bonaparte.api.codecs.impl,
  de.jpaw.bonaparte.pojos.api,
  de.jpaw.bonaparte.pojos.apip,
  de.jpaw.bonaparte.pojos.apiw,

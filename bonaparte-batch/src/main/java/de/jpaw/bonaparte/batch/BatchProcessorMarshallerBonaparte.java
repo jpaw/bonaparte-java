@@ -6,13 +6,13 @@ import de.jpaw.batch.api.BatchProcessorMarshaller;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.ByteArrayComposer;
 import de.jpaw.bonaparte.core.ByteArrayParser;
+import de.jpaw.bonaparte.core.MimeTypes;
 
 public class BatchProcessorMarshallerBonaparte implements BatchProcessorMarshaller<BonaPortable> {
-    private static final String MEDIA_TYPE = "application/bonaparte";
 
     @Override
     public String getContentType() {
-        return MEDIA_TYPE;
+        return MimeTypes.MIME_TYPE_BONAPARTE;
     }
 
     @Override
