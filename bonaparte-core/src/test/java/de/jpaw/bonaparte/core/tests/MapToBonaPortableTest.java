@@ -18,7 +18,7 @@ public class MapToBonaPortableTest {
     /** Demonstrates how a JSON String can be converted back to a BonaPortable. This is effectively a 2 step process. */
     @Test
     public void testJsonToBonaPortable() throws Exception {
-        String json = "{ \"$PQON\": \"meta.ParsedFoldingComponent\", \"fieldname\":\"foo\"   ,  \"index\": 42 }";
+        String json = "{ \"" + MimeTypes.JSON_FIELD_PQON + "\": \"meta.ParsedFoldingComponent\", \"fieldname\":\"foo\"   ,  \"index\": 42 }";
         Map<String,Object> testMap = new JsonParser(json, false).parseObject();
         BonaPortable test = MapParser.asBonaPortable(testMap, StaticMeta.OUTER_BONAPORTABLE);
         Assert.assertNotNull(test);
