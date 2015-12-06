@@ -301,7 +301,7 @@ public class CompactJsonComposer extends AbstractCompactComposer {
     public void writeObject(BonaCustom o) throws IOException {
         if (o != null) {
             out.write(OBJECT_BEGIN_JSON);
-            super.stringOut("$PQON");
+            super.stringOut(MimeTypes.JSON_FIELD_PQON);
             super.stringOut(o.ret$PQON());
             // push array nesting
             final int savedArrayDepth = arrayDepth;

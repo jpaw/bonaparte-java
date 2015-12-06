@@ -57,7 +57,7 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
     
     public MapParser(Map<String, Object> map, boolean instantInMillis) {
         this.map = map;
-        // currentClass = map.get("$PQON");
+        // currentClass = map.get(MimeTypes.JSON_FIELD_PQON);
         this.instantInMillis = instantInMillis;
         this.spu = new StringParserUtil(new ParsePositionProvider() {
 
@@ -91,13 +91,13 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
         }
         
         // variable contents. see if we got a partially qualified name
-        Object pqon1 = map.get("$PQON");
+        Object pqon1 = map.get(MimeTypes.JSON_FIELD_PQON);
         if (pqon1 != null && pqon1 instanceof String) {
             // lucky day, we got the partially qualified name
             return BonaPortableFactory.createObject((String)pqon1);
         }
         
-        Object pqon2 = map.get("@type");
+        Object pqon2 = map.get(MimeTypes.JSON_FIELD_FQON);
         if (pqon2 != null && pqon2 instanceof String) {
             // also lucky, we got a fully qualified name
             return BonaPortableFactory.createObjectByFqon((String)pqon2);
@@ -108,7 +108,20 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
             // also no lower bound? Cannot work around that!
             throw new MessageParserException(MessageParserException.JSON_NO_PQON, di.getName(), -1, null);
         }
-        // issue a warning, at least
+        
+        if (LOGGER.isTraceEnabled()) {
+            // output the map we got
+            LOGGER.trace("Cannot convert Map to BonaPortable, Map dump is");
+            for (Map.Entry<String, Object> me : map.entrySet())
+                LOGGER.trace("    \"{}\": {}", me.getKey(), me.getValue() == null ? "null" : me.getValue().toString());
+        }
+        
+        // severe issue if the base class is abstract
+        if (lowerBound.getIsAbstract()) {
+            LOGGER.warn("Parsed object cannot be determined, no type information provided and base object is abstract. {}: ({}...)", di.getName(), lowerBound.getName());
+            throw new MessageParserException(MessageParserException.JSON_NO_PQON, di.getName(), -1, null);
+        }
+        // issue a warning, at least, and use the base class
         LOGGER.warn("Parsed object cannot be determined uniquely, no type information provided and subclasses allowed for {}: ({}...)", di.getName(), lowerBound.getName());
         return BonaPortableFactory.createObject(lowerBound.getName());
     }

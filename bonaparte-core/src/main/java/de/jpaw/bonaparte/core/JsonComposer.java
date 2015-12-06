@@ -238,7 +238,7 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
         needFieldSeparator = false;
         if (writeTypeInfo) {
             // create the class canonical name as a special field, to be compatible to json-io
-            jsonEscaper.outputAscii("@type");
+            jsonEscaper.outputAscii(MimeTypes.JSON_FIELD_FQON);
             out.append(':');
             jsonEscaper.outputUnicodeNoControls(obj.getClass().getCanonicalName());
             needFieldSeparator = true;
@@ -246,7 +246,7 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
         if (writePqonInfo || (maybeWritePqonInfo && di.getAllowSubclasses())) {
             // create the class partially qualified name as a special field, if required
             writeSeparator();
-            jsonEscaper.outputAscii("@PQON");
+            jsonEscaper.outputAscii(MimeTypes.JSON_FIELD_PQON);
             out.append(':');
             jsonEscaper.outputUnicodeNoControls(obj.ret$PQON());
             needFieldSeparator = true;

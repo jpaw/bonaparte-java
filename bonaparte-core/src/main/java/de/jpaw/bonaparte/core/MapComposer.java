@@ -49,7 +49,7 @@ public class MapComposer extends NoOpComposer<RuntimeException> implements Messa
     static public Map<String,Object> marshal(BonaCustom obj, boolean storeNulls, boolean storePQON) {
         final Map<String, Object> map = new HashMap<String, Object>();
         if (storePQON)
-            map.put("$PQON", obj.ret$PQON());
+            map.put(MimeTypes.JSON_FIELD_PQON, obj.ret$PQON());
         MapComposer mc = new MapComposer(map, storeNulls, storePQON);
         obj.serializeSub(mc);
         return mc.getStorage();

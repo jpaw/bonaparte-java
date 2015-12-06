@@ -165,7 +165,7 @@ public class MessageParserException extends ApplicationException {
         codeToDescription.put(JSON_EXCEPTION               , "JSON parsing exception");
         codeToDescription.put(JSON_ID                      , "Map key is not a valid JSON identifier");
         codeToDescription.put(JSON_DUPLICATE_KEY           , "Map key of JSON map occurs multiple times");
-        codeToDescription.put(JSON_NO_PQON                 , "No map entry $PQON of type String found");
+        codeToDescription.put(JSON_NO_PQON                 , "No map entry @PQON of type String found");
         codeToDescription.put(INVALID_CHAR                 , "Invalid Character: must be String type and of length 1");
         codeToDescription.put(UNSUPPORTED_CONVERSION       , "Unsupported conversion between types");
         codeToDescription.put(BINARY_TOO_LONG              , "Binary data type too long");

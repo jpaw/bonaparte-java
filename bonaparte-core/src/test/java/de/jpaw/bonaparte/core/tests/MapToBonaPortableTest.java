@@ -8,6 +8,7 @@ import org.testng.annotations.Test;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.MapParser;
+import de.jpaw.bonaparte.core.MimeTypes;
 import de.jpaw.bonaparte.core.StaticMeta;
 import de.jpaw.bonaparte.util.ToStringHelper;
 import de.jpaw.json.JsonParser;
@@ -47,7 +48,7 @@ public class MapToBonaPortableTest {
     public void testMapToBonaPortable() throws Exception {
         Map<String,Object> testMap = new HashMap<String,Object>(10);
         
-        testMap.put("$PQON",     "meta.ParsedFoldingComponent");
+        testMap.put(MimeTypes.JSON_FIELD_PQON, "meta.ParsedFoldingComponent");
         testMap.put("fieldname", "foo");
         testMap.put("index",     "42");     // show that converter also maps Strings to Integer where required!
         
@@ -62,11 +63,11 @@ public class MapToBonaPortableTest {
         Map<String,Object> testMap = new HashMap<String,Object>(10);
         Map<String,Object> testMap2 = new HashMap<String,Object>(10);
         
-        testMap2.put("$PQON",     "meta.ParsedFoldingComponent");
+        testMap2.put(MimeTypes.JSON_FIELD_PQON, "meta.ParsedFoldingComponent");
         testMap2.put("fieldname", "bar");
         testMap2.put("index",     999);
         
-        testMap.put("$PQON",     "meta.ParsedFoldingComponent");
+        testMap.put(MimeTypes.JSON_FIELD_PQON, "meta.ParsedFoldingComponent");
         testMap.put("fieldname", "foo");
         testMap.put("index",     42);
         testMap.put("alphaIndex", "EUR");
