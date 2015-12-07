@@ -36,7 +36,7 @@ public class CompactByteArrayComposer extends AbstractCompactComposer implements
     /** Quick conversion utility method, for use by code generators. (null safe, avoids double copying of the result) */
     public static ByteArray marshalAsByteArray(ObjectReference di, BonaPortable x) {
         if (x == null)
-            return ByteArray.ZERO_BYTE_ARRAY;
+            return null; // consistent with the other methods: f(null) = null  //  ByteArray.ZERO_BYTE_ARRAY;
         ByteBuilder b = new ByteBuilder();
         new CompactByteArrayComposer(b, false).addField(di, x);
         return new ByteArray(b.getCurrentBuffer(), 0, b.length());

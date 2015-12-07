@@ -77,7 +77,7 @@ public class ByteArrayComposer extends AbstractMessageComposer<RuntimeException>
     /** Quick conversion utility method, for use by code generators. (null safe, avoids double copying of the result) */
     public ByteArray marshalAsByteArray(ObjectReference di, BonaPortable x) {
         if (x == null)
-            return ByteArray.ZERO_BYTE_ARRAY;
+            return null; // consistent with the other methods: f(null) = null  //  ByteArray.ZERO_BYTE_ARRAY;
         ByteArrayComposer bac = new ByteArrayComposer();
         bac.addField(di, x);
         return new ByteArray(bac.getBuffer(), 0, bac.getLength());

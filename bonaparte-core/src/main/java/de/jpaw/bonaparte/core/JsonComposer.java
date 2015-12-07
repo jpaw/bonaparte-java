@@ -63,6 +63,8 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
     protected boolean needRecordSeparator = false;
 
     public static String toJsonString(BonaCustom obj) {
+        if (obj == null)
+            return null;
         StringBuilder buff = new StringBuilder(4000);
         JsonComposer bjc = new JsonComposer(buff);
         try {
@@ -74,6 +76,8 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
         return buff.toString();
     }
     public static String toJsonString(Collection<? extends BonaCustom> obj) {
+        if (obj == null)
+            return null;
         StringBuilder buff = new StringBuilder(4000);
         JsonComposer bjc = new JsonComposer(buff);
         try {
@@ -85,6 +89,8 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
         return buff.toString();
     }
     public static String toJsonString(Iterable<? extends BonaCustom> obj) {
+        if (obj == null)
+            return null;
         StringBuilder buff = new StringBuilder(4000);
         JsonComposer bjc = new JsonComposer(buff);
         try {
