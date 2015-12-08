@@ -3,7 +3,7 @@ Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-ManifestVersion: 2
 Bundle-Name: bonaparte core libraries
 Bundle-SymbolicName: bonaparte.core
-Bundle-Version: 3.7.7.qualifier
+Bundle-Version: 3.7.7
 Bundle-Vendor: Michael Bischoff
 Require-Bundle: joda-time;bundle-version="2.6";visibility:=reexport,
  com.google.guava;bundle-version="18.0";visibility:=reexport
