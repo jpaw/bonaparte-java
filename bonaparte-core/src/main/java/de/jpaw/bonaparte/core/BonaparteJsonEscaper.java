@@ -10,6 +10,8 @@ public class BonaparteJsonEscaper extends ExtendedJsonEscaperForAppendables {
 
     // static utility method: serialize Object (single field)
     public static String asJson(Object obj) {
+        if (obj == null)
+            return null;
         StringBuilder buff = new StringBuilder(100);
         try {
             new BonaparteJsonEscaper(buff).outputJsonElement(obj);
@@ -21,6 +23,8 @@ public class BonaparteJsonEscaper extends ExtendedJsonEscaperForAppendables {
 
     // static utility method: serialize Object (single field)
     public static String asJson(Map<String, Object> obj) {
+        if (obj == null)
+            return null;
         StringBuilder buff = new StringBuilder(100);
         try {
             new BonaparteJsonEscaper(buff).outputJsonObject(obj);
@@ -32,6 +36,8 @@ public class BonaparteJsonEscaper extends ExtendedJsonEscaperForAppendables {
 
     // static utility method: serialize Object (array)
     public static String asJson(List<?> obj) {
+        if (obj == null)
+            return null;
         StringBuilder buff = new StringBuilder(100);
         try {
             new BonaparteJsonEscaper(buff).outputJsonArray(obj);
