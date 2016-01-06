@@ -59,7 +59,7 @@
         <mina.version>2.0.7</mina.version>              <!-- http://mina.apache.org/ 2.0.7 -->
         <camel.version>2.16.1</camel.version>           <!-- http://camel.apache.org/ --> <!-- UPTODATE 2015-10-10 -->
         <vertx.version>2.1.6</vertx.version>            <!-- http://vertx.io/ UPTODATE 2014-11-13 -->
-        <vertx3.version>3.1.0</vertx3.version>          <!-- UPTODATE 2015-04-10 -->
+        <vertx3.version>3.2.0</vertx3.version>          <!-- UPTODATE 2015-12-31 -->
         
         <!-- distributed caches -->
         <ehcache.version>2.9.1</ehcache.version>        <!-- UPTODATE 2015-03-05 -->
