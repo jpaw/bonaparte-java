@@ -5,7 +5,7 @@
     <parent>
         <groupId>de.jpaw</groupId>
         <artifactId>jpaw-se-parent</artifactId>
-        <version>1.1.1-SNAPSHOT</version>
+        <version>1.1.0</version>
         <relativePath/>
     </parent>
 
@@ -20,21 +20,21 @@
             <dependency>
                 <groupId>de.jpaw</groupId>
                 <artifactId>jpaw-bom</artifactId>
-                <version>1.5.1-SNAPSHOT</version>
+                <version>1.5.0</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>de.jpaw</groupId>
                 <artifactId>fixedpoint-bom</artifactId>
-                <version>0.7.1-SNAPSHOT</version>
+                <version>0.7.0</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>de.jpaw</groupId>
                 <artifactId>jdp-bom</artifactId>
-                <version>0.3.1-SNAPSHOT</version>
+                <version>0.3.0</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
@@ -44,7 +44,7 @@
     <properties>
         <!-- override definition in jpaw-se-parent -->
         <xtend.version>2.9.1</xtend.version>            <!-- UPTODATE 2015-12-31 -->
-
+        
         <!-- define revisions of other jpaw.de projects, not covered by plugin management -->
         <bonaparte-plugin.version>4.0.2-SNAPSHOT</bonaparte-plugin.version>
         <bonaparte-plugin-commons-lang.version>2.6</bonaparte-plugin-commons-lang.version>      <!-- currently needed by the plugins -->
