@@ -77,7 +77,7 @@
         <hibernate-validator.version>5.2.2.Final</hibernate-validator.version>      <!-- validator >= 5.0 need javax.el-api as well! -->
         <javax-el-api.version>2.2.5</javax-el-api.version>
         
-        <zk.version>6.5.4</zk.version>                  <!-- ZK 8 released Oct 14 -->
+        <zk.version>8.0.1</zk.version>                  <!-- UPTODATE 2016-01-16 -->
     </properties>
 
     <build>
