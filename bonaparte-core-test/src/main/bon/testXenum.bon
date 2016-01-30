@@ -9,10 +9,15 @@ package testXenum {
     enum Abc {
         ALPHA="A", BRAVO="B", CHARLIE="C"
     }
+    enum Xyz {
+        XAVER = "X", YOU = "Y", ZORK = "Z"
+    }
 
-    xenum XColor is Color : 2;
-    xenum MoreColors is BW extends XColor;
-    xenum XAbc is Abc;
+    xenum XColor            is Color : 2;
+    xenum MoreColors        is BW extends XColor;
+    
+    xenum XAbc              is Abc;
+    xenum XmoreLetters      is Xyz extends XAbc; 
 
     class SimpleSampleUsingEnum {
         enum Color          myColor;
@@ -31,5 +36,8 @@ package testXenum {
         xenum MoreColors    myMoreColors;  // not yet working, typecast issue!
     }
 
-    xenumset MyXEnumSet is XAbc ;
+    xenumset MyXEnumSet     is XAbc ;
+    
+    enumset<String> AbcSet  is Abc;
+    xenumset XAlphabet      is XAbc;
 }
