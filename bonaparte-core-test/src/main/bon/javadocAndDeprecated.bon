@@ -6,6 +6,6 @@ package javadoc {
         int commentedField;         // more comments on field
 
         @Deprecated
-        long deprecatedField;
+        Long deprecatedField;
     }
 }
