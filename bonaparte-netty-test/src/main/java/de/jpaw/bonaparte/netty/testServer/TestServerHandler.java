@@ -42,22 +42,22 @@ public class TestServerHandler extends SimpleChannelInboundHandler<BonaPortable>
     private AtomicInteger counterInThread = new AtomicInteger(0);
     private final int thisThreadId;
 
-    private static final Logger logger = LoggerFactory.getLogger(TestServerHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestServerHandler.class);
 
     TestServerHandler() {
         thisThreadId = threadSerial.incrementAndGet();
-        logger.info("Creating new thread {}", thisThreadId);
+        LOGGER.info("Creating new thread {}", thisThreadId);
     }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        logger.info("New incoming channel requested for thread {}", thisThreadId);
+        LOGGER.info("New incoming channel requested for thread {}", thisThreadId);
         // sslHandler not yet valid here, handshake only starts now!
         super.channelActive(ctx);
     }
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        logger.info("Channel for thread {} closed after {} requests", thisThreadId, counterInThread.get());
+        LOGGER.info("Channel for thread {} closed after {} requests", thisThreadId, counterInThread.get());
         // number of requests is cumulative, as this instance is reused for future new connections
         super.channelInactive(ctx);
     }
@@ -73,7 +73,7 @@ public class TestServerHandler extends SimpleChannelInboundHandler<BonaPortable>
         } else {
             // cipher = " (unencrypted)";
         }
-        // logger.info("Received an object of type " + request.getClass().getCanonicalName() + cipher);
+        // LOGGER.info("Received an object of type " + request.getClass().getCanonicalName() + cipher);
         Request myRequest = (Request) request;
         Response myResponse = new Response();
 
@@ -93,7 +93,7 @@ public class TestServerHandler extends SimpleChannelInboundHandler<BonaPortable>
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        logger.warn("Unexpected exception from downstream.", cause);
+        LOGGER.warn("Unexpected exception from downstream.", cause);
         ctx.close();
     }
 }

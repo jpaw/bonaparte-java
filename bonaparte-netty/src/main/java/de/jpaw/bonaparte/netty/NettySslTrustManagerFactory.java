@@ -15,7 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class NettySslTrustManagerFactory extends TrustManagerFactorySpi {
-    private static final Logger logger = LoggerFactory.getLogger(NettySslTrustManagerFactory.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(NettySslTrustManagerFactory.class);
 
     private static final TrustManager DUMMY_TRUST_MANAGER = new X509TrustManager() {
         @Override
@@ -29,14 +29,14 @@ public class NettySslTrustManagerFactory extends TrustManagerFactorySpi {
             // You should do something in the real world.
             // You will reach here only if you enabled client certificate auth,
             // as described in SecureChatSslContextFactory.
-            logger.error("UNKNOWN CLIENT CERTIFICATE: {}", chain[0].getSubjectDN());
+            LOGGER.error("UNKNOWN CLIENT CERTIFICATE: {}", chain[0].getSubjectDN());
         }
 
         @Override
         public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
             // Always trust - it is an example.
             // You should do something in the real world.
-            logger.error("UNKNOWN SERVER CERTIFICATE: {}", chain[0].getSubjectDN());
+            LOGGER.error("UNKNOWN SERVER CERTIFICATE: {}", chain[0].getSubjectDN());
         }
     };
 

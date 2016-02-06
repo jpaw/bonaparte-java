@@ -12,7 +12,7 @@ import de.jpaw.bonaparte.netty.util.KeyStoreIo;
 
 
 public class NettySslContextFactory {
-    private static final Logger logger = LoggerFactory.getLogger(NettySslContextFactory.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(NettySslContextFactory.class);
     private static final String keyFilename = System.getProperty("user.home") + File.separator + ".key";
 
     private static final String PROTOCOL = "TLS";
@@ -41,7 +41,7 @@ public class NettySslContextFactory {
         } catch (Exception e) {
             throw new Error("Failed to initialize the client-side SSLContext", e);
         }
-        logger.info("Assigning client and server SSL contexts");
+        LOGGER.info("Assigning client and server SSL contexts");
         SERVER_CONTEXT = serverContext;
         CLIENT_CONTEXT = clientContext;
     }

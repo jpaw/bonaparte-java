@@ -14,7 +14,7 @@ import de.jpaw.bonaparte.core.ByteArrayParser;
 import de.jpaw.bonaparte.core.MessageParserException;
 
 public class BonaparteNettyDecoder extends ByteToMessageDecoder {
-    private static final Logger logger = LoggerFactory.getLogger(BonaparteNettyDecoder.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BonaparteNettyDecoder.class);
     private final ErrorForwarder errorForwarder;
 
     public BonaparteNettyDecoder(ErrorForwarder errorForwarder) {
@@ -24,7 +24,7 @@ public class BonaparteNettyDecoder extends ByteToMessageDecoder {
     public static byte [] getData(ByteBuf msg) {
         byte[] array;
         if (msg.readableBytes() <= 0 || msg.getByte(msg.readableBytes()-1) != '\n') {
-            logger.debug("Ignoring {} bytes of data - no NL at end of message", msg.readableBytes());
+            LOGGER.debug("Ignoring {} bytes of data - no NL at end of message", msg.readableBytes());
             return null;  // message not yet complete
         }
 
@@ -49,16 +49,16 @@ public class BonaparteNettyDecoder extends ByteToMessageDecoder {
         if (array == null)
             return;  // no data yet...
 
-        logger.debug("Received {} bytes of data", array.length);
+        LOGGER.debug("Received {} bytes of data", array.length);
         try {
             ByteArrayParser p = new ByteArrayParser(array, 0, -1);
             BonaPortable obj = p.readRecord();
-            logger.debug("Successfully parsed data of class {}", obj.getClass());
+            LOGGER.debug("Successfully parsed data of class {}", obj.getClass());
             out.add(obj);
         } catch (MessageParserException e) {
             // http://co-de-generation.blogspot.de/2012/09/slf4j-doesnt-log-exception-stacktrace.html
-            logger.error("Cannot parse " + array.length + " bytes of data: Exception {}", e);
-            logger.error("Message received is <{}>", array.length <= 200 ? new String(array) : new String(array).substring(0, 200));
+            LOGGER.error("Cannot parse " + array.length + " bytes of data: Exception {}", e);
+            LOGGER.error("Message received is <{}>", array.length <= 200 ? new String(array) : new String(array).substring(0, 200));
             if (errorForwarder == null) {
                 throw e;
             } else {

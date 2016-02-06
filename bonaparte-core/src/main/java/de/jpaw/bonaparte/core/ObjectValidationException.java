@@ -29,7 +29,6 @@ import de.jpaw.util.ApplicationException;
 
 public class ObjectValidationException extends ApplicationException {
     private static final long serialVersionUID = 8530206162841355351L;
-//    private static final Logger logger = LoggerFactory.getLogger(MessageParserException.class);
 
     private static final int OFFSET = CL_VALIDATION_ERROR * CLASSIFICATION_FACTOR + 16000;  // offset for all codes in this class
     private static final int ILE_OFFSET = CL_INTERNAL_LOGIC_ERROR * CLASSIFICATION_FACTOR + 16000;  // offset for all codes in this class

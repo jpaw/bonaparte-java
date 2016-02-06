@@ -16,21 +16,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class KeyStoreIo {
-    private static final Logger logger = LoggerFactory.getLogger(KeyStoreIo.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(KeyStoreIo.class);
 
     static public KeyStore keyStoreFromFile(String filename) {
         KeyStore ks;
         try {
             ks = KeyStore.getInstance("JKS");
         } catch (KeyStoreException e) {
-            logger.error("Cannot instantiate keystore JKS: {}", e);
+            LOGGER.error("Cannot instantiate keystore JKS: {}", e);
             return null;
         }
 
         // read the password from a file in the user's HOME
         String pwFilename = filename + "storePW";
         String keyStoreFilename = filename + "store";
-        logger.info("Reading keystore from file {} with PW in {}", pwFilename, keyStoreFilename);
+        LOGGER.info("Reading keystore from file {} with PW in {}", pwFilename, keyStoreFilename);
 
         try (BufferedReader rpw = new BufferedReader(new FileReader(pwFilename))) {
             String line = rpw.readLine();
@@ -42,11 +42,11 @@ public class KeyStoreIo {
                 ks.load(kis, password);
                 kis.close();
             } catch (Exception e) {
-                logger.error("Cannot read from keystore file: {}", e);
+                LOGGER.error("Cannot read from keystore file: {}", e);
                 return null;
             }
         } catch (IOException e) {
-            logger.error("Cannot read from pw file: {}", e);
+            LOGGER.error("Cannot read from pw file: {}", e);
             return null;
         }
 
@@ -67,12 +67,12 @@ public class KeyStoreIo {
         try {
             kmf = KeyManagerFactory.getInstance(algorithm);
         } catch (NoSuchAlgorithmException e2) {
-            logger.error("Cannot instantiate key manager factory: {}", e2);
+            LOGGER.error("Cannot instantiate key manager factory: {}", e2);
             return null;
         }
 
         String keyPwFilename = filename + "PW";
-        logger.info("Reading key password from file {}", keyPwFilename);
+        LOGGER.info("Reading key password from file {}", keyPwFilename);
         try (BufferedReader rpw = new BufferedReader(new FileReader(keyPwFilename))) {
             String line = rpw.readLine();
             rpw.close();
@@ -80,7 +80,7 @@ public class KeyStoreIo {
             char[] keyPassword = line.toCharArray();
             kmf.init(ks, keyPassword);
         } catch (Exception e) {
-            logger.error("Cannot read from key pw file: {}", e);
+            LOGGER.error("Cannot read from key pw file: {}", e);
             return null;
         }
 
@@ -92,14 +92,14 @@ public class KeyStoreIo {
     static public KeyManagerFactory keyStoreFromFile(String keyFilename, String pwFilename, String type) {
         char[] keyPassword;
         String keyPwFilename = pwFilename;
-        logger.info("Reading key password from file {}", keyPwFilename);
+        LOGGER.info("Reading key password from file {}", keyPwFilename);
         try (BufferedReader rpw = new BufferedReader(new FileReader(keyPwFilename))) {
             String line = rpw.readLine();
             rpw.close();
             // get user password
             keyPassword = line.toCharArray();
         } catch (Exception e) {
-            logger.error("Cannot read from key pw file: {}", e);
+            LOGGER.error("Cannot read from key pw file: {}", e);
             return null;
         }
 
@@ -107,7 +107,7 @@ public class KeyStoreIo {
         try {
             ks = KeyStore.getInstance(type);
         } catch (KeyStoreException e) {
-            logger.error("Cannot instantiate keystore {}: {}", type, e);
+            LOGGER.error("Cannot instantiate keystore {}: {}", type, e);
             return null;
         }
 
@@ -115,7 +115,7 @@ public class KeyStoreIo {
             ks.load(kis, keyPassword);
             kis.close();
         } catch (Exception e) {
-            logger.error("Cannot read from keystore file: {}", e);
+            LOGGER.error("Cannot read from keystore file: {}", e);
             return null;
         }
 
@@ -127,14 +127,14 @@ public class KeyStoreIo {
         try {
             kmf = KeyManagerFactory.getInstance(algorithm);
         } catch (NoSuchAlgorithmException e2) {
-            logger.error("Cannot instantiate key manager factory: {}", e2);
+            LOGGER.error("Cannot instantiate key manager factory: {}", e2);
             return null;
         }
 
         try {
             kmf.init(ks, keyPassword);
         } catch (UnrecoverableKeyException | KeyStoreException | NoSuchAlgorithmException e) {
-            logger.error("Cannot init kmf", e);
+            LOGGER.error("Cannot init kmf", e);
             return null;
         }
 

@@ -28,7 +28,7 @@ import de.jpaw.bonaparte.core.ByteArrayParser;
 import de.jpaw.bonaparte.core.MessageParserException;
 
 public class Receiver implements MessageListener, ExceptionListener {
-    private static final Logger logger = LoggerFactory.getLogger(Receiver.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Receiver.class);
     private final Queue queue;
     private final boolean doObjectMessages;
     private final ConnectionFactory cf;
@@ -93,18 +93,18 @@ public class Receiver implements MessageListener, ExceptionListener {
                 int afterOk = numOk.get();
                 int afterExc = numExc.get();
                 if (afterOk > beforeOk) {
-                    logger.info("Read {} messages OK, {} exceptions", afterOk - beforeOk, afterExc - beforeExc);
+                    LOGGER.info("Read {} messages OK, {} exceptions", afterOk - beforeOk, afterExc - beforeExc);
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
-            logger.error("an error occurred: " + e);
+            LOGGER.error("an error occurred: " + e);
         }
     }
 
     @Override
     public void onException(JMSException exception) {
-        logger.error("an error occurred: " + exception);
+        LOGGER.error("an error occurred: " + exception);
 
     }
 
