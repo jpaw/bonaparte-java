@@ -36,7 +36,7 @@ public class TestStringEnumSetOperations {
     
     private void testIntersect(String a, String b, String common) throws Exception {
         AbcSet x = new AbcSet(a);
-        x.intersectWith(new AbcSet(b));             // Set Difference
+        x.intersectWith(new AbcSet(b));             // Set Xor
         
         Assert.assertEquals(x, new AbcSet(common)); // Set equals
         
@@ -45,7 +45,6 @@ public class TestStringEnumSetOperations {
         
         Assert.assertEquals(x1.getBitmap(), common);// String equals
     }
-    
     
     @Test
     public void testEnumSetIntersect() throws Exception {
@@ -61,6 +60,7 @@ public class TestStringEnumSetOperations {
         testIntersect("",   "AB", "");
     }
 
+    
     private void testDifference(String a, String b, String difference) throws Exception {
         AbcSet x = new AbcSet(a);
         x.exclude(new AbcSet(b));                       // Set exclusion
@@ -72,7 +72,6 @@ public class TestStringEnumSetOperations {
         
         Assert.assertEquals(x1.getBitmap(), difference);// String equals
     }
-    
     
     @Test
     public void testEnumSetDifference() throws Exception {
@@ -90,11 +89,40 @@ public class TestStringEnumSetOperations {
         testDifference("ABC", "AC", "B");
     }
 
+    
+    private void testXor(String a, String b, String flipped) throws Exception {
+        AbcSet x = new AbcSet(a);
+        x.flip(new AbcSet(b));                       // Set xor
+        
+        Assert.assertEquals(x, new AbcSet(flipped)); // Set equals
+        
+        AbcSet x1 = new AbcSet(a);
+        x1.flip(b);                                  // String arg xor
+        
+        Assert.assertEquals(x1.getBitmap(), flipped);// String equals
+    }
+    
+    @Test
+    public void testEnumSetXor() throws Exception {
+        testXor("AB", "BC", "AC");
+        testXor("AB", "C",  "ABC");
+        testXor("AB", "B",  "A");
+        testXor("AB", "A",  "B");
+        testXor("BC", "AB", "AC");
+        testXor("B",  "C",  "BC");
+        testXor("B",  "AB", "A");
+        testXor("AB", "AB", "");
+        testXor("AB", "",   "AB");
+        testXor("",   "AB", "AB");
+        testXor("ABC", "B", "AC");
+        testXor("ABC", "AC", "B");
+    }
+    
+
     private void testInit(String a, String result) throws Exception {
         AbcSet x = new AbcSet(a);
         Assert.assertEquals(x.getBitmap(), result);    // String equals
     }
-    
     
     @Test
     public void testEnumSetInit() throws Exception {

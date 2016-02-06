@@ -46,7 +46,6 @@ public class TestStringXEnumSetOperations {
         Assert.assertEquals(x1.getBitmap(), common);// String equals
     }
     
-    
     @Test
     public void testEnumSetIntersect() throws Exception {
         testIntersect("AB", "BC", "B");
@@ -61,6 +60,7 @@ public class TestStringXEnumSetOperations {
         testIntersect("",   "AB", "");
     }
 
+    
     private void testDifference(String a, String b, String difference) throws Exception {
         XAlphabet x = new XAlphabet(a);
         x.exclude(new XAlphabet(b));                       // Set exclusion
@@ -72,7 +72,6 @@ public class TestStringXEnumSetOperations {
         
         Assert.assertEquals(x1.getBitmap(), difference);// String equals
     }
-    
     
     @Test
     public void testEnumSetDifference() throws Exception {
@@ -90,11 +89,40 @@ public class TestStringXEnumSetOperations {
         testDifference("ABC", "AC", "B");
     }
 
+    
+    private void testXor(String a, String b, String flipped) throws Exception {
+        XAlphabet x = new XAlphabet(a);
+        x.flip(new XAlphabet(b));                       // Set xor
+        
+        Assert.assertEquals(x, new XAlphabet(flipped)); // Set equals
+        
+        XAlphabet x1 = new XAlphabet(a);
+        x1.flip(b);                                  // String arg xor
+        
+        Assert.assertEquals(x1.getBitmap(), flipped);// String equals
+    }
+    
+    @Test
+    public void testEnumSetXor() throws Exception {
+        testXor("AB", "BC", "AC");
+        testXor("AB", "C",  "ABC");
+        testXor("AB", "B",  "A");
+        testXor("AB", "A",  "B");
+        testXor("BC", "AB", "AC");
+        testXor("B",  "C",  "BC");
+        testXor("B",  "AB", "A");
+        testXor("AB", "AB", "");
+        testXor("AB", "",   "AB");
+        testXor("",   "AB", "AB");
+        testXor("ABC", "B", "AC");
+        testXor("ABC", "AC", "B");
+    }
+
+    
     private void testInit(String a, String result) throws Exception {
         XAlphabet x = new XAlphabet(a);
         Assert.assertEquals(x.getBitmap(), result);    // String equals
     }
-    
     
     @Test
     public void testEnumSetInit() throws Exception {
