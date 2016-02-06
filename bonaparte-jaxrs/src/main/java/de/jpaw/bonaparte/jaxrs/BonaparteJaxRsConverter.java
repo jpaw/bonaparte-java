@@ -9,13 +9,14 @@ import de.jpaw.bonaparte.core.ByteArrayComposer;
 import de.jpaw.bonaparte.core.ByteArrayParser;
 import de.jpaw.bonaparte.core.MessageParser;
 import de.jpaw.bonaparte.core.MessageParserException;
+import de.jpaw.bonaparte.core.MimeTypes;
 
 @Provider
-@Produces(ByteArrayComposer.MIME_TYPE)
+@Produces(MimeTypes.MIME_TYPE_BONAPARTE)
 public class BonaparteJaxRsConverter extends AbstractBonaparteConverters<RuntimeException> {
 
     public BonaparteJaxRsConverter() {
-        super(ByteArrayComposer.MIME_TYPE);
+        super(MimeTypes.MIME_TYPE_BONAPARTE);
     }
 
     @Override

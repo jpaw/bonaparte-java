@@ -8,14 +8,15 @@ import javax.ws.rs.ext.Provider;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.BufferedMessageWriter;
 import de.jpaw.bonaparte.core.CompactByteArrayComposer;
+import de.jpaw.bonaparte.core.MimeTypes;
 
 // converter for a list or set of BonaPortables. Unfortunately, due to type erasure, we cannot really verify the element types by the class reference
 @Provider
-@Produces(CompactByteArrayComposer.MIME_TYPE)
+@Produces(MimeTypes.MIME_TYPE_COMPACT_BONAPARTE)
 public class CompactJaxRsIterableConverter extends AbstractBonaparteConverter<Iterable<BonaPortable>, IOException> {
 
     public CompactJaxRsIterableConverter() {
-        super(CompactByteArrayComposer.MIME_TYPE, Iterable.class);
+        super(MimeTypes.MIME_TYPE_COMPACT_BONAPARTE, Iterable.class);
     }
 
     @Override

@@ -125,7 +125,7 @@ package de.jpaw.bonaparte.core;
  */
 
 public interface CompactConstants {
-    public static final String MIME_TYPE = "application/compact";
+//    public static final String MIME_TYPE = MimeTypes.MIME_TYPE_COMPACT_BONAPARTE;
     public static final String EMPTY_STRING = new String("");
 
     public static final int COMPACT_BOOLEAN_FALSE = 0x9e;

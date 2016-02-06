@@ -26,7 +26,7 @@ package de.jpaw.bonaparte.core;
  */
 
 public interface ByteArrayConstants {
-    public static final String MIME_TYPE = MimeTypes.MIME_TYPE_BONAPARTE;
+//    public static final String MIME_TYPE = MimeTypes.MIME_TYPE_BONAPARTE;
     public static final String EMPTY_STRING = new String("");
     // constants
     public static final byte PLUS_SIGN = '+';

@@ -11,13 +11,14 @@ import de.jpaw.bonaparte.core.CompactByteArrayComposer;
 import de.jpaw.bonaparte.core.CompactByteArrayParser;
 import de.jpaw.bonaparte.core.MessageParser;
 import de.jpaw.bonaparte.core.MessageParserException;
+import de.jpaw.bonaparte.core.MimeTypes;
 
 @Provider
-@Produces(CompactByteArrayComposer.MIME_TYPE)
+@Produces(MimeTypes.MIME_TYPE_COMPACT_BONAPARTE)
 public class CompactJaxRsConverter extends AbstractBonaparteConverters<IOException> {
 
     public CompactJaxRsConverter() {
-        super(CompactByteArrayComposer.MIME_TYPE);
+        super(MimeTypes.MIME_TYPE_COMPACT_BONAPARTE);
     }
 
     @Override

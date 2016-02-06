@@ -24,6 +24,7 @@ import javax.ws.rs.core.MediaType
 import javax.ws.rs.core.Response
 import javax.xml.bind.JAXBContext
 import de.jpaw.bonaparte.core.JsonComposer
+import de.jpaw.bonaparte.core.MimeTypes
 
 /**
  * REST Service to provide currency data is various formats.
@@ -37,6 +38,7 @@ import de.jpaw.bonaparte.core.JsonComposer
 //@Consumes(MediaType.APPLICATION_JSON)
 //@Produces(MediaType.APPLICATION_JSON)
 class CurrencyService extends Application {
+    private static final String MIME_TYPE_BON = MimeTypes.MIME_TYPE_BONAPARTE
     private static final String MIME_TYPE_XLS = "application/vnd.ms-excel"
     private static final String MIME_TYPE_XLSX = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     private static final JAXBContext context = XmlUtil.getJaxbContext("de.jpaw.bonaparte.pojos.examples.jaxrs")
@@ -64,7 +66,7 @@ class CurrencyService extends Application {
             case 'bon': {
                 val bac = new ByteArrayComposer();
                 bac.writeTransmission(objs)
-                Response.ok(bac.bytes, ByteArrayComposer.MIME_TYPE).build
+                Response.ok(bac.bytes, MIME_TYPE_BON).build
             }
             case 'json': {
                 Response.ok(JsonComposer.toJsonString(objs), MediaType.APPLICATION_JSON).build
@@ -139,14 +141,14 @@ class CurrencyService extends Application {
     // showcase for the jaxrs converter
     @GET
     @Path("bon")
-    @Produces(ByteArrayComposer.MIME_TYPE)
+    @Produces(MIME_TYPE_BON)
     def public allAsBonaPortable() {
         return Currency.availableCurrencies.map[toBon]
     }
 
     @GET
     @Path("bon/{code}")
-    @Produces(ByteArrayComposer.MIME_TYPE)
+    @Produces(MIME_TYPE_BON)
     def public asBonaPortable(@PathParam("code") String code) {
         val currency = Currency.getInstance(code)
         if (currency === null)
