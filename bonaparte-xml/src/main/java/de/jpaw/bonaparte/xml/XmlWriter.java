@@ -19,9 +19,9 @@ public class XmlWriter<T extends BonaPortable> extends AbstractMessageWriter<XML
 
     private final boolean formatted;
     private final boolean fragment;
-    private Marshaller m;
-    private String dataTag;
-    private XMLStreamWriter sw;
+    private final Marshaller m;
+    private final String dataTag;
+    private final XMLStreamWriter sw;
     private final Class<T> cls;
     
     public XmlWriter(Marshaller m, OutputStream os, boolean formatted, boolean fragment, Class<T> cls, String outerElementName) throws Exception {
@@ -47,7 +47,7 @@ public class XmlWriter<T extends BonaPortable> extends AbstractMessageWriter<XML
     public void startTransmission() throws XMLStreamException {
         sw.writeStartDocument();
         conditionalNewline(sw);
-        sw.writeStartElement(dataTag == null ? "data" : dataTag);
+        sw.writeStartElement(dataTag);
         conditionalNewline(sw);
     }
 

@@ -31,7 +31,7 @@ public class MediaTypeInfo {
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.COMPACT_BONAPARTE),  "cb",   MediaCategory.RECORDS, false, MimeTypes.MIME_TYPE_COMPACT_BONAPARTE));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.XLSX),               "xlsx", MediaCategory.RECORDS, false, "application/vnd.ms-excel"));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.XLS),                "xls",  MediaCategory.RECORDS, false, "application/vnd.ms-excel"));
-        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.CSV),                "csv",  MediaCategory.RECORDS, true,  "text/csv"));
+        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.CSV),                "csv",  MediaCategory.RECORDS, true,  MimeTypes.MIME_TYPE_CSV));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.TEXT),               "txt",  MediaCategory.TEXT,    true,  "text/plain"));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.HTML),               "html", MediaCategory.TEXT,    true,  "text/html"));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.CSS),                "css",  MediaCategory.TEXT,    true,  "text/css"));
