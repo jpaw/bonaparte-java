@@ -23,7 +23,6 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.nio.charset.Charset;
 import java.util.Arrays;
 
 import de.jpaw.bonaparte.core.BonaPortable;
@@ -37,6 +36,7 @@ import de.jpaw.bonaparte.core.MessageParserException;
 import de.jpaw.bonaparte.core.StringBuilderComposer;
 import de.jpaw.bonaparte.core.StringBuilderParser;
 import de.jpaw.bonaparte.testrunner.MultiTestRunner;
+import de.jpaw.util.ByteArray;
 
 /**
  * The SimpleTestRunner class.
@@ -54,8 +54,6 @@ import de.jpaw.bonaparte.testrunner.MultiTestRunner;
  */
 
 public class SimpleTestRunner {
-    static private final Charset defaultCharset = Charset.forName("UTF-8");          // always use UTF-8 unless explicitly requested differently
-
     static private void dumpToFile(String filename, byte [] data) throws Exception {
         OutputStream stream = new FileOutputStream(filename);
         stream.write(data);
@@ -87,7 +85,7 @@ public class SimpleTestRunner {
         sbc.reset();
         sbc.writeRecord(src);
         byte [] sbcResult = sbc.getBytes();
-        StringBuilder work = new StringBuilder(new String (sbcResult, defaultCharset));
+        StringBuilder work = new StringBuilder(new String (sbcResult, ByteArray.CHARSET_UTF8));
         MessageParser<MessageParserException> w1 = new StringBuilderParser(work, 0, -1);
         BonaPortable dst1 = w1.readRecord();
         assert dst1.getClass() == src.getClass() : "returned obj is of wrong type (StringBuilderParser)"; // assuming we have one class loader only
@@ -138,7 +136,7 @@ public class SimpleTestRunner {
          ***********************************************************************************/
 
         System.out.println("parser StringBuilder");
-        StringBuilder work = new StringBuilder(new String (bacResult, defaultCharset));
+        StringBuilder work = new StringBuilder(new String (bacResult, ByteArray.CHARSET_UTF8));
         MessageParser<MessageParserException> w1 = new StringBuilderParser(work, 0, -1);
         BonaPortable dst1 = w1.readRecord();
         assert dst1.getClass() == src.getClass() : "returned obj is of wrong type (StringBuilderParser)"; // assuming we have one class loader only

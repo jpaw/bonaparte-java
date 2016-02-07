@@ -1,6 +1,5 @@
 package de.jpaw.bonaparte.benchmarks;
 
-import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 
 import org.openjdk.jmh.annotations.Benchmark;
@@ -17,6 +16,7 @@ import de.jpaw.bonaparte.core.ByteArrayParser;
 import de.jpaw.bonaparte.core.CompactByteArrayComposer;
 import de.jpaw.bonaparte.core.CompactByteArrayParser;
 import de.jpaw.bonaparte.core.MessageParserException;
+import de.jpaw.bonaparte.core.Settings;
 import de.jpaw.bonaparte.pojos.myTypes.BoxedTypes;
 import de.jpaw.bonaparte.pojos.myTypes.Primitives;
 import de.jpaw.util.ByteBuilder;
@@ -50,7 +50,7 @@ import de.jpaw.util.ByteBuilder;
 public class BonaparteBoxedVsPrimitives {
     public static Primitives primObj = new Primitives((byte)88, (short)-23001, 827462846, 9278439287429437L, true, (float) 3.14, 2.718281828, 'X');
     public static BoxedTypes boxedObj = new BoxedTypes((byte)88, (short)-23001, 827462846, 9278439287429437L, true, (float) 3.14, 2.718281828, 'X');
-    public static ByteBuilder builder = new ByteBuilder(2000, StandardCharsets.UTF_8);
+    public static ByteBuilder builder = new ByteBuilder(2000, Settings.UTF8_CHARSET);
     public static CompactByteArrayComposer cbac = new CompactByteArrayComposer(builder, true);
     public static ByteArrayComposer bac = new ByteArrayComposer();
     public static byte [] dataCompactPrimitives;

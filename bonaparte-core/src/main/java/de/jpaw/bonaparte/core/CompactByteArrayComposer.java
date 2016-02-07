@@ -133,6 +133,16 @@ public class CompactByteArrayComposer extends AbstractCompactComposer implements
 
     // overwrite some methods in order to eat the checked IOException
     @Override
+    public void close() {
+        try {
+            super.close();
+        } catch (IOException e) {
+            // IOException from ByteArray operation???
+            throw new RuntimeException(e);
+        }
+    }
+    
+    @Override
     public void addField(ObjectReference di, BonaCustom obj) {
         try {
             super.addField(di, obj);

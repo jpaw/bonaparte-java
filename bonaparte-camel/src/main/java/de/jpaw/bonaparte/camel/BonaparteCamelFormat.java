@@ -31,8 +31,8 @@ import de.jpaw.bonaparte.core.BonaCustom;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.ByteArrayConstants;
 import de.jpaw.bonaparte.core.StringBuilderComposer;
-import de.jpaw.bonaparte.core.StringBuilderConstants;
 import de.jpaw.bonaparte.core.StringBuilderParser;
+import de.jpaw.util.ByteArray;
 
 /**
  * The BonaparteCamelFormat class.
@@ -49,7 +49,7 @@ public final class BonaparteCamelFormat implements DataFormat {
     // configuration
     private boolean writeCRs = false;
     // the character set used for backend communication: UTF-8 or ISO-8859-something or windows-125x
-    private Charset useCharset = Charset.forName("UTF-8"); // Charset.defaultCharset(); or "windows-1252"
+    private Charset useCharset = ByteArray.CHARSET_UTF8; // Charset.defaultCharset(); or "windows-1252"
     private int initialBufferSize = 16000;  // start big to avoid frequent reallocation 
     
     
