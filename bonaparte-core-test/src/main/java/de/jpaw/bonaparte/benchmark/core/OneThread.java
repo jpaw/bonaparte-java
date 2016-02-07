@@ -6,7 +6,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.nio.charset.Charset;
 import java.util.Date;
 
 import com.google.gson.Gson;
@@ -19,10 +18,9 @@ import de.jpaw.bonaparte.core.MessageParser;
 import de.jpaw.bonaparte.core.MessageParserException;
 import de.jpaw.bonaparte.core.StringBuilderComposer;
 import de.jpaw.bonaparte.core.StringBuilderParser;
+import de.jpaw.util.ByteArray;
 
 public class OneThread implements Runnable {
-    static private final Charset useCharset = Charset.forName("UTF-8"); // Charset.defaultCharset(); or "windows-1252"
-
     private final int method;
     private final int callsPerThread;
     private final int initialBufferSize;
@@ -89,7 +87,7 @@ public class OneThread implements Runnable {
     private void sbp() throws MessageParserException {
         methodName = "Bonaparte StringBuilder Parser";
         for (int i = 0; i < callsPerThread; ++i) {
-            StringBuilder work = new StringBuilder(new String(srcdata, useCharset));
+            StringBuilder work = new StringBuilder(new String(srcdata, ByteArray.CHARSET_UTF8));
             MessageParser<MessageParserException> w1 = new StringBuilderParser(work, 0, -1);
             @SuppressWarnings("unused")
             BonaPortable dst1 = w1.readRecord();

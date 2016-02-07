@@ -7,7 +7,7 @@ import de.jpaw.bonaparte.core.ByteArrayComposer;
 import de.jpaw.bonaparte.core.ByteArrayParser;
 import de.jpaw.socket.SimpleRawTcpClient;
 
-public class SimpleTcpClient extends SimpleRawTcpClient {
+public class SimpleTcpClient extends SimpleRawTcpClient implements INetworkDialog {
     private final ByteArrayComposer w;
 
     public SimpleTcpClient(String hostname, int port, boolean useSsl) throws IOException {
@@ -19,6 +19,7 @@ public class SimpleTcpClient extends SimpleRawTcpClient {
         w = new ByteArrayComposer();
     }
 
+    @Override
     public BonaPortable doIO(BonaPortable request) throws Exception {
         boolean foundDelimiter = false;
         w.reset();
@@ -43,5 +44,4 @@ public class SimpleTcpClient extends SimpleRawTcpClient {
         ByteArrayParser p = new ByteArrayParser(responseBuffer, 0, haveBytes);
         return p.readRecord();
     }
-
 }

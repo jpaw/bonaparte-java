@@ -17,6 +17,8 @@ package de.jpaw.bonaparte.core;
 
 import java.nio.charset.Charset;
 
+import de.jpaw.util.ByteArray;
+
 /**
  * Defines the parameters for most serializers / marshallers and deserializers / unmarshallers of the bonaparte format.
  *
@@ -26,8 +28,7 @@ import java.nio.charset.Charset;
 public abstract class Settings implements StaticMeta {
     // static private boolean defaultCRs = System.lineSeparator().length() == 2; // on Unix: false, on Windows: true (this check requires Java 7 which we do not have here)
     static private boolean defaultCRs = System.getProperty("line.separator").length() == 2;     // on Unix: false, on Windows: true
-    static private Charset defaultCharset = Charset.forName("UTF-8");                           // always use UTF-8 unless explicitly requested differently
-    static public final Charset UTF8_CHARSET = Charset.forName("UTF-8");                        // StandardCharsets.UTF8 not yet available in Java 6...
+    static private Charset defaultCharset = ByteArray.CHARSET_UTF8;                           // always use UTF-8 unless explicitly requested differently
     static private ParseSkipNonNulls defaultSkipNonNullsBehavior = ParseSkipNonNulls.WARN;      // allow improved downwards compatibility
     static public final int COLLECTION_COUNT_NULL = -1;                                         // int returned by parseArrayStart and parseMapStart to indicate a null array / map (in contrast to one with 0 entries)
     static public final int COLLECTION_COUNT_REF = -2;                                          // int used internally in the compact format which indicates the content was some external one to many relationship.

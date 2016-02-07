@@ -28,10 +28,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.jpaw.bonaparte.core.BonaCustom;
+import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.ByteArrayComposer;
 import de.jpaw.bonaparte.core.ByteArrayConstants;
 import de.jpaw.bonaparte.core.ByteArrayParser;
-import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.util.ByteArray;
 
 /**
  * The NewDataFormat class.
@@ -47,7 +48,7 @@ public final class Bonaparte2ByteDataFormat implements DataFormat {
     private static final Logger logger = LoggerFactory.getLogger(Bonaparte2ByteDataFormat.class);
     private boolean writeCRs = false;
     // the character set used for backend communication: UTF-8 or ISO-8859-something or windows-125x
-    private Charset useCharset = Charset.forName("UTF-8"); // Charset.defaultCharset(); or "windows-1252"
+    private Charset useCharset = ByteArray.CHARSET_UTF8; // Charset.defaultCharset(); or "windows-1252"
     private int initialBufferSize = 16000;  // start big to avoid frequent reallocation 
     
     private void toStream(ByteArrayComposer w, OutputStream stream) throws IOException {

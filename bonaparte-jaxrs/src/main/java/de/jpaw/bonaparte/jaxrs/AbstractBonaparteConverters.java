@@ -14,7 +14,7 @@ import javax.ws.rs.ext.MessageBodyReader;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.MessageParser;
 import de.jpaw.bonaparte.core.MessageParserException;
-import de.jpaw.bonaparte.core.Settings;
+import de.jpaw.util.ByteArray;
 import de.jpaw.util.ByteBuilder;
 
 public abstract class AbstractBonaparteConverters<E extends Exception> extends AbstractBonaparteConverter<BonaPortable, E> implements MessageBodyReader<BonaPortable> {
@@ -37,7 +37,7 @@ public abstract class AbstractBonaparteConverters<E extends Exception> extends A
     public BonaPortable readFrom(Class<BonaPortable> cls, Type type, Annotation[] anno, MediaType mediaType, MultivaluedMap<String, String> args,
             InputStream is) throws IOException, WebApplicationException {
         // we may need to compose the full message from several parts
-        ByteBuilder buffer = new ByteBuilder(0, Settings.UTF8_CHARSET);
+        ByteBuilder buffer = new ByteBuilder(0, ByteArray.CHARSET_UTF8);
         final byte [] tmp = new byte [READ_CHUNK_SIZE]; 
         // do a loop here, because an initial read may not return the full number of bytes
         for (;;) {

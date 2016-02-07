@@ -1,6 +1,5 @@
 package testcases.conversion;
 
-import java.nio.charset.Charset;
 import java.util.Arrays;
 
 import org.testng.annotations.Test;
@@ -14,9 +13,9 @@ import de.jpaw.bonaparte.core.StringBuilderComposer;
 import de.jpaw.bonaparte.core.StringBuilderParser;
 import de.jpaw.bonaparte.coretests.initializers.FillParameterTests;
 import de.jpaw.bonaparte.pojos.tests1.Parameters;
+import de.jpaw.util.ByteArray;
 
 public class TestParameters {
-    static private final Charset defaultCharset = Charset.forName("UTF-8");          // always use UTF-8 unless explicitly requested differently
 
     @Test
     public void testParameters1() throws Exception {
@@ -39,7 +38,7 @@ public class TestParameters {
 
         // deserialize again
         System.out.println("parser StringBuilder");
-        StringBuilder work = new StringBuilder(new String (bacResult, defaultCharset));
+        StringBuilder work = new StringBuilder(new String (bacResult, ByteArray.CHARSET_UTF8));
         MessageParser<MessageParserException> w1 = new StringBuilderParser(work, 0, -1);
         BonaPortable dst1 = w1.readRecord();
         assert dst1.getClass() == src.getClass() : "returned obj is of wrong type (StringBuilderParser)"; // assuming we have one class loader only
@@ -81,7 +80,7 @@ public class TestParameters {
 
         // deserialize again
         System.out.println("parser StringBuilder");
-        StringBuilder work = new StringBuilder(new String (bacResult, defaultCharset));
+        StringBuilder work = new StringBuilder(new String (bacResult, ByteArray.CHARSET_UTF8));
         MessageParser<MessageParserException> w1 = new StringBuilderParser(work, 0, -1);
         try {
             @SuppressWarnings("unused")

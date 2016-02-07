@@ -6,7 +6,6 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.nio.charset.Charset;
 import java.util.Arrays;
 
 import org.testng.annotations.Test;
@@ -27,10 +26,10 @@ import de.jpaw.bonaparte.core.MessageParserException;
 import de.jpaw.bonaparte.core.StringBuilderComposer;
 import de.jpaw.bonaparte.core.StringBuilderParser;
 import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
+import de.jpaw.util.ByteArray;
 
 
 public class SerializationTest {
-    static private final Charset defaultCharset = Charset.forName("UTF-8");          // always use UTF-8 unless explicitly requested differently
     static private boolean doDump = false;
 
     private void dumpToFile(String filename, byte [] data) throws Exception {
@@ -105,7 +104,7 @@ public class SerializationTest {
             dumpToFile("/tmp/Test1-dump.bin", sbcResult);
 
         // deserialize again
-        StringBuilder work = new StringBuilder(new String (bacResult, defaultCharset));
+        StringBuilder work = new StringBuilder(new String (bacResult, ByteArray.CHARSET_UTF8));
         MessageParser<MessageParserException> w = new StringBuilderParser(work, 0, -1);
         BonaPortable obj2 = w.readRecord();
         assert obj2 instanceof ClassDefinition : "returned obj is of wrong type (StringBuilderParser)";
