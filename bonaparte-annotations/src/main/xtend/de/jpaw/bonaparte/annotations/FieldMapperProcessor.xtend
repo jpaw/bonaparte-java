@@ -13,6 +13,7 @@ import org.eclipse.xtend.lib.macro.declaration.FieldDeclaration
     annotation FieldMapper {
 }
 
+// maps all fields from src to dst. Lax check, fields are copied if the generated Java type matches.
 class FieldMapperProcessor extends AbstractMethodProcessor {
 
     // the annotated class must have a void return type and two parameters which are simple classes, dst and src
@@ -25,8 +26,8 @@ class FieldMapperProcessor extends AbstractMethodProcessor {
             method.addError("annotated method must have at least 2 parameters")
             return
         }
-        val dst = method.parameters.get(1)
-        val src = method.parameters.get(2)
+        val dst = method.parameters.get(0)
+        val src = method.parameters.get(1)
         
         if (!bon.isAssignableFrom(src.type) || !bon.isAssignableFrom(dst.type)) {
             method.addError("both parameters must be instances of classes implementing BonaPortable")
