@@ -22,6 +22,11 @@
             </dependency>
             <dependency>
                 <groupId>de.jpaw</groupId>
+                <artifactId>bonaparte-annotations</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.jpaw</groupId>
                 <artifactId>bonaparte-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
