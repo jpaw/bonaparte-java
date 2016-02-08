@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>bonaparte-base</artifactId>
-    <version>4.0.6</version>
+    <version>4.0.7</version>
     <packaging>pom</packaging>
     
     <description>build master for BONAPARTE based projects</description>
@@ -264,6 +264,7 @@
     <modules>
         <module>../bonaparte-bom/pom.xml</module>
         <module>../bonaparte-core/pom.xml</module>
+        <module>../bonaparte-annotations/pom.xml</module>
         <module>../bonaparte-scanner/pom.xml</module>
         <module>../bonaparte-core-test/pom.xml</module>
         <module>../bonaparte-adapters-gson/pom.xml</module>

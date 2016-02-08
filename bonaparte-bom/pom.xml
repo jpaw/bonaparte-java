@@ -4,7 +4,7 @@
     <parent>
         <groupId>de.jpaw</groupId>
         <artifactId>bonaparte-base</artifactId>
-        <version>4.0.6</version>
+        <version>4.0.7</version>
         <relativePath>../bonaparte-base/pom.xml</relativePath>
     </parent>
 
@@ -18,6 +18,11 @@
             <dependency>
                 <groupId>de.jpaw</groupId>
                 <artifactId>bonaparte-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.jpaw</groupId>
+                <artifactId>bonaparte-annotations</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

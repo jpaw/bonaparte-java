@@ -25,23 +25,26 @@ import de.jpaw.util.ByteBuilder;
 public class HttpPostClient implements INetworkDialog {
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpPostClient.class);
     
-    protected final URL url;
+    protected String baseUrl;
+    private final boolean addVariableUrlPath;
     private final boolean logSizes;
     private final boolean logText;
     private final boolean logHex;
+    private URL cachedUrl = null;
     protected IMarshaller marshaller;
     protected String authentication = null;
     
-    public HttpPostClient(URL url, boolean logSizes, boolean logText, boolean logHex, IMarshaller initialMarshaller) {
-        this.url        = url;
-        this.logSizes   = logSizes;
-        this.logText    = logText;
-        this.logHex     = logHex;
-        this.marshaller = initialMarshaller;
+    public HttpPostClient(String baseUrl, boolean addVariableUrlPath, boolean logSizes, boolean logText, boolean logHex, IMarshaller initialMarshaller) {
+        this.baseUrl            = baseUrl;
+        this.addVariableUrlPath = addVariableUrlPath;
+        this.logSizes           = logSizes;
+        this.logText            = logText;
+        this.logHex             = logHex;
+        this.marshaller         = initialMarshaller;
     }
     
-    public HttpPostClient(URL url) {
-        this(url, false, false, false, new RecordMarshallerBonaparte());
+    public HttpPostClient(String baseUrl) {
+        this(baseUrl, false, false, false, false, new RecordMarshallerBonaparte());
     }
     
     public void setMarshaller(IMarshaller marshaller) {
@@ -56,6 +59,19 @@ public class HttpPostClient implements INetworkDialog {
     @Override
     public BonaPortable doIO(BonaPortable request) throws Exception {
         ByteArray serializedRequest = marshaller.marshal(request);
+        
+        URL url = null;
+        if (addVariableUrlPath) {
+            String variablePath = request.ret$BonaPortableClass().getProperty("path");
+            if (variablePath != null) {
+                url = new URL(baseUrl + "/" + variablePath);
+            }
+        }
+        if (url == null) {
+            if (cachedUrl == null)
+                cachedUrl = new URL(baseUrl);
+            url = cachedUrl;
+        }
 
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setDoOutput(true);
