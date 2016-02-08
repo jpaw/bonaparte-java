@@ -20,8 +20,9 @@ class FieldMapperProcessor extends AbstractMethodProcessor {
     override doTransform(MutableMethodDeclaration method, extension TransformationContext context) {
         val bon = BonaPortable.newTypeReference
         //checks
-        if (method.parameters.size != 2 || method.returnType != primitiveVoid) {
-            method.addError("annotated method must have exactly 2 parameters and have void return type")
+        // we allow for return types and more than 2 parameters. The first 2 are used by the implementations.
+        if (method.parameters.size < 2) {   //  || method.returnType != primitiveVoid
+            method.addError("annotated method must have at least 2 parameters")
             return
         }
         val dst = method.parameters.get(1)
@@ -34,10 +35,9 @@ class FieldMapperProcessor extends AbstractMethodProcessor {
 
         val oldBody = method.body
         method.body = [ '''
-            «oldBody»
             «buildMapping(dst.type, src.type, dst.simpleName, src.simpleName, true)»
-            '''
-        ]
+            «oldBody»
+        ''' ]
     }
     
     def private static boolean isInSrc(FieldDeclaration srcField, ClassDeclaration entity) {
