@@ -57,9 +57,9 @@
         <netty.version>4.0.34.Final</netty.version>     <!-- https://netty.io/news/ --> <!-- UPTODATE 2016-01-29 -->
         <poi.version>3.13</poi.version>                 <!-- http://poi.apache.org/ UPTODATE 2015-10-12 -->
         <mina.version>2.0.7</mina.version>              <!-- http://mina.apache.org/ 2.0.7 -->
-        <camel.version>2.16.1</camel.version>           <!-- http://camel.apache.org/ --> <!-- UPTODATE 2015-10-10 -->
+        <camel.version>2.16.2</camel.version>           <!-- http://camel.apache.org/ --> <!-- UPTODATE 2015-10-10 -->
         <vertx.version>2.1.6</vertx.version>            <!-- http://vertx.io/ UPTODATE 2014-11-13 -->
-        <vertx3.version>3.2.0</vertx3.version>          <!-- UPTODATE 2015-12-31 -->
+        <vertx3.version>3.2.1</vertx3.version>          <!-- UPTODATE 2016-02-20 -->
         
         <!-- distributed caches -->
         <ehcache.version>2.9.1</ehcache.version>        <!-- UPTODATE 2015-03-05 -->
