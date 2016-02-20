@@ -54,7 +54,39 @@ public class HttpPostClient implements INetworkDialog {
     public void setAuthentication(String authentication) {
         this.authentication = authentication;
     }
+    
+    // properties can be set in their own method to allow overriding it
+    protected void setRequestProperties(HttpURLConnection connection) {
+        connection.setDoOutput(true);
+        connection.setDoInput(true);
+        connection.setInstanceFollowRedirects(false);
+        connection.setConnectTimeout(5000);
+        connection.setRequestProperty("Content-Type",   marshaller.getContentType());
+        connection.setRequestProperty("Accept",         marshaller.getContentType());
+        connection.setRequestProperty("Charset",        "utf-8");
+        connection.setRequestProperty("Accept-Charset", "utf-8");
+        connection.setUseCaches(false);
+    }
+    
+    protected void requestLogger(String pqon, ByteArray serializedRequest) {
+        if (logSizes)
+            LOGGER.info("{} serialized as {} bytes for MIME type {}", pqon, serializedRequest.length(), marshaller.getContentType());
+        if (logText)
+            LOGGER.info("Request is <{}>", serializedRequest.toString());
+        if (logHex)
+            LOGGER.info(serializedRequest.hexdump(0, 0));
+    }
 
+    protected void responseLogger(ByteBuilder serializedResponse) {
+        if (logSizes)
+            LOGGER.info("retrieved {} bytes response", serializedResponse.length());
+        if (logText)
+            LOGGER.info("Response is <{}>", serializedResponse.toString());
+        if (logHex)
+            LOGGER.info(serializedResponse.hexdump(0, 0));
+    }
+    
+    
     /** Execute the request / response dialog. */ 
     @Override
     public BonaPortable doIO(BonaPortable request) throws Exception {
@@ -74,25 +106,15 @@ public class HttpPostClient implements INetworkDialog {
         }
 
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setDoOutput(true);
-        connection.setDoInput(true);
-        connection.setInstanceFollowRedirects(false);
-        connection.setConnectTimeout(5000);
         connection.setRequestMethod("POST");
-        connection.setRequestProperty("Content-Type", marshaller.getContentType());
-        connection.setRequestProperty("charset", "utf-8");
-        connection.setRequestProperty("Content-Length", "" + serializedRequest.length());
-        connection.setUseCaches(false);
+        
+        setRequestProperties(connection);
         
         if (authentication != null)
             connection.setRequestProperty("Authorization", authentication);
-
-        if (logSizes)
-            LOGGER.info("{} serialized as {} bytes for MIME type {}", request.ret$PQON(), serializedRequest.length(), marshaller.getContentType());
-        if (logText)
-            LOGGER.info("Request is <{}>", serializedRequest.toString());
-        if (logHex)
-            LOGGER.info(serializedRequest.hexdump(0, 0));
+        
+        connection.setRequestProperty("Content-Length", "" + serializedRequest.length());
+        requestLogger(request.ret$PQON(), serializedRequest);
 
         // write the request
         DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
@@ -116,12 +138,7 @@ public class HttpPostClient implements INetworkDialog {
         is.close();
         wr.close();
     
-        if (logSizes)
-            LOGGER.info("retrieved {} bytes response", serializedResponse.length());
-        if (logText)
-            LOGGER.info("Response is <{}>", serializedResponse.toString());
-        if (logHex)
-            LOGGER.info(serializedResponse.hexdump(0, 0));
+        responseLogger(serializedResponse);
 
         return marshaller.unmarshal(serializedResponse);
     }
