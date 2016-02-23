@@ -1,0 +1,19 @@
+package test.adapters {
+    abstract class TestXml XML PROPERTY {
+    }
+    class TestXml2 XML FIELD xmlAdapter {
+        default public;
+
+        byte(2)     digits2;
+        Long(18,6)  microUnits;
+        Int (6,3) round roundedMillis;
+    }
+    
+    class TestNoXml1 XML PROPERTY {
+    }
+    abstract class TestNoXml2 XML PROPERTY {
+        int data;
+    }
+    class TestNoXml3 XML PROPERTY extends TestXml {
+    }
+}

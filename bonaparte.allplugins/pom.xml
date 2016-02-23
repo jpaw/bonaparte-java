@@ -15,7 +15,7 @@
     
     <properties>
         <!-- define releases we want to use, to ensure consistency -->
-        <jpaw.version>1.5.4-SNAPSHOT</jpaw.version>
+        <jpaw.version>1.5.5-SNAPSHOT</jpaw.version>
         <bonaparte.version>4.0.8-SNAPSHOT</bonaparte.version>
     </properties>    
     
