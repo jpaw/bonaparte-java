@@ -6,7 +6,7 @@ import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.MessageParserException;
 import de.jpaw.bonaparte.core.StringProviderParser;
 
-/** Parser which parses parameters from headers of a HttpRequest. */ 
+/** Parser which parses parameters from headers of a HttpRequest. */
 public class HttpRequestParameterParser extends StringProviderParser {
 
     public static StringProviderParser.StringGetter createGetter(final HttpServletRequest request) {
@@ -17,7 +17,7 @@ public class HttpRequestParameterParser extends StringProviderParser {
             }
         };
     }
-    
+
     public HttpRequestParameterParser(final HttpServletRequest request) {
         super(createGetter(request));
     }

@@ -99,7 +99,7 @@ public class BonaPortableFactory {
         else
             return getBonaparteClassDefaultPackagePrefix() + "." + name;
     }
-    
+
     // generalized factory: create an instance of the requested type, which is specified by partially qualified name.
     // We receive PQCN (partially qualified class name) as parameter.
     // Anything before the last '.' is the Bonaparte package name (which is null is there is no '.').
@@ -109,35 +109,35 @@ public class BonaPortableFactory {
     // before actually loading the class. Therefore, bundle information must be fed in separately
     // and can only be consistency-checked afterwards.
 
-    
+
     // new method, caches the BClass, to avoid reflection to create a new instance
     // parameter name is the PQON of the desired class
     public static BonaPortable createObject(String pqon) throws MessageParserException {
         BonaPortableClass<? extends BonaPortable> bclass = mapByPQON.get(pqon);
         if (bclass != null)
             return bclass.newInstance();  // new instance without reflection
-        
+
         // determine fully qualified pqon of class and use reflection to retrieve an instance the first time
         BonaPortable instance = createObjectSub(mapPqonToFqon(pqon));
-        
+
         // store it in the cache for next time
         mapByPQON.putIfAbsent(pqon, instance.ret$BonaPortableClass());
         return instance;
     }
-    
+
     public static BonaPortable createObjectByFqon(String fqon) throws MessageParserException {
         BonaPortableClass<? extends BonaPortable> bclass = mapByFQON.get(fqon);
         if (bclass != null)
             return bclass.newInstance();  // new instance without reflection
-        
+
         // determine fully qualified pqon of class and use reflection to retrieve an instance the first time
         BonaPortable instance = createObjectSub(fqon);
-        
+
         // store it in the cache for next time
         mapByFQON.putIfAbsent(fqon, instance.ret$BonaPortableClass());
         return instance;
     }
-    
+
     private static BonaPortable createObjectSub(String FQON) throws MessageParserException {
         try {
             LOGGER.debug("Factory: loading class {}", FQON);
@@ -155,7 +155,7 @@ public class BonaPortableFactory {
         throw new MessageParserException(MessageParserException.CLASS_NOT_FOUND, "class", 0, FQON);
     }
 
-    
+
     public static BonaPortableClass<? extends BonaPortable> getBClassForPqon(String pqon) throws MessageParserException {
         BonaPortableClass<? extends BonaPortable> bclass = mapByPQON.get(pqon);
         if (bclass == null) {
@@ -165,7 +165,7 @@ public class BonaPortableFactory {
         }
         return bclass;
     }
-    
+
     public static BonaPortableClass<? extends BonaPortable> getBClassForFqon(String fqon) throws MessageParserException {
         BonaPortableClass<? extends BonaPortable> bclass = mapByFQON.get(fqon);
         if (bclass == null) {
@@ -175,7 +175,7 @@ public class BonaPortableFactory {
         }
         return bclass;
     }
-    
+
     // auto getters and setters only following
     public static Map<String, String> getPackagePrefixMap() {
         return packagePrefixMap;

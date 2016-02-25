@@ -39,7 +39,7 @@
                 <filtering>false</filtering>
             </resource>
         </resources>
-        
+
         <plugins>
             <plugin>
                 <groupId>org.eclipse.xtext</groupId>

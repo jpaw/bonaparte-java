@@ -16,12 +16,12 @@ import de.jpaw.util.ByteBuilder;
 public class RecordMarshallerCsv implements IMarshaller {
     private final CSVConfiguration cfg;
     private final Charset cs;
-    
+
     public RecordMarshallerCsv(CSVConfiguration cfg, Charset cs) {
         this.cfg = cfg;
         this.cs = cs == null ? ByteArray.CHARSET_UTF8 : cs;
     }
-    
+
     @Override
     public String getContentType() {
         return MimeTypes.MIME_TYPE_CSV;

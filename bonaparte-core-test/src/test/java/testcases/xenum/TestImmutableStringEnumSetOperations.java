@@ -7,18 +7,18 @@ import de.jpaw.enums.ImmutableStringEnumSet;
 
 
 public class TestImmutableStringEnumSetOperations {
-    
+
     private void testUnify(String a, String b, String union) throws Exception {
         ImmutableStringEnumSet x = ImmutableStringEnumSet.of(a);
         ImmutableStringEnumSet y = ImmutableStringEnumSet.of(b);
         ImmutableStringEnumSet z = ImmutableStringEnumSet.of(union);
         ImmutableStringEnumSet r = x.or(y);
-        
+
         Assert.assertEquals(z, r);  // Set equals
-        
+
         Assert.assertEquals(r.getBitmap(), union); // String equals
     }
-    
+
     @Test
     public void testEnumSetUnion() throws Exception {
         testUnify("AB", "BC", "ABC");
@@ -32,19 +32,19 @@ public class TestImmutableStringEnumSetOperations {
         testUnify("AB", "",   "AB");
         testUnify("",   "AB", "AB");
     }
-    
-    
+
+
     private void testIntersect(String a, String b, String common) throws Exception {
         ImmutableStringEnumSet x = ImmutableStringEnumSet.of(a);
         ImmutableStringEnumSet y = ImmutableStringEnumSet.of(b);
         ImmutableStringEnumSet z = ImmutableStringEnumSet.of(common);
         ImmutableStringEnumSet r = x.and(y);
-        
+
         Assert.assertEquals(z, r);  // Set equals
-        
+
         Assert.assertEquals(r.getBitmap(), common); // String equals
     }
-    
+
     @Test
     public void testEnumSetIntersect() throws Exception {
         testIntersect("AB", "BC", "B");
@@ -59,18 +59,18 @@ public class TestImmutableStringEnumSetOperations {
         testIntersect("",   "AB", "");
     }
 
-    
+
     private void testDifference(String a, String b, String difference) throws Exception {
         ImmutableStringEnumSet x = ImmutableStringEnumSet.of(a);
         ImmutableStringEnumSet y = ImmutableStringEnumSet.of(b);
         ImmutableStringEnumSet z = ImmutableStringEnumSet.of(difference);
         ImmutableStringEnumSet r = x.minus(y);
-        
+
         Assert.assertEquals(z, r);  // Set equals
-        
+
         Assert.assertEquals(r.getBitmap(), difference); // String equals
     }
-    
+
     @Test
     public void testEnumSetDifference() throws Exception {
         testDifference("AB", "BC", "A");
@@ -87,18 +87,18 @@ public class TestImmutableStringEnumSetOperations {
         testDifference("ABC", "AC", "B");
     }
 
-    
+
     private void testXor(String a, String b, String flipped) throws Exception {
         ImmutableStringEnumSet x = ImmutableStringEnumSet.of(a);
         ImmutableStringEnumSet y = ImmutableStringEnumSet.of(b);
         ImmutableStringEnumSet z = ImmutableStringEnumSet.of(flipped);
         ImmutableStringEnumSet r = x.xor(y);
-        
+
         Assert.assertEquals(z, r);  // Set equals
-        
+
         Assert.assertEquals(r.getBitmap(), flipped); // String equals
     }
-    
+
     @Test
     public void testEnumSetXor() throws Exception {
         testXor("AB", "BC", "AC");
@@ -115,12 +115,12 @@ public class TestImmutableStringEnumSetOperations {
         testXor("ABC", "AC", "B");
     }
 
-    
+
     private void testInit(String a, String result) throws Exception {
         ImmutableStringEnumSet x = ImmutableStringEnumSet.of(a);
         Assert.assertEquals(x.getBitmap(), result);    // String equals
     }
-    
+
     @Test
     public void testEnumSetInit() throws Exception {
         testInit("AB", "AB");

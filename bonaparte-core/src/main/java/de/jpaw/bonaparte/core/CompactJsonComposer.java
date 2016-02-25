@@ -28,7 +28,7 @@ import de.jpaw.util.ByteArray;
 // composer which does the same as the standard compact composer, but adds field names
 public class CompactJsonComposer extends AbstractCompactComposer {
     private int arrayDepth = 0;
-    
+
     protected CompactJsonComposer(DataOutput out) {
         super(out, ObjectReuseStrategy.NONE, false);
     }
@@ -41,7 +41,7 @@ public class CompactJsonComposer extends AbstractCompactComposer {
         if (arrayDepth == 0)
             super.stringOut(di.getName());
     }
-    
+
     @Override
     public void writeNull(FieldDefinition di) throws IOException {
         // skip nulls, but only if not in array
@@ -288,14 +288,14 @@ public class CompactJsonComposer extends AbstractCompactComposer {
         } else if (arrayDepth != 0)
             writeNull();
     }
-    
+
     @Override
     public void writeRecord(BonaCustom o) throws IOException {
         startRecord();      // Noop by default
         writeObject(o);
         terminateRecord();  // Noop by default
     }
-    
+
     // write an object as map without a field name - nested entry
     @Override
     public void writeObject(BonaCustom o) throws IOException {

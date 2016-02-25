@@ -65,7 +65,7 @@ public class TestPrimitives {
             SimpleTestRunner.run(obj, false);
         }
     }
-    
+
     @Test
     public void testPrimitiveIntegralsFibonacci() throws Exception {
         final int n = 91;
@@ -79,7 +79,7 @@ public class TestPrimitives {
             if (fibonacci[i] < 0)
                 System.out.println("Fibonacci[" + i + "] is negative");
         }
-        
+
         ByteBuilder bb = new ByteBuilder();
         CompactByteArrayComposer cbac = new CompactByteArrayComposer(bb, false);
         Primitives p = new Primitives();
@@ -106,7 +106,7 @@ public class TestPrimitives {
             "ü", "grün",  "gräßlich und auch sehr lang",            // 1, 5, 27 chars (+2), 27 chars (+4) => all stored as UTF-8 with 2 byte prefix
             "€", "€€",    "jksdfksdfh€lsdfjsdlfj sdlfj sldfj jsld " // 1, 2, 39 chars (+2) (+4) (+41) => all stored as UTF-16 with 1/2/2 byte prefix (first is a char)
         };
-        
+
         ByteBuilder bb = new ByteBuilder();
         CompactByteArrayComposer cbac = new CompactByteArrayComposer(bb, false);
         for (int i = 0; i < tests.length; ++i) {
@@ -151,7 +151,7 @@ public class TestPrimitives {
             Assert.assertEquals(hash, hashes[i], "hash for run " + i);
         }
     }
-    
+
     @Test
     public void testStrings1() throws Exception {
         ByteBuilder bb = new ByteBuilder();
@@ -160,7 +160,7 @@ public class TestPrimitives {
         System.out.println(String.format("Chars are 0x%04x 0x%04x", (int)'X', (int)'ü'));
         System.out.println(ByteUtil.dump(cbac.getBytes(), 100));
     }
-    
+
     @Test
     public void testStrings1a() throws Exception {
         ByteBuilder bb = new ByteBuilder();
@@ -169,7 +169,7 @@ public class TestPrimitives {
         System.out.println(String.format("Chars are 0x%04x 0x%04x", (int)'X', (int)'ü'));
         System.out.println(ByteUtil.dump(cbac.getBytes(), 100));
     }
-    
+
     @Test
     public void testStrings1Greek() throws Exception {
         ByteBuilder bb = new ByteBuilder();

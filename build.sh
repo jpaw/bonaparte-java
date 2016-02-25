@@ -2,7 +2,7 @@
 
 GOAL=install
 if [ x != x$1 ]; then
-	GOAL=$1
+    GOAL=$1
 fi
 
 echo "Cleaning repo folder..."

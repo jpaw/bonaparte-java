@@ -111,7 +111,7 @@ public class AppendableComposer extends AbstractMessageComposer<IOException> imp
     public int getNumberOfObjectReuses() {
         return numberOfObjectReuses;
     }
-    
+
     /**************************************************************************************************
      * Serialization goes here
      **************************************************************************************************/
@@ -535,7 +535,7 @@ public class AppendableComposer extends AbstractMessageComposer<IOException> imp
         jsonEscaper.outputJsonArray(obj);      // the JSON string is known not to contain escape characters and needs no quoting
         terminateField();
     }
-    
+
     @Override
     public void addField(ObjectReference di, Object obj) throws IOException {
         if (obj == null) {

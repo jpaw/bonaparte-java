@@ -18,7 +18,7 @@ public class TestCompactSkips {
         public CBAPTester(byte[] buffer, int offset, int length) {
             super(buffer, offset, length);
         }
-        
+
         public void validateEOF() throws Exception {
             require(0);
             int c;
@@ -29,18 +29,18 @@ public class TestCompactSkips {
             }
             throw new Exception("Expected end of record, got " + Integer.toString(c));
         }
-        
+
         public void runSkip() {
-            
+
         }
     }
-    
+
     @Test
     public void checkConfig() throws Exception {
         Assert.assertEquals(CompactConstants.SKIP_BYTES.length, 5 * 16 + 4);    // assert that no item has been forgotten / is extra
     }
-    
-    
+
+
     @Test
     public void runTest() throws Exception {
         byte [] testdata = CompactByteArrayComposer.marshal(ClassDefinition.meta$$this, ClassDefinition.class$MetaData());   // get some serialized byte array
@@ -50,7 +50,7 @@ public class TestCompactSkips {
         tester.eatObjectTerminator();
         tester.validateEOF();
     }
-    
+
     @Test
     public void runTest2() throws Exception {
         byte [] testdata = CompactByteArrayComposer.marshal(Complex.meta$$this, new Complex(2.7, 3.14));   // get some serialized byte array

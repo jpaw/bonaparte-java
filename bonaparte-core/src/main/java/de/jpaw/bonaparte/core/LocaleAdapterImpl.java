@@ -5,7 +5,7 @@ import java.util.Locale;
 import de.jpaw.bonaparte.pojos.meta.LocaleAdapter;
 
 public class LocaleAdapterImpl {
-    
+
     private static String nie(String s) {  // nie: null if empty
         return s == null || s.length() == 0 ? null : s;
     }

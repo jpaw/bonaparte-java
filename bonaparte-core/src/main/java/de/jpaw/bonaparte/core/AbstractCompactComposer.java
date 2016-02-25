@@ -64,7 +64,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
     protected final boolean recommendIdentifiable;              // if true, then factoryId and classId will be used to identify the object (requires prior registration of factories before parsing)
     protected boolean skipLowerBoundObjectDescription = true;   // if true and the object to serialize corresponds to its lower bound, then do not output the class description
     protected AbstractCompactComposer jsonComposer = null;      // derived composer on same DataOutput, which also creates field names. Will be initialized on demand.
-    
+
     protected AbstractCompactComposer(DataOutput out, ObjectReuseStrategy reuseStrategy, boolean recommendIdentifiable) {
         switch (reuseStrategy) {
         case BY_CONTENTS:
@@ -93,7 +93,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
     public void setSkipLowerBoundObjectDescription(boolean skipLowerBoundObjectDescription) {
         this.skipLowerBoundObjectDescription = skipLowerBoundObjectDescription;
     }
-    
+
     // must be overridden / called if caching / reuse is active!
     public void reset() {
         numberOfObjectsSerialized = 0;
@@ -107,8 +107,8 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
         return numberOfObjectReuses;
     }
 
-    
-    
+
+
     protected void writeNull() throws IOException {
         out.writeByte(NULL_FIELD);
     }
@@ -123,7 +123,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
         out.writeByte(NULL_FIELD);
     }
 
-    
+
 
     // write a non-empty string (using charAt())
     protected void writeLongString(String s) throws IOException {
@@ -137,7 +137,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
             if (c > 127)
                 ++numWith2Byte;
         }
-        if (maxCode <= 255) {       // no reason not to support a full 8 bit character set - this may save a bit of space for some west european texts 
+        if (maxCode <= 255) {       // no reason not to support a full 8 bit character set - this may save a bit of space for some west european texts
             // pure ASCII String
             if (len <= 16) {
                 out.writeByte(SHORT_ISO_STRING + len - 1);
@@ -350,7 +350,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
             writeLongString(s);
         }
     }
-    
+
     @Override
     public void addField(AlphanumericElementaryDataItem di, String s) throws IOException {
         if (s == null) {
@@ -374,7 +374,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
             out.write(tmp);
         }
     }
-    
+
     // n is not null
     protected void bigdecimalOut(BigDecimal n) throws IOException {
         int sgn = n.signum();
@@ -397,7 +397,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
             }
         }
     }
-    
+
     // decimal
     @Override
     public void addField(NumericElementaryDataItem di, BigDecimal n) throws IOException {
@@ -491,13 +491,13 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
             out.writeDouble(d);
         }
     }
-    
+
     protected void uuidOut(UUID n) throws IOException {
         out.writeByte(COMPACT_UUID);
         out.writeLong(n.getMostSignificantBits());
         out.writeLong(n.getLeastSignificantBits());
     }
-    
+
     // UUID
     @Override
     public void addField(MiscElementaryDataItem di, UUID n) throws IOException {
@@ -507,7 +507,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
             writeNull();
         }
     }
-    
+
     protected void bytearrayOut(ByteArray b) throws IOException {
         out.writeByte(COMPACT_BINARY);
         intOut(b.length());
@@ -533,7 +533,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
             out.write(b);
         }
     }
-    
+
     // raw. Almost the same as ByteArray...
     @Override
     public void addField(BinaryElementaryDataItem di, byte[] b) throws IOException {
@@ -550,7 +550,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
         intOut(t.getMonthOfYear());
         intOut(t.getDayOfMonth());
     }
-    
+
     // converters for DAY und TIMESTAMP
     @Override
     public void addField(TemporalElementaryDataItem di, LocalDate t) throws IOException {
@@ -573,7 +573,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
         else
             intOut(t.getMillisOfDay() / 1000);
     }
-    
+
     @Override
     public void addField(TemporalElementaryDataItem di, LocalDateTime t) throws IOException {
         if (t != null) {
@@ -611,7 +611,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
             writeNull();
         }
     }
-    
+
     @Override
     public void startTransmission() throws IOException {
     }
@@ -771,9 +771,9 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
         }
         elementOut(obj);
     }
-    
-    
-    
+
+
+
     // output an Object array - anonymous subroutine
     protected void elementOut(Object [] l) throws IOException {
         if (l == null) {
@@ -785,7 +785,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
         for (Object o : l)
             elementOut(o);
     }
-    
+
     // output a list - anonymous subroutine
     protected void elementOut(List<Object> l) throws IOException {
         if (l == null) {
@@ -797,7 +797,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
         for (Object o : l)
             elementOut(o);
     }
-    
+
     // output a map - anonymous subroutine
     protected void elementOut(Map<String, Object> obj) throws IOException {
         if (obj == null) {
@@ -806,13 +806,13 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
         }
         out.writeByte(MAP_BEGIN);
         intOut(obj.size());  // number of members.  Note: this implies we cannot skip nulls! OK as we assume they would have been cleared before if it was the intention to do so.
-        
+
         for (Map.Entry<String, Object> elem: obj.entrySet()) {
             stringOut(elem.getKey());
             elementOut(elem.getValue());
         }
     }
-    
+
     // output a generic object - anonymous subroutine
     protected void elementOut(Object obj) throws IOException {
         if (obj == null) {
@@ -964,7 +964,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
         }
         throw new RuntimeException("Cannot transform type " + obj.getClass().getSimpleName() + " to JSON");
     }
-    
+
     // code moved out due to excessive length
     private void outputPrimitiveArrays(Object obj) throws IOException {
         if (obj instanceof byte []) {

@@ -24,7 +24,7 @@ public class MultiGetterTest {
         marshaller.marshal(x, writer);
         return writer.toString();
     }
-    
+
     public void marshall3a() throws Exception {
         System.out.println("Output 3a is " + marshal(new TestXml3a(42)));
     }

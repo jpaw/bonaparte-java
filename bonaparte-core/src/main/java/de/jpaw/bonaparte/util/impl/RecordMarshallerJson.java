@@ -12,7 +12,7 @@ import de.jpaw.util.ByteArray;
 import de.jpaw.util.ByteBuilder;
 
 public class RecordMarshallerJson implements IMarshaller {
-    
+
     @Override
     public String getContentType() {
         return MimeTypes.MIME_TYPE_JSON;

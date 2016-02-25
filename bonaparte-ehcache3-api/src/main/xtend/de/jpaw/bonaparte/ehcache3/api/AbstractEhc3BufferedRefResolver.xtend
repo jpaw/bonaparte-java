@@ -12,14 +12,14 @@ import org.ehcache.Cache
 
 /** Implementation of the RefResolver for ehCache / terracotta using an additional on heap near cache. */
 abstract class AbstractEhcBufferedRefResolver<REF extends Ref, DTO extends REF, TRACKING extends TrackingBase> extends AbstractRefResolver<REF, DTO, TRACKING> {
-        
+
     protected Cache<Long, DataWithTrackingW<DTO, TRACKING>> map;
     protected TrackingUpdater<TRACKING> trackingUpdater;
     protected Provider<RequestContext> contextProvider;
     protected String name;
-    
+
     def abstract protected TRACKING createTracking();
-    
+
     new(String name,
         Cache<Long, DataWithTrackingW<DTO, TRACKING>> map,
         TrackingUpdater<TRACKING> trackingUpdater,
@@ -30,27 +30,27 @@ abstract class AbstractEhcBufferedRefResolver<REF extends Ref, DTO extends REF, 
         this.trackingUpdater = trackingUpdater;
         this.contextProvider = contextProvider
     }
-    
+
     override protected getUncached(Long key) {
         return map.get(key)
     }
-    
+
     override protected getUncachedKey(REF refObject) throws PersistenceException {
         throw new UnsupportedOperationException("REF resolver not implemented")
         //throw new PersistenceException(PersistenceException.RECORD_DOES_NOT_EXIST, key.longValue, name)
     }
-    
+
     override protected uncachedCreate(DTO obj) throws PersistenceException {
         val dwt = new DataWithTrackingW(obj, createTracking, contextProvider.get().tenantRef)
         trackingUpdater.preCreate(contextProvider.get, dwt.tracking)
         map.put(obj.objectRef, dwt)
         return dwt
     }
-    
+
     override protected uncachedRemove(DataWithTrackingW<DTO, TRACKING> previous) {
         map.remove(previous.data.objectRef)
     }
-    
+
     override protected uncachedUpdate(DataWithTrackingW<DTO, TRACKING> dwt, DTO obj) throws PersistenceException {
         dwt.data = obj
         // update the tracking columns
@@ -58,11 +58,11 @@ abstract class AbstractEhcBufferedRefResolver<REF extends Ref, DTO extends REF, 
         // write back the update
         map.put(obj.objectRef, dwt)
     }
-    
+
     override createKey(long key) {
         return createKey(Long.valueOf(key));
     }
-    
+
     override flush() {
     }
 }

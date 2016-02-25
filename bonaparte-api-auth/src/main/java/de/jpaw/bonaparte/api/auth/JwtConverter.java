@@ -27,42 +27,42 @@ public class JwtConverter {
         long now = System.currentTimeMillis();
         return new Instant(now - now % 1000L);
     }
-    
+
     public static Map<String,Object> asMap(String json) throws JsonException {
         return new JsonParser(json, true).parseObject();
     }
-    
+
     public static JwtAlg parseAlg(String json) throws ApplicationException {
         final JwtAlg alg = (JwtAlg) MapParser.asBonaPortable(new JsonParser(json, true).parseObject(), Jwt.meta$$alg);
         alg.freeze();
         return alg;
     }
-    
+
     public static JwtPayload parsePayload(Map<String,Object> map) throws ApplicationException {
         final JwtPayload payload = (JwtPayload) MapParser.asBonaPortable(map, Jwt.meta$$payload);
         payload.freeze();
         return payload;
     }
-    
+
     public static JwtPayload parsePayload(String json) throws ApplicationException {
         final JwtPayload payload = (JwtPayload) MapParser.asBonaPortable(new JsonParser(json, true).parseObject(), Jwt.meta$$payload);
         payload.freeze();
         return payload;
     }
-    
+
     public static String toJson(JwtAlg alg) {
         return JsonComposer.toJsonString(alg);
     }
-    
+
     public static String toJson(JwtPayload payload) {
         return JsonComposer.toJsonString(payload);
     }
-    
-    
+
+
     public static JwtInfo parseJwtInfo(String json) throws ApplicationException {
         return parseJwtInfo(parsePayload(json));      // use the intermediate object to avoid the hassle of handwritten type checks
     }
-    
+
     public static JwtInfo parseJwtInfo(JwtPayload payload) throws ApplicationException {
         final JwtInfo info = new JwtInfo();
         info.setIssuer              (payload.getIss());
@@ -76,7 +76,7 @@ public class JwtConverter {
         info.setName                (payload.getName());
         info.setLocale              (payload.getLocale());
         info.setZoneinfo            (payload.getZoneinfo());
-        
+
         info.setTenantId            (payload.getI());
         info.setTenantRef           (payload.getT());
         info.setSessionRef          (payload.getS());
@@ -93,18 +93,18 @@ public class JwtConverter {
         info.freeze();
         return info;
     }
-    
+
     // converter from JwtInfo into a JWT Map uses a composer
     private static class MapWithTagKeysComposer extends ListMetaComposer {
         private final Map<String,Object> target;
         private final Map<String, String> properties;
-        
+
         private MapWithTagKeysComposer(Map<String,Object> target, Map<String, String> properties) {
             super(new ArrayList<DataAndMeta>(0), false, false, false, true);
             this.target = target;
             this.properties = properties;
         }
-        
+
         @Override
         protected void add(FieldDefinition di, Object o) {
             if (o != null) {
@@ -117,7 +117,7 @@ public class JwtConverter {
             }
         }
     }
-    
+
     /** Returns the JwtInfo as a Payload map. */
     public static Map<String,Object> asMap(JwtInfo info) {
         final Map<String, Object> jsonMap = new HashMap<String, Object>(16);

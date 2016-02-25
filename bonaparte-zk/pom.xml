@@ -11,7 +11,7 @@
 
     <artifactId>bonaparte-zk</artifactId>
     <packaging>jar</packaging>
-    
+
     <description>Renderers for ZK Grids or Listboxes</description>
 
     <dependencies>

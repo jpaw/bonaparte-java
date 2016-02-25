@@ -2,12 +2,12 @@ import api.*
 
 package api.auth XML PROPERTY factoryId 25 {
     properties tag;
-    
+
     type resourceId                     is Unicode(255);    // ID ofa resource / permission
-    
+
     enumset<int>    Permissionset       is OperationType;   // compact storage (2 bytes in Bonaparte compact format)
     enumset<String> PermissionsetAlpha  is OperationType;   // readable format
-    
+
     enum UserLogLevelType {
         STEALTH,                // neither session nor any request
         SESSION_ONLY,           // only session statistics
@@ -16,7 +16,7 @@ package api.auth XML PROPERTY factoryId 25 {
         REQUESTS,               // message, with serialized requests, but no responses
         FULL                    // requests and responses
     }
-    
+
     /** A useful enum to access the map entries of a JWT token by instance.name(). */
     enum JwtFieldName {
         ISSUER                  = "iss",
@@ -30,7 +30,7 @@ package api.auth XML PROPERTY factoryId 25 {
         ZONEINFO                = "zoneinfo",   // time zone
         TENANT_ID               = "i",          // alphanumeric ID of the tenant
         TENANT_REF              = "t",          // numeric ID of the tenant (internal key)
-        SESSION_REF             = "s",          // a unique reference for all contents of this token except iat, jti, exp (i.e. same for refreshes) 
+        SESSION_REF             = "s",          // a unique reference for all contents of this token except iat, jti, exp (i.e. same for refreshes)
         USER_REF                = "u",
         ROLE_REF                = "r",          // restriction to role
         SESSION_ID              = "o",          // constant for a sequence of sessions, i.e. multiple tokens of same session_id but different session_ref may have language or tenant changes
@@ -42,20 +42,20 @@ package api.auth XML PROPERTY factoryId 25 {
         PERMISSION_MIN          = "pl",
         PERMISSION_MAX          = "pu"
     }
-    
+
     // JSON Web Token as per https://tools.ietf.org/html/rfc7519
     final class Jwt classId 200 {
         required (JwtAlg)               alg;
         required (JwtPayload...)        payload;
         required Binary(32)             sig;        // use a zero byte length signature for alg = none
     }
-    
+
     final class JwtAlg classId 201 {
         required Ascii(3)               typ;        // "JWT"
         required Ascii(16)              alg;        // usually not more than 5 ("HS256"...), but more in case of encrpyted JWTs
         optional Ascii(3)               cty;        // content type
     }
-    
+
     class JwtInfo classId 202 {
         optional Unicode(255)           issuer              properties tag = "iss";         // issuer
         optional Unicode(255)           userId              properties tag = "sub";         // subject (user ID)
@@ -64,7 +64,7 @@ package api.auth XML PROPERTY factoryId 25 {
         optional Instant                notBefore           properties tag = "nbf";         // not before
         optional Instant                issuedAt            properties tag = "iat";         // issued at
         optional Unicode(40)            jsonTokenIdentifier properties tag = "jti";         // JSON token identifier (unique ID)
-        
+
         // commonly used fields...
         optional Unicode(255)           name                properties tag = "name";        // user name (user real world name)
         optional languageTag            locale              properties tag = "locale";      // IETF BCP47 language tag (ISO639-A2, plus optional "-" and then ISO3166-A2)
@@ -85,7 +85,7 @@ package api.auth XML PROPERTY factoryId 25 {
         optional Enumset Permissionset  permissionsMin      properties tag = "pl";         // minimum permissions (lower bound, set always allowed)
         optional Enumset Permissionset  permissionsMax      properties tag = "pu";         // maximum permissions (upper bound, permissions not in this set are never allowed)
     }
-    
+
     // technical mapping
     class JwtPayload classId 203 {
         optional Unicode(255)           iss;        // issuer
@@ -95,7 +95,7 @@ package api.auth XML PROPERTY factoryId 25 {
         optional Instant                nbf;        // not before
         optional Instant                iat;        // issued at
         optional Unicode(40)            jti;        // JSON token identifier (unique ID)
-        
+
         // commonly used fields...
         optional Unicode(255)           name;       // user name (user real world name)
         optional languageTag            locale;     // IETF BCP47 language tag (ISO639-A2, plus optional "-" and then ISO3166-A2)

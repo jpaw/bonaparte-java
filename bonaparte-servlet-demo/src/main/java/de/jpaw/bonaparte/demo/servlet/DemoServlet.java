@@ -24,18 +24,18 @@ public class DemoServlet extends HttpServlet {
    @Override
    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
        response.setContentType("text/plain");
-       
+
        PrintWriter out = response.getWriter();
-       
+
        try {
            // parse request headers:
            HdrParams hdr = new HdrParams();
            HttpHeaderParameterParser.unmarshal(request, hdr);
-       
+
            // parse request parameters:
            ReqParams req = new ReqParams();
            HttpRequestParameterParser.unmarshal(request, req);
-       
+
            out.println("Supported Query parameters: q, hello, value (int)\n\nreceived result:\nHeader parameters = "
                + ToStringHelper.toStringML(hdr)
                + "\nQuery Parameters = "

@@ -61,7 +61,7 @@ public class CompactParser extends AbstractCompactParser<IOException> {
         }
         return false;
     }
-    
+
     @Override
     protected int needToken() throws IOException {
         if (pushedBack >= 0) {
@@ -83,8 +83,8 @@ public class CompactParser extends AbstractCompactParser<IOException> {
     @Override
     protected void pushback(int c) {
         pushedBack = c;
-    } 
-    
+    }
+
     @Override
     protected void skipBytes(int howMany) throws IOException {
         in.skipBytes(howMany);
@@ -99,7 +99,7 @@ public class CompactParser extends AbstractCompactParser<IOException> {
     protected int readFixed2ByteInt() throws IOException {
         return in.readShort();
     }
-    
+
     @Override
     protected int readFixed3ByteInt() throws IOException {
         int nn = in.readByte() << 16;             // does sign-extend as required
@@ -121,7 +121,7 @@ public class CompactParser extends AbstractCompactParser<IOException> {
         return in.readLong();
     }
 
-    
+
     @Override
     protected byte [] readBytes(int len) throws IOException {
         if (len == 0)
@@ -130,7 +130,7 @@ public class CompactParser extends AbstractCompactParser<IOException> {
         in.readFully(data);
         return data;
     }
-    
+
     @Override
     protected ByteArray readByteArray(int len) throws IOException {
         return ByteArray.fromDataInput(in, len);
@@ -144,7 +144,7 @@ public class CompactParser extends AbstractCompactParser<IOException> {
             data[i] = (char)(0xff & in.readUnsignedByte());     // workaround hazelcast 3.4.x bug
         return new String(data);
     }
-    
+
     @Override
     protected String readUTF16(int len) throws IOException {
         char data [] = new char [len];
@@ -163,5 +163,5 @@ public class CompactParser extends AbstractCompactParser<IOException> {
             throw new RuntimeException(e);      // should never happen, CHARSET_UTF16 is guaranteed to exist
         }
     }
-    
+
 }

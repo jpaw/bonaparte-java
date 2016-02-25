@@ -1,11 +1,11 @@
 import api.*
 
 package api.media XML PROPERTY factoryId 25 {
-    
+
     /** Defines the format of the data output. */
     enum MediaType {
         // structured output types (record output)
-        BONAPARTE = "B", ^XML = "L", JSON = "J", NULL = "N", COMPACT_BONAPARTE = "c", XLS = "X", XLSX="x", CSV = "C", 
+        BONAPARTE = "B", ^XML = "L", JSON = "J", NULL = "N", COMPACT_BONAPARTE = "c", XLS = "X", XLSX="x", CSV = "C",
         // textual document file output types
         TEXT = "T", HTML="H", CSS="S", MARKDOWN = "m", TEX = "t", LATEX = "l", URL = "r",
         // binary document output types
@@ -19,9 +19,9 @@ package api.media XML PROPERTY factoryId 25 {
         // anything else
         RAW = "#",
         // user defined or undefined
-        USER_DEFINED = "U", UNDEFINED = "?" 
+        USER_DEFINED = "U", UNDEFINED = "?"
     }
-    
+
     xenum MediaXType is MediaType:1;
 
     enum MediaCategory {
@@ -31,9 +31,9 @@ package api.media XML PROPERTY factoryId 25 {
         IMAGE       = "I",
         RECORDS     = "R",      // format suitable to transmit data records
         TEXT        = "T",      // textual document (not textual data file format)
-        DOCUMENT    = "B"       // binary document     
+        DOCUMENT    = "B"       // binary document
     }
-     
+
     enum EnumOutputType {
         DEFAULT="D", TOKEN="T", NAME="N", DESCRIPTION="O"  // description is translated text
     }
@@ -45,14 +45,14 @@ package api.media XML PROPERTY factoryId 25 {
         required boolean                            isText;                         // false = raw data, true = text
         required Ascii(64)                          mimeType;                       // MIME type
     }
-    
+
     class MediaData classId 101 {
         required xenum MediaXType                   mediaType;                      // defines the content type
         optional Unicode(8000000) allowControlChars text;                           // textual data stored here
         optional Binary(8000000)                    rawData;                        // binary data
         optional Json                               z;                              // variable attributes like encoding / charset, image width / height etc
     }
-    
+
     class Image classId 102 extends MediaData {
         optional Integer                            width;                          // width of the image, if known
         optional Integer                            height;                         // height of the image, if known

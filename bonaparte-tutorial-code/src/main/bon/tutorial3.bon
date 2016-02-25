@@ -18,5 +18,3 @@ package tutorial.^xenum {
         xenum MoreColors    myColor;
     }
 }
-
-

@@ -1,5 +1,5 @@
 package test.jaxbtemporal XML FIELD {
-    
+
     class TestFieldXml XML FIELD xmlRoot {
         default public;
 
@@ -7,7 +7,7 @@ package test.jaxbtemporal XML FIELD {
         Timestamp(0)    myDateTime;
         Time(0)         myTime;
     }
-    
+
     class TestPropXml XML PROPERTY xmlRoot {
         default public;
 

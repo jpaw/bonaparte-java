@@ -14,4 +14,3 @@ public enum AccountType1 implements TokenizableEnum {
         return token;
     }
 }
-

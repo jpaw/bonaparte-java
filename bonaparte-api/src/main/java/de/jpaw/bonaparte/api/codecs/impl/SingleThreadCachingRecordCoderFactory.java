@@ -13,7 +13,7 @@ import de.jpaw.bonaparte.core.MimeTypes;
 public class SingleThreadCachingRecordCoderFactory implements IMessageCoderFactory<BonaPortable, BonaPortable, byte []> {
     private final Map<String,IMessageDecoder<BonaPortable, byte []>> decoders = new HashMap<String,IMessageDecoder<BonaPortable, byte []>>(10);
     private final Map<String,IMessageEncoder<BonaPortable, byte []>> encoders = new HashMap<String,IMessageEncoder<BonaPortable, byte []>>(10);
-    
+
     // override to add additional methods
     protected IMessageEncoder<BonaPortable, byte []> createNewEncoderInstance(String mimeType) {
         if (mimeType.equals(MimeTypes.MIME_TYPE_BONAPARTE))
@@ -24,7 +24,7 @@ public class SingleThreadCachingRecordCoderFactory implements IMessageCoderFacto
             return new JsonEncoder<BonaPortable>();
         return null;
     }
-    
+
     // override to add additional methods
     protected IMessageDecoder<BonaPortable, byte []> createNewDecoderInstance(String mimeType) {
         if (mimeType.equals(MimeTypes.MIME_TYPE_BONAPARTE))
@@ -35,7 +35,7 @@ public class SingleThreadCachingRecordCoderFactory implements IMessageCoderFacto
             return new JsonDecoder<BonaPortable>(BonaPortable.class);
         return null;
     }
-    
+
     @Override
     public final IMessageEncoder<BonaPortable, byte []> getEncoderInstance(String mimeType) {
         IMessageEncoder<BonaPortable, byte []> encoder = encoders.get(mimeType);

@@ -127,7 +127,7 @@ public class CompactByteArrayParser extends AbstractCompactParser<MessageParserE
     protected boolean atEnd() throws MessageParserException {
         return parseIndex >= messageLength;
     }
-    
+
     @Override
     protected int needToken() throws MessageParserException {
         if (parseIndex >= messageLength) {
@@ -146,13 +146,13 @@ public class CompactByteArrayParser extends AbstractCompactParser<MessageParserE
             throw newMPE(MessageParserException.UNEXPECTED_CHARACTER, String.format("(expected 0x%02x, got 0x%02x)", c, d));
         }
     }
-    
+
 
     @Override
     protected void pushback(int c) {
         // ignore c, just decrement the position
         --parseIndex;
-    } 
+    }
 
     @Override
     protected char readChar() throws MessageParserException {
@@ -168,7 +168,7 @@ public class CompactByteArrayParser extends AbstractCompactParser<MessageParserE
         int nn = inputdata[parseIndex++] << 8;
         return nn | inputdata[parseIndex++] & 0xff;
     }
-    
+
     @Override
     protected int readFixed3ByteInt() throws MessageParserException {
         require(3);
@@ -177,7 +177,7 @@ public class CompactByteArrayParser extends AbstractCompactParser<MessageParserE
         nn |= inputdata[parseIndex++] & 0xff;
         return nn;
     }
-    
+
     @Override
     protected int readFixed4ByteInt() throws MessageParserException {
         require(4);
@@ -213,7 +213,7 @@ public class CompactByteArrayParser extends AbstractCompactParser<MessageParserE
         parseIndex += len;
         return data;
     }
-    
+
     @Override
     protected ByteArray readByteArray(int len) throws MessageParserException {
         if (len > 0) {
@@ -263,7 +263,7 @@ public class CompactByteArrayParser extends AbstractCompactParser<MessageParserE
         }
     }
 
-    
+
     @Override
     protected void skipBytes(int howMany) throws MessageParserException {
         if (parseIndex + howMany >= messageLength) {

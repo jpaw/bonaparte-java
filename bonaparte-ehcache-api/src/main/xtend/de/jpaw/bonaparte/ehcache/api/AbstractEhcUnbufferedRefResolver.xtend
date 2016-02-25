@@ -20,22 +20,22 @@ import net.sf.ehcache.search.Direction
 
 /** Implementation of the RefResolver for ehCache / terracotta without an additional on heap near cache. */
 abstract class AbstractEhcUnbufferedRefResolver<REF extends Ref, DTO extends REF, TRACKING extends TrackingBase> implements RefResolver<REF, DTO, TRACKING> {
-        
-    @Inject        
+
+    @Inject
     private EhcCriteriaBuilder queryBuilder
-    
+
     protected Cache map;
     protected TrackingUpdater<TRACKING> trackingUpdater;
     protected Provider<RequestContext> contextProvider;
     protected String name;
-    
+
     def abstract protected TRACKING createTracking();
-    
+
     // override me to provide sortable column resolution
     def protected Attribute<?> getAttributeByName(String name) {
         return null
     }
-    
+
     new(String name,
         Cache map,
         TrackingUpdater<TRACKING> trackingUpdater,
@@ -46,7 +46,7 @@ abstract class AbstractEhcUnbufferedRefResolver<REF extends Ref, DTO extends REF
         this.trackingUpdater = trackingUpdater;
         this.contextProvider = contextProvider
     }
-    
+
     override getDTO(Long key) throws ApplicationException {
         if (key === null)
             return null
@@ -55,28 +55,28 @@ abstract class AbstractEhcUnbufferedRefResolver<REF extends Ref, DTO extends REF
             return (entry.objectValue as DataWithTrackingW<DTO, TRACKING>).data
         throw new PersistenceException(PersistenceException.RECORD_DOES_NOT_EXIST, key.longValue, name)
     }
-    
+
     override getTracking(Long key) throws ApplicationException {
         val entry = map.get(key)
         if (entry === null)
             throw new PersistenceException(PersistenceException.RECORD_DOES_NOT_EXIST, key.longValue, name)
         return (entry.objectValue as DataWithTrackingW<DTO, TRACKING>).tracking
     }
-    
+
     override remove(Long key) throws ApplicationException {
         map.remove(key)
     }
-    
+
     override create(DTO dto) throws ApplicationException {
         val dwt = new DataWithTrackingW(dto, createTracking, contextProvider.get().tenantRef)
         trackingUpdater.preCreate(contextProvider.get, dwt.tracking)
         map.put(new Element(dto.objectRef, dwt))
     }
-    
+
     override createKey(long key) {
         return createKey(Long.valueOf(key));
     }
-    
+
     override getDTO(REF ref) throws ApplicationException {
         if (ref === null)
             return null
@@ -86,7 +86,7 @@ abstract class AbstractEhcUnbufferedRefResolver<REF extends Ref, DTO extends REF
             throw new PersistenceException(PersistenceException.RECORD_DOES_NOT_EXIST, key.longValue, name)
         return (dwt.objectValue as DataWithTrackingW<DTO, TRACKING>).data
     }
-    
+
     override update(DTO newDTO) throws ApplicationException {
         // read the previous recorded data (mainly to get the tracking information)
         val e = map.get(newDTO.ref)
@@ -99,18 +99,18 @@ abstract class AbstractEhcUnbufferedRefResolver<REF extends Ref, DTO extends REF
         // write back the update
         map.put(new Element(newDTO.objectRef, dwt))
     }
-    
+
     // no local cache - nothing to to
     override final clear() {
     }
-    
+
     override flush() {
     }
-    
+
     // common subroutine for query and queryKeys
     def protected querySub(int limit, int offset, SearchFilter filters, List<SortColumn> sortColumns) throws ApplicationException {
-        val criteria = queryBuilder.buildPredicate(map, filters)  
-        // 
+        val criteria = queryBuilder.buildPredicate(map, filters)
+        //
         val query = map.createQuery
         if (criteria !== null)
             query.addCriteria(criteria)
@@ -124,20 +124,20 @@ abstract class AbstractEhcUnbufferedRefResolver<REF extends Ref, DTO extends REF
             query.maxResults(limit + offset)
         return query
     }
-    
+
     override query(int limit, int offset, SearchFilter filters, List<SortColumn> sortColumns) throws ApplicationException {
         val results = querySub(limit, offset, filters, sortColumns).includeValues.execute
-        val resultSet = if (offset == 0) results.all else results.range(offset, limit)   
+        val resultSet = if (offset == 0) results.all else results.range(offset, limit)
         val r = resultSet.map[value as DataWithTrackingW<DTO, TRACKING>].toList
         results.discard  // free memory
         return r
     }
-    
+
     override queryKeys(int limit, int offset, SearchFilter filters, List<SortColumn> sortColumns) throws ApplicationException {
         val results = querySub(limit, offset, filters, sortColumns).includeKeys.execute
-        val resultSet = if (offset == 0) results.all else results.range(offset, limit)   
+        val resultSet = if (offset == 0) results.all else results.range(offset, limit)
         val r = resultSet.map[key as Long].toList
         results.discard  // free memory
         return r
-    }    
+    }
 }

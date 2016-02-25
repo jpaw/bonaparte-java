@@ -11,19 +11,19 @@ import de.jpaw.util.ByteArray;
 import de.jpaw.util.ByteBuilder;
 
 public class MarshallerBonaparte implements IMarshaller {
-	
-	@Override
-	public String getContentType() {
-		return MimeTypes.MIME_TYPE_BONAPARTE;
-	}
 
-	@Override
-	public ByteArray marshal(BonaPortable request) {
-		return ByteArrayComposer.marshalAsByteArray(StaticMeta.OUTER_BONAPORTABLE, request);
-	}
+    @Override
+    public String getContentType() {
+        return MimeTypes.MIME_TYPE_BONAPARTE;
+    }
 
-	@Override
-	public BonaPortable unmarshal(ByteBuilder buffer) throws ApplicationException {
-		return (new ByteArrayParser(buffer.getCurrentBuffer(), 0, buffer.length())).readObject(StaticMeta.OUTER_BONAPORTABLE, BonaPortable.class);
-	}
+    @Override
+    public ByteArray marshal(BonaPortable request) {
+        return ByteArrayComposer.marshalAsByteArray(StaticMeta.OUTER_BONAPORTABLE, request);
+    }
+
+    @Override
+    public BonaPortable unmarshal(ByteBuilder buffer) throws ApplicationException {
+        return (new ByteArrayParser(buffer.getCurrentBuffer(), 0, buffer.length())).readObject(StaticMeta.OUTER_BONAPORTABLE, BonaPortable.class);
+    }
 }

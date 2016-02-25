@@ -8,7 +8,7 @@ package test.adapters {
         Long(18,6)  microUnits;
         Int (6,3) round roundedMillis;
     }
-    
+
     class TestNoXml1 XML PROPERTY {
     }
     abstract class TestNoXml2 XML PROPERTY {

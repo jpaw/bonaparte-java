@@ -23,7 +23,7 @@ public class XmlWriter<T extends BonaPortable> extends AbstractMessageWriter<XML
     private final String dataTag;
     private final XMLStreamWriter sw;
     private final Class<T> cls;
-    
+
     public XmlWriter(Marshaller m, OutputStream os, boolean formatted, boolean fragment, Class<T> cls, String outerElementName) throws Exception {
         this.m = m;
         this.formatted = formatted;

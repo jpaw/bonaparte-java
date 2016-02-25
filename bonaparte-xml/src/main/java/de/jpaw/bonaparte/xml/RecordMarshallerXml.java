@@ -17,32 +17,32 @@ public class RecordMarshallerXml implements IMarshaller {
     private final JAXBContext context;
     private final boolean formatted;
 
-    /** Constructor creates the class instance, which builds the thread safe JAXB context. 
+    /** Constructor creates the class instance, which builds the thread safe JAXB context.
      * @throws JAXBException */
     public RecordMarshallerXml(JAXBContext context, boolean formatted) throws JAXBException {
         this.context = context;
-    	this.formatted = formatted;
+        this.formatted = formatted;
     }
-    
-	@Override
-	public String getContentType() {
-		return MimeTypes.MIME_TYPE_XML;
-	}
 
-	@Override
-	public ByteArray marshal(BonaPortable request) throws Exception {
-		Marshaller m = context.createMarshaller();
-		if (formatted)
-			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);  // for testing purposes - do not use in production
-		// create an outputStream to marshal to, into a byte array
-		ByteBuilderOutputStream os = new ByteBuilderOutputStream(16000);
+    @Override
+    public String getContentType() {
+        return MimeTypes.MIME_TYPE_XML;
+    }
+
+    @Override
+    public ByteArray marshal(BonaPortable request) throws Exception {
+        Marshaller m = context.createMarshaller();
+        if (formatted)
+            m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);  // for testing purposes - do not use in production
+        // create an outputStream to marshal to, into a byte array
+        ByteBuilderOutputStream os = new ByteBuilderOutputStream(16000);
         m.marshal(request, os);
         return os.asByteArray();
-	}
+    }
 
-	@Override
-	public BonaPortable unmarshal(ByteBuilder buffer) throws Exception {
-		Unmarshaller u = context.createUnmarshaller();
-		return (BonaPortable)u.unmarshal(buffer.asByteArrayInputStream());
-	}
+    @Override
+    public BonaPortable unmarshal(ByteBuilder buffer) throws Exception {
+        Unmarshaller u = context.createUnmarshaller();
+        return (BonaPortable)u.unmarshal(buffer.asByteArrayInputStream());
+    }
 }

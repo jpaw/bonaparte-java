@@ -13,15 +13,15 @@ import de.jpaw.bonaparte.core.MimeTypes;
 public class SingleThreadCachingMessageCoderFactory2<D extends BonaPortable, E extends BonaPortable> implements IMessageCoderFactory<D, E, byte []> {
     private final Map<String,IMessageDecoder<D, byte []>> decoders = new HashMap<String,IMessageDecoder<D, byte []>>(10);
     private final Map<String,IMessageEncoder<E, byte []>> encoders = new HashMap<String,IMessageEncoder<E, byte []>>(10);
-    
+
     private final Class<D> decoderClass;
     private final Class<E> encoderClass;
-    
+
     public SingleThreadCachingMessageCoderFactory2(Class<D> decoderClass, Class<E> encoderClass) {
         this.decoderClass = decoderClass;
         this.encoderClass = encoderClass;
     }
-    
+
     // override to add additional methods
     protected IMessageEncoder<E, byte []> createNewEncoderInstance(String mimeType) {
         if (mimeType.equals(MimeTypes.MIME_TYPE_BONAPARTE))
@@ -32,7 +32,7 @@ public class SingleThreadCachingMessageCoderFactory2<D extends BonaPortable, E e
             return new JsonEncoder<E>();
         return null;
     }
-    
+
     // override to add additional methods
     protected IMessageDecoder<D, byte []> createNewDecoderInstance(String mimeType) {
         if (mimeType.equals(MimeTypes.MIME_TYPE_BONAPARTE))
@@ -43,7 +43,7 @@ public class SingleThreadCachingMessageCoderFactory2<D extends BonaPortable, E e
             return new JsonDecoder<D>(decoderClass);
         return null;
     }
-    
+
     @Override
     public final IMessageEncoder<E, byte []> getEncoderInstance(String mimeType) {
         IMessageEncoder<E, byte []> encoder = encoders.get(mimeType);

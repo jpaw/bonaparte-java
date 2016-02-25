@@ -35,17 +35,17 @@ public class MapComposer extends NoOpComposer<RuntimeException> implements Messa
     final protected Map<String, Object> storage;
     final protected boolean storeNulls;
     final protected boolean storePQON;      // set to true for JSON conversions
-    
+
     static public Map<String,Object> marshal(BonaCustom obj) {
         MapComposer mc = new MapComposer();
         obj.serializeSub(mc);
         return mc.getStorage();
     }
-    
+
     static public Map<String,Object> toJsonMap(BonaCustom obj) {
         return marshal(obj, false, true);
     }
-    
+
     static public Map<String,Object> marshal(BonaCustom obj, boolean storeNulls, boolean storePQON) {
         final Map<String, Object> map = new HashMap<String, Object>();
         if (storePQON)
@@ -54,7 +54,7 @@ public class MapComposer extends NoOpComposer<RuntimeException> implements Messa
         obj.serializeSub(mc);
         return mc.getStorage();
     }
-    
+
     /** Creates a new ListComposer for a given preallocated external storage.
      * keepObjects = true replaces the prior ListObjComposer */
     public MapComposer(final Map<String, Object> storage, boolean storeNulls, boolean storePQON) {
@@ -82,7 +82,7 @@ public class MapComposer extends NoOpComposer<RuntimeException> implements Messa
     public void reset() {
         storage.clear();
     }
-    
+
     protected void store(FieldDefinition di, Object x) {
         if (x != null || storeNulls)
             storage.put(di.getName(), x);
@@ -202,7 +202,7 @@ public class MapComposer extends NoOpComposer<RuntimeException> implements Messa
         if (n == null)
             writeNull(di);
         else
-            store(di, Integer.valueOf(n.ordinal())); 
+            store(di, Integer.valueOf(n.ordinal()));
     }
 
     @Override

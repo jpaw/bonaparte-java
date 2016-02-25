@@ -112,7 +112,7 @@ public class ByteArrayComposer extends AbstractMessageComposer<RuntimeException>
     protected int getNumberOfObjectsSerialized() {
         return numberOfObjectsSerialized;
     }
-    
+
     @Override
     public void setCharset(Charset charset) {
         super.setCharset(charset);
@@ -234,7 +234,7 @@ public class ByteArrayComposer extends AbstractMessageComposer<RuntimeException>
         addCharSub(c);
         terminateField();
     }
-    
+
     protected void unicodeOut(String s) {
         // take care not to break multi-Sequences
         for (int i = 0; i < s.length();) {
@@ -567,7 +567,7 @@ public class ByteArrayComposer extends AbstractMessageComposer<RuntimeException>
     public boolean addExternal(ObjectReference di, Object obj) {
         return false;       // perform conversion by default
     }
-    
+
     @Override
     public void addField(ObjectReference di, Map<String, Object> obj) {
         if (obj == null)

@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.Collection;
 
 public abstract class AbstractMessageWriter<E extends Exception> extends Settings implements MessageWriter<E> {
-    
+
     /** Writes a list or set of objects, with proper separators.
      * For most implementations, the default implementation should be sufficient.
      */
@@ -28,7 +28,7 @@ public abstract class AbstractMessageWriter<E extends Exception> extends Setting
         }
         terminateTransmission();
     }
-    
+
     @Override
     public void close() throws IOException {
     }

@@ -12,14 +12,14 @@ import de.jpaw.bonaparte.core.StaticMeta;
 
 public class BonaparteByteArraySerializer extends BonaparteSerializer implements ByteArraySerializer<BonaPortable> {
     private final boolean recommendIds;
-    
+
     public BonaparteByteArraySerializer() {
         this.recommendIds = false;
     }
     public BonaparteByteArraySerializer(boolean recommendIds) {
         this.recommendIds = recommendIds;
     }
-    
+
     @Override
     public byte[] write(BonaPortable object) throws IOException {
         CompactByteArrayComposer cbac = new CompactByteArrayComposer(500, recommendIds);

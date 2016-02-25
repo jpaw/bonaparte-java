@@ -108,7 +108,7 @@ public class JsonTest {
         FilterProvider filters = new SimpleFilterProvider().addFilter("regexFilter", new RegexBeanPropertyFilter("\\$.*"));
         System.out.println("Jackson produces " + mapper.writer(filters).writeValueAsString(getData()));
     }
-    
+
     // Jackson after bonaparte 3.4.0: no filter required (but still Joda module)
     @Test
     public void runJackson2() throws Exception {

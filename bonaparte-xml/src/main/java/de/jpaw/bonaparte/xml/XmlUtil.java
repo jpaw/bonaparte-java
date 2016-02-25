@@ -13,9 +13,9 @@ import de.jpaw.xenums.init.ReflectionsPackageCache;
 
 public class XmlUtil {
     private static final Class<?> [] TYPE_DUMMY = new Class [0];
-    
+
     public static JAXBContext getJaxbContext(String ... packages) {
-        
+
         Reflections [] reflections = ReflectionsPackageCache.getAll(packages);
         Set<Class<?>> classes = new HashSet<Class<?>>(1000);
         for (Reflections r: reflections) {

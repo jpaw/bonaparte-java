@@ -31,7 +31,7 @@ public interface EhcFilter {
 public class EhcCriteriaBuilder {
     @Inject
     var EhcFilter ehcFilter
-    
+
     def public Criteria buildPredicate(Cache cache, SearchFilter filter) {
         if (filter === null)
             return null;

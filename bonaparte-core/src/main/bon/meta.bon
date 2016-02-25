@@ -124,7 +124,7 @@ package meta factoryId 29 {
         optional Ascii(7)                   language;           // ISO 639 language code, typically 2 lowercase letters
         optional Ascii(3)                   country;            // ISO 3166 country code (A2 or N3)
         optional Ascii(16)                  variant;            // variant code
-        optional Ascii(4)                   script;             // script extension 
+        optional Ascii(4)                   script;             // script extension
     }
 
     final immutable class BonaClassAdapter is de.jpaw.bonaparte.core.BonaPortableClass adapter de.jpaw.bonaparte.core.BonaClassAdapter singleField withExceptionConverter {

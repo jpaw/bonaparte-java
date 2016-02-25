@@ -17,7 +17,7 @@ import de.jpaw.bonaparte.pojos.api.auth.UserLogLevelType;
 import de.jpaw.bonaparte.util.ToStringHelper;
 
 public class JwtConverterTest {
-    
+
     private JwtInfo createSampleInfo(Instant now, UUID sessionId) {
         // test one field per data type at least
         JwtInfo info = new JwtInfo();
@@ -31,15 +31,15 @@ public class JwtConverterTest {
         info.setSessionId(sessionId);
         return info;
     }
-    
+
     @Test
     public void testInfoToMap() throws Exception {
         Instant now = JwtConverter.lastFullSecond();
         UUID sessionId = UUID.randomUUID();
-        
+
         // test one field per data type at least
         JwtInfo info = createSampleInfo(now, sessionId);
-        
+
         Map<String, Object> jsonMap = JwtConverter.asMap(info);
         Assert.assertEquals(jsonMap.size(), 8);
         Assert.assertEquals(jsonMap.get("sub"), "John");
@@ -50,7 +50,7 @@ public class JwtConverterTest {
         Assert.assertEquals(jsonMap.get("w"), Boolean.TRUE);
         Assert.assertEquals(jsonMap.get("p"), "B.test");
         Assert.assertEquals(jsonMap.get("o"), sessionId);
-        
+
         // test the conversion back to the JwtInfo
         JwtPayload payload = JwtConverter.parsePayload(jsonMap);
         JwtInfo info2 = JwtConverter.parseJwtInfo(payload);
@@ -58,12 +58,12 @@ public class JwtConverterTest {
         System.out.println(ToStringHelper.toStringML(info2));
         Assert.assertEquals(info2, info);
     }
-    
+
     @Test
     public void testInfoJson() {
         Instant now = JwtConverter.lastFullSecond();
         UUID sessionId = UUID.randomUUID();
-        
+
         // test one field per data type at least
         JwtInfo info = createSampleInfo(now, sessionId);
         String json = BonaparteJsonEscaper.asJson(JwtConverter.asMap(info));

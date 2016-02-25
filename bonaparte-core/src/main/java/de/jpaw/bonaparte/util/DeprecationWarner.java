@@ -8,7 +8,7 @@ public class DeprecationWarner {
     public static class DefaultWarner implements IDeprecationWarner {
         final static private Logger LOGGER = LoggerFactory.getLogger(DefaultWarner.class);
         final String action;
-        
+
         public DefaultWarner(String forWhichAction) {
             action = forWhichAction;
         }
@@ -16,7 +16,7 @@ public class DeprecationWarner {
         @Override
         public void warn(Object obj, String fieldName) {
             LOGGER.warn("Using {} for deprecated field {}.{}", action, obj.getClass().getCanonicalName(), fieldName);
-        }        
+        }
     }
 
     /** Assign your preferred implementation, for example to obtain stack traces etc. */

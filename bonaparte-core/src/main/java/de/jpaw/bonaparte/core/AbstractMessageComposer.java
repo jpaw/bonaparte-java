@@ -10,7 +10,7 @@ public abstract class AbstractMessageComposer<E extends Exception> extends Abstr
         addField(StaticMeta.OUTER_BONAPORTABLE, o);
         terminateRecord();
     }
-    
+
     @Override
     public void writeObject(BonaCustom o) throws E {
         addField(StaticMeta.OUTER_BONAPORTABLE, o);

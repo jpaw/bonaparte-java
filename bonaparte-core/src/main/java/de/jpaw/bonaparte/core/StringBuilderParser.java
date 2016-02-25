@@ -75,7 +75,7 @@ public final class StringBuilderParser extends AbstractPartialJsonStringParser i
             return currentClass;
         }
     });
-    
+
     @Override
     protected MessageParserException newMPE(int errorCode, FieldDefinition di, String msg) {
         return new MessageParserException(errorCode, di.getName(), parseIndex, currentClass, msg);
@@ -712,7 +712,7 @@ public final class StringBuilderParser extends AbstractPartialJsonStringParser i
         needToken(FIELD_TERMINATOR);
         return result;
     }
-    
+
     @Override
     protected String getString(FieldDefinition di) throws MessageParserException {
         return readString(di.getName(), di.getIsRequired(), Integer.MAX_VALUE, true, false, true, true);

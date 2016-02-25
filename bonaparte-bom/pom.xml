@@ -12,7 +12,7 @@
     <packaging>pom</packaging>
 
     <description>Bonaparte bill of materials</description>
- 
+
     <dependencyManagement>
         <dependencies>
             <dependency>

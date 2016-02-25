@@ -145,7 +145,7 @@ public class BaseExcelComposer extends AbstractMessageComposer<RuntimeException>
             return csBigDecimal[decimals];
         }
     }
-    
+
     /** Write the current state of the Workbook onto a stream. */
     @Override
     public void write(OutputStream os) throws IOException {
@@ -165,11 +165,11 @@ public class BaseExcelComposer extends AbstractMessageComposer<RuntimeException>
         try (ByteArrayOutputStream out = new ByteArrayOutputStream(50000)) {
             write(out);
             out.flush();
-            result = out.toByteArray(); 
+            result = out.toByteArray();
         }
         return result;
     }
-    
+
     protected void setFieldWidth(FieldDefinition di) {
         int gap = 3;        // addon for graphical reasons (border dist)
         int width = 8;  // this is the xls default
@@ -210,10 +210,10 @@ public class BaseExcelComposer extends AbstractMessageComposer<RuntimeException>
         default:
             break;
         }
-        LOGGER.debug("Setting width of column {} ({}); to {}", column, di.getName(), width); 
+        LOGGER.debug("Setting width of column {} ({}); to {}", column, di.getName(), width);
         sheet.setColumnWidth(column, (width + gap) * 256);
     }
-    
+
     /**************************************************************************************************
      * Serialization goes here
      **************************************************************************************************/

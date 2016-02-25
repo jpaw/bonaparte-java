@@ -5,7 +5,7 @@
 \usepackage[utf8x]{inputenc}
 \usepackage{listings}
     \lstset{numbers=left, numberstyle=\tiny, numbersep=5pt,frame=leftline}
-    \lstset{language=Java} 
+    \lstset{language=Java}
     \lstset{basicstyle=\small,tabsize=4,extendedchars=false,columns=flexible}
 %    \lstset{keywordstyle=\ttfamily\bfseries}
     \lstset{keywordstyle=\bfseries}
@@ -29,7 +29,7 @@ Extension\footnote{SHIPANWABE - Should Have I Picked Another Name With A Better 
 \maketitle
 \begin{abstract}
 Bonaparte is an Eclipse XText based domain specific language (DSL), with the purpose to generate code for fast object serialization / deserialization.
-There is a preferred serialization format (the ``Bonaparte format''), but the DSL itself is independent of the serialization format. 
+There is a preferred serialization format (the ``Bonaparte format''), but the DSL itself is independent of the serialization format.
 The Bonaparte serialization format combines features of CSV, JSON, Java serialization and Google protocol buffers.
 \end{abstract}
 \section{Why another serialization format?}
@@ -59,7 +59,7 @@ The Bonaparte message format was designed with the following goals in mind:
 \end{itemize}
 Normally, Bonaparte serialized formats are defined as UTF-8 encoded character byte streams.
 Using an extension mechanism or via external setting of the encoding, other encodings are also supported (provided they cover all required code points of transmitted text fields).
-In fact, the serialized format can be converted between UTF-8 and other formats during transmission and parsed in a different encoding. 
+In fact, the serialized format can be converted between UTF-8 and other formats during transmission and parsed in a different encoding.
 
 \section{Why a specialized DSL?}
 The key driver for the development of the DSL was the desire to have a notation which is independent of the target language and also very compact.
@@ -165,7 +165,7 @@ currently existing format supports all of them.
     serialized, the grammar can specify if exactly that class, or also any
     subclass can be (de-)serialized instead.
     \item Data domains. The implemention can provide a mapping of HQONs (Half
-    Qualified Object Names) to class names. 
+    Qualified Object Names) to class names.
     \item Auto-detection of encoding conversions (for certain formats: one single-byte, one multi-byte) $=>$ use the EURO currency
     sign as criteria:
     ISO 8859-15, UTF-8? (Future feature, requires extension parsing)
@@ -178,7 +178,7 @@ currently existing format supports all of them.
     to allow the dynamic creation of the data classes and is sent as data
     objects defined in the ``meta'' package.
     \item Generics support. At the moment, it's the same halfhearted approach as in Java (namely, with type erasure), but the plan is to extend it to
-    a full-featured implementation, comparable to C\# or C++'s templates. 
+    a full-featured implementation, comparable to C\# or C++'s templates.
 \end{itemize}
 
 \section{Description of the format}
@@ -205,23 +205,23 @@ and trailing spaces treat this as a non-strippable space character.
 YYYYMMDDHHMISS(fff), or any subsequence of this which at least defines the
 day. The timestamp is assumed to be in UTC, Gregorian Calendar. The maximum
 number of sub-second fractional digits is implementation defined,
-implementations which see more digits presented than they support are expected to silently ignore them.  
+implementations which see more digits presented than they support are expected to silently ignore them.
 \item raw data (binary bytes). Binary data is transmitted in base64 encoding.
 \end{itemize}
 Any elementary field is terminated by a field terminator character (ctrl-F). Any
 field may be empty, which means, it consists only of the field terminator
 character. If during parsing of an object the object termination character
-(ctrl-O) is found, any additional fields are assumed to be empty. 
+(ctrl-O) is found, any additional fields are assumed to be empty.
 
 Arrays are represented by an introduction character ctrl-B, followed by an
 arbitrary number of objects or elementary data items, followed by the array
 termination character, ctrl-A. Converting a singular data item in an object into
-an array therefore is (from a message presentation form) an upwards compatible operation. 
+an array therefore is (from a message presentation form) an upwards compatible operation.
 
 Objects are represented by an identifier giving their name (any valid Java
 identifier of up to 30 characters length is fine) and a version number (default
 0). Both object ID and version number are treated as regular fields, i.e. are
-terminated by a field termination character. 
+terminated by a field termination character.
 
 \subsection{Special characters}
 
@@ -314,17 +314,17 @@ form of Java maps)\\
 
 \subsection{Message format railroad diagrams}
 In the following diagrams, a single uppercase letter inside a circle represents the single byte control code represented by the ASCII code of the letter minus 64 (0x40).
- 
+
 \railoptions{+ac}   % \railoptions{-h}
 
 
 \begin{rail}
 null : 'N'
     ;
-   
+
 atomicfield : value 'F'
     ;
-   
+
 array :
     'B' count 'F' (member *) 'A'
     ;
@@ -334,15 +334,15 @@ member : null | atomicfield | array | object
 
 revision : 'N' | (revisionstring 'F')
     ;
-   
+
 \end{rail}
-        
+
 \begin{rail}
 versionedmemberlist :
     revision (member*)
     ;
 \end{rail}
-        
+
 \begin{rail}
 object :
     'S' objectname 'F' versionedmemberlist
@@ -350,7 +350,7 @@ object :
     'O'
     ;
 \end{rail}
-        
+
 \begin{rail}
 record :
     'R' revision
@@ -358,12 +358,12 @@ record :
                                                     ('M')? 'J'
     ;
 \end{rail}
-        
+
 \begin{rail}
 transmission :
     'T' revision
-    (('X' extension 'Y')+) 
-    ( record *) 
+    (('X' extension 'Y')+)
+    ( record *)
     ('Z')?
     ('Q')?
     ;
@@ -395,7 +395,7 @@ The following changes are supported:
     \item changing a boolean into a number or character field
     \item changing an ASCII field into a UNICODE field
     \item removing an existing field, which is not the last field of a class.
-    \item Swapping between array, List and Set data structures 
+    \item Swapping between array, List and Set data structures
 \end{itemize}
 
 If incompatible changes cannot be avoided, use of the ``versioning feature'' is required. This requires additional development
@@ -447,7 +447,7 @@ Akka is a very promising actor framework. Actors can communicate via the Bonapar
 
 \section{License}
 The Bonaparte DSL and the default serialization / deserialization implementation for Java
-are available under the Apache license, version 2 (\url{http://www.apache.org/licenses/}). 
+are available under the Apache license, version 2 (\url{http://www.apache.org/licenses/}).
 
 \section{References and Prerequisites}
 The source of the Bonaparte DSL can be obtained here: \url{https://github.com/jpaw/bonaparte-dsl}.

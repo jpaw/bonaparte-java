@@ -123,7 +123,7 @@ public class ByteArrayParser extends AbstractMessageParser<MessageParserExceptio
     public ByteArrayParser(byte [] buffer) {
         this(buffer, 0, -1, DEFAULT_COMPATIBILITY179);
     }
-    
+
     /**************************************************************************************************
      * Deserialization goes here. Code below does not use the ByteBuilder class,
      * but reads from the byte[] directly
@@ -681,7 +681,7 @@ public class ByteArrayParser extends AbstractMessageParser<MessageParserExceptio
             // 1.7.9 and before had this token assigned for two meanings: parent separator but also object separator
             return;
         }
-        
+
         // we have extra data and it is not null. Now the behavior depends on a parser setting
         ParseSkipNonNulls mySetting = getSkipNonNullsBehavior();
         switch (mySetting) {

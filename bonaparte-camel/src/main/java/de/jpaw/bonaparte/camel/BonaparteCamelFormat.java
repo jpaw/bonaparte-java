@@ -36,10 +36,10 @@ import de.jpaw.util.ByteArray;
 
 /**
  * The BonaparteCamelFormat class.
- * 
+ *
  * @author Michael Bischoff
  * @version $Revision$
- * 
+ *
  *          Implements the Apache Camel DataFormat interface using the StringBuilder bonaparte implementation.
  *          Work in progress - needs major rework to provide better separation of outer transmission layer.
  */
@@ -50,11 +50,11 @@ public final class BonaparteCamelFormat implements DataFormat {
     private boolean writeCRs = false;
     // the character set used for backend communication: UTF-8 or ISO-8859-something or windows-125x
     private Charset useCharset = ByteArray.CHARSET_UTF8; // Charset.defaultCharset(); or "windows-1252"
-    private int initialBufferSize = 16000;  // start big to avoid frequent reallocation 
-    
-    
+    private int initialBufferSize = 16000;  // start big to avoid frequent reallocation
+
+
 //    private void writeOptions(OutputStream stream, StringBuilderComposer w) throws IOException {
-//        String encoding = "\030E€\031"; 
+//        String encoding = "\030E€\031";
 //        if (writeEncoding)
 //            stream.write(encoding.getBytes(w.getCharset()));
 //    }
@@ -63,15 +63,15 @@ public final class BonaparteCamelFormat implements DataFormat {
         stream.write(w.getBuffer(), 0, w.getLength());
         w.reset();
     }
-    
-    
+
+
     @Override
     public void marshal(Exchange exchange, Object graph, OutputStream stream) throws Exception {
         StringBuilder work = new StringBuilder(initialBufferSize);
         StringBuilderComposer w = new StringBuilderComposer(work);
         w.setCharset(useCharset);
         w.setWriteCRs(writeCRs);
-        
+
         if (Collection.class.isInstance(graph)) {
             w.startTransmission();
 //            writeOptions(stream, w);
@@ -101,8 +101,8 @@ public final class BonaparteCamelFormat implements DataFormat {
             throw new Exception("multi-reads for big messages not yet supported");
         if (byteBuffer[0] == ByteArrayConstants.TRANSMISSION_BEGIN)   // multi record (transmission)
             isMultiRecord = true;
-        
-        StringBuilder work = new StringBuilder(new String (byteBuffer, useCharset)); 
+
+        StringBuilder work = new StringBuilder(new String (byteBuffer, useCharset));
         StringBuilderParser w = new StringBuilderParser(work, 0, -1);
         List<BonaPortable> resultSet = w.readTransmission();
         if (isMultiRecord)
@@ -116,7 +116,7 @@ public final class BonaparteCamelFormat implements DataFormat {
         }
     }
 
-    
+
     public boolean isWriteCRs() {
         return writeCRs;
     }

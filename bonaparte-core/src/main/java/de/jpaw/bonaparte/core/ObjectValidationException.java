@@ -59,7 +59,7 @@ public class ObjectValidationException extends ApplicationException {
     static public final int UNSUPPORTED_MAP_VALUE_TYPE  = ILE_OFFSET + 52;
     static public final int INVALID_SEQUENCE            = ILE_OFFSET + 53;
     static public final int MAP_NOT_UNSUPPORTED         = ILE_OFFSET + 54;
-    
+
     static {
         codeToDescription.put(MAY_NOT_BE_BLANK          , "Empty, but required field");
         codeToDescription.put(NO_PATTERN_MATCH          , "Field contents does not match required pattern");
@@ -77,7 +77,7 @@ public class ObjectValidationException extends ApplicationException {
         codeToDescription.put(NOT_FREEZABLE             , "This object cannot be turned into immutable state");
         codeToDescription.put(OBJECT_IS_FROZEN          , "Object instance is frozen and cannot be modified");
         codeToDescription.put(IS_IMMUTABLE              , "This object cannot be turned into mutable state");
-        
+
         // JSON map codes
         codeToDescription.put(UNSUPPORTED_MAP_KEY_TYPE  , "This map key type is currently not supported");
         codeToDescription.put(UNSUPPORTED_MAP_VALUE_TYPE, "This map key type is currently not supported");

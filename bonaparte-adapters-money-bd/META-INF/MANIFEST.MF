@@ -11,4 +11,4 @@ Require-Bundle: bonaparte.core,
 Export-Package: de.jpaw.bonaparte.adapters.moneybd,
  de.jpaw.bonaparte.pojos.adapters.moneybd
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6 
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

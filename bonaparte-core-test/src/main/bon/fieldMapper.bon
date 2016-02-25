@@ -1,23 +1,23 @@
 package fieldMappers {
-    
+
     type alsoInt is int;
-    
+
     class A {
         int i;
         long j;
         alsoInt k;
     }
-    
+
     class AA extends A {
         Unicode(80)     text;
     }
-    
-    
+
+
     class B {
         Unicode(10)     text;
         int k;
     }
-    
+
     class BB extends B {
         int i;
         int j;

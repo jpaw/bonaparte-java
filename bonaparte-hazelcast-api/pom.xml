@@ -13,7 +13,7 @@
     <packaging>jar</packaging>
 
     <description>BONAPARTE Hazelcast criteria API support</description>
-    
+
     <build>
         <plugins>
             <plugin>

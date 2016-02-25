@@ -6,19 +6,19 @@ import org.testng.annotations.Test;
 import de.jpaw.bonaparte.pojos.testXenum.XAlphabet;
 
 public class TestStringXEnumSetOperations {
-    
+
     private void testUnify(String a, String b, String union) throws Exception {
         XAlphabet x = new XAlphabet(a);
         x.unifyWith(new XAlphabet(b));                 // Set union
-        
+
         Assert.assertEquals(x, new XAlphabet(union));  // Set equals
-        
+
         XAlphabet x1 = new XAlphabet(a);
         x1.unifyWith(b);                            // String arg union
-        
+
         Assert.assertEquals(x1.getBitmap(), union); // String equals
     }
-    
+
     @Test
     public void testEnumSetUnion() throws Exception {
         testUnify("AB", "BC", "ABC");
@@ -32,20 +32,20 @@ public class TestStringXEnumSetOperations {
         testUnify("AB", "",   "AB");
         testUnify("",   "AB", "AB");
     }
-    
-    
+
+
     private void testIntersect(String a, String b, String common) throws Exception {
         XAlphabet x = new XAlphabet(a);
         x.intersectWith(new XAlphabet(b));             // Set Difference
-        
+
         Assert.assertEquals(x, new XAlphabet(common)); // Set equals
-        
+
         XAlphabet x1 = new XAlphabet(a);
         x1.intersectWith(b);                        // String arg Difference
-        
+
         Assert.assertEquals(x1.getBitmap(), common);// String equals
     }
-    
+
     @Test
     public void testEnumSetIntersect() throws Exception {
         testIntersect("AB", "BC", "B");
@@ -60,19 +60,19 @@ public class TestStringXEnumSetOperations {
         testIntersect("",   "AB", "");
     }
 
-    
+
     private void testDifference(String a, String b, String difference) throws Exception {
         XAlphabet x = new XAlphabet(a);
         x.exclude(new XAlphabet(b));                       // Set exclusion
-        
+
         Assert.assertEquals(x, new XAlphabet(difference)); // Set equals
-        
+
         XAlphabet x1 = new XAlphabet(a);
         x1.exclude(b);                                  // String arg exclusion
-        
+
         Assert.assertEquals(x1.getBitmap(), difference);// String equals
     }
-    
+
     @Test
     public void testEnumSetDifference() throws Exception {
         testDifference("AB", "BC", "A");
@@ -89,19 +89,19 @@ public class TestStringXEnumSetOperations {
         testDifference("ABC", "AC", "B");
     }
 
-    
+
     private void testXor(String a, String b, String flipped) throws Exception {
         XAlphabet x = new XAlphabet(a);
         x.flip(new XAlphabet(b));                       // Set xor
-        
+
         Assert.assertEquals(x, new XAlphabet(flipped)); // Set equals
-        
+
         XAlphabet x1 = new XAlphabet(a);
         x1.flip(b);                                  // String arg xor
-        
+
         Assert.assertEquals(x1.getBitmap(), flipped);// String equals
     }
-    
+
     @Test
     public void testEnumSetXor() throws Exception {
         testXor("AB", "BC", "AC");
@@ -118,12 +118,12 @@ public class TestStringXEnumSetOperations {
         testXor("ABC", "AC", "B");
     }
 
-    
+
     private void testInit(String a, String result) throws Exception {
         XAlphabet x = new XAlphabet(a);
         Assert.assertEquals(x.getBitmap(), result);    // String equals
     }
-    
+
     @Test
     public void testEnumSetInit() throws Exception {
         testInit("AB", "AB");

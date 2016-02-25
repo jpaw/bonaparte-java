@@ -18,13 +18,13 @@ import de.jpaw.util.ByteBuilder;
  * Client connection via http. This class provides a request / response functionality implemented via http POST.
  * The http authorization header can be modifed during the lifetime of an instance.
  * The marshaller can be changed as well, this is however usually not desired.
- * 
+ *
  * @author mbi
  *
  */
 public class HttpPostClient implements INetworkDialog {
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpPostClient.class);
-    
+
     protected String baseUrl;
     private final boolean addVariableUrlPath;
     private final boolean logSizes;
@@ -33,7 +33,7 @@ public class HttpPostClient implements INetworkDialog {
     private URL cachedUrl = null;
     protected IMarshaller marshaller;
     protected String authentication = null;
-    
+
     public HttpPostClient(String baseUrl, boolean addVariableUrlPath, boolean logSizes, boolean logText, boolean logHex, IMarshaller initialMarshaller) {
         this.baseUrl            = baseUrl;
         this.addVariableUrlPath = addVariableUrlPath;
@@ -42,11 +42,11 @@ public class HttpPostClient implements INetworkDialog {
         this.logHex             = logHex;
         this.marshaller         = initialMarshaller;
     }
-    
+
     public HttpPostClient(String baseUrl) {
         this(baseUrl, false, false, false, false, new RecordMarshallerBonaparte());
     }
-    
+
     public void setMarshaller(IMarshaller marshaller) {
         this.marshaller = marshaller;
     }
@@ -54,7 +54,7 @@ public class HttpPostClient implements INetworkDialog {
     public void setAuthentication(String authentication) {
         this.authentication = authentication;
     }
-    
+
     // properties can be set in their own method to allow overriding it
     protected void setRequestProperties(HttpURLConnection connection) {
         connection.setDoOutput(true);
@@ -67,7 +67,7 @@ public class HttpPostClient implements INetworkDialog {
         connection.setRequestProperty("Accept-Charset", "utf-8");
         connection.setUseCaches(false);
     }
-    
+
     protected void requestLogger(String pqon, ByteArray serializedRequest) {
         if (logSizes)
             LOGGER.info("{} serialized as {} bytes for MIME type {}", pqon, serializedRequest.length(), marshaller.getContentType());
@@ -85,13 +85,13 @@ public class HttpPostClient implements INetworkDialog {
         if (logHex)
             LOGGER.info(serializedResponse.hexdump(0, 0));
     }
-    
-    
-    /** Execute the request / response dialog. */ 
+
+
+    /** Execute the request / response dialog. */
     @Override
     public BonaPortable doIO(BonaPortable request) throws Exception {
         ByteArray serializedRequest = marshaller.marshal(request);
-        
+
         URL url = null;
         if (addVariableUrlPath) {
             String variablePath = request.ret$BonaPortableClass().getProperty("path");
@@ -107,12 +107,12 @@ public class HttpPostClient implements INetworkDialog {
 
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("POST");
-        
+
         setRequestProperties(connection);
-        
+
         if (authentication != null)
             connection.setRequestProperty("Authorization", authentication);
-        
+
         connection.setRequestProperty("Content-Length", "" + serializedRequest.length());
         requestLogger(request.ret$PQON(), serializedRequest);
 
@@ -120,24 +120,24 @@ public class HttpPostClient implements INetworkDialog {
         DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
         serializedRequest.toOutputStream(wr);
         wr.flush();
-    
+
         // retrieve the response
         InputStream is = connection.getInputStream();
-        
+
         // after getInputStream, the status should be available: https://www.tbray.org/ongoing/When/201x/2012/01/17/HttpURLConnection
         int returnCode = connection.getResponseCode();
         String statusMessage = connection.getResponseMessage();
-        
+
         if (returnCode != HttpURLConnection.HTTP_OK) {
             LOGGER.warn("response for {} is HTTP {} ({})", request.ret$PQON(), returnCode, statusMessage);
             return null;
         }
-        
+
         ByteBuilder serializedResponse = new ByteBuilder();
         serializedResponse.readFromInputStream(is, 0);
         is.close();
         wr.close();
-    
+
         responseLogger(serializedResponse);
 
         return marshaller.unmarshal(serializedResponse);

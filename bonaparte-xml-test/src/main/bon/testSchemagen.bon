@@ -1,26 +1,26 @@
 package (com.foo) test.jaxb.schema XML PROPERTY BeanVal {
-    
+
     enum MyEnum {
         HELLO, WORLD
     }
-    
+
     enum MyAlphaEnum {
         HELLO="h", WORLD="w", STARS="s"
     }
-    
+
     enumset MyEnumSet           is MyAlphaEnum;
-    
+
     type countryCode            is Uppercase(2..2);
-    
+
     type numCurrencyCode        is int(3);
-    
+
     type myEnumset              is enumset MyEnumSet;
-    
-    
+
+
     class TestSub {
-        Ascii(10)                       myAscii;           
+        Ascii(10)                       myAscii;
     }
-    
+
     class TestXml xmlRoot {
         int                             test;
         Decimal(12,6)                   num;
@@ -30,25 +30,25 @@ package (com.foo) test.jaxb.schema XML PROPERTY BeanVal {
         Unicode(80) List<>              texts;
         Object                          anyBonaPortable;
     }
-    
+
     class TestXmlMap xmlRoot {
         int                             test;
         Decimal(12,6) Map<String>       myMap;
-        enum MyEnum                     myReqStdEnum;    
-        enum MyAlphaEnum                myReqAlphaEnum;    
-        optional Enum MyEnum            myOptStdEnum;    
+        enum MyEnum                     myReqStdEnum;
+        enum MyAlphaEnum                myReqAlphaEnum;
+        optional Enum MyEnum            myOptStdEnum;
         optional Enum MyAlphaEnum       myOptAlphaEnum;
-        required enumset MyEnumSet      myEnumSet;    
+        required enumset MyEnumSet      myEnumSet;
     }
-    
+
     class SubExtended extends TestSub {
         int                             extraObject;
     }
-    
+
     class MapExtended xmlRoot extends TestXmlMap {
         int                             afterTheMap;
     }
-    
+
     class TestTemporal xmlRoot=records {
         Day                             myDay;
         Time                            myTime;

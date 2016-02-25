@@ -177,7 +177,7 @@ public final class StringCSVParser extends AbstractPartialJsonStringParser imple
     public void setMapping(CSVObjectTypeDetector objectTypeDetector) {
         this.objectTypeDetector = objectTypeDetector;
     }
-    
+
     @Override
     protected MessageParserException newMPE(int errorCode, FieldDefinition di, String msg) {
         return new MessageParserException(errorCode, di.getName(), parseIndex, currentClass, msg);
@@ -694,10 +694,9 @@ public final class StringCSVParser extends AbstractPartialJsonStringParser imple
             return Byte.parseByte(processTrailingSigns(token));
         return (byte) postProcessForImplicitDecimals(di, token);
     }
-    
+
     @Override
     protected String getString(FieldDefinition di) throws MessageParserException {
         return readString(di.getName(), di.getIsRequired(), Integer.MAX_VALUE, true, false, true, true);
     }
 }
-

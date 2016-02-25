@@ -54,7 +54,7 @@ public class ListComposer extends NoOpComposer<RuntimeException> implements Mess
     public ListComposer(final List<Object> storage, boolean doDeepCopies, boolean keepObjects, boolean keepExternals) {
         this(storage, doDeepCopies, keepObjects, keepExternals, false);
     }
-    
+
     /** Creates a new ListComposer, creating an own internal storage. */
     public ListComposer(boolean doDeepCopies, boolean keepObjects, boolean keepExternals) {
         this(new ArrayList<Object>(), doDeepCopies, keepObjects, keepExternals);

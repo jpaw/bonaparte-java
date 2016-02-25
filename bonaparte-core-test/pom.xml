@@ -13,12 +13,12 @@
     <packaging>jar</packaging>
 
     <description>BONAPARTE core library extended unit tests</description>
-    
+
     <properties>
         <json-io.version>4.1.6</json-io.version>
         <jackson.version>2.5.0</jackson.version>
     </properties>
-    
+
     <dependencies>
         <dependency>
             <groupId>de.jpaw</groupId>
@@ -47,11 +47,11 @@
             <version>${slf4j.version}</version>
             <scope>runtime</scope>
         </dependency>
-        <!-- need a Bean validation implementation. Apache BVal is said to 
-            be twice as fast, but required commons & beanutils dependencies as well. 
-            Also, the Hibernate validator is the current reference implementation, so 
+        <!-- need a Bean validation implementation. Apache BVal is said to
+            be twice as fast, but required commons & beanutils dependencies as well.
+            Also, the Hibernate validator is the current reference implementation, so
             choosing this one. -->
-        <!-- Uhm, the hibernate one uses JBOSS logging instead of slf4j. 
+        <!-- Uhm, the hibernate one uses JBOSS logging instead of slf4j.
             Bleh. -->
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -65,8 +65,8 @@
             <version>${javax-el-api.version}</version>
             <scope>runtime</scope>
         </dependency>
-        
-        
+
+
         <!-- GSON for comparison with JsonComposer -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
@@ -74,14 +74,14 @@
             <version>${gson.version}</version>
             <scope>compile</scope>
         </dependency>
-        
+
         <!-- JSON-IO (https://github.com/jdereg/json-io and http://code.google.com/p/json-io/) for comparison with JsonComposer -->
         <dependency>
             <groupId>com.cedarsoftware</groupId>
             <artifactId>json-io</artifactId>
             <version>${json-io.version}</version>
         </dependency>
-        
+
         <!-- Jackson also for comparison with JsonComposer -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -92,15 +92,15 @@
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-joda</artifactId>
             <version>${jackson.version}</version>
-        </dependency> 
-        
+        </dependency>
+
         <!-- Jackson-jr as lightweight alternative to the full Jackson, it uses the same jackson-core as dependency -->
         <dependency>
             <groupId>com.fasterxml.jackson.jr</groupId>
             <artifactId>jackson-jr-objects</artifactId>
             <version>${jackson.version}</version>
         </dependency>
-        
+
     </dependencies>
 
 

@@ -32,4 +32,3 @@ public class JsonConversionTest {
         System.out.println(xcJ.encodePrettily());
     }
 }
-

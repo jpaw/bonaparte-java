@@ -49,19 +49,19 @@ public final class Bonaparte2ByteDataFormat implements DataFormat {
     private boolean writeCRs = false;
     // the character set used for backend communication: UTF-8 or ISO-8859-something or windows-125x
     private Charset useCharset = ByteArray.CHARSET_UTF8; // Charset.defaultCharset(); or "windows-1252"
-    private int initialBufferSize = 16000;  // start big to avoid frequent reallocation 
-    
+    private int initialBufferSize = 16000;  // start big to avoid frequent reallocation
+
     private void toStream(ByteArrayComposer w, OutputStream stream) throws IOException {
         stream.write(w.getBuffer(), 0, w.getLength());
         w.reset();
     }
-    
+
 
     @Override
     public void marshal(Exchange exchange, Object graph, OutputStream stream) throws Exception {
         ByteArrayComposer w = new ByteArrayComposer();
         w.setCharset(useCharset);
-        
+
         if (Collection.class.isInstance(graph)) {
             w.startTransmission();
 //            writeOptions(stream, w);
@@ -105,7 +105,7 @@ public final class Bonaparte2ByteDataFormat implements DataFormat {
         }
     }
 
-    
+
     public boolean isWriteCRs() {
         return writeCRs;
     }
@@ -113,7 +113,7 @@ public final class Bonaparte2ByteDataFormat implements DataFormat {
     public void setWriteCRs(boolean writeCRs) {
         this.writeCRs = writeCRs;
     }
-    
+
     public Charset getUseCharset() {
         return useCharset;
     }

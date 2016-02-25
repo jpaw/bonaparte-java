@@ -49,11 +49,11 @@ public class SerializationTest {
         final ObjectDataOutput out3   = ss.createObjectDataOutput(1024);
         out2.writeObject(obj);
         out3.writeData(data3);
-        
+
         //byte [] bytes1 = data1.getData();           // shortest => existed with 3.4.x, no longer in 3.5.x
         byte [] bytes2 = out2.toByteArray();        // 5 bytes more     => this one is the recommended one to use
         byte [] bytes3 = out3.toByteArray();        // 17 bytes more
-        
+
         System.out.println("Size 1 is " + 0 /* bytes1.length */ + ", size 2 is " + bytes2.length + ", size 3 is " + bytes3.length);
 //        System.out.println("buff 1 is\n" + ByteUtil.dump(bytes1, 0));
 //        System.out.println("buff 2 is\n" + ByteUtil.dump(bytes2, 0));
@@ -64,7 +64,7 @@ public class SerializationTest {
         final ObjectDataInput in3 = ss.createObjectDataInput(bytes3);
         final Object rd2          = in2.readObject();
         final Data rd3            = in3.readData();
-        
+
         assert(obj.equals(rd2));
         assert(data3.equals(rd3));
     }
@@ -104,10 +104,10 @@ public class SerializationTest {
             }
         }, null);
     }
-    
+
     private static void runPojoSerializer(String what, Serializer s) throws Exception {
         BonaPortableFactoryById.registerClass(PojoTest.BClass.INSTANCE);
-        
+
         PojoTest tmp = new PojoTest();
         tmp.hello = "Hello, world";
         tmp.num = 18;

@@ -53,7 +53,7 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
     protected final boolean writePqonInfo;      // for every class, also output "@PQON" and the partially qualified name
     protected final boolean maybeWritePqonInfo; // for every class, also output "@PQON" and the partially qualified name, if the containing record allows subclassing
     protected final JsonEscaper jsonEscaper;
-    
+
     protected enum MapMode {
         NO_MAP, EXPECT_KEY, EXPECT_VALUE
     }
@@ -101,7 +101,7 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
         }
         return buff.toString();
     }
-    
+
     @Override
     public void writeObject(BonaCustom o) throws IOException {
         objectOutSub(StaticMeta.OUTER_BONAPORTABLE, o);
@@ -427,7 +427,7 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
         terminateObject(di, obj);
         currentClass = previousClass;
     }
-    
+
     @Override
     public void addField(ObjectReference di, BonaCustom obj) throws IOException {
         if (di.getMultiplicity() != Multiplicity.SCALAR) {
@@ -523,7 +523,7 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
     public boolean addExternal(ObjectReference di, Object obj) throws IOException {
         return false;       // perform conversion by default
     }
-    
+
     @Override
     public void addField(ObjectReference di, Map<String, Object> obj) throws IOException {
         if (obj == null) {

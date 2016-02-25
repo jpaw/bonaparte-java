@@ -1,5 +1,5 @@
 package demo.servlet {
-    
+
     class HdrParams {
         optional Unicode(80) truncate           host;
         optional Unicode(80) truncate           accept_encoding;

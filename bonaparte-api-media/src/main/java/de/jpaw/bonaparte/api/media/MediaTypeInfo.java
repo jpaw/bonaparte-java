@@ -13,7 +13,7 @@ import de.jpaw.enums.XEnumFactory;
 public class MediaTypeInfo {
     private static final ConcurrentMap<String, MediaTypeDescriptor> mimeMap = new ConcurrentHashMap<String, MediaTypeDescriptor>(32);
     private static final ConcurrentMap<MediaXType, MediaTypeDescriptor> reverseMimeMap = new ConcurrentHashMap<MediaXType, MediaTypeDescriptor>(32);
-    
+
     protected static void registerFormatType(MediaTypeDescriptor f) {
         f.freeze();  // make it immutable
         if (reverseMimeMap.putIfAbsent(f.getMediaType(), f) != null) {
@@ -21,7 +21,7 @@ public class MediaTypeInfo {
             mimeMap.putIfAbsent(f.getMimeType(), f);
         }
     }
-    
+
     // static initializations
     static {
         final XEnumFactory<MediaXType> fct = MediaXType.myFactory;  // fileExt, isImage. isAudio, isRecord, isText, isBinary, mimeType
@@ -55,7 +55,7 @@ public class MediaTypeInfo {
     public static MediaTypeDescriptor getFormatByMimeType(String mimeType) {
         return mimeMap.get(mimeType);
     }
-    
+
     public static MediaTypeDescriptor getFormatByType(MediaXType formatType) {
         return reverseMimeMap.get(formatType);
     }

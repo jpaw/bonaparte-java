@@ -15,9 +15,9 @@ package testXenum {
 
     xenum XColor            is Color : 2;
     xenum MoreColors        is BW extends XColor;
-    
+
     xenum XAbc              is Abc;
-    xenum XmoreLetters      is Xyz extends XAbc; 
+    xenum XmoreLetters      is Xyz extends XAbc;
 
     class SimpleSampleUsingEnum {
         enum Color          myColor;
@@ -37,7 +37,7 @@ package testXenum {
     }
 
     xenumset MyXEnumSet     is XAbc ;
-    
+
     enumset<String> AbcSet  is Abc;
     xenumset XAlphabet      is XAbc;
 }

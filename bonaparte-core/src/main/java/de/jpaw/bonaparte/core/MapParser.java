@@ -45,16 +45,16 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
 
     private final Map<String, Object> map;
     private Iterator<Object> iter = null;
-    
+
     private String currentClass = "N/A";
     protected final boolean instantInMillis;
-    
+
     protected final StringParserUtil spu;
-    
+
     protected MessageParserException err(int errno, FieldDefinition di) {
         return new MessageParserException(errno, di.getName(), -1, currentClass);
     }
-    
+
     public MapParser(Map<String, Object> map, boolean instantInMillis) {
         this.map = map;
         // currentClass = map.get(MimeTypes.JSON_FIELD_PQON);
@@ -72,15 +72,15 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
             }
         }, instantInMillis);
     }
-    
+
     // populate an existing object from a provided map
     public static void populateFrom(BonaPortable obj, Map<String, Object> map) throws MessageParserException {
         obj.deserialize(new MapParser(map, false));
     }
-    
+
     private static BonaPortable allocObject(Map<String, Object> map, ObjectReference di) throws MessageParserException {
         final ClassDefinition lowerBound = di.getLowerBound();
-        
+
         // create the object. Determine the type by the object reference, if that defines no subclassing
         // otherwise, check for special fields like $PQON (partially qualified name), and @type (fully qualified name)
         if (di.getAllowSubclasses() == false) {
@@ -89,33 +89,33 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
                 throw new MessageParserException(MessageParserException.JSON_BAD_OBJECTREF);
             return BonaPortableFactory.createObject(di.getLowerBound().getName());        // OK
         }
-        
+
         // variable contents. see if we got a partially qualified name
         Object pqon1 = map.get(MimeTypes.JSON_FIELD_PQON);
         if (pqon1 != null && pqon1 instanceof String) {
             // lucky day, we got the partially qualified name
             return BonaPortableFactory.createObject((String)pqon1);
         }
-        
+
         Object pqon2 = map.get(MimeTypes.JSON_FIELD_FQON);
         if (pqon2 != null && pqon2 instanceof String) {
             // also lucky, we got a fully qualified name
             return BonaPortableFactory.createObjectByFqon((String)pqon2);
         }
-        
+
         // fallback: use the lower bound of di, if provided
         if (lowerBound == null) {
             // also no lower bound? Cannot work around that!
             throw new MessageParserException(MessageParserException.JSON_NO_PQON, di.getName(), -1, null);
         }
-        
+
         if (LOGGER.isTraceEnabled()) {
             // output the map we got
             LOGGER.trace("Cannot convert Map to BonaPortable, Map dump is");
             for (Map.Entry<String, Object> me : map.entrySet())
                 LOGGER.trace("    \"{}\": {}", me.getKey(), me.getValue() == null ? "null" : me.getValue().toString());
         }
-        
+
         // severe issue if the base class is abstract
         if (lowerBound.getIsAbstract()) {
             LOGGER.warn("Parsed object cannot be determined, no type information provided and base object is abstract. {}: ({}...)", di.getName(), lowerBound.getName());
@@ -125,25 +125,25 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
         LOGGER.warn("Parsed object cannot be determined uniquely, no type information provided and subclasses allowed for {}: ({}...)", di.getName(), lowerBound.getName());
         return BonaPortableFactory.createObject(lowerBound.getName());
     }
-    
+
     // convert a map to BonaPortable, read class info from the Map ($PQON entries)
     public static BonaPortable asBonaPortable(Map<String, Object> map, ObjectReference di) throws MessageParserException {
         BonaPortable obj = allocObject(map, di);
         populateFrom(obj, map);
         return obj;
     }
-    
+
     private Object getNext(FieldDefinition di) {
         return (iter != null) ? iter.next() : map.get(di.getName());
     }
-    
+
     private Object get(FieldDefinition di) throws MessageParserException {
         Object z = getNext(di);
         if (z == null && di.getIsRequired())
             throw err(MessageParserException.ILLEGAL_EXPLICIT_NULL, di);
         return z;
     }
-    
+
     @Override
     public MessageParserException enumExceptionConverter(IllegalArgumentException e) throws MessageParserException {
         return new MessageParserException(MessageParserException.INVALID_ENUM_TOKEN, e.getMessage(), -1, currentClass);
@@ -306,7 +306,7 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
         }
         throw err(MessageParserException.UNSUPPORTED_CONVERSION, di);
     }
-    
+
     @Override
     public BigDecimal readBigDecimal(NumericElementaryDataItem di) throws MessageParserException {
         Object z = get(di);
@@ -479,7 +479,7 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
         Object z = get(di);
         if (z == null)
             return null;
-        
+
         BonaCustom obj;
         if (z instanceof Map<?,?>) {
              obj = asBonaPortable((Map<String, Object>)z, di);      // recursive invocation
@@ -488,7 +488,7 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
         } else {
             throw err(MessageParserException.UNSUPPORTED_CONVERSION, di);
         }
-        
+
         if (obj.getClass().equals(type))
             return (R)obj;
         if (!di.getAllowSubclasses() && !type.isAssignableFrom(obj.getClass()))
@@ -525,7 +525,7 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
         }
         throw err(MessageParserException.UNSUPPORTED_CONVERSION, di);
     }
-    
+
     @Override
     public Object readElement(ObjectReference di) throws MessageParserException {
         return get(di);

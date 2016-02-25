@@ -54,7 +54,7 @@ public class ListMetaComposer extends NoOpComposer<RuntimeException> implements 
     public ListMetaComposer(final List<DataAndMeta> storage, boolean doDeepCopies, boolean keepObjects, boolean keepExternals) {
         this(storage, doDeepCopies, keepObjects, keepExternals, false);
     }
-    
+
     /** Creates a new ListMetaComposer, creating an own internal storage. */
     public ListMetaComposer(boolean doDeepCopies, boolean keepObjects, boolean keepExternals) {
         this(new ArrayList<DataAndMeta>(), doDeepCopies, keepObjects, keepExternals);

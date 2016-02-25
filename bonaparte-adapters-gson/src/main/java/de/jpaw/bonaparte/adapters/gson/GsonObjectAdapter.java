@@ -7,7 +7,7 @@ import com.google.gson.JsonParser;
 import de.jpaw.bonaparte.core.ExceptionConverter;
 
 public class GsonObjectAdapter {
-    
+
     public static String marshal(JsonObject obj) {
         return obj.toString();
     }

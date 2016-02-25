@@ -750,7 +750,7 @@ public final class ExternalizableParser extends AbstractMessageParser<IOExceptio
     public byte readPrimitiveByte(BasicNumericElementaryDataItem di) throws IOException {
         return (byte)readVarInt(di.getName(), 8);
     }
-    
+
     @Override
     public Map<String, Object> readJson(ObjectReference di) throws IOException {
         String tmp = readString(di.getName(), di.getIsRequired(), Integer.MAX_VALUE, true, false, true, true);
@@ -787,4 +787,3 @@ public final class ExternalizableParser extends AbstractMessageParser<IOExceptio
         }
     }
 }
-

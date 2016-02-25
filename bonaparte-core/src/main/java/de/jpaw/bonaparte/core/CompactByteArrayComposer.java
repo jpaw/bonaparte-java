@@ -22,7 +22,7 @@ public class CompactByteArrayComposer extends AbstractCompactComposer implements
 
     private static final int DEFAULT_BUFFER_SIZE = 8000;
     protected final ByteBuilder out;
-    
+
 
     /** Quick conversion utility method, for use by code generators. (null safe) */
     public static byte [] marshal(ObjectReference di, BonaPortable x) {
@@ -87,7 +87,7 @@ public class CompactByteArrayComposer extends AbstractCompactComposer implements
     public CompactByteArrayComposer() {
         this(new ByteBuilder(DEFAULT_BUFFER_SIZE, getDefaultCharset()), ObjectReuseStrategy.defaultStrategy, false);
     }
-    
+
     public CompactByteArrayComposer(int bufferSize, boolean recommendIdentifiable) {
         this(new ByteBuilder(bufferSize, getDefaultCharset()), ObjectReuseStrategy.defaultStrategy, recommendIdentifiable);
     }
@@ -141,7 +141,7 @@ public class CompactByteArrayComposer extends AbstractCompactComposer implements
             throw new RuntimeException(e);
         }
     }
-    
+
     @Override
     public void addField(ObjectReference di, BonaCustom obj) {
         try {
@@ -161,7 +161,7 @@ public class CompactByteArrayComposer extends AbstractCompactComposer implements
             throw new RuntimeException(e);
         }
     }
-    
+
     @Override
     public void writeObject(BonaCustom o) {
         try {
@@ -171,7 +171,7 @@ public class CompactByteArrayComposer extends AbstractCompactComposer implements
             throw new RuntimeException(e);
         }
     }
-    
+
     @Override
     public void writeTransmission(Iterable<? extends BonaCustom> coll) {
         try {
@@ -181,7 +181,7 @@ public class CompactByteArrayComposer extends AbstractCompactComposer implements
             throw new RuntimeException(e);
         }
     }
-    
+
     @Override
     public void writeTransmission(Collection<? extends BonaCustom> coll) {
         try {

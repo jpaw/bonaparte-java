@@ -40,11 +40,11 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
 
     // most of these are available from DataInput, but need an Exception mapper
     abstract protected boolean atEnd() throws E;                // test for end of input - can be slow (using exceptions for some implementations, therefore only use if no other method exists)
-    abstract protected void pushback(int c);                    // push back a single token, which must be the last byte read, and can only be consumed by a subsequent needToken() (both flavours) 
+    abstract protected void pushback(int c);                    // push back a single token, which must be the last byte read, and can only be consumed by a subsequent needToken() (both flavours)
     abstract protected E newMPE(int n, String msg);             // construct a suitable exception
     abstract protected BonaPortable createObject(String classname) throws E;             // same method - overloading required for possible exception mapping
     abstract protected BigDecimal checkAndScale(BigDecimal num, NumericElementaryDataItem di) throws E;       // exception mapper
-    
+
     // basic methods to read data from the stream - all of them will throw an exception if the end of the input has been reached
     abstract protected int needToken() throws E;                // single byte as unsigned (or pushed back character)
     abstract protected void needToken(int c) throws E;          // single byte as unsigned (or pushed back character)
@@ -60,7 +60,7 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
     abstract protected String readISO(int len) throws E;        // could be coded in general, but provided for performance
     abstract protected String readUTF16(int len) throws E;      // could be coded in general, but provided for performance
     abstract protected String readUTF8(int len) throws E;       // could be coded in general, but provided for performance
-    
+
     protected String currentClass;
     private final boolean useCache = true;
     private List<BonaPortable> objects;
@@ -75,18 +75,18 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
         if (useCache)
             objects.clear();
     }
-    
+
     // provide a parser position, if possible. Only used for diagnostic output, return -1 if not available
     protected int getParseIndex() {
         return -1;
     }
-    
+
     @Override
     public void setClassName(String newClassName) {
         currentClass = newClassName;
     }
 
-    
+
     @Override
     public E enumExceptionConverter(IllegalArgumentException e) {
         return newMPE(MessageParserException.INVALID_ENUM_TOKEN, e.getMessage());
@@ -96,7 +96,7 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
     public E customExceptionConverter(String msg, Exception e) {
         return newMPE(MessageParserException.CUSTOM_OBJECT_EXCEPTION, e != null ? msg + e.toString() : msg);
     }
-    
+
     private E eNotNumeric(int n, String fieldname) {
         return newMPE(MessageParserException.NUMBER_PARSING_ERROR, "Numeric token expected but got " + (n & 0xff) + " for field " + currentClass + "." + fieldname);
     }
@@ -130,7 +130,7 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
         pushback(c);
         return false;
     }
-    
+
     // check for Null called for field members inside a class
     protected boolean checkForNullOrNeedToken(String fieldname, boolean isRequired, int token) throws E {
         int c = needToken();
@@ -154,7 +154,7 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
         }
         throw newMPE(MessageParserException.UNEXPECTED_CHARACTER, String.format("(expected 0x%02x, got 0x%02x)", token, c));
     }
-    
+
     // get the next token, or -1 for explicit null or -2 for implicit null
     protected int nextToken(String fieldname, boolean isRequired) throws E {
         int c = needToken();
@@ -308,7 +308,7 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
             return readFixed8ByteLong();
         return readInt(firstByte, fieldname);
     }
-    
+
     @Override
     public String readAscii(AlphanumericElementaryDataItem di) throws E {
         if (checkForNull(di))
@@ -396,7 +396,7 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
             return BigDecimal.valueOf(readLong(c, fieldname), scale);
         }
     }
-    
+
     @Override
     public BigDecimal readBigDecimal(NumericElementaryDataItem di) throws E {
         if (checkForNull(di))
@@ -505,7 +505,7 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
         int day = readInt(needToken(), fieldname);
         return new LocalDate(year, month, day);
     }
-    
+
     @Override
     public LocalDate readDay(TemporalElementaryDataItem di) throws E {
         if (checkForNullOrNeedToken(di.getName(), di.getIsRequired(), COMPACT_DATE))
@@ -541,7 +541,7 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
         }
         return new LocalDateTime(year, month, day, secondsOfDay / 3600, (secondsOfDay % 3600) / 60, secondsOfDay % 60, millis);
     }
-    
+
     @Override
     public LocalDateTime readDayTime(TemporalElementaryDataItem di) throws E {
         if (checkForNull(di))
@@ -577,13 +577,13 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
         }
         return value;
     }
-    
+
     protected UUID readUUID() throws E {
         long msl = readFixed8ByteLong();
         long lsl = readFixed8ByteLong();
         return new UUID(msl, lsl);
     }
-    
+
     @Override
     public UUID readUUID(MiscElementaryDataItem di) throws E {
         if (checkForNullOrNeedToken(di.getName(), di.getIsRequired(), COMPACT_UUID))
@@ -761,7 +761,7 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
         int c = needToken();
         if (c >= 0x20 && c < 0x80)
             return (char)c;         // single byte char (ASCII printable)
-        if (c == SHORT_ISO_STRING)  // 1 char ISO string 
+        if (c == SHORT_ISO_STRING)  // 1 char ISO string
             return (char)needToken();
         if (c != UNICODE_CHAR)
             throw newMPE(MessageParserException.UNEXPECTED_CHARACTER, String.format("(expected UNICODE_CHAR, got 0x%02x)", c));
@@ -778,7 +778,7 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
         if (map.put(key, value) != null)
             throw newMPE(MessageParserException.JSON_DUPLICATE_KEY, key);
     }
-    
+
     // read a non-null map with the start character already parsed
     protected Map<String, Object> readJsonMapFlexSizeSub() throws E {
         final Map<String, Object> map = new HashMap<String, Object>();
@@ -792,8 +792,8 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
             addMapElem(map);
         }
     }
-    
-    // read a JSON object: Either a flex map or a null is expected here  
+
+    // read a JSON object: Either a flex map or a null is expected here
     @Override
     public Map<String, Object> readJson(ObjectReference di) throws E {
         int c = nextToken(di.getName(), di.getIsRequired());
@@ -809,8 +809,8 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
             throw newMPE(MessageParserException.UNEXPECTED_CHARACTER, String.format("(expected object start 0xab or 0xfa, got 0x%02x)", c));
         }
     }
-    
-    // read a JSON array: Either an array or a null is expected here  
+
+    // read a JSON array: Either an array or a null is expected here
     @Override
     public List<Object> readArray(ObjectReference di) throws E {
         if (checkForNullOrNeedToken(di.getName(), di.getIsRequired(),  ARRAY_BEGIN))
@@ -818,7 +818,7 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
         // not null, therefore JSON begin
         return readArraySub();
     }
-    
+
     protected List<Object> readArraySub() throws E {
         final int numElem = readInt(needToken(), "$jsonArrayNumElem");
         final List<Object> l = new ArrayList<Object>(numElem);
@@ -826,7 +826,7 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
             l.add(readElementSub());
         return l;
     }
-    
+
     protected Map<String, Object> readMapFixedSizeSub() throws E {
         final int numElem = readInt(needToken(), "$jsonMapNumElem");
         final Map<String, Object> map = new HashMap<String, Object>(CollectionUtil.mapInitialSize(numElem));
@@ -851,9 +851,9 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
         CONSTANT_OBJECTS[0xa0]  = null;
         for (i = 0xa1; i <= 0xaa; ++i)
             CONSTANT_OBJECTS[i] = Integer.valueOf(-(i - 0xa0)); // -1..-10
-        
+
     }
-    
+
     // read an optional element
     protected Object readElementSub() throws E {
         int c = needToken();
@@ -887,7 +887,7 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
                 return EMPTY_STRING;
             }
         }
-        
+
         // remaining tokens are 0xd0 .. 0xff
         // hope the compiler converts it to a jump table
         switch (c) {
@@ -909,12 +909,12 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
             return readDateTime("$jsonElemDateTime", false);
         case COMPACT_DATETIME_MILLIS:       //0xdc
             return readDateTime("$jsonElemDateTimeMs", true);
-        case OBJECT_AGAIN:                  //0xdd 
+        case OBJECT_AGAIN:                  //0xdd
         case OBJECT_BEGIN_ID:               //0xde
         case OBJECT_BEGIN_PQON:             //0xdf
             // cannot happen within JSON, except if the structure has been redeclared.
             throw newMPE(MessageParserException.INVALID_BACKREFERENCE, "in JSON element");
-            
+
         case COMPACT_BIGINTEGER:            //0xe0
             {
                 int len = readInt(needToken(), "$jsonElemBigintLen");
@@ -975,7 +975,7 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
             throw newMPE(MessageParserException.UNEXPECTED_CHARACTER, String.format("0x%02x in JSON element", c));
         }
     }
-    
+
     // reads a single element
     @Override
     public Object readElement(ObjectReference di) throws E {
@@ -986,7 +986,7 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
     public Integer readEnum(EnumDataItem edi, BasicNumericElementaryDataItem di) throws E {
         return readInteger(di);
     }
-    
+
     @Override
     public String readEnum(EnumDataItem edi, AlphanumericElementaryDataItem di) throws E {
         return readString(di);

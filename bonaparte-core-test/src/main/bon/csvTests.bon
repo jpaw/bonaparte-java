@@ -31,4 +31,3 @@ package csvTests {
         signed Long (18,6)      signedMicros;
     }
 }
-

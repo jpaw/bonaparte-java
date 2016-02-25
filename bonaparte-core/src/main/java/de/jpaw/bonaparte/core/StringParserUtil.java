@@ -54,7 +54,7 @@ public class StringParserUtil {
     protected MessageParserException err(int errno, FieldDefinition di, String data) {
         return new MessageParserException(errno, di.getName(), data, parsePositionProvider);
     }
-    
+
     public void ensureNotNull(FieldDefinition di, String data) throws MessageParserException {
         if (data == null)
             throw new MessageParserException(MessageParserException.ILLEGAL_EXPLICIT_NULL, di.getName(), null, parsePositionProvider);

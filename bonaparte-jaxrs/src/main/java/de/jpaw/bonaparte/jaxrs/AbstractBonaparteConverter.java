@@ -19,14 +19,14 @@ public abstract class AbstractBonaparteConverter<T, E extends Exception> impleme
     protected final Logger LOGGER = LoggerFactory.getLogger(AbstractBonaparteConverter.class);
     protected final String supportedMimeType;
     protected final Class<?> supportedClass;
-    
+
     public AbstractBonaparteConverter(String supportedMimeType, Class<?> supportedClass) {
         this.supportedMimeType = supportedMimeType;
         this.supportedClass = supportedClass;
     }
 
     protected abstract BufferedMessageWriter<E> newComposerWithData(T obj);
-    
+
     @Override
     public long getSize(T obj, Class<?> cls, Type type, Annotation[] anno, MediaType mediaType) {
         return -1;      // unknown size

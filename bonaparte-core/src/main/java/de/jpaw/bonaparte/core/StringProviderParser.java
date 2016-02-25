@@ -35,7 +35,7 @@ public class StringProviderParser extends AbstractPartialJsonStringParser implem
         /** Returns the contents of the field named by name, or null if that field has not been provided. */
         String get(String name) throws MessageParserException;
     }
-    
+
     @Override
     protected MessageParserException newMPE(int errorCode, FieldDefinition di, String msg) {
         return new MessageParserException(errorCode, di.getName(), -1, currentClass, msg);
@@ -260,13 +260,13 @@ public class StringProviderParser extends AbstractPartialJsonStringParser implem
     protected String getString(FieldDefinition di) throws MessageParserException {
         return getParameter(di);
     }
-    
+
     // special handling of enums: access the original name, not the one with $token suffix: take care when di and when edi is used!
     @Override
     public Integer readEnum(EnumDataItem edi, BasicNumericElementaryDataItem di) throws MessageParserException {
         return stringParser.readInteger(di, getParameter(edi));
     }
-    
+
     // special handling of enums: access the original name, not the one with $token suffix: take care when di and when edi is used!
     @Override
     public String readEnum(EnumDataItem edi, AlphanumericElementaryDataItem di) throws MessageParserException {

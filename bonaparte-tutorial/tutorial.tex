@@ -4,7 +4,7 @@
 \usepackage[utf8x]{inputenc}
 \usepackage{listings}
     \lstset{numbers=left, numberstyle=\tiny, numbersep=5pt,frame=leftline}
-    \lstset{language=Java} 
+    \lstset{language=Java}
     \lstset{basicstyle=\small,tabsize=4,extendedchars=false,columns=flexible}
 %    \lstset{keywordstyle=\ttfamily\bfseries}
     \lstset{keywordstyle=\bfseries}
@@ -65,22 +65,22 @@ You can observe the following:
   comparable to Java syntax highlighting.
   \item Source folding. You see small encircled minus signs at the left side. Click on them to collapse or expand the corresponding scope areas.
   \item Auto-completion.  If you type {\ttfamily packa} and then press ctrl-space, Eclipse will auto-complete the keyword {\ttfamily package}.
-  In case of multiple possibilities, you will get a popup window with all expansions valid in the current context. 
-  \item Online syntax checking. Enter a class name which starts with a lower case letter.  
+  In case of multiple possibilities, you will get a popup window with all expansions valid in the current context.
+  \item Online syntax checking. Enter a class name which starts with a lower case letter.
 
 \vspace{2mm}
 
 \hspace{1cm}\includegraphics[scale=0.5]{images/tut1-002.png}
 
-    \noindent 
+    \noindent
     If you move the mouse above the keyword underlined with the way red line, Eclipse will show a tooltip with the explanation
-     ``Class names should start with upper case letters''. 
- 
+     ``Class names should start with upper case letters''.
+
 \end{itemize}
 
 Delete the class with the incorrect name. We want to add some fields to the class {\ttfamily MyFirstClass} now. As a type keyword, Bonaparte supports all
 primitives and their boxed equivalents of Java (which, for the Java code generator, map exactly to their corresponding Java equivalent), plus the following additional types:
- 
+
 \begin{itemize}
   \item Character types:  {\ttfamily Ascii}, {\ttfamily Lowercase}, {\ttfamily Uppercase}, {\ttfamily Unicode}. In Java, all of them map to {\ttfamily String},
    but they have different plausibility checks in the deserializer. The {\ttfamily Ascii} type accepts the printable 7 bit ASCII characters
@@ -99,16 +99,16 @@ primitives and their boxed equivalents of Java (which, for the Java code generat
       The {\ttfamily Decimal} type requires the specification of significant digits and fractional digits. It is mapped to a type which supports fixed point BCD arithmetic, suitable for
       financial calculations, where the use of {\ttfamily float} or {\ttfamily double} is a no-go due to potential rounding issues. The {\ttfamily Decimal} type
       maps to the Java type BigDecimal. {\ttfamily Decimal} allows up to 18 significant digits. The number of fractional digits cannot exceed the number of significant digits.
-      
+
       A length can be provided also for the Java primitives and their boyed equivalents, if given, it determines the maximum
       number of accepted digits. {\ttfamily short(4)} for example allows the numbers 0 to 9999 (possible with a sign, unless
       the {\ttfamily unsigned} attribute has been given). You can provide even decimal digits, for example {\ttfamily
       short(4,2)}. Depending on the serialization format, the short with the value 314 will then be sent as either 3.14 (XML,
       CSV type formats) or 314 (Bonaportable and compact format).
   \item Temporal types: {\ttfamily Day}, {\ttfamily Time}, {\ttfamily Timestamp}, and {\ttfamily Instant}. The {\ttfamily Day}
-  type represents a calendar date without time. In Java, it maps to the {\ttfamily LocalDate} class of the JodaTime library. The {\ttfamily Timestamp} type represents an instant (day plus time), which in Java maps   
+  type represents a calendar date without time. In Java, it maps to the {\ttfamily LocalDate} class of the JodaTime library. The {\ttfamily Timestamp} type represents an instant (day plus time), which in Java maps
     to the {\ttfamily LocalDateTime} class of the JodaTime library. In serialized form, the timestamp is always in UTC time zone. For {\ttfamily Timestamp},
-    you can specify a sub-second precision of 0 to 3 (0 meaning single second precision, 3 meaning millisecond precision). 
+    you can specify a sub-second precision of 0 to 3 (0 meaning single second precision, 3 meaning millisecond precision).
     The {\ttfamily Instant} finally is there to support the JodaTime {\ttfamily Instant} class.
     As Java 8 includes JSR310, you can also configure the DSL to use Java 8 classes instead of the JodaTime classes, as all
     supported JodaTime classes have a Java 8 equivalent. There is an important difference concerning the serialized form,
@@ -125,7 +125,7 @@ primitives and their boxed equivalents of Java (which, for the Java code generat
   \item Other types: {\ttfamily Uuid}, {\ttfamily Object}, {\ttfamily Enum} and {\ttfamily Xenum}. The
   {\ttfamily Uuid} type supports the universally unique identifiers (\url{http://en.wikipedia.org/wiki/Uuid}) and their standardized transmission format as a 36 byte hex string, formatted with dashes.
    The type maps to the Java UUID class. The {\ttfamily Object} holds a generic type defined in Bonaparte. A type (or subtype) of a specific class can be
-    referenced by giving it's name in round parenthesis.  
+    referenced by giving it's name in round parenthesis.
    The {\ttfamily Enum} references a special enumeration class, also defined in Bonaparte, which will be discussed later.
    {\ttfamily enum}s can be either regular (as in Java, identified by some integral ordinal), or alphanumeric ({\ttfamily
    Tokenizable}, where a string can be used to identify the instance). The latter one is preferred, because additional instances
@@ -136,12 +136,12 @@ primitives and their boxed equivalents of Java (which, for the Java code generat
    access to the underlying bitmap. For {\ttfamily enumset}s, all primitive integral types are supported for the bitmap. In
    addition, an {\ttfamily enumset} can be represented by the concatenated list of tokens, provided the tokens are all single
    characters. Such sets are always stored in ascending order of the token, such that the representation is deterministic, and
-   it is possible to define simple regular expressions matching all enum sets which contain a specified subset of instances. 
+   it is possible to define simple regular expressions matching all enum sets which contain a specified subset of instances.
    \item External type adapters. Any Java Class can be used within Bonaparte, if a suitable type adapter is provided. Type
    adapters work similar to JAXB's {\ttfamily XmlAdapter}s. Bonaparte distinguishes {\ttfamily singleField} adapters, which map
    to a single directly supported Bonaparte type (i.e. one of the above), or arbitrary adapters, which map through some
    intermediate support class, described by a list of Bonaparte types (including previously defined adapters).
-   
+
    An adapter can receive input from a separate previously defined field. This way a class using a number of money types for
    example can be serialized, transmitting the currency only once.
 \end{itemize}
@@ -162,14 +162,14 @@ intended to support building interfaces for the fixed point arithmetic of the up
 \vspace{2mm}
 
 As an exercise, try some types and save the file {\ttfamily .bon} file. The default configuration is that Eclipse automatically transforms the source into
-Java code during the save process (which can be configured via the standard Eclipse project setting ``build automatically''). The generated code goes into 
+Java code during the save process (which can be configured via the standard Eclipse project setting ``build automatically''). The generated code goes into
 {\ttfamily src-gen} by default, but the recommendation is to change that to {\ttfamily src/generated}, to match Maven folder conventions.
 This can be done per project or via global workspace settings, in the ``BonScript'' section.
 
 \vspace{2mm}
 \begin{center}
 \includegraphics[scale=0.45]{images/tut1-003.png}
-\end{center} 
+\end{center}
 
 There are some more settings you can adjust in order to adapt the code generator to your needs:
 
@@ -177,14 +177,14 @@ There are some more settings you can adjust in order to adapt the code generator
 \begin{center}
 \includegraphics[scale=0.5]{images/tut1-prefs2.png}
 \end{center}
- 
+
 Look into the generated code. It will have tons of unnecessary imports, but otherwise should be pretty much readable.
 You will notice that the generated class implements two interfaces, {\ttfamily Externalizable} and {\ttfamily BonaPortableWithMetaData}.
 
 \vspace{2mm}
 \hspace{1cm}\includegraphics[scale=0.5]{images/tut1-004.png}
 
-\noindent 
+\noindent
 The {\ttfamily Externalizable} interface indicates that there is a customization of way the object is serialized when initiated
 via the standard Java serialization (namely {\ttfamily readExternal} and {\ttfamily writeExternal} are implemented) (and this behaviour can be disabled),
 the other interface is the for the standard Bonaparte interface. Ignoring the metadata part, all Java classes generated by Bonaparte implement the interface
@@ -200,26 +200,26 @@ specifying a visibility directive exactly as in Java:
 
 \vspace{2mm}
 \hspace{1cm}\includegraphics[scale=0.5]{images/tut1-006.png}
- 
+
 \noindent The generated code is as follows:
 
 \vspace{2mm}
 \hspace{1cm}\includegraphics[scale=0.5]{images/tut1-008.png}
- 
+
 \noindent The getters and setters are always public.
 
 \section{Class inheritance}
 The availability of the {\ttfamily protected} keyword suggests that class inheritance is spported. In fact, you have exactly the same
 possibilities as in Java: abstract and final classes, and single inheritance, using exactly the same syntax as in Java:
- 
+
 
 \vspace{2mm}
 \hspace{1cm}\includegraphics[scale=0.5]{images/tut1-007.png}
 
 
 \section{Field specific parser directives}
-Up to now, there's not a lot which would justify the overhead of a DSL.  
-We now want to provide directives to the parser which instruct it when to accept and when to reject data. 
+Up to now, there's not a lot which would justify the overhead of a DSL.
+We now want to provide directives to the parser which instruct it when to accept and when to reject data.
 
 Any field you can prefix with the {\ttfamily required} keyword, which tells the parser to reject any record where no data for this field is specified.
 This ensures, that in Java, you do not get {\ttfamily null} as the field value. (In other words, a {\ttfamily required
@@ -233,11 +233,11 @@ Alphanumeric fields allow the following directives:
   \item {\ttfamily trim} instructs the parser to discard any leading or trailing space. Input data with field with the contents ``\ \ \ Some text\ \ \  '' would result in a String with the
   value ``Some text''. Any checks for maximum field length are performed after trimming spaces.
   \item {\ttfamily truncate} causes the parser to silently truncate data after the specified maximum field length has been reached.
-   (The default behaviour is to reject data when field contents exceeds the specified length.) 
+   (The default behaviour is to reject data when field contents exceeds the specified length.)
    \item {\ttfamily regexp} {\it{some string}} causes the parser to validate the data against any regular expression. (This is only supported for
      {\ttfamily Ascii} fields or their upper/lowercase subtypes).
    \item Instead of just maximum field lenghts, you can also specify minimum number of character by giving a range as the field size.
-    {\ttfamily Unicode(10..100) description} does require a description of at least 10 characters. 
+    {\ttfamily Unicode(10..100) description} does require a description of at least 10 characters.
 \end{itemize}
 
 This screenshot shows a class where the directives explained above are used:
@@ -263,7 +263,7 @@ Numeric fields with fractional digits (type {\ttfamily Decimal} allow the follow
 \end{itemize}
 
 \section{Default settings}
-Often, some settings apply to a whole class or package. 
+Often, some settings apply to a whole class or package.
 In Bonaparte, you can define field visibility and also some of the field specific parser directives at package and class level.
 
 Suppose, you only deal with unsigned numeric data and also have one class where all parsed data should be stripped from leading and trailing space.
@@ -272,7 +272,7 @@ You also want all fields to be publicly accessible:
 \vspace{2mm}
 
 \hspace{1cm}\includegraphics[scale=0.5]{images/tut1-009-defaults.png}
- 
+
 \noindent You can override every default directive at the deeper level, for example override package default per class or per field and override class defaults
 at field level. For this purpose, for every directive, there is a corresponding negated directive.
 The following default directives are supported:
@@ -284,9 +284,9 @@ The following default directives are supported:
    \item {\ttfamily signed}, {\ttfamily unsigned} (apply to all numeric fields): Specifies whether negative numbers are accepted or rejected.
    \item {\ttfamily required}, {\ttfamily optional} (apply to all fields which have an uppercase type): Specify whether an empty field is parsed as
     {\ttfamily null} or is rejected. Obviously you cannot specify {\ttfamily optional} for primitive types, and for consistency also not for other types which
-    are the lowercase equivalent of the main type. 
+    are the lowercase equivalent of the main type.
   \item {\ttfamily trim}, {\ttfamily notrim} (apply to {\ttfamily Unicode}, {\ttfamily Ascii}, {\ttfamily Lowercase}, {\ttfamily Uppercase} fields):
-    Specify stripping of leading and trailing whitespace. 
+    Specify stripping of leading and trailing whitespace.
   \item {\ttfamily truncate}, {\ttfamily notruncate} (apply to the same types): Specify if encountering oversize input will cause silent truncation or throwing an exception.
   \item {\ttfamily round}, {\ttfamily failOnExtraDecimas} (apply to {\ttfamily Decimal} fields): specifies whether too many
   non-zero fractional digits are rounded or an exception is thrown.
@@ -296,7 +296,7 @@ The following default directives are supported:
     The Bonaparte format will escape them properly such that they do not break the format, but if you export data to regular CSV files as well, you might want to
     forbid such characters.
   \item {\ttfamily usePrimitives}, {\ttfamily useBoxed} (applies to types which have Java primitive type equivalents): Instructs the generator to use the primitive types
-    or to use only boxed types. 
+    or to use only boxed types.
 \end{itemize}
 The directives must appear in the order given above. Defaults do not extend to additional fields in inherited classes.
 
@@ -313,14 +313,14 @@ In Bonaparte, you can define and later use a type definition as follows:
 
 \hspace{1cm}\includegraphics[scale=0.5]{images/tut1-010-typedefs.png}
 
-\noindent 
+\noindent
 Type definitions must appear in packages before any classes are defined. As shown in the example, you can also use them in other packages,
 specifying their fully qualified name. This is not very convenient, a simpler way is shown in the next section.
 
 A very important aspect of type definitions is, that they bind package / class defaults from where they are defined, and not where they are used.
-This decision has been made in order to ensure that a type has the same properties everywhere. 
- 
- 
+This decision has been made in order to ensure that a type has the same properties everywhere.
+
+
 \section{Combining multiple source files}
 As projects get bigger, it is no longer convenient to have all definitions inside a single file.
 The Bonaparte DSL supports multiple source files, and definitions made in one file can be imported and used in another file.
@@ -331,22 +331,22 @@ The {\ttfamily import } statement specifies, which data should be imported. You 
 \vspace{2mm}
 
 \hspace{1cm}\includegraphics[scale=0.5]{images/tut1-011-imports.png}
- 
+
 \noindent Imports include the imported data into the current namespace, therefore se of the fully qualified name is no longer required.
 Bonaparte supports imports only at the beginning of a source file, before any package is defined. Please note that the logical package of
 the imported data must be specified, do not mix it up with C's {\ttfamily \#include}, which references a file location.
- 
+
 \section{Javadoc}
 Bonaparte will copy Javadoc comments created just ahead of a class definition to the generated class source. In addition, Javadoc style
-multiple comments just ahead of a package definition will by transferred to a special {\ttfamily package-info.java} file. 
+multiple comments just ahead of a package definition will by transferred to a special {\ttfamily package-info.java} file.
 If you use the same package name in multiple source files, you are responsible to take care that no conflicts concerning
-class names or package Javadoc occurs. (If there are conflicts, the one generated last would overwrite prior definitions.) 
+class names or package Javadoc occurs. (If there are conflicts, the one generated last would overwrite prior definitions.)
 
 Regular single-line comments which appear behind a field definition will be copied to the generated Java source file.
 (Plan is to convert it to field level Javadoc, at the moment the required value converter has not yet been implemented.)
 
 \newpage
- 
+
 \section{Enums}
 As briefly mentioned before, enumeration data types are supported as well.
 
@@ -401,7 +401,7 @@ from assigned an instance of {\ttfamily GenericCustomerReference}  to the {\ttfa
 Often, fields do not occur a single time only. Bonaparte supports arrays, lists, sets and maps. All except maps are
 serialized to the same format, therefore switching between both alternatives does not break message compatibility.
 Use which ever is better suitable for your application.
-Both forms can optionally specify a maximum number of entries. 
+Both forms can optionally specify a maximum number of entries.
 The syntax for arrays is similar to Java, the list / set / map syntax differs from Java (for sake of grammar simplicity).
 
 \vspace{2mm}
@@ -440,7 +440,7 @@ evaluated by the Bonaparte JPA DSL: The effect is that if such a class is stored
 
 \section{Generics}
 All generic references in Bonaparte specify classes defined in Bonaparte, i.e. they map to the Java representation of {\ttfamily
-? extends BonaPortable}. It is not possible to use generics to reference boxed primitives. 
+? extends BonaPortable}. It is not possible to use generics to reference boxed primitives.
 
 \section{Adapters}
 The following code fragment allows storing an instance of {\ttfamily java.lang.Class} inside a Bonaportable:
@@ -487,16 +487,16 @@ is used:
 In the example, the {\ttfamily currencyCode} field (which by coincidence is itself mapped by an adapter here) is used to provide
 the missing information.
 
-You can find more examples of adapters on the projects {\ttfamily bonaparte-adapters-}*. 
+You can find more examples of adapters on the projects {\ttfamily bonaparte-adapters-}*.
 
 
 \section{Special directives}
-The following directives can be specified at package or class level, in the given order. 
+The following directives can be specified at package or class level, in the given order.
 \subsection{JAXB directives}
 Bonaparte can emit JAXB directives (in a very limited way), namely specifying the access type through directive {\ttfamily XML}, followed
 by either {\ttfamily noXML}, {\ttfamily NONE}, {\ttfamily FIELD}, or {\ttfamily PROPERTY}. This causes the code generator to generate
 appropriate JAXB annotations, and also to create a file {\ttfamily jaxb.index} at package level.
- 
+
 
 \subsection{Skipping the {\ttfamily Externalizable} interface}
 If you do not want that Java's default serialization implementation is modified, specify {\ttfamily noExt}. (Specify {\ttfamily Ext} to

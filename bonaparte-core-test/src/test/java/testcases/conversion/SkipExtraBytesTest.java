@@ -12,7 +12,7 @@ import de.jpaw.util.ByteUtil;
 
 public class SkipExtraBytesTest {
 
-    
+
     static final String data = "\u0012\u000e\u0013mytest.Outer\u0006\u000e\u0013mytest.Inner\u0006\u000e3333\u0006\u000e\u000f66\u0006\u000f\r\n";
     static final String dataLess = "\u0012\u000e\u0013mytest.Outer\u0006\u000e\u0013mytest.Inner\u0006\u000e3333\u0006\u000f66\u0006\u000f\r\n";
     static final String dataMore = "\u0012\u000e\u0013mytest.Outer\u0006\u000e\u0013mytest.Inner\u0006\u000e3333\u0006\u000e\u000e\u000f66\u0006\u000f\r\n";
@@ -23,11 +23,11 @@ public class SkipExtraBytesTest {
         ByteArrayComposer bac = new ByteArrayComposer();
         bac.writeRecord(x);
         byte [] result = bac.getBytes();
-        
+
         System.out.println("Length of buffer is " + result.length);
         System.out.println(ByteUtil.dump(result, 9999));
     }
-    
+
     @Test
     public void testDecode() throws Exception {
         Outer x = new Outer(new Inner(3333, null), 66);
@@ -35,7 +35,7 @@ public class SkipExtraBytesTest {
         BonaPortable xx = bap.readRecord();
         Assert.assertEquals(xx, x);
     }
-    
+
     @Test
     public void testDecodeLess() throws Exception {
         Outer x = new Outer(new Inner(3333, null), 66);
@@ -43,7 +43,7 @@ public class SkipExtraBytesTest {
         BonaPortable xx = bap.readRecord();
         Assert.assertEquals(xx, x);
     }
-    
+
     @Test
     public void testDecodeMore() throws Exception {
         Outer x = new Outer(new Inner(3333, null), 66);

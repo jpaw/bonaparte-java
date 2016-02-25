@@ -17,11 +17,11 @@ public class HttpRequestParameterParser extends StringProviderParser {
             }
         };
     }
-    
+
     public HttpRequestParameterParser(final MultiMap request) {
         super(createGetter(request));
     }
-    
+
     /** unmarshals request parameters into a preallocated object.
      * @throws MessageParserException */
     public static void unmarshal(MultiMap request, BonaPortable obj) throws MessageParserException {

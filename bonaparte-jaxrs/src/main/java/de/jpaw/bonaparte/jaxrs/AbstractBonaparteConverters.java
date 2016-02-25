@@ -24,7 +24,7 @@ public abstract class AbstractBonaparteConverters<E extends Exception> extends A
     public AbstractBonaparteConverters(String supportedMimeType) {
         super(supportedMimeType, BonaPortable.class);
     }
-    
+
     protected abstract MessageParser<MessageParserException> newParser(byte [] buffer, int offset, int len);
 
     @Override
@@ -38,7 +38,7 @@ public abstract class AbstractBonaparteConverters<E extends Exception> extends A
             InputStream is) throws IOException, WebApplicationException {
         // we may need to compose the full message from several parts
         ByteBuilder buffer = new ByteBuilder(0, ByteArray.CHARSET_UTF8);
-        final byte [] tmp = new byte [READ_CHUNK_SIZE]; 
+        final byte [] tmp = new byte [READ_CHUNK_SIZE];
         // do a loop here, because an initial read may not return the full number of bytes
         for (;;) {
             int lastRead = is.read(tmp, 0, READ_CHUNK_SIZE);

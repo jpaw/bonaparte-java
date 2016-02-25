@@ -28,7 +28,7 @@ import de.jpaw.bonaparte.core.MimeTypes
 
 /**
  * REST Service to provide currency data is various formats.
- * 
+ *
  * access via http://localhost:8080/bonaparte-examples-jaxrs-3.5.0-SNAPSHOT/jaxrs/format/xls, for example
  *
  */
@@ -42,11 +42,11 @@ class CurrencyService extends Application {
     private static final String MIME_TYPE_XLS = "application/vnd.ms-excel"
     private static final String MIME_TYPE_XLSX = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     private static final JAXBContext context = XmlUtil.getJaxbContext("de.jpaw.bonaparte.pojos.examples.jaxrs")
-        
+
     def static private toBon(Currency it) {
         return new BonCurrency(currencyCode, defaultFractionDigits, displayName, numericCode, symbol)
     }
-    
+
     def static private Response inFormat(List<? extends BonaCustom> objs, String format) {
         switch (format) {
             case 'xls': {
@@ -86,14 +86,14 @@ class CurrencyService extends Application {
                 Response.status(Response.Status.BAD_REQUEST).build
         }
     }
-    
+
     // explicit format as a parameter
     @GET
     @Path("format/{format}")
     def public allInFormat(@PathParam("format") String format) {
         return Currency.availableCurrencies.map[toBon].toList.inFormat(format)
     }
-    
+
     @GET
     @Path("format/{format}/{code}")
     def public inFormat(@PathParam("format") String format, @PathParam("code") String code) {
@@ -137,7 +137,7 @@ class CurrencyService extends Application {
             throw new WebApplicationException("Unknown currency code " + code, Response.Status.BAD_REQUEST);
         return currency.toBon
     }
-    
+
     // showcase for the jaxrs converter
     @GET
     @Path("bon")

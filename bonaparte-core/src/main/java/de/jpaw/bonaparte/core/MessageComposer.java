@@ -47,14 +47,14 @@ import de.jpaw.util.ByteArray;
  * @author Michael Bischoff
  * @version $Revision$
  *
- *          Defines the methods required for any serialization implementation. Methods defined here will be called from the 
+ *          Defines the methods required for any serialization implementation. Methods defined here will be called from the
  */
 
 public interface MessageComposer<E extends Exception> extends MessageWriter<E> {
 
-    void startRecord() throws E;                             // required for internal implementation of MessageWriter  
-    void terminateRecord() throws E;                         // required for internal implementation of MessageWriter  
-    
+    void startRecord() throws E;                             // required for internal implementation of MessageWriter
+    void terminateRecord() throws E;                         // required for internal implementation of MessageWriter
+
     // serialization methods: structure
     void writeNull(FieldDefinition di) throws E;             // write a null field
     void writeNullCollection(FieldDefinition di) throws E;   // the whole collection is null
@@ -63,7 +63,7 @@ public interface MessageComposer<E extends Exception> extends MessageWriter<E> {
     void writeSuperclassSeparator() throws E;  // this is bad. It should be transparent to the classes if the message format contains separators or not.
     void terminateMap() throws E;
     void terminateArray() throws E;
-    
+
     // the following methods are not required by the bonaportables directly, but for delegating composer operation
     void startObject(ObjectReference di, BonaCustom o) throws E;  // write the name and the revision  (only used internally in composers)
     void terminateObject(ObjectReference di, BonaCustom o) throws E;

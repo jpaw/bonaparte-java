@@ -13,4 +13,3 @@ import de.jpaw.bonaparte.core.BonaPortable;
 public @interface KeyClass {
     public Class<? extends BonaPortable> value();
 }
-

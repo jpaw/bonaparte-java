@@ -32,13 +32,13 @@ package adapters.tests {
         required (Micros)                                                       quantity;
         required (FpSingleAmountExt) for currency                               amount;
     }
-    
+
     /** GSON Element test */
     class DataWithJsonElem {
         required Unicode(80)            text;
         optional (GsonElement)          z;
     }
-    
+
     /** GSON Element test */
     class DataWithJsonObj {
         required Unicode(80)            text;

@@ -103,7 +103,7 @@ public class MessageParserException extends ApplicationException {
     static public final int BINARY_TOO_LONG              = OFFSET + 63;
     static public final int JSON_BAD_OBJECTREF           = OFFSET8 + 64;
     static public final int WRONG_CLASS                  = OFFSET + 65;
-    
+
 
     static {
         codeToDescription.put(MISSING_FIELD_TERMINATOR     , "Missing field terminator");

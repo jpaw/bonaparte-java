@@ -147,7 +147,7 @@ public class CSVComposer extends AppendableComposer {
             addRawData(stringQuote);
         }
     }
-    
+
     @Override
     public void addField(AlphanumericElementaryDataItem di, String s) throws IOException {
         writeString(s);

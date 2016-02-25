@@ -31,7 +31,7 @@ public interface HzFilter {
 public class HzCriteriaBuilder {
     @Inject
     var HzFilter hzFilter
-    
+
     def public Predicate<?,?> buildPredicate(SearchFilter filter) {
         if (filter === null)
             return null;

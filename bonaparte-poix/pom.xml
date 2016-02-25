@@ -11,7 +11,7 @@
 
     <artifactId>bonaparte-poix</artifactId>
     <packaging>jar</packaging>
-    
+
     <build>
         <plugins>
             <!-- we need try with resources here -->

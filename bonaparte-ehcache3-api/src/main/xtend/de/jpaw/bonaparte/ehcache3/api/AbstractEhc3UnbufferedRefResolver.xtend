@@ -16,14 +16,14 @@ import org.ehcache.Cache
 
 /** Implementation of the RefResolver for ehCache / terracotta without an additional on heap near cache. */
 abstract class AbstractEhcUnbufferedRefResolver<REF extends Ref, DTO extends REF, TRACKING extends TrackingBase> implements RefResolver<REF, DTO, TRACKING> {
-        
+
     protected Cache<Long, DataWithTrackingW<DTO, TRACKING>> map;
     protected TrackingUpdater<TRACKING> trackingUpdater;
     protected Provider<RequestContext> contextProvider;
     protected String name;
-    
+
     def abstract protected TRACKING createTracking();
-    
+
     new(String name,
         Cache<Long, DataWithTrackingW<DTO, TRACKING>> map,
         TrackingUpdater<TRACKING> trackingUpdater,
@@ -34,7 +34,7 @@ abstract class AbstractEhcUnbufferedRefResolver<REF extends Ref, DTO extends REF
         this.trackingUpdater = trackingUpdater;
         this.contextProvider = contextProvider
     }
-    
+
     override getDTO(Long key) throws ApplicationException {
         if (key === null)
             return null
@@ -43,28 +43,28 @@ abstract class AbstractEhcUnbufferedRefResolver<REF extends Ref, DTO extends REF
             return dwt.data
         throw new PersistenceException(PersistenceException.RECORD_DOES_NOT_EXIST, key.longValue, name)
     }
-    
+
     override getTracking(Long key) throws ApplicationException {
         val entry = map.get(key)
         if (entry === null)
             throw new PersistenceException(PersistenceException.RECORD_DOES_NOT_EXIST, key.longValue, name)
         return entry.tracking
     }
-    
+
     override remove(Long key) throws ApplicationException {
         map.remove(key)
     }
-    
+
     override create(DTO dto) throws ApplicationException {
         val dwt = new DataWithTrackingW(dto, createTracking, contextProvider.get().tenantRef)
         trackingUpdater.preCreate(contextProvider.get, dwt.tracking)
         map.put(dto.objectRef, dwt)
     }
-    
+
     override createKey(long key) {
         return createKey(Long.valueOf(key));
     }
-    
+
     override getDTO(REF ref) throws ApplicationException {
         if (ref === null)
             return null
@@ -74,7 +74,7 @@ abstract class AbstractEhcUnbufferedRefResolver<REF extends Ref, DTO extends REF
             throw new PersistenceException(PersistenceException.RECORD_DOES_NOT_EXIST, key.longValue, name)
         return dwt.data
     }
-    
+
     override update(DTO newDTO) throws ApplicationException {
         // read the previous recorded data (mainly to get the tracking information)
         val dwt = map.get(newDTO.ref)
@@ -86,19 +86,19 @@ abstract class AbstractEhcUnbufferedRefResolver<REF extends Ref, DTO extends REF
         // write back the update
         map.put(newDTO.objectRef, dwt)
     }
-    
+
     // no local cache - nothing to to
     override final clear() {
     }
-    
+
     override flush() {
     }
-    
+
     override query(int limit, int offset, SearchFilter filters, List<SortColumn> sortColumns) throws ApplicationException {
         throw new UnsupportedOperationException();
     }
-    
+
     override queryKeys(int limit, int offset, SearchFilter filters, List<SortColumn> sortColumns) throws ApplicationException {
         throw new UnsupportedOperationException();
-    }    
+    }
 }

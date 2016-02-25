@@ -11,16 +11,16 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name="data")
 public class XmlListWrapper {
     private final List<?> items;
- 
+
     // not required, except for JAXB
     public XmlListWrapper() {
         this.items = new ArrayList();
     }
-    
+
     public XmlListWrapper(List<?> items) {
         this.items = items;
     }
- 
+
     @XmlAnyElement(lax=true)
     public List<?> getItems() {
         return items;

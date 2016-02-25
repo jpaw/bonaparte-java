@@ -28,7 +28,7 @@ class FieldMapperProcessor extends AbstractMethodProcessor {
         }
         val dst = method.parameters.get(0)
         val src = method.parameters.get(1)
-        
+
         if (!bon.isAssignableFrom(src.type) || !bon.isAssignableFrom(dst.type)) {
             method.addError("both parameters must be instances of classes implementing BonaPortable")
             return
@@ -40,7 +40,7 @@ class FieldMapperProcessor extends AbstractMethodProcessor {
             «oldBody»
         ''' ]
     }
-    
+
     def private static boolean isInSrc(FieldDeclaration srcField, ClassDeclaration entity) {
         try {
             val mm = entity.findDeclaredMethod('''get«srcField.simpleName.toFirstUpper»''')
@@ -56,7 +56,7 @@ class FieldMapperProcessor extends AbstractMethodProcessor {
         }
         return false  // exists, but type differs, or got an exception
     }
-    
+
         def static public CharSequence buildMapping(TypeReference dst, TypeReference src, String dstName, String srcName, boolean includeSuperClasses) {
         val dstClass = dst.type as ClassDeclaration
         val srcClass = src.type as ClassDeclaration

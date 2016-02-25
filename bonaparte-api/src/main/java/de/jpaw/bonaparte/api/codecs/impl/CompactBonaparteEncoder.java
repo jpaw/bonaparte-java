@@ -7,7 +7,7 @@ import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 
 public class CompactBonaparteEncoder<O extends BonaPortable> implements IMessageEncoder<O, byte []> {
     private final CompactByteArrayComposer bac = new CompactByteArrayComposer();
-    
+
     @Override
     public byte[] encode(O obj, ObjectReference di) {
         bac.reset();

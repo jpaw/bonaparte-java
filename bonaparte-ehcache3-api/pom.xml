@@ -13,7 +13,7 @@
     <packaging>jar</packaging>
 
     <description>BONAPARTE EhCache3 criteria API support</description>
-    
+
     <build>
         <plugins>
             <plugin>

@@ -95,7 +95,7 @@ package de.jpaw.bonaparte.core;
  *
  *    The implementation makes no guarantees that always the short possible form is used. Year numbers for example
  *    are likely to be written always as 2 bytes, because the likelyhood of year numbers in the range 00..63 is very low.
- *    
+ *
  *    The format carries partial type information, i.e. certain data types can be recovered, such as
  *    - float, double, UUID, time realted types.
  *    Some types (but only types which are not specified by JSON) will be different after deserialization (unless type information is provided to the deserializer):
@@ -109,7 +109,7 @@ package de.jpaw.bonaparte.core;
  *    - Integral types: long => int, if the value fits, short, byte => int (always)
  *    - Instant         => long
  *    - BonaPortables   => Map<String, Object>  (reason is that the receiving application probably does not know the specific type)
- *    
+ *
  *    JSON null value policy:
  *    If a Map<> is output, then null values will be exported. The reason is that a map could be cleard of null values before output, if desired.
  *    Also, it would require a 2 pass approach otherwise, as the map outputs the number of entries before.
@@ -117,11 +117,11 @@ package de.jpaw.bonaparte.core;
  *    The reason is that objects typically contain a high number of optional fields, which are only needed if filled, and there is no other way
  *    to clear them. For objects, a different token is used ("variable map") and the object's PQON is output as well. This allows optional reconstruction
  *    of the class.
- *    
+ *
  *    For the compact format, the serialized form of any Java object added via addElement is identical to the form when added with the specific method (i.e.
  *    as part of a BonaPortable), because there is sufficient type information in the serialized form. For other formats (the bonaparte ASCII format for example,
  *    the serialized forms will differ in order to be able to distinguish numbers from strings (as element, a string would be output including quotes, when
- *    added directly, then without. 
+ *    added directly, then without.
  */
 
 public interface CompactConstants {
@@ -130,7 +130,7 @@ public interface CompactConstants {
 
     public static final int COMPACT_BOOLEAN_FALSE = 0x9e;
     public static final int COMPACT_BOOLEAN_TRUE  = 0x9f;
-    
+
     public static final int PARENT_SEPARATOR = 0xae;
     public static final int OBJECT_BEGIN_ID = 0xde;
     public static final int OBJECT_BEGIN_PQON = 0xdf;
@@ -169,7 +169,7 @@ public interface CompactConstants {
 
     @Deprecated
     public static final int ASCII_STRING = 0xe1;
-    public static final int ISO_STRING   = 0xe1;            
+    public static final int ISO_STRING   = 0xe1;
     public static final int UTF16_STRING = 0xfd;
     public static final int UTF8_STRING  = 0xff;
 
@@ -181,7 +181,7 @@ public interface CompactConstants {
 
     public static final int COMPRESSED = 0xd5;
     public static final int COMPRESSED_LZ4 = 0;  // first type
-    
+
     // declares the number of bytes following a token which are not to be interpreted but must be skipped
     public static final int [] SKIP_BYTES = {
         -1, 0, 0, 0,        // 0xa?

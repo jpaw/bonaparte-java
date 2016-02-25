@@ -13,15 +13,15 @@ import de.jpaw.bonaparte.core.StaticMeta;
 
 public class BonaparteStreamSerializer extends BonaparteSerializer implements StreamSerializer<BonaPortable> {
     private final boolean recommendIds;
-    
+
     public BonaparteStreamSerializer() {
         this.recommendIds = false;
     }
     public BonaparteStreamSerializer(boolean recommendIds) {
         this.recommendIds = recommendIds;
     }
-    
-    
+
+
     @Override
     public void write(ObjectDataOutput out, BonaPortable object) throws IOException {
         CompactComposer cbac = new CompactComposer(out, recommendIds);

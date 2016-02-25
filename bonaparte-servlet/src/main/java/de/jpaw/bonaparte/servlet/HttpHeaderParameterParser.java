@@ -7,7 +7,7 @@ import de.jpaw.bonaparte.core.MessageParserException;
 import de.jpaw.bonaparte.core.StringProviderParser;
 
 /** Parser which parses parameters from headers of a HttpRequest.
- * With Java 8, the whole class would not be required. */ 
+ * With Java 8, the whole class would not be required. */
 public class HttpHeaderParameterParser extends StringProviderParser {
 
     public static StringProviderParser.StringGetter createGetter(final HttpServletRequest request) {
@@ -18,11 +18,11 @@ public class HttpHeaderParameterParser extends StringProviderParser {
             }
         };
     }
-    
+
     public HttpHeaderParameterParser(final HttpServletRequest request) {
         super(createGetter(request));
     }
-    
+
     /** unmarshals header parameters into a preallocated object.
      * @throws MessageParserException */
     public static void unmarshal(HttpServletRequest request, BonaPortable obj) throws MessageParserException {

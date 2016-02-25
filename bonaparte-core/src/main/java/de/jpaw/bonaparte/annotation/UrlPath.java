@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 /**
  * Annotation to be placed as a marker in external APIs to define a URL path component.
- * 
+ *
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })

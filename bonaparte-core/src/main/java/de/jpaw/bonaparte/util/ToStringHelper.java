@@ -105,7 +105,7 @@ public class ToStringHelper {
             _buffer.append(value.toString());
         }
     }
-    
+
     public static void BonaPortable(StringBuilder _buffer, StringBuilder _currentIndent, boolean showNulls, Object obj) {
         _buffer.append(obj.getClass().getSimpleName());
         _buffer.append("(");
