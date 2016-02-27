@@ -64,7 +64,7 @@
         <!-- distributed caches -->
         <ehcache.version>2.9.1</ehcache.version>        <!-- UPTODATE 2015-03-05 -->
         <ehcache3.version>3.0.0.m3</ehcache3.version>   <!-- UPTODATE 2015-03-24 -->
-        <hazelcast.version>3.5.3</hazelcast.version>    <!-- http://hazelcast.org/download/ UPTODATE 2015-03-22 -->
+        <hazelcast.version>3.5.5</hazelcast.version>    <!-- http://hazelcast.org/download/ UPTODATE 2016-01-31 -->
         <infinispan.version>7.1.1.Final</infinispan.version>  <!-- UPTODATE 2015-03-05 -->
 
         <koloboke.version>0.6.8</koloboke.version>      <!-- UPTODATE 2015-04-10 -->

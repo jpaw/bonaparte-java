@@ -10,6 +10,7 @@ import de.jpaw.bonaparte.core.DataAndMeta;
 import de.jpaw.bonaparte.core.JsonComposer;
 import de.jpaw.bonaparte.core.ListMetaComposer;
 import de.jpaw.bonaparte.core.MapParser;
+import de.jpaw.bonaparte.core.MimeTypes;
 import de.jpaw.bonaparte.pojos.api.auth.Jwt;
 import de.jpaw.bonaparte.pojos.api.auth.JwtAlg;
 import de.jpaw.bonaparte.pojos.api.auth.JwtInfo;
@@ -21,6 +22,7 @@ import de.jpaw.util.ApplicationException;
 
 /** Conversions between JSON strings and Bonaparte classes for parts of the JWT. */
 public class JwtConverter {
+    private static final String PAYLOAD_PQON = JwtPayload.BClass.INSTANCE.getPqon();
 
     /** returns the current time, rounded down to the previous full second. */
     public static Instant lastFullSecond() {
@@ -45,9 +47,13 @@ public class JwtConverter {
     }
 
     public static JwtPayload parsePayload(String json) throws ApplicationException {
-        final JwtPayload payload = (JwtPayload) MapParser.asBonaPortable(new JsonParser(json, true).parseObject(), Jwt.meta$$payload);
-        payload.freeze();
-        return payload;
+        final Map<String,Object> map = new JsonParser(json, true).parseObject();
+        // if no object type has been specified, provide the default type to avoid a warning, unless fqon or pqon is specified
+        Object pqon1 = map.get(MimeTypes.JSON_FIELD_PQON);
+        Object pqon2 = map.get(MimeTypes.JSON_FIELD_FQON);
+        if (!((pqon1 != null && pqon1 instanceof String) || (pqon2 != null && pqon2 instanceof String)))
+            map.put(MimeTypes.JSON_FIELD_PQON, PAYLOAD_PQON);
+        return parsePayload(map);
     }
 
     public static String toJson(JwtAlg alg) {
