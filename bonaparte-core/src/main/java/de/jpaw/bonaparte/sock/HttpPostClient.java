@@ -136,11 +136,11 @@ public class HttpPostClient implements INetworkDialog {
         serializedRequest.toOutputStream(wr);
         wr.flush();
 
-        // according to https://www.tbray.org/ongoing/When/201x/2012/01/17/HttpURLConnection the status should be available
+        // according to https://www.tbray.org/ongoing/When/201x/2012/01/17/HttpURLConnection the status should be available 
         // after getInputStream for GET
         // before for POST
         // in either case, swapping the order would cause a nasty IOException!
-
+        
         int returnCode = connection.getResponseCode();
         String statusMessage = connection.getResponseMessage();
 
