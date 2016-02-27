@@ -1,7 +1,7 @@
 package de.jpaw.bonaparte.sock;
 
-import java.io.DataOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -55,6 +55,11 @@ public class HttpPostClient implements INetworkDialog {
         this.authentication = authentication;
     }
 
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
+        cachedUrl = null;       // reset cached converted URL if changing the base path!
+    }
+
     // properties can be set in their own method to allow overriding it
     protected void setRequestProperties(HttpURLConnection connection) {
         connection.setDoOutput(true);
@@ -86,14 +91,24 @@ public class HttpPostClient implements INetworkDialog {
             LOGGER.info(serializedResponse.hexdump(0, 0));
     }
 
+    protected BonaPortable errorReturn(String requestPqon, int returnCode, String statusMessage) throws Exception {
+        LOGGER.warn("response for {} is HTTP {} ({})", requestPqon, returnCode, statusMessage);
+        return null;
+    }
 
     /** Execute the request / response dialog. */
     @Override
     public BonaPortable doIO(BonaPortable request) throws Exception {
-        ByteArray serializedRequest = marshaller.marshal(request);
+        ByteArray serializedRequest = ByteArray.ZERO_BYTE_ARRAY;
+        String requestPqon          = "LOGOUT";
+
+        if (request != null) {
+            serializedRequest   = marshaller.marshal(request);
+            requestPqon         = request.ret$PQON();
+        }
 
         URL url = null;
-        if (addVariableUrlPath) {
+        if (addVariableUrlPath && request != null) {
             String variablePath = request.ret$BonaPortableClass().getProperty("path");
             if (variablePath != null) {
                 url = new URL(baseUrl + "/" + variablePath);
@@ -114,24 +129,27 @@ public class HttpPostClient implements INetworkDialog {
             connection.setRequestProperty("Authorization", authentication);
 
         connection.setRequestProperty("Content-Length", "" + serializedRequest.length());
-        requestLogger(request.ret$PQON(), serializedRequest);
+        requestLogger(requestPqon, serializedRequest);
 
         // write the request
-        DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
+        OutputStream wr = connection.getOutputStream();
         serializedRequest.toOutputStream(wr);
         wr.flush();
 
-        // retrieve the response
-        InputStream is = connection.getInputStream();
+        // according to https://www.tbray.org/ongoing/When/201x/2012/01/17/HttpURLConnection the status should be available
+        // after getInputStream for GET
+        // before for POST
+        // in either case, swapping the order would cause a nasty IOException!
 
-        // after getInputStream, the status should be available: https://www.tbray.org/ongoing/When/201x/2012/01/17/HttpURLConnection
         int returnCode = connection.getResponseCode();
         String statusMessage = connection.getResponseMessage();
 
         if (returnCode != HttpURLConnection.HTTP_OK) {
-            LOGGER.warn("response for {} is HTTP {} ({})", request.ret$PQON(), returnCode, statusMessage);
-            return null;
+            return errorReturn(requestPqon, returnCode, statusMessage);
         }
+
+        // retrieve the response
+        InputStream is = connection.getInputStream();
 
         ByteBuilder serializedResponse = new ByteBuilder();
         serializedResponse.readFromInputStream(is, 0);
@@ -140,6 +158,6 @@ public class HttpPostClient implements INetworkDialog {
 
         responseLogger(serializedResponse);
 
-        return marshaller.unmarshal(serializedResponse);
+        return serializedResponse.length() == 0 ? null : marshaller.unmarshal(serializedResponse);
     }
 }
