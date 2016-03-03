@@ -31,5 +31,7 @@ public class TestCSVOut {
     @Test
     public void testCSVAnyScale() throws Exception {
         run(new BigDecimal(0), "0", "0.000000");
+        run(new BigDecimal(0.25), "0.25", "0.250000");
+        run(new BigDecimal("7.888120000"), "7.888120000", "7.888120");
     }
 }
