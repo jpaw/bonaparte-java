@@ -30,4 +30,8 @@ package csvTests {
         signed int (8,3)        signedMillis;
         signed Long (18,6)      signedMicros;
     }
+
+    class Number6 {
+        signed Decimal(12,6)    number6;
+    }
 }
