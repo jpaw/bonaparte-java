@@ -27,7 +27,7 @@ package jsonTest {
 
     enum ColorNum   { RED, GREEN, BLUE }
     enum ColorAlnum { RED="R", GREEN = "G", BLUE="B" }
-    
+
     class JsonEnumAndList {
         enum ColorNum           cn;
         enum ColorAlnum         ca;

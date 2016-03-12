@@ -5,19 +5,24 @@ import java.util.List;
 import java.util.Map;
 
 import org.joda.time.LocalDate;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.core.ByteArrayComposer;
 import de.jpaw.bonaparte.core.CompactByteArrayComposer;
 import de.jpaw.bonaparte.core.CompactByteArrayParser;
 import de.jpaw.bonaparte.core.JsonComposer;
 import de.jpaw.bonaparte.core.MapComposer;
+import de.jpaw.bonaparte.core.MapParser;
+import de.jpaw.bonaparte.core.StaticMeta;
 import de.jpaw.bonaparte.core.StringBuilderComposer;
 import de.jpaw.bonaparte.pojos.jsonTest.ColorAlnum;
 import de.jpaw.bonaparte.pojos.jsonTest.ColorNum;
 import de.jpaw.bonaparte.pojos.jsonTest.JsonEnumAndList;
 import de.jpaw.bonaparte.pojos.jsonTest.JsonFieldTest;
 import de.jpaw.bonaparte.util.ToStringHelper;
+import de.jpaw.json.JsonParser;
 import de.jpaw.util.ByteUtil;
 
 public class JsonComposerTest {
@@ -96,7 +101,7 @@ public class JsonComposerTest {
         l.add("Hello, world");
         return t;
     }
-    
+
     @Test
     public void runJsonEnumAndListCompactTest() throws Exception {
         JsonEnumAndList t = testObject();
@@ -112,7 +117,7 @@ public class JsonComposerTest {
 
         System.out.println(JsonComposer.toJsonString(t2));
     }
-    
+
     @Test
     public void runJsonEnumAndListTest() throws Exception {
         JsonEnumAndList t = testObject();
@@ -122,6 +127,19 @@ public class JsonComposerTest {
         cbac.writeRecord(t);
 
         System.out.println(buff);       // visually verify: array, enum names
+
+        Object obj = new JsonParser(buff, false).parseElement();
+        System.out.println(ToStringHelper.toStringML(obj));       // visually verify: array, enum names
+
+        Assert.assertTrue(obj instanceof Map);
+        Map<?,?> objM = (Map<?,?>)obj;
+        Object expL = objM.get("any");
+        Assert.assertNotNull(expL);
+        Assert.assertTrue(expL instanceof List);
+        List<?> objL = (List<?>)expL;
+        Assert.assertEquals(objL.size(), 4);
+        Assert.assertEquals(objM.get("cn"), Integer.valueOf(1));
+        Assert.assertEquals(objM.get("ca"), "G");
     }
 
     @Test
@@ -133,5 +151,22 @@ public class JsonComposerTest {
         Map<String, Object> map = cbac.getStorage();
 
         System.out.println(ToStringHelper.toStringML(map));       // visually verify: array, enum names
+
+        MapParser mp = new MapParser(map, false);
+        Object obj = mp.readElement(StaticMeta.OUTER_BONAPORTABLE_FOR_ELEMENT);
+        System.out.println(ToStringHelper.toStringML(obj));       // visually verify: array, enum names
+    }
+
+    @Test
+    public void runJsonNestedEnumAndListTest() throws Exception {
+        JsonEnumAndList t1 = testObject();
+        JsonEnumAndList t2 = testObject();
+
+        t1.setAny(t2);
+        ByteArrayComposer bac = new ByteArrayComposer();
+        bac.writeRecord(t1);
+
+        String txt = new String(bac.getBytes(), "UTF-8");
+        System.out.println(txt);       // visually verify: array, enum names
     }
 }

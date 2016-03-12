@@ -17,11 +17,11 @@ public class TestCSVOut {
         StringBuilder buff = new StringBuilder(100);
         Number6 data = new Number6(number);
         data.freeze();
-        
+
         CSVComposer2 p2 = new CSVComposer2(buff, cfg);
         p2.writeObject(data);
         Assert.assertEquals(buff.toString(), expected2);
-        
+
         buff.setLength(0);
         CSVComposer3 p3 = new CSVComposer3(buff, cfg);
         p3.writeObject(data);
