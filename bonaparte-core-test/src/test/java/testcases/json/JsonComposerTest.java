@@ -2,6 +2,7 @@ package testcases.json;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.joda.time.LocalDate;
 import org.testng.annotations.Test;
@@ -10,7 +11,11 @@ import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.CompactByteArrayComposer;
 import de.jpaw.bonaparte.core.CompactByteArrayParser;
 import de.jpaw.bonaparte.core.JsonComposer;
+import de.jpaw.bonaparte.core.MapComposer;
 import de.jpaw.bonaparte.core.StringBuilderComposer;
+import de.jpaw.bonaparte.pojos.jsonTest.ColorAlnum;
+import de.jpaw.bonaparte.pojos.jsonTest.ColorNum;
+import de.jpaw.bonaparte.pojos.jsonTest.JsonEnumAndList;
 import de.jpaw.bonaparte.pojos.jsonTest.JsonFieldTest;
 import de.jpaw.bonaparte.util.ToStringHelper;
 import de.jpaw.util.ByteUtil;
@@ -78,4 +83,55 @@ public class JsonComposerTest {
         System.out.println(JsonComposer.toJsonString(t2));
     }
 
+    private JsonEnumAndList testObject() {
+        JsonEnumAndList t = new JsonEnumAndList();
+
+        t.setCn(ColorNum.GREEN);
+        t.setCa(ColorAlnum.GREEN);
+        List<Object> l = new ArrayList<Object>(20);
+        t.setAny(l);
+        l.add(42);
+        l.add(3.14);
+        l.add('x');
+        l.add("Hello, world");
+        return t;
+    }
+    
+    @Test
+    public void runJsonEnumAndListCompactTest() throws Exception {
+        JsonEnumAndList t = testObject();
+
+        CompactByteArrayComposer cbac = new CompactByteArrayComposer();
+        cbac.writeRecord(t);
+        byte [] b = cbac.getBytes();
+
+        // deserialize again
+        CompactByteArrayParser cbap = new CompactByteArrayParser(b, 0, -1);
+        BonaPortable t2 = cbap.readRecord();
+        System.out.println(ToStringHelper.toStringML(t2));
+
+        System.out.println(JsonComposer.toJsonString(t2));
+    }
+    
+    @Test
+    public void runJsonEnumAndListTest() throws Exception {
+        JsonEnumAndList t = testObject();
+
+        StringBuilder buff = new StringBuilder(200);
+        JsonComposer cbac = new JsonComposer(buff);
+        cbac.writeRecord(t);
+
+        System.out.println(buff);       // visually verify: array, enum names
+    }
+
+    @Test
+    public void runJsonEnumAndListAsMapTest() throws Exception {
+        JsonEnumAndList t = testObject();
+
+        MapComposer cbac = new MapComposer();
+        cbac.writeRecord(t);
+        Map<String, Object> map = cbac.getStorage();
+
+        System.out.println(ToStringHelper.toStringML(map));       // visually verify: array, enum names
+    }
 }

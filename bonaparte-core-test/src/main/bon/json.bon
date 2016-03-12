@@ -24,4 +24,13 @@ package jsonTest {
         Array               optList2;
         Array List<>        listOfList2;
     }
+
+    enum ColorNum   { RED, GREEN, BLUE }
+    enum ColorAlnum { RED="R", GREEN = "G", BLUE="B" }
+    
+    class JsonEnumAndList {
+        enum ColorNum           cn;
+        enum ColorAlnum         ca;
+        Element                 any;
+    }
 }
