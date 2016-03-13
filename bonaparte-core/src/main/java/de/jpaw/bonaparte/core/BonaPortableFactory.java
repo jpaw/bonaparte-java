@@ -144,13 +144,14 @@ public class BonaPortableFactory {
             Class<? extends BonaPortable> f = Class.forName(FQON, true, Thread.currentThread().getContextClassLoader()).asSubclass(BonaPortable.class);
             return f.newInstance();
         } catch (ClassNotFoundException e) {
-            LOGGER.error("ClassNotFound exception for {}, my CL = {}, OCCL = {}",
-                    FQON, A_WAY_TO_GET_MY_CLASSLOADER.getClass().getClassLoader().toString(),
-                    Thread.currentThread().getContextClassLoader().toString());
+            LOGGER.error("ClassNotFound exception for {}", FQON);
+            logClassloaders();
         } catch (InstantiationException e) {
             LOGGER.error("Instantiation exception for {}", FQON);
+            logClassloaders();
         } catch (IllegalAccessException e) {
             LOGGER.error("IllegalAccess exception for {}", FQON);
+            logClassloaders();
         }
         throw new MessageParserException(MessageParserException.CLASS_NOT_FOUND, "class", 0, FQON);
     }
@@ -185,32 +186,35 @@ public class BonaPortableFactory {
         BonaPortableFactory.packagePrefixMap = packagePrefixMap;
     }
 
+    public static void logClassloaders() {
+        LOGGER.info("My classloader is {}, thread context classloader is {}",
+                A_WAY_TO_GET_MY_CLASSLOADER.getClass().getClassLoader().toString(),
+                Thread.currentThread().getContextClassLoader().toString());
+    }
+
     public static String getBonaparteClassDefaultPackagePrefix() {
         if (bonaparteClassDefaultPackagePrefixShouldBeRetrieved) {
             String possibleOverride = System.getProperty(BONAPARTE_DEFAULT_PACKAGE_PREFIX);
             // bonaparteClassDefaultPackagePrefix = System.getProperty(BONAPARTE_DEFAULT_PACKAGE_PREFIX, bonaparteClassDefaultPackagePrefix);
             if (possibleOverride != null) {
                 bonaparteClassDefaultPackagePrefix = possibleOverride;
-                LOGGER.info("setting default package prefix to {} from system property, my CL is {}, OCCL is {}",
-                        bonaparteClassDefaultPackagePrefix,
-                        A_WAY_TO_GET_MY_CLASSLOADER.getClass().getClassLoader().toString(),
-                        Thread.currentThread().getContextClassLoader().toString());
+                LOGGER.info("Setting default package prefix to {} from system property", bonaparteClassDefaultPackagePrefix);
+                if (LOGGER.isDebugEnabled())
+                    logClassloaders();
             }
             bonaparteClassDefaultPackagePrefixShouldBeRetrieved = false;
         }
         return bonaparteClassDefaultPackagePrefix;
     }
-
+    
     public static void setBonaparteClassDefaultPackagePrefix(
             String bonaparteClassDefaultPackagePrefix) {
         BonaPortableFactory.bonaparteClassDefaultPackagePrefix = bonaparteClassDefaultPackagePrefix;
         bonaparteClassDefaultPackagePrefixShouldBeRetrieved = false;   // I got it from the application now
         if (publishDefaultPrefix) {
-            LOGGER.info("publishing new default package prefix {}, my CL is {}, OCCL is {}, cnt = {}",
-                    bonaparteClassDefaultPackagePrefix,
-                    A_WAY_TO_GET_MY_CLASSLOADER.getClass().getClassLoader().toString(),
-                    Thread.currentThread().getContextClassLoader().toString(),
-                    initializationCounter.incrementAndGet());
+            LOGGER.info("Publishing new default package prefix {}, count = {}", bonaparteClassDefaultPackagePrefix, initializationCounter.incrementAndGet());
+            if (LOGGER.isDebugEnabled())
+                logClassloaders();
             System.setProperty(BONAPARTE_DEFAULT_PACKAGE_PREFIX, bonaparteClassDefaultPackagePrefix);
         }
     }
