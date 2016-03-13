@@ -21,6 +21,7 @@ import de.jpaw.bonaparte.pojos.jsonTest.ColorAlnum;
 import de.jpaw.bonaparte.pojos.jsonTest.ColorNum;
 import de.jpaw.bonaparte.pojos.jsonTest.JsonEnumAndList;
 import de.jpaw.bonaparte.pojos.jsonTest.JsonFieldTest;
+import de.jpaw.bonaparte.pojos.jsonTest.XColor;
 import de.jpaw.bonaparte.util.ToStringHelper;
 import de.jpaw.json.JsonParser;
 import de.jpaw.util.ByteUtil;
@@ -93,10 +94,12 @@ public class JsonComposerTest {
 
         t.setCn(ColorNum.GREEN);
         t.setCa(ColorAlnum.GREEN);
+        t.setCx(XColor.myFactory.getByName("RED"));
         List<Object> l = new ArrayList<Object>(20);
         t.setAny(l);
         l.add(42);
         l.add(3.14);
+        l.add(ColorAlnum.GREEN);
         l.add('x');
         l.add("Hello, world");
         return t;
@@ -137,9 +140,10 @@ public class JsonComposerTest {
         Assert.assertNotNull(expL);
         Assert.assertTrue(expL instanceof List);
         List<?> objL = (List<?>)expL;
-        Assert.assertEquals(objL.size(), 4);
+        Assert.assertEquals(objL.size(), 5);
         Assert.assertEquals(objM.get("cn"), Integer.valueOf(1));
         Assert.assertEquals(objM.get("ca"), "G");
+        Assert.assertEquals(objM.get("cx"), "R");
     }
 
     @Test
@@ -168,5 +172,37 @@ public class JsonComposerTest {
 
         String txt = new String(bac.getBytes(), "UTF-8");
         System.out.println(txt);       // visually verify: array, enum names
+
+        // variant 2: MapComposer.marshal
+        Map<?,?> objM = MapComposer.marshal(t1);
+        System.out.println(ToStringHelper.toStringML(objM));       // visually verify: array, enum names => OK
+    }
+
+    @Test
+    public void runJsonNestedEnumAndList2Test() throws Exception {
+        JsonEnumAndList t1 = testObject();
+        JsonEnumAndList t2 = testObject();
+
+        t1.setAny(MapComposer.marshal(t2));
+        ByteArrayComposer bac = new ByteArrayComposer();
+        bac.writeRecord(t1);
+
+        String txt = new String(bac.getBytes(), "UTF-8");
+        System.out.println(txt);       // visually verify: array, enum names
+    }
+
+    @Test
+    public void runJsonNestedEnumAndList3Test() throws Exception {
+        JsonEnumAndList t1 = testObject();
+        JsonEnumAndList t2 = testObject();
+
+        t1.setAny(MapComposer.marshal(t2));
+        CompactByteArrayComposer bac = new CompactByteArrayComposer();
+        bac.writeRecord(t1);
+
+        // expand again
+        CompactByteArrayParser cbap = new CompactByteArrayParser(bac.getBuffer(), 0, bac.getLength());
+        BonaPortable obj = cbap.readRecord();
+        System.out.println(ToStringHelper.toStringML(obj));       // visually verify: array, enum names
     }
 }

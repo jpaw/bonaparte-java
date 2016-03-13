@@ -846,7 +846,7 @@ public class ByteArrayParser extends AbstractMessageParser<MessageParserExceptio
         try {
             return new JsonParser(tmp, false).parseObject();
         } catch (JsonException e) {
-            throw new MessageParserException(MessageParserException.JSON_EXCEPTION, di.getName(), parseIndex, currentClass, e.getMessage());
+            throw new MessageParserException(MessageParserException.JSON_EXCEPTION_MAP, di.getName(), parseIndex, currentClass, e.getMessage());
         }
     }
 
@@ -858,19 +858,24 @@ public class ByteArrayParser extends AbstractMessageParser<MessageParserExceptio
         try {
             return new JsonParser(tmp, false).parseArray();
         } catch (JsonException e) {
-            throw new MessageParserException(MessageParserException.JSON_EXCEPTION, di.getName(), parseIndex, currentClass, e.getMessage());
+            throw new MessageParserException(MessageParserException.JSON_EXCEPTION_ARRAY, di.getName(), parseIndex, currentClass, e.getMessage());
         }
     }
 
     @Override
     public Object readElement(ObjectReference di) throws MessageParserException {
+        // hack to allow for BonaPortable here
+        if (parseIndex < messageLength) {
+            if (inputdata[parseIndex] == OBJECT_AGAIN || inputdata[parseIndex] == OBJECT_BEGIN)
+                return readObject(di, BonaPortable.class);
+        }
         String tmp = readString(di.getName(), di.getIsRequired(), Integer.MAX_VALUE, true, false, true, true);
         if (tmp == null)
             return null;
         try {
             return new JsonParser(tmp, false).parseElement();
         } catch (JsonException e) {
-            throw new MessageParserException(MessageParserException.JSON_EXCEPTION, di.getName(), parseIndex, currentClass, e.getMessage());
+            throw new MessageParserException(MessageParserException.JSON_EXCEPTION_OBJECT, di.getName(), parseIndex, currentClass, e.getMessage());
         }
     }
 }

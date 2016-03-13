@@ -21,7 +21,7 @@ public abstract class AbstractPartialJsonStringParser extends AbstractMessagePar
         try {
             return new JsonParser(tmp, false).parseObject();
         } catch (JsonException e) {
-            throw newMPE(MessageParserException.JSON_EXCEPTION, di, e.getMessage());
+            throw newMPE(MessageParserException.JSON_EXCEPTION_MAP, di, e.getMessage());
         }
     }
 
@@ -33,7 +33,7 @@ public abstract class AbstractPartialJsonStringParser extends AbstractMessagePar
         try {
             return new JsonParser(tmp, false).parseArray();
         } catch (JsonException e) {
-            throw newMPE(MessageParserException.JSON_EXCEPTION, di, e.getMessage());
+            throw newMPE(MessageParserException.JSON_EXCEPTION_ARRAY, di, e.getMessage());
         }
     }
 
@@ -45,7 +45,7 @@ public abstract class AbstractPartialJsonStringParser extends AbstractMessagePar
         try {
             return new JsonParser(tmp, false).parseElement();
         } catch (JsonException e) {
-            throw newMPE(MessageParserException.JSON_EXCEPTION, di, e.getMessage());
+            throw newMPE(MessageParserException.JSON_EXCEPTION_OBJECT, di, e.getMessage());
         }
     }
 }

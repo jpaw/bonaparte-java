@@ -717,4 +717,15 @@ public final class StringBuilderParser extends AbstractPartialJsonStringParser i
     protected String getString(FieldDefinition di) throws MessageParserException {
         return readString(di.getName(), di.getIsRequired(), Integer.MAX_VALUE, true, false, true, true);
     }
+
+    @Override
+    public Object readElement(ObjectReference di) throws MessageParserException {
+        // hack to allow for BonaPortable here
+        if (parseIndex < messageLength) {
+            char c = work.charAt(parseIndex);
+            if (c == OBJECT_AGAIN || c == OBJECT_BEGIN)
+                return readObject(di, BonaPortable.class);
+        }
+        return super.readElement(di);
+    }
 }

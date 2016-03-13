@@ -27,10 +27,12 @@ package jsonTest {
 
     enum ColorNum   { RED, GREEN, BLUE }
     enum ColorAlnum { RED="R", GREEN = "G", BLUE="B" }
+    xenum XColor is ColorAlnum:1;
 
     class JsonEnumAndList {
         enum ColorNum           cn;
         enum ColorAlnum         ca;
+        xenum XColor            cx;
         Element                 any;
     }
 }

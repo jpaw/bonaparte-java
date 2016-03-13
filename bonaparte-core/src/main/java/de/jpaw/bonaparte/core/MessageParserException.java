@@ -103,6 +103,9 @@ public class MessageParserException extends ApplicationException {
     static public final int BINARY_TOO_LONG              = OFFSET + 63;
     static public final int JSON_BAD_OBJECTREF           = OFFSET8 + 64;
     static public final int WRONG_CLASS                  = OFFSET + 65;
+    static public final int JSON_EXCEPTION_MAP           = OFFSET + 66;
+    static public final int JSON_EXCEPTION_ARRAY         = OFFSET + 67;
+    static public final int JSON_EXCEPTION_OBJECT        = OFFSET + 68;
 
 
     static {
@@ -171,6 +174,9 @@ public class MessageParserException extends ApplicationException {
         codeToDescription.put(BINARY_TOO_LONG              , "Binary data type too long");
         codeToDescription.put(JSON_BAD_OBJECTREF           , "Invalid object reference definition (no subclassing allowed and no base type)");
         codeToDescription.put(WRONG_CLASS                  , "Got an object of a different class");
+        codeToDescription.put(JSON_EXCEPTION_MAP           , "JSON parsing exception: Map<String,Object> expected");
+        codeToDescription.put(JSON_EXCEPTION_ARRAY         , "JSON parsing exception: List expected");
+        codeToDescription.put(JSON_EXCEPTION_OBJECT        , "JSON parsing exception: any object");
     }
 
     /** Creates a parser exception with an explicitly defined position and class name. */
