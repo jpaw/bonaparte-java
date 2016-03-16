@@ -12,7 +12,11 @@ package testXenum {
     enum Xyz {
         XAVER = "X", YOU = "Y", ZORK = "Z"
     }
-
+    enum ManyLetters {
+        ALPHA = "A", BRAVO   = "B", CHARLIE = "C",
+        DELTA = "D", ECHO    = "E", FOXTROT = "F",
+        XAVER = "X", YOU     = "Y", ZORK    = "Z"
+    }
     xenum XColor            is Color : 2;
     xenum MoreColors        is BW extends XColor;
 
@@ -40,4 +44,5 @@ package testXenum {
 
     enumset<String> AbcSet  is Abc;
     xenumset XAlphabet      is XAbc;
+    enumset<String> LetterSet is ManyLetters;
 }

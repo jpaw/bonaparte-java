@@ -1,6 +1,7 @@
 package testcases.json;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -189,6 +190,18 @@ public class JsonComposerTest {
 
         String txt = new String(bac.getBytes(), "UTF-8");
         System.out.println(txt);       // visually verify: array, enum names
+        
+        Map<String,Object> bonInMap = new HashMap<String, Object>(4);
+        bonInMap.put("content", t1);   // map includes bon includes map
+        JsonEnumAndList t3 = testObject();
+        t3.setAny(bonInMap);
+        Map<?,?> objM = MapComposer.marshal(t3);
+        System.out.println(ToStringHelper.toStringML(objM));       // visually verify: array, enum names => OK
+
+        bac.reset();
+        bac.writeRecord(t3);
+        String txt2 = new String(bac.getBytes(), "UTF-8");
+        System.out.println(txt2);       // visually verify: array, enum names
     }
 
     @Test
