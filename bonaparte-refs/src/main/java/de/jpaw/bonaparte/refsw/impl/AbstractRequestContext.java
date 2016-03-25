@@ -18,6 +18,7 @@ import de.jpaw.bonaparte.refsw.RequestContext;
 public class AbstractRequestContext implements RequestContext, AutoCloseable {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractRequestContext.class);
     private static final int MAX_PERSISTENCE_PROVIDERS = PersistenceProviders.values().length;   // how many different persistence providers may participate?
+    public static boolean AUTOCLOSE_ON_ROLLBACK_OR_COMMIT = true;           // could be adjusted by external parties
 
     public final String userId;
     public final String tenantId;
@@ -60,6 +61,16 @@ public class AbstractRequestContext implements RequestContext, AutoCloseable {
         return persistenceUnits[priority];
     }
 
+    protected void closeAll(final boolean nullUnit) throws Exception {
+        for (int i = 0; i <= maxPersistenceProvider; ++i) {
+            if (persistenceUnits[i] != null) {
+                persistenceUnits[i].close();
+                if (nullUnit)
+                    persistenceUnits[i] = null;
+            }
+        }
+    }
+
     @Override
     public void commit() throws Exception {
         for (int i = 0; i <= maxPersistenceProvider; ++i) {
@@ -72,9 +83,8 @@ public class AbstractRequestContext implements RequestContext, AutoCloseable {
                 throw e;    // throw the original exception here (or convert to return code?)
             }
         }
-        for (int i = 0; i <= maxPersistenceProvider; ++i)
-            if (persistenceUnits[i] != null)
-                persistenceUnits[i].close();
+        if (AUTOCLOSE_ON_ROLLBACK_OR_COMMIT)
+            closeAll(false);
     }
 
     @Override
@@ -82,9 +92,8 @@ public class AbstractRequestContext implements RequestContext, AutoCloseable {
         for (int i = 0; i <= maxPersistenceProvider; ++i)
             if (persistenceUnits[i] != null)
                 persistenceUnits[i].rollback();
-        for (int i = 0; i <= maxPersistenceProvider; ++i)
-            if (persistenceUnits[i] != null)
-                persistenceUnits[i].close();
+        if (AUTOCLOSE_ON_ROLLBACK_OR_COMMIT)
+            closeAll(false);
     }
 
     @Override
@@ -92,13 +101,7 @@ public class AbstractRequestContext implements RequestContext, AutoCloseable {
         if (LOGGER.isDebugEnabled())
             LOGGER.debug("Closing RequestContext for user {}, tenant {}, processRef {}", userId, tenantId, Long.valueOf(requestRef));
 
-        for (int i = 0; i <= maxPersistenceProvider; ++i) {
-            if (persistenceUnits[i] != null) {
-                persistenceUnits[i].close();
-                // clear reference
-                persistenceUnits[i] = null;
-            }
-        }
+        closeAll(true);
         maxPersistenceProvider = -1;
     }
 
