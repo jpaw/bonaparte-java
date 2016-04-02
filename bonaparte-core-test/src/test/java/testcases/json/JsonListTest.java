@@ -13,8 +13,8 @@ public class JsonListTest {
     private static final TestSimple t1 = new TestSimple(12, "hello");
     private static final TestSimple t2 = new TestSimple(99, null);
 
-    private static final String expected1 = "{\"num\":12,\"text\":\"hello\"}\n";
-    private static final String expected2 = "{\"num\":99}\n";
+    private static final String expected1 = "{\"@PQON\":\"jsonTest.TestSimple\",\"num\":12,\"text\":\"hello\"}\n";
+    private static final String expected2 = "{\"@PQON\":\"jsonTest.TestSimple\",\"num\":99}\n";
 
     @Test
     public void runBonaList() throws Exception {
