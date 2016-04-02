@@ -20,9 +20,9 @@ public interface StaticMeta {
     // CSV special: no subclasses allowed (for parsing)
     public static final ObjectReference OUTER_BONAPORTABLE_FOR_CSV = new ObjectReference(Visibility.PRIVATE, false, "record",
             Multiplicity.SCALAR, IndexType.NONE, 0, 0, DataCategory.OBJECT, "BonaPortable", false, false, false, "BonaPortable", null, null, null);
-    // JSON special: keep the name of the outer record secret! Due to missing type info, also here no subclasses are possible
+    // JSON special: keep the name of the outer record secret! PQON is output only when allowSubclasses is true
     public static final ObjectReference OUTER_BONAPORTABLE_FOR_JSON = new ObjectReference(Visibility.PRIVATE, false, "",
-            Multiplicity.SCALAR, IndexType.NONE, 0, 0, DataCategory.OBJECT, "Json", false, false, false, "Map", null, null, null);
+            Multiplicity.SCALAR, IndexType.NONE, 0, 0, DataCategory.OBJECT, "Json", false, false, true, "Map", null, null, null);
     public static final ObjectReference OUTER_BONAPORTABLE_FOR_ARRAY = new ObjectReference(Visibility.PRIVATE, false, "",
             Multiplicity.SCALAR, IndexType.NONE, 0, 0, DataCategory.OBJECT, "Array", false, false, false, "List", null, null, null);
     public static final ObjectReference OUTER_BONAPORTABLE_FOR_ELEMENT = new ObjectReference(Visibility.PRIVATE, false, "",

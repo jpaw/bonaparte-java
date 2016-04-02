@@ -48,6 +48,7 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
     protected String currentClass = "N/A";
     protected String remFieldName = null;
     protected final Appendable out;
+    protected final boolean instantInMillis = false;    // instants are integral seconds, as in JWT iat / exp
     protected final boolean writeNulls;
     protected final boolean writeTypeInfo;      // for every class, also output "@type" and the fully qualified name
     protected final boolean writePqonInfo;      // for every class, also output "@PQON" and the partially qualified name
@@ -501,7 +502,24 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
 
     @Override
     public void addField(TemporalElementaryDataItem di, Instant t) throws IOException {
-        writeOptionalQuotedAscii(di, t == null ? null : LOCAL_DATETIME_ISO.print(t));
+        // must be compatible to ExtendedJsonComposer!
+        // writeOptionalQuotedAscii(di, t == null ? null : LOCAL_DATETIME_ISO.print(t));
+        if (t == null) {
+            writeNull(di);
+        } else {
+            writeFieldName(di);
+            long millis = t.getMillis();
+            if (instantInMillis) {
+                out.append(Long.toString(millis));
+            } else {
+                out.append(Long.toString(millis / 1000));
+                if (di.getFractionalSeconds() > 0) {
+                    millis %= 1000;
+                    if (millis > 0)
+                        out.append(String.format(".%03d", millis));
+                }
+            }
+        }
     }
 
     @Override
