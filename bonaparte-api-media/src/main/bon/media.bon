@@ -38,7 +38,7 @@ package api.media XML PROPERTY factoryId 25 {
         DEFAULT="D", TOKEN="T", NAME="N", DESCRIPTION="O"  // description is translated text
     }
 
-    class MediaTypeDescriptor classId 100 {
+    final class MediaTypeDescriptor classId 100 {
         required xenum MediaXType                   mediaType;
         required Ascii(6)                           defaultFileExtension;           // file extension (without a dot)
         required enum MediaCategory                 formatCategory;                 // which type of data is it?
@@ -46,15 +46,10 @@ package api.media XML PROPERTY factoryId 25 {
         required Ascii(64)                          mimeType;                       // MIME type
     }
 
-    class MediaData classId 101 {
+    final class MediaData classId 101 {
         required xenum MediaXType                   mediaType;                      // defines the content type
         optional Unicode(8000000) allowControlChars text;                           // textual data stored here
         optional Binary(8000000)                    rawData;                        // binary data
         optional Json                               z;                              // variable attributes like encoding / charset, image width / height etc
-    }
-
-    class Image classId 102 extends MediaData {
-        optional Integer                            width;                          // width of the image, if known
-        optional Integer                            height;                         // height of the image, if known
     }
 }

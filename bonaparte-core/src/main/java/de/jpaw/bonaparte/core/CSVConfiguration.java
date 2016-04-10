@@ -289,7 +289,7 @@ public class CSVConfiguration {
 
     public DateTimeFormatter determineDayFormatter() {
         try {
-            return customTimestampFormat == null
+            return customDayFormat == null
                     ? DateTimeFormat.forStyle(dateStyle.getToken() + "-")
                     : DateTimeFormat.forPattern(customDayFormat);
         } catch (IllegalArgumentException e) {
