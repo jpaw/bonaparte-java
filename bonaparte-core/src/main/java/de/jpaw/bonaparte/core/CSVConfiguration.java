@@ -302,7 +302,7 @@ public class CSVConfiguration {
     public DateTimeFormatter determineTimeFormatter() {
         try {
             return customTimeFormat == null
-                    ? DateTimeFormat.forStyle(timeStyle.getToken())
+                    ? DateTimeFormat.forStyle("-" + timeStyle.getToken())
                     : DateTimeFormat.forPattern(customTimeFormat);
         } catch (IllegalArgumentException e) {
             // could occur if the user provided format is invalid
@@ -314,7 +314,7 @@ public class CSVConfiguration {
     public DateTimeFormatter determineTime3Formatter() {
         try {
             return customTimeWithMsFormat == null
-                    ? DateTimeFormat.forStyle(timeStyle.getToken())
+                    ? DateTimeFormat.forStyle("-" + timeStyle.getToken())
                     : DateTimeFormat.forPattern(customTimeWithMsFormat);
         } catch (IllegalArgumentException e) {
             // could occur if the user provided format is invalid
