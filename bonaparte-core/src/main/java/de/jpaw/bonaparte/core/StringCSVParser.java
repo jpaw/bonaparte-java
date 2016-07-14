@@ -18,6 +18,9 @@ package de.jpaw.bonaparte.core;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -76,7 +79,20 @@ public final class StringCSVParser extends AbstractPartialJsonStringParser imple
     protected final int timestampFormatLength;      // day and time on second precision (Joda)
     protected final int timestamp3FormatLength;     // day and time on millisecond precision (Joda)
     protected CSVObjectTypeDetector objectTypeDetector = null;
+    protected NumberFormat localBigDecimalFormat = null;      // if set (via setNationalBigDecimal)
+    protected NumberFormat localFloatFormat      = null;      // if set (via setNationalFloat)
 
+    public void setNationalBigDecimal() {
+        localBigDecimalFormat = NumberFormat.getInstance(cfg.locale);
+        if (localBigDecimalFormat instanceof DecimalFormat) {
+            ((DecimalFormat)localBigDecimalFormat).setParseBigDecimal(true);
+        }
+    }
+    public void setNationalFloat() {
+        localFloatFormat = NumberFormat.getInstance(cfg.locale);
+    }
+    
+    
     /** Define the method to guess the type of the record by inspecting its contents. */
     public static interface CSVObjectTypeDetector {
         Class<? extends BonaPortable> typeByContents(String msg) throws MessageParserException;
@@ -313,7 +329,16 @@ public final class StringCSVParser extends AbstractPartialJsonStringParser imple
         String token = getField(di.getName(), di.getIsRequired(), di.getTotalDigits() + extra);
         if (token == null)
             return null;
-        BigDecimal r = new BigDecimal(processTrailingSigns(token));
+        BigDecimal r;
+        if (localBigDecimalFormat != null) {
+            try {
+                r = (BigDecimal) localBigDecimalFormat.parse(processTrailingSigns(token));
+            } catch (ParseException e) {
+                throw new MessageParserException(MessageParserException.NUMBER_PARSING_ERROR, di.getName(), parseIndex, currentClass);
+            }
+        } else {
+            r = new BigDecimal(processTrailingSigns(token));
+        }
         return BigDecimalTools.checkAndScale(r, di, parseIndex, currentClass);
     }
 
@@ -541,7 +566,7 @@ public final class StringCSVParser extends AbstractPartialJsonStringParser imple
         String token = getField(di.getName(), di.getIsRequired(), di.getTotalDigits()+(di.getIsSigned() ? 1 : 0));
         if (token == null)
             return null;
-        return Float.valueOf(token.trim());
+        return parseFloat(token.trim(), di);
     }
 
     @Override
@@ -552,6 +577,30 @@ public final class StringCSVParser extends AbstractPartialJsonStringParser imple
         return Double.valueOf(token.trim());
     }
 
+    protected Float parseFloat(String s, BasicNumericElementaryDataItem di) throws MessageParserException {
+        if (localFloatFormat != null) {
+            try {
+                return (Float) localFloatFormat.parse(processTrailingSigns(s));
+            } catch (ParseException e) {
+                throw new MessageParserException(MessageParserException.NUMBER_PARSING_ERROR, di.getName(), parseIndex, currentClass);
+            }
+        } else {
+            return Float.valueOf(s);
+        }
+    }
+    
+    protected Double parseDouble(String s, BasicNumericElementaryDataItem di) throws MessageParserException {
+        if (localFloatFormat != null) {
+            try {
+                return (Double) localFloatFormat.parse(processTrailingSigns(s));
+            } catch (ParseException e) {
+                throw new MessageParserException(MessageParserException.NUMBER_PARSING_ERROR, di.getName(), parseIndex, currentClass);
+            }
+        } else {
+            return Double.valueOf(s);
+        }
+    }
+    
     @Override
     public void eatParentSeparator() throws MessageParserException {
     }
@@ -654,13 +703,13 @@ public final class StringCSVParser extends AbstractPartialJsonStringParser imple
     @Override
     public double readPrimitiveDouble(BasicNumericElementaryDataItem di) throws MessageParserException {
         String token = getField(di.getName(), di.getIsRequired(), di.getTotalDigits()+(di.getIsSigned() ? 1 : 0));
-        return Double.parseDouble(token.trim());
+        return parseDouble(token.trim(), di);
     }
 
     @Override
     public float readPrimitiveFloat(BasicNumericElementaryDataItem di) throws MessageParserException {
         String token = getField(di.getName(), di.getIsRequired(), di.getTotalDigits()+(di.getIsSigned() ? 1 : 0));
-        return Float.parseFloat(token.trim());
+        return parseFloat(token.trim(), di);
     }
 
     @Override
