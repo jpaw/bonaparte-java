@@ -337,7 +337,11 @@ public final class StringCSVParser extends AbstractPartialJsonStringParser imple
                 throw new MessageParserException(MessageParserException.NUMBER_PARSING_ERROR, di.getName(), parseIndex, currentClass);
             }
         } else {
-            r = new BigDecimal(processTrailingSigns(token));
+            try {
+                r = new BigDecimal(processTrailingSigns(token));
+            } catch (NumberFormatException e) {
+                throw new MessageParserException(MessageParserException.NUMBER_PARSING_ERROR, di.getName(), parseIndex, currentClass);
+            }
         }
         return BigDecimalTools.checkAndScale(r, di, parseIndex, currentClass);
     }
