@@ -5,18 +5,18 @@
     <parent>
         <groupId>de.jpaw</groupId>
         <artifactId>jpaw-se-parent</artifactId>
-        <version>1.1.2-SNAPSHOT</version>
+        <version>1.1.1</version>
         <relativePath/>
     </parent>
 
     <artifactId>bonaparte.allplugins</artifactId>
-    <version>4.0.15</version>
+    <version>4.0.16</version>
     <packaging>pom</packaging>
     
     <properties>
         <!-- define releases we want to use, to ensure consistency -->
-        <jpaw.version>1.5.8-SNAPSHOT</jpaw.version>
-        <bonaparte.version>4.0.15</bonaparte.version>
+        <jpaw.version>1.5.7</jpaw.version>
+        <bonaparte.version>4.0.16</bonaparte.version>
     </properties>    
     
     <repositories>

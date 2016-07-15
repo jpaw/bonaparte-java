@@ -2,6 +2,7 @@ package testcases.csv;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Locale;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -72,4 +73,14 @@ public class TestCSV {
         parseCSVAndCompare(input, testData);
     }
 
+    // test case to show how parsing of CSV with localized decimal point works
+    @Test
+    public void testCSVNationalDecimalFormat() throws Exception {
+        CSVConfiguration cfgDE = CSVConfiguration.Builder.from(cfg1).forLocale(Locale.GERMAN).build();
+        String input      = "Hello;-5;-3,14;;;0;12";
+        StringCSVParser p = new StringCSVParser(cfgDE, input);
+        p.setNationalBigDecimal();  // switch to 
+        BonaPortable o    = p.readObject(StaticMeta.OUTER_BONAPORTABLE_FOR_CSV, testData.getClass());
+        Assert.assertEquals(testData, o);
+    }
 }

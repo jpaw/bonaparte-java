@@ -3,6 +3,11 @@ package csvTests {
     enum Color {
         RED="#ff000", GREEN="#00FF00", BLUE="#0000FF"
     }
+    
+    enum Single {
+        FIRST   = "A",
+        SECOND  = "B"
+    }
 
     class Test1 {
         Ascii(10)               string1;
