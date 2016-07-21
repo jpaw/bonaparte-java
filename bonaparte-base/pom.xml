@@ -54,12 +54,12 @@
         <gson.version>2.4</gson.version>                <!-- UPTODATE 2015-10-04 -->
 
         <lucene.version>4.10.4</lucene.version>         <!-- 5.3.1 is out 2015-10-10 -->
-        <netty.version>4.0.39.Final</netty.version>     <!-- https://netty.io/news/ --> <!-- UPTODATE 2016-07-13 -->
+        <netty.version>4.1.2.Final</netty.version>      <!-- https://netty.io/news/ --> <!-- UPTODATE 2016-07-21 -->
         <poi.version>3.14</poi.version>                 <!-- http://poi.apache.org/ UPTODATE 2016-03-20 -->
         <mina.version>2.0.7</mina.version>              <!-- http://mina.apache.org/ 2.0.7 -->
         <camel.version>2.17.2</camel.version>           <!-- http://camel.apache.org/ --> <!-- UPTODATE 2016-04-10 -->
         <vertx.version>2.1.6</vertx.version>            <!-- http://vertx.io/ UPTODATE 2014-11-13 -->
-        <vertx3.version>3.2.1</vertx3.version>          <!-- UPTODATE 2016-02-20 -->
+        <vertx3.version>3.3.2</vertx3.version>          <!-- UPTODATE 2016-07-21 -->
 
         <!-- distributed caches -->
         <ehcache.version>2.10.2</ehcache.version>       <!-- UPTODATE 2016-04-18 -->
