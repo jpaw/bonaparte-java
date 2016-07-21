@@ -3,7 +3,7 @@ Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-ManifestVersion: 2
 Bundle-Name: bonaparte external class adapters for fixed point based monetary types
 Bundle-SymbolicName: bonaparte.adapters.moneyfp
-Bundle-Version: 4.0.16
+Bundle-Version: 4.0.17.qualifier
 Bundle-Vendor: Michael Bischoff
 Require-Bundle: bonaparte.core,
  fixedpoint.core,
