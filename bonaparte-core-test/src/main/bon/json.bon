@@ -10,6 +10,16 @@ package jsonTest {
         Uuid                myNull;
     }
 
+    final class TestTS {
+        Timestamp(0)        ts0;
+        Timestamp(3)        ts3;
+    }
+
+    final class TestT {
+        Time(0)             t0;
+        Time(3)             t3;
+    }
+
     class TestSimple {
         int                 num;
         Unicode(20)         text;
