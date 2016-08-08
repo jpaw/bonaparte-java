@@ -43,8 +43,10 @@ import de.jpaw.util.ByteBuilder;
  */
 public class JsonComposer extends AbstractMessageComposer<IOException> {
     protected static final DateTimeFormatter LOCAL_DATE_ISO = DateTimeFormat.forPattern("yyyy-MM-dd"); // ISODateTimeFormat.basicDate();
-    protected static final DateTimeFormatter LOCAL_DATETIME_ISO = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss"); // ISODateTimeFormat.basicDateTime();
-    protected static final DateTimeFormatter LOCAL_TIME_ISO = DateTimeFormat.forPattern("HH:mm:ss"); // ISODateTimeFormat.basicTime();
+    protected static final DateTimeFormatter LOCAL_DATETIME_ISO = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'"); // ISODateTimeFormat.basicDateTime();
+    protected static final DateTimeFormatter LOCAL_TIME_ISO = DateTimeFormat.forPattern("HH:mm:ss'Z'"); // ISODateTimeFormat.basicTime();
+    protected static final DateTimeFormatter LOCAL_DATETIME_ISO_WITH_MS = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"); // ISODateTimeFormat.basicDateTime();
+    protected static final DateTimeFormatter LOCAL_TIME_ISO_WITH_MS = DateTimeFormat.forPattern("HH:mm:ss.SSS'Z'"); // ISODateTimeFormat.basicTime();
     protected String currentClass = "N/A";
     protected String remFieldName = null;
     protected final Appendable out;
@@ -492,12 +494,12 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
 
     @Override
     public void addField(TemporalElementaryDataItem di, LocalDateTime t) throws IOException {
-        writeOptionalQuotedAscii(di, t == null ? null : LOCAL_DATETIME_ISO.print(t));
+        writeOptionalQuotedAscii(di, t == null ? null : di.getFractionalSeconds() > 0 ? LOCAL_DATETIME_ISO_WITH_MS.print(t) : LOCAL_DATETIME_ISO.print(t));
     }
 
     @Override
     public void addField(TemporalElementaryDataItem di, LocalTime t) throws IOException {
-        writeOptionalQuotedAscii(di, t == null ? null : LOCAL_TIME_ISO.print(t));
+        writeOptionalQuotedAscii(di, t == null ? null : di.getFractionalSeconds() > 0 ? LOCAL_TIME_ISO_WITH_MS.print(t) : LOCAL_TIME_ISO.print(t));
     }
 
     @Override

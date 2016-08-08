@@ -443,7 +443,8 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
         if (z instanceof String) {
             // cannot use spu, use JSON instead of Bonaparte formatting
             try {
-                return LocalTime.parse((String)z, di.getFractionalSeconds() > 0 ? ISODateTimeFormat.time() : ISODateTimeFormat.timeNoMillis());
+                //return LocalTime.parse((String)z, di.getFractionalSeconds() > 0 ? ISODateTimeFormat.time() : ISODateTimeFormat.timeNoMillis());
+                return LocalTime.parse((String)z, ISODateTimeFormat.timeParser());   // a more flexible parser
             } catch (IllegalArgumentException e) {
                 throw err(MessageParserException.ILLEGAL_TIME, di);
             }
@@ -462,7 +463,8 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
         if (z instanceof String) {
             // cannot use spu, use JSON instead of Bonaparte formatting
             try {
-                return LocalDateTime.parse((String)z, di.getFractionalSeconds() > 0 ? ISODateTimeFormat.dateTime() : ISODateTimeFormat.dateTimeNoMillis());
+                // return LocalDateTime.parse((String)z, di.getFractionalSeconds() > 0 ? ISODateTimeFormat.dateTime() : ISODateTimeFormat.dateTimeNoMillis());
+                return LocalDateTime.parse((String)z, ISODateTimeFormat.dateTimeParser());   // a more flexible parser
             } catch (IllegalArgumentException e) {
                 throw err(MessageParserException.ILLEGAL_TIME, di);
             }
