@@ -2,15 +2,14 @@ package de.jpaw.bonaparte.csvTests;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.Locale;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.FormatStyle;
+import java.util.Locale;
 
 import de.jpaw.bonaparte.core.CSVComposer;
 import de.jpaw.bonaparte.core.CSVComposer2;
 import de.jpaw.bonaparte.core.CSVConfiguration;
-import de.jpaw.bonaparte.core.CSVStyle;
 import de.jpaw.bonaparte.pojos.csvTests.Test1;
 
 public class CSVDemo {
@@ -36,7 +35,7 @@ public class CSVDemo {
     private static void testTag(String tag, String name) {
         runTest(new CSVConfiguration.Builder()
         .forLocale(Locale.forLanguageTag(tag))
-        .dateTimeStyle(CSVStyle.MEDIUM, CSVStyle.MEDIUM)
+        .dateTimeStyle(FormatStyle.MEDIUM, FormatStyle.MEDIUM)
         .usingSeparator("; ")
         .setCustomDayTimeFormats(null, null, null, null, null)
         .build(), name);
@@ -52,7 +51,7 @@ public class CSVDemo {
         runTest(builder.forLocale(Locale.US).build(), "US");
         runTest(builder
                 .forLocale(Locale.GERMANY)
-                .dateTimeStyle(CSVStyle.MEDIUM, CSVStyle.MEDIUM)
+                .dateTimeStyle(FormatStyle.MEDIUM, FormatStyle.MEDIUM)
                 .usingSeparator("; ")
                 .booleanTokens("WAHR", "FALSCH")  // as used by Excel
                 .resetCustomDayTimeFormats()

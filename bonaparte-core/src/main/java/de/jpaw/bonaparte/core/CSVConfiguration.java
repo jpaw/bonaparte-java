@@ -1,10 +1,10 @@
 package de.jpaw.bonaparte.core;
 
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.Locale;
 
-import java.time.DateTimeZone;
-import java.time.format.DateTimeFormat;
-import java.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,6 +12,7 @@ public class CSVConfiguration {
     private static final Logger LOGGER = LoggerFactory.getLogger(CSVConfiguration.class);
 
     public final static String EMPTY_STRING = "";                           // used instead of null Strings
+    public final static ZoneId DEFAULT_ZONE = ZoneId.of("UTC");             // default time zone (UTC)
     public final static String DEFAULT_DAY_FORMAT = "yyyyMMdd";             // default pattern for LocalDate (bonaparte Day) outputs
     public final static String DEFAULT_TIME_FORMAT = "HHmmss";              // default pattern for LocalTime (bonaparte Time(0)) outputs
     public final static String DEFAULT_TIME_WITH_MS_FORMAT = "HHmmssSSS";   // default pattern for LocalTime (bonaparte Time(3)) outputs
@@ -36,9 +37,9 @@ public class CSVConfiguration {
     public final String booleanTrue;        // string to output for boolean true value
     public final String booleanFalse;       // string to output for boolean false value
     public final Locale locale;             // used to determine date format
-    public final DateTimeZone timeZone;     // the timezone to use (for special output formatters). Will use UTC if null.
-    public final CSVStyle dateStyle;        // verbosity for day output
-    public final CSVStyle timeStyle;        // verbosity for time output
+    public final ZoneId timeZone;     // the timezone to use (for special output formatters). Will use UTC if null.
+    public final FormatStyle dateStyle;        // verbosity for day output
+    public final FormatStyle timeStyle;        // verbosity for time output
     public final String customDayFormat;             // set to override locale specific LocalDate formatter
     public final String customTimeFormat;            // set to override locale specific LocalTime formatter
     public final String customTimeWithMsFormat;      // set to override locale specific LocalTime formatter if milliseconds should be printed
@@ -46,7 +47,7 @@ public class CSVConfiguration {
     public final String customTimestampWithMsFormat; // set to override locale specific LocalDateTime formatter if milliseconds should be printed
 
     public final static CSVConfiguration CSV_DEFAULT_CONFIGURATION = new CSVConfiguration(
-            ";", '\"', "\"\"", "?", false, false, null, null, null, null, null, null, "1", "0", Locale.ROOT, null, CSVStyle.SHORT, CSVStyle.SHORT,
+            ";", '\"', "\"\"", "?", false, false, null, null, null, null, null, null, "1", "0", Locale.ROOT, null, FormatStyle.SHORT, FormatStyle.SHORT,
             DEFAULT_DAY_FORMAT, DEFAULT_TIME_FORMAT, DEFAULT_TIME_WITH_MS_FORMAT, DEFAULT_TIMESTAMP_FORMAT, DEFAULT_TS_WITH_MS_FORMAT, false, false, false);
 
     public static final String nvl(String s) {
@@ -54,7 +55,7 @@ public class CSVConfiguration {
     }
     public CSVConfiguration(String separator, Character quote, String quoteReplacement, String ctrlReplacement, boolean datesQuoted, boolean removePoint4BD,
             String mapStart, String mapEnd, String arrayStart, String arrayEnd, String objectStart, String objectEnd, String booleanTrue, String booleanFalse,
-            Locale locale, DateTimeZone timeZone, CSVStyle dateStyle, CSVStyle timeStyle,
+            Locale locale, ZoneId timeZone, FormatStyle dateStyle, FormatStyle timeStyle,
             String customDayFormat,
             String customTimeFormat, String customTimeWithMsFormat,
             String customTimestampFormat, String customTimestampWithMsFormat,
@@ -112,9 +113,9 @@ public class CSVConfiguration {
         protected String booleanTrue;         // string to output for boolean true value
         protected String booleanFalse;        // string to output for boolean false value
         protected Locale locale;              // used to determine date format
-        protected DateTimeZone timeZone;      // the timezone to use (for special output formatters). Will use UTC if null.
-        protected CSVStyle dateStyle;         // verbosity for day output
-        protected CSVStyle timeStyle;         // verbosity for time output
+        protected ZoneId timeZone;            // the timezone to use (for special output formatters). Will use UTC if null.
+        protected FormatStyle dateStyle;         // verbosity for day output
+        protected FormatStyle timeStyle;         // verbosity for time output
         protected String customDayFormat;             // set to override locale specific LocalDate formatter
         protected String customTimeFormat;            // set to override locale specific LocalTime formatter
         protected String customTimeWithMsFormat;      // set to override locale specific LocalTime formatter if milliseconds should be printed
@@ -182,7 +183,7 @@ public class CSVConfiguration {
             this.locale = locale;
             return this;
         }
-        public Builder forTimeZone(DateTimeZone timeZone) {
+        public Builder forTimeZone(ZoneId timeZone) {
             this.timeZone = timeZone;
             return this;
         }
@@ -242,29 +243,29 @@ public class CSVConfiguration {
             this.datesQuoted = datesQuoted;
             return this;
         }
-        public Builder dateTimeStyle(CSVStyle dateStyle, CSVStyle timeStyle) {
+        public Builder dateTimeStyle(FormatStyle dateStyle, FormatStyle timeStyle) {
             this.dateStyle = dateStyle;
             this.timeStyle = timeStyle;
             return this;
         }
-        /** Custom format setting. See http://joda-time.sourceforge.net/apidocs/java.time/format/DateTimeFormat.html for format description. */
+        /** Custom format setting. See http://joda-time.sourceforge.net/apidocs/java.time/format/DateTimeFormatter.html for format description. */
         public Builder setCustomDayFormat(String customDayFormat) {
             this.customDayFormat = customDayFormat;
             return this;
         }
-        /** Custom format setting. See http://joda-time.sourceforge.net/apidocs/java.time/format/DateTimeFormat.html for format description. */
+        /** Custom format setting. See http://joda-time.sourceforge.net/apidocs/java.time/format/DateTimeFormatter.html for format description. */
         public Builder setCustomTimeFormats(String customTimeFormat, String customTimeWithMsFormat) {
             this.customTimeFormat = customTimeFormat;
             this.customTimeWithMsFormat = customTimeWithMsFormat;
             return this;
         }
-        /** Custom format setting. See http://joda-time.sourceforge.net/apidocs/java.time/format/DateTimeFormat.html for format description. */
+        /** Custom format setting. See http://joda-time.sourceforge.net/apidocs/java.time/format/DateTimeFormatter.html for format description. */
         public Builder setCustomDayTimeFormats(String customTimestampFormat, String customTimestampWithMsFormat) {
             this.customTimestampFormat = customTimestampFormat;
             this.customTimestampWithMsFormat = customTimestampWithMsFormat;
             return this;
         }
-        /** Custom format setting. See http://joda-time.sourceforge.net/apidocs/java.time/format/DateTimeFormat.html for format description. */
+        /** Custom format setting. See http://joda-time.sourceforge.net/apidocs/java.time/format/DateTimeFormatter.html for format description. */
         public Builder setCustomDayTimeFormats(String customDayFormat,
                 String customTimeFormat, String customTimeWithMsFormat,
                 String customTimestampFormat, String customTimestampWithMsFormat) {
@@ -290,60 +291,60 @@ public class CSVConfiguration {
     public DateTimeFormatter determineDayFormatter() {
         try {
             return customDayFormat == null
-                    ? DateTimeFormat.forStyle(dateStyle.getToken() + "-")
-                    : DateTimeFormat.forPattern(customDayFormat);
+                    ? DateTimeFormatter.ofLocalizedDate(dateStyle)
+                    : DateTimeFormatter.ofPattern(customDayFormat, locale);
         } catch (IllegalArgumentException e) {
             // could occur if the user provided format is invalid
             LOGGER.error("Provided format is not valid: " + customDayFormat, e);
-            return DateTimeFormat.forPattern(DEFAULT_DAY_FORMAT);
+            return DateTimeFormatter.ofPattern(DEFAULT_DAY_FORMAT);
         }
     }
 
     public DateTimeFormatter determineTimeFormatter() {
         try {
             return customTimeFormat == null
-                    ? DateTimeFormat.forStyle("-" + timeStyle.getToken())
-                    : DateTimeFormat.forPattern(customTimeFormat);
+                    ? DateTimeFormatter.ofLocalizedTime(timeStyle)
+                    : DateTimeFormatter.ofPattern(customTimeFormat, locale);
         } catch (IllegalArgumentException e) {
             // could occur if the user provided format is invalid
             LOGGER.error("Provided format is not valid: " + customTimeFormat, e);
-            return DateTimeFormat.forPattern(DEFAULT_TIME_FORMAT);
+            return DateTimeFormatter.ofPattern(DEFAULT_TIME_FORMAT);
         }
     }
 
     public DateTimeFormatter determineTime3Formatter() {
         try {
             return customTimeWithMsFormat == null
-                    ? DateTimeFormat.forStyle("-" + timeStyle.getToken())
-                    : DateTimeFormat.forPattern(customTimeWithMsFormat);
+                    ? DateTimeFormatter.ofLocalizedTime(timeStyle)
+                    : DateTimeFormatter.ofPattern(customTimeWithMsFormat, locale);
         } catch (IllegalArgumentException e) {
             // could occur if the user provided format is invalid
             LOGGER.error("Provided format is not valid: " + customTimeWithMsFormat, e);
-            return DateTimeFormat.forPattern(DEFAULT_TIME_WITH_MS_FORMAT);
+            return DateTimeFormatter.ofPattern(DEFAULT_TIME_WITH_MS_FORMAT);
         }
     }
 
     public DateTimeFormatter determineTimestampFormatter() {
         try {
             return customTimestampFormat == null
-                    ? DateTimeFormat.forStyle(dateStyle.getToken() + timeStyle.getToken())
-                    : DateTimeFormat.forPattern(customTimestampFormat);
+                    ? DateTimeFormatter.ofLocalizedDateTime(dateStyle, timeStyle)
+                    : DateTimeFormatter.ofPattern(customTimestampFormat, locale);
         } catch (IllegalArgumentException e) {
             // could occur if the user provided format is invalid
             LOGGER.error("Provided format is not valid: " + customTimestampFormat, e);
-            return DateTimeFormat.forPattern(DEFAULT_TIMESTAMP_FORMAT);
+            return DateTimeFormatter.ofPattern(DEFAULT_TIMESTAMP_FORMAT);
         }
     }
 
     public DateTimeFormatter determineTimestamp3Formatter() {
         try {
             return customTimestampWithMsFormat == null
-                    ? DateTimeFormat.forStyle(dateStyle.getToken() + timeStyle.getToken())
-                    : DateTimeFormat.forPattern(customTimestampWithMsFormat);
+                    ? DateTimeFormatter.ofLocalizedDateTime(dateStyle, timeStyle)
+                    : DateTimeFormatter.ofPattern(customTimestampWithMsFormat, locale);
         } catch (IllegalArgumentException e) {
             // could occur if the user provided format is invalid
             LOGGER.error("Provided format is not valid: " + customTimestampWithMsFormat, e);
-            return DateTimeFormat.forPattern(DEFAULT_TS_WITH_MS_FORMAT);
+            return DateTimeFormatter.ofPattern(DEFAULT_TS_WITH_MS_FORMAT);
         }
     }
 }

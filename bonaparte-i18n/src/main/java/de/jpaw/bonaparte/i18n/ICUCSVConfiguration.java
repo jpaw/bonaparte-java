@@ -1,11 +1,11 @@
 package de.jpaw.bonaparte.i18n;
 
+import java.time.format.FormatStyle;
 import java.util.Locale;
 
 import com.ibm.icu.util.ULocale;
 
 import de.jpaw.bonaparte.core.CSVConfiguration;
-import de.jpaw.bonaparte.core.CSVStyle;
 
 /** An example how to extend the CSVConfiguration builder pattern. Is not actually used. */
 public class ICUCSVConfiguration extends CSVConfiguration {
@@ -14,7 +14,7 @@ public class ICUCSVConfiguration extends CSVConfiguration {
 
     public ICUCSVConfiguration(String separator, Character quote, String quoteReplacement, String ctrlReplacement, boolean datesQuoted, boolean removePoint4BD,
             String mapStart, String mapEnd, String arrayStart, String arrayEnd, String objectStart, String objectEnd, String booleanTrue, String booleanFalse,
-            Locale locale, CSVStyle dateStyle, CSVStyle timeStyle,
+            Locale locale, FormatStyle dateStyle, FormatStyle timeStyle,
             String customDayFormat, String customTimeFormat, String customTimeWithMsFormat, String customTimestampFormat, String customTimestampWithMsFormat,
             ULocale ulocale) {
         super(separator, quote, quoteReplacement, ctrlReplacement, datesQuoted, removePoint4BD, mapStart, mapEnd, arrayStart, arrayEnd, objectStart, objectEnd,
