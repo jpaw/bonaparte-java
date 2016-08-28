@@ -21,15 +21,14 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
@@ -165,20 +164,24 @@ public final class StringCSVParser extends AbstractPartialJsonStringParser imple
         setSource(src, 0, src.length());
     }
 
+    // must be final because called from constructor!
+    protected DateTimeFormatter doDateTimeFormatter(DateTimeFormatter input) {
+        return cfg.timeZone == null ? input.withLocale(cfg.locale).withZone(CSVConfiguration.DEFAULT_ZONE) : input.withLocale(cfg.locale).withZone(cfg.timeZone);
+    }
     public StringCSVParser(CSVConfiguration cfg, String work) {
         // strip CR/LF from input, if existing
         setSource(work);
         this.cfg = cfg;
         this.lengthOfBoolean = cfg.booleanFalse.length() > cfg.booleanTrue.length() ? cfg.booleanFalse.length() : cfg.booleanTrue.length();
-        this.dayFormat = cfg.determineDayFormatter().withLocale(cfg.locale).withZoneUTC();
-        this.timeFormat = cfg.determineTimeFormatter().withLocale(cfg.locale).withZoneUTC();
-        this.time3Format = cfg.determineTime3Formatter().withLocale(cfg.locale).withZoneUTC();
-        this.timestampFormat = cfg.determineTimestampFormatter().withLocale(cfg.locale).withZoneUTC();
-        this.timestamp3Format = cfg.determineTimestamp3Formatter().withLocale(cfg.locale).withZoneUTC();
-        this.dayFormatLength = cfg.customDayFormat == null ? 8 : cfg.customDayFormat.length();
-        this.timeFormatLength = cfg.customTimeFormat == null ? 6 : cfg.customTimeFormat.length();
-        this.time3FormatLength = cfg.customTimeWithMsFormat == null ? 9 : cfg.customTimeWithMsFormat.length();
-        this.timestampFormatLength = cfg.customTimestampFormat == null ? 14 : cfg.customTimestampFormat.length();
+        this.dayFormat          = doDateTimeFormatter(cfg.determineDayFormatter());
+        this.timeFormat         = doDateTimeFormatter(cfg.determineTimeFormatter());
+        this.time3Format        = doDateTimeFormatter(cfg.determineTime3Formatter());
+        this.timestampFormat    = doDateTimeFormatter(cfg.determineTimestampFormatter());
+        this.timestamp3Format   = doDateTimeFormatter(cfg.determineTimestamp3Formatter());
+        this.dayFormatLength        = cfg.customDayFormat == null ? 8 : cfg.customDayFormat.length();
+        this.timeFormatLength       = cfg.customTimeFormat == null ? 6 : cfg.customTimeFormat.length();
+        this.time3FormatLength      = cfg.customTimeWithMsFormat == null ? 9 : cfg.customTimeWithMsFormat.length();
+        this.timestampFormatLength  = cfg.customTimestampFormat == null ? 14 : cfg.customTimestampFormat.length();
         this.timestamp3FormatLength = cfg.customTimestampWithMsFormat == null ? 17 : cfg.customTimestampWithMsFormat.length();
         fixedLength = cfg.separator.length() == 0;
         currentClass = "N/A";
@@ -387,10 +390,7 @@ public final class StringCSVParser extends AbstractPartialJsonStringParser imple
         if (token == null)
             return null;
         try {
-            if (di.getFractionalSeconds() > 0)
-                return timestamp3Format.parseLocalDateTime(token);
-            else
-                return timestampFormat.parseLocalDateTime(token);
+            return LocalDateTime.parse(token, di.getFractionalSeconds() > 0 ? timestamp3Format : timestampFormat);
         } catch (Exception e) {
             throw new MessageParserException(MessageParserException.ILLEGAL_CALENDAR_VALUE, di.getName(), parseIndex, currentClass);
         }
@@ -401,7 +401,7 @@ public final class StringCSVParser extends AbstractPartialJsonStringParser imple
         if (token == null)
             return null;
         try {
-            return dayFormat.parseLocalDate(token);
+            return LocalDate.parse(token, dayFormat);
         } catch (Exception e) {
             throw new MessageParserException(MessageParserException.ILLEGAL_CALENDAR_VALUE, di.getName(), parseIndex, currentClass);
         }
@@ -412,10 +412,7 @@ public final class StringCSVParser extends AbstractPartialJsonStringParser imple
         if (token == null)
             return null;
         try {
-            if (di.getFractionalSeconds() > 0)
-                return time3Format.parseLocalTime(token);
-            else
-                return timeFormat.parseLocalTime(token);
+            return LocalTime.parse(token, di.getFractionalSeconds() > 0 ? time3Format : timeFormat);
         } catch (Exception e) {
             throw new MessageParserException(MessageParserException.ILLEGAL_CALENDAR_VALUE, di.getName(), parseIndex, currentClass);
         }

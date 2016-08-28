@@ -19,14 +19,13 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.NumberFormat;
-import java.util.Map;
-import java.util.UUID;
-
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
+import java.util.UUID;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
@@ -36,6 +35,7 @@ import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
+import de.jpaw.bonaparte.util.DayTime;
 import de.jpaw.util.ByteArray;
 /**
  * The CSVComposer class.
@@ -63,8 +63,9 @@ public class CSVComposer extends AppendableComposer {
     protected final NumberFormat numberFormat;              // locale's default format for formatting float and double, covers decimal point and sign
     protected final NumberFormat bigDecimalFormat;          // locale's default format for formatting BigDecimal, covers decimal point and sign
 
+    // must be final because called from constructor!
     protected final DateTimeFormatter doDateTimeFormatter(DateTimeFormatter input) {
-        return cfg.timeZone == null ? input.withLocale(cfg.locale).withZoneUTC() : input.withLocale(cfg.locale).withZone(cfg.timeZone);
+        return cfg.timeZone == null ? input.withLocale(cfg.locale).withZone(CSVConfiguration.DEFAULT_ZONE) : input.withLocale(cfg.locale).withZone(cfg.timeZone);
     }
 
     public CSVComposer(Appendable work, CSVConfiguration cfg) {
@@ -279,7 +280,7 @@ public class CSVComposer extends AppendableComposer {
         if (t != null) {
             if (cfg.datesQuoted)
                 addRawData(stringQuote);
-            addRawData(dayFormat.print(t));
+            addRawData(t.format(dayFormat));
             if (cfg.datesQuoted)
                 addRawData(stringQuote);
         }
@@ -292,9 +293,9 @@ public class CSVComposer extends AppendableComposer {
             if (cfg.datesQuoted)
                 addRawData(stringQuote);
             if (di.getFractionalSeconds() <= 0)
-                addRawData(timeFormat.print(t));   // second precision
+                addRawData(t.format(timeFormat));   // second precision
             else
-                addRawData(time3Format.print(t));  // millisecond precision
+                addRawData(t.format(time3Format));  // millisecond precision
             if (cfg.datesQuoted)
                 addRawData(stringQuote);
         }
@@ -307,9 +308,9 @@ public class CSVComposer extends AppendableComposer {
             if (cfg.datesQuoted)
                 addRawData(stringQuote);
             if (di.getFractionalSeconds() <= 0)
-                addRawData(timestampFormat.print(t));   // second precision
+                addRawData(t.format(timestampFormat));   // second precision
             else
-                addRawData(timestamp3Format.print(t));  // millisecond precision
+                addRawData(t.format(timestamp3Format));  // millisecond precision
             if (cfg.datesQuoted)
                 addRawData(stringQuote);
         }
@@ -319,7 +320,7 @@ public class CSVComposer extends AppendableComposer {
     public void addField(TemporalElementaryDataItem di, Instant t) throws IOException {
         writeSeparator();
         if (t != null) {
-            addRawData(Long.toString(t.getMillis()));
+            addRawData(Long.toString(DayTime.millisOfEpoch(t)));
         }
     }
 

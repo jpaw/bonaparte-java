@@ -18,16 +18,16 @@ package de.jpaw.bonaparte.core;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,6 +43,7 @@ import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
+import de.jpaw.bonaparte.util.DayTime;
 import de.jpaw.bonaparte.util.FixASCII;
 import de.jpaw.enums.XEnum;
 import de.jpaw.util.Base64;
@@ -381,10 +382,7 @@ public class ByteArrayComposer extends AbstractMessageComposer<RuntimeException>
     @Override
     public void addField(TemporalElementaryDataItem di, LocalDate t) {
         if (t != null) {
-            int [] values = t.getValues();   // 3 values: year, month, day
-            int tmpValue = (10000 * values[0]) + (100 * values[1]) + values[2];
-            // int tmpValue = 10000 * t.getYear() + 100 * t.getMonthOfYear() + t.getDayOfMonth();
-            work.appendAscii(Integer.toString(tmpValue));
+            work.appendAscii(Integer.toString(DayTime.dayAsInt(t)));    // output the day as YYYYMMDD
             terminateField();
         } else {
             writeNull();
@@ -394,25 +392,23 @@ public class ByteArrayComposer extends AbstractMessageComposer<RuntimeException>
     @Override
     public void addField(TemporalElementaryDataItem di, LocalDateTime t) {
         if (t != null) {
-            int [] values = t.getValues(); // 4 values: year, month, day, millis of day
-            //int tmpValue = 10000 * t.getYear() + 100 * t.getMonthOfYear() + t.getDayOfMonth();
-            work.appendAscii(Integer.toString((10000 * values[0]) + (100 * values[1]) + values[2]));
+            work.appendAscii(Integer.toString(DayTime.dayAsInt(t)));   // output the day as YYYYMMDD
             int length = di.getFractionalSeconds();
             if (length >= 0) {
-                // not only day, but also time
-                //tmpValue = 10000 * t.getHourOfDay() + 100 * t.getMinuteOfHour() + t.getSecondOfMinute();
-                if (length > 0 ? (values[3] != 0) : ((values[3] / 1000) != 0)) {
+                // not only day, but also time: TODO: length < 0 deprecated?
+                long millisOfDay = DayTime.millisOfDay(t);
+                if (length > 0 ? (millisOfDay != 0) : (millisOfDay / 1000L) != 0) {
                     work.append((byte) '.');
                     if (di.getHhmmss()) {
-                        int tmpValue = values[3] / 60000; // minutes and hours
+                        int tmpValue = (int)(millisOfDay / 60000L); // minutes and hours
                         tmpValue = (100 * (tmpValue / 60)) + (tmpValue % 60);
-                        lpad(Integer.toString((tmpValue * 100) + ((values[3] % 60000) / 1000)), 6, (byte) '0');
+                        lpad(Integer.toString((tmpValue * 100) + (int)(millisOfDay % 60000L) / 1000), 6, (byte) '0');
                     } else {
-                        lpad(Integer.toString(values[3] / 1000), 6, (byte) '0');
+                        lpad(Integer.toString((int)(millisOfDay / 1000L)), 6, (byte) '0');
                     }
                     if (length > 0) {
                         // add milliseconds
-                        int milliSeconds = values[3] % 1000;
+                        int milliSeconds = (int)(millisOfDay % 1000L);
                         if (milliSeconds != 0) {
                             lpad(Integer.toString(milliSeconds), 3, (byte) '0');
                         }
@@ -428,10 +424,10 @@ public class ByteArrayComposer extends AbstractMessageComposer<RuntimeException>
     @Override
     public void addField(TemporalElementaryDataItem di, Instant t) {
         if (t != null) {
-            long millis = t.getMillis();
-            work.appendAscii(Long.toString(millis / 1000L));
+            long s = t.getEpochSecond();
+            work.appendAscii(Long.toString(s));
             int length = di.getFractionalSeconds();
-            int millisecs = (int)(millis % 1000L);
+            int millisecs = t.getNano() % 1000;
             if (length > 0 && millisecs != 0) {
                 work.append((byte)'.');
                 lpad(Integer.toString(millisecs), 3, (byte)'0');
@@ -446,7 +442,7 @@ public class ByteArrayComposer extends AbstractMessageComposer<RuntimeException>
     public void addField(TemporalElementaryDataItem di, LocalTime t) {
         if (t != null) {
             int length = di.getFractionalSeconds();
-            int millis = t.getMillisOfDay();
+            int millis = DayTime.millisOfDay(t);
             if (di.getHhmmss()) {
                 int tmpValue = millis / 60000; // minutes and hours
                 tmpValue = (100 * (tmpValue / 60)) + (tmpValue % 60);

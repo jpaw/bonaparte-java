@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import java.time.DateTimeZone;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -439,7 +438,7 @@ public final class ExternalizableParser extends AbstractMessageParser<IOExceptio
         if ((hour > 23) || (minute > 59) || (second > 59)) {
             throw new IOException(String.format("ILLEGAL TIME: found %d:%d:%d in %s.%s", hour, minute, second, currentClass, di.getName()));
         }
-        return new LocalTime(fractional, DateTimeZone.UTC);
+        return LocalTime.ofNanoOfDay(1000000L * fractional);
     }
 
     @Override
@@ -447,7 +446,7 @@ public final class ExternalizableParser extends AbstractMessageParser<IOExceptio
         if (checkForNull(di)) {
             return null;
         }
-        return new Instant(readLongNoNull(di.getName()));
+        return Instant.ofEpochMilli(readLongNoNull(di.getName()));
     }
 
     @Override

@@ -5,7 +5,6 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.UUID;
 
-import java.time.DateTimeZone;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -298,7 +297,10 @@ public class StringParserUtil {
             throw err(MessageParserException.ILLEGAL_TIME, di,
                       String.format("(found %d for %s)", (hour * 10000) + (minute * 100) + second, data));
         }
-        return new LocalTime(1000 * seconds + millis, DateTimeZone.UTC);
+        if (millis != 0)
+            return LocalTime.ofNanoOfDay(1000000000L * seconds + 1000000L * millis);
+        else
+            return LocalTime.ofSecondOfDay(seconds);
     }
 
     // see ExtendedJsonEscaperForAppendables.instantInMillis: this variant assumes "false", i.e. instant in seconds.
@@ -306,7 +308,7 @@ public class StringParserUtil {
         if (data == null)
             return null;
         if (instantInMillis) {
-            return new Instant(Long.parseLong(data));
+            return Instant.ofEpochMilli(Long.parseLong(data));
         }
         int millis = 0;
         long seconds = 0;

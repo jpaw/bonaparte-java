@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import java.time.DateTimeZone;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -521,9 +520,11 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
         int c = needToken();
         switch (c) {
         case COMPACT_TIME_MILLIS:
-            return new LocalTime(readInt(needToken(), di.getName()), DateTimeZone.UTC);
+            int arg = readInt(needToken(), di.getName());
+            return LocalTime.ofNanoOfDay(1000000L * arg);
         case COMPACT_TIME:
-            return new LocalTime(readInt(needToken(), di.getName()) * 1000L, DateTimeZone.UTC);
+            int arg2 = readInt(needToken(), di.getName());
+            return LocalTime.ofSecondOfDay(arg2);
         default:
             throw newMPE(MessageParserException.UNEXPECTED_CHARACTER, String.format("(expected COMPACT_TIME_*, got 0x%02x)", c));
         }
@@ -562,7 +563,7 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
     public Instant readInstant(TemporalElementaryDataItem di) throws E {
         if (checkForNull(di))
             return null;
-        return new Instant(readLong(needToken(), di.getName()));
+        return Instant.ofEpochMilli(readLong(needToken(), di.getName()));
     }
 
     @Override
@@ -902,9 +903,9 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
         case COMPACT_DATE:                  //0xd8
             return readDate("$jsonElemDate");
         case COMPACT_TIME:                  //0xd9
-            return new LocalTime(readInt(needToken(), "$jsonElemTime") * 1000L, DateTimeZone.UTC);
+            return LocalTime.ofSecondOfDay(readInt(needToken(), "$jsonElemTime"));
         case COMPACT_TIME_MILLIS:           //0xda
-            return new LocalTime(readInt(needToken(), "$jsonElemTimeMs"), DateTimeZone.UTC);
+            return LocalTime.ofNanoOfDay(1000000L * readInt(needToken(), "$jsonElemTimeMs"));
         case COMPACT_DATETIME:              //0xdb
             return readDateTime("$jsonElemDateTime", false);
         case COMPACT_DATETIME_MILLIS:       //0xdc

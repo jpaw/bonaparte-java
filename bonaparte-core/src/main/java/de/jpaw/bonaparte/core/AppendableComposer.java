@@ -340,25 +340,23 @@ public class AppendableComposer extends AbstractMessageComposer<IOException> imp
     @Override
     public void addField(TemporalElementaryDataItem di, LocalDateTime t) throws IOException {
         if (t != null) {
-            int [] values = t.getValues(); // 4 values: year, month, day, millis of day
-            //int tmpValue = 10000 * t.getYear() + 100 * t.getMonthOfYear() + t.getDayOfMonth();
-            work.append(Integer.toString((10000 * values[0]) + (100 * values[1]) + values[2]));
+            work.append(Integer.toString(DayTime.dayAsInt(t)));   // output the day as YYYYMMDD
             int length = di.getFractionalSeconds();
             if (length >= 0) {
-                // not only day, but also time
-                //tmpValue = 10000 * t.getHourOfDay() + 100 * t.getMinuteOfHour() + t.getSecondOfMinute();
-                if (length > 0 ? (values[3] != 0) : ((values[3] / 1000) != 0)) {
+                // not only day, but also time: TODO: length < 0 deprecated?
+                long millisOfDay = DayTime.millisOfDay(t);
+                if (length > 0 ? (millisOfDay != 0) : (millisOfDay / 1000L) != 0) {
                     work.append('.');
                     if (di.getHhmmss()) {
-                        int tmpValue = values[3] / 60000; // minutes and hours
+                        int tmpValue = (int)(millisOfDay / 60000L); // minutes and hours
                         tmpValue = (100 * (tmpValue / 60)) + (tmpValue % 60);
-                        lpad(Integer.toString((tmpValue * 100) + ((values[3] % 60000) / 1000)), 6, '0');
+                        lpad(Integer.toString((tmpValue * 100) + (int)(millisOfDay % 60000L) / 1000), 6, '0');
                     } else {
-                        lpad(Integer.toString(values[3] / 1000), 6, '0');
+                        lpad(Integer.toString((int)(millisOfDay / 1000L)), 6, '0');
                     }
                     if (length > 0) {
                         // add milliseconds
-                        int milliSeconds = values[3] % 1000;
+                        int milliSeconds = (int)(millisOfDay % 1000L);
                         if (milliSeconds != 0) {
                             lpad(Integer.toString(milliSeconds), 3, '0');
                         }
@@ -375,7 +373,7 @@ public class AppendableComposer extends AbstractMessageComposer<IOException> imp
     public void addField(TemporalElementaryDataItem di, LocalTime t) throws IOException {
         if (t != null) {
             int length = di.getFractionalSeconds();
-            int millis = t.getMillisOfDay();
+            int millis = DayTime.millisOfDay(t);
             if (di.getHhmmss()) {
                 int tmpValue = millis / 60000; // minutes and hours
                 tmpValue = (100 * (tmpValue / 60)) + (tmpValue % 60);
@@ -398,10 +396,10 @@ public class AppendableComposer extends AbstractMessageComposer<IOException> imp
     @Override
     public void addField(TemporalElementaryDataItem di, Instant t) throws IOException {
         if (t != null) {
-            long millis = t.getMillis();
-            work.append(Long.toString(millis / 1000L));
+            long s = t.getEpochSecond();
+            work.append(Long.toString(s));
             int length = di.getFractionalSeconds();
-            int millisecs = (int)(millis % 1000L);
+            int millisecs = t.getNano() % 1000;
             if (length > 0 && millisecs != 0) {
                 work.append('.');
                 lpad(Integer.toString(millisecs), 3, '0');
