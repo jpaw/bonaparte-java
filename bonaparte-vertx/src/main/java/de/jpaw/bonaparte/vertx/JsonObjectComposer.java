@@ -321,7 +321,11 @@ public class JsonObjectComposer extends AbstractMessageComposer<RuntimeException
         if (t == null) {
             writeNull(di);
         } else {
-            writeNonNull(di, Long.toString(t.getEpochSecond()));
+            long n = t.getEpochSecond();
+            if (inArray)
+                arr.addNumber(n);
+            else
+                obj.putNumber(di.getName(), n);
             // TODO: add fractional part?  int nano = t.getNano();
         }
     }
