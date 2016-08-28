@@ -20,6 +20,7 @@ import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
+import de.jpaw.bonaparte.util.DayTime;
 import de.jpaw.util.ByteArray;
 
 
@@ -228,7 +229,7 @@ public class CompactJsonComposer extends AbstractCompactComposer {
     public void addField(TemporalElementaryDataItem di, Instant t) throws IOException {
         if (t != null) {
             optFieldNameOut(di);
-            super.longOut(t.getMillis());
+            super.longOut(DayTime.millisOfEpoch(t));
         } else if (arrayDepth != 0)
             writeNull();
     }

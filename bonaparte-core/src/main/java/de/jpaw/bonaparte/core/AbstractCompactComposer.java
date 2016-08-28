@@ -5,17 +5,17 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.Temporal;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 import de.jpaw.bonaparte.enums.BonaNonTokenizableEnum;
 import de.jpaw.bonaparte.enums.BonaTokenizableEnum;
@@ -30,6 +30,7 @@ import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
+import de.jpaw.bonaparte.util.DayTime;
 import de.jpaw.enums.AbstractByteEnumSet;
 import de.jpaw.enums.AbstractIntEnumSet;
 import de.jpaw.enums.AbstractLongEnumSet;
@@ -568,9 +569,9 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
         intOut(t.getMonthValue());
         intOut(t.getDayOfMonth());
         if (fractional)
-            intOut(t.getMillisOfDay());
+            intOut(DayTime.millisOfDay(t));
         else
-            intOut(t.getMillisOfDay() / 1000);
+            intOut(t.toLocalTime().toSecondOfDay());
     }
 
     @Override
@@ -586,10 +587,10 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
         int millis = t.getNano() / 1000000;
         if (millis != 0) {
             out.writeByte(COMPACT_TIME_MILLIS);
-            intOut(t.getMillisOfDay());
+            intOut(DayTime.millisOfDay(t));
         } else {
             out.writeByte(COMPACT_TIME);
-            intOut(t.getMillisOfDay() / 1000);
+            intOut(t.toSecondOfDay());
         }
     }
 
@@ -605,7 +606,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
     @Override
     public void addField(TemporalElementaryDataItem di, Instant t) throws IOException {
         if (t != null) {
-            longOut(t.getMillis());
+            longOut(DayTime.millisOfEpoch(t));
         } else {
             writeNull();
         }
@@ -925,11 +926,11 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
             stringOut(((AbstractXEnumBase)obj).getToken());
             return;
         }
-        if (obj instanceof Instant) {
-            longOut(((Instant)obj).getMillis());
-            return;
-        }
-        if (obj instanceof ReadablePartial) {
+        if (obj instanceof Temporal) {
+            if (obj instanceof Instant) {
+                longOut(DayTime.millisOfEpoch((Instant)obj));
+                return;
+            }
             if (obj instanceof LocalDate) {
                 localdateOut((LocalDate)obj);
                 return;
@@ -942,7 +943,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
                 localdatetimeOut((LocalDateTime)obj);
                 return;
             }
-            throw new RuntimeException("Cannot transform joda readable partial of type " + obj.getClass().getSimpleName() + " to JSON");
+            throw new RuntimeException("Cannot transform Java Temporal of type " + obj.getClass().getSimpleName() + " to JSON");
         }
         if (obj instanceof BonaCustom) {
             // addField(di, (BonaCustom)obj);      // output objects as object, even within JSON! (catch issues during deserialize)

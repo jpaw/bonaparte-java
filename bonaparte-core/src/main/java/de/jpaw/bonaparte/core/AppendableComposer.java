@@ -18,16 +18,15 @@ package de.jpaw.bonaparte.core;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 import de.jpaw.bonaparte.enums.BonaNonTokenizableEnum;
 import de.jpaw.bonaparte.enums.BonaTokenizableEnum;
@@ -41,6 +40,7 @@ import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
+import de.jpaw.bonaparte.util.DayTime;
 import de.jpaw.bonaparte.util.FixASCII;
 import de.jpaw.enums.XEnum;
 import de.jpaw.json.JsonEscaper;
@@ -330,10 +330,7 @@ public class AppendableComposer extends AbstractMessageComposer<IOException> imp
     @Override
     public void addField(TemporalElementaryDataItem di, LocalDate t) throws IOException {
         if (t != null) {
-            int [] values = t.getValues();   // 3 values: year, month, day
-            int tmpValue = (10000 * values[0]) + (100 * values[1]) + values[2];
-            // int tmpValue = 10000 * t.getYear() + 100 * t.getMonthOfYear() + t.getDayOfMonth();
-            work.append(Integer.toString(tmpValue));
+            work.append(Integer.toString(DayTime.dayAsInt(t)));
             terminateField();
         } else {
             writeNull();

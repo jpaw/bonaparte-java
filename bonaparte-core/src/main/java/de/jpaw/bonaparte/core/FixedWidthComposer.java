@@ -18,9 +18,8 @@ package de.jpaw.bonaparte.core;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.UUID;
-
 import java.time.Instant;
+import java.util.UUID;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
@@ -29,6 +28,7 @@ import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
+import de.jpaw.bonaparte.util.DayTime;
 /**
  * The CSVComposer class.
  *
@@ -146,7 +146,7 @@ public class FixedWidthComposer extends CSVComposer {
     @Override
     public void addField(TemporalElementaryDataItem di, Instant t) throws IOException {
         if (t != null) {
-            outputPaddedNumber(Long.toString(t.getMillis()), 18);
+            outputPaddedNumber(Long.toString(DayTime.millisOfEpoch(t)), 18);
         } else {
             addRawData(SPACE_PADDINGS[18]);
         }
