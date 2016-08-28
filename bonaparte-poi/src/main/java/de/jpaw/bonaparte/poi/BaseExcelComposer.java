@@ -396,7 +396,7 @@ public class BaseExcelComposer extends AbstractMessageComposer<RuntimeException>
     @Override
     public void addField(TemporalElementaryDataItem di, LocalDate t) {
         if (t != null) {
-            newCell(di, csDay).setCellValue(t.toDate());
+            newCell(di, csDay).setCellValue(DayTime.toDate(t));
         } else {
             writeNull(di);
         }
@@ -405,7 +405,7 @@ public class BaseExcelComposer extends AbstractMessageComposer<RuntimeException>
     @Override
     public void addField(TemporalElementaryDataItem di, LocalDateTime t) {
         if (t != null) {
-            newCell(di, csTimestamp).setCellValue(t.toDate());
+            newCell(di, csTimestamp).setCellValue(DayTime.toDate(t));
         } else {
             writeNull(di);
         }
@@ -423,7 +423,7 @@ public class BaseExcelComposer extends AbstractMessageComposer<RuntimeException>
     @Override
     public void addField(TemporalElementaryDataItem di, Instant t) {
         if (t != null) {
-            newCell(di, csTimestamp).setCellValue(t.toDate());
+            newCell(di, csTimestamp).setCellValue(DayTime.toDate(t));
         } else {
             writeNull(di);
         }
