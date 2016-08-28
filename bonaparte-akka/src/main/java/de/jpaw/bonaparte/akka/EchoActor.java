@@ -1,12 +1,11 @@
 package de.jpaw.bonaparte.akka;
 
+import java.time.LocalDateTime;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import akka.actor.UntypedActor;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import org.joda.time.LocalDateTime;
-
 import de.jpaw.bonaparte.pojos.rqrs.Request;
 import de.jpaw.bonaparte.pojos.rqrs.Response;
 
@@ -26,7 +25,7 @@ public class EchoActor extends UntypedActor {
             myResponse.setUniqueId(myRequest.getUniqueId());
             myResponse.setThreadNo(thisThreadId);
             myResponse.setSerialInThread(counterInThread.incrementAndGet());
-            myResponse.setWhenReceiced(new LocalDateTime());
+            myResponse.setWhenReceiced(LocalDateTime.now());
 
             if (myRequest.getDuration() > 0)
                 Thread.sleep(myRequest.getDuration());

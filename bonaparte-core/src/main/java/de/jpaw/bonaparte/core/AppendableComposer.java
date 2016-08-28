@@ -399,7 +399,7 @@ public class AppendableComposer extends AbstractMessageComposer<IOException> imp
             long s = t.getEpochSecond();
             work.append(Long.toString(s));
             int length = di.getFractionalSeconds();
-            int millisecs = t.getNano() % 1000;
+            int millisecs = t.getNano() / 1000000;
             if (length > 0 && millisecs != 0) {
                 work.append('.');
                 lpad(Integer.toString(millisecs), 3, '0');

@@ -22,15 +22,15 @@ public class TemporalXMLMarshallerTest {
             "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
             "<test_jaxbtemporal:TestFieldXml xmlns:test_jaxbtemporal=\"http://www.jpaw.de/schema/test_jaxbtemporal.xsd\">\n" +
             "    <test_jaxbtemporal:myDate>2015-03-07</test_jaxbtemporal:myDate>\n" +
-            "    <test_jaxbtemporal:myDateTime>2015-03-07T18:14:55.000</test_jaxbtemporal:myDateTime>\n" +
-            "    <test_jaxbtemporal:myTime>18:34:55.000</test_jaxbtemporal:myTime>\n" +
+            "    <test_jaxbtemporal:myDateTime>2015-03-07T18:14:55.123</test_jaxbtemporal:myDateTime>\n" +
+            "    <test_jaxbtemporal:myTime>18:34:55</test_jaxbtemporal:myTime>\n" +
             "</test_jaxbtemporal:TestFieldXml>\n";
 
     public void marshallTemporal() throws Exception {
         TestFieldXml obj = new TestFieldXml();
         obj.myDate = LocalDate.of(2015, 3, 7);
         obj.myTime = LocalTime.of(18, 34, 55);
-        obj.myDateTime = LocalDateTime.of(2015, 3, 7, 18, 14, 55);
+        obj.myDateTime = LocalDateTime.of(2015, 3, 7, 18, 14, 55, 123000000);
 
         // create the XML for this
         JAXBContext context = JAXBContext.newInstance(PACKAGE);
@@ -56,7 +56,7 @@ public class TemporalXMLMarshallerTest {
         TestFieldXml obj2 = (TestFieldXml)obj;
         assert(LocalDate.of(2015, 3, 7).equals(obj2.myDate));
         assert(LocalTime.of(18, 34, 55).equals(obj2.myTime));
-        assert(LocalDateTime.of(2015, 3, 7, 18, 14, 55).equals(obj2.myDateTime));
+        assert(LocalDateTime.of(2015, 3, 7, 18, 14, 55, 123000000).equals(obj2.myDateTime));
     }
 
     public void createTemporalSchema() throws Exception {

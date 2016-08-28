@@ -11,16 +11,6 @@
     <artifactId>bonaparte-akka</artifactId>
     <description>Akka test with Bonaparte</description>
 
-    <!-- no more required for 2.1.1
-    <repositories>
-        <repository>
-            <id>akka.repository</id>
-            <name>Akka Maven Repository</name>
-            <url>http://repo.akka.io/snapshots</url>
-        </repository>
-    </repositories>
-    -->
-
     <dependencies>
         <dependency>
             <groupId>de.jpaw</groupId>

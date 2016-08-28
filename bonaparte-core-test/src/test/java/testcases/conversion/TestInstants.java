@@ -18,6 +18,7 @@ import de.jpaw.bonaparte.coretests.util.SimpleTestRunner;
 public class TestInstants {
     @Test
     public void testInstants() throws Exception {
+        System.out.println("It is now " + System.currentTimeMillis());
         SimpleTestRunner.run(FillInstants.fillInstants(), false);
     }
 

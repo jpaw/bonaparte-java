@@ -427,7 +427,7 @@ public class ByteArrayComposer extends AbstractMessageComposer<RuntimeException>
             long s = t.getEpochSecond();
             work.appendAscii(Long.toString(s));
             int length = di.getFractionalSeconds();
-            int millisecs = t.getNano() % 1000;
+            int millisecs = t.getNano() / 1000000;
             if (length > 0 && millisecs != 0) {
                 work.append((byte)'.');
                 lpad(Integer.toString(millisecs), 3, (byte)'0');

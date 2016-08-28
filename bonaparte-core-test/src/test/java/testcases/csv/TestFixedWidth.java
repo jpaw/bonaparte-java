@@ -48,9 +48,9 @@ public class TestFixedWidth {
 
         CSVConfiguration fixedWidthCfg2 = CSVConfiguration.Builder.from(fixedWidthCfg1)
                 .booleanTokens("J", "N")
-                .setCustomDayFormat("dd.MM.YYYY")
+                .setCustomDayFormat("dd.MM.yyyy")
                 .setCustomTimeFormats("HH:mm:ss", "HH:mm:ss.SSS")
-                .setCustomDayTimeFormats("YYYY-MM-dd HH:mm:ss", "YYYY-MM-DD HH:mm:ss.SSS")
+                .setCustomDayTimeFormats("yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.SSS")
                 .usingZeroPadding(false).build();
         runTest(fixedWidthCfg2, t1, "Hello              12           3.10 2013-04-01 23:55:0012.11.2001J      1234567890123\n");
     }

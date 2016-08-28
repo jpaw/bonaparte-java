@@ -19,13 +19,13 @@
  */
 package de.jpaw.bonaparte.mina.testServer;
 
+import java.time.LocalDateTime;
 import java.util.concurrent.atomic.AtomicInteger;
 
 //import org.apache.log4j.PropertyConfigurator;
 import org.apache.mina.core.service.IoHandler;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
-import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,7 +66,7 @@ public class TestServerHandler extends IoHandlerAdapter /*<BonaPortable>*/{
         myResponse.setUniqueId(myRequest.getUniqueId());
         myResponse.setThreadNo(thisThreadId);
         myResponse.setSerialInThread(counterInThread.incrementAndGet());
-        myResponse.setWhenReceiced(new LocalDateTime());
+        myResponse.setWhenReceiced(LocalDateTime.now());
 
         if (myRequest.getDuration() > 0)
             try {

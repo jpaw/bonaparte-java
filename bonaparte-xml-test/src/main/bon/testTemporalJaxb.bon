@@ -4,7 +4,7 @@ package test.jaxbtemporal XML FIELD {
         default public;
 
         Day             myDate;
-        Timestamp(0)    myDateTime;
+        Timestamp(3)    myDateTime;
         Time(0)         myTime;
     }
 
@@ -12,7 +12,7 @@ package test.jaxbtemporal XML FIELD {
         default public;
 
         Day             myDate;
-        Timestamp(0)    myDateTime;
+        Timestamp(3)    myDateTime;
         Time(0)         myTime;
     }
 }

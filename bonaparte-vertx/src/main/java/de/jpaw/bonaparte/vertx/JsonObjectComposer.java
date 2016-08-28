@@ -2,16 +2,15 @@ package de.jpaw.bonaparte.vertx;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.ISODateTimeFormat;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import org.vertx.java.core.json.JsonArray;
 import org.vertx.java.core.json.JsonObject;
 
@@ -36,9 +35,6 @@ import de.jpaw.util.ByteArray;
 
 /** Composer which serializes all data into a vertx JsonObject */
 public class JsonObjectComposer extends AbstractMessageComposer<RuntimeException> {
-    protected static final DateTimeFormatter LOCAL_DATE_ISO = ISODateTimeFormat.basicDate();
-    protected static final DateTimeFormatter LOCAL_DATETIME_ISO = ISODateTimeFormat.basicDateTime();
-    protected static final DateTimeFormatter LOCAL_TIME_ISO = ISODateTimeFormat.basicTime();
 
     protected JsonObject obj = null;
     protected JsonArray arr = null;
@@ -298,7 +294,7 @@ public class JsonObjectComposer extends AbstractMessageComposer<RuntimeException
         if (t == null) {
             writeNull(di);
         } else {
-            writeNonNull(di, LOCAL_DATE_ISO.print(t));
+            writeNonNull(di, t.format(DateTimeFormatter.ISO_LOCAL_DATE));
         }
     }
 
@@ -307,7 +303,7 @@ public class JsonObjectComposer extends AbstractMessageComposer<RuntimeException
         if (t == null) {
             writeNull(di);
         } else {
-            writeNonNull(di, LOCAL_DATETIME_ISO.print(t));
+            writeNonNull(di, t.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         }
     }
 
@@ -316,7 +312,7 @@ public class JsonObjectComposer extends AbstractMessageComposer<RuntimeException
         if (t == null) {
             writeNull(di);
         } else {
-            writeNonNull(di, LOCAL_TIME_ISO.print(t));
+            writeNonNull(di, t.format(DateTimeFormatter.ISO_LOCAL_TIME));
         }
     }
 
@@ -325,7 +321,8 @@ public class JsonObjectComposer extends AbstractMessageComposer<RuntimeException
         if (t == null) {
             writeNull(di);
         } else {
-            writeNonNull(di, LOCAL_DATETIME_ISO.print(t));
+            writeNonNull(di, Long.toString(t.getEpochSecond()));
+            // TODO: add fractional part?  int nano = t.getNano();
         }
     }
 
