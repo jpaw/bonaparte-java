@@ -2,7 +2,7 @@ package de.jpaw.bonaparte.poi.tests;
 
 import java.io.IOException;
 
-import org.joda.time.Instant;
+import java.time.Instant;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;

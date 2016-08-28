@@ -1,7 +1,8 @@
 package testcases.json;
 
-import org.joda.time.Instant;
-import org.joda.time.LocalDate;
+import java.time.Instant;
+import java.time.LocalDate;
+
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -14,7 +15,7 @@ import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.PropertyWriter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
-import com.fasterxml.jackson.datatype.joda.JodaModule;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.gson.Gson;
 
 import de.jpaw.bonaparte.core.BonaPortable;
@@ -24,10 +25,10 @@ import de.jpaw.bonaparte.pojos.jsonTest.TestObj;
 public class JsonTest {
 
     private TestObj getData() {
-        return new TestObj(42, 42424242424242L, new LocalDate(2014, 12, 31), new Instant(), "Hello, world\n", true, null);
+        return new TestObj(42, 42424242424242L, LocalDate.of(2014, 12, 31), Instant.now(), "Hello, world\n", true, null);
     }
     private TestObj[] getArrayData() {
-        TestObj x = new TestObj(42, 42424242424242L, new LocalDate(2014, 12, 31), new Instant(), "Hello, world\n", true, null);
+        TestObj x = new TestObj(42, 42424242424242L, LocalDate.of(2014, 12, 31), Instant.now(), "Hello, world\n", true, null);
         TestObj [] array = new TestObj[3];
         array[0] = x;
         array[1] = x;
@@ -100,7 +101,7 @@ public class JsonTest {
     public void runJackson() throws Exception {
 
         ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JodaModule());
+        mapper.registerModule(new JavaTimeModule());
         mapper.registerModule(new BonaparteModule());
         mapper.setSerializationInclusion(Include.NON_NULL);
 
@@ -114,7 +115,7 @@ public class JsonTest {
     public void runJackson2() throws Exception {
 
         ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JodaModule());
+        mapper.registerModule(new JavaTimeModule());
         System.out.println("Jackson2 produces " + mapper.writer().writeValueAsString(getData()));
     }
 }

@@ -3,8 +3,8 @@ package testcases.csv;
 import java.io.IOException;
 import java.math.BigDecimal;
 
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import org.testng.annotations.Test;
 
 import de.jpaw.bonaparte.core.BonaPortable;
@@ -42,7 +42,7 @@ public class TestFixedWidth {
 
     @Test
     public void testFixedWidth() throws Exception {
-        Test1 t1 = new Test1("Hello", 12, new BigDecimal("3.1"), new LocalDateTime(2013, 04, 01, 23, 55, 0), new LocalDate(2001, 11, 12), true, 1234567890123L);
+        Test1 t1 = new Test1("Hello", 12, new BigDecimal("3.1"), LocalDateTime.of(2013, 04, 01, 23, 55, 0), LocalDate.of(2001, 11, 12), true, 1234567890123L);
 
         runTest(fixedWidthCfg1,  t1, "Hello      0000000012000000000003.10 201304012355002001111210000001234567890123\n");
 

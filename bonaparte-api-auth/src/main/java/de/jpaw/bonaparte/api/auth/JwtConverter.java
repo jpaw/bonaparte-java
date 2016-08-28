@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.joda.time.Instant;
+import java.time.Instant;
 
 import de.jpaw.bonaparte.core.DataAndMeta;
 import de.jpaw.bonaparte.core.JsonComposer;
@@ -27,7 +27,7 @@ public class JwtConverter {
     /** returns the current time, rounded down to the previous full second. */
     public static Instant lastFullSecond() {
         long now = System.currentTimeMillis();
-        return new Instant(now - now % 1000L);
+        return Instant.ofEpochSecond(now - now % 1000L);
     }
 
     public static Map<String,Object> asMap(String json) throws JsonException {

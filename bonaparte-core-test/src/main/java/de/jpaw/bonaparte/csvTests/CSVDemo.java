@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Locale;
 
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import de.jpaw.bonaparte.core.CSVComposer;
 import de.jpaw.bonaparte.core.CSVComposer2;
@@ -14,8 +14,7 @@ import de.jpaw.bonaparte.core.CSVStyle;
 import de.jpaw.bonaparte.pojos.csvTests.Test1;
 
 public class CSVDemo {
-    private static Test1 t = new Test1("Hello, world", 42, new BigDecimal("3.14"), LocalDateTime.now(), LocalDate.now(), true,
-            -78653L);
+    private static Test1 t = new Test1("Hello, world", 42, new BigDecimal("3.14"), LocalDateTime.now(), LocalDate.now(), true, -78653L);
 
     private static void run2Tests(CSVConfiguration cfg, String formatName, boolean useComposer2) {
         StringBuilder buffer = new StringBuilder(200);

@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.net.ssl.SSLSession;
 
-import org.joda.time.LocalDateTime;
+import java.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,7 +81,7 @@ public class TestServerHandler extends SimpleChannelInboundHandler<BonaPortable>
         myResponse.setUniqueId(myRequest.getUniqueId());
         myResponse.setThreadNo(thisThreadId);
         myResponse.setSerialInThread(0); // counterInThread.incrementAndGet());  => locking issue!
-        myResponse.setWhenReceiced(new LocalDateTime());
+        myResponse.setWhenReceiced(LocalDateTime.now());
 
         if (myRequest.getDuration() > 0) {
             Thread.sleep(myRequest.getDuration());

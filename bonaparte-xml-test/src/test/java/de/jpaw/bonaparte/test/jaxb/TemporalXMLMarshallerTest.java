@@ -7,9 +7,9 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-import org.joda.time.LocalTime;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import org.testng.annotations.Test;
 
 import de.jpaw.bonaparte.pojos.test.jaxbtemporal.TestFieldXml;
@@ -28,9 +28,9 @@ public class TemporalXMLMarshallerTest {
 
     public void marshallTemporal() throws Exception {
         TestFieldXml obj = new TestFieldXml();
-        obj.myDate = new LocalDate(2015, 3, 7);
-        obj.myTime = new LocalTime(18, 34, 55);
-        obj.myDateTime = new LocalDateTime(2015, 3, 7, 18, 14, 55);
+        obj.myDate = LocalDate.of(2015, 3, 7);
+        obj.myTime = LocalTime.of(18, 34, 55);
+        obj.myDateTime = LocalDateTime.of(2015, 3, 7, 18, 14, 55);
 
         // create the XML for this
         JAXBContext context = JAXBContext.newInstance(PACKAGE);
@@ -54,9 +54,9 @@ public class TemporalXMLMarshallerTest {
         assert(obj != null);
         assert(obj instanceof TestFieldXml);
         TestFieldXml obj2 = (TestFieldXml)obj;
-        assert(new LocalDate(2015, 3, 7).equals(obj2.myDate));
-        assert(new LocalTime(18, 34, 55).equals(obj2.myTime));
-        assert(new LocalDateTime(2015, 3, 7, 18, 14, 55).equals(obj2.myDateTime));
+        assert(LocalDate.of(2015, 3, 7).equals(obj2.myDate));
+        assert(LocalTime.of(18, 34, 55).equals(obj2.myTime));
+        assert(LocalDateTime.of(2015, 3, 7, 18, 14, 55).equals(obj2.myDateTime));
     }
 
     public void createTemporalSchema() throws Exception {

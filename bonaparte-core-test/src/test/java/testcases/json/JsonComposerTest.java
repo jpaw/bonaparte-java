@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -41,7 +41,7 @@ public class JsonComposerTest {
         JsonFieldTest t = new JsonFieldTest();
 
         t.setText("mytext");
-        t.setVarField(new LocalDate(2015,10,31));
+        t.setVarField(LocalDate.of(2015,10,31));
 
         List<Object> l = new ArrayList<Object>(20);
         t.setVarList(l);

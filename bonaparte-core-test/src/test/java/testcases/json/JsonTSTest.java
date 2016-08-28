@@ -2,8 +2,8 @@ package testcases.json;
 
 import java.util.Map;
 
-import org.joda.time.LocalDateTime;
-import org.joda.time.LocalTime;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -17,8 +17,8 @@ public class JsonTSTest {
 
     @Test
     public void testTS() throws Exception {
-        LocalDateTime ld0 = new LocalDateTime(2016, 12, 31, 17, 59, 59);
-        LocalDateTime ld3 = new LocalDateTime(2016, 12, 31, 17, 59, 59, 333);
+        LocalDateTime ld0 = LocalDateTime.of(2016, 12, 31, 17, 59, 59);
+        LocalDateTime ld3 = LocalDateTime.of(2016, 12, 31, 17, 59, 59, 333000000);
         TestTS ts = new TestTS();
         ts.setTs0(ld0);
         ts.setTs3(ld3);
@@ -35,8 +35,8 @@ public class JsonTSTest {
 
     @Test
     public void testT() throws Exception {
-        LocalTime l0 = new LocalTime(17, 59, 59);
-        LocalTime l3 = new LocalTime(17, 59, 59, 333);
+        LocalTime l0 = LocalTime.of(17, 59, 59);
+        LocalTime l3 = LocalTime.of(17, 59, 59, 333000000);
         TestT ts = new TestT();
         ts.setT0(l0);
         ts.setT3(l3);
