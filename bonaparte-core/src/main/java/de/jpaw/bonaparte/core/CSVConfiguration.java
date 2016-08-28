@@ -2,9 +2,9 @@ package de.jpaw.bonaparte.core;
 
 import java.util.Locale;
 
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+import java.time.DateTimeZone;
+import java.time.format.DateTimeFormat;
+import java.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -247,24 +247,24 @@ public class CSVConfiguration {
             this.timeStyle = timeStyle;
             return this;
         }
-        /** Custom format setting. See http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html for format description. */
+        /** Custom format setting. See http://joda-time.sourceforge.net/apidocs/java.time/format/DateTimeFormat.html for format description. */
         public Builder setCustomDayFormat(String customDayFormat) {
             this.customDayFormat = customDayFormat;
             return this;
         }
-        /** Custom format setting. See http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html for format description. */
+        /** Custom format setting. See http://joda-time.sourceforge.net/apidocs/java.time/format/DateTimeFormat.html for format description. */
         public Builder setCustomTimeFormats(String customTimeFormat, String customTimeWithMsFormat) {
             this.customTimeFormat = customTimeFormat;
             this.customTimeWithMsFormat = customTimeWithMsFormat;
             return this;
         }
-        /** Custom format setting. See http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html for format description. */
+        /** Custom format setting. See http://joda-time.sourceforge.net/apidocs/java.time/format/DateTimeFormat.html for format description. */
         public Builder setCustomDayTimeFormats(String customTimestampFormat, String customTimestampWithMsFormat) {
             this.customTimestampFormat = customTimestampFormat;
             this.customTimestampWithMsFormat = customTimestampWithMsFormat;
             return this;
         }
-        /** Custom format setting. See http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html for format description. */
+        /** Custom format setting. See http://joda-time.sourceforge.net/apidocs/java.time/format/DateTimeFormat.html for format description. */
         public Builder setCustomDayTimeFormats(String customDayFormat,
                 String customTimeFormat, String customTimeWithMsFormat,
                 String customTimestampFormat, String customTimestampWithMsFormat) {

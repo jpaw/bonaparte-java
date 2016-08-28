@@ -1,6 +1,6 @@
 package de.jpaw.bonaparte.core.tests;
 
-import org.joda.time.LocalDateTime;
+import java.time.LocalDateTime;
 import org.testng.annotations.Test;
 
 import de.jpaw.bonaparte.util.DayTime;
@@ -8,7 +8,7 @@ import de.jpaw.bonaparte.util.DayTime;
 public class DayTimeTest {
     @Test
     public void testTimeDifference() throws Exception {
-        LocalDateTime start = new LocalDateTime();
+        LocalDateTime start = LocalDateTime.now();
 
         Thread.sleep(155L);
         LocalDateTime end = LocalDateTime.now();

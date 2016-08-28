@@ -8,11 +8,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.joda.time.DateTimeZone;
-import org.joda.time.Instant;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-import org.joda.time.LocalTime;
+import java.time.DateTimeZone;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -503,7 +503,7 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
         int year = readInt(needToken(), fieldname);
         int month = readInt(needToken(), fieldname);
         int day = readInt(needToken(), fieldname);
-        return new LocalDate(year, month, day);
+        return LocalDate.of(year, month, day);
     }
 
     @Override
@@ -539,7 +539,7 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
             millis = secondsOfDay % 1000;
             secondsOfDay /= 1000;
         }
-        return new LocalDateTime(year, month, day, secondsOfDay / 3600, (secondsOfDay % 3600) / 60, secondsOfDay % 60, millis);
+        return LocalDateTime.of(year, month, day, secondsOfDay / 3600, (secondsOfDay % 3600) / 60, secondsOfDay % 60, 1000000 * millis);
     }
 
     @Override

@@ -12,11 +12,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.joda.time.Instant;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-import org.joda.time.LocalTime;
-import org.joda.time.ReadablePartial;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import de.jpaw.bonaparte.enums.BonaNonTokenizableEnum;
 import de.jpaw.bonaparte.enums.BonaTokenizableEnum;
@@ -547,7 +546,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
     protected void localdateOut(LocalDate t) throws IOException {
         out.writeByte(COMPACT_DATE);
         intOut(t.getYear());
-        intOut(t.getMonthOfYear());
+        intOut(t.getMonthValue());
         intOut(t.getDayOfMonth());
     }
 
@@ -562,11 +561,11 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
     }
 
     protected void localdatetimeOut(LocalDateTime t) throws IOException {
-        int millis = t.getMillisOfSecond();
+        int millis = t.getNano() / 1000000;
         boolean fractional = millis != 0;
         out.writeByte(!fractional ? COMPACT_DATETIME : COMPACT_DATETIME_MILLIS);
         intOut(t.getYear());
-        intOut(t.getMonthOfYear());
+        intOut(t.getMonthValue());
         intOut(t.getDayOfMonth());
         if (fractional)
             intOut(t.getMillisOfDay());
@@ -584,7 +583,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
     }
 
     protected void localtimeOut(LocalTime t) throws IOException {
-        int millis = t.getMillisOfSecond();
+        int millis = t.getNano() / 1000000;
         if (millis != 0) {
             out.writeByte(COMPACT_TIME_MILLIS);
             intOut(t.getMillisOfDay());

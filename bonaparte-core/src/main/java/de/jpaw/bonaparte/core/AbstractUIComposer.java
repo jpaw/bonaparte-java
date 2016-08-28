@@ -3,7 +3,7 @@ package de.jpaw.bonaparte.core;
 import java.io.IOException;
 import java.util.Locale;
 
-import org.joda.time.DateTimeZone;
+import java.time.DateTimeZone;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;

@@ -25,11 +25,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.joda.time.Instant;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-import org.joda.time.LocalTime;
-import org.joda.time.format.DateTimeFormatter;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
@@ -451,7 +451,7 @@ public final class StringCSVParser extends AbstractPartialJsonStringParser imple
                         parseIndex, currentClass);
             }
         }
-        return new Instant(1000L * seconds + millis);
+        return Instant.ofEpochSecond(seconds, 1000000 * millis);
     }
 
 

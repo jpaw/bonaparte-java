@@ -21,7 +21,7 @@ import java.net.URLClassLoader;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.joda.time.Instant;
+import java.time.Instant;
 
 import de.jpaw.bonaparte.pojos.meta.BundleInformation;
 import de.jpaw.bonaparte.pojos.meta.BundleStatus;

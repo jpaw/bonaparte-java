@@ -5,11 +5,11 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.UUID;
 
-import org.joda.time.DateTimeZone;
-import org.joda.time.Instant;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-import org.joda.time.LocalTime;
+import java.time.DateTimeZone;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
@@ -220,7 +220,7 @@ public class StringParserUtil {
             // TODO! default is lenient mode, therefore will not check. Solution
             // is to read the data again and compare the values of day, month
             // and year
-            result = new LocalDateTime(year, month, day, hour, minute, second, fractional);
+            result = LocalDateTime.of(year, month, day, hour, minute, second, fractional * 1000000);
         } catch (Exception e) {
             throw err(MessageParserException.ILLEGAL_CALENDAR_VALUE, di, data);
         }
@@ -248,7 +248,7 @@ public class StringParserUtil {
             // TODO! default is lenient mode, therefore will not check. Solution
             // is to read the data again and compare the values of day, month
             // and year
-            result = new LocalDate(year, month, day);
+            result = LocalDate.of(year, month, day);
         } catch (Exception e) {
             throw err(MessageParserException.ILLEGAL_CALENDAR_VALUE, di, data);
         }
@@ -335,7 +335,7 @@ public class StringParserUtil {
             // don't want millis here: trunc!  (TODO: add a flag to complain!)
             millis = 0;
         }
-        return new Instant(1000L * seconds + millis);
+        return Instant.ofEpochSecond(seconds, 1000000 * millis);
     }
 
     public Byte readByte(final BasicNumericElementaryDataItem di, String data) throws MessageParserException {

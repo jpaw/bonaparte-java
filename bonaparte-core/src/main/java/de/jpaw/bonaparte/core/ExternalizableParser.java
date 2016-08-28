@@ -24,11 +24,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.joda.time.DateTimeZone;
-import org.joda.time.Instant;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-import org.joda.time.LocalTime;
+import java.time.DateTimeZone;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -362,7 +362,7 @@ public final class ExternalizableParser extends AbstractMessageParser<IOExceptio
             // TODO! default is lenient mode, therefore will not check. Solution
             // is to read the data again and compare the values of day, month
             // and year
-            result = new LocalDateTime(year, month, day, hour, minute, second, fractional);
+            result = LocalDateTime.of(year, month, day, hour, minute, second, fractional * 1000000);
         } catch (Exception e) {
             throw new IOException(String.format("exception creating LocalDateTime for %d-%d-%d in %s.%s", year, month, day, currentClass, fieldname));
         }
@@ -396,7 +396,7 @@ public final class ExternalizableParser extends AbstractMessageParser<IOExceptio
             // TODO! default is lenient mode, therefore will not check. Solution
             // is to read the data again and compare the values of day, month
             // and year
-            result = new LocalDate(year, month, day);
+            result = LocalDate.of(year, month, day);
         } catch (Exception e) {
             throw new IOException(String.format("exception creating LocalDate for %d-%d-%d in %s.%s", year, month, day, currentClass, fieldname));
         }

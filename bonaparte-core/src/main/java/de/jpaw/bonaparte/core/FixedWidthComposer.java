@@ -20,7 +20,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.UUID;
 
-import org.joda.time.Instant;
+import java.time.Instant;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
