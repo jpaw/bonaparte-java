@@ -3,7 +3,7 @@ package de.jpaw.bonaparte.api.auth.tests;
 import java.util.Map;
 import java.util.UUID;
 
-import org.joda.time.Instant;
+import java.time.Instant;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

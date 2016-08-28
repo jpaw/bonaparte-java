@@ -1,6 +1,6 @@
 package de.jpaw.bonaparte.refsp;
 
-import org.joda.time.Instant;
+import java.time.Instant;
 
 import de.jpaw.bonaparte.refs.PersistenceProvider;
 

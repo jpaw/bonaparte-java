@@ -1,6 +1,6 @@
 package de.jpaw.bonaparte.refsp.impl;
 
-import org.joda.time.Instant;
+import java.time.Instant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

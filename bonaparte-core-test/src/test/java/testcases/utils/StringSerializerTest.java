@@ -5,7 +5,7 @@ import static org.testng.Assert.assertEquals;
 import java.math.BigDecimal;
 import java.util.Arrays;
 
-import org.joda.time.LocalDate;
+import java.time.LocalDate;
 import org.testng.annotations.Test;
 
 import de.jpaw.bonaparte.core.StringBuilderComposer;
@@ -22,7 +22,7 @@ public class StringSerializerTest {
         test1.setString1("One param");
 
         Test2 test2 = new Test2();
-        test2.setDay1(new LocalDate());
+        test2.setDay1(LocalDate.now());
         test2.setDec1(new BigDecimal(1.2d));
         test2.setInt1(42);
         test2.setLongNum(4200l);
