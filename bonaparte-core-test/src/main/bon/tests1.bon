@@ -155,4 +155,9 @@ package tests1 Ext {
     class Longtest {
         long l;
     }
+
+    class TestSignedInteger {
+        required signed int         si;
+        required signed Long        sl;
+    }
 }
