@@ -19,10 +19,10 @@ package ui factoryId 25 {
 
     /** Defines properties of a column displayed in some UI, to be used with the foldingComposer. */
     class UIColumn classId 41 {
-        required identifier                         fieldName;          // field name in dotted notation (data.component.field[arrayIndex])
-        required int                                width;              // specific width, if 0, then it is determined using the data type width
-        optional Enum Alignment                     alignment;          // L/M/R
-        optional Enum LayoutHint                    layoutHint;         // type of view to display
+        required identifier                         fieldName;              // field name in dotted notation (data.component.field[arrayIndex])
+        required int                                width;                  // specific width, if 0, then it is determined using the data type width
+        optional Enum Alignment                     alignment;              // L/M/R
+        optional Enum LayoutHint                    layoutHint;             // type of view to display
     }
 
     /** User specific configuration for a column. */
@@ -40,13 +40,19 @@ package ui factoryId 25 {
         required boolean                            isRequired;             // if the fields allow null (if collections: the collection elements)
         optional Boolean                            isList;                 // multiplicity (either true or absent / null)
         optional Boolean                            isMap;                  // multiplicity (either true or absent / null)
+        required Ascii(32)                          dataCategory;           // the high level category (instance name of enum DataCategory)
         required identifier                         dataType;               // the Bonaparte data type, here: in all lower case
-        required Unicode(255) Map<String>           fieldProperties;        // decimals="n" etc. 
-        optional identifier                         pqon;                   // for enums, the PQON
+        required Unicode(255) Map<String>           fieldProperties;        // decimals="n" etc.
+        required Unicode(255) Map<String>           classProperties;        // properties at class level for nested objects (dataType = ref) (currently not populated)
+        optional identifier                         pqon;                   // for enums, the PQON (for xenums, the pqon of the base enum)
+        optional identifier                         pqon2;                  // for xenums, the PQON
         optional Int                                length;                 // for text the number of characters, for numbers the maximum total digits (including decimals)
         optional Int                                minLength;              // for text or numbers
         optional Int                                decimalDigits;          // for numbers
         optional Boolean                            isSigned;               // for numeric types only
+        required enumIdType List<>                  enumInstances;          // for enums or xenums: the instance names
+        required enumTokenType List<>               enumTokens;             // for enums or xenums: the corresponding tokens
+        optional Boolean                            allowCtrl;              // for alphanumeric types (unicode) only: allow newlines and control chars?
     }
 
     /** Parameters used by autoconfiguration, to determine default column withs. */
