@@ -10,19 +10,19 @@ package ui factoryId 25 {
     enum LayoutHint   { TEXT="T", IMAGE="I", CHECKBOX="B", OBJECT="O" } // object is a generic bonaortable, the only way to display it is via popup and specific toString renderers
 
     enum UIFilterType {
-        EQUALITY="E",                   // filter criteria must match exactly (the only possible for references and enums)
-        LOWER_BOUND="L",                // input is a lower bound
-        UPPER_BOUND="U",                // input is an upper bound
-        RANGE="R",                      // lower and upper bound (relates to 2 separate input fields)
-        LIKE="W"                        // equality with wildcard (affects plausi check, only possible for text fields)
+        EQUALITY        = "E",                      // filter criteria must match exactly (the only possible for references and enums)
+        LOWER_BOUND     = "L",                      // input is a lower bound
+        UPPER_BOUND     = "U",                      // input is an upper bound
+        RANGE           = "R",                      // lower and upper bound (relates to 2 separate input fields)
+        LIKE            = "W"                       // equality with wildcard (affects plausi check, only possible for text fields)
     }
 
     /** Defines properties of a column displayed in some UI, to be used with the foldingComposer. */
     class UIColumn classId 41 {
-        required identifier                         fieldName;          // field name in dotted notation (data.component.field[arrayIndex])
-        required int                                width;              // specific width, if 0, then it is determined using the data type width
-        optional Enum Alignment                     alignment;          // L/M/R
-        optional Enum LayoutHint                    layoutHint;         // type of view to display
+        required identifier                         fieldName;              // field name in dotted notation (data.component.field[arrayIndex])
+        required int                                width;                  // specific width, if 0, then it is determined using the data type width
+        optional Enum Alignment                     alignment;              // L/M/R
+        optional Enum LayoutHint                    layoutHint;             // type of view to display
     }
 
     /** User specific configuration for a column. */
@@ -31,7 +31,28 @@ package ui factoryId 25 {
         required boolean                            allowSorting;           // leave it false if sorting would be too resource intense
         required boolean                            negateFilter;           // if a filter is configured: negate the condition
         optional Enum UIFilterType                  filterType;             // determines which type of filter to apply
+        optional Boolean                            notSelectable;          // TRUE if the column cannot be selected in a grid to be displayed (columns which are for filter only)
+        optional (UIMeta)                           meta;                   // condensed meta data
+    }
 
+    /** Condensed meta data (meta.FieldDefinition), which is required if the UI is not Java based. */
+    final class UIMeta {
+        required boolean                            isRequired;             // if the fields allow null (if collections: the collection elements)
+        optional Boolean                            isList;                 // multiplicity (either true or absent / null)
+        optional Boolean                            isMap;                  // multiplicity (either true or absent / null)
+        required Ascii(32)                          dataCategory;           // the high level category (instance name of enum DataCategory)
+        required identifier                         dataType;               // the Bonaparte data type, here: in all lower case
+        required Unicode(255) Map<String>           fieldProperties;        // decimals="n" etc.
+        required Unicode(255) Map<String>           classProperties;        // properties at class level for nested objects (dataType = ref) (currently not populated)
+        optional identifier                         pqon;                   // for enums, the PQON (for xenums, the pqon of the base enum)
+        optional identifier                         pqon2;                  // for xenums, the PQON
+        optional Int                                length;                 // for text the number of characters, for numbers the maximum total digits (including decimals)
+        optional Int                                minLength;              // for text or numbers
+        optional Int                                decimalDigits;          // for numbers
+        optional Boolean                            isSigned;               // for numeric types only
+        required enumIdType List<>                  enumInstances;          // for enums or xenums: the instance names
+        required enumTokenType List<>               enumTokens;             // for enums or xenums: the corresponding tokens
+        optional Boolean                            allowCtrl;              // for alphanumeric types (unicode) only: allow newlines and control chars?
     }
 
     /** Parameters used by autoconfiguration, to determine default column withs. */
