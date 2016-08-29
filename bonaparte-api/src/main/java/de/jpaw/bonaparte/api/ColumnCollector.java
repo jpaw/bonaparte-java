@@ -14,6 +14,7 @@ import de.jpaw.bonaparte.pojos.ui.Alignment;
 import de.jpaw.bonaparte.pojos.ui.LayoutHint;
 import de.jpaw.bonaparte.pojos.ui.UIColumn;
 import de.jpaw.bonaparte.pojos.ui.UIDefaults;
+import de.jpaw.bonaparte.pojos.ui.UIMeta;
 
 /** Utility class which helps to guess an initial UI configuration. */
 public class ColumnCollector {
@@ -151,5 +152,36 @@ public class ColumnCollector {
     /** Main external entry. */
     public void addToColumns(ClassDefinition cls) {
         addToColumns("", cls);
+    }
+    
+    /** Creates the UIMeta object, without the properties yet. */
+    public UIMeta createMeta(FieldDefinition meta) {
+        UIMeta m = new UIMeta();
+        // transfer fields which are in the main class
+        m.setIsRequired(meta.getIsRequired());
+        m.setDataType(meta.getBonaparteType());
+
+        switch (meta.getMultiplicity()) {
+        case ARRAY:
+        case LIST:
+        case SET:
+            m.setIsList(Boolean.TRUE);
+            break;
+        case MAP:
+            m.setIsMap(Boolean.TRUE);
+            break;
+        case SCALAR:
+            // no entry
+            break;
+        
+        }
+//        optional identifier                         pqon;                   // for enums, the PQON
+//        optional Int                                length;                 // for text the number of characters, for numbers the maximum total digits (including decimals)
+//        optional Int                                minLength;              // for text or numbers
+//        optional Int                                decimalDigits;          // for numbers
+//        optional Boolean                            isSigned;               // for numeric types only
+        
+        
+        return m;
     }
 }
