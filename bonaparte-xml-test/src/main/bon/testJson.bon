@@ -1,0 +1,10 @@
+import meta.*
+
+package test.^json XML PROPERTY {
+    final class Test4XML XML PROPERTY xmlRoot {
+        optional Element                obj;
+        optional Json                   jsono;
+        optional Array                  arr;
+        Element List<>              many;
+    }
+}

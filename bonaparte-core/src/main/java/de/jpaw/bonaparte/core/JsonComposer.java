@@ -120,7 +120,7 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
         this.writeTypeInfo      = false;
         this.writePqonInfo      = false;
         this.maybeWritePqonInfo = true;
-        this.jsonEscaper        = new BonaparteJsonEscaper(out, this);
+        this.jsonEscaper        = new BonaparteJsonEscaper(out);
     }
     public JsonComposer(Appendable out, boolean writeNulls, JsonEscaper jsonEscaper) {
         this(out, writeNulls, false, false, true, jsonEscaper);

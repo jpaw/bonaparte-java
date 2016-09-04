@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
+import org.joda.time.DateTimeZone;
 import org.joda.time.Instant;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
@@ -146,5 +147,11 @@ public class DayTime {
     static public int timeAsInt(LocalTime when) {
         return when.getMillisOfSecond() + 1000 * when.getSecondOfMinute() + 100000 * when.getMinuteOfHour() + 10000000 * when.getHourOfDay();
     }
-
+    
+//    static public Instant toInstant(LocalDateTime ldt) {
+//        // no good conversion known ? return new Instant(Date.getMillis(ldt.toDate()));
+//    }
+    static public LocalDateTime toLocalDateTime(Instant i) {
+        return new LocalDateTime(i.getMillis(), DateTimeZone.UTC);
+    }
 }
