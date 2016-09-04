@@ -47,25 +47,26 @@ public class BonaparteJsonEscaper extends ExtendedJsonEscaperForAppendables {
         return buff.toString();
     }
 
-    private JsonComposer bonaparteJsonComposer = null;
 
     public BonaparteJsonEscaper(Appendable appendable) {
         super(appendable);
     }
 
-    public BonaparteJsonEscaper(Appendable appendable, JsonComposer bonaparteJsonComposer) {
-        super(appendable);
-        this.bonaparteJsonComposer = bonaparteJsonComposer;  // avoid recursive construction of new objects
-    }
+//  private JsonComposer bonaparteJsonComposer = null;
+//    public BonaparteJsonEscaper(Appendable appendable, JsonComposer bonaparteJsonComposer) {
+//        super(appendable);
+//        this.bonaparteJsonComposer = bonaparteJsonComposer;  // avoid recursive construction of new objects
+//    }
 
     @Override
     public void outputJsonElement(Object obj) throws IOException {
         if (obj instanceof BonaCustom) {
-            if (bonaparteJsonComposer == null) {
-                bonaparteJsonComposer = new JsonComposer(appendable, false, this);
-            }
-            // output as Json
-            bonaparteJsonComposer.writeObject((BonaCustom)obj);
+//            if (bonaparteJsonComposer == null) {
+//                bonaparteJsonComposer = new JsonComposer(appendable, false, this);
+//            }
+//            // output as Json
+//            bonaparteJsonComposer.writeObject((BonaCustom)obj);
+            new JsonComposer(appendable, false, this).writeObject((BonaCustom)obj);
             return;
         }
         super.outputJsonElement(obj);

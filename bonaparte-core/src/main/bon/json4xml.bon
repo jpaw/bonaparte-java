@@ -1,0 +1,29 @@
+import meta.*
+
+package ^json4xml // XML PROPERTY NAMESPACE "http://www.jpaw.de/schema/bonaparte.xsd"
+ {
+
+    /** Models a Json object (with some limitations).
+     * Lists can only contain a single consistent field type.
+     * If none of the optional types is provided, null is assumed.
+     * The XSD does not support alternatives (XSD 1.1, not yet supported by JAXB), therefore plausi checks must be done manually in code.
+     */
+    final class JSON nojava XML PROPERTY {          // only generate XSD, java code sits in jpaw-xml
+        required (KVP) List<>       kvp;            // all key/value pairs
+    }
+
+
+    final class KVP nojava XML PROPERTY {           // only generate XSD, java code sits in jpaw-xml
+        required identifier             key;        // the field name (only required field)
+        optional Double                 num;        // numeric field;
+        required Double List<>          nums;       // List of numerics
+        optional Unicode(4000)          value;      // alphanumeric
+        required Unicode(4000) List<>   values;     // List of alphanumerics
+        optional Boolean                bool;       // boolean field;
+        required Boolean List<>         bools;      // List of booleans
+        optional (JSON)                 obj;        // object
+        required (JSON) List<>          objs;       // List of objects
+        optional Element                any;        // catch-all
+        required Element List<>         anys;       // List of catch-alls
+    }
+}

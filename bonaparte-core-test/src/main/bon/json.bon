@@ -32,7 +32,7 @@ package jsonTest {
         element List<>      varList;
         array               varList2;
         Array               optList2;
-        Array List<>        listOfList2;
+        // Array List<>        listOfList2;
     }
 
     enum ColorNum   { RED, GREEN, BLUE }

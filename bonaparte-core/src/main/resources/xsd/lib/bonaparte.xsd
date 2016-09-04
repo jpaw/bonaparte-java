@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <xs:schema targetNamespace="http://www.jpaw.de/schema/bonaparte.xsd"
+  xmlns:bon="http://www.jpaw.de/schema/bonaparte.xsd"
   xmlns:xs="http://www.w3.org/2001/XMLSchema">
   
     <xs:simpleType name="CHAR">
@@ -33,4 +34,27 @@
     <xs:complexType name="BONAPORTABLE" abstract="true">
         <xs:sequence/>
     </xs:complexType>
+
+    <!-- XSD for XML representation of JSON objects (maps of key / value pairs) -->
+    <xs:complexType name="JSON" block="#all" final="#all">
+        <xs:sequence>
+            <xs:element name="kvp" minOccurs="0" maxOccurs="unbounded" type="bon:KVP"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="KVP" block="#all" final="#all">
+        <xs:sequence>
+            <xs:element name="key" type="xs:string"/>
+            <xs:element name="num"    minOccurs="0" nillable="true"       type="xs:double"/>
+            <xs:element name="nums"   minOccurs="0" maxOccurs="unbounded" type="xs:double"/>
+            <xs:element name="value"  minOccurs="0" nillable="true"       type="xs:string"/>
+            <xs:element name="values" minOccurs="0" maxOccurs="unbounded" type="xs:string"/>
+            <xs:element name="bool"   minOccurs="0" nillable="true"       type="xs:boolean"/>
+            <xs:element name="bools"  minOccurs="0" maxOccurs="unbounded" type="xs:boolean"/>
+            <xs:element name="obj"    minOccurs="0" nillable="true"       type="bon:JSON"/>
+            <xs:element name="objs"   minOccurs="0" maxOccurs="unbounded" type="bon:JSON"/>
+            <xs:element name="any"    minOccurs="0" nillable="true"       type="xs:anyType"/>
+            <xs:element name="anys"   minOccurs="0" maxOccurs="unbounded" type="xs:anyType"/>
+        </xs:sequence>
+    </xs:complexType>
+
 </xs:schema>
