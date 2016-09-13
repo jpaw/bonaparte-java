@@ -35,12 +35,14 @@ public class UtilException extends ApplicationException {
     static public final int DESCEND_TO_NON_REFERENCE    = OFFSET + 2;
     static public final int DESCEND_TO_GENERIC_OBJECT   = OFFSET + 3;
     static public final int ADAPTER_WITHOUT_FIELDS      = OFFSET + 4;
+    static public final int NO_CLOSING_BRACKET          = OFFSET + 5;
 
     static {
         codeToDescription.put(PATH_COMPONENT_NOT_FOUND      , "Path component not found");
         codeToDescription.put(DESCEND_TO_NON_REFERENCE      , "Path element is not the last one but is no reference");
         codeToDescription.put(DESCEND_TO_GENERIC_OBJECT     , "Path element leads to a generic reference");
         codeToDescription.put(ADAPTER_WITHOUT_FIELDS        , "Adapter defines no field (should not happen)");
+        codeToDescription.put(NO_CLOSING_BRACKET            , "Unmatched opening bracket");
     }
 
     public UtilException(int errorCode, String text) {

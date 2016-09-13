@@ -2,8 +2,10 @@ package de.jpaw.bonaparte.api;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericEnumSetDataItem;
@@ -27,6 +29,8 @@ import de.jpaw.bonaparte.pojos.ui.UIColumn;
 import de.jpaw.bonaparte.pojos.ui.UIColumnConfiguration;
 import de.jpaw.bonaparte.pojos.ui.UIDefaults;
 import de.jpaw.bonaparte.pojos.ui.UIMeta;
+import de.jpaw.bonaparte.util.FieldGetter;
+import de.jpaw.bonaparte.util.UtilException;
 
 /** Utility class which helps to guess an initial UI configuration. */
 public class ColumnCollector {
@@ -191,8 +195,13 @@ public class ColumnCollector {
 
         if (meta instanceof ObjectReference) {
             ObjectReference or = (ObjectReference)meta;
-            if (or.getLowerBound() != null)
-                m.setPqon(or.getLowerBound().getName());
+            ClassDefinition bound = or.getSecondaryLowerBound();
+            if (bound == null)
+                bound = or.getLowerBound();
+            if (bound != null) {
+                m.setPqon(bound.getName());
+                m.setClassProperties(bound.getProperties());
+            }
         } else {
             if (meta instanceof BasicNumericElementaryDataItem) {
                 BasicNumericElementaryDataItem bn = (BasicNumericElementaryDataItem)meta;
@@ -274,24 +283,61 @@ public class ColumnCollector {
             }
         }
     }
+    
+    /** Given a path name of the form field1[index].field2[index2], with optional array indexes, return a stripped field name field1.field2.
+     * Nested brackets are currently NOT supported. */
+    public String stripArrayIndexes(String pathname) throws UtilException {
+        int i = pathname.indexOf('[');
+        if (i < 0) {
+            // not a single index contained - skip allocating a StringBuilder and return the original pathname
+            return pathname;
+        }
+        StringBuilder result = new StringBuilder(pathname.length());
+        int rest = 0;   // start index of the remaining path
+        while (i >= 0) {
+            // transfer portion before i
+            if (i > rest)
+                result.append(pathname.substring(rest, i));
+            // find end of skip
+            i = pathname.indexOf(']', i+1);
+            if (i < 0)
+                throw new UtilException(UtilException.NO_CLOSING_BRACKET, pathname);
+            rest = i+1;
+            i = pathname.indexOf('[', rest);
+        }
+        // no more brackets found, return the rest
+        result.append(pathname.substring(rest));
+        return result.toString();
+    }
 
-    /** Create meta data (currently non nested names only). Returns class level properties. */
-    public Map<String, String> createUIMetas(List<UIColumnConfiguration> uis, ClassDefinition cls) {
+    /** Create meta data (now extended to support nested names as well). Returns class level properties.
+     * For a method to evaluate the value of a field for a given instance, see FieldGetter.getSingleField in project bonaparte-core */
+    public Map<String, String> createUIMetas(List<UIColumnConfiguration> uis, ClassDefinition cls) throws UtilException {
         // create a hash of the field names
         Map<String, UIColumnConfiguration> fields = new HashMap<String, UIColumnConfiguration>(uis.size() * 2);
+        Set<String> usedClasses = new HashSet<String>();
+        
+        // walk all fields, use the hash to avoid computing similar names multiple times
         for (UIColumnConfiguration ui : uis) {
-            fields.put(ui.getFieldName(), ui);
-        }
-
-        // process the fields
-        for (FieldDefinition f: cls.getFields()) {
-            UIColumnConfiguration u = fields.get(f.getName());
-            if (u != null) {
-                u.setMeta(createMeta(f));
+            String strippedPathname = stripArrayIndexes(ui.getFieldName());  // properties are the same for different indexes of the same field
+            UIColumnConfiguration previousUi = fields.get(strippedPathname);
+            if (previousUi != null) {
+                ui.setMeta(previousUi.getMeta());
+            } else {
+                // have to compute it
+                fields.put(strippedPathname, ui);
+                FieldDefinition fd = FieldGetter.getFieldDefinitionForPathname(cls, strippedPathname);
+                ui.setMeta(createMeta(fd));
+                // if the stripped classname contains at least one dot, remember the class part
+                int i = strippedPathname.lastIndexOf('.');
+                if (i > 0)
+                    usedClasses.add(strippedPathname.substring(0, i));  // remember all classes which host fields
             }
         }
 
         // now assign the properties at field level
+        
+        // TODO: nested fields still TODO - enhance meta information to simplify life...
         Map<String, String> classProperties = new HashMap<String, String>();
         for (Map.Entry<String, String> e : cls.getProperties().entrySet()) {
             String key = e.getKey();
