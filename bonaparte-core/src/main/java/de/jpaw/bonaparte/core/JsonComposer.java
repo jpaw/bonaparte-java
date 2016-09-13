@@ -423,12 +423,15 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
     }
 
     protected void objectOutSub(ObjectReference di, BonaCustom obj) throws IOException {
-        String previousClass = currentClass;
-        currentClass = di.getName();
+        // PUSH operation for composer state
+        String  previousClass   = currentClass;   currentClass   = di.getName();
+        MapMode previousMapMode = currentMapMode; currentMapMode = MapMode.NO_MAP;
         startObject(di, obj);
         obj.serializeSub(this);
         terminateObject(di, obj);
-        currentClass = previousClass;
+        // POP operation for composer state
+        currentMapMode = previousMapMode;
+        currentClass   = previousClass;
     }
 
     @Override

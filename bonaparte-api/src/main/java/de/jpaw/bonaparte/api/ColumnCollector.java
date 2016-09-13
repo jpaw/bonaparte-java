@@ -309,6 +309,13 @@ public class ColumnCollector {
         result.append(pathname.substring(rest));
         return result.toString();
     }
+    
+    /** Create meta for a single field. No properties stored. */
+    public void createUIMeta(UIColumnConfiguration ui, ClassDefinition cls) throws UtilException {
+        String strippedPathname = stripArrayIndexes(ui.getFieldName());  // properties are the same for different indexes of the same field
+        FieldDefinition fd = FieldGetter.getFieldDefinitionForPathname(cls, strippedPathname);
+        ui.setMeta(createMeta(fd));
+    }
 
     /** Create meta data (now extended to support nested names as well). Returns class level properties.
      * For a method to evaluate the value of a field for a given instance, see FieldGetter.getSingleField in project bonaparte-core */
