@@ -31,6 +31,12 @@ package api factoryId 25 {
        refp "0L"
        keyp "new VoidRef()" {
     }
+    
+    /** Just an anchor for composite keys. */
+    abstract class CompositeKeyRef {}
+
+    /** Just an anchor for DTOs of classes with composite keys. */
+    abstract class CompositeKeyBase {}
 
     /** Base class for all audit information. Any other audit data holding class should inherit this one.
      * If tracking is not present, the returned data should be null, therefore this class has been made abstract.

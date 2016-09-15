@@ -19,7 +19,7 @@ package pt2 {
     }
     class YetAnotherHouseRepainted extends pt.MyHouse {
         properties color="green";
-        int b;
+        int b properties price="high";
     }
 }
 

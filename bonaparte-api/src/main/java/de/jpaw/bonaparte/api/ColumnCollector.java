@@ -177,6 +177,7 @@ public class ColumnCollector {
         m.setIsRequired(meta.getIsRequired());
         m.setDataCategory(meta.getDataCategory().name());
         m.setDataType(meta.getBonaparteType());
+        m.setFieldProperties(meta.getProperties());
 
         switch (meta.getMultiplicity()) {
         case ARRAY:

@@ -1,7 +1,6 @@
 package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
-import java.util.Map;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.ClassDefinition;

@@ -39,6 +39,7 @@ package meta factoryId 29 {
         required identifier                 dataType;               // the java data type
         required boolean                    isPrimitive;            // true if the field is a primitive data type in Java
         required boolean                    isAggregateRequired;    // field is an aggregate field (array, List, Set, Map) and the aggregate itself may not be null
+        required Unicode(512) Map<String>   ^properties;            // field properties, properties without value are represented as empty string
     }
 
     class ObjectReference classId 1 extends FieldDefinition {
