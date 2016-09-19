@@ -39,6 +39,11 @@ import de.jpaw.util.ByteBuilder;
  * See https://github.com/jdereg/json-io and http://code.google.com/p/json-io/ for json-io source and documentation.
  *
  * @author Michael Bischoff (jpaw.de)
+ * 
+ * This implementation uses the following logic when writing fields:
+ * - for SCALAR Multiplicity, field name and contents are written
+ * - for LIST, SET, ARRAY, only values are written
+ * - for Map, a special MapMode determines whether the next element output is a key or the data object.
  *
  */
 public class JsonComposer extends AbstractMessageComposer<IOException> {
@@ -57,10 +62,7 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
     protected final boolean maybeWritePqonInfo; // for every class, also output "@PQON" and the partially qualified name, if the containing record allows subclassing
     protected final JsonEscaper jsonEscaper;
 
-    protected enum MapMode {
-        NO_MAP, EXPECT_KEY, EXPECT_VALUE
-    }
-    protected MapMode currentMapMode = MapMode.NO_MAP;
+    protected boolean currentMapMode = false;
 
     protected boolean needFieldSeparator = false;
     protected boolean needRecordSeparator = false;
@@ -144,10 +146,20 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
 
     /** Writes a quoted fieldname. We assume that no escaping is required, because all valid identifier characters in Java don't need escaping. */
     protected void writeFieldName(FieldDefinition di) throws IOException {
+        if (remFieldName != null) {
+            // from map mode....   Same criteria could be: if MapMode = expect_value
+            writeSeparator();
+            jsonEscaper.outputUnicodeNoControls(remFieldName);
+            out.append(':');
+            remFieldName = null;
+            currentMapMode = true;
+            return;
+        }
         if (di.getName().length() > 0) {
             writeSeparator();
             jsonEscaper.outputUnicodeNoControls(di.getName());
             out.append(':');
+            return;
         }
         // else it's the special JSON outer type to be ignored...
     }
@@ -290,23 +302,35 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
         // the map does not start a new sub object, but rather is serialized into the current object.
         if (di.getMapIndexType() != IndexType.STRING)
             throw new IOException(new ObjectValidationException(ObjectValidationException.UNSUPPORTED_MAP_KEY_TYPE, di.getName(), currentClass));
-        if (/* !(di instanceof ObjectReference) && */ !(di instanceof AlphanumericElementaryDataItem))
-            throw new IOException(new ObjectValidationException(ObjectValidationException.UNSUPPORTED_MAP_VALUE_TYPE, di.getName(), currentClass));
-        if (currentMapMode != MapMode.NO_MAP)
+//        if (/* !(di instanceof ObjectReference) && */ !(di instanceof AlphanumericElementaryDataItem))
+//            throw new IOException(new ObjectValidationException(ObjectValidationException.UNSUPPORTED_MAP_VALUE_TYPE, di.getName(), currentClass));
+        if (currentMapMode)
+            // nested maps are not allowed / possible
             throw new IOException(new ObjectValidationException(ObjectValidationException.INVALID_SEQUENCE, di.getName(), currentClass));
-        currentMapMode = MapMode.EXPECT_KEY;
+        currentMapMode = true;
+        writeFieldName(di);
+        out.append('{');
+        needFieldSeparator = false;
     }
 
+    // actually this is not called, instead, terminateArray() is called!
     @Override
     public void terminateMap() throws IOException {
-        if (currentMapMode != MapMode.EXPECT_KEY)
+        if (!currentMapMode)
             throw new IOException(new ObjectValidationException(ObjectValidationException.INVALID_SEQUENCE, "?", currentClass));
-        currentMapMode = MapMode.NO_MAP;
+        currentMapMode = false;
     }
 
     @Override
     public void terminateArray() throws IOException {
-        out.append(']');
+        if (currentMapMode) {
+            // inside map!
+            out.append('}');
+            currentMapMode = false;
+        } else {
+            // yes, it was an array, list or set!
+            out.append(']');
+        }
         needFieldSeparator = true;
     }
 
@@ -385,34 +409,19 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
 
     @Override
     public void addField(AlphanumericElementaryDataItem di, String s) throws IOException {
-        if (di.getMultiplicity() != Multiplicity.SCALAR) {
-            // in array or map
-            switch (currentMapMode) {
-            case NO_MAP:        // array
-                // must write a null without a name
-                writeSeparator();
-                if (s == null)
-                    out.append("null");
-                else
-                    jsonEscaper.outputUnicodeWithControls(s);
-                break;
-            case EXPECT_KEY:
-                remFieldName = s;
-                currentMapMode = MapMode.EXPECT_VALUE;
-                break;
-            case EXPECT_VALUE:
-                currentMapMode = MapMode.EXPECT_KEY;
-                if (s != null || writeNulls) {
-                    writeSeparator();
-                    jsonEscaper.outputUnicodeNoControls(remFieldName);
-                    out.append(':');
-                    if (s != null)
-                        jsonEscaper.outputUnicodeWithControls(s);
-                    else
-                        out.append("null");
-                }
-                break;
-            }
+        if (di == StaticMeta.MAP_INDEX_META_STRING) {
+            // just remember the field name for later...
+            remFieldName = s;
+            return;
+        }
+        if (di.getMultiplicity() != Multiplicity.SCALAR && di.getMultiplicity() != Multiplicity.MAP) {
+            // in array, list or set
+            // must write a null without a name!
+            writeSeparator();
+            if (s == null)
+                out.append("null");
+            else
+                jsonEscaper.outputUnicodeWithControls(s);
         } else if (s != null) {
             writeFieldName(di);
             jsonEscaper.outputUnicodeWithControls(s);
@@ -424,14 +433,16 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
 
     protected void objectOutSub(ObjectReference di, BonaCustom obj) throws IOException {
         // PUSH operation for composer state
-        String  previousClass   = currentClass;   currentClass   = di.getName();
-        MapMode previousMapMode = currentMapMode; currentMapMode = MapMode.NO_MAP;
+        String  previousRemFieldName = remFieldName;   remFieldName   = null;
+        String  previousClass        = currentClass;   currentClass   = di.getName();
+        boolean previousMapMode      = currentMapMode; currentMapMode = false;
         startObject(di, obj);
         obj.serializeSub(this);
         terminateObject(di, obj);
         // POP operation for composer state
         currentMapMode = previousMapMode;
         currentClass   = previousClass;
+        remFieldName   = previousRemFieldName;
     }
 
     @Override

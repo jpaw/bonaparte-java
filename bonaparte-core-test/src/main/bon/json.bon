@@ -45,4 +45,10 @@ package jsonTest {
         xenum XColor            cx;
         Element                 any;
     }
+    
+    class JsonWithMap {
+        enum ColorAlnum         en;
+        Unicode(20) Map<String> map;
+        int                     num;
+    }
 }
