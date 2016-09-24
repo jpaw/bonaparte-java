@@ -77,7 +77,7 @@ public class JwtConverter {
         info.setExpiresAt           (payload.getExp());
         info.setNotBefore           (payload.getNbf());
         info.setIssuedAt            (payload.getIat());
-        info.setJsonTokenIdentifier(payload.getJti());
+        info.setJsonTokenIdentifier (payload.getJti());
 
         info.setName                (payload.getName());
         info.setLocale              (payload.getLocale());
@@ -96,6 +96,7 @@ public class JwtConverter {
         info.setResourceIsWildcard  (payload.getW());
         info.setPermissionsMin      (payload.getPl());
         info.setPermissionsMax      (payload.getPu());
+        info.setZ                   (payload.getZ());
         info.freeze();
         return info;
     }

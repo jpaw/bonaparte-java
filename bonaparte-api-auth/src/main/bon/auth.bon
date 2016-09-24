@@ -40,7 +40,8 @@ package api.auth XML PROPERTY factoryId 25 {
         RESOURCE_FILTER         = "p",
         RESOURCE_IS_WILDCARD    = "w",
         PERMISSION_MIN          = "pl",
-        PERMISSION_MAX          = "pu"
+        PERMISSION_MAX          = "pu",
+        CUSTOM                  = "z"           // arbitray JSON element
     }
 
     // JSON Web Token as per https://tools.ietf.org/html/rfc7519
@@ -84,6 +85,7 @@ package api.auth XML PROPERTY factoryId 25 {
         optional Boolean                resourceIsWildcard  properties tag = "w";          // if TRUE, then the resource is also a positive ID: all resources matching or below "resource" are permitted, with "permissionsMin"
         optional Enumset Permissionset  permissionsMin      properties tag = "pl";         // minimum permissions (lower bound, set always allowed)
         optional Enumset Permissionset  permissionsMax      properties tag = "pu";         // maximum permissions (upper bound, permissions not in this set are never allowed)
+        optional Json                   z                   properties tag = "z";          // user extensions when class inheritance is not used
     }
 
     // technical mapping
@@ -115,5 +117,6 @@ package api.auth XML PROPERTY factoryId 25 {
         optional Boolean                w;          // if TRUE, then the resource is also a positive ID: all resources matching or below "resource" are permitted, with "permissionsMin"
         optional Enumset Permissionset  pl;         // minimum permissions (lower bound, set always allowed)
         optional Enumset Permissionset  pu;         // maximum permissions (upper bound, permissions not in this set are never allowed)
+        optional Json                   z;          // user extensions when class inheritance is not used
     }
 }

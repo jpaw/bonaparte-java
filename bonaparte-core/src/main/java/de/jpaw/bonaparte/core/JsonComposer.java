@@ -29,6 +29,7 @@ import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
+import de.jpaw.bonaparte.util.LongTools;
 import de.jpaw.enums.XEnum;
 import de.jpaw.json.JsonEscaper;
 import de.jpaw.util.Base64;
@@ -75,7 +76,6 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
         try {
             bjc.writeRecord(obj);
         } catch (IOException e) {
-            // oh yes, sure, StringBuilder throws IOException!
             throw new RuntimeException(e);
         }
         return buff.toString();
@@ -88,7 +88,6 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
         try {
             bjc.writeTransmission(obj);
         } catch (IOException e) {
-            // oh yes, sure, StringBuilder throws IOException!
             throw new RuntimeException(e);
         }
         return buff.toString();
@@ -403,6 +402,7 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
 
     @Override
     public void addField(BasicNumericElementaryDataItem di, long n) throws IOException {
+        LongTools.checkLongOverflow(n);
         writeOptionalFieldName(di);
         out.append(Long.toString(n));
     }
