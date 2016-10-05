@@ -1,0 +1,14 @@
+package fieldGettersTest {
+    
+    class Child {
+        int                     x;
+    }
+    
+    class Parent {
+        int                     x;
+        (Child)                 y;
+        Json                    z;
+        (Child) Map<String>     map;
+        (Child) List<>          list;
+    }
+}

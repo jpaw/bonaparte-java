@@ -20,7 +20,7 @@ public class ReflectionTest {
     public void testReflectionNegative() throws Exception {
         try {
             FieldGetter.getBClass(UUID.class);
-            throw new Exception("Expected and exception here");
+            throw new Exception("Expected an exception here");
         } catch (IllegalArgumentException e) {
             // expected, OK!
         }
