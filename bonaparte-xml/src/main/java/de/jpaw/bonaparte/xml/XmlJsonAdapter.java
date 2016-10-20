@@ -28,7 +28,7 @@ public class XmlJsonAdapter extends XmlAdapter<XmlJsonAdapter.JSON, Map<String, 
         public Object        any;
         public List<Object>  anys;
     }
-    
+
     private static Object firstNonNull(Object ... objs) {
         for (Object o : objs)
             if (o != null)

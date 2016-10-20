@@ -46,7 +46,7 @@ public class FrozenCloneTools {
         }
         return b.build();
     }
-    
+
     @SuppressWarnings("unchecked")
     public static Object frozenClone(Object input) throws ObjectValidationException {
         if (input == null)

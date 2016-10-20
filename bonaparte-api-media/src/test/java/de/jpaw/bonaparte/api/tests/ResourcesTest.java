@@ -7,13 +7,13 @@ import de.jpaw.bonaparte.api.media.MediaDataUtil;
 import de.jpaw.bonaparte.pojos.api.media.MediaData;
 
 public class ResourcesTest {
-    
+
     @Test
     public void testPNG() throws Exception {
         MediaData d = MediaDataUtil.resourceAsPNG("/image/jpaw.png");
         Assert.assertEquals(d.getRawData().length(), 1048);
     }
-    
+
     @Test
     public void testJPG() throws Exception {
         MediaData d = MediaDataUtil.resourceAsJPG("/image/jpaw.jpg");

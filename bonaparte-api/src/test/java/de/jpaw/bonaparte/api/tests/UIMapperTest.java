@@ -33,7 +33,7 @@ public class UIMapperTest {
     @Test
     public void uiMap3Test() throws Exception {
         ColumnCollector cc = new ColumnCollector();
-        
+
         UIColumnConfiguration uic = new UIColumnConfiguration();
         uic.setFieldName("meta[8].enumInstances");
 

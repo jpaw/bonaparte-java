@@ -10,28 +10,28 @@ import de.jpaw.bonaparte.pojos.fieldGettersTest.Parent;
 import de.jpaw.bonaparte.util.FieldGetter;
 
 public class FieldGetterTest {
-    
+
     @Test
     public void testFieldGettersWithNullComponents() throws Exception {
         Child c = new Child(47);
         Parent p = new Parent();
-        
+
         p.setX(48);
-        
+
         Assert.assertEquals(FieldGetter.getField(p, "x"), 48);          // test simple access
-        
+
         // child access
         Assert.assertEquals(FieldGetter.getField(p, "y.x"), null);      // test access when a path component is null
         p.setY(c);
         Assert.assertEquals(FieldGetter.getField(p, "y.x"), 47);        // test simple access to child
-        
+
         // list access
         Assert.assertEquals(FieldGetter.getField(p, "list[2].x"), null);        // test access via null List
         p.setList(Collections.singletonList(c));
         Assert.assertEquals(FieldGetter.getField(p, "list[0].x"), 47);          // test access via existing List entry
         Assert.assertEquals(FieldGetter.getField(p, "list[-1].x"), 47);         // test access via existing List but invalid index: assumes index 0
         Assert.assertEquals(FieldGetter.getField(p, "list[99].x"), null);       // test access via existing List but index out of range
-        
+
         // map access
         Assert.assertEquals(FieldGetter.getField(p, "map[hello].x"), null);     // test access via null Map
         p.setMap(Collections.singletonMap("hello", c));

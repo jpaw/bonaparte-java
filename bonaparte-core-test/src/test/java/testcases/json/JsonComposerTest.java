@@ -190,7 +190,7 @@ public class JsonComposerTest {
 
         String txt = new String(bac.getBytes(), "UTF-8");
         System.out.println(txt);       // visually verify: array, enum names
-        
+
         Map<String,Object> bonInMap = new HashMap<String, Object>(4);
         bonInMap.put("content", t1);   // map includes bon includes map
         JsonEnumAndList t3 = testObject();

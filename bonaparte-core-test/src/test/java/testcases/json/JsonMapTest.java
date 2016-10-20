@@ -25,7 +25,7 @@ public class JsonMapTest {
         String j1 = JsonComposer.toJsonString(j);
         System.out.println("Bonaparte produces " + j1);
 
-        
+
         Assert.assertEquals(j1, expected1);
 
         // list related tests: empty list

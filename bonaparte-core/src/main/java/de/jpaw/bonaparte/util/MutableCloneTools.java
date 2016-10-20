@@ -46,7 +46,7 @@ public class MutableCloneTools {
         }
         return b.build();
     }
-    
+
     @SuppressWarnings("unchecked")
     public static Object mutableClone(Object input, boolean unfreezeCollections) throws ObjectValidationException {
         if (input == null)

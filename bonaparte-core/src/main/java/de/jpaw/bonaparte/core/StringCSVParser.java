@@ -91,8 +91,8 @@ public final class StringCSVParser extends AbstractPartialJsonStringParser imple
     public void setNationalFloat() {
         localFloatFormat = NumberFormat.getInstance(cfg.locale);
     }
-    
-    
+
+
     /** Define the method to guess the type of the record by inspecting its contents. */
     public static interface CSVObjectTypeDetector {
         Class<? extends BonaPortable> typeByContents(String msg) throws MessageParserException;
@@ -592,7 +592,7 @@ public final class StringCSVParser extends AbstractPartialJsonStringParser imple
             return Float.valueOf(s);
         }
     }
-    
+
     protected Double parseDouble(String s, BasicNumericElementaryDataItem di) throws MessageParserException {
         if (localFloatFormat != null) {
             try {
@@ -604,7 +604,7 @@ public final class StringCSVParser extends AbstractPartialJsonStringParser imple
             return Double.valueOf(s);
         }
     }
-    
+
     @Override
     public void eatParentSeparator() throws MessageParserException {
     }
