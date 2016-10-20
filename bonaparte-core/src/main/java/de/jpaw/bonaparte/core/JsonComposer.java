@@ -40,7 +40,7 @@ import de.jpaw.util.ByteBuilder;
  * See https://github.com/jdereg/json-io and http://code.google.com/p/json-io/ for json-io source and documentation.
  *
  * @author Michael Bischoff (jpaw.de)
- * 
+ *
  * This implementation uses the following logic when writing fields:
  * - for SCALAR Multiplicity, field name and contents are written
  * - for LIST, SET, ARRAY, only values are written

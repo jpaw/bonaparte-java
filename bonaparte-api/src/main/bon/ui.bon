@@ -1,6 +1,11 @@
 import meta.*
 /** Bonaparte metadata.
  * Assigned to factoryId 25, classIds 41-50
+ *
+ * To define default settings for a grid, the following data is required:
+ * - List<UIFilter> to define search fields
+ * - List<String> to define fieldnames in result grid (using default widths)
+ * If widths should be specified as well, a list of UIColumns is required.
  */
 
 package ui factoryId 25 {
@@ -25,6 +30,13 @@ package ui factoryId 25 {
         optional Enum LayoutHint                    layoutHint;             // type of view to display
     }
 
+
+    /** Defines properties of a column used as a filter - lean. */
+    class UIFilter classId 45 {
+        required Enum UIFilterType                  filterType;             // determines which type of filter to apply
+        required identifier                         fieldName;              // field name in dotted notation (data.component.field[arrayIndex])
+    }
+
     /** User specific configuration for a column. */
     class UIColumnConfiguration classId 42 extends UIColumn {
         required boolean                            visible;                // true, if column should be shown.
@@ -36,7 +48,7 @@ package ui factoryId 25 {
     }
 
     /** Condensed meta data (meta.FieldDefinition), which is required if the UI is not Java based. */
-    final class UIMeta {
+    final class UIMeta classId 44 {
         required boolean                            isRequired;             // if the fields allow null (if collections: the collection elements)
         optional Boolean                            isList;                 // multiplicity (either true or absent / null)
         optional Boolean                            isMap;                  // multiplicity (either true or absent / null)

@@ -2,9 +2,11 @@ import meta.*
 
 package test.^json XML PROPERTY {
     final class Test4XML XML PROPERTY xmlRoot {
+        required Ascii(8)               first;
         optional Element                obj;
         optional Json                   jsono;
         optional Array                  arr;
-        Element List<>              many;
+        Element List<>                  many;
+        required Ascii(8)               last;
     }
 }

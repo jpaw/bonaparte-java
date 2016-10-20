@@ -206,7 +206,7 @@ public class BonaPortableFactory {
         }
         return bonaparteClassDefaultPackagePrefix;
     }
-    
+
     public static void setBonaparteClassDefaultPackagePrefix(
             String bonaparteClassDefaultPackagePrefix) {
         BonaPortableFactory.bonaparteClassDefaultPackagePrefix = bonaparteClassDefaultPackagePrefix;

@@ -9,7 +9,7 @@ import de.jpaw.enums.TokenizableEnum;
 
 public class TestImmutableEnumSet {
     public static final ImmutableStringEnumSet BASE = ImmutableStringEnumSet.of("BCDEF");
-    
+
     private void testAdd(TokenizableEnum b, String union) throws Exception {
         ImmutableStringEnumSet z = ImmutableStringEnumSet.of(union);
         ImmutableStringEnumSet r = BASE.add(b);
@@ -18,7 +18,7 @@ public class TestImmutableEnumSet {
 
         Assert.assertEquals(union, r.getBitmap()); // String equals
     }
-    
+
     @Test
     public void testAdd() throws Exception {
         testAdd(ManyLetters.ALPHA,   "ABCDEF");
@@ -27,7 +27,7 @@ public class TestImmutableEnumSet {
         testAdd(ManyLetters.FOXTROT, "BCDEF");
         testAdd(ManyLetters.XAVER,   "BCDEFX");
     }
-    
+
     @Test
     public void testAddInBetween() throws Exception {
         ImmutableStringEnumSet a = ImmutableStringEnumSet.of("BD");
@@ -44,7 +44,7 @@ public class TestImmutableEnumSet {
 
         Assert.assertEquals(difference, r.getBitmap()); // String equals
     }
-    
+
     @Test
     public void testMinus() throws Exception {
         testMinus(ManyLetters.ALPHA,   "BCDEF");

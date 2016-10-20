@@ -122,7 +122,7 @@ package meta factoryId 29 {
         optional identifier                 canonicalName;      // fully qualified name
     }
 
-    final immutable class LocaleAdapter is java.util.Locale adapter de.jpaw.bonaparte.core.LocaleAdapterImpl withExceptionConverter {
+    final immutable class LocaleAdapter classId 23 is java.util.Locale adapter de.jpaw.bonaparte.core.LocaleAdapterImpl withExceptionConverter {
         optional Ascii(7)                   language;           // ISO 639 language code, typically 2 lowercase letters
         optional Ascii(3)                   country;            // ISO 3166 country code (A2 or N3)
         optional Ascii(16)                  variant;            // variant code

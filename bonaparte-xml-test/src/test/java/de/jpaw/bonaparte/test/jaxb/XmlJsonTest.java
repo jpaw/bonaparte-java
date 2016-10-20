@@ -40,19 +40,21 @@ public class XmlJsonTest {
         Map<String, Object> map = new HashMap<String, Object>(4);
         map.put("hello", "world");
         map.put("isGreen", true);
-        
+
         Test4XML obj = new Test4XML();
+        obj.setFirst("Hello");
         obj.setObj(3.15);
         obj.setJsono(map);
-        
+
         List many = new ArrayList<Object>(8);
         many.add(3.55);
         many.add(true);
         many.add(null);
         many.add("bye");
         obj.setMany(many);
-        
+
         obj.setArr(many);
+        obj.setLast("world");
 
         // create the XML for this
         JAXBContext context = JAXBContext.newInstance(PACKAGE);

@@ -147,7 +147,7 @@ public class DayTime {
     static public int timeAsInt(LocalTime when) {
         return when.getMillisOfSecond() + 1000 * when.getSecondOfMinute() + 100000 * when.getMinuteOfHour() + 10000000 * when.getHourOfDay();
     }
-    
+
 //    static public Instant toInstant(LocalDateTime ldt) {
 //        // no good conversion known ? return new Instant(Date.getMillis(ldt.toDate()));
 //    }

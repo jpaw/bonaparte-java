@@ -18,7 +18,15 @@ package api factoryId 25 {
         ACTIVATE    = "A",  // (re)activate a record
         VERIFY      = "V",  // verify that the primary and a provided alternate key refer to the same resource
         MERGE       = "M",  // create or update (unkown prior state)
-        PATCH       = "P"   // field wise integration (update all non-null fields, or all fields by bitmap)
+        PATCH       = "P",  // field wise integration (update all non-null fields, or all fields by bitmap)
+        EXPORT      = "E",  // export data
+        IMPORT      = "T",  // import data
+        CONFIGURE   = "F",  // configure settings
+        CONTEXT     = "Q",  // in UI: use context menu
+        ADMIN       = "K",  // owns elevated permissions, for example to define defaults for others
+        APPROVE     = "Y",  // approve cases
+        REJECT      = "N",  // decline cases
+        CUSTOM      = "Z"   // context
     }
 
     /** Base class for all DTOs which can be stored in some key/value store and have a primitive or wrapped long
@@ -31,7 +39,7 @@ package api factoryId 25 {
        refp "0L"
        keyp "new VoidRef()" {
     }
-    
+
     /** Just an anchor for composite keys. */
     abstract class CompositeKeyRef {}
 
@@ -115,6 +123,12 @@ package api factoryId 25 {
     final class NotFilter classId 22 extends SearchFilter {
         required (SearchFilter...)                  filter;
     }
+
+    /** A filter which is always true. To be used in cases when null (absence of a filter) is not suitable. */
+    final class TrueFilter classId 38 extends SearchFilter {}
+
+    /** A filter which is always false. */
+    final class FalseFilter classId 39 extends SearchFilter {}
 
     /** Base class for all field specific filters. */
     abstract class FieldFilter extends SearchFilter {

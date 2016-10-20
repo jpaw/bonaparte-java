@@ -42,13 +42,21 @@ public class ColumnCollector {
 
     public final List<UIColumn> columns = new ArrayList<UIColumn>();
     private final UIDefaults prefs;
+    private final boolean keepObjects;
 
     public ColumnCollector() {
         prefs = DEFAULTS;
+        keepObjects = false;
     }
 
     public ColumnCollector(UIDefaults preferences) {
         prefs = preferences;
+        keepObjects = false;
+    }
+
+    public ColumnCollector(UIDefaults preferences, boolean keepObjects) {
+        prefs = preferences;
+        this.keepObjects = keepObjects;
     }
 
     private int width(int chars) {
@@ -68,6 +76,12 @@ public class ColumnCollector {
             ObjectReference o = (ObjectReference)f;
             if (o.getLowerBound() != null) {
                 // yes, descend! (discards the descriptor prepared before...)
+                if (keepObjects) {
+                    d.setWidth(prefs.getWidthObject());
+                    d.setAlignment(Alignment.LEFT);  // probably replaced by some description
+                    d.setLayoutHint(LayoutHint.OBJECT);
+                    columns.add(d);
+                }
                 addToColumns(pathname + ".", o.getSecondaryLowerBound() != null ? o.getSecondaryLowerBound() : o.getLowerBound());
             } else {
                 // regular object
@@ -136,7 +150,7 @@ public class ColumnCollector {
             return;
         }
 
-        // anything else (binary for example) ignore
+        // anything else (binary for example) ignore (for images or JSON, context menus / popups should be used)
     }
 
     private void addToColumnsNoRecursion(String prefix, ClassDefinition cls) {
@@ -284,7 +298,7 @@ public class ColumnCollector {
             }
         }
     }
-    
+
     /** Given a path name of the form field1[index].field2[index2], with optional array indexes, return a stripped field name field1.field2.
      * Nested brackets are currently NOT supported. */
     public String stripArrayIndexes(String pathname) throws UtilException {
@@ -310,7 +324,7 @@ public class ColumnCollector {
         result.append(pathname.substring(rest));
         return result.toString();
     }
-    
+
     /** Create meta for a single field. No properties stored. */
     public void createUIMeta(UIColumnConfiguration ui, ClassDefinition cls) throws UtilException {
         String strippedPathname = stripArrayIndexes(ui.getFieldName());  // properties are the same for different indexes of the same field
@@ -324,7 +338,7 @@ public class ColumnCollector {
         // create a hash of the field names
         Map<String, UIColumnConfiguration> fields = new HashMap<String, UIColumnConfiguration>(uis.size() * 2);
         Set<String> usedClasses = new HashSet<String>();
-        
+
         // walk all fields, use the hash to avoid computing similar names multiple times
         for (UIColumnConfiguration ui : uis) {
             String strippedPathname = stripArrayIndexes(ui.getFieldName());  // properties are the same for different indexes of the same field
@@ -344,7 +358,7 @@ public class ColumnCollector {
         }
 
         // now assign the properties at field level
-        
+
         // TODO: nested fields still TODO - enhance meta information to simplify life...
         Map<String, String> classProperties = new HashMap<String, String>();
         for (Map.Entry<String, String> e : cls.getProperties().entrySet()) {

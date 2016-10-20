@@ -46,7 +46,7 @@ public class FreezeTools {
         }
         return b.build();
     }
-    
+
     @SuppressWarnings("unchecked")
     public static Object freeze(Object input) {
         if (input == null)

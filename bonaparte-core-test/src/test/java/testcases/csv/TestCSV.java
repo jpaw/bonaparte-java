@@ -79,7 +79,7 @@ public class TestCSV {
         CSVConfiguration cfgDE = CSVConfiguration.Builder.from(cfg1).forLocale(Locale.GERMAN).build();
         String input      = "Hello;-5;-3,14;;;0;12";
         StringCSVParser p = new StringCSVParser(cfgDE, input);
-        p.setNationalBigDecimal();  // switch to 
+        p.setNationalBigDecimal();  // switch to
         BonaPortable o    = p.readObject(StaticMeta.OUTER_BONAPORTABLE_FOR_CSV, testData.getClass());
         Assert.assertEquals(testData, o);
     }
