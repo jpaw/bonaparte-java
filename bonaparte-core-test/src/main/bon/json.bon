@@ -51,4 +51,14 @@ package jsonTest {
         Unicode(20) Map<String> map;
         int                     num;
     }
+    class Json2WithMap {
+        enum ColorAlnum         en;
+        Integer Map<String>     map;
+        int                     num;
+    }
+    class JsonWithMapOfObjects {
+        enum ColorAlnum         en;
+        (TestObj) Map<String>   map;
+        int                     num;
+    }
 }

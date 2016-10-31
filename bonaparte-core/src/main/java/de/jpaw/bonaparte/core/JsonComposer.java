@@ -163,9 +163,22 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
         // else it's the special JSON outer type to be ignored...
     }
 
+    protected boolean isListType(FieldDefinition di) {
+        switch (di.getMultiplicity()) {
+        case ARRAY:
+        case LIST:
+        case SET:
+            return true;
+        case MAP:
+        case SCALAR:
+            return false;
+        }
+        return false;
+    }
+
     /** Writes a quoted fieldname, if not in an array, or a separator only. */
     protected void writeOptionalFieldName(FieldDefinition di) throws IOException {
-        if (di.getMultiplicity() != Multiplicity.SCALAR) {
+        if (isListType(di)) {
             // inside array: must write without a name
             writeSeparator();
         } else {
@@ -174,7 +187,7 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
     }
 
     protected void writeOptionalUnquotedString(FieldDefinition di, String s) throws IOException {
-        if (di.getMultiplicity() != Multiplicity.SCALAR) {
+        if (isListType(di)) {
             // must write a null without a name
             writeSeparator();
             out.append(s == null ? "null" : s);
@@ -188,7 +201,7 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
     }
 
     protected void writeOptionalQuotedAscii(FieldDefinition di, String s) throws IOException {
-        if (di.getMultiplicity() != Multiplicity.SCALAR) {
+        if (isListType(di)) {
             // must write a null without a name
             writeSeparator();
             if (s == null)
@@ -205,7 +218,7 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
     }
 
     protected void writeOptionalQuotedUnicodeNoControls(FieldDefinition di, String s) throws IOException {
-        if (di.getMultiplicity() != Multiplicity.SCALAR) {
+        if (isListType(di)) {
             // must write a null without a name
             writeSeparator();
             if (s == null)
@@ -223,7 +236,7 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
 
     @Override
     public void writeNull(FieldDefinition di) throws IOException {
-        if (di.getMultiplicity() != Multiplicity.SCALAR) {
+        if (isListType(di)) {
             // must write a null without a name
             writeSeparator();
             out.append("null");
@@ -414,7 +427,7 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
             remFieldName = s;
             return;
         }
-        if (di.getMultiplicity() != Multiplicity.SCALAR && di.getMultiplicity() != Multiplicity.MAP) {
+        if (isListType(di)) {
             // in array, list or set
             // must write a null without a name!
             writeSeparator();
@@ -447,7 +460,7 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
 
     @Override
     public void addField(ObjectReference di, BonaCustom obj) throws IOException {
-        if (di.getMultiplicity() != Multiplicity.SCALAR) {
+        if (isListType(di)) {
             // must write a null without a name
             writeSeparator();
             if (obj == null) {
