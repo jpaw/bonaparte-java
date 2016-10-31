@@ -244,6 +244,7 @@ public class ColumnCollector {
                 EnumDefinition ed           = en.getBaseEnum();
                 m.setPqon(ed.getName());
                 m.setEnumInstances(ed.getIds());
+                m.setEnumTokens(ed.getTokens());
 
             } else if (meta instanceof XEnumDataItem) {
                 XEnumDataItem xen           = (XEnumDataItem)meta;
@@ -252,12 +253,14 @@ public class ColumnCollector {
                 m.setPqon2(xed.getName());
                 m.setPqon(ed.getName());
                 m.setEnumInstances(ed.getIds());
+                m.setEnumTokens(ed.getTokens());
 
             } else if (meta instanceof AlphanumericEnumSetDataItem) {
                 AlphanumericEnumSetDataItem en = (AlphanumericEnumSetDataItem)meta;
                 EnumDefinition ed           = en.getBaseEnumset().getBaseEnum();
                 m.setPqon(ed.getName());
                 m.setEnumInstances(ed.getIds());
+                m.setEnumTokens(ed.getTokens());
 
             } else if (meta instanceof NumericEnumSetDataItem) {
                 NumericEnumSetDataItem en   = (NumericEnumSetDataItem)meta;
@@ -273,6 +276,7 @@ public class ColumnCollector {
                 m.setPqon2(xed.getName());
                 m.setPqon(ed.getName());
                 m.setEnumInstances(ed.getIds());
+                m.setEnumTokens(ed.getTokens());
 
             } else if (meta instanceof TemporalElementaryDataItem) {
                 TemporalElementaryDataItem tn = (TemporalElementaryDataItem)meta;
