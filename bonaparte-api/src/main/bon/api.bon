@@ -228,4 +228,47 @@ package api factoryId 25 {
         optional Time(0)                            upperBound;
         required Time(0) List<>                     valueList;
     }
+
+    /** Provides filtering for UUIDs.
+     */
+    final class UuidFilter classId 40 extends FieldFilter {
+        optional Uuid                               equalsValue;
+        required Uuid List<>                        valueList;
+    }
+
+    /** Provides filtering for double precision floating point.
+     */
+    final class DoubleFilter classId 41 extends FieldFilter {
+        optional Double                             equalsValue;
+        optional Double                             lowerBound;
+        optional Double                             upperBound;
+        required Double List<>                      valueList;
+    }
+
+    /** Provides filtering for single precision float.
+     */
+    final class FloatFilter classId 42 extends FieldFilter {
+        optional Float                              equalsValue;
+        optional Float                              lowerBound;
+        optional Float                              upperBound;
+        required Float List<>                       valueList;
+    }
+
+    /** Provides filtering for integral values of signed 15 bit.
+     */
+    final class ShortFilter classId 43 extends FieldFilter {
+        optional Short                              equalsValue;
+        optional Short                              lowerBound;
+        optional Short                              upperBound;
+        required Short List<>                       valueList;
+    }
+
+    /** Provides filtering for integral values of signed 7 bit. Exactly one of the fields must be not null.
+     */
+    final class ByteFilter classId 44 extends FieldFilter {
+        optional Byte                               equalsValue;
+        optional Byte                               lowerBound;
+        optional Byte                               upperBound;
+        required Byte List<>                        valueList;
+    }
 }
