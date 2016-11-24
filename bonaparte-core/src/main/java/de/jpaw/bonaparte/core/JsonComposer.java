@@ -489,7 +489,8 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
         } else {
             ByteBuilder tmp = new ByteBuilder((b.length() * 2) + 4, null);
             Base64.encodeToByte(tmp, b.getBytes(), 0, b.length());
-            jsonEscaper.outputAscii(new String(tmp.getCurrentBuffer(), 0, tmp.length()));
+            String s = new String(tmp.getCurrentBuffer(), 0, tmp.length());
+            writeOptionalQuotedAscii(di, s);
         }
     }
 
@@ -500,7 +501,8 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
         } else {
             ByteBuilder tmp = new ByteBuilder((b.length * 2) + 4, null);
             Base64.encodeToByte(tmp, b, 0, b.length);
-            jsonEscaper.outputAscii(new String(tmp.getCurrentBuffer(), 0, tmp.length()));
+            String s = new String(tmp.getCurrentBuffer(), 0, tmp.length());
+            writeOptionalQuotedAscii(di, s);
         }
     }
 
