@@ -19,6 +19,8 @@ package ui factoryId 25 {
         LOWER_BOUND     = "L",                      // input is a lower bound
         UPPER_BOUND     = "U",                      // input is an upper bound
         RANGE           = "R",                      // lower and upper bound (relates to 2 separate input fields)
+        NULL            = "N",                      // field should be null
+        IN              = "I",                      // field should be one of multiple options
         LIKE            = "W"                       // equality with wildcard (affects plausi check, only possible for text fields)
     }
 
@@ -35,6 +37,7 @@ package ui factoryId 25 {
     class UIFilter classId 45 {
         required Enum UIFilterType                  filterType;             // determines which type of filter to apply
         required identifier                         fieldName;              // field name in dotted notation (data.component.field[arrayIndex])
+        optional Boolean                            negate;                 // if Boolean.TRUE, then negate the filter
     }
 
     /** User specific configuration for a column. */
