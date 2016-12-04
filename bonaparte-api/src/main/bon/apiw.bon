@@ -5,12 +5,13 @@ import api.*
  */
 package apiw factoryId 25 {
     default private unsigned trim noControlChars;
+    properties notNull, noinsert, noupdate;
 
     /** Root class of reference objects. Using wrapped primitive long in order to support null intuitively.
      * Wrapped long (object) version.
      */
     class Ref classId 51 extends AbstractRef refw "objectRef" {
-        optional Long                               objectRef;
+        optional Long                               objectRef    properties notNull, noupdate;  // objectRef, as a primary key it cannot be changed and, if persisted, is never null 
     }
 
     /** A class which allows the separation of multiple tenants.
