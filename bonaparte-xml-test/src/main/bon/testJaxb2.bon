@@ -1,0 +1,8 @@
+package test.jaxb2 XML FIELD NAMESPACEPREFIX "" ATTRIBUTEFORMDEFAULT QUALIFIED ELEMENTFORMDEFAULT UNSET {
+    class TestXml XML FIELD xmlRoot {
+        default public;
+
+        int         test;
+        Ascii(10)   data;
+    }
+}

@@ -13,7 +13,7 @@ package test.jaxb {
         Int (6,3) round roundedMillis;
     }
 
-    class TestXml2Up XML PROPERTY uppercase xmlRoot {
+    class TestXml2Up XML PROPERTY UPPERCASE xmlRoot {
         default public;
 
         byte(2)     digits2;
@@ -23,7 +23,7 @@ package test.jaxb {
     }
 
 
-    class TestXml2UpF XML FIELD uppercase xmlRoot {
+    class TestXml2UpF XML FIELD UPPERCASE xmlRoot {
         default public;
 
         byte(2)     digits2;
