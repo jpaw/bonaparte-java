@@ -37,4 +37,13 @@ package mapTests {
         required Integer required Map<String>   mrr;
         optional Integer required Map<String>   mor;
     }
+    
+    class ClassWithEnum {
+        enum Color                         color;
+        enum AlphaColor                    alphaColor;
+    }
+
+    class ClassWithMapWithObjectWithEnum {
+        Element                            data;
+    }
 }
