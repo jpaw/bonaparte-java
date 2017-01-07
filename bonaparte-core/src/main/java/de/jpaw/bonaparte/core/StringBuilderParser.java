@@ -274,8 +274,8 @@ public final class StringBuilderParser extends AbstractPartialJsonStringParser i
         if (checkForNull(fieldname, isRequired)) {
             return null;
         }
-        // OK, read it
-        StringBuffer tmp = new StringBuffer(length == 0 ? 32 : length);
+        // OK, read it. The provided length can be huge, use a sensible starting size if it is too big
+        StringBuffer tmp = new StringBuffer(length == 0 || length > 256 ? 256 : length);
         char c;
         if (doTrim) {
             // skip leading spaces

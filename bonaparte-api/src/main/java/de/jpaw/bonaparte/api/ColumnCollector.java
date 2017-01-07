@@ -139,6 +139,15 @@ public class ColumnCollector {
             columns.add(d);
             return;
         }
+        if (f instanceof BinaryElementaryDataItem) {
+            // all binary fields
+            BinaryElementaryDataItem a = (BinaryElementaryDataItem)f;
+            d.setWidth(width(2 + 2 * a.getLength()));  // space for 0x, followed by hex representation
+            d.setAlignment(Alignment.LEFT);
+            d.setLayoutHint(LayoutHint.TEXT);   // image just in some cases
+            columns.add(d);
+            return;
+        }
 
         // enum or enumset...
         String category = f.getDataCategory().name();
