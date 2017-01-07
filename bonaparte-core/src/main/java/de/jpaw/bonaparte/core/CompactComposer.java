@@ -30,6 +30,14 @@ public class CompactComposer extends AbstractCompactComposer {
      * Charset
      **/
     public CompactComposer(DataOutput out, ObjectReuseStrategy reuseStrategy, boolean recommendIdentifiable) {
-        super(out, reuseStrategy, recommendIdentifiable);
+        super(out, reuseStrategy, recommendIdentifiable, true);
+    }
+
+    /**
+     * Creates a new ByteArrayComposer, using this classes static default
+     * Charset
+     **/
+    public CompactComposer(DataOutput out, ObjectReuseStrategy reuseStrategy, boolean recommendIdentifiable, boolean useJsonForBonaCustomInElements) {
+        super(out, reuseStrategy, recommendIdentifiable, useJsonForBonaCustomInElements);
     }
 }

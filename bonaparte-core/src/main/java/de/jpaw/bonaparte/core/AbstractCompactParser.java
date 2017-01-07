@@ -909,11 +909,13 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
             return readDateTime("$jsonElemDateTime", false);
         case COMPACT_DATETIME_MILLIS:       //0xdc
             return readDateTime("$jsonElemDateTimeMs", true);
+
         case OBJECT_AGAIN:                  //0xdd
         case OBJECT_BEGIN_ID:               //0xde
         case OBJECT_BEGIN_PQON:             //0xdf
-            // cannot happen within JSON, except if the structure has been redeclared.
-            throw newMPE(MessageParserException.INVALID_BACKREFERENCE, "in JSON element");
+            // object within JSON
+            pushback(c);
+            return readObject(StaticMeta.INNER_BONAPORTABLE, BonaPortable.class);
 
         case COMPACT_BIGINTEGER:            //0xe0
             {

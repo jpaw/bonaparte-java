@@ -55,6 +55,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
             return null;
         }
     }
+    private final boolean useJsonForBonaCustomInElements;       // if true, the subobjects inside Element will be output as JSON. This kills enums on deserialization, but allows to deserialize objects not known on receiver side. 
     private final boolean useCache;
     private final Map<BonaCustom, Integer> objectCache;
     private int numberOfObjectsSerialized;
@@ -65,7 +66,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
     protected boolean skipLowerBoundObjectDescription = true;   // if true and the object to serialize corresponds to its lower bound, then do not output the class description
     protected AbstractCompactComposer jsonComposer = null;      // derived composer on same DataOutput, which also creates field names. Will be initialized on demand.
 
-    protected AbstractCompactComposer(DataOutput out, ObjectReuseStrategy reuseStrategy, boolean recommendIdentifiable) {
+    protected AbstractCompactComposer(DataOutput out, ObjectReuseStrategy reuseStrategy, boolean recommendIdentifiable, boolean useJsonForBonaCustomInElements) {
         switch (reuseStrategy) {
         case BY_CONTENTS:
             this.objectCache = new HashMap<BonaCustom, Integer>(250);
@@ -82,6 +83,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
         }
         this.out = out;
         this.recommendIdentifiable = recommendIdentifiable;
+        this.useJsonForBonaCustomInElements = useJsonForBonaCustomInElements;
         numberOfObjectsSerialized = 0;
         numberOfObjectReuses = 0;
     }
@@ -946,11 +948,14 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
             throw new RuntimeException("Cannot transform joda readable partial of type " + obj.getClass().getSimpleName() + " to JSON");
         }
         if (obj instanceof BonaCustom) {
-            // addField(di, (BonaCustom)obj);      // output objects as object, even within JSON! (catch issues during deserialize)
-            // create a special JSON composer on demand
-            if (jsonComposer == null)
-                jsonComposer = new CompactJsonComposer(out);        // composer which adds ability to output field names
-            jsonComposer.writeObject((BonaCustom)obj);
+            if (useJsonForBonaCustomInElements) {
+                // create a special JSON composer on demand
+                if (jsonComposer == null)
+                    jsonComposer = new CompactJsonComposer(out);        // composer which adds ability to output field names
+                jsonComposer.writeObject((BonaCustom)obj);
+            } else {
+                addField(StaticMeta.INNER_BONAPORTABLE, (BonaCustom)obj);      // output objects as object, even within JSON! (catch issues during deserialize)
+            }
             return;
         }
         if (obj instanceof Object []) {

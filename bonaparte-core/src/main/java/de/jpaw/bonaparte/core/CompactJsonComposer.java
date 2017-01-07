@@ -30,7 +30,7 @@ public class CompactJsonComposer extends AbstractCompactComposer {
     private int arrayDepth = 0;
 
     protected CompactJsonComposer(DataOutput out) {
-        super(out, ObjectReuseStrategy.NONE, false);
+        super(out, ObjectReuseStrategy.NONE, false, true);
     }
 
     protected void resetArrayDepth() {      // arrayDepth counts the level how deep we are in nested arrays / maps, which determines if field name output is required

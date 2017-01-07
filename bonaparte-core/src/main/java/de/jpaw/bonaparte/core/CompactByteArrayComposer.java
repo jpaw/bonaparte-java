@@ -24,6 +24,15 @@ public class CompactByteArrayComposer extends AbstractCompactComposer implements
     protected final ByteBuilder out;
 
 
+    /** Quick conversion utility method, for use by code generators. (null safe).   Treats embedded JSONs differently than marshal().  */
+    public static byte [] marshalIdentity(ObjectReference di, BonaPortable x) {
+        if (x == null)
+            return null;
+        ByteBuilder b = new ByteBuilder();
+        new CompactByteArrayComposer(b, ObjectReuseStrategy.defaultStrategy, false, false).addField(di, x);
+        return b.getBytes();
+    }
+
     /** Quick conversion utility method, for use by code generators. (null safe) */
     public static byte [] marshal(ObjectReference di, BonaPortable x) {
         if (x == null)
@@ -85,15 +94,19 @@ public class CompactByteArrayComposer extends AbstractCompactComposer implements
     }
 
     public CompactByteArrayComposer() {
-        this(new ByteBuilder(DEFAULT_BUFFER_SIZE, getDefaultCharset()), ObjectReuseStrategy.defaultStrategy, false);
+        this(new ByteBuilder(DEFAULT_BUFFER_SIZE, getDefaultCharset()), ObjectReuseStrategy.defaultStrategy, false, true);
+    }
+
+    public CompactByteArrayComposer(boolean useJsonForBonaCustomInElements) {
+        this(new ByteBuilder(DEFAULT_BUFFER_SIZE, getDefaultCharset()), ObjectReuseStrategy.defaultStrategy, false, useJsonForBonaCustomInElements);
     }
 
     public CompactByteArrayComposer(int bufferSize, boolean recommendIdentifiable) {
-        this(new ByteBuilder(bufferSize, getDefaultCharset()), ObjectReuseStrategy.defaultStrategy, recommendIdentifiable);
+        this(new ByteBuilder(bufferSize, getDefaultCharset()), ObjectReuseStrategy.defaultStrategy, recommendIdentifiable, true);
     }
 
     public CompactByteArrayComposer(ByteBuilder out, boolean recommendIdentifiable) {
-        this(out, ObjectReuseStrategy.defaultStrategy, recommendIdentifiable);
+        this(out, ObjectReuseStrategy.defaultStrategy, recommendIdentifiable, true);
     }
 
     /**
@@ -101,7 +114,16 @@ public class CompactByteArrayComposer extends AbstractCompactComposer implements
      * Charset
      **/
     public CompactByteArrayComposer(ByteBuilder out, ObjectReuseStrategy reuseStrategy, boolean recommendIdentifiable) {
-        super(out, reuseStrategy, recommendIdentifiable);
+        super(out, reuseStrategy, recommendIdentifiable, true);
+        this.out = out;
+    }
+
+    /**
+     * Creates a new ByteArrayComposer, using this classes static default
+     * Charset
+     **/
+    public CompactByteArrayComposer(ByteBuilder out, ObjectReuseStrategy reuseStrategy, boolean recommendIdentifiable, boolean useJsonForBonaCustomInElements) {
+        super(out, reuseStrategy, recommendIdentifiable, useJsonForBonaCustomInElements);
         this.out = out;
     }
 
