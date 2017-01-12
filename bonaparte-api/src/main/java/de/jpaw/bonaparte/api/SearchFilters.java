@@ -4,10 +4,13 @@ import java.util.List;
 
 import de.jpaw.bonaparte.pojos.api.AndFilter;
 import de.jpaw.bonaparte.pojos.api.FalseFilter;
+import de.jpaw.bonaparte.pojos.api.IntFilter;
+import de.jpaw.bonaparte.pojos.api.LongFilter;
 import de.jpaw.bonaparte.pojos.api.NotFilter;
 import de.jpaw.bonaparte.pojos.api.OrFilter;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
 import de.jpaw.bonaparte.pojos.api.TrueFilter;
+import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
 
 /** Methods to combine search filters. All methods in this class immediately evaluate logical operations on true or false. */
 public class SearchFilters {
@@ -62,5 +65,26 @@ public class SearchFilters {
         for (SearchFilter f : filters)
             current = or(current, f);
         return current;
+    }
+    
+    
+    // some useful shortcuts (as xtend extension methods) to work around missing default parameters in Java
+    
+    public static IntFilter equalsFilter(String fieldName, Integer value) {
+        IntFilter f = new IntFilter(fieldName);
+        f.setEqualsValue(value);
+        return f;
+    }
+    
+    public static LongFilter equalsFilter(String fieldName, Long value) {
+        LongFilter f = new LongFilter(fieldName);
+        f.setEqualsValue(value);
+        return f;
+    }
+    
+    public static UnicodeFilter equalsFilter(String fieldName, String value) {
+        UnicodeFilter f = new UnicodeFilter(fieldName);
+        f.setEqualsValue(value);
+        return f;
     }
 }

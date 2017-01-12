@@ -25,73 +25,83 @@ public class CompactByteArrayComposer extends AbstractCompactComposer implements
 
 
     /** Quick conversion utility method, for use by code generators. (null safe).   Treats embedded JSONs differently than marshal().  */
-    public static byte [] marshalIdentity(ObjectReference di, BonaPortable x) {
+    public static byte [] marshal(ObjectReference di, BonaPortable x, boolean useJsonForBonaCustomInElements) {
         if (x == null)
             return null;
         ByteBuilder b = new ByteBuilder();
-        new CompactByteArrayComposer(b, ObjectReuseStrategy.defaultStrategy, false, false).addField(di, x);
+        new CompactByteArrayComposer(b, ObjectReuseStrategy.defaultStrategy, false, useJsonForBonaCustomInElements).addField(di, x);
         return b.getBytes();
     }
 
     /** Quick conversion utility method, for use by code generators. (null safe) */
     public static byte [] marshal(ObjectReference di, BonaPortable x) {
-        if (x == null)
-            return null;
-        ByteBuilder b = new ByteBuilder();
-        new CompactByteArrayComposer(b, false).addField(di, x);
-        return b.getBytes();
+        return marshal(di, x, true);
     }
 
     /** Quick conversion utility method, for use by code generators. (null safe, avoids double copying of the result) */
-    public static ByteArray marshalAsByteArray(ObjectReference di, BonaPortable x) {
+    public static ByteArray marshalAsByteArray(ObjectReference di, BonaPortable x, boolean useJsonForBonaCustomInElements) {
         if (x == null)
             return null; // consistent with the other methods: f(null) = null  //  ByteArray.ZERO_BYTE_ARRAY;
         ByteBuilder b = new ByteBuilder();
-        new CompactByteArrayComposer(b, false).addField(di, x);
+        new CompactByteArrayComposer(b, ObjectReuseStrategy.defaultStrategy, false, useJsonForBonaCustomInElements).addField(di, x);
         return new ByteArray(b.getCurrentBuffer(), 0, b.length());
     }
-
+    public static ByteArray marshalAsByteArray(ObjectReference di, BonaPortable x) {
+        return marshalAsByteArray(di, x, true);
+    }
+    
     /** Quick conversion utility method, for use by code generators. (null safe) */
+    public static byte [] marshalAsElement(ObjectReference di, Object x, boolean useJsonForBonaCustomInElements) {
+        if (x == null)
+            return null;
+        ByteBuilder b = new ByteBuilder();
+        try {
+            new CompactByteArrayComposer(b, ObjectReuseStrategy.defaultStrategy, false, useJsonForBonaCustomInElements).addField(di, x);
+        } catch (IOException e) {
+            // NOT POSSIBLE
+            throw new RuntimeException(e);
+        }
+        return b.getBytes();
+    }
+
     public static byte [] marshalAsElement(ObjectReference di, Object x) {
+        return marshalAsElement(di, x, true);
+    }
+    
+    /** Quick conversion utility method, for use by code generators. (null safe) */
+    public static byte [] marshalAsArray(ObjectReference di, List<Object> x, boolean useJsonForBonaCustomInElements) {
         if (x == null)
             return null;
         ByteBuilder b = new ByteBuilder();
         try {
-            new CompactByteArrayComposer(b, false).addField(di, x);
+            new CompactByteArrayComposer(b, ObjectReuseStrategy.defaultStrategy, false, useJsonForBonaCustomInElements).addField(di, x);
         } catch (IOException e) {
             // NOT POSSIBLE
             throw new RuntimeException(e);
         }
         return b.getBytes();
     }
-
-    /** Quick conversion utility method, for use by code generators. (null safe) */
     public static byte [] marshalAsArray(ObjectReference di, List<Object> x) {
-        if (x == null)
-            return null;
-        ByteBuilder b = new ByteBuilder();
-        try {
-            new CompactByteArrayComposer(b, false).addField(di, x);
-        } catch (IOException e) {
-            // NOT POSSIBLE
-            throw new RuntimeException(e);
-        }
-        return b.getBytes();
+        return marshalAsArray(di, x, true);
     }
 
     /** Quick conversion utility method, for use by code generators. (null safe) */
-    public static byte [] marshalAsJson(ObjectReference di, Map<String, Object> x) {
+    public static byte [] marshalAsJson(ObjectReference di, Map<String, Object> x, boolean useJsonForBonaCustomInElements) {
         if (x == null)
             return null;
         ByteBuilder b = new ByteBuilder();
         try {
-            new CompactByteArrayComposer(b, false).addField(di, x);
+            new CompactByteArrayComposer(b, ObjectReuseStrategy.defaultStrategy, false, useJsonForBonaCustomInElements).addField(di, x);
         } catch (IOException e) {
             // NOT POSSIBLE
             throw new RuntimeException(e);
         }
         return b.getBytes();
     }
+    public static byte [] marshalAsJson(ObjectReference di, Map<String, Object> x) {
+        return marshalAsJson(di, x, true);
+    }
+    
 
     public CompactByteArrayComposer() {
         this(new ByteBuilder(DEFAULT_BUFFER_SIZE, getDefaultCharset()), ObjectReuseStrategy.defaultStrategy, false, true);

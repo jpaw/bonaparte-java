@@ -271,4 +271,19 @@ package api factoryId 25 {
         optional Byte                               upperBound;
         required Byte List<>                        valueList;
     }
+
+    /** Provides filtering for ByteArrays.
+     */
+    final class ByteArrayFilter classId 45 extends FieldFilter {
+        optional Binary(2000)                       equalsValue;
+        required Binary(2000) List<>                valueList;
+    }
+
+    /** Provides filtering for byte[].
+     */
+    final class BytesFilter classId 46 extends FieldFilter {
+        optional Raw(2000)                          equalsValue;
+        required Raw(2000) List<>                   valueList;
+    }
+
 }
