@@ -61,4 +61,53 @@ package jsonTest {
         (TestObj) Map<String>   map;
         int                     num;
     }
+    
+    class JsonWithList {
+        Integer         List<>          ciList;
+        int                             num1;
+        Unicode(20)     List<>          caList;
+        int                             num2;
+    }
+    class JsonWithListOfEnums {
+        enum ColorNum   List<>          cnList;
+        int                             num1;
+        enum ColorAlnum List<>          caList;
+        int                             num2;
+    }
+    class JsonWithStringMap {
+        Integer         Map<String>     ciMap;
+        int                             num1;
+        Unicode(20)     Map<String>     caMap;
+        int                             num2;
+    }
+    class JsonWithStringMapOfEnums {
+        enum ColorNum   Map<String>     cnMap;
+        int                             num1;
+        enum ColorAlnum Map<String>     caMap;
+        int                             num2;
+    }
+    class JsonWithLongMap {
+        Integer         Map<Long>       ciMap;
+        int                             num1;
+        Unicode(20)     Map<Long>       caMap;
+        int                             num2;
+    }
+    class JsonWithLongMapOfEnums {
+        enum ColorNum   Map<Long>       cnMap;
+        int                             num1;
+        enum ColorAlnum Map<Long>       caMap;
+        int                             num2;
+    }
+    class JsonWithIntegerMap {
+        Integer         Map<Integer>    ciMap;
+        int                             num1;
+        Unicode(20)     Map<Integer>    caMap;
+        int                             num2;
+    }
+    class JsonWithIntegerMapOfEnums {
+        enum ColorNum   Map<Integer>    cnMap;
+        int                             num1;
+        enum ColorAlnum Map<Integer>    caMap;
+        int                             num2;
+    }
 }

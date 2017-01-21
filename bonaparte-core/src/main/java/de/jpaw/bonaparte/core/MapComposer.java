@@ -2,6 +2,7 @@ package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,11 @@ public class MapComposer extends NoOpComposer<RuntimeException> implements Messa
     final protected Map<String, Object> storage;
     final protected boolean storeNulls;
     final protected boolean storePQON;      // set to true for JSON conversions
+    static interface Store {
+        void store(FieldDefinition di, Object x);
+        void storeKey(Object key);  // only used for Map
+    }
+    protected Store currentStorage = null; 
 
     static public Map<String,Object> marshal(BonaCustom obj) {
         MapComposer mc = new MapComposer();
@@ -84,8 +90,12 @@ public class MapComposer extends NoOpComposer<RuntimeException> implements Messa
     }
 
     protected void store(FieldDefinition di, Object x) {
-        if (x != null || storeNulls)
-            storage.put(di.getName(), x);
+        if (currentStorage != null) {
+            currentStorage.store(di, x);
+        } else {
+            if (x != null || storeNulls)
+                storage.put(di.getName(), x);
+        }
     }
 
     @Override
@@ -100,6 +110,11 @@ public class MapComposer extends NoOpComposer<RuntimeException> implements Messa
 
     @Override
     public void addField(AlphanumericElementaryDataItem di, String s) {
+        if (di == StaticMeta.MAP_INDEX_META_STRING) {
+            // just remember the field name for later...
+            currentStorage.storeKey(s);
+            return;
+        }
         store(di, s);
     }
 
@@ -135,11 +150,21 @@ public class MapComposer extends NoOpComposer<RuntimeException> implements Messa
 
     @Override
     public void addField(BasicNumericElementaryDataItem di, int n) {
+        if (di == StaticMeta.MAP_INDEX_META_INTEGER) {
+            // just remember the field name for later...
+            currentStorage.storeKey(n);
+            return;
+        }
         store(di, Integer.valueOf(n));
     }
 
     @Override
     public void addField(BasicNumericElementaryDataItem di, long n) {
+        if (di == StaticMeta.MAP_INDEX_META_LONG) {
+            // just remember the field name for later...
+            currentStorage.storeKey(n);
+            return;
+        }
         store(di, Long.valueOf(n));
     }
 
@@ -239,5 +264,60 @@ public class MapComposer extends NoOpComposer<RuntimeException> implements Messa
     @Override
     public void addField(ObjectReference di, Object obj) {
         store(di, obj);
+    }
+
+    static protected class ListStorage implements Store {
+        private final List<Object> currentList;
+        protected ListStorage(List<Object> currentList) {
+            this.currentList = currentList;
+        }
+        @Override
+        public void store(FieldDefinition di, Object x) {
+            currentList.add(x);
+        }
+        @Override
+        public void storeKey(Object key) {
+            throw new RuntimeException("Logic error: storeKey called for List/Set/Array subtype");
+        }
+    }
+
+    static protected class MapStorage implements Store {
+        private final Map<Object,Object> currentMap;
+        private Object lastKey = null;
+        protected MapStorage(Map<Object,Object> currentMap) {
+            this.currentMap = currentMap;
+        }
+        @Override
+        public void store(FieldDefinition di, Object x) {
+            currentMap.put(lastKey, x);
+        }
+        @Override
+        public void storeKey(Object key) {
+            lastKey = key;
+        }
+    }
+
+    @Override
+    public void startArray(FieldDefinition di, int currentMembers, int sizeOfElement) {
+        List<Object> currentList = new ArrayList<Object>(currentMembers);
+        store(di, currentList);
+        currentStorage = new ListStorage(currentList);
+    }
+
+    @Override
+    public void startMap(FieldDefinition di, int currentMembers) {
+        Map<Object,Object> currentMap = new HashMap<Object,Object>(currentMembers);
+        store(di, currentMap);
+        currentStorage = new MapStorage(currentMap);
+    }
+
+    @Override
+    public void terminateMap() {
+        currentStorage = null;
+    }
+
+    @Override
+    public void terminateArray() {
+        currentStorage = null;
     }
 }
