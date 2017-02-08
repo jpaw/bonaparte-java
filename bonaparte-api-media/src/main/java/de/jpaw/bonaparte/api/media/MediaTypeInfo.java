@@ -16,10 +16,8 @@ public class MediaTypeInfo {
 
     protected static void registerFormatType(MediaTypeDescriptor f) {
         f.freeze();  // make it immutable
-        if (reverseMimeMap.putIfAbsent(f.getMediaType(), f) != null) {
-            // was a new entry: also add the reverse mapping
-            mimeMap.putIfAbsent(f.getMimeType(), f);
-        }
+        reverseMimeMap.putIfAbsent(f.getMediaType(), f);
+        mimeMap.putIfAbsent(f.getMimeType(), f);
     }
 
     // static initializations
@@ -46,8 +44,9 @@ public class MediaTypeInfo {
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.JPG),                "jpg",  MediaCategory.IMAGE,   false, "image/jpeg"));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.PNG),                "png",  MediaCategory.IMAGE,   false, "image/png"));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.WAV),                "wav",  MediaCategory.AUDIO,   false, "audio/x-wav"));
-        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.MP3),                "mp3",  MediaCategory.AUDIO,   false, "audio/mpeg"));
-        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.MP4),                "mp4",  MediaCategory.VIDEO,   false, "video/mpeg"));
+        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.MP3),                "mp3",  MediaCategory.AUDIO,   false, "audio/mp3"));   // chrome, Opera
+        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.MP3),                "mp3",  MediaCategory.AUDIO,   false, "audio/mpeg"));  // firefox, IE
+        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.MP4),                "mp4",  MediaCategory.VIDEO,   false, "video/mp4"));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.MPG),                "mpg",  MediaCategory.VIDEO,   false, "video/mpeg"));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.RAW),                "dat",  MediaCategory.OTHER,   false, "application/octet-stream"));
     }
