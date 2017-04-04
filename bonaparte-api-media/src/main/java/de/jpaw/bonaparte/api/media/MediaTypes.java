@@ -13,6 +13,7 @@ public interface MediaTypes {
     public static final MediaXType MEDIA_XTYPE_CSV               = MediaXType.of(MediaType.CSV);
     public static final MediaXType MEDIA_XTYPE_TEXT              = MediaXType.of(MediaType.TEXT);
     public static final MediaXType MEDIA_XTYPE_HTML              = MediaXType.of(MediaType.HTML);
+    public static final MediaXType MEDIA_XTYPE_XHTML             = MediaXType.of(MediaType.XHTML);
     public static final MediaXType MEDIA_XTYPE_CSS               = MediaXType.of(MediaType.CSS);
     public static final MediaXType MEDIA_XTYPE_MARKDOWN          = MediaXType.of(MediaType.MARKDOWN);
     public static final MediaXType MEDIA_XTYPE_TEX               = MediaXType.of(MediaType.TEX);

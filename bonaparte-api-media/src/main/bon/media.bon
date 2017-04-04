@@ -7,7 +7,7 @@ package api.media XML PROPERTY factoryId 25 {
         // structured output types (record output)
         BONAPARTE = "B", ^XML = "L", JSON = "J", NULL = "N", COMPACT_BONAPARTE = "c", XLS = "X", XLSX="x", CSV = "C",
         // textual document file output types
-        TEXT = "T", HTML="H", CSS="S", MARKDOWN = "m", TEX = "t", LATEX = "l", URL = "r",
+        TEXT = "T", HTML="H", XHTML="h", CSS="S", MARKDOWN = "m", TEX = "t", LATEX = "l", URL = "r",
         // binary document output types
         PDF = "P", DVI = "D", POSTSCRIPT = "o",
         // images

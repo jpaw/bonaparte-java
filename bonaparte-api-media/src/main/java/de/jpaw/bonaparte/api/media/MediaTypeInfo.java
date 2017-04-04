@@ -32,6 +32,7 @@ public class MediaTypeInfo {
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.CSV),                "csv",  MediaCategory.RECORDS, true,  MimeTypes.MIME_TYPE_CSV));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.TEXT),               "txt",  MediaCategory.TEXT,    true,  "text/plain"));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.HTML),               "html", MediaCategory.TEXT,    true,  "text/html"));
+        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.XHTML),              "xhtml",MediaCategory.TEXT,    true,  " application/xhtml+xml"));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.CSS),                "css",  MediaCategory.TEXT,    true,  "text/css"));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.MARKDOWN),           "md",   MediaCategory.TEXT,    true,  "text/markdown"));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.TEX),                "tex",  MediaCategory.TEXT,    true,  "application/x-tex"));
