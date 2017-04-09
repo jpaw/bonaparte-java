@@ -24,7 +24,6 @@ import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.IndexType;
 import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
-import de.jpaw.bonaparte.pojos.meta.Multiplicity;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
@@ -68,6 +67,19 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
     protected boolean needFieldSeparator = false;
     protected boolean needRecordSeparator = false;
 
+    public static String toJsonStringNoPQON(BonaCustom obj) {
+        if (obj == null)
+            return null;
+        StringBuilder buff = new StringBuilder(4000);
+        JsonComposer bjc = new JsonComposer(buff, false, false, false, false, new BonaparteJsonEscaper(buff));
+        bjc.setWriteCRs(false);
+        try {
+            bjc.writeRecord(obj);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return buff.toString();
+    }
     public static String toJsonString(BonaCustom obj) {
         if (obj == null)
             return null;
