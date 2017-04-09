@@ -1,0 +1,5 @@
+package test.unquali XML PROPERTY ELEMENTFORMDEFAULT UNQUALIFIED NAMESPACEPREFIX "" {
+    final class Test4XML XML PROPERTY xmlRoot {
+        required Ascii(8)               first;
+    }
+}
