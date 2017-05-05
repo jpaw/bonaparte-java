@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>bonaparte-base</artifactId>
-    <version>4.4.4</version>
+    <version>4.4.5</version>
     <packaging>pom</packaging>
 
     <description>build master for BONAPARTE based projects</description>
@@ -34,7 +34,7 @@
             <dependency>
                 <groupId>de.jpaw</groupId>
                 <artifactId>jdp-bom</artifactId>
-                <version>0.3.5</version>
+                <version>0.4.0</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
