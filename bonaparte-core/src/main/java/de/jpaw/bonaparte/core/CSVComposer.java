@@ -152,7 +152,7 @@ public class CSVComposer extends AppendableComposer {
 
     @Override
     public void addField(AlphanumericElementaryDataItem di, String s) throws IOException {
-        writeString(replaceSeparator ? s.replace(cfg.separator, cfg.quoteReplacement): s);
+        writeString(replaceSeparator && s != null ? s.replace(cfg.separator, cfg.quoteReplacement): s);
     }
 
 
