@@ -54,6 +54,7 @@ public class CSVComposer extends AppendableComposer {
     protected final CSVConfiguration cfg;
 
     // derived data from CSVConfiguration
+    protected final boolean replaceSeparator;               // true is a separator is specified and we use unquoted strings and the quote is null, but a quote replacement defined
     protected final String stringQuote;                     // quote character for strings, as a string
     protected final DateTimeFormatter dayFormat;            // day without time (Joda)
     protected final DateTimeFormatter timeFormat;           // time on second precision (Joda)
@@ -71,6 +72,7 @@ public class CSVComposer extends AppendableComposer {
         super(work, ObjectReuseStrategy.NONE);  // CSV does not know about object backreferences...
         this.cfg = cfg;
         this.stringQuote = (cfg.quote != null) ? String.valueOf(cfg.quote) : "";  // use this for cases where a String is required
+        this.replaceSeparator = (cfg.quote == null) && cfg.quoteReplacement != null && cfg.separator != null && cfg.separator.length() > 0;
         //this.usesDefaultDecimalPoint = cfg.decimalPoint.equals(".");
         //this.shouldWarnWhenUsingFloat = cfg.decimalPoint.length() == 0;     // removing decimal points from float or double is a bad idea, because no scale is defined
 
@@ -150,7 +152,7 @@ public class CSVComposer extends AppendableComposer {
 
     @Override
     public void addField(AlphanumericElementaryDataItem di, String s) throws IOException {
-        writeString(s);
+        writeString(replaceSeparator ? s.replace(cfg.separator, cfg.quoteReplacement): s);
     }
 
 
