@@ -21,7 +21,8 @@ package ui factoryId 25 {
         RANGE           = "R",                      // lower and upper bound (relates to 2 separate input fields)
         NULL            = "N",                      // field should be null
         IN              = "I",                      // field should be one of multiple options
-        LIKE            = "W"                       // equality with wildcard (affects plausi check, only possible for text fields)
+        LIKE            = "W",                      // equality with wildcard (affects plausi check, only possible for text fields)
+        CUSTOM          = "C"                       // custom filter - must specify qualifier
     }
 
     /** Defines properties of a column displayed in some UI, to be used with the foldingComposer. */
@@ -38,6 +39,7 @@ package ui factoryId 25 {
         required Enum UIFilterType                  filterType;             // determines which type of filter to apply
         required identifier                         fieldName;              // field name in dotted notation (data.component.field[arrayIndex])
         optional Boolean                            negate;                 // if Boolean.TRUE, then negate the filter
+        optional Unicode(32)                        qualifier;              // specifies custom implementation - required for UIFilterType C but can be used for standard filter types as well
     }
 
     /** User specific configuration for a column. */
