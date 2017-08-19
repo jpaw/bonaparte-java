@@ -50,6 +50,7 @@ package ui factoryId 25 {
         optional Enum UIFilterType                  filterType;             // determines which type of filter to apply
         optional Boolean                            notSelectable;          // TRUE if the column cannot be selected in a grid to be displayed (columns which are for filter only)
         optional (UIMeta)                           meta;                   // condensed meta data
+        optional Unicode(32)                        filterQualifier;        // specifies custom implementation - required for UIFilterType C but can be used for standard filter types as well
     }
 
     /** Condensed meta data (meta.FieldDefinition), which is required if the UI is not Java based. */
