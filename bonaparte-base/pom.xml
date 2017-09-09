@@ -5,7 +5,7 @@
     <parent>
         <groupId>de.jpaw</groupId>
         <artifactId>jpaw-se-parent</artifactId>
-        <version>1.1.3</version>
+        <version>1.1.4</version>
         <relativePath/>
     </parent>
 
@@ -20,21 +20,21 @@
             <dependency>
                 <groupId>de.jpaw</groupId>
                 <artifactId>jpaw-bom</artifactId>
-                <version>1.5.12</version>
+                <version>1.5.13</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>de.jpaw</groupId>
                 <artifactId>fixedpoint-bom</artifactId>
-                <version>0.7.1</version>
+                <version>0.7.2</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>de.jpaw</groupId>
                 <artifactId>jdp-bom</artifactId>
-                <version>0.4.0</version>
+                <version>0.4.1</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
@@ -42,12 +42,8 @@
     </dependencyManagement>
 
     <properties>
-        <!-- temporary overides (newer than in jpaw-se-parent 1.1.3) -->
-        <slf4j.version>1.7.25</slf4j.version>           <!-- http://www.slf4j.org/ -->
-        <logback.version>1.2.3</logback.version>        <!-- http://logback.qos.ch/ -->
-
         <!-- define revisions of other jpaw.de projects, not covered by plugin management -->
-        <bonaparte-plugin.version>4.4.7</bonaparte-plugin.version>
+        <bonaparte-plugin.version>4.4.8</bonaparte-plugin.version>
         <bonaparte-plugin-commons-lang.version>2.6</bonaparte-plugin-commons-lang.version>      <!-- currently needed by the plugins -->
 
         <!-- define releases (mostly of 3rd party dependencies) we want to use, to ensure consistency -->
@@ -58,7 +54,7 @@
         <netty.version>4.1.8.Final</netty.version>      <!-- https://netty.io/news/ -->
         <poi.version>3.14</poi.version>                 <!-- http://poi.apache.org/ UPTODATE 2016-03-20 -->
         <mina.version>2.0.7</mina.version>              <!-- http://mina.apache.org/ 2.0.7 -->
-        <camel.version>2.17.3</camel.version>           <!-- http://camel.apache.org/ --> <!-- UPTODATE 2016-08-08 -->
+        <camel.version>2.17.7</camel.version>           <!-- http://camel.apache.org/ -->
         <vertx.version>2.1.6</vertx.version>            <!-- http://vertx.io/ UPTODATE 2014-11-13 -->
         <vertx3.version>3.4.2</vertx3.version>          <!-- UPTODATE 2016-09-13 -->
 
