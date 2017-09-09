@@ -431,7 +431,7 @@ public final class StringBuilderParser extends AbstractPartialJsonStringParser i
         int foundIndexType = readInteger(fieldname);
         if (foundIndexType != di.getMapIndexType().ordinal()) {
             throw new MessageParserException(MessageParserException.WRONG_MAP_INDEX_TYPE,
-                    String.format("(got %d, expected for %s)", foundIndexType, di.getMapIndexType(), fieldname), parseIndex, currentClass);
+                    String.format("(got %d, expected %d for %s)", foundIndexType, di.getMapIndexType().ordinal(), fieldname), parseIndex, currentClass);
         }
         int n = readInteger(fieldname);
         if ((n < 0) || (n > 1000000000)) {
@@ -565,7 +565,7 @@ public final class StringBuilderParser extends AbstractPartialJsonStringParser i
         ParseSkipNonNulls mySetting = getSkipNonNullsBehavior();
         switch (mySetting) {
         case ERROR:
-            throw new MessageParserException(MessageParserException.EXTRA_FIELDS, String.format("(found byte 0x%02x)", z), parseIndex, currentClass);
+            throw new MessageParserException(MessageParserException.EXTRA_FIELDS, String.format("(found byte 0x%02x)", (int)z), parseIndex, currentClass);
         case WARN:
             LOGGER.warn("{} at index {} parsing class {}", MessageParserException.codeToString(MessageParserException.EXTRA_FIELDS), parseIndex, currentClass);
             // fall through

@@ -37,8 +37,8 @@ public class TestXenumSerialization {
     public void testEncodeDecode(BonaPortable obj) throws Exception {
         byte [] res1 = serialize(obj);
         Object r1 = deserialize(res1);
-        System.out.println("Got object " + r1.getClass().getName());
         assert(r1 != null);
+        System.out.println("Got object " + r1.getClass().getName());
         assert(r1 instanceof BonaPortable);
 //        System.out.println("Org object is " + ToStringHelper.toStringML(obj));
 //        System.out.println("New object is " + ToStringHelper.toStringML((BonaPortable)r1));

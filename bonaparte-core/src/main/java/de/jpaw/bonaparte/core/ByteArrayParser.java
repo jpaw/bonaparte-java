@@ -544,7 +544,7 @@ public class ByteArrayParser extends AbstractMessageParser<MessageParserExceptio
         int foundIndexType = readInteger(fieldname);
         if (foundIndexType != di.getMapIndexType().ordinal()) {
             throw new MessageParserException(MessageParserException.WRONG_MAP_INDEX_TYPE,
-                    String.format("(got %d, expected for %s)", foundIndexType, di.getMapIndexType(), fieldname), parseIndex, currentClass);
+                    String.format("(got %d, expected %d for %s)", foundIndexType, di.getMapIndexType().ordinal(), fieldname), parseIndex, currentClass);
         }
         int n = readInteger(fieldname);
         if ((n < 0) || (n > 1000000000)) {

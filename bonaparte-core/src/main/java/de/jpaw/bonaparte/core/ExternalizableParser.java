@@ -461,8 +461,8 @@ public final class ExternalizableParser extends AbstractMessageParser<IOExceptio
         needToken(MAP_BEGIN);
         int foundIndexType = readVarInt(fieldname, 32);
         if (foundIndexType != di.getMapIndexType().ordinal()) {
-            throw new IOException(String.format("WRONG_MAP_INDEX_TYPE: got %d, expected for %s.%s",
-                    foundIndexType, di.getMapIndexType(), currentClass, fieldname));
+            throw new IOException(String.format("WRONG_MAP_INDEX_TYPE: got %d, expected %d for %s.%s",
+                    foundIndexType, di.getMapIndexType().ordinal(), currentClass, fieldname));
         }
         int n = readVarInt(fieldname, 32);
         if ((n < 0) || (n > 1000000000)) {

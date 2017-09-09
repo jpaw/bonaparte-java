@@ -590,7 +590,7 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
 
     @Override
     public BonaPortable readRecord() throws MessageParserException {
-        BonaPortable obj = allocObject(map, null);
+        BonaPortable obj = allocObject(map, StaticMeta.OUTER_BONAPORTABLE);
         obj.deserialize(this);
         return obj;
     }

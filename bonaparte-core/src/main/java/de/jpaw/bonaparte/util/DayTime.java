@@ -105,7 +105,7 @@ public class DayTime {
         if (when == null) {
             return null;
         }
-        return new Date(when.getMillisOfDay());
+        return new Date(when.getMillisOfDay());  // intended conversion: Date is some time in Jan 1st 1970
     }
 
     /** Provides functionality to convert a Joda instant to a java Date. */

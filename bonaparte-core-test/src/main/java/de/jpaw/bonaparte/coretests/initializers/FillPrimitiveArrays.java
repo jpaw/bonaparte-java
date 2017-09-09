@@ -36,7 +36,7 @@ public class FillPrimitiveArrays {
         x.setShort1(shorta);
 
         boolean [] booleana = new boolean[1001];
-        for (int i = 0; i < 1001; ++i) booleana[i] = i%1 == 0;
+        for (int i = 0; i < 1001; ++i) booleana[i] = ((i & 1) == 0);
         x.setBoolean1(booleana);
 
         char [] chara = new char [333];
