@@ -18,12 +18,12 @@ public class TestBigDecimalParser {
         assert(((BDTest)(dst)).getAmount().scale() == 1);   // accepted as is
     }
 
-    @Test
-    public void testBigDecimalByteArrayRd1() throws Exception {
-        BonaPortable dst = SimpleTestRunner.runThroughByteArray(new BDTestWithAutoRounding(new BigDecimal("3.14010067878")));
-        assert(dst instanceof BDTestWithAutoRounding);
-        assert(((BDTestWithAutoRounding)(dst)).getAmount().scale() == 6);   // scale & round in case of extended precision
-    }
+//    @Test
+//    public void testBigDecimalByteArrayRd1() throws Exception {
+//        BonaPortable dst = SimpleTestRunner.runThroughByteArray(new BDTestWithAutoRounding(new BigDecimal("3.14010067878")));
+//        assert(dst instanceof BDTestWithAutoRounding);
+//        assert(((BDTestWithAutoRounding)(dst)).getAmount().scale() == 6);   // scale & round in case of extended precision
+//    }
 
     @Test
     public void testBigDecimalByteArrayRd2() throws Exception {
@@ -39,12 +39,12 @@ public class TestBigDecimalParser {
         assert(((BDTestWithAutoRoundingAndScaling)(dst)).getAmount().scale() == 6);  // DOES scale in case of lower precision
     }
 
-    @Test
-    public void testBigDecimalStringBuilderRd1() throws Exception {
-        BonaPortable dst = SimpleTestRunner.runThroughStringBuilder(new BDTestWithAutoRounding(new BigDecimal("3.14010067878")));
-        assert(dst instanceof BDTestWithAutoRounding);
-        assert(((BDTestWithAutoRounding)(dst)).getAmount().scale() == 6);   // scale & round in case of extended precision
-    }
+//    @Test
+//    public void testBigDecimalStringBuilderRd1() throws Exception {
+//        BonaPortable dst = SimpleTestRunner.runThroughStringBuilder(new BDTestWithAutoRounding(new BigDecimal("3.14010067878")));
+//        assert(dst instanceof BDTestWithAutoRounding);
+//        assert(((BDTestWithAutoRounding)(dst)).getAmount().scale() == 6);   // scale & round in case of extended precision
+//    }
 
     @Test
     public void testBigDecimalStringBuilderRd2() throws Exception {
