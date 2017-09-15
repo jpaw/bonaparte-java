@@ -1,12 +1,12 @@
 package de.jpaw.bonaparte.util;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.ObjectValidationException;
@@ -16,35 +16,29 @@ public class FrozenCloneTools {
     public static Map<String, Object> frozenClone(Map<String, Object> input) throws ObjectValidationException {
         if (input == null)
             return null;
-        ImmutableMap.Builder<String, Object> b = ImmutableMap.<String, Object>builder();
+        Map<String, Object> b = new HashMap<String, Object>(input.size() * 2);  // reserve space for a load factor of .5
         for (Map.Entry<String, Object> e : input.entrySet()) {
-            Object obj = frozenClone(e.getValue());
-            if (obj != null)
-                b.put(e.getKey(), obj);
+            b.put(e.getKey(), frozenClone(e.getValue()));
         }
-        return b.build();
+        return Collections.unmodifiableMap(b);
     }
     public static List<Object> frozenClone(List<Object> input) throws ObjectValidationException {
         if (input == null)
             return null;
-        ImmutableList.Builder<Object> b = ImmutableList.<Object>builder();
+        List<Object> b = new ArrayList<Object>(input.size());
         for (Object e : input) {
-            Object obj = frozenClone(e);
-            if (obj != null)
-                b.add(obj);
+            b.add(frozenClone(e));
         }
-        return b.build();
+        return Collections.unmodifiableList(b);
     }
     public static Set<Object> frozenClone(Set<Object> input) throws ObjectValidationException {
         if (input == null)
             return null;
-        ImmutableSet.Builder<Object> b = ImmutableSet.<Object>builder();
+        Set<Object> b = new HashSet<Object>(input.size() * 2);
         for (Object e : input) {
-            Object obj = frozenClone(e);
-            if (obj != null)
-                b.add(obj);
+            b.add(frozenClone(e));
         }
-        return b.build();
+        return Collections.unmodifiableSet(b);
     }
 
     @SuppressWarnings("unchecked")
