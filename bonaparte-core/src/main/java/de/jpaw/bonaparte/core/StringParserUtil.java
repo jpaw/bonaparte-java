@@ -19,6 +19,7 @@ import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
+import de.jpaw.bonaparte.util.DayTime;
 import de.jpaw.enums.AbstractXEnumBase;
 import de.jpaw.enums.XEnumFactory;
 import de.jpaw.util.Base64;
@@ -298,7 +299,7 @@ public class StringParserUtil {
             throw err(MessageParserException.ILLEGAL_TIME, di,
                       String.format("(found %d for %s)", (hour * 10000) + (minute * 100) + second, data));
         }
-        return new LocalTime(1000 * seconds + millis, DateTimeZone.UTC);
+        return DayTime.timeForMillis(1000 * seconds + millis);
     }
 
     // see ExtendedJsonEscaperForAppendables.instantInMillis: this variant assumes "false", i.e. instant in seconds.

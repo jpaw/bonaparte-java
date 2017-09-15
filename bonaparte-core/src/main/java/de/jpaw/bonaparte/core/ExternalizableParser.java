@@ -43,6 +43,7 @@ import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDefinition;
 import de.jpaw.bonaparte.util.BigDecimalTools;
+import de.jpaw.bonaparte.util.DayTime;
 import de.jpaw.enums.AbstractXEnumBase;
 import de.jpaw.enums.XEnumFactory;
 import de.jpaw.json.JsonException;
@@ -439,7 +440,7 @@ public final class ExternalizableParser extends AbstractMessageParser<IOExceptio
         if ((hour > 23) || (minute > 59) || (second > 59)) {
             throw new IOException(String.format("ILLEGAL TIME: found %d:%d:%d in %s.%s", hour, minute, second, currentClass, di.getName()));
         }
-        return new LocalTime(fractional, DateTimeZone.UTC);
+        return DayTime.timeForMillis(fractional);
     }
 
     @Override

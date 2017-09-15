@@ -27,6 +27,7 @@ import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDefinition;
+import de.jpaw.bonaparte.util.DayTime;
 import de.jpaw.enums.AbstractXEnumBase;
 import de.jpaw.enums.XEnumFactory;
 import de.jpaw.util.ByteArray;
@@ -521,7 +522,7 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
         int c = needToken();
         switch (c) {
         case COMPACT_TIME_MILLIS:
-            return new LocalTime(readInt(needToken(), di.getName()), DateTimeZone.UTC);
+            return DayTime.timeForMillis(readInt(needToken(), di.getName()));
         case COMPACT_TIME:
             return new LocalTime(readInt(needToken(), di.getName()) * 1000L, DateTimeZone.UTC);
         default:
@@ -904,7 +905,7 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
         case COMPACT_TIME:                  //0xd9
             return new LocalTime(readInt(needToken(), "$jsonElemTime") * 1000L, DateTimeZone.UTC);
         case COMPACT_TIME_MILLIS:           //0xda
-            return new LocalTime(readInt(needToken(), "$jsonElemTimeMs"), DateTimeZone.UTC);
+            return DayTime.timeForMillis(readInt(needToken(), "$jsonElemTimeMs"));
         case COMPACT_DATETIME:              //0xdb
             return readDateTime("$jsonElemDateTime", false);
         case COMPACT_DATETIME_MILLIS:       //0xdc

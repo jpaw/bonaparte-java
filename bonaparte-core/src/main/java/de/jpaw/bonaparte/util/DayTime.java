@@ -154,4 +154,9 @@ public class DayTime {
     static public LocalDateTime toLocalDateTime(Instant i) {
         return new LocalDateTime(i.getMillis(), DateTimeZone.UTC);
     }
+
+    /** Converts the time since midnight (in milliseconds, i.e. 0..86_400_000) to a LocalTime. */ 
+    static public LocalTime timeForMillis(int millis) {
+        return new LocalTime(millis, DateTimeZone.UTC);
+    }
 }
