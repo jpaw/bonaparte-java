@@ -5,25 +5,25 @@
     <parent>
         <groupId>de.jpaw</groupId>
         <artifactId>jpaw-se-parent</artifactId>
-        <version>1.1.2</version>
+        <version>1.1.3-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
     <artifactId>bonaparte.allplugins</artifactId>
-    <version>4.1.4</version>
+    <version>4.4.22-SNAPSHOT</version>
     <packaging>pom</packaging>
     
     <properties>
         <!-- define releases we want to use, to ensure consistency -->
-        <jpaw.version>1.5.7</jpaw.version>
-        <bonaparte.version>4.1.4</bonaparte.version>
+        <jpaw.version>1.5.21-SNAPSHOT</jpaw.version>
+        <bonaparte.version>4.4.22-SNAPSHOT</bonaparte.version>
     </properties>    
     
     <repositories>
         <repository>
             <id>p2-mars</id>
             <layout>p2</layout>
-            <url>http://download.eclipse.org/releases/neon</url>
+            <url>http://download.eclipse.org/releases/mars</url>
         </repository>
     </repositories>
 
