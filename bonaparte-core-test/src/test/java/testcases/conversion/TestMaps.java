@@ -36,31 +36,31 @@ public class TestMaps {
     public void testMaps() throws Exception {
         SimpleTestRunner.run(FillMaps.test1(), false);
     }
-    
+
     private BonaPortable generateData() {
         ClassWithEnum content = new ClassWithEnum();
         content.setColor(Color.GREEN);
         content.setAlphaColor(AlphaColor.GREEN);
-        
+
         ClassWithMapWithObjectWithEnum mainClass = new ClassWithMapWithObjectWithEnum();
         Map<String, Object> someData = new HashMap<String, Object>();
         someData.put("myKey", content);
         mainClass.setData(someData);
-        
+
         return mainClass;
     }
-    
+
     @Test(expectedExceptions = AssertionError.class)
     public void testMapsWithEnums1() throws Exception {
-        
+
         BonaPortable mainClass = generateData();
         // this test fails because the BonaPortable inside a map is not converted back into an object, it stays a map
         SimpleTestRunner.run(mainClass, false);
     }
-        
+
     @Test(expectedExceptions = AssertionError.class)
     public void testMapsWithEnums2() throws Exception {
-            
+
         BonaPortable mainClass = generateData();
         // this test fails because the BonaPortable inside a map is not converted back into an object, it stays a map
         CompactTest.run(mainClass, false);
@@ -68,16 +68,16 @@ public class TestMaps {
 
     @Test(expectedExceptions = ExpectedTestException.class)
     public void testMapsWithEnums3() throws Exception {
-            
+
         BonaPortable mainClass = generateData();
         // test again, using a predefined marshaller
         RecordMarshallerCompactBonaparte marshaller = new RecordMarshallerCompactBonaparte();
         ByteArray data = marshaller.marshal(mainClass);
-        
+
         ByteBuilder buffer = new ByteBuilder();
         buffer.write(data.getBytes());
         System.out.println("Data size is " + buffer.length());
-        
+
         BonaPortable out = marshaller.unmarshal(buffer);
         try {
             Assert.assertEquals(out, mainClass, "(Expect difference!): ");
@@ -89,16 +89,16 @@ public class TestMaps {
 
     @Test
     public void testMapsWithEnums4() throws Exception {
-            
+
         BonaPortable mainClass = generateData();
         // test again, using a predefined marshaller
         RecordMarshallerCompactBonaparteIdentity marshaller = new RecordMarshallerCompactBonaparteIdentity();
         ByteArray data = marshaller.marshal(mainClass);
-        
+
         ByteBuilder buffer = new ByteBuilder();
         buffer.write(data.getBytes());
         System.out.println("Data size is " + buffer.length());
-        
+
         BonaPortable out = marshaller.unmarshal(buffer);
         Assert.assertEquals(out, mainClass);
     }

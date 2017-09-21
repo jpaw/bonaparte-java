@@ -55,7 +55,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
             return null;
         }
     }
-    private final boolean useJsonForBonaCustomInElements;       // if true, the subobjects inside Element will be output as JSON. This kills enums on deserialization, but allows to deserialize objects not known on receiver side. 
+    private final boolean useJsonForBonaCustomInElements;       // if true, the subobjects inside Element will be output as JSON. This kills enums on deserialization, but allows to deserialize objects not known on receiver side.
     private final boolean useCache;
     private final Map<BonaCustom, Integer> objectCache;
     private int numberOfObjectsSerialized;

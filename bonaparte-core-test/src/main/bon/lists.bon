@@ -1,8 +1,8 @@
 package myList {
-    
+
     class ListTest {
         required Integer List<6>      rlist;
         optional Integer List<6>      olist;
-        
+
     }
 }

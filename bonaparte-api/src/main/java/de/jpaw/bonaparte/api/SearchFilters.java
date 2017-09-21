@@ -66,22 +66,22 @@ public class SearchFilters {
             current = or(current, f);
         return current;
     }
-    
-    
+
+
     // some useful shortcuts (as xtend extension methods) to work around missing default parameters in Java
-    
+
     public static IntFilter equalsFilter(String fieldName, Integer value) {
         IntFilter f = new IntFilter(fieldName);
         f.setEqualsValue(value);
         return f;
     }
-    
+
     public static LongFilter equalsFilter(String fieldName, Long value) {
         LongFilter f = new LongFilter(fieldName);
         f.setEqualsValue(value);
         return f;
     }
-    
+
     public static UnicodeFilter equalsFilter(String fieldName, String value) {
         UnicodeFilter f = new UnicodeFilter(fieldName);
         f.setEqualsValue(value);

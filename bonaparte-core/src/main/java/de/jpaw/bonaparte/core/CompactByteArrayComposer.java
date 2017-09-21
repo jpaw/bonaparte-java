@@ -49,7 +49,7 @@ public class CompactByteArrayComposer extends AbstractCompactComposer implements
     public static ByteArray marshalAsByteArray(ObjectReference di, BonaPortable x) {
         return marshalAsByteArray(di, x, true);
     }
-    
+
     /** Quick conversion utility method, for use by code generators. (null safe) */
     public static byte [] marshalAsElement(ObjectReference di, Object x, boolean useJsonForBonaCustomInElements) {
         if (x == null)
@@ -67,7 +67,7 @@ public class CompactByteArrayComposer extends AbstractCompactComposer implements
     public static byte [] marshalAsElement(ObjectReference di, Object x) {
         return marshalAsElement(di, x, true);
     }
-    
+
     /** Quick conversion utility method, for use by code generators. (null safe) */
     public static byte [] marshalAsArray(ObjectReference di, List<Object> x, boolean useJsonForBonaCustomInElements) {
         if (x == null)
@@ -101,7 +101,7 @@ public class CompactByteArrayComposer extends AbstractCompactComposer implements
     public static byte [] marshalAsJson(ObjectReference di, Map<String, Object> x) {
         return marshalAsJson(di, x, true);
     }
-    
+
 
     public CompactByteArrayComposer() {
         this(new ByteBuilder(DEFAULT_BUFFER_SIZE, getDefaultCharset()), ObjectReuseStrategy.defaultStrategy, false, true);

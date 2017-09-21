@@ -18,7 +18,7 @@
                 <groupId>org.eclipse.tycho</groupId>
                 <artifactId>tycho-maven-plugin</artifactId>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.eclipse.tycho</groupId>
                 <artifactId>tycho-p2-repository-plugin</artifactId>

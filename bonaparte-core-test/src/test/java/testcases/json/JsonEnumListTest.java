@@ -21,7 +21,7 @@ public class JsonEnumListTest {
     @Test
     public void runBonaList() throws Exception {
         JsonComposer.setDefaultWriteCRs(false);
-        
+
         JsonWithListOfEnums jwl = new JsonWithListOfEnums();
         jwl.setNum1(42);
         jwl.setNum2(28);

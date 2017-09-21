@@ -19,7 +19,7 @@ public class JsonList2Test {
     @Test
     public void runBonaList() throws Exception {
         JsonComposer.setDefaultWriteCRs(false);
-        
+
         JsonWithList jwl = new JsonWithList();
         jwl.setNum1(42);
         jwl.setNum2(28);

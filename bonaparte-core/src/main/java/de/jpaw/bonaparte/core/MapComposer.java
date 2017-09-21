@@ -40,7 +40,7 @@ public class MapComposer extends NoOpComposer<RuntimeException> implements Messa
         void store(FieldDefinition di, Object x);
         void storeKey(Object key);  // only used for Map
     }
-    protected Store currentStorage = null; 
+    protected Store currentStorage = null;
 
     static public Map<String,Object> marshal(BonaCustom obj) {
         MapComposer mc = new MapComposer();

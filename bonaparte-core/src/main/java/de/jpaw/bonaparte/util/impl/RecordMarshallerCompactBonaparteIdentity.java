@@ -11,7 +11,7 @@ import de.jpaw.util.ByteBuilder;
 
 /** similar to MarshallerCompactBonaparte, but assumes the receiver has the same object structure.
  * Sub objects within JSON will be serializes as objects.
- * 
+ *
  * @author mbi
  *
  */

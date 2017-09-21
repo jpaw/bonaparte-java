@@ -11,7 +11,7 @@ package apiw factoryId 25 {
      * Wrapped long (object) version.
      */
     class Ref classId 51 extends AbstractRef refw "objectRef" {
-        optional Long                               objectRef    properties notNull, noupdate;  // objectRef, as a primary key it cannot be changed and, if persisted, is never null 
+        optional Long                               objectRef    properties notNull, noupdate;  // objectRef, as a primary key it cannot be changed and, if persisted, is never null
     }
 
     /** A class which allows the separation of multiple tenants.

@@ -17,7 +17,7 @@ public class UppercaseNamesTest {
     private static final String EXPECTED_XML =
             "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
             "<TestXml2Up>\n" +
-            "    <Digits2>88</Digits2>\n" + 
+            "    <Digits2>88</Digits2>\n" +
             "    <MicroUnits>0.545454</MicroUnits>\n" +
             "</TestXml2Up>\n";
 

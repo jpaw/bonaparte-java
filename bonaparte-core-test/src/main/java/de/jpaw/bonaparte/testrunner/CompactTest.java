@@ -28,7 +28,7 @@ public class CompactTest {
         if (doDumpToFile)
             dumpToFile("/tmp/" + src.ret$PQON() + "-dump-compact.bin", cbacResult);
         System.out.println("compact: Length of buffer is " + cbacResult.length);
-    
+
         System.out.println("compact2");
         ByteArrayOutputStream baos = new ByteArrayOutputStream(10000);
         DataOutputStream dataOut = new DataOutputStream(baos);

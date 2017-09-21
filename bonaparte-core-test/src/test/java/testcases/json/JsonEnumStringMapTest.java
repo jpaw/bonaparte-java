@@ -27,7 +27,7 @@ public class JsonEnumStringMapTest {
     @Test
     public void runBonaStringMap() throws Exception {
         JsonComposer.setDefaultWriteCRs(false);
-        
+
         JsonWithStringMapOfEnums jwl = new JsonWithStringMapOfEnums();
         jwl.setNum1(42);
         jwl.setNum2(28);

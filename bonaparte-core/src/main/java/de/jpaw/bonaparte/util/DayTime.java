@@ -155,7 +155,7 @@ public class DayTime {
         return new LocalDateTime(i.getMillis(), DateTimeZone.UTC);
     }
 
-    /** Converts the time since midnight (in milliseconds, i.e. 0..86_400_000) to a LocalTime. */ 
+    /** Converts the time since midnight (in milliseconds, i.e. 0..86_400_000) to a LocalTime. */
     static public LocalTime timeForMillis(int millis) {
         return new LocalTime(millis, DateTimeZone.UTC);
     }

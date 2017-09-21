@@ -61,7 +61,7 @@ package jsonTest {
         (TestObj) Map<String>   map;
         int                     num;
     }
-    
+
     class JsonWithList {
         Integer         List<>          ciList;
         int                             num1;
