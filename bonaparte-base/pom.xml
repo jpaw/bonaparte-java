@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>bonaparte-base</artifactId>
-    <version>4.4.22</version>
+    <version>4.4.23</version>
     <packaging>pom</packaging>
 
     <description>build master for BONAPARTE based projects</description>
@@ -43,7 +43,7 @@
 
     <properties>
         <!-- define revisions of other jpaw.de projects, not covered by plugin management -->
-        <bonaparte-plugin.version>4.4.22</bonaparte-plugin.version>
+        <bonaparte-plugin.version>4.4.23</bonaparte-plugin.version>
         <bonaparte-plugin-commons-lang.version>2.6</bonaparte-plugin-commons-lang.version>      <!-- currently needed by the plugins -->
 
         <!-- define releases (mostly of 3rd party dependencies) we want to use, to ensure consistency -->
