@@ -43,8 +43,7 @@
 
     <properties>
         <!-- define revisions of other jpaw.de projects, not covered by plugin management -->
-        <bonaparte-plugin.version>4.4.23</bonaparte-plugin.version>
-        <bonaparte-plugin-commons-lang.version>2.6</bonaparte-plugin-commons-lang.version>      <!-- currently needed by the plugins -->
+        <bonaparte-plugin.version>4.5.4</bonaparte-plugin.version>
 
         <!-- define releases (mostly of 3rd party dependencies) we want to use, to ensure consistency -->
         <!-- Some more versions, used by specific dependent projects -->
@@ -209,11 +208,6 @@
                             <groupId>de.jpaw.bonaparte-dsl</groupId>
                             <artifactId>de.jpaw.bonaparte.dsl</artifactId>
                             <version>${bonaparte-plugin.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>commons-lang</groupId>
-                            <artifactId>commons-lang</artifactId>
-                            <version>${bonaparte-plugin-commons-lang.version}</version>
                         </dependency>
                     </dependencies>
                 </plugin>
