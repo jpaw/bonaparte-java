@@ -19,20 +19,20 @@ import de.jpaw.bonaparte.util.ToStringHelper;
 
 @Test
 public class XmlJsonTest {
-    private static final String PACKAGE = "de.jpaw.bonaparte.pojos.test.json";   // package name where jaxb.index sits
+    private static final String PACKAGES = "de.jpaw.bonaparte.pojos.test.json:de.jpaw.bonaparte.xml";   // package name where jaxb.index sits
     private static final String EXPECTED_XML =
             "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-            "<test_json:Test4XML xmlns:test_json=\"http://www.jpaw.de/schema/test_json.xsd\">\n" +
+            "<test_json:Test4XML xmlns:bon=\"http://www.jpaw.de/schema/bonaparte.xsd\" xmlns:test_json=\"http://www.jpaw.de/schema/test_json.xsd\">\n" +
             "<test_json:obj xsi:type=\"xs:double\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">3.15</test_json:obj>\n" +
             "    <test_json:jsono>\n" +
-            "        <kvp>\n" +
-            "            <key>isGreen</key>\n" +
-            "            <bool>true</bool>\n" +
-            "        </kvp>\n" +
-            "        <kvp>\n" +
-            "            <key>hello</key>\n" +
-            "            <value>world</value>\n" +
-            "        </kvp>\n" +
+            "        <bon:kvp>\n" +
+            "            <bon:key>isGreen</bon:key>\n" +
+            "            <bon:bool>true</bon:bool>\n" +
+            "        </bon:kvp>\n" +
+            "        <bon:kvp>\n" +
+            "            <bon:key>hello</bon:key>\n" +
+            "            <bon:value>world</bon:value>\n" +
+            "        </bon:kvp>\n" +
             "    </test_json:jsono>\n" +
             "</test_json:Test4XML>\n";
 
@@ -57,7 +57,7 @@ public class XmlJsonTest {
         obj.setLast("world");
 
         // create the XML for this
-        JAXBContext context = JAXBContext.newInstance(PACKAGE);
+        JAXBContext context = JAXBContext.newInstance(PACKAGES);
         Marshaller marshaller = context.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         StringWriter writer = new StringWriter();
@@ -70,7 +70,7 @@ public class XmlJsonTest {
 
     public void unmarshallJson() throws Exception {
         // create the XML for this
-        JAXBContext context = JAXBContext.newInstance(PACKAGE);
+        JAXBContext context = JAXBContext.newInstance(PACKAGES);
 
         Unmarshaller unmarshaller = context.createUnmarshaller();
         Object obj = unmarshaller.unmarshal(new StringReader(EXPECTED_XML));
@@ -83,7 +83,7 @@ public class XmlJsonTest {
     }
 
     public void createJsonSchema() throws Exception {
-        JAXBContext context = JAXBContext.newInstance(PACKAGE);
+        JAXBContext context = JAXBContext.newInstance(PACKAGES);
         DemoSchemaWriter sor = new DemoSchemaWriter();
         context.generateSchema(sor);
 
