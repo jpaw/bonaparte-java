@@ -1,7 +1,5 @@
 package de.jpaw.bonaparte.benchmarks;
 
-import java.lang.reflect.Field;
-
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.OperationsPerInvocation;
 import org.openjdk.jmh.annotations.Scope;
@@ -25,28 +23,28 @@ import org.openjdk.jmh.infra.Blackhole;
 public class StringSerializers {
     static public final int OPERATIONS_PER_INVOCATION = 1000000;
     protected volatile String subject = "Hello, world";
-    private static Field unsafeString = calculateUnsafe();
-
-    static private Field calculateUnsafe() {
-        try {
-            Field f = String.class.getDeclaredField("value");
-            f.setAccessible(true);
-            return f;
-        } catch (Exception e) {
-            return null;
-        }
-    }
+//    private static Field unsafeString = calculateUnsafe();
+//
+//    static private Field calculateUnsafe() {
+//        try {
+//            Field f = String.class.getDeclaredField("value");
+//            f.setAccessible(true);
+//            return f;
+//        } catch (Exception e) {
+//            return null;
+//        }
+//    }
 
     @Benchmark
     public void empty() {
     }
 
-    @Benchmark
-    public void getPrivateCharAddress(Blackhole bh)
-            throws IllegalArgumentException, IllegalAccessException {
-        for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i)
-            bh.consume(unsafeString.get(subject));
-    }
+//    @Benchmark
+//    public void getPrivateCharAddress(Blackhole bh)
+//            throws IllegalArgumentException, IllegalAccessException {
+//        for (int i = 0; i < OPERATIONS_PER_INVOCATION; ++i)
+//            bh.consume(unsafeString.get(subject));
+//    }
 
     @Benchmark
     public void copyNewArray(Blackhole bh) throws IllegalArgumentException,
@@ -79,17 +77,17 @@ public class StringSerializers {
         }
     }
 
-    @Benchmark
-    public void getMaxCodeWithReflection(Blackhole bh)
-            throws IllegalArgumentException, IllegalAccessException {
-        for (int k = 0; k < OPERATIONS_PER_INVOCATION; ++k) {
-            char buff[] = (char[]) unsafeString.get(subject);
-            int maxCode = 0;
-            int len = buff.length;
-            for (int i = 0; i < len; ++i) {
-                if (buff[i] > maxCode)
-                    maxCode = buff[i];
-            }
-        }
-    }
+//    @Benchmark
+//    public void getMaxCodeWithReflection(Blackhole bh)
+//            throws IllegalArgumentException, IllegalAccessException {
+//        for (int k = 0; k < OPERATIONS_PER_INVOCATION; ++k) {
+//            char buff[] = (char[]) unsafeString.get(subject);
+//            int maxCode = 0;
+//            int len = buff.length;
+//            for (int i = 0; i < len; ++i) {
+//                if (buff[i] > maxCode)
+//                    maxCode = buff[i];
+//            }
+//        }
+//    }
 }

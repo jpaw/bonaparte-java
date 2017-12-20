@@ -2,7 +2,6 @@ package de.jpaw.bonaparte.core;
 
 import java.io.DataOutput;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.HashMap;
@@ -45,16 +44,17 @@ import de.jpaw.util.ByteArray;
 
 public abstract class AbstractCompactComposer extends AbstractMessageComposer<IOException> implements CompactConstants {
 
-    private static Field unsafeString = calculateUnsafe();
-    static private Field calculateUnsafe() {
-        try {
-            Field f = String.class.getDeclaredField("value");
-            f.setAccessible(true);
-            return f;
-        } catch (Exception e) {
-            return null;
-        }
-    }
+	// remove unsafe access due to changes in Java 9
+//    private static Field unsafeString = calculateUnsafe();
+//    static private Field calculateUnsafe() {
+//        try {
+//            Field f = String.class.getDeclaredField("value");
+//            f.setAccessible(true);
+//            return f;
+//        } catch (Exception e) {
+//            return null;
+//        }
+//    }
     private final boolean useJsonForBonaCustomInElements;       // if true, the subobjects inside Element will be output as JSON. This kills enums on deserialization, but allows to deserialize objects not known on receiver side.
     private final boolean useCache;
     private final Map<BonaCustom, Integer> objectCache;
@@ -214,60 +214,60 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
         }
     }
 
-    // write a non-empty string (using char[])
-    protected void writeLongStringStealArray(String s) throws IOException {
-        if (unsafeString == null) {
-            writeLongStringArray(s);
-            return;
-        }
-        char buff[];
-        try {
-            buff = (char []) unsafeString.get(s);
-        } catch (Exception e) {
-            writeLongStringArray(s);
-            return;
-        }
-        char maxCode = 0;
-        int numWith2Byte = 0;
-        int len = buff.length;
-        for (int i = 0; i < len; ++ i) {
-            char c = buff[i];
-            if (c > maxCode)
-                maxCode = c;
-            if (c > 127)
-                ++numWith2Byte;
-        }
-        if (maxCode <= 255) {
-            // pure ASCII String
-            if (len <= 16) {
-                out.writeByte(SHORT_ISO_STRING + len - 1);
-            } else {
-                out.writeByte(ISO_STRING);
-                intOut(len);
-            }
-            for (int i = 0; i < len; ++i)
-                out.writeByte(buff[i]);
-        } else if (maxCode < 2048) {
-            // UTF-8 out, with max. 2 byte sequences...
-            out.writeByte(UTF8_STRING);
-            intOut(len + numWith2Byte);
-            for (int i = 0; i < len; ++i) {
-                int c = buff[i];
-                if (c < 128) {
-                    out.writeByte(c);
-                } else {
-                    // out.writeShort(((0xC0 | (c >> 6)) << 8) | (0x80 | (c & 0x3F)));
-                    out.writeShort(0xC080 | ((c & 0x7c0) << 2) | (c & 0x3F));  // should be the same, but shorter
-                }
-            }
-        } else {
-            // UTF-16, due to possible 3 byte sequences
-            out.writeByte(UTF16_STRING);
-            intOut(len);
-            for (int i = 0; i < len; ++i)
-                out.writeShort(buff[i]);
-        }
-    }
+//    // write a non-empty string (using char[])
+//    protected void writeLongStringStealArray(String s) throws IOException {
+//        if (unsafeString == null) {
+//            writeLongStringArray(s);
+//            return;
+//        }
+//        char buff[];
+//        try {
+//            buff = (char []) unsafeString.get(s);
+//        } catch (Exception e) {
+//            writeLongStringArray(s);
+//            return;
+//        }
+//        char maxCode = 0;
+//        int numWith2Byte = 0;
+//        int len = buff.length;
+//        for (int i = 0; i < len; ++ i) {
+//            char c = buff[i];
+//            if (c > maxCode)
+//                maxCode = c;
+//            if (c > 127)
+//                ++numWith2Byte;
+//        }
+//        if (maxCode <= 255) {
+//            // pure ASCII String
+//            if (len <= 16) {
+//                out.writeByte(SHORT_ISO_STRING + len - 1);
+//            } else {
+//                out.writeByte(ISO_STRING);
+//                intOut(len);
+//            }
+//            for (int i = 0; i < len; ++i)
+//                out.writeByte(buff[i]);
+//        } else if (maxCode < 2048) {
+//            // UTF-8 out, with max. 2 byte sequences...
+//            out.writeByte(UTF8_STRING);
+//            intOut(len + numWith2Byte);
+//            for (int i = 0; i < len; ++i) {
+//                int c = buff[i];
+//                if (c < 128) {
+//                    out.writeByte(c);
+//                } else {
+//                    // out.writeShort(((0xC0 | (c >> 6)) << 8) | (0x80 | (c & 0x3F)));
+//                    out.writeShort(0xC080 | ((c & 0x7c0) << 2) | (c & 0x3F));  // should be the same, but shorter
+//                }
+//            }
+//        } else {
+//            // UTF-16, due to possible 3 byte sequences
+//            out.writeByte(UTF16_STRING);
+//            intOut(len);
+//            for (int i = 0; i < len; ++i)
+//                out.writeShort(buff[i]);
+//        }
+//    }
 
     // output an integral value
     protected void intOut(int n) throws IOException {
@@ -347,7 +347,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
         } else if (s.length() == 1) {
             charOut(s.charAt(0));
         } else if (s.length() > 8) {
-            writeLongStringStealArray(s);
+            writeLongString(s);  // writeLongStringStealArray
         } else {
             writeLongString(s);
         }
@@ -676,7 +676,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
                 intOut(meta.getId());
             } else {
                 out.writeByte(OBJECT_BEGIN_PQON);
-                writeLongStringStealArray(meta.getName());
+                writeLongString(meta.getName());  // writeLongStringStealArray
                 addField(REVISION_META, meta.getRevision());
             }
         }

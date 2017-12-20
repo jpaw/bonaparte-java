@@ -47,25 +47,24 @@
             <version>${slf4j.version}</version>
             <scope>runtime</scope>
         </dependency>
-        <!-- need a Bean validation implementation. Apache BVal is said to
-            be twice as fast, but required commons & beanutils dependencies as well.
-            Also, the Hibernate validator is the current reference implementation, so
-            choosing this one. -->
-        <!-- Uhm, the hibernate one uses JBOSS logging instead of slf4j.
-            Bleh. -->
         <dependency>
-            <groupId>org.hibernate</groupId>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>${validation-api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
             <version>${hibernate-validator.version}</version>
         </dependency>
-        <!-- dependency for validator >= 5.0 -->
+        <!-- dependency for validator >= 5.3.1 -->
         <dependency>
-           <groupId>javax.el</groupId>
-            <artifactId>javax.el-api</artifactId>
-            <version>${javax-el-api.version}</version>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.el</artifactId>
+            <version>${javax-el.version}</version>
             <scope>runtime</scope>
         </dependency>
-
 
         <!-- GSON for comparison with JsonComposer -->
         <dependency>
