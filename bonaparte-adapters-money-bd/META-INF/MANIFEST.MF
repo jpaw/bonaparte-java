@@ -3,7 +3,7 @@ Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-ManifestVersion: 2
 Bundle-Name: bonaparte external class adapters for monetary types based on BigDecimal
 Bundle-SymbolicName: bonaparte.adapters.moneybd
-Bundle-Version: 4.6.2
+Bundle-Version: 4.7.0
 Bundle-Vendor: Michael Bischoff
 Require-Bundle: bonaparte.core,
  jpaw.money,
