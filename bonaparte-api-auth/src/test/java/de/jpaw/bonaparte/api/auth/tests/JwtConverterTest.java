@@ -25,7 +25,7 @@ public class JwtConverterTest {
         info.setUserRef(4711L);
         info.setIssuedAt(now);
         info.setLogLevel(UserLogLevelType.REQUESTS);
-        info.setPermissionsMax(Permissionset.of(OperationType.EXECUTE, OperationType.SEARCH));
+        info.setPermissionsMax(Permissionset.ofTokens(OperationType.EXECUTE, OperationType.SEARCH));
         info.setResource("B.test");
         info.setResourceIsWildcard(Boolean.TRUE);
         info.setSessionId(sessionId);
@@ -46,7 +46,7 @@ public class JwtConverterTest {
         Assert.assertEquals(jsonMap.get("iat"), now);
         Assert.assertEquals(jsonMap.get("u"), Long.valueOf(4711L));
         Assert.assertEquals(jsonMap.get("l"),  UserLogLevelType.REQUESTS.ordinal());
-        Assert.assertEquals(jsonMap.get("pu"), Permissionset.of(OperationType.EXECUTE, OperationType.SEARCH).getBitmap());
+        Assert.assertEquals(jsonMap.get("pu"), Permissionset.ofTokens(OperationType.EXECUTE, OperationType.SEARCH).getBitmap());
         Assert.assertEquals(jsonMap.get("w"), Boolean.TRUE);
         Assert.assertEquals(jsonMap.get("p"), "B.test");
         Assert.assertEquals(jsonMap.get("o"), sessionId);
