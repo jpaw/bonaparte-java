@@ -18,7 +18,9 @@ package de.jpaw.bonaparte.core;
 import java.math.BigDecimal;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
+import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 
@@ -69,6 +71,12 @@ public interface BonaPortable extends BonaCustom {
 
     /** Can be invoked to apply a String converter to all String typed fields in the object, parent objects, and included child objects. */
     public void treeWalkString(DataConverter<String, AlphanumericElementaryDataItem> _cvt, boolean descend);
+
+    /** Can be invoked to apply an integer converter to all Integer typed fields in the object, parent objects, and included child objects. */
+    public void treeWalkInteger(DataConverter<Integer, BasicNumericElementaryDataItem> _cvt, boolean descend);
+
+    /** Can be invoked to apply a Boolean converter to all Boolean typed fields in the object, parent objects, and included child objects. */
+    public void treeWalkBoolean(DataConverter<Boolean, MiscElementaryDataItem> _cvt, boolean descend);
 
     /** Can be invoked to apply a BigDecimal converter to all BigDecimal typed fields in the object, parent objects, and included child objects. */
     public void treeWalkBigDecimal(DataConverter<BigDecimal, NumericElementaryDataItem> _cvt, boolean descend);

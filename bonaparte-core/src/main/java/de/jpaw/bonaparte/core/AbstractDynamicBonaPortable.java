@@ -3,8 +3,10 @@ package de.jpaw.bonaparte.core;
 import java.math.BigDecimal;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
+import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.ParsedFoldingComponent;
@@ -141,5 +143,17 @@ public class AbstractDynamicBonaPortable implements BonaPortable {
         // TODO Auto-generated method stub
         return false;
     }
+
+	@Override
+	public void treeWalkInteger(DataConverter<Integer, BasicNumericElementaryDataItem> _cvt, boolean descend) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void treeWalkBoolean(DataConverter<Boolean, MiscElementaryDataItem> _cvt, boolean descend) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }
