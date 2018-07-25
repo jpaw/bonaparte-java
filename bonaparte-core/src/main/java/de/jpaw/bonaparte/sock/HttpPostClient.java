@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.core.HttpPostResponseObject;
 import de.jpaw.bonaparte.util.IMarshaller;
 import de.jpaw.bonaparte.util.impl.RecordMarshallerBonaparte;
 import de.jpaw.util.ByteArray;
@@ -22,7 +23,7 @@ import de.jpaw.util.ByteBuilder;
  * @author mbi
  *
  */
-public class HttpPostClient implements INetworkDialog {
+public class HttpPostClient implements INetworkDialog, INetworkDialog2 {
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpPostClient.class);
 
     protected String baseUrl;
@@ -33,6 +34,7 @@ public class HttpPostClient implements INetworkDialog {
     private URL cachedUrl = null;
     protected IMarshaller marshaller;
     protected String authentication = null;
+    protected int timeoutInMs = 5000;
 
     public HttpPostClient(String baseUrl, boolean addVariableUrlPath, boolean logSizes, boolean logText, boolean logHex, IMarshaller initialMarshaller) {
         this.baseUrl            = baseUrl;
@@ -51,6 +53,10 @@ public class HttpPostClient implements INetworkDialog {
         this.marshaller = marshaller;
     }
 
+    public void setTimeoutInMs(int newTimeout) {
+        this.timeoutInMs = newTimeout;
+    }
+
     public void setAuthentication(String authentication) {
         this.authentication = authentication;
     }
@@ -65,7 +71,7 @@ public class HttpPostClient implements INetworkDialog {
         connection.setDoOutput(true);
         connection.setDoInput(true);
         connection.setInstanceFollowRedirects(false);
-        connection.setConnectTimeout(5000);
+        connection.setConnectTimeout(timeoutInMs);
         connection.setRequestProperty("Content-Type",   marshaller.getContentType());
         connection.setRequestProperty("Accept",         marshaller.getContentType());
         connection.setRequestProperty("Charset",        "utf-8");
@@ -99,6 +105,12 @@ public class HttpPostClient implements INetworkDialog {
     /** Execute the request / response dialog. */
     @Override
     public BonaPortable doIO(BonaPortable request) throws Exception {
+        return doIO2(request).getResponseObject();
+    }
+
+    /** Execute the request / response dialog. */
+    @Override
+    public HttpPostResponseObject doIO2(BonaPortable request) throws Exception {
         ByteArray serializedRequest = ByteArray.ZERO_BYTE_ARRAY;
         String requestPqon          = "LOGOUT";
 
@@ -146,7 +158,8 @@ public class HttpPostClient implements INetworkDialog {
 
         if ((returnCode / 100) != (HttpURLConnection.HTTP_OK / 100)) {   // accept 200, 201, etc... 
             wr.close();
-            return errorReturn(requestPqon, returnCode, statusMessage);
+            BonaPortable errorResp = errorReturn(requestPqon, returnCode, statusMessage);
+            return new HttpPostResponseObject(returnCode, statusMessage, errorResp);
         }
 
         // retrieve the response
@@ -159,6 +172,6 @@ public class HttpPostClient implements INetworkDialog {
 
         responseLogger(serializedResponse);
 
-        return serializedResponse.length() == 0 ? null : marshaller.unmarshal(serializedResponse);
+        return new HttpPostResponseObject(returnCode, statusMessage, serializedResponse.length() == 0 ? null : marshaller.unmarshal(serializedResponse));
     }
 }
