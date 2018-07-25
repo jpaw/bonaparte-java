@@ -144,7 +144,8 @@ public class HttpPostClient implements INetworkDialog {
         int returnCode = connection.getResponseCode();
         String statusMessage = connection.getResponseMessage();
 
-        if (returnCode != HttpURLConnection.HTTP_OK) {
+        if ((returnCode / 100) != (HttpURLConnection.HTTP_OK / 100)) {   // accept 200, 201, etc... 
+            wr.close();
             return errorReturn(requestPqon, returnCode, statusMessage);
         }
 
