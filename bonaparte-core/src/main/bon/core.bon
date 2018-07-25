@@ -8,4 +8,10 @@ package (de.jpaw) bonaparte.core XML NONE factoryId 29 {
     enum CSVStyle {
         SHORT="S", MEDIUM="M", LONG="L", FULL="F"
     }
+
+    class HttpPostResponseObject {
+        int                     httpReturnCode;         // the http return code of the request
+        Unicode(255)            httpStatusMessage;      // the http status message, or a truncated part of it
+        Object                  responseObject;         // the response object returned
+    }
 }
