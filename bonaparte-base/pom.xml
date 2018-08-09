@@ -34,7 +34,7 @@
             <dependency>
                 <groupId>de.jpaw</groupId>
                 <artifactId>jdp-bom</artifactId>
-                <version>0.5.0</version>
+                <version>0.6.0</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
@@ -50,7 +50,7 @@
         <gson.version>2.4</gson.version>                <!-- UPTODATE 2015-10-04 -->
 
         <lucene.version>4.10.4</lucene.version>         <!-- 5.3.1 is out 2015-10-10 -->
-        <netty.version>4.1.27.Final</netty.version>
+        <netty.version>4.1.28.Final</netty.version>
         <poi.version>3.16</poi.version>                 <!-- http://poi.apache.org/ UPTODATE 2016-03-20 -->
         <mina.version>2.0.7</mina.version>              <!-- http://mina.apache.org/ 2.0.7 -->
         <camel.version>2.21.1</camel.version>           <!-- http://camel.apache.org/ -->
@@ -71,7 +71,7 @@
         <kryo.version>2.24.0</kryo.version>             <!-- kryo3 exists, with different groupId -->
 
         <validation-api.version>2.0.1.Final</validation-api.version>
-        <hibernate-validator.version>6.0.10.Final</hibernate-validator.version>
+        <hibernate-validator.version>6.0.11.Final</hibernate-validator.version>
         <javax-el.version>3.0.1-b08</javax-el.version>    <!-- expression language, required for hibernate validator -->
 
         <zk.version>8.5.0</zk.version>
