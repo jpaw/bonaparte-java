@@ -44,7 +44,7 @@ import de.jpaw.util.ByteArray;
 
 public abstract class AbstractCompactComposer extends AbstractMessageComposer<IOException> implements CompactConstants {
 
-	// remove unsafe access due to changes in Java 9
+    // remove unsafe access due to changes in Java 9
 //    private static Field unsafeString = calculateUnsafe();
 //    static private Field calculateUnsafe() {
 //        try {

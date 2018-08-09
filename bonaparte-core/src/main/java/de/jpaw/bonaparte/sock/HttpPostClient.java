@@ -156,7 +156,7 @@ public class HttpPostClient implements INetworkDialog, INetworkDialog2 {
         int returnCode = connection.getResponseCode();
         String statusMessage = connection.getResponseMessage();
 
-        if ((returnCode / 100) != (HttpURLConnection.HTTP_OK / 100)) {   // accept 200, 201, etc... 
+        if ((returnCode / 100) != (HttpURLConnection.HTTP_OK / 100)) {   // accept 200, 201, etc...
             wr.close();
             BonaPortable errorResp = errorReturn(requestPqon, returnCode, statusMessage);
             return new HttpPostResponseObject(returnCode, statusMessage, errorResp);

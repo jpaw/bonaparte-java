@@ -144,16 +144,16 @@ public class AbstractDynamicBonaPortable implements BonaPortable {
         return false;
     }
 
-	@Override
-	public void treeWalkInteger(DataConverter<Integer, BasicNumericElementaryDataItem> _cvt, boolean descend) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void treeWalkInteger(DataConverter<Integer, BasicNumericElementaryDataItem> _cvt, boolean descend) {
+        // TODO Auto-generated method stub
 
-	@Override
-	public void treeWalkBoolean(DataConverter<Boolean, MiscElementaryDataItem> _cvt, boolean descend) {
-		// TODO Auto-generated method stub
-		
-	}
+    }
+
+    @Override
+    public void treeWalkBoolean(DataConverter<Boolean, MiscElementaryDataItem> _cvt, boolean descend) {
+        // TODO Auto-generated method stub
+
+    }
 
 }
