@@ -54,6 +54,7 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
     protected static final DateTimeFormatter LOCAL_TIME_ISO_WITH_MS = DateTimeFormat.forPattern("HH:mm:ss.SSS'Z'"); // ISODateTimeFormat.basicTime();
     protected String currentClass = "N/A";
     protected String remFieldName = null;
+    protected int indentation = 0;
     protected final Appendable out;
     protected final boolean instantInMillis = false;    // instants are integral seconds, as in JWT iat / exp
     protected final boolean writeNulls;
@@ -147,12 +148,55 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
         this.jsonEscaper        = jsonEscaper;
     }
 
+    protected void colon() throws IOException {
+        out.append(':');
+        spaceIfPrettyPrint();
+    }
+
+    protected void newLine() throws IOException {
+        if (getWriteCRs())
+            out.append('\r');
+        out.append('\n');
+    }
+
+    /** Hook to override if pretty-printing is desired. */
+    protected void newLineandIndentIfPrettyPrint() throws IOException {
+    }
+
+    protected void openBlock() throws IOException {
+        out.append('{');
+        ++indentation;
+        needFieldSeparator = false;
+    }
+    protected void closeBlock() throws IOException {
+        --indentation;
+        if (needFieldSeparator)
+            newLineandIndentIfPrettyPrint();
+        out.append('}');
+        needFieldSeparator = true;
+    }
+
     /** Checks if a field separator (',') must be written, and does so if required. Sets the separator to required for the next field. */
     protected void writeSeparator() throws IOException {
-        if (needFieldSeparator)
+        if (needFieldSeparator) {
             out.append(',');
-        else
+        } else {
             needFieldSeparator = true;
+        }
+    }
+
+    /** Hook to override if pretty-printing is desired. */
+    protected void spaceIfPrettyPrint() throws IOException {
+    }
+
+    /** Checks if a field separator (',') must be written, and does so if required. Sets the separator to required for the next field. */
+    protected void writeSeparatorSameLine() throws IOException {
+        if (needFieldSeparator) {
+            out.append(',');
+            spaceIfPrettyPrint();
+        } else {
+            needFieldSeparator = true;
+        }
     }
 
     /** Writes a quoted fieldname. We assume that no escaping is required, because all valid identifier characters in Java don't need escaping. */
@@ -160,16 +204,18 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
         if (remFieldName != null) {
             // from map mode....   Same criteria could be: if MapMode = expect_value
             writeSeparator();
+            newLineandIndentIfPrettyPrint();
             jsonEscaper.outputUnicodeNoControls(remFieldName);
-            out.append(':');
+            colon();
             remFieldName = null;
             currentMapMode = true;
             return;
         }
         if (di.getName().length() > 0) {
             writeSeparator();
+            newLineandIndentIfPrettyPrint();
             jsonEscaper.outputUnicodeNoControls(di.getName());
-            out.append(':');
+            colon();
             return;
         }
         // else it's the special JSON outer type to be ignored...
@@ -192,7 +238,7 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
     protected void writeOptionalFieldName(FieldDefinition di) throws IOException {
         if (isListType(di)) {
             // inside array: must write without a name
-            writeSeparator();
+            writeSeparatorSameLine();
         } else {
             writeFieldName(di);
         }
@@ -201,7 +247,7 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
     protected void writeOptionalUnquotedString(FieldDefinition di, String s) throws IOException {
         if (isListType(di)) {
             // must write a null without a name
-            writeSeparator();
+            writeSeparatorSameLine();
             out.append(s == null ? "null" : s);
         } else if (s != null) {
             writeFieldName(di);
@@ -215,7 +261,7 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
     protected void writeOptionalQuotedAscii(FieldDefinition di, String s) throws IOException {
         if (isListType(di)) {
             // must write a null without a name
-            writeSeparator();
+            writeSeparatorSameLine();
             if (s == null)
                 out.append("null");
             else
@@ -232,7 +278,7 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
     protected void writeOptionalQuotedUnicodeNoControls(FieldDefinition di, String s) throws IOException {
         if (isListType(di)) {
             // must write a null without a name
-            writeSeparator();
+            writeSeparatorSameLine();
             if (s == null)
                 out.append("null");
             else
@@ -279,20 +325,21 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
     // called for not-null elements only
     @Override
     public void startObject(ObjectReference di, BonaCustom obj) throws IOException {
-        out.append('{');
-        needFieldSeparator = false;
+        openBlock();
         if (writeTypeInfo) {
             // create the class canonical name as a special field, to be compatible to json-io
+            newLineandIndentIfPrettyPrint();
             jsonEscaper.outputAscii(MimeTypes.JSON_FIELD_FQON);
-            out.append(':');
+            colon();
             jsonEscaper.outputUnicodeNoControls(obj.getClass().getCanonicalName());
             needFieldSeparator = true;
         }
         if (writePqonInfo || (maybeWritePqonInfo && di.getAllowSubclasses())) {
+            newLineandIndentIfPrettyPrint();  // indent despite!
             // create the class partially qualified name as a special field, if required
             writeSeparator();
             jsonEscaper.outputAscii(MimeTypes.JSON_FIELD_PQON);
-            out.append(':');
+            colon();
             jsonEscaper.outputUnicodeNoControls(obj.ret$PQON());
             needFieldSeparator = true;
         }
@@ -304,8 +351,7 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
 
     @Override
     public void terminateObject(ObjectReference di, BonaCustom obj) throws IOException {
-        out.append('}');
-        needFieldSeparator = true;
+        closeBlock();
     }
 
 
@@ -333,8 +379,7 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
             throw new IOException(new ObjectValidationException(ObjectValidationException.INVALID_SEQUENCE, di.getName(), currentClass));
         currentMapMode = true;
         writeFieldName(di);
-        out.append('{');
-        needFieldSeparator = false;
+        openBlock();
     }
 
     // actually this is not called, instead, terminateArray() is called!
@@ -349,20 +394,18 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
     public void terminateArray() throws IOException {
         if (currentMapMode) {
             // inside map!
-            out.append('}');
+            closeBlock();
             currentMapMode = false;
         } else {
             // yes, it was an array, list or set!
             out.append(']');
+            needFieldSeparator = true;
         }
-        needFieldSeparator = true;
     }
 
     @Override
     public void terminateRecord() throws IOException {
-        if (getWriteCRs())
-            out.append('\r');
-        out.append('\n');
+        newLine();
     }
 
     @Override
