@@ -17,7 +17,7 @@ public abstract class AbstractMessageWriter<E extends Exception> extends Setting
         terminateTransmission();
     }
 
-    /** Writes a colection of objects via Iterable, with proper separators.
+    /** Writes a collection of objects via Iterable, with proper separators.
      * For most implementations, the default implementation should be sufficient.
      */
     @Override

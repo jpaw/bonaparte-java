@@ -1,6 +1,7 @@
 package de.jpaw.bonaparte.core;
 
 import java.io.IOException;
+import java.util.Collection;
 
 public class JsonComposerPrettyPrint extends JsonComposer {
 
@@ -15,6 +16,18 @@ public class JsonComposerPrettyPrint extends JsonComposer {
         JsonComposer bjc = new JsonComposerPrettyPrint(buff);
         try {
             bjc.writeRecord(obj);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return buff.toString();
+    }
+    public static String toJsonString(Collection<? extends BonaCustom> obj) {
+        if (obj == null)
+            return null;
+        StringBuilder buff = new StringBuilder(4000);
+        JsonComposer bjc = new JsonComposerPrettyPrint(buff);
+        try {
+            bjc.writeTransmission(obj);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
