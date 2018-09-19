@@ -57,10 +57,12 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
     protected int indentation = 0;
     protected final Appendable out;
     protected final boolean instantInMillis = false;    // instants are integral seconds, as in JWT iat / exp
-    protected final boolean writeNulls;
-    protected final boolean writeTypeInfo;      // for every class, also output "@type" and the fully qualified name
-    protected final boolean writePqonInfo;      // for every class, also output "@PQON" and the partially qualified name
-    protected final boolean maybeWritePqonInfo; // for every class, also output "@PQON" and the partially qualified name, if the containing record allows subclassing
+    protected boolean writeEnumOrdinals  = true;      // false: write name, true: write ordinal for non tokenizable enums
+    protected boolean writeEnumTokens    = true;      // false: write name, true: write token for tokenizable enums / xenums
+    protected boolean writeNulls         = false;
+    protected boolean writeTypeInfo      = false;      // for every class, also output "@type" and the fully qualified name
+    protected boolean writePqonInfo      = false;      // for every class, also output "@PQON" and the partially qualified name
+    protected boolean maybeWritePqonInfo = true; // for every class, also output "@PQON" and the partially qualified name, if the containing record allows subclassing
     protected final JsonEscaper jsonEscaper;
 
     protected boolean currentMapMode = false;
@@ -131,9 +133,6 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
         //this(out, writeNulls, false, true, new BonaparteJsonEscaper(out, this)); // this cannot be referenced
         this.out                = out;
         this.writeNulls         = writeNulls;
-        this.writeTypeInfo      = false;
-        this.writePqonInfo      = false;
-        this.maybeWritePqonInfo = true;
         this.jsonEscaper        = new BonaparteJsonEscaper(out);
     }
     public JsonComposer(Appendable out, boolean writeNulls, JsonEscaper jsonEscaper) {
@@ -610,17 +609,17 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
 
     @Override
     public void addEnum(EnumDataItem di, BasicNumericElementaryDataItem ord, BonaNonTokenizableEnum n) throws IOException {
-        writeOptionalUnquotedString(di, n == null ? null : Integer.toString(n.ordinal()));
+        writeOptionalUnquotedString(di, n == null ? null : writeEnumOrdinals ? Integer.toString(n.ordinal()) : n.name());
     }
 
     @Override
     public void addEnum(EnumDataItem di, AlphanumericElementaryDataItem token, BonaTokenizableEnum n) throws IOException {
-        writeOptionalQuotedUnicodeNoControls(di, n == null ? null : n.getToken());
+        writeOptionalQuotedUnicodeNoControls(di, n == null ? null : writeEnumTokens ? n.getToken() : n.name());
     }
 
     @Override
     public void addEnum(XEnumDataItem di, AlphanumericElementaryDataItem token, XEnum<?> n) throws IOException {
-        writeOptionalQuotedUnicodeNoControls(di, n == null ? null : n.getToken());
+        writeOptionalQuotedUnicodeNoControls(di, n == null ? null : writeEnumTokens ? n.getToken() : n.name());
     }
 
     @Override
@@ -654,5 +653,43 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
             writeOptionalFieldName(di);
             jsonEscaper.outputJsonElement(obj);
         }
+    }
+
+    // Java boilerplate code below:
+    public boolean isWriteEnumOrdinals() {
+        return writeEnumOrdinals;
+    }
+    public void setWriteEnumOrdinals(boolean writeEnumOrdinals) {
+        this.writeEnumOrdinals = writeEnumOrdinals;
+    }
+    public boolean isWriteEnumTokens() {
+        return writeEnumTokens;
+    }
+    public void setWriteEnumTokens(boolean writeEnumTokens) {
+        this.writeEnumTokens = writeEnumTokens;
+    }
+    public boolean isWriteNulls() {
+        return writeNulls;
+    }
+    public void setWriteNulls(boolean writeNulls) {
+        this.writeNulls = writeNulls;
+    }
+    public boolean isWriteTypeInfo() {
+        return writeTypeInfo;
+    }
+    public void setWriteTypeInfo(boolean writeTypeInfo) {
+        this.writeTypeInfo = writeTypeInfo;
+    }
+    public boolean isWritePqonInfo() {
+        return writePqonInfo;
+    }
+    public void setWritePqonInfo(boolean writePqonInfo) {
+        this.writePqonInfo = writePqonInfo;
+    }
+    public boolean isMaybeWritePqonInfo() {
+        return maybeWritePqonInfo;
+    }
+    public void setMaybeWritePqonInfo(boolean maybeWritePqonInfo) {
+        this.maybeWritePqonInfo = maybeWritePqonInfo;
     }
 }
