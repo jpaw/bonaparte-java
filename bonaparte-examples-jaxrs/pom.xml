@@ -18,7 +18,6 @@
     </prerequisites>
 
     <properties>
-        <jackson.version>2.5.0</jackson.version>
         <!-- Plugins -->
         <war.plugin.version>2.4</war.plugin.version>
         <wildfly.plugin.version>1.0.2.Final</wildfly.plugin.version>

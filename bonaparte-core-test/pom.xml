@@ -16,7 +16,6 @@
 
     <properties>
         <json-io.version>4.1.6</json-io.version>
-        <jackson.version>2.5.0</jackson.version>
     </properties>
 
     <dependencies>
