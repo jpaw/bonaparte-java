@@ -2,8 +2,12 @@ package testcases.xenum;
 
 import java.util.List;
 
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import de.jpaw.bonaparte.pojos.csvTests.Color;
+import de.jpaw.bonaparte.pojos.testXenum.XColor;
+import de.jpaw.enums.TokenizableEnum;
 import de.jpaw.enums.XEnumFactory;
 import de.jpaw.xenums.init.XenumInitializer;
 
@@ -16,5 +20,13 @@ public class TestXenumInstances {
         for (Object e : l) {
             System.out.println("e is of class " + e.getClass().getCanonicalName() + " and has value " + e);
         }
+    }
+
+    @Test
+    public void testXenumsInstance() throws Exception {
+        Color c = Color.RED;
+        XColor cc = XColor.of(c);
+        Assert.assertTrue(c instanceof TokenizableEnum, "Color should be a TokenizableEnum");
+        // Assert.assertTrue(cc instanceof TokenizableEnum, "XColor should be a TokenizableEnum");
     }
 }
