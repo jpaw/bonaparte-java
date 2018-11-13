@@ -14,6 +14,8 @@ import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.jpaw.bonaparte.enums.BonaNonTokenizableEnum;
 import de.jpaw.bonaparte.enums.BonaTokenizableEnum;
@@ -22,7 +24,6 @@ import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
-import de.jpaw.bonaparte.pojos.meta.IndexType;
 import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
@@ -47,6 +48,7 @@ import de.jpaw.util.ByteBuilder;
  *
  */
 public class JsonComposer extends AbstractMessageComposer<IOException> {
+	private final static Logger LOGGER = LoggerFactory.getLogger(JsonComposer.class);
     protected static final DateTimeFormatter LOCAL_DATE_ISO = DateTimeFormat.forPattern("yyyy-MM-dd"); // ISODateTimeFormat.basicDate();
     protected static final DateTimeFormatter LOCAL_DATETIME_ISO = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'"); // ISODateTimeFormat.basicDateTime();
     protected static final DateTimeFormatter LOCAL_TIME_ISO = DateTimeFormat.forPattern("HH:mm:ss'Z'"); // ISODateTimeFormat.basicTime();
@@ -79,6 +81,7 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
         try {
             bjc.writeRecord(obj);
         } catch (IOException e) {
+            LOGGER.error("Serialization exception: ", e);
             throw new RuntimeException(e);
         }
         return buff.toString();
@@ -91,6 +94,7 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
         try {
             bjc.writeRecord(obj);
         } catch (IOException e) {
+            LOGGER.error("Serialization exception: ", e);
             throw new RuntimeException(e);
         }
         return buff.toString();
@@ -103,6 +107,7 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
         try {
             bjc.writeTransmission(obj);
         } catch (IOException e) {
+            LOGGER.error("Serialization exception: ", e);
             throw new RuntimeException(e);
         }
         return buff.toString();
@@ -116,6 +121,7 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
             bjc.writeTransmission(obj);
         } catch (IOException e) {
             // oh yes, sure, StringBuilder throws IOException!
+            LOGGER.error("Serialization exception: ", e);
             throw new RuntimeException(e);
         }
         return buff.toString();
@@ -369,8 +375,8 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
         // Here, the keys reflect the field names and the value their contents.
         // In order to allow a mixture of fixed names and variable names, and a mixture of variable names with different types,
         // the map does not start a new sub object, but rather is serialized into the current object.
-        if (di.getMapIndexType() != IndexType.STRING)
-            throw new IOException(new ObjectValidationException(ObjectValidationException.UNSUPPORTED_MAP_KEY_TYPE, di.getName(), currentClass));
+//        if (di.getMapIndexType() != IndexType.STRING)
+//            throw new IOException(new ObjectValidationException(ObjectValidationException.UNSUPPORTED_MAP_KEY_TYPE, di.getName(), currentClass));
 //        if (/* !(di instanceof ObjectReference) && */ !(di instanceof AlphanumericElementaryDataItem))
 //            throw new IOException(new ObjectValidationException(ObjectValidationException.UNSUPPORTED_MAP_VALUE_TYPE, di.getName(), currentClass));
         if (currentMapMode)
@@ -463,12 +469,22 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
 
     @Override
     public void addField(BasicNumericElementaryDataItem di, int n) throws IOException {
+        if (di == StaticMeta.MAP_INDEX_META_INTEGER) {
+            // just remember the field name for later...
+            remFieldName = "_" + Integer.toString(n);
+            return;
+        }
         writeOptionalFieldName(di);
         out.append(Integer.toString(n));
     }
 
     @Override
     public void addField(BasicNumericElementaryDataItem di, long n) throws IOException {
+        if (di == StaticMeta.MAP_INDEX_META_LONG) {
+            // just remember the field name for later...
+            remFieldName = "_" + Long.toString(n);
+            return;
+        }
         LongTools.checkLongOverflow(n);
         writeOptionalFieldName(di);
         out.append(Long.toString(n));

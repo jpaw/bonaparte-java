@@ -10,6 +10,8 @@ import org.testng.annotations.Test;
 import de.jpaw.bonaparte.core.JsonComposer;
 import de.jpaw.bonaparte.pojos.jsonTest.ColorAlnum;
 import de.jpaw.bonaparte.pojos.jsonTest.Json2WithMap;
+import de.jpaw.bonaparte.pojos.jsonTest.JsonWithIntegerMap;
+import de.jpaw.bonaparte.pojos.jsonTest.JsonWithLongMap;
 import de.jpaw.bonaparte.pojos.jsonTest.JsonWithMap;
 import de.jpaw.bonaparte.pojos.jsonTest.JsonWithMapOfObjects;
 import de.jpaw.bonaparte.pojos.jsonTest.TestObj;
@@ -62,6 +64,32 @@ public class JsonMapTest {
         obj.getMap().put("DE", de);
         obj.getMap().put("FR", fr);
         String j1 = JsonComposer.toJsonString(obj);
+        System.out.println("Bonaparte produces " + j1);
+        Assert.assertEquals(j1, expected1);
+    }
+
+    @Test
+    public void runBonaLongMap() throws Exception {
+        final JsonWithLongMap j = new JsonWithLongMap(new HashMap<Long, Integer>(), 12, new HashMap<Long, String>(), 24);
+        final String expected1 = "{\"@PQON\":\"jsonTest.JsonWithLongMap\",\"ciMap\":{\"_33\":17},\"num1\":12,\"caMap\":{\"_66\":\"Hello, world\"},\"num2\":24}\n";
+        JsonComposer.setDefaultWriteCRs(false);
+
+        j.getCiMap().put(33L, 17);
+        j.getCaMap().put(66L, "Hello, world");
+        String j1 = JsonComposer.toJsonString(j);
+        System.out.println("Bonaparte produces " + j1);
+        Assert.assertEquals(j1, expected1);
+    }
+
+    @Test
+    public void runBonaIntegerMap() throws Exception {
+        final JsonWithIntegerMap j = new JsonWithIntegerMap(new HashMap<Integer, Integer>(), 12, new HashMap<Integer, String>(), 24);
+        final String expected1 = "{\"@PQON\":\"jsonTest.JsonWithIntegerMap\",\"ciMap\":{\"_33\":17},\"num1\":12,\"caMap\":{\"_66\":\"Hello, world\"},\"num2\":24}\n";
+        JsonComposer.setDefaultWriteCRs(false);
+
+        j.getCiMap().put(33, 17);
+        j.getCaMap().put(66, "Hello, world");
+        String j1 = JsonComposer.toJsonString(j);
         System.out.println("Bonaparte produces " + j1);
         Assert.assertEquals(j1, expected1);
     }
