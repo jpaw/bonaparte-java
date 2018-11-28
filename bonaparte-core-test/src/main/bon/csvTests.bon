@@ -39,4 +39,10 @@ package csvTests {
     class Number6 {
         signed Decimal(12,6)    number6;
     }
+
+    class WithBigInt {
+        Ascii(10)               string1;
+        Number(12)              number1;
+        Ascii(10)               string2;
+    }
 }

@@ -1,6 +1,7 @@
 package testcases.csv;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -9,6 +10,7 @@ import de.jpaw.bonaparte.core.CSVComposer2;
 import de.jpaw.bonaparte.core.CSVComposer3;
 import de.jpaw.bonaparte.core.CSVConfiguration;
 import de.jpaw.bonaparte.pojos.csvTests.Number6;
+import de.jpaw.bonaparte.pojos.csvTests.WithBigInt;
 
 public class TestCSVOut {
     private CSVConfiguration cfg = new CSVConfiguration.Builder().usingSeparator(";").usingQuoteCharacter(null).usingZeroPadding(false).build();
@@ -33,5 +35,23 @@ public class TestCSVOut {
         run(new BigDecimal(0), "0", "0.000000");
         run(new BigDecimal(0.25), "0.25", "0.250000");
         run(new BigDecimal("7.888120000"), "7.888120000", "7.888120");
+    }
+
+    @Test
+    public void testCSVBigInteger() throws Exception {
+        final WithBigInt data = new WithBigInt("hello", BigInteger.valueOf(14), "world");
+        StringBuilder buff = new StringBuilder(100);
+        CSVComposer2 p2 = new CSVComposer2(buff, cfg);
+        p2.writeObject(data);
+        Assert.assertEquals(buff.toString(), "hello;14;world");
+    }
+
+    @Test
+    public void testCSVBigIntegerNull() throws Exception {
+       final WithBigInt data = new WithBigInt("hello", null, "world");
+        StringBuilder buff = new StringBuilder(100);
+        CSVComposer2 p2 = new CSVComposer2(buff, cfg);
+        p2.writeObject(data);
+        Assert.assertEquals(buff.toString(), "hello;;world");
     }
 }
