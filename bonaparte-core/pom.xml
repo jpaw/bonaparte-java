@@ -61,6 +61,11 @@
             <artifactId>jpaw-json</artifactId>
         </dependency>
         <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>${jaxb.version}</version>
+        </dependency>
+        <dependency>
             <groupId>de.jpaw</groupId>
             <artifactId>jpaw-socket</artifactId>
         </dependency>
