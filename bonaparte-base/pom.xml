@@ -51,12 +51,12 @@
         <jackson.version>2.9.7</jackson.version>
 
         <lucene.version>4.10.4</lucene.version>
-        <netty.version>4.1.32.Final</netty.version>
+        <netty.version>4.1.33.Final</netty.version>
         <poi.version>3.17</poi.version>
         <mina.version>2.0.7</mina.version>
-        <camel.version>2.21.2</camel.version>
+        <camel.version>2.21.3</camel.version>
         <vertx.version>2.1.6</vertx.version>
-        <vertx3.version>3.5.4</vertx3.version>
+        <vertx3.version>3.6.3</vertx3.version>
 
         <!-- distributed caches -->
         <ehcache.version>2.10.2</ehcache.version>
@@ -72,7 +72,7 @@
         <kryo.version>2.24.0</kryo.version>             <!-- kryo3 exists, with different groupId -->
 
         <validation-api.version>2.0.1.Final</validation-api.version>
-        <hibernate-validator.version>6.0.13.Final</hibernate-validator.version>
+        <hibernate-validator.version>6.0.15.Final</hibernate-validator.version>
         <javax-el.version>3.0.1-b08</javax-el.version>    <!-- expression language, required for hibernate validator -->
 
         <zk.version>8.5.0</zk.version>
