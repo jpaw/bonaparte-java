@@ -152,7 +152,19 @@ public class CSVComposer extends AppendableComposer {
 
     @Override
     public void addField(AlphanumericElementaryDataItem di, String s) throws IOException {
-        writeString(replaceSeparator && s != null ? s.replace(cfg.separator, cfg.quoteReplacement): s);
+        // if quotes are specified, quote characters inside the string must be replaced.
+        // else, separator characters (if they exist, i.e. not fixed width format) must be replaced
+        if (s == null) {
+            writeString(null);
+        } else if (cfg.quote != null) {
+            // quotes exist: replace any quotes inside the string
+            writeString(s.replace(stringQuote, cfg.quoteReplacement));
+        } else if (replaceSeparator) {
+            // no quotes: replace any separator character
+            writeString(s.replace(cfg.separator, cfg.quoteReplacement));
+        } else {
+            writeString(null);
+        }
     }
 
 
@@ -160,7 +172,8 @@ public class CSVComposer extends AppendableComposer {
     @Override
     public void addField(BasicNumericElementaryDataItem di, BigInteger n) throws IOException {
         writeSeparator();
-        super.addField(di, n);
+        if (n != null)
+            super.addField(di, n);
     }
 
     // decimal
