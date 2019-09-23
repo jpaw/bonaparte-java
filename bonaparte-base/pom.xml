@@ -83,6 +83,7 @@
         <javax-el.version>3.0.1-b08</javax-el.version>    <!-- expression language, required for hibernate validator -->
 
         <zk.version>8.6.0.1</zk.version>
+        <aws.version>1.11.118</aws.version>
     </properties>
 
     <build>
@@ -292,6 +293,16 @@
         <module>../bonaparte-i18n/pom.xml</module>
         <module>../bonaparte-repackage/pom.xml</module>
         <module>../bonaparte-examples-jaxrs/pom.xml</module>
+
+        <module>../bonaparte8-util/pom.xml</module>
+        <module>../bonaparte8-api-alexa/pom.xml</module>
+        <module>../bonaparte8-aws-sqs/pom.xml</module>
+        <module>../bonaparte8-vertx3/pom.xml</module>
+        <module>../bonaparte8-vertx3-auth/pom.xml</module>
+        <module>../bonaparte8-vertx3-test/pom.xml</module>
+        <module>../bonaparte8-adapters-datetime/pom.xml</module>
+        <module>../bonaparte8-batch/pom.xml</module>
+        <module>../bonaparte8-test/pom.xml</module>
     </modules>
 
 </project>

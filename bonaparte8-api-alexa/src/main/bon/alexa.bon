@@ -1,0 +1,215 @@
+/**
+ * Bonaparte model to make Alexa message elements available to Java.
+ * See https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/alexa-skills-kit-interface-reference for documentation
+ *
+ * AudioPlayer requests are not yet implemented (https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/custom-audioplayer-interface-reference#requests)
+ */
+package api.alexa {
+    default private unsigned trim noControlChars;
+
+    type alexaId                is Unicode(255);
+
+    enum AlexaRequestType {
+        LAUNCH_REQUEST          = "LaunchRequest",
+        INTENT_REQUEST          = "IntentRequest",
+        SESSION_ENDED_REQUEST   = "SessionEndedRequest"
+    }
+
+    enum SpeechType {
+        PLAIN_TEXT               = "PlainText",
+        SSML                     = "SSML"
+    }
+
+    enum CardType {
+        SIMPLE                   = "Simple",
+        STANDARD                 = "Standard",
+        ASK_FOR_PERMISSIONS      = "AskForPermissionsConsent",
+        LINK_ACCOUNT             = "LinkAccount"
+    }
+
+    enum PlayerActivity {
+        IDLE                     = "IDLE",
+        PAUSED                   = "PAUSED",
+        PLAYING                  = "PLAYING",
+        BUFFER_UNDERRUN          = "BUFFER_UNDERRUN",
+        FINISHED                 = "FINISHED",
+        STOPPED                  = "STOPPED"
+    }
+
+
+
+    final class AlexaSlotIn {
+        required alexaId                            name;
+        required Unicode(2000)                      value;
+
+    }
+
+    final class AlexaIntentIn {
+        required alexaId                            name;
+        required (AlexaSlotIn) Map<String>          slots;
+    }
+
+
+    final class AlexaApplicationIn {
+        required alexaId                            applicationId;
+    }
+
+    final class AlexaUser {
+        required alexaId                            userId;
+        optional Json                               permissions;
+        optional alexaId                            accessToken;
+    }
+
+    final class AlexaSessionIn {
+        optional Boolean                            isNew is "new";
+        optional alexaId                            sessionId;      // "SessionId." + UUID
+        required (AlexaApplicationIn)               application;
+        optional Json                               attributes;     // session attributes
+        optional (AlexaUser)                        user;
+    }
+
+    final class AlexaRequestBody {
+        required alexaId                            version;
+        optional (AlexaSessionIn)                   session;
+        optional (AlexaContext)                     context;
+        required Json                               request; // various requests, type is determined dynamically
+    }
+
+    // request with specific request
+    final class AlexaRequestBodyIn {
+        required alexaId                            version;
+        optional (AlexaSessionIn)                   session;
+        optional (AlexaContext)                     context;
+        required (AlexaRequest)                     request; // various requests, type is determined dynamically
+    }
+
+    final class AlexaContextSystem {
+        required (AlexaApplicationIn)               application;
+        optional (AlexaUser)                        user;
+        optional (AlexaDevice)                      device;
+        optional alexaId                            apiEndpoint;
+     }
+
+    final class AlexaDevice {
+        required alexaId                            deviceId;
+        optional Json                               supportedInterfaces;
+    }
+
+    final class AlexaAudioPlayer {
+        optional alexaId                            token;
+        optional Long                               offsetInMilliseconds;
+        optional Enum PlayerActivity                playerActivity;
+    }
+
+    final class AlexaContext {
+        optional (AlexaContextSystem)               system      is "System";        // uses caps as first character
+        optional (AlexaAudioPlayer)                 audioPlayer is "AudioPlayer";   // uses caps as first character
+    }
+
+    abstract class AlexaAbstractRequest {
+        required enum AlexaRequestType             ^type;
+        required alexaId                           requestId;
+        required Timestamp                         ^timestamp;
+        optional Ascii(32)                         locale;
+    }
+
+    final class AlexaRequest extends AlexaAbstractRequest {
+        optional (AlexaIntentIn)                   intent;
+    }
+
+    // login without specific action: just create the session
+    final class AlexaLaunchRequest extends AlexaAbstractRequest {}
+
+    final class AlexaIntentRequest extends AlexaAbstractRequest {
+        required (AlexaIntentIn)                   intent;
+    }
+
+    final class AlexaError {
+        required alexaId                            ^type;
+        optional Unicode(2000)                     message;
+    }
+    final class AlexaSessionEndedRequest extends AlexaAbstractRequest {
+        optional Unicode(2000)                     reason;
+        optional (AlexaError)                      error;
+    }
+
+
+
+
+
+    final class AlexaImage {
+        optional Unicode(2000)                      smallImageUrl;
+        optional Unicode(2000)                      largeImageUrl;
+    }
+    final class AlexaResponseBody {
+        required alexaId                            version;
+        optional Json                               sessionAttributes;
+        optional (AlexaResponse)                    response;             // null for AlexaSessionEndedRequest, else non null
+    }
+
+    final class AlexaOutputSpeech {
+        required enum SpeechType                    ^type;
+        optional Unicode(8000) allowControlChars    text;
+        optional Unicode(8000) allowControlChars    ssml;
+    }
+
+    final class AlexaResponse {
+        optional (AlexaOutputSpeech)                outputSpeech;
+        optional (AlexaCard)                        card;
+        optional (AlexaReprompt)                    reprompt;
+        required (AlexaDirective...) List<>         directives;
+        optional Boolean                            shouldEndSession;
+    }
+
+    final class AlexaCard {
+        required enum CardType                      ^type;
+        optional Unicode(8000) allowControlChars    title;
+        optional Unicode(8000) allowControlChars    content;
+        optional Unicode(8000) allowControlChars    text;
+        optional (AlexaImage)                       image;
+        required alexaId List<>                     permissions;  // in case of ASK_FOR_PERMISSIONS
+    }
+    final class AlexaReprompt {
+        optional (AlexaOutputSpeech)                outputSpeech;
+    }
+
+
+    class AlexaDirective {
+        required alexaId                            ^type;
+        // to be extended
+    }
+
+
+
+    /** IntentSchema is the object to upload to AWS. */
+    final class AlexaIntentSchema {
+        required (AlexaIntent) List<>               intents;
+    }
+
+    final class AlexaSlot {
+        required alexaId                            name;
+        required alexaId                            ^type;
+
+    }
+
+    final class AlexaIntent {
+        required alexaId                            intent;
+        required (AlexaSlot) List<>                 slots;   // doc says List but it is a map
+    }
+
+    final class AlexaPostalCodeResponse {
+        optional Uppercase(2)                       countryCode;  // ISO 3166 countryCode
+        optional alexaId                            postalCode;
+    }
+
+    final class AlexaFullAddressResponse {
+        optional alexaId                            stateOrRegion;
+        optional Unicode(255) truncate              city;
+        optional Uppercase(2)                       countryCode;  // ISO 3166 countryCode
+        optional alexaId                            postalCode;
+        optional Unicode(255) truncate              addressLine1;
+        optional Unicode(255) truncate              addressLine2; // will be sent, but maybe as empty string
+        optional Unicode(255) truncate              addressLine3; // will be sent, but maybe as empty string
+        optional Unicode(255) truncate              districtOrCounty; // will be sent, but maybe as empty string
+    }
+}

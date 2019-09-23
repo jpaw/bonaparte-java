@@ -1,0 +1,17 @@
+package testobjects {
+    enum Color {
+        RED = "R", GREEN = "G", BLUE = "B"
+    }
+
+    xenum XColor is Color : 2;
+
+    class EventBusTest {
+        required Ascii(10)          key;
+        required int                z;
+        optional XEnum XColor       color;
+    }
+
+    class StringList {
+        required Unicode(80) required List<> items;
+    }
+}

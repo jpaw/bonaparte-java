@@ -1,0 +1,10 @@
+
+package s3Tests {
+    default private unsigned trim noControlChars;
+
+    class Test1 {
+        required long               timestampCreated;
+        required int                counter;
+        required Unicode(80)        message;
+    }
+}
