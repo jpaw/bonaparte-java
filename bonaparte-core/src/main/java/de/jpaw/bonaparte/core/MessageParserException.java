@@ -106,6 +106,7 @@ public class MessageParserException extends ApplicationException {
     static public final int JSON_EXCEPTION_MAP           = OFFSET + 66;
     static public final int JSON_EXCEPTION_ARRAY         = OFFSET + 67;
     static public final int JSON_EXCEPTION_OBJECT        = OFFSET + 68;
+    static public final int INVALID_ENUM_NAME            = OFFSET + 69;
 
 
     static {
@@ -177,6 +178,7 @@ public class MessageParserException extends ApplicationException {
         codeToDescription.put(JSON_EXCEPTION_MAP           , "JSON parsing exception: Map<String,Object> expected");
         codeToDescription.put(JSON_EXCEPTION_ARRAY         , "JSON parsing exception: List expected");
         codeToDescription.put(JSON_EXCEPTION_OBJECT        , "JSON parsing exception: any object");
+        codeToDescription.put(INVALID_ENUM_NAME            , "invalid name to instantiate enum");
     }
 
     /** Creates a parser exception with an explicitly defined position and class name. */

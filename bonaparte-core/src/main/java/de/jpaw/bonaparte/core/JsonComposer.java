@@ -48,7 +48,7 @@ import de.jpaw.util.ByteBuilder;
  *
  */
 public class JsonComposer extends AbstractMessageComposer<IOException> {
-	private final static Logger LOGGER = LoggerFactory.getLogger(JsonComposer.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(JsonComposer.class);
     protected static final DateTimeFormatter LOCAL_DATE_ISO = DateTimeFormat.forPattern("yyyy-MM-dd"); // ISODateTimeFormat.basicDate();
     protected static final DateTimeFormatter LOCAL_DATETIME_ISO = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'"); // ISODateTimeFormat.basicDateTime();
     protected static final DateTimeFormatter LOCAL_TIME_ISO = DateTimeFormat.forPattern("HH:mm:ss'Z'"); // ISODateTimeFormat.basicTime();
@@ -87,10 +87,15 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
         return buff.toString();
     }
     public static String toJsonString(BonaCustom obj) {
+        return toJsonString(obj, true, true);
+    }
+    public static String toJsonString(BonaCustom obj, boolean writeEnumOrdinals, boolean writeEnumTokens) {
         if (obj == null)
             return null;
         StringBuilder buff = new StringBuilder(4000);
         JsonComposer bjc = new JsonComposer(buff);
+        bjc.writeEnumOrdinals = writeEnumOrdinals;
+        bjc.writeEnumTokens = writeEnumTokens;
         try {
             bjc.writeRecord(obj);
         } catch (IOException e) {
@@ -625,7 +630,11 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
 
     @Override
     public void addEnum(EnumDataItem di, BasicNumericElementaryDataItem ord, BonaNonTokenizableEnum n) throws IOException {
-        writeOptionalUnquotedString(di, n == null ? null : writeEnumOrdinals ? Integer.toString(n.ordinal()) : n.name());
+        if (writeEnumOrdinals) {
+            writeOptionalUnquotedString(di, n == null ? null : Integer.toString(n.ordinal()));
+        } else {
+            writeOptionalQuotedUnicodeNoControls(di, n == null ? null : n.name());
+        }
     }
 
     @Override

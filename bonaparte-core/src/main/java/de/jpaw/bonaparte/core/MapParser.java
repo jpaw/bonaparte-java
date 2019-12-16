@@ -44,6 +44,8 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
     private static final Logger LOGGER = LoggerFactory.getLogger(MapParser.class);
 
     private final Map<String, Object> map;
+    private final boolean readEnumOrdinals;    // false: use name, true: return ordinal for non tokenizable enums
+    private final boolean readEnumTokens;      // false: use name, true: return token for tokenizable enums / xenums
     private Iterator<Object> iter = null;
 
     private String currentClass = "N/A";
@@ -56,9 +58,15 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
     }
 
     public MapParser(Map<String, Object> map, boolean instantInMillis) {
+        this(map, instantInMillis, true, true);
+    }
+
+    public MapParser(Map<String, Object> map, boolean instantInMillis, boolean readEnumOrdinals, boolean readEnumTokens) {
         this.map = map;
         // currentClass = map.get(MimeTypes.JSON_FIELD_PQON);
-        this.instantInMillis = instantInMillis;
+        this.instantInMillis  = instantInMillis;
+        this.readEnumOrdinals = readEnumOrdinals;
+        this.readEnumTokens   = readEnumTokens;
         this.spu = new StringParserUtil(new ParsePositionProvider() {
 
             @Override
@@ -78,7 +86,7 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
         obj.deserialize(new MapParser(map, false));
     }
 
-    private static BonaPortable allocObject(Map<String, Object> map, ObjectReference di) throws MessageParserException {
+    public static BonaPortable allocObject(Map<String, Object> map, ObjectReference di) throws MessageParserException {
         final ClassDefinition lowerBound = di.getLowerBound();
 
         // create the object. Determine the type by the object reference, if that defines no subclassing
@@ -614,7 +622,7 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
             return result;
         }
         if (z instanceof String) {
-            final T value = factory.getByToken((String)z);
+            final T value = readEnumTokens ? factory.getByToken((String)z) : factory.getByName((String)z);
             if (value == null)
                 throw err(MessageParserException.INVALID_ENUM_TOKEN, di);
             return value;
@@ -632,7 +640,15 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
             return Integer.valueOf(((Number)z).intValue());
         }
         if (z instanceof String) {
-            return Integer.valueOf(spu.readPrimitiveInteger(di, (String)z));
+            if (readEnumOrdinals) {
+                return Integer.valueOf(spu.readPrimitiveInteger(di, (String)z));
+            }
+            // expect a name, and map that to the ordinal
+            int ordinal = edi.getBaseEnum().getIds().indexOf(z);
+            if (ordinal < 0) {
+                throw err(MessageParserException.INVALID_ENUM_NAME, di);
+            }
+            return ordinal;
         }
         throw err(MessageParserException.UNSUPPORTED_CONVERSION, edi);
     }
@@ -644,7 +660,16 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
         if (z == null)
             return null;
         if (z instanceof String) {
-            return spu.readString(di, (String)z);
+            if (readEnumTokens) {
+                return spu.readString(di, (String)z);
+            }
+            // expect a name, and map it to the token
+            int ordinal = edi.getBaseEnum().getIds().indexOf(z);
+            if (ordinal < 0) {
+                throw err(MessageParserException.INVALID_ENUM_NAME, di);
+            }
+            // convert the name into a token
+            return edi.getBaseEnum().getTokens().get(ordinal);
         }
         throw err(MessageParserException.UNSUPPORTED_CONVERSION, edi);
     }
