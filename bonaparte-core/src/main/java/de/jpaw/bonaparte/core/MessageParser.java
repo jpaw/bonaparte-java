@@ -27,15 +27,18 @@ import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.AlphanumericEnumSetDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
-import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.NumericEnumSetDataItem;
+import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
+import de.jpaw.bonaparte.pojos.meta.XEnumSetDataItem;
 import de.jpaw.enums.AbstractXEnumBase;
 import de.jpaw.enums.XEnumFactory;
 import de.jpaw.util.ByteArray;
@@ -89,9 +92,18 @@ public interface MessageParser<E extends Exception> extends ExceptionConverter<E
     public String                               readEnum(EnumDataItem edi, AlphanumericElementaryDataItem di) throws E;
     public <T extends AbstractXEnumBase<T>> T   readXEnum(XEnumDataItem di, XEnumFactory<T> factory) throws E;
 
+    // separate entries for enumsets allow to override them without any impact to regular alphanumeric / numeric methods
+    // these methods are supposed to return the token strings / bitmaps of the enum sets
+    default String    readString4Xenumset    (XEnumSetDataItem            di) throws E { return readString(di); }
+    default String    readString4EnumSet     (AlphanumericEnumSetDataItem di) throws E { return readString(di); }
+    default Long      readLong4EnumSet       (NumericEnumSetDataItem      di) throws E { return readLong(di); }
+    default Integer   readInteger4EnumSet    (NumericEnumSetDataItem      di) throws E { return readInteger(di); }
+    default Short     readShort4EnumSet      (NumericEnumSetDataItem      di) throws E { return readShort(di); }
+    default Byte      readByte4EnumSet       (NumericEnumSetDataItem      di) throws E { return readByte(di); }
+
     // add the primitive types
-    public char       readPrimitiveCharacter (MiscElementaryDataItem di) throws E;
-    public boolean    readPrimitiveBoolean   (MiscElementaryDataItem di) throws E;
+    public char       readPrimitiveCharacter (MiscElementaryDataItem      di) throws E;
+    public boolean    readPrimitiveBoolean   (MiscElementaryDataItem      di) throws E;
     public double     readPrimitiveDouble    (BasicNumericElementaryDataItem di) throws E;
     public float      readPrimitiveFloat     (BasicNumericElementaryDataItem di) throws E;
     public long       readPrimitiveLong      (BasicNumericElementaryDataItem di) throws E;
