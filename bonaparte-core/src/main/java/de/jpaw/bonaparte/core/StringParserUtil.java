@@ -73,7 +73,7 @@ public class StringParserUtil {
     }
 
     // just do trim and length checks
-    public String readStringSub(final AlphanumericElementaryDataItem di, String data) throws MessageParserException {
+    protected String readStringSub(final AlphanumericElementaryDataItem di, String data) throws MessageParserException {
         if (di.getDoTrim())
             data = data.trim();
         if (data.length() > di.getLength()) {
@@ -81,6 +81,8 @@ public class StringParserUtil {
                 data = data.substring(0, di.getLength());
             else
                 throw err(MessageParserException.STRING_TOO_LONG, di, data);
+        } else if (data.length() < di.getMinLength()) {
+            throw err(MessageParserException.STRING_TOO_SHORT, di, data);
         }
         return data;
     }

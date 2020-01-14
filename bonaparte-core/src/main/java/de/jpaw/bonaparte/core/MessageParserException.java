@@ -107,6 +107,7 @@ public class MessageParserException extends ApplicationException {
     static public final int JSON_EXCEPTION_ARRAY         = OFFSET + 67;
     static public final int JSON_EXCEPTION_OBJECT        = OFFSET + 68;
     static public final int INVALID_ENUM_NAME            = OFFSET + 69;
+    static public final int STRING_TOO_SHORT             = OFFSET + 70;
 
 
     static {
@@ -131,6 +132,7 @@ public class MessageParserException extends ApplicationException {
         codeToDescription.put(ILLEGAL_CHAR_NOT_NUMERIC     , "Illegal character in numeric field (allowed are only [-.eE0-9]");
         codeToDescription.put(NUMERIC_TOO_LONG             , "numeric field too long (max 40 characters allowed)");
         codeToDescription.put(STRING_TOO_LONG              , "String longer than allowed");
+        codeToDescription.put(STRING_TOO_SHORT             , "String shorter than allowed");
         codeToDescription.put(ILLEGAL_ESCAPE_SEQUENCE      , "Invalid escape sequence (second character must be between @ and _ (0x40..0x5f)");
         codeToDescription.put(ILLEGAL_BOOLEAN              , "only 0 and 1 are allowed for a boolean field");
         codeToDescription.put(BASE64_PARSING_ERROR         , "problem parsing a base64 encoded raw field");
