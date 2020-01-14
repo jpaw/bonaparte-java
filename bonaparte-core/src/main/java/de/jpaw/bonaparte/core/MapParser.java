@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -19,16 +21,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.AlphanumericEnumSetDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
 import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
+import de.jpaw.bonaparte.pojos.meta.EnumDefinition;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.NumericEnumSetDataItem;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
+import de.jpaw.bonaparte.pojos.meta.XEnumSetDataItem;
 import de.jpaw.enums.AbstractXEnumBase;
 import de.jpaw.enums.XEnumFactory;
 import de.jpaw.util.ByteArray;
@@ -672,5 +678,128 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
             return edi.getBaseEnum().getTokens().get(ordinal);
         }
         throw err(MessageParserException.UNSUPPORTED_CONVERSION, edi);
+    }
+
+    // enumset conversions
+
+    protected String mapEnumTokens(FieldDefinition di, EnumDefinition edi) {
+        final Collection<?> values = getCollection(di);
+        if (values == null)
+            return null;
+        final ArrayList<String> tokens = new ArrayList<>(values.size());
+        List<String> instances = edi.getIds();
+        for (Object v: values) {
+            int ordinal = instances.indexOf(v);
+            if (ordinal < 0) {
+                throw err(MessageParserException.INVALID_ENUM_NAME, di);
+            }
+            tokens.add(edi.getTokens().get(ordinal));
+        }
+        Collections.sort(tokens);
+        StringBuilder buff = new StringBuilder(tokens.size());
+        for (String s: tokens) {
+            buff.append(s);
+        }
+        return buff.toString();
+    }
+
+    @Override
+    public String readString4Xenumset(XEnumSetDataItem di) throws MessageParserException {
+        if (readEnumTokens) {
+            return readString(di);
+        } else {
+            // compose the set
+            // read instance names and map to tokens
+            // FIXME: currently maps values of the base enum only, must obtain dynamically collected enums
+            EnumDefinition edi = di.getBaseXEnumset().getBaseXEnum().getBaseEnum();
+            return mapEnumTokens(di, edi);
+        }
+    }
+
+    @Override
+    public String readString4EnumSet(AlphanumericEnumSetDataItem di) throws MessageParserException {
+        if (readEnumTokens) {
+            return readString(di);
+        } else {
+            // compose the set
+            // read instance names and map to tokens
+            EnumDefinition edi = di.getBaseEnumset().getBaseEnum();
+            return mapEnumTokens(di, edi);
+        }
+    }
+
+    protected Collection<?>  getCollection(FieldDefinition di) {
+        Object enumset = get(di);
+        if (enumset == null)
+            return null;
+        if (!(enumset instanceof Collection)) {
+            throw err(MessageParserException.UNSUPPORTED_CONVERSION, di);
+        }
+        return (Collection<?>)enumset;
+    }
+
+    protected long mapToBitmap(NumericEnumSetDataItem di, Collection<?> values) {
+        long bitmap = 0L;
+        List<String> instances = di.getBaseEnumset().getBaseEnum().getIds();
+        for (Object v: values) {
+            int ordinal = instances.indexOf(v);
+            if (ordinal < 0) {
+                throw err(MessageParserException.INVALID_ENUM_NAME, di);
+            }
+            bitmap |= (1L << ordinal);
+        }
+        return bitmap;
+    }
+
+    @Override
+    public Long readLong4EnumSet(NumericEnumSetDataItem di) throws MessageParserException {
+        if (readEnumOrdinals) {
+            return readLong(di);
+        } else {
+            // read instance names and map to ordinals
+            final Collection<?> values = getCollection(di);
+            if (values == null)
+                return null;
+            return Long.valueOf(mapToBitmap(di, values));
+        }
+    }
+
+    @Override
+    public Integer readInteger4EnumSet(NumericEnumSetDataItem di) throws MessageParserException {
+        if (readEnumOrdinals) {
+            return readInteger(di);
+        } else {
+            // read instance names and map to ordinals
+            final Collection<?> values = getCollection(di);
+            if (values == null)
+                return null;
+            return Integer.valueOf((int) mapToBitmap(di, values));
+        }
+    }
+
+    @Override
+    public Short readShort4EnumSet(NumericEnumSetDataItem di) throws MessageParserException {
+        if (readEnumOrdinals) {
+            return readShort(di);
+        } else {
+            // read instance names and map to ordinals
+            final Collection<?> values = getCollection(di);
+            if (values == null)
+                return null;
+            return Short.valueOf((short) mapToBitmap(di, values));
+        }
+    }
+
+    @Override
+    public Byte readByte4EnumSet(NumericEnumSetDataItem di) throws MessageParserException {
+        if (readEnumOrdinals) {
+            return readByte(di);
+        } else {
+            // read instance names and map to ordinals
+            final Collection<?> values = getCollection(di);
+            if (values == null)
+                return null;
+            return Byte.valueOf((byte) mapToBitmap(di, values));
+        }
     }
 }
