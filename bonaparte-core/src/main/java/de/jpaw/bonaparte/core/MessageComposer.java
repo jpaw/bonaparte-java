@@ -26,18 +26,27 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
 
+import de.jpaw.bonaparte.enums.BonaByteEnumSet;
+import de.jpaw.bonaparte.enums.BonaIntEnumSet;
+import de.jpaw.bonaparte.enums.BonaLongEnumSet;
 import de.jpaw.bonaparte.enums.BonaNonTokenizableEnum;
+import de.jpaw.bonaparte.enums.BonaShortEnumSet;
+import de.jpaw.bonaparte.enums.BonaStringEnumSet;
 import de.jpaw.bonaparte.enums.BonaTokenizableEnum;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.AlphanumericEnumSetDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.NumericEnumSetDataItem;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
+import de.jpaw.bonaparte.pojos.meta.XEnumSetDataItem;
+import de.jpaw.enums.TokenizableEnum;
 import de.jpaw.enums.XEnum;
 import de.jpaw.util.ByteArray;
 
@@ -99,6 +108,14 @@ public interface MessageComposer<E extends Exception> extends MessageWriter<E> {
     void addEnum(EnumDataItem di, BasicNumericElementaryDataItem ord, BonaNonTokenizableEnum n) throws E;
     void addEnum(EnumDataItem di, AlphanumericElementaryDataItem token, BonaTokenizableEnum n) throws E;
     void addEnum(XEnumDataItem di, AlphanumericElementaryDataItem token, XEnum<?> n) throws E;
+
+    // Enumsets
+    default <S extends Enum<S>> void addField(NumericEnumSetDataItem      di, BonaByteEnumSet<S> n)   throws E { if (n == null) writeNull(di); else addField(di, n.getBitmap()); }
+    default <S extends Enum<S>> void addField(NumericEnumSetDataItem      di, BonaShortEnumSet<S> n)  throws E { if (n == null) writeNull(di); else addField(di, n.getBitmap()); }
+    default <S extends Enum<S>> void addField(NumericEnumSetDataItem      di, BonaIntEnumSet<S> n)    throws E { if (n == null) writeNull(di); else addField(di, n.getBitmap()); }
+    default <S extends Enum<S>> void addField(NumericEnumSetDataItem      di, BonaLongEnumSet<S> n)   throws E { if (n == null) writeNull(di); else addField(di, n.getBitmap()); }
+    default <S extends TokenizableEnum> void addField(AlphanumericEnumSetDataItem di, BonaStringEnumSet<S> e) throws E { if (e == null) writeNull(di); else addField(di, e.getBitmap()); }
+    default <S extends TokenizableEnum> void addField(XEnumSetDataItem            di, BonaStringEnumSet<S> e) throws E { if (e == null) writeNull(di); else addField(di, e.getBitmap()); }
 
     boolean addExternal(ObjectReference di, Object obj) throws E;    // by default do nothing and return false, then the marshalled output will be performed
 }

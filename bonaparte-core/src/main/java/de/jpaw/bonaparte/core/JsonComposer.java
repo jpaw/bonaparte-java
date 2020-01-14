@@ -6,6 +6,7 @@ import java.math.BigInteger;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.joda.time.Instant;
@@ -17,19 +18,29 @@ import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.jpaw.bonaparte.enums.BonaByteEnumSet;
+import de.jpaw.bonaparte.enums.BonaIntEnumSet;
+import de.jpaw.bonaparte.enums.BonaLongEnumSet;
 import de.jpaw.bonaparte.enums.BonaNonTokenizableEnum;
+import de.jpaw.bonaparte.enums.BonaShortEnumSet;
+import de.jpaw.bonaparte.enums.BonaStringEnumSet;
 import de.jpaw.bonaparte.enums.BonaTokenizableEnum;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.AlphanumericEnumSetDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
+import de.jpaw.bonaparte.pojos.meta.EnumDefinition;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.NumericEnumSetDataItem;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
+import de.jpaw.bonaparte.pojos.meta.XEnumSetDataItem;
 import de.jpaw.bonaparte.util.LongTools;
+import de.jpaw.enums.TokenizableEnum;
 import de.jpaw.enums.XEnum;
 import de.jpaw.json.JsonEscaper;
 import de.jpaw.util.Base64;
@@ -678,6 +689,122 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
             writeOptionalFieldName(di);
             jsonEscaper.outputJsonElement(obj);
         }
+    }
+
+    protected <S extends Enum<S>> void writeEnumset(FieldDefinition di, Set<Enum<S>> s) throws IOException {
+        writeOptionalFieldName(di);
+        out.append('[');
+        boolean needComma = false;
+        for (Enum<S> t: s) {
+            if (needComma) {
+                out.append(',');
+            } else {
+                needComma = true;  // next time
+            }
+            jsonEscaper.outputUnicodeNoControls(t.name());
+        }
+        out.append(']');
+    }
+
+    // output a non-null numeric enumset, as list of instance names
+    protected void writeAsArray(NumericEnumSetDataItem di, long n) throws IOException {
+        writeOptionalFieldName(di);
+        out.append('[');
+        EnumDefinition edi = di.getBaseEnumset().getBaseEnum();
+        // write a list of instance names
+        List<String> ids = edi.getIds();
+        int ordinal = 0;
+        boolean needComma = false;
+        while (n != 0L) {
+            if ((n & 1L) != 0L ) {
+                if (needComma) {
+                    out.append(',');
+                } else {
+                    needComma = true;  // next time
+                }
+                jsonEscaper.outputUnicodeNoControls(ids.get(ordinal));
+            }
+            ++ordinal;
+            n >>>= 1;
+        }
+        out.append(']');
+    }
+
+    @Override
+    public <S extends Enum<S>> void addField(NumericEnumSetDataItem di, BonaByteEnumSet<S> n) throws IOException {
+        if (n == null) {
+            writeNull(di);
+        } else if (writeEnumOrdinals) {
+            addField(di, n.getBitmap());
+        } else {
+            // writeEnumset(di, n);  // Java does not like it. Bug?
+            writeAsArray(di, n.getBitmap());
+        }
+    }
+    
+    @Override
+    public <S extends Enum<S>> void addField(NumericEnumSetDataItem di, BonaShortEnumSet<S> n) throws IOException {
+        if (n == null) {
+            writeNull(di);
+        } else if (writeEnumOrdinals) {
+            addField(di, n.getBitmap());
+        } else {
+            writeAsArray(di, n.getBitmap());
+        }
+    }
+    
+    @Override
+    public <S extends Enum<S>> void addField(NumericEnumSetDataItem di, BonaIntEnumSet<S> n) throws IOException {
+        if (n == null) {
+            writeNull(di);
+        } else if (writeEnumOrdinals) {
+            addField(di, n.getBitmap());
+        } else {
+            writeAsArray(di, n.getBitmap());
+        }
+    }
+    
+    @Override
+    public <S extends Enum<S>> void addField(NumericEnumSetDataItem di, BonaLongEnumSet<S> n) throws IOException {
+        if (n == null) {
+            writeNull(di);
+        } else if (writeEnumOrdinals) {
+            addField(di, n.getBitmap());
+        } else {
+            writeAsArray(di, n.getBitmap());
+        }
+    }
+    
+    // output a non-null numeric enumset, as list of instance names
+    protected <S extends TokenizableEnum> void writeAlphaEnumSet(AlphanumericElementaryDataItem di, BonaStringEnumSet<S> e) throws IOException {
+        if (e == null) {
+            writeNull(di);
+        } else if (writeEnumTokens) {
+            addField(di, e.getBitmap());
+        } else {
+            writeOptionalFieldName(di);
+            out.append('[');
+            boolean needComma = false;
+            for (TokenizableEnum t: e) {
+                if (needComma) {
+                    out.append(',');
+                } else {
+                    needComma = true;  // next time
+                }
+                jsonEscaper.outputUnicodeNoControls(t.name());
+            }
+            out.append(']');
+        }
+    }
+
+    @Override
+    public <S extends TokenizableEnum> void addField(AlphanumericEnumSetDataItem di, BonaStringEnumSet<S> e) throws IOException {
+        writeAlphaEnumSet(di, e);
+    }
+    
+    @Override
+    public <S extends TokenizableEnum> void addField(XEnumSetDataItem di, BonaStringEnumSet<S> e) throws IOException {
+        writeAlphaEnumSet(di, e);
     }
 
     // Java boilerplate code below:

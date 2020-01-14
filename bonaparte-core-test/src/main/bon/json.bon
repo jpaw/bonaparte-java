@@ -110,4 +110,23 @@ package jsonTest {
         enum ColorAlnum Map<Integer>    caMap;
         int                             num2;
     }
+
+    // additions for enumsets
+    enumset  ColorNumSet   is ColorNum;
+    enumset  ColorAlnumSet is ColorAlnum;
+    xenumset XColorSet     is XColor;
+
+    class JsonEnumSets {
+        enumset ColorNumSet           cn;
+        enumset ColorAlnumSet         ca;
+        xenumset XColorSet(10)        cx;
+        // used for empty sets
+        enumset ColorNumSet           cn2;
+        enumset ColorAlnumSet         ca2;
+        xenumset XColorSet(10)        cx2;
+        // used for nulls
+        Enumset ColorNumSet           cn3;
+        Enumset ColorAlnumSet         ca3;
+        XEnumset XColorSet(10)        cx3;
+    }
 }

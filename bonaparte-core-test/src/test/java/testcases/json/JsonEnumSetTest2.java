@@ -10,41 +10,51 @@ import de.jpaw.bonaparte.core.JsonComposer;
 import de.jpaw.bonaparte.core.MapParser;
 import de.jpaw.bonaparte.core.StaticMeta;
 import de.jpaw.bonaparte.pojos.jsonTest.ColorAlnum;
+import de.jpaw.bonaparte.pojos.jsonTest.ColorAlnumSet;
 import de.jpaw.bonaparte.pojos.jsonTest.ColorNum;
-import de.jpaw.bonaparte.pojos.jsonTest.JsonEnumAndList;
+import de.jpaw.bonaparte.pojos.jsonTest.ColorNumSet;
+import de.jpaw.bonaparte.pojos.jsonTest.JsonEnumSets;
 import de.jpaw.bonaparte.pojos.jsonTest.XColor;
+import de.jpaw.bonaparte.pojos.jsonTest.XColorSet;
 import de.jpaw.json.JsonParser;
 
-// Test which serializes enums (with token and without) and xenums to JSON
+// Test which serializes enumsets (with token and without) and xenumsets to JSON
 // in various formats:
 // - ordinal (untokenizable only)
 // - token (tokenizable enum and xenum)
 // - instance name enum and xenum)
 // and also parses the output and compares for equality
 
-public class JsonEnumTest2 {
+public class JsonEnumSetTest2 {
 
     @Test
     public void runOrdinalToken() throws Exception {
-        runTest(true, true, 62);
+        runTest(true, true, 82);
     }
     @Test
     public void runOrdinalName() throws Exception {
-        runTest(true, false, 69);
+        runTest(true, false, 87);
     }
     @Test
     public void runNameToken() throws Exception {
-        runTest(false, true, 66);
+        runTest(false, true, 106);
     }
     @Test
     public void runNameName() throws Exception {
-        runTest(false, false, 73);
+        runTest(false, false, 111);
     }
 
     public void runTest(boolean useOrdinals, boolean useTokens, int lengthExpected) throws Exception {
         JsonComposer.setDefaultWriteCRs(false);
 
-        JsonEnumAndList in = new JsonEnumAndList(ColorNum.RED, ColorAlnum.GREEN, XColor.forName("BLUE"), null);
+        JsonEnumSets in = new JsonEnumSets();
+        in.setCn(ColorNumSet.ofTokens(ColorNum.RED, ColorNum.GREEN));
+        in.setCa(ColorAlnumSet.ofTokens(ColorAlnum.GREEN));
+        in.setCx(XColorSet.ofTokens(XColor.forName("BLUE")));
+
+        in.setCn2(ColorNumSet.ofTokens());
+        in.setCa2(ColorAlnumSet.ofTokens());
+        in.setCx2(XColorSet.ofTokens());
 
         // non list related tests
         String j1 = JsonComposer.toJsonString(in, useOrdinals, useTokens);
