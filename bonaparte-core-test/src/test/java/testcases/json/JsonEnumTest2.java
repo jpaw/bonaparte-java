@@ -12,6 +12,7 @@ import de.jpaw.bonaparte.core.StaticMeta;
 import de.jpaw.bonaparte.pojos.jsonTest.ColorAlnum;
 import de.jpaw.bonaparte.pojos.jsonTest.ColorNum;
 import de.jpaw.bonaparte.pojos.jsonTest.JsonEnumAndList;
+import de.jpaw.bonaparte.pojos.jsonTest.WrapperForJsonEnumAndList;
 import de.jpaw.bonaparte.pojos.jsonTest.XColor;
 import de.jpaw.json.JsonParser;
 
@@ -52,11 +53,22 @@ public class JsonEnumTest2 {
 //        String j2 = BonaparteJsonEscaper.asJson(in);
 //        System.out.println("BJE produces       " + j2);
         Assert.assertEquals(lengthExpected, j1.length());
-        
+
         Map<String, Object> intermediate = (new JsonParser(j1, false)).parseObject();
         BonaPortable out = MapParser.allocObject(intermediate, StaticMeta.OUTER_BONAPORTABLE_FOR_JSON);
         out.deserialize(new MapParser(intermediate, false, useOrdinals, useTokens));
-        
+
         Assert.assertEquals(out, in);
+
+        // run an additional test for the object wrapped in some other object
+        WrapperForJsonEnumAndList inW = new WrapperForJsonEnumAndList(in);
+        String jW = JsonComposer.toJsonString(inW, useOrdinals, useTokens);
+        System.out.println("Bonaparte produces " + jW + " (length " + jW.length() + ")");
+
+        Map<String, Object> intermediateW = (new JsonParser(jW, false)).parseObject();
+        BonaPortable outW = MapParser.allocObject(intermediateW, StaticMeta.OUTER_BONAPORTABLE_FOR_JSON);
+        outW.deserialize(new MapParser(intermediateW, false, useOrdinals, useTokens));
+
+        Assert.assertEquals(outW, inW);
     }
 }

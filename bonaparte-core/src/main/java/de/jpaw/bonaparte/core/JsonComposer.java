@@ -741,7 +741,7 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
             writeAsArray(di, n.getBitmap());
         }
     }
-    
+
     @Override
     public <S extends Enum<S>> void addField(NumericEnumSetDataItem di, BonaShortEnumSet<S> n) throws IOException {
         if (n == null) {
@@ -752,7 +752,7 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
             writeAsArray(di, n.getBitmap());
         }
     }
-    
+
     @Override
     public <S extends Enum<S>> void addField(NumericEnumSetDataItem di, BonaIntEnumSet<S> n) throws IOException {
         if (n == null) {
@@ -763,7 +763,7 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
             writeAsArray(di, n.getBitmap());
         }
     }
-    
+
     @Override
     public <S extends Enum<S>> void addField(NumericEnumSetDataItem di, BonaLongEnumSet<S> n) throws IOException {
         if (n == null) {
@@ -774,7 +774,7 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
             writeAsArray(di, n.getBitmap());
         }
     }
-    
+
     // output a non-null numeric enumset, as list of instance names
     protected <S extends TokenizableEnum> void writeAlphaEnumSet(AlphanumericElementaryDataItem di, BonaStringEnumSet<S> e) throws IOException {
         if (e == null) {
@@ -801,7 +801,7 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
     public <S extends TokenizableEnum> void addField(AlphanumericEnumSetDataItem di, BonaStringEnumSet<S> e) throws IOException {
         writeAlphaEnumSet(di, e);
     }
-    
+
     @Override
     public <S extends TokenizableEnum> void addField(XEnumSetDataItem di, BonaStringEnumSet<S> e) throws IOException {
         writeAlphaEnumSet(di, e);

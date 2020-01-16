@@ -16,19 +16,19 @@ public class TestIterators {
             buff.append(a.name());
         }
     }
-    
+
     public void usual() {
         for (AlphabetEnum a: AlphabetEnum.values()) {
             buff.append(a.name());
         }
     }
-    
+
     public void newGenerated() {
         for (AlphabetEnum a: AlphabetEnum.all) {
             buff.append(a.name());
         }
     }
-    
+
     private void before() {
         System.gc();
         memSize = Runtime.getRuntime().freeMemory();

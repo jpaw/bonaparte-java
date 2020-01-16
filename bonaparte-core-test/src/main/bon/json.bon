@@ -46,6 +46,10 @@ package jsonTest {
         Element                 any;
     }
 
+    class WrapperForJsonEnumAndList {
+        required (JsonEnumAndList)  obj;
+    }
+
     class JsonWithMap {
         enum ColorAlnum         en;
         Unicode(20) Map<String> map;
@@ -128,5 +132,9 @@ package jsonTest {
         Enumset ColorNumSet           cn3;
         Enumset ColorAlnumSet         ca3;
         XEnumset XColorSet(10)        cx3;
+    }
+
+    class WrapperForJsonEnumSets {
+        required (JsonEnumSets)       obj;
     }
 }

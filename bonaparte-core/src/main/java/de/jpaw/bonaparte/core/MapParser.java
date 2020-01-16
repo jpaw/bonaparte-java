@@ -498,7 +498,12 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
 
         BonaCustom obj;
         if (z instanceof Map<?,?>) {
-             obj = asBonaPortable((Map<String, Object>)z, di);      // recursive invocation
+             // recursive invocation. This creates a new instance of MapParser, with same settings
+             // an alternative implementation could remove the "final" qualifier from map, push it, and continue with the same parser instance
+             Map subMap = (Map<String, Object>)z;
+             BonaPortable subObj = allocObject(subMap, di);
+             subObj.deserialize(new MapParser(subMap, instantInMillis, readEnumOrdinals, readEnumTokens));
+             obj = subObj;
         } else if (z instanceof BonaCustom) {
             obj = (BonaCustom)z;
         } else {
