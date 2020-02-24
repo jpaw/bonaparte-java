@@ -93,13 +93,13 @@ public class XmlJsonZTest {
         assert(sb != null);
         System.out.println("Schema is " + sb);
     }
-    
+
     @Test
     public void marshallJson() throws Exception {
         final TestJsonZ obj = buildObject();
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JodaModule());
-        
+
         String serialized = mapper.writer().writeValueAsString(obj);
         System.out.println("Jackson2 produces " + serialized);
         assertEquals(EXPECTED_JSON, serialized);

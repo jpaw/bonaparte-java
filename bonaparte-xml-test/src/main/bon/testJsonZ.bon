@@ -1,8 +1,8 @@
 package test.jsonZ XML PROPERTY {
-	
-	class TestJsonZ xmlRoot {
-		required int               num;
-		optional Json              z;
-		required Ascii(3)          str;
-	}
+
+    class TestJsonZ xmlRoot {
+        required int               num;
+        optional Json              z;
+        required Ascii(3)          str;
+    }
 }

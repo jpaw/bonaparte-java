@@ -40,14 +40,14 @@ public class EnumIterators {
             bh.consume(a.name());
         }
     }
-    
+
     @Benchmark
     public void usual(Blackhole bh) {
         for (AlphabetEnum a: AlphabetEnum.values()) {
             bh.consume(a.name());
         }
     }
-    
+
     @Benchmark
     public void newGenerated(Blackhole bh) {
         for (AlphabetEnum a: AlphabetEnum.all) {
