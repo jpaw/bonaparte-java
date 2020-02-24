@@ -129,4 +129,14 @@ public final class Bonaparte2ByteDataFormat implements DataFormat {
     public void setInitialBufferSize(int initialBufferSize) {
         this.initialBufferSize = initialBufferSize;
     }
+
+    @Override
+    public void start() {
+        // nothing to do
+    }
+
+    @Override
+    public void stop() {
+        // nothing to do
+    }
 }
