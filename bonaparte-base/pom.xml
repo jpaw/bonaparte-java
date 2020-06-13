@@ -58,7 +58,7 @@
         <jackson.version>2.9.10</jackson.version>
 
         <lucene.version>4.10.4</lucene.version>
-        <netty.version>4.1.47.Final</netty.version>
+        <netty.version>4.1.50.Final</netty.version>
         <poi.version>4.1.2</poi.version>
         <mina.version>2.0.7</mina.version>
         <camel.version>3.1.0</camel.version>
