@@ -16,4 +16,8 @@ package test.adapters {
     }
     class TestNoXml3 XML PROPERTY extends TestXml {
     }
+
+    class BigDeci {
+        Decimal(14,2)   value;
+    }
 }

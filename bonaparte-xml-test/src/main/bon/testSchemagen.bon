@@ -1,5 +1,5 @@
 package (com.foo) test.jaxb.schema XML PROPERTY BeanVal {
-    properties xmlUppercase, xmlAttribute;
+    properties xmlUppercase, xmlAllUppercase, xmlAttribute, xmlId;
 
     enum MyEnum {
         HELLO, WORLD
@@ -70,5 +70,17 @@ package (com.foo) test.jaxb.schema XML PROPERTY BeanVal {
         int                             test2 properties xmlAttribute;
         int                             test3 properties xmlUppercase;
         int                             test4 properties xmlUppercase, xmlAttribute;
+    }
+
+    class TestXmlAllUpperAndCustom XML PROPERTY ALL_UPPERCASE xmlRoot {
+        int                             test1;
+        int                             test2 properties xmlId="TeSt33";
+    }
+
+    class TestXmlDummy XML PROPERTY xmlRoot {
+        int                             test1;
+        int                             test2 properties xmlUppercase;
+        int                             test3 properties xmlAllUppercase;
+        int                             test4 properties xmlId="TeSt4334";
     }
 }
