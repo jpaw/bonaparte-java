@@ -288,8 +288,11 @@ public final class StringCSVParser extends AbstractPartialJsonStringParser imple
         String token = getField(fieldname, isRequired, length);
         if (token == null)
             return null;
-        if (doTrim) {
+        if (doTrim && !fixedLength) {
             token = token.trim();       // CSV formats trim by default
+            if (token.length() == 0 && cfg.quote == null) {
+                return null;            // convert empty string to null, if unquoted
+            }
         }
         for (int i = 0; i < token.length(); ++i) {
             char c = token.charAt(i);

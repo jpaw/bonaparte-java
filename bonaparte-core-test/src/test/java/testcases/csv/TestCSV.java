@@ -15,6 +15,7 @@ import de.jpaw.bonaparte.core.StaticMeta;
 import de.jpaw.bonaparte.core.StringCSVParser;
 import de.jpaw.bonaparte.pojos.csvTests.ScaledInts;
 import de.jpaw.bonaparte.pojos.csvTests.Test1;
+import de.jpaw.bonaparte.pojos.csvTests.Test4;
 
 public class TestCSV {
 
@@ -82,5 +83,27 @@ public class TestCSV {
         p.setNationalBigDecimal();  // switch to
         BonaPortable o    = p.readObject(StaticMeta.OUTER_BONAPORTABLE_FOR_CSV, testData.getClass());
         Assert.assertEquals(testData, o);
+    }
+
+    @Test
+    public void testCSVShort() throws Exception {
+        CSVConfiguration cfgDE = CSVConfiguration.Builder.from(cfg1).build();
+        String input      = "4;   hello   ;7";
+        StringCSVParser p = new StringCSVParser(cfgDE, input);
+        BonaPortable o    = p.readObject(StaticMeta.OUTER_BONAPORTABLE_FOR_CSV, Test4.class);
+        Test4 oo = (Test4)o;
+        Assert.assertEquals(oo.getMayBeNullButNotShort(), "hello", "truncated string");
+        oo.validate();
+    }
+
+    @Test
+    public void testCSVShort2() throws Exception {
+        CSVConfiguration cfgDE = CSVConfiguration.Builder.from(cfg1).build();
+        String input      = "4;      ;7";
+        StringCSVParser p = new StringCSVParser(cfgDE, input);
+        BonaPortable o    = p.readObject(StaticMeta.OUTER_BONAPORTABLE_FOR_CSV, Test4.class);
+        Test4 oo = (Test4)o;
+        oo.validate();
+        Assert.assertEquals(oo.getMayBeNullButNotShort(), null, "truncated string");
     }
 }
