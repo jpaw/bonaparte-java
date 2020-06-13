@@ -79,7 +79,7 @@
         <kryo.version>2.24.0</kryo.version>             <!-- kryo3 exists, with different groupId -->
 
         <validation-api.version>2.0.1.Final</validation-api.version>
-        <hibernate-validator.version>6.0.18.Final</hibernate-validator.version>
+        <hibernate-validator.version>6.0.20.Final</hibernate-validator.version>
         <javax-el.version>3.0.1-b08</javax-el.version>    <!-- expression language, required for hibernate validator -->
 
         <zk.version>8.6.0.1</zk.version>
