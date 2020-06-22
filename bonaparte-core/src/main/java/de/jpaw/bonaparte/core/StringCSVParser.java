@@ -244,16 +244,38 @@ public final class StringCSVParser extends AbstractPartialJsonStringParser imple
             // ending here, implicit end
             // fall through with null
         } else {
-            int index = work.indexOf(cfg.separator, parseIndex);
-            if (index < 0) {
-                result = work.substring(parseIndex);
-                parseIndex = messageLength;
+            // first, check for a quote delimited string
+            if (cfg.quote != null && work.charAt(parseIndex) == cfg.quote.charValue()) {
+                // yes, is a quoted string: read characters up to the next quote, and eat that
+                int index = work.indexOf(cfg.quote.charValue(), parseIndex+1);
+                if (index < 0) {
+                    throw new MessageParserException(MessageParserException.MISSING_CLOSING_QUOTE, fieldname, parseIndex, currentClass);
+                } else {
+                    result = work.substring(parseIndex+1, index);
+                    parseIndex = index + 1; // skip field and quote
+                    // now expect the delimiter, or an end
+                    if (parseIndex < messageLength) {
+                        // at least one character more
+                        if (work.indexOf(cfg.separator, parseIndex) == parseIndex) {
+                            ++parseIndex;  // FIXME: this assumes length of separator is 1
+                        } else {
+                            throw new MessageParserException(MessageParserException.MISSING_FIELD_TERMINATOR, fieldname, parseIndex, currentClass);
+                        }
+                    }
+                }
             } else {
-                result = work.substring(parseIndex, index);
-                parseIndex = index + 1; // skip field and separator
+                // no, read up to the next delimited
+                int index = work.indexOf(cfg.separator, parseIndex);
+                if (index < 0) {
+                    result = work.substring(parseIndex);
+                    parseIndex = messageLength;
+                } else {
+                    result = work.substring(parseIndex, index);
+                    parseIndex = index + 1; // skip field and separator  // FIXME: this assumes length of separator is 1
+                }
+                if (result.length() == 0)
+                    result = null;
             }
-            if (result.length() == 0)
-                result = null;
         }
         if (result == null && isRequired)
             throw new MessageParserException(MessageParserException.ILLEGAL_EXPLICIT_NULL, fieldname, parseIndex, currentClass);

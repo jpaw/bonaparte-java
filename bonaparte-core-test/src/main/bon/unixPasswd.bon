@@ -1,6 +1,6 @@
 package csvTests {
 
-    class UnixPasswd {
+    final class UnixPasswd {
         ascii(16)       name;       // login name
         ascii(32)       passwd;     // password (salted & encrypted)
         int             uid;        // numeric user ID

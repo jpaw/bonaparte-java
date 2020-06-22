@@ -12,9 +12,9 @@ import de.jpaw.bonaparte.core.CSVConfiguration;
 import de.jpaw.bonaparte.core.StringCSVParser;
 import de.jpaw.bonaparte.pojos.csvTests.UnixPasswd;
 
-public class TestUnix {
+public class TestUnixWithQuotes {
 
-    private CSVConfiguration unixPasswdCfg = new CSVConfiguration.Builder().usingSeparator(":").usingQuoteCharacter(null).build();
+    private CSVConfiguration unixPasswdCfg = new CSVConfiguration.Builder().usingSeparator(":").usingQuoteCharacter('\'').build();
 
     private static void runTest(CSVConfiguration cfg, BonaPortable input, String expectedOutput) {
         StringBuilder buffer = new StringBuilder(200);
@@ -27,6 +27,7 @@ public class TestUnix {
             throw new RuntimeException("Hey, StringBuilder.append threw an IOException!" + e);
         }
         String actualOutput = buffer.toString();
+        // System.out.println("Output is " + actualOutput);
         assert(expectedOutput.equals(actualOutput));
 
         // now parse
@@ -40,7 +41,7 @@ public class TestUnix {
         UnixPasswd pwEntry = new UnixPasswd("root", "x", 0, 0,"System superuser", "/root", "/bin/sh");
         UnixPasswd pwEntry2 = new UnixPasswd("jpaw", "x", 1003, 314,"Michael Bischoff", "/home/jpaw", "/bin/bash");
 
-        runTest(unixPasswdCfg, pwEntry, "root:x:0:0:System superuser:/root:/bin/sh\n");
-        runTest(unixPasswdCfg, pwEntry2, "jpaw:x:1003:314:Michael Bischoff:/home/jpaw:/bin/bash\n");
+        runTest(unixPasswdCfg, pwEntry, "'root':'x':0:0:'System superuser':'/root':'/bin/sh'\n");
+        runTest(unixPasswdCfg, pwEntry2, "'jpaw':'x':1003:314:'Michael Bischoff':'/home/jpaw':'/bin/bash'\n");
     }
 }
