@@ -245,7 +245,7 @@ public final class StringCSVParser extends AbstractPartialJsonStringParser imple
             // fall through with null
         } else {
             // first, check for a quote delimited string
-            if (cfg.quote != null && work.charAt(parseIndex) == cfg.quote.charValue()) {
+            if (cfg.quote != null && parseIndex < messageLength && work.charAt(parseIndex) == cfg.quote.charValue()) {
                 // yes, is a quoted string: read characters up to the next quote, and eat that
                 int index = work.indexOf(cfg.quote.charValue(), parseIndex+1);
                 if (index < 0) {
