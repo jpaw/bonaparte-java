@@ -82,7 +82,7 @@ public class XmlJsonAdapter extends XmlAdapter<XmlJsonAdapter.JSON, Map<String, 
                     if (l.size() > 0) {
                         Object w = l.get(0);
                         if (w instanceof Number)
-                            entry.nums = l;
+                            entry.nums = convertToDoubleList(l);
                         else if (w instanceof String)
                             entry.values = l;
                         else if (w instanceof Boolean)
@@ -93,7 +93,9 @@ public class XmlJsonAdapter extends XmlAdapter<XmlJsonAdapter.JSON, Map<String, 
                             entry.any = v;  // fallback
                     } // no action if empty list - cannot determine type, leave null
                 } else {
-                    if (v instanceof Number)
+                    if (v instanceof Double)
+                        entry.num = (Double)v;  // explicit check for Double to avoid unbox/box
+                    else if (v instanceof Number)
                         entry.num = ((Number)v).doubleValue();
                     else if (v instanceof String)
                         entry.value = (String)v;
@@ -110,5 +112,24 @@ public class XmlJsonAdapter extends XmlAdapter<XmlJsonAdapter.JSON, Map<String, 
         JSON result = new JSON();
         result.kvp = xml;
         return result;
+    }
+
+    protected List<Double> convertToDoubleList(List src) {
+        final List<Double> dst = new ArrayList<>(src.size());
+        for (Object o: src) {
+            if (o == null) {
+                // should not happen, really!
+                dst.add(null);
+            } else if (o instanceof Double) {
+                dst.add((Double)o);
+            } else if (o instanceof Number) {
+                // convert int, long, BigDecimal to Double, otherwise JAXB will squeeze in some xsi:int etc... which violates the xsd
+                dst.add(((Number)o).doubleValue());
+            } else {
+                // last resort to obtain some numeric value...
+                dst.add(new Double(o.toString()));
+            }
+        }
+        return dst;
     }
 }
