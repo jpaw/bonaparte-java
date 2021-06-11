@@ -50,20 +50,20 @@
 
     <properties>
         <!-- define revisions of other jpaw.de projects, not covered by plugin management -->
-        <bonaparte-plugin.version>4.40.0</bonaparte-plugin.version>
+        <bonaparte-plugin.version>4.40.2</bonaparte-plugin.version>
 
         <!-- define releases (mostly of 3rd party dependencies) we want to use, to ensure consistency -->
         <!-- Some more versions, used by specific dependent projects -->
         <gson.version>2.4</gson.version>
-        <jackson.version>2.11.2</jackson.version>
+        <jackson.version>2.11.4</jackson.version>
 
         <lucene.version>4.10.4</lucene.version>
-        <netty.version>4.1.51.Final</netty.version>
+        <netty.version>4.1.59.Final</netty.version>
         <poi.version>4.1.2</poi.version>
         <mina.version>2.0.7</mina.version>
-        <camel.version>3.4.2</camel.version>
+        <camel.version>3.7.4</camel.version>
         <vertx.version>2.1.6</vertx.version>
-        <vertx3.version>3.9.2</vertx3.version>
+        <vertx3.version>4.0.3</vertx3.version>
 
         <!-- distributed caches -->
         <ehcache.version>2.10.2</ehcache.version>
@@ -79,10 +79,10 @@
         <kryo.version>2.24.0</kryo.version>             <!-- kryo3 exists, with different groupId -->
 
         <validation-api.version>2.0.1.Final</validation-api.version>
-        <hibernate-validator.version>6.1.5.Final</hibernate-validator.version>
+        <hibernate-validator.version>6.2.0.Final</hibernate-validator.version>
         <javax-el.version>3.0.1-b08</javax-el.version>    <!-- expression language, required for hibernate validator -->
 
-        <zk.version>8.6.0.1</zk.version>
+        <zk.version>9.5.0.3</zk.version>
         <aws.version>1.11.118</aws.version>
     </properties>
 
@@ -298,8 +298,10 @@
         <module>../bonaparte8-api-alexa/pom.xml</module>
         <module>../bonaparte8-aws-sqs/pom.xml</module>
         <module>../bonaparte8-vertx3/pom.xml</module>
+<!--
         <module>../bonaparte8-vertx3-auth/pom.xml</module>
         <module>../bonaparte8-vertx3-test/pom.xml</module>
+-->
         <module>../bonaparte8-adapters-datetime/pom.xml</module>
         <module>../bonaparte8-batch/pom.xml</module>
         <module>../bonaparte8-test/pom.xml</module>
