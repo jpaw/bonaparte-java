@@ -10,11 +10,14 @@ public class BonaparteJsonEscaper extends ExtendedJsonEscaperForAppendables {
 
     // static utility method: serialize Object (single field)
     public static String asJson(Object obj) {
+        return asJson(obj, true);
+    }
+    public static String asJson(Object obj, boolean writeNulls) {
         if (obj == null)
             return null;
         StringBuilder buff = new StringBuilder(100);
         try {
-            new BonaparteJsonEscaper(buff).outputJsonElement(obj);
+            new BonaparteJsonEscaper(buff, writeNulls).outputJsonElement(obj);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -23,11 +26,14 @@ public class BonaparteJsonEscaper extends ExtendedJsonEscaperForAppendables {
 
     // static utility method: serialize Object (single field)
     public static String asJson(Map<String, Object> obj) {
+        return asJson(obj, true);
+    }
+    public static String asJson(Map<String, Object> obj, boolean writeNulls) {
         if (obj == null)
             return null;
         StringBuilder buff = new StringBuilder(100);
         try {
-            new BonaparteJsonEscaper(buff).outputJsonObject(obj);
+            new BonaparteJsonEscaper(buff, writeNulls).outputJsonObject(obj);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -36,20 +42,26 @@ public class BonaparteJsonEscaper extends ExtendedJsonEscaperForAppendables {
 
     // static utility method: serialize Object (array)
     public static String asJson(List<?> obj) {
+        return asJson(obj, true);
+    }
+    public static String asJson(List<?> obj, boolean writeNulls) {
         if (obj == null)
             return null;
         StringBuilder buff = new StringBuilder(100);
         try {
-            new BonaparteJsonEscaper(buff).outputJsonArray(obj);
+            new BonaparteJsonEscaper(buff, writeNulls).outputJsonArray(obj);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         return buff.toString();
     }
 
-
     public BonaparteJsonEscaper(Appendable appendable) {
         super(appendable);
+    }
+
+    public BonaparteJsonEscaper(Appendable appendable, boolean writeNulls) {
+        super(appendable, writeNulls, false, false);
     }
 
 //  private JsonComposer bonaparteJsonComposer = null;
