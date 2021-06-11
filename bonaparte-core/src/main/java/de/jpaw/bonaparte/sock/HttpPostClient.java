@@ -20,9 +20,14 @@ import de.jpaw.util.ByteBuilder;
  * The http authorization header can be modifed during the lifetime of an instance.
  * The marshaller can be changed as well, this is however usually not desired.
  *
+ * Deprecated. Network I/O is no longer deemed as a responsibility of this project,
+ * and newer JDKs provide new APIs which also support http/2.
+ * The package de.jpaw.bonaparte.sock will be dropped in bonaparte 5.
+ *
  * @author mbi
  *
  */
+@Deprecated
 public class HttpPostClient implements INetworkDialog, INetworkDialog2 {
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpPostClient.class);
 

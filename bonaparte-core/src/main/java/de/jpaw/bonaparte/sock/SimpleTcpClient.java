@@ -7,6 +7,7 @@ import de.jpaw.bonaparte.core.ByteArrayComposer;
 import de.jpaw.bonaparte.core.ByteArrayParser;
 import de.jpaw.socket.SimpleRawTcpClient;
 
+@Deprecated
 public class SimpleTcpClient extends SimpleRawTcpClient implements INetworkDialog {
     private final ByteArrayComposer w;
 
