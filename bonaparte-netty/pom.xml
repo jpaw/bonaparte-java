@@ -5,8 +5,8 @@
     <parent>
         <groupId>de.jpaw</groupId>
         <artifactId>bonaparte-base</artifactId>
-        <version>4.40.2</version>
-        <relativePath>../bonaparte-base/pom.xml</relativePath>
+        <version>4.41.0</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>bonaparte-netty</artifactId>
@@ -16,14 +16,15 @@
 
     <build>
         <plugins>
-            <!-- we need try with resources here -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
+                <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
-                    <encoding>${project.build.sourceEncoding}</encoding>
+                    <archive>
+                        <manifestEntries>
+                            <Automatic-Module-Name>de.jpaw.bonaparte.netty</Automatic-Module-Name>
+                        </manifestEntries>
+                    </archive>
                 </configuration>
             </plugin>
         </plugins>

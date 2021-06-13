@@ -5,8 +5,8 @@
     <parent>
         <groupId>de.jpaw</groupId>
         <artifactId>bonaparte-base</artifactId>
-        <version>4.40.2</version>
-        <relativePath>../bonaparte-base/pom.xml</relativePath>
+        <version>4.41.0</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>bonaparte8-vertx3-auth</artifactId>
