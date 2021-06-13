@@ -5,7 +5,7 @@
     <parent>
         <groupId>de.jpaw</groupId>
         <artifactId>jpaw-se-parent</artifactId>
-        <version>1.7.1</version>
+        <version>1.8.0</version>
         <relativePath/>
     </parent>
 
@@ -59,7 +59,7 @@
 
         <lucene.version>4.10.4</lucene.version>
         <netty.version>4.1.59.Final</netty.version>
-        <poi.version>4.1.2</poi.version>
+        <poi.version>5.0.0</poi.version>
         <mina.version>2.0.7</mina.version>
         <camel.version>3.7.4</camel.version>
         <vertx.version>2.1.6</vertx.version>
@@ -253,58 +253,57 @@
 
 
     <modules>
-        <module>../bonaparte-bom/pom.xml</module>
-        <module>../bonaparte-core/pom.xml</module>
-        <module>../bonaparte-annotations/pom.xml</module>
-        <module>../bonaparte-scanner/pom.xml</module>
-        <module>../bonaparte-core-test/pom.xml</module>
-        <module>../bonaparte-adapters-gson/pom.xml</module>
-        <module>../bonaparte-adapters-scalar/pom.xml</module>
-        <module>../bonaparte-adapters-money-bd/pom.xml</module>
-        <module>../bonaparte-adapters-money-fp/pom.xml</module>
-        <module>../bonaparte-adapters-test/pom.xml</module>
-        <module>../bonaparte-api/pom.xml</module>
-        <module>../bonaparte-android/pom.xml</module>
-        <module>../bonaparte-xml/pom.xml</module>
-        <module>../bonaparte-xml-test/pom.xml</module>
-        <module>../bonaparte-api-auth/pom.xml</module>
-        <module>../bonaparte-api-media/pom.xml</module>
-        <module>../bonaparte-jaxrs/pom.xml</module>
-        <module>../bonaparte-hazelcast/pom.xml</module>
-        <module>../bonaparte-hazelcast-api/pom.xml</module>
-        <module>../bonaparte-hazelcast-test/pom.xml</module>
-        <module>../bonaparte-ehcache-api/pom.xml</module>
-        <module>../bonaparte-ehcache3-api/pom.xml</module>
-        <module>../bonaparte-poi/pom.xml</module>
-        <module>../bonaparte-poix/pom.xml</module>
-        <module>../bonaparte-demorqrs/pom.xml</module>
-        <module>../bonaparte-refs/pom.xml</module>
-        <module>../bonaparte-netty/pom.xml</module>
-        <module>../bonaparte-netty-test/pom.xml</module>
-        <module>../bonaparte-batch/pom.xml</module>
-        <module>../bonaparte-akka/pom.xml</module>
-        <module>../bonaparte-camel/pom.xml</module>
-        <module>../bonaparte-servlet/pom.xml</module>
-        <module>../bonaparte-mina-test/pom.xml</module>
-        <module>../bonaparte-hornetq-test/pom.xml</module>
-        <module>../bonaparte-vertx/pom.xml</module>
-        <module>../bonaparte-vertx-test/pom.xml</module>
-        <module>../bonaparte-zk/pom.xml</module>
-        <module>../bonaparte-i18n/pom.xml</module>
-        <module>../bonaparte-repackage/pom.xml</module>
-        <module>../bonaparte-examples-jaxrs/pom.xml</module>
+        <module>bonaparte-bom/pom.xml</module>
+        <module>bonaparte-core/pom.xml</module>
+        <module>bonaparte-annotations/pom.xml</module>
+        <module>bonaparte-scanner/pom.xml</module>
+        <module>bonaparte-core-test/pom.xml</module>
+        <module>bonaparte-adapters-gson/pom.xml</module>
+        <module>bonaparte-adapters-scalar/pom.xml</module>
+        <module>bonaparte-adapters-money-bd/pom.xml</module>
+        <module>bonaparte-adapters-money-fp/pom.xml</module>
+        <module>bonaparte-adapters-test/pom.xml</module>
+        <module>bonaparte-api/pom.xml</module>
+        <module>bonaparte-android/pom.xml</module>
+        <module>bonaparte-xml/pom.xml</module>
+        <module>bonaparte-xml-test/pom.xml</module>
+        <module>bonaparte-api-auth/pom.xml</module>
+        <module>bonaparte-api-media/pom.xml</module>
+        <module>bonaparte-jaxrs/pom.xml</module>
+        <module>bonaparte-hazelcast/pom.xml</module>
+        <module>bonaparte-hazelcast-api/pom.xml</module>
+        <module>bonaparte-hazelcast-test/pom.xml</module>
+        <module>bonaparte-ehcache-api/pom.xml</module>
+        <module>bonaparte-ehcache3-api/pom.xml</module>
+        <module>bonaparte-poi/pom.xml</module>
+        <module>bonaparte-demorqrs/pom.xml</module>
+        <module>bonaparte-refs/pom.xml</module>
+        <module>bonaparte-netty/pom.xml</module>
+        <module>bonaparte-netty-test/pom.xml</module>
+        <module>bonaparte-batch/pom.xml</module>
+        <module>bonaparte-akka/pom.xml</module>
+        <module>bonaparte-camel/pom.xml</module>
+        <module>bonaparte-servlet/pom.xml</module>
+        <module>bonaparte-mina-test/pom.xml</module>
+        <module>bonaparte-hornetq-test/pom.xml</module>
+        <module>bonaparte-vertx/pom.xml</module>
+        <module>bonaparte-vertx-test/pom.xml</module>
+        <module>bonaparte-zk/pom.xml</module>
+        <module>bonaparte-i18n/pom.xml</module>
+        <module>bonaparte-repackage/pom.xml</module>
+        <module>bonaparte-examples-jaxrs/pom.xml</module>
 
-        <module>../bonaparte8-util/pom.xml</module>
-        <module>../bonaparte8-api-alexa/pom.xml</module>
-        <module>../bonaparte8-aws-sqs/pom.xml</module>
-        <module>../bonaparte8-vertx3/pom.xml</module>
+        <module>bonaparte8-util/pom.xml</module>
+        <module>bonaparte8-api-alexa/pom.xml</module>
+        <module>bonaparte8-aws-sqs/pom.xml</module>
+        <module>bonaparte8-vertx3/pom.xml</module>
 <!--
-        <module>../bonaparte8-vertx3-auth/pom.xml</module>
-        <module>../bonaparte8-vertx3-test/pom.xml</module>
+        <module>bonaparte8-vertx3-auth/pom.xml</module>
+        <module>bonaparte8-vertx3-test/pom.xml</module>
 -->
-        <module>../bonaparte8-adapters-datetime/pom.xml</module>
-        <module>../bonaparte8-batch/pom.xml</module>
-        <module>../bonaparte8-test/pom.xml</module>
+        <module>bonaparte8-adapters-datetime/pom.xml</module>
+        <module>bonaparte8-batch/pom.xml</module>
+        <module>bonaparte8-test/pom.xml</module>
     </modules>
 
 </project>

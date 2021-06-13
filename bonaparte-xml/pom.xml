@@ -6,7 +6,7 @@
         <groupId>de.jpaw</groupId>
         <artifactId>bonaparte-base</artifactId>
         <version>4.40.2</version>
-        <relativePath>../bonaparte-base/pom.xml</relativePath>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>bonaparte-xml</artifactId>
@@ -29,4 +29,21 @@
             <artifactId>jpaw-xenum-init</artifactId>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Automatic-Module-Name>de.jpaw.bonaparte.xml</Automatic-Module-Name>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>

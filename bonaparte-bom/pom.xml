@@ -127,11 +127,6 @@
             </dependency>
             <dependency>
                 <groupId>de.jpaw</groupId>
-                <artifactId>bonaparte-poix</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>de.jpaw</groupId>
                 <artifactId>bonaparte-demorqrs</artifactId>
                 <version>${project.version}</version>
             </dependency>

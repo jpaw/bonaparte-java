@@ -14,14 +14,15 @@
 
     <build>
         <plugins>
-            <!-- we need try with resources here -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
+                <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
-                    <encoding>${project.build.sourceEncoding}</encoding>
+                    <archive>
+                        <manifestEntries>
+                            <Automatic-Module-Name>de.jpaw.bonaparte.poix</Automatic-Module-Name>
+                        </manifestEntries>
+                    </archive>
                 </configuration>
             </plugin>
         </plugins>

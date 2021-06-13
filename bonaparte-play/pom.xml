@@ -73,7 +73,7 @@
         </dependency>
         <dependency>
             <groupId>de.jpaw</groupId>
-            <artifactId>bonaparte-poix</artifactId>
+            <artifactId>bonaparte-poi</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
