@@ -23,7 +23,7 @@ You can find the PDFs at the following URLs:
 
 This project uses maven3 as a build tool. Just run
 
-    (cd bonaparts-base && mvn install)
+    mvn clean install
 
 ###Compatibility
 
