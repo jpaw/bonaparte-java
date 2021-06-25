@@ -55,6 +55,8 @@ public class BonaPortableFactory {
     static private class HiddenClass {
     }
     static final private HiddenClass A_WAY_TO_GET_MY_CLASSLOADER = new HiddenClass();
+    static private ClassLoader classLoaderToUse = null;
+
     static public final String BONAPARTE_DEFAULT_PACKAGE_PREFIX = "bonapartePrefix"; // "BONAPARTE_DEFAULT_PACKAGE_PREFIX";  // system property name which can be used as a source
     static public boolean publishDefaultPrefix = true;          // required in environments which instantiate multiple classloaders for isolation (vert.x)
     static private boolean bonaparteClassDefaultPackagePrefixShouldBeRetrieved = true;
@@ -62,6 +64,10 @@ public class BonaPortableFactory {
 
     // prevent instance creation
     private BonaPortableFactory() {
+    }
+
+    public static void useFixedClassLoader(ClassLoader loader) {
+        classLoaderToUse = loader == null ? A_WAY_TO_GET_MY_CLASSLOADER.getClass().getClassLoader() : loader;
     }
 
     /** Maps the partially qualified object name (PQON) into a fully qualified name / canonical name.
@@ -141,7 +147,8 @@ public class BonaPortableFactory {
     private static BonaPortable createObjectSub(String FQON) throws MessageParserException {
         try {
             LOGGER.debug("Factory: loading class {}", FQON);
-            Class<? extends BonaPortable> f = Class.forName(FQON, true, Thread.currentThread().getContextClassLoader()).asSubclass(BonaPortable.class);
+            final ClassLoader loader = classLoaderToUse == null ? Thread.currentThread().getContextClassLoader() : classLoaderToUse;
+            final Class<? extends BonaPortable> f = Class.forName(FQON, true, loader).asSubclass(BonaPortable.class);
             return f.newInstance();
         } catch (ClassNotFoundException e) {
             LOGGER.error("ClassNotFound exception for {}", FQON);
