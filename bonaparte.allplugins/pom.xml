@@ -5,25 +5,26 @@
     <parent>
         <groupId>de.jpaw</groupId>
         <artifactId>jpaw-se-parent</artifactId>
-        <version>1.5.0</version>
+        <version>2.0.0</version>
         <relativePath/>
     </parent>
 
     <artifactId>bonaparte.allplugins</artifactId>
-    <version>4.42.1</version>
+    <version>4.50.0</version>
     <packaging>pom</packaging>
 
     <properties>
         <!-- define releases we want to use, to ensure consistency -->
-        <jpaw.version>1.9.0</jpaw.version>
-        <bonaparte.version>4.42.1</bonaparte.version>
+        <jpaw.version>2.6.0</jpaw.version>
+        <bonaparte.version>4.50.0</bonaparte.version>
+        <tycho.version>1.7.0</tycho.version>
     </properties>
 
     <repositories>
         <repository>
-            <id>p2-mars</id>
+            <id>p2-eclipse</id>
             <layout>p2</layout>
-            <url>http://download.eclipse.org/releases/2018-12/201812191000/</url>
+            <url>https://download.eclipse.org/releases/2021-06/</url>
         </repository>
     </repositories>
 

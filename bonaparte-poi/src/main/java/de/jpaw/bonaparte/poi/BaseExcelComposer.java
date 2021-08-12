@@ -61,7 +61,7 @@ import de.jpaw.util.ByteBuilder;
 import de.jpaw.util.IntegralLimits;
 
 // according to http://stackoverflow.com/questions/469695/decode-base64-data-in-java , xml.bind is included in Java 6 SE
-//import javax.xml.bind.DatatypeConverter;
+//import jakarta.xml.bind.DatatypeConverter;
 /**
  * Implements the output of Bonaparte objects into Excel formats.
  *

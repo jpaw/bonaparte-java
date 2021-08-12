@@ -5,8 +5,7 @@
     <parent>
         <groupId>de.jpaw</groupId>
         <artifactId>bonaparte-base</artifactId>
-        <version>4.42.1</version>
-        <relativePath>../pom.xml</relativePath>
+        <version>4.50.0</version>
     </parent>
 
     <artifactId>bonaparte-core-test</artifactId>
@@ -15,7 +14,7 @@
     <description>BONAPARTE core library extended unit tests</description>
 
     <properties>
-        <json-io.version>4.1.6</json-io.version>
+        <json-io.version>4.12.0</json-io.version>
     </properties>
 
     <dependencies>

@@ -1,7 +1,0 @@
-package testobjects {
-    enum Color {
-        RED = "R", GREEN = "G", BLUE = "B"
-    }
-
-    xenum XColor is Color : 2;
-}

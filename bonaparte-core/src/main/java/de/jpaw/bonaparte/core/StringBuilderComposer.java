@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 // according to http://stackoverflow.com/questions/469695/decode-base64-data-in-java , xml.bind is included in Java 6 SE
-//import javax.xml.bind.DatatypeConverter;
+//import jakarta.xml.bind.DatatypeConverter;
 /**
  * The StringBuilderComposer class.
  *

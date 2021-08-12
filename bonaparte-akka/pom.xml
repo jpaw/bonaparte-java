@@ -4,8 +4,7 @@
     <parent>
         <groupId>de.jpaw</groupId>
         <artifactId>bonaparte-base</artifactId>
-        <version>4.42.1</version>
-        <relativePath>../pom.xml</relativePath>
+        <version>4.50.0</version>
     </parent>
 
     <artifactId>bonaparte-akka</artifactId>
@@ -16,7 +15,7 @@
         <repository>
             <id>akka.repository</id>
             <name>Akka Maven Repository</name>
-            <url>http://repo.akka.io/snapshots</url>
+            <url>https://repo.akka.io/snapshots</url>
         </repository>
     </repositories>
     -->

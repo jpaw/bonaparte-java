@@ -2,7 +2,7 @@ package de.jpaw.bonaparte.test.jaxb;
 
 import java.io.StringWriter;
 
-import javax.xml.bind.SchemaOutputResolver;
+import jakarta.xml.bind.SchemaOutputResolver;
 import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamResult;
 

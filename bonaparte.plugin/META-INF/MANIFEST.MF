@@ -3,7 +3,7 @@ Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-ManifestVersion: 2
 Bundle-Name: bonaparte core libraries plugin
 Bundle-SymbolicName: bonaparte.plugin
-Bundle-Version: 4.42.1
+Bundle-Version: 4.50.0
 Bundle-Vendor: Michael Bischoff
 Require-Bundle: org.eclipse.xtext;visibility:=reexport,
  org.eclipse.xtext.xbase;resolution:=optional;visibility:=reexport,
@@ -28,8 +28,8 @@ Export-Package: de.jpaw.bonaparte.core,
  org.slf4j.api,
  org.slf4j.spi,
  org.slf4j.impl,
- javax.xml.bind,
- javax.xml.bind.annotation,
+ jakarta.xml.bind,
+ jakarta.xml.bind.annotation,
  org.joda.time,
  org.joda.time.base,
  org.joda.time.chrono,

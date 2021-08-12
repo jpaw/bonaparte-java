@@ -2,9 +2,9 @@ package de.jpaw.bonaparte.test.jaxb;
 
 import java.io.StringReader;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.helpers.DefaultValidationEventHandler;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.Unmarshaller;
+import jakarta.xml.bind.helpers.DefaultValidationEventHandler;
 
 import org.testng.annotations.Test;
 
@@ -55,7 +55,7 @@ public class ImplicitDecimalsRoundingTest {
             obj = unmarshaller.unmarshal(new StringReader(NOTROUNDED_XML));
             System.out.println("Not good, I expected an exception, but got " + obj);
             throw new Exception("missing exception in case of rounding where forbidden");
-        } catch (javax.xml.bind.UnmarshalException e) {
+        } catch (jakarta.xml.bind.UnmarshalException e) {
             System.out.println("Good, caught the expected exception: " + e);
         }
     }
