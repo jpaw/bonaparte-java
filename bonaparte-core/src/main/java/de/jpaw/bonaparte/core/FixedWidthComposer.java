@@ -28,7 +28,6 @@ import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
-import de.jpaw.bonaparte.util.DayTime;
 /**
  * The CSVComposer class.
  *
@@ -146,7 +145,7 @@ public class FixedWidthComposer extends CSVComposer {
     @Override
     public void addField(TemporalElementaryDataItem di, Instant t) throws IOException {
         if (t != null) {
-            outputPaddedNumber(Long.toString(DayTime.millisOfEpoch(t)), 18);
+            outputPaddedNumber(Long.toString(t.getEpochSecond() * 1000L + (long)(t.getNano() / 1000000)), 18);
         } else {
             addRawData(SPACE_PADDINGS[18]);
         }

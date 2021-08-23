@@ -1,10 +1,8 @@
 package de.jpaw.bonaparte.core;
 
 import java.util.Locale;
-
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +34,7 @@ public class CSVConfiguration {
     public final String booleanTrue;        // string to output for boolean true value
     public final String booleanFalse;       // string to output for boolean false value
     public final Locale locale;             // used to determine date format
-    public final DateTimeZone timeZone;     // the timezone to use (for special output formatters). Will use UTC if null.
+    public final ZoneId timeZone;     // the timezone to use (for special output formatters). Will use UTC if null.
     public final CSVStyle dateStyle;        // verbosity for day output
     public final CSVStyle timeStyle;        // verbosity for time output
     public final String customDayFormat;             // set to override locale specific LocalDate formatter
@@ -54,7 +52,7 @@ public class CSVConfiguration {
     }
     public CSVConfiguration(String separator, Character quote, String quoteReplacement, String ctrlReplacement, boolean datesQuoted, boolean removePoint4BD,
             String mapStart, String mapEnd, String arrayStart, String arrayEnd, String objectStart, String objectEnd, String booleanTrue, String booleanFalse,
-            Locale locale, DateTimeZone timeZone, CSVStyle dateStyle, CSVStyle timeStyle,
+            Locale locale, ZoneId timeZone, CSVStyle dateStyle, CSVStyle timeStyle,
             String customDayFormat,
             String customTimeFormat, String customTimeWithMsFormat,
             String customTimestampFormat, String customTimestampWithMsFormat,
@@ -112,7 +110,7 @@ public class CSVConfiguration {
         protected String booleanTrue;         // string to output for boolean true value
         protected String booleanFalse;        // string to output for boolean false value
         protected Locale locale;              // used to determine date format
-        protected DateTimeZone timeZone;      // the timezone to use (for special output formatters). Will use UTC if null.
+        protected ZoneId timeZone;            // the timezone to use (for special output formatters). Will use UTC if null.
         protected CSVStyle dateStyle;         // verbosity for day output
         protected CSVStyle timeStyle;         // verbosity for time output
         protected String customDayFormat;             // set to override locale specific LocalDate formatter
@@ -182,7 +180,7 @@ public class CSVConfiguration {
             this.locale = locale;
             return this;
         }
-        public Builder forTimeZone(DateTimeZone timeZone) {
+        public Builder forTimeZone(ZoneId timeZone) {
             this.timeZone = timeZone;
             return this;
         }
@@ -247,24 +245,24 @@ public class CSVConfiguration {
             this.timeStyle = timeStyle;
             return this;
         }
-        /** Custom format setting. See http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html for format description. */
+        /** Custom format setting. See http://joda-time.sourceforge.net/apidocs/java/time/format/DateTimeFormat.html for format description. */
         public Builder setCustomDayFormat(String customDayFormat) {
             this.customDayFormat = customDayFormat;
             return this;
         }
-        /** Custom format setting. See http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html for format description. */
+        /** Custom format setting. See http://joda-time.sourceforge.net/apidocs/java/time/format/DateTimeFormat.html for format description. */
         public Builder setCustomTimeFormats(String customTimeFormat, String customTimeWithMsFormat) {
             this.customTimeFormat = customTimeFormat;
             this.customTimeWithMsFormat = customTimeWithMsFormat;
             return this;
         }
-        /** Custom format setting. See http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html for format description. */
+        /** Custom format setting. See http://joda-time.sourceforge.net/apidocs/java/time/format/DateTimeFormat.html for format description. */
         public Builder setCustomDayTimeFormats(String customTimestampFormat, String customTimestampWithMsFormat) {
             this.customTimestampFormat = customTimestampFormat;
             this.customTimestampWithMsFormat = customTimestampWithMsFormat;
             return this;
         }
-        /** Custom format setting. See http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html for format description. */
+        /** Custom format setting. See http://joda-time.sourceforge.net/apidocs/java/time/format/DateTimeFormat.html for format description. */
         public Builder setCustomDayTimeFormats(String customDayFormat,
                 String customTimeFormat, String customTimeWithMsFormat,
                 String customTimestampFormat, String customTimestampWithMsFormat) {
@@ -290,12 +288,12 @@ public class CSVConfiguration {
     public DateTimeFormatter determineDayFormatter() {
         try {
             return customDayFormat == null
-                    ? DateTimeFormat.forStyle(dateStyle.getToken() + "-")
-                    : DateTimeFormat.forPattern(customDayFormat);
+                    ? DateTimeFormatter.forStyle(dateStyle.getToken() + "-")
+                    : DateTimeFormatter.forPattern(customDayFormat);
         } catch (IllegalArgumentException e) {
             // could occur if the user provided format is invalid
             LOGGER.error("Provided format is not valid: " + customDayFormat, e);
-            return DateTimeFormat.forPattern(DEFAULT_DAY_FORMAT);
+            return DateTimeFormatter.forPattern(DEFAULT_DAY_FORMAT);
         }
     }
 

@@ -17,7 +17,7 @@
 
     <properties>
         <!-- define revisions of other jpaw.de projects, not covered by plugin management -->
-        <bonaparte-plugin.version>4.60.0</bonaparte-plugin.version>
+        <bonaparte-plugin.version>4.60.1</bonaparte-plugin.version>
 
         <!-- define releases (mostly of 3rd party dependencies) we want to use, to ensure consistency -->
         <!-- Some more versions, used by specific dependent projects -->

@@ -18,16 +18,16 @@ package de.jpaw.bonaparte.core;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.joda.time.Instant;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-import org.joda.time.LocalTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -428,7 +428,7 @@ public class ByteArrayComposer extends AbstractMessageComposer<RuntimeException>
     @Override
     public void addField(TemporalElementaryDataItem di, Instant t) {
         if (t != null) {
-            long millis = t.getMillis();
+            long millis = t.toEpochMilli();
             work.appendAscii(Long.toString(millis / 1000L));
             int length = di.getFractionalSeconds();
             int millisecs = (int)(millis % 1000L);
@@ -446,19 +446,21 @@ public class ByteArrayComposer extends AbstractMessageComposer<RuntimeException>
     public void addField(TemporalElementaryDataItem di, LocalTime t) {
         if (t != null) {
             int length = di.getFractionalSeconds();
-            int millis = t.getMillisOfDay();
+            int seconds = t.toSecondOfDay();
             if (di.getHhmmss()) {
-                int tmpValue = millis / 60000; // minutes and hours
+                int tmpValue = seconds / 60; // minutes and hours
                 tmpValue = (100 * (tmpValue / 60)) + (tmpValue % 60);
-                work.appendAscii(Integer.toString((tmpValue * 100) + ((millis % 60000) / 1000)));
+                work.appendAscii(Integer.toString((tmpValue * 100) + (seconds % 60)));
             } else {
-                work.appendAscii(Integer.toString(millis / 1000));
+                work.appendAscii(Integer.toString(seconds));
             }
-            if (length > 0 && (millis % 1000) != 0) {
-                // add milliseconds
-                work.append((byte)'.');
-                int milliSeconds = millis % 1000;
-                lpad(Integer.toString(milliSeconds), 3, (byte)'0');
+            if (length > 0) {
+                int millis = t.getNano() / 1000000;
+                if (millis  != 0) {
+                   // add milliseconds
+                   work.append((byte)'.');
+                   lpad(Integer.toString(millis), 3, (byte)'0');
+                }
             }
             terminateField();
         } else {

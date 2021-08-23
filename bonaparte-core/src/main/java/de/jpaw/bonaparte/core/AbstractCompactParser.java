@@ -2,17 +2,17 @@ package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.joda.time.DateTimeZone;
-import org.joda.time.Instant;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-import org.joda.time.LocalTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -524,7 +524,7 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
         case COMPACT_TIME_MILLIS:
             return DayTime.timeForMillis(readInt(needToken(), di.getName()));
         case COMPACT_TIME:
-            return new LocalTime(readInt(needToken(), di.getName()) * 1000L, DateTimeZone.UTC);
+            return new LocalTime(readInt(needToken(), di.getName()) * 1000L, ZoneId.UTC);
         default:
             throw newMPE(MessageParserException.UNEXPECTED_CHARACTER, String.format("(expected COMPACT_TIME_*, got 0x%02x)", c));
         }
@@ -540,7 +540,7 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
             millis = secondsOfDay % 1000;
             secondsOfDay /= 1000;
         }
-        return new LocalDateTime(year, month, day, secondsOfDay / 3600, (secondsOfDay % 3600) / 60, secondsOfDay % 60, millis);
+        return LocalDateTime.of(year, month, day, secondsOfDay / 3600, (secondsOfDay % 3600) / 60, secondsOfDay % 60, millis * 1000000);
     }
 
     @Override
@@ -563,7 +563,7 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
     public Instant readInstant(TemporalElementaryDataItem di) throws E {
         if (checkForNull(di))
             return null;
-        return new Instant(readLong(needToken(), di.getName()));
+        return Instant.ofEpochMilli(readLong(needToken(), di.getName()));
     }
 
     @Override

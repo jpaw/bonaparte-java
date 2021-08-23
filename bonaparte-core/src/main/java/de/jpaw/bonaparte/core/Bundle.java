@@ -18,10 +18,9 @@ package de.jpaw.bonaparte.core;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.time.Instant;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
-import org.joda.time.Instant;
 
 import de.jpaw.bonaparte.pojos.meta.BundleInformation;
 import de.jpaw.bonaparte.pojos.meta.BundleStatus;

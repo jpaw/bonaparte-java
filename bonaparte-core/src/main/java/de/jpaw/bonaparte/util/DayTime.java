@@ -15,15 +15,12 @@
  */
 package de.jpaw.bonaparte.util;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.TimeZone;
-
-import org.joda.time.DateTimeZone;
-import org.joda.time.Instant;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-import org.joda.time.LocalTime;
 
 /**
  * Some convenience functions for days and timestamps.
@@ -34,55 +31,10 @@ import org.joda.time.LocalTime;
  */
 public class DayTime {
 
-    /** Provides functionality missing in the {@link java.util.GregorianCalendar} class, to create a new object initialized with the current timestamp. */
-    static public GregorianCalendar getCurrentTimestamp() {
-        GregorianCalendar now = new GregorianCalendar();
-        now.setTime(new Date());
-        return now;
-    }
-
-    /** Provides functionality to convert a Joda timestamp to a GregorianCalendar. */
-    static public GregorianCalendar toCalendar(LocalDateTime when) {
-        if (when == null) {
-            return null;
-        }
-        GregorianCalendar then = new GregorianCalendar();
-        then.setTime(when.toDate());
-        return then;
-    }
-
-    /** Provides functionality to convert a Joda date to a GregorianCalendar. */
-    static public GregorianCalendar toCalendar(LocalDate when) {
-        if (when == null) {
-            return null;
-        }
-        GregorianCalendar then = new GregorianCalendar();
-        then.setTime(when.toDate());
-        return then;
-    }
-
-    /** Provides functionality to convert a Joda date to a GregorianCalendar. */
-    static public GregorianCalendar toCalendar(LocalTime when) {
-        if (when == null) {
-            return null;
-        }
-        long millis = when.getMillisOfDay();
-        GregorianCalendar then = new GregorianCalendar();
-        then.setTimeInMillis(millis);
-        return then;
-    }
-
-
-    /** Provides functionality to convert a Joda instant to a GregorianCalendar. */
-    static public GregorianCalendar toCalendar(Instant when) {
-        if (when == null) {
-            return null;
-        }
-        long millis = when.getMillis();
-        GregorianCalendar then = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
-        then.setTimeInMillis(millis);
-        return then;
-    }
+	/** shorthand */
+	static public int millisOfDay(LocalTime t) {
+	    return t.toSecondOfDay() * 1000 + t.getNano() / 1000000;
+	}
 
     /** Provides functionality to convert a Joda timestamp to a java Date. */
     static public Date toDate(LocalDateTime when) {

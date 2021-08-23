@@ -12,11 +12,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.joda.time.Instant;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-import org.joda.time.LocalTime;
-import org.joda.time.format.ISODateTimeFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -425,7 +424,7 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
         }
         if (z instanceof Number) {
             // convert number of seconds to Instant
-            return new Instant((long)(((Number)z).doubleValue() * 1000.0));
+            return Instant.ofEpochMilli((long)(((Number)z).doubleValue() * 1000.0));
         }
         throw err(MessageParserException.UNSUPPORTED_CONVERSION, di);
     }
@@ -438,7 +437,7 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
         if (z instanceof String) {
             // cannot use spu, use JSON instead of Bonaparte formatting
             try {
-                return LocalDate.parse((String)z, ISODateTimeFormat.date());
+                return LocalDate.parse((String)z);
             } catch (IllegalArgumentException e) {
                 throw err(MessageParserException.ILLEGAL_TIME, di);
             }
@@ -458,7 +457,7 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
             // cannot use spu, use JSON instead of Bonaparte formatting
             try {
                 //return LocalTime.parse((String)z, di.getFractionalSeconds() > 0 ? ISODateTimeFormat.time() : ISODateTimeFormat.timeNoMillis());
-                return LocalTime.parse((String)z, ISODateTimeFormat.timeParser());   // a more flexible parser
+                return LocalTime.parse((String)z);   // a more flexible parser
             } catch (IllegalArgumentException e) {
                 throw err(MessageParserException.ILLEGAL_TIME, di);
             }
@@ -478,7 +477,7 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
             // cannot use spu, use JSON instead of Bonaparte formatting
             try {
                 // return LocalDateTime.parse((String)z, di.getFractionalSeconds() > 0 ? ISODateTimeFormat.dateTime() : ISODateTimeFormat.dateTimeNoMillis());
-                return LocalDateTime.parse((String)z, ISODateTimeFormat.dateTimeParser());   // a more flexible parser
+                return LocalDateTime.parse((String)z);   // a more flexible parser
             } catch (IllegalArgumentException e) {
                 throw err(MessageParserException.ILLEGAL_TIME, di);
             }

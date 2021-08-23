@@ -549,7 +549,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
     protected void localdateOut(LocalDate t) throws IOException {
         out.writeByte(COMPACT_DATE);
         intOut(t.getYear());
-        intOut(t.getMonthOfYear());
+        intOut(t.getMonthValue());
         intOut(t.getDayOfMonth());
     }
 
@@ -564,14 +564,14 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
     }
 
     protected void localdatetimeOut(LocalDateTime t) throws IOException {
-        int millis = t.getMillisOfSecond();
+        int millis = t.getNano() / 1000000;
         boolean fractional = millis != 0;
         out.writeByte(!fractional ? COMPACT_DATETIME : COMPACT_DATETIME_MILLIS);
         intOut(t.getYear());
-        intOut(t.getMonthOfYear());
+        intOut(t.getMonthValue());
         intOut(t.getDayOfMonth());
         if (fractional)
-            intOut(DayTime.millisOfDay(t));
+            intOut(DayTime.millisOfDay(t.toLocalTime()));
         else
             intOut(t.toLocalTime().toSecondOfDay());
     }
@@ -586,7 +586,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
     }
 
     protected void localtimeOut(LocalTime t) throws IOException {
-        int millis = t.getMillisOfSecond();
+        int millis = t.getNano() / 1000000;
         if (millis != 0) {
             out.writeByte(COMPACT_TIME_MILLIS);
             intOut(DayTime.millisOfDay(t));
@@ -608,7 +608,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
     @Override
     public void addField(TemporalElementaryDataItem di, Instant t) throws IOException {
         if (t != null) {
-            longOut(DayTime.millisOfEpoch(t));
+            longOut(t.toEpochMilli());
         } else {
             writeNull();
         }
@@ -930,7 +930,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
         }
         if (obj instanceof Temporal) {
             if (obj instanceof Instant) {
-                longOut(DayTime.millisOfEpoch((Instant)obj));
+                longOut(((Instant)obj).toEpochMilli());
                 return;
             }
             if (obj instanceof LocalDate) {
