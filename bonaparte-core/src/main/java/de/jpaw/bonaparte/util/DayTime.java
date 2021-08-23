@@ -36,6 +36,18 @@ public class DayTime {
 	    return t.toSecondOfDay() * 1000 + t.getNano() / 1000000;
 	}
 
+    /** Converts the day portion of a LocalDate or localDateTime into a number in the format YYYYMMDD. */
+    static public int dayAsInt(LocalDate when) {
+        return when.getDayOfMonth() + 100 * when.getMonthValue() + 10000 * when.getYear();
+    }
+
+    /** Converts the day portion of a LocalDate or localDateTime into a number in the format YYYYMMDD. */
+    static public int dayAsInt(LocalDateTime when) {
+        return when.getDayOfMonth() + 100 * when.getMonthValue() + 10000 * when.getYear();
+    }
+
+    
+    
     /** Provides functionality to convert a Joda timestamp to a java Date. */
     static public Date toDate(LocalDateTime when) {
         if (when == null) {
@@ -80,15 +92,6 @@ public class DayTime {
             return (int)((t1 + 86400000L) - t0);
         }
         return (int)(t1 - t0);
-    }
-
-    /** Converts the day portion of a LocalDate or localDateTime into a number in the format YYYYMMDD. */
-    static public int dayAsInt(LocalDateTime when) {
-        return when.getDayOfMonth() + 100 * when.getMonthOfYear() + 10000 * when.getYear();
-    }
-    /** Converts the day portion of a LocalDate or localDateTime into a number in the format YYYYMMDD. */
-    static public int dayAsInt(LocalDate when) {
-        return when.getDayOfMonth() + 100 * when.getMonthOfYear() + 10000 * when.getYear();
     }
 
     /** Converts the time portion of a LocalTime or localDateTime into a number in the format HHMMSSMMM. */

@@ -340,28 +340,24 @@ public class AppendableComposer extends AbstractMessageComposer<IOException> imp
     @Override
     public void addField(TemporalElementaryDataItem di, LocalDateTime t) throws IOException {
         if (t != null) {
-            int [] values = t.getValues(); // 4 values: year, month, day, millis of day
-            //int tmpValue = 10000 * t.getYear() + 100 * t.getMonthOfYear() + t.getDayOfMonth();
-            work.append(Integer.toString((10000 * values[0]) + (100 * values[1]) + values[2]));
+            work.append(Integer.toString(10000 * t.getYear() + 100 * t.getMonthValue() + t.getDayOfMonth()));
             int length = di.getFractionalSeconds();
             if (length >= 0) {
                 // not only day, but also time
+                final LocalTime tm = t.toLocalTime(); 
+                final int seconds = tm.toSecondOfDay();
+                final int milliSeconds = tm.getNano() / 1000000;
                 //tmpValue = 10000 * t.getHourOfDay() + 100 * t.getMinuteOfHour() + t.getSecondOfMinute();
-                if (length > 0 ? (values[3] != 0) : ((values[3] / 1000) != 0)) {
+                if (seconds != 0 || length > 0 && milliSeconds != 0) {
                     work.append('.');
                     if (di.getHhmmss()) {
-                        int tmpValue = values[3] / 60000; // minutes and hours
-                        tmpValue = (100 * (tmpValue / 60)) + (tmpValue % 60);
-                        lpad(Integer.toString((tmpValue * 100) + ((values[3] % 60000) / 1000)), 6, '0');
+                        lpad(Integer.toString(100000 * tm.getHour() + 100 * tm.getMinute() + seconds % 60), 6, '0');
                     } else {
-                        lpad(Integer.toString(values[3] / 1000), 6, '0');
+                        lpad(Integer.toString(tm.toSecondOfDay()), 6, '0');
                     }
-                    if (length > 0) {
+                    if (length > 0 && milliSeconds != 0) {
                         // add milliseconds
-                        int milliSeconds = values[3] % 1000;
-                        if (milliSeconds != 0) {
-                            lpad(Integer.toString(milliSeconds), 3, '0');
-                        }
+                        lpad(Integer.toString(milliSeconds), 3, '0');
                     }
                 }
             }

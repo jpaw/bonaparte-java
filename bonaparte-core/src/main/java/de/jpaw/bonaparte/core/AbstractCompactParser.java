@@ -504,7 +504,7 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
         int year = readInt(needToken(), fieldname);
         int month = readInt(needToken(), fieldname);
         int day = readInt(needToken(), fieldname);
-        return new LocalDate(year, month, day);
+        return LocalDate.of(year, month, day);
     }
 
     @Override
@@ -524,7 +524,7 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
         case COMPACT_TIME_MILLIS:
             return DayTime.timeForMillis(readInt(needToken(), di.getName()));
         case COMPACT_TIME:
-            return new LocalTime(readInt(needToken(), di.getName()) * 1000L, ZoneId.UTC);
+            return LocalTime.ofSecondOfDay(readInt(needToken(), di.getName()));
         default:
             throw newMPE(MessageParserException.UNEXPECTED_CHARACTER, String.format("(expected COMPACT_TIME_*, got 0x%02x)", c));
         }
@@ -903,7 +903,7 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
         case COMPACT_DATE:                  //0xd8
             return readDate("$jsonElemDate");
         case COMPACT_TIME:                  //0xd9
-            return new LocalTime(readInt(needToken(), "$jsonElemTime") * 1000L, DateTimeZone.UTC);
+            return LocalTime.ofSecondOfDay(readInt(needToken(), "$jsonElemTime"));
         case COMPACT_TIME_MILLIS:           //0xda
             return DayTime.timeForMillis(readInt(needToken(), "$jsonElemTimeMs"));
         case COMPACT_DATETIME:              //0xdb
