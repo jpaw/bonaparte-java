@@ -4,13 +4,12 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Map;
-import java.util.UUID;
-
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Map;
+import java.util.UUID;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
@@ -20,7 +19,6 @@ import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
-import de.jpaw.bonaparte.util.DayTime;
 import de.jpaw.util.ByteArray;
 
 
@@ -229,7 +227,7 @@ public class CompactJsonComposer extends AbstractCompactComposer {
     public void addField(TemporalElementaryDataItem di, Instant t) throws IOException {
         if (t != null) {
             optFieldNameOut(di);
-            super.longOut(DayTime.millisOfEpoch(t));
+            super.longOut(t.toEpochMilli());
         } else if (arrayDepth != 0)
             writeNull();
     }

@@ -13,7 +13,6 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormat;
 import java.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,11 +59,11 @@ import de.jpaw.util.ByteBuilder;
  */
 public class JsonComposer extends AbstractMessageComposer<IOException> {
     private final static Logger LOGGER = LoggerFactory.getLogger(JsonComposer.class);
-    protected static final DateTimeFormatter LOCAL_DATE_ISO = DateTimeFormat.forPattern("yyyy-MM-dd"); // ISODateTimeFormat.basicDate();
-    protected static final DateTimeFormatter LOCAL_DATETIME_ISO = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'"); // ISODateTimeFormat.basicDateTime();
-    protected static final DateTimeFormatter LOCAL_TIME_ISO = DateTimeFormat.forPattern("HH:mm:ss'Z'"); // ISODateTimeFormat.basicTime();
-    protected static final DateTimeFormatter LOCAL_DATETIME_ISO_WITH_MS = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"); // ISODateTimeFormat.basicDateTime();
-    protected static final DateTimeFormatter LOCAL_TIME_ISO_WITH_MS = DateTimeFormat.forPattern("HH:mm:ss.SSS'Z'"); // ISODateTimeFormat.basicTime();
+    protected static final DateTimeFormatter LOCAL_DATE_ISO = DateTimeFormatter.ofPattern("yyyy-MM-dd"); // ISODateTimeFormat.basicDate();
+    protected static final DateTimeFormatter LOCAL_DATETIME_ISO = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'"); // ISODateTimeFormat.basicDateTime();
+    protected static final DateTimeFormatter LOCAL_TIME_ISO = DateTimeFormatter.ofPattern("HH:mm:ss'Z'"); // ISODateTimeFormat.basicTime();
+    protected static final DateTimeFormatter LOCAL_DATETIME_ISO_WITH_MS = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"); // ISODateTimeFormat.basicDateTime();
+    protected static final DateTimeFormatter LOCAL_TIME_ISO_WITH_MS = DateTimeFormatter.ofPattern("HH:mm:ss.SSS'Z'"); // ISODateTimeFormat.basicTime();
     protected String currentClass = "N/A";
     protected String remFieldName = null;
     protected int indentation = 0;
@@ -604,17 +603,17 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
 
     @Override
     public void addField(TemporalElementaryDataItem di, LocalDate t) throws IOException {
-        writeOptionalQuotedAscii(di, t == null ? null : LOCAL_DATE_ISO.print(t));
+        writeOptionalQuotedAscii(di, t == null ? null : t.format(LOCAL_DATE_ISO));
     }
 
     @Override
     public void addField(TemporalElementaryDataItem di, LocalDateTime t) throws IOException {
-        writeOptionalQuotedAscii(di, t == null ? null : di.getFractionalSeconds() > 0 ? LOCAL_DATETIME_ISO_WITH_MS.print(t) : LOCAL_DATETIME_ISO.print(t));
+        writeOptionalQuotedAscii(di, t == null ? null : di.getFractionalSeconds() > 0 ? t.format(LOCAL_DATETIME_ISO_WITH_MS) : t.format(LOCAL_DATETIME_ISO));
     }
 
     @Override
     public void addField(TemporalElementaryDataItem di, LocalTime t) throws IOException {
-        writeOptionalQuotedAscii(di, t == null ? null : di.getFractionalSeconds() > 0 ? LOCAL_TIME_ISO_WITH_MS.print(t) : LOCAL_TIME_ISO.print(t));
+        writeOptionalQuotedAscii(di, t == null ? null : di.getFractionalSeconds() > 0 ? t.format(LOCAL_TIME_ISO_WITH_MS) : t.format(LOCAL_TIME_ISO));
     }
 
     @Override
@@ -625,7 +624,7 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
             writeNull(di);
         } else {
             writeFieldName(di);
-            long millis = t.getMillis();
+            long millis = t.toEpochMilli();
             if (instantInMillis) {
                 out.append(Long.toString(millis));
             } else {

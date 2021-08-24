@@ -42,6 +42,7 @@ import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDefinition;
 import de.jpaw.bonaparte.util.BigDecimalTools;
+import de.jpaw.bonaparte.util.DayTime;
 import de.jpaw.enums.AbstractXEnumBase;
 import de.jpaw.enums.XEnumFactory;
 import de.jpaw.util.Base64;
@@ -170,11 +171,11 @@ public final class StringCSVParser extends AbstractPartialJsonStringParser imple
         setSource(work);
         this.cfg = cfg;
         this.lengthOfBoolean = cfg.booleanFalse.length() > cfg.booleanTrue.length() ? cfg.booleanFalse.length() : cfg.booleanTrue.length();
-        this.dayFormat = cfg.determineDayFormatter().withLocale(cfg.locale).withZoneUTC();
-        this.timeFormat = cfg.determineTimeFormatter().withLocale(cfg.locale).withZoneUTC();
-        this.time3Format = cfg.determineTime3Formatter().withLocale(cfg.locale).withZoneUTC();
-        this.timestampFormat = cfg.determineTimestampFormatter().withLocale(cfg.locale).withZoneUTC();
-        this.timestamp3Format = cfg.determineTimestamp3Formatter().withLocale(cfg.locale).withZoneUTC();
+        this.dayFormat = cfg.determineDayFormatter().withLocale(cfg.locale).withZone(DayTime.ZONE_UTC);
+        this.timeFormat = cfg.determineTimeFormatter().withLocale(cfg.locale).withZone(DayTime.ZONE_UTC);
+        this.time3Format = cfg.determineTime3Formatter().withLocale(cfg.locale).withZone(DayTime.ZONE_UTC);
+        this.timestampFormat = cfg.determineTimestampFormatter().withLocale(cfg.locale).withZone(DayTime.ZONE_UTC);
+        this.timestamp3Format = cfg.determineTimestamp3Formatter().withLocale(cfg.locale).withZone(DayTime.ZONE_UTC);
         this.dayFormatLength = cfg.customDayFormat == null ? 8 : cfg.customDayFormat.length();
         this.timeFormatLength = cfg.customTimeFormat == null ? 6 : cfg.customTimeFormat.length();
         this.time3FormatLength = cfg.customTimeWithMsFormat == null ? 9 : cfg.customTimeWithMsFormat.length();
@@ -413,9 +414,9 @@ public final class StringCSVParser extends AbstractPartialJsonStringParser imple
             return null;
         try {
             if (di.getFractionalSeconds() > 0)
-                return timestamp3Format.parseLocalDateTime(token);
+                return LocalDateTime.parse(token, timestamp3Format);
             else
-                return timestampFormat.parseLocalDateTime(token);
+                return LocalDateTime.parse(token, timestampFormat);
         } catch (Exception e) {
             throw new MessageParserException(MessageParserException.ILLEGAL_CALENDAR_VALUE, di.getName(), parseIndex, currentClass);
         }
@@ -426,7 +427,7 @@ public final class StringCSVParser extends AbstractPartialJsonStringParser imple
         if (token == null)
             return null;
         try {
-            return dayFormat.parseLocalDate(token);
+            return LocalDate.parse(token, dayFormat);
         } catch (Exception e) {
             throw new MessageParserException(MessageParserException.ILLEGAL_CALENDAR_VALUE, di.getName(), parseIndex, currentClass);
         }
@@ -438,9 +439,9 @@ public final class StringCSVParser extends AbstractPartialJsonStringParser imple
             return null;
         try {
             if (di.getFractionalSeconds() > 0)
-                return time3Format.parseLocalTime(token);
+                return LocalTime.parse(token, time3Format);
             else
-                return timeFormat.parseLocalTime(token);
+                return LocalTime.parse(token, timeFormat);
         } catch (Exception e) {
             throw new MessageParserException(MessageParserException.ILLEGAL_CALENDAR_VALUE, di.getName(), parseIndex, currentClass);
         }
@@ -476,7 +477,7 @@ public final class StringCSVParser extends AbstractPartialJsonStringParser imple
                         parseIndex, currentClass);
             }
         }
-        return new Instant(1000L * seconds + millis);
+        return Instant.ofEpochMilli(1000L * seconds + millis);
     }
 
 

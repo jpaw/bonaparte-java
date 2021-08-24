@@ -15,12 +15,9 @@
  */
 package de.jpaw.bonaparte.util;
 
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Date;
-import java.util.TimeZone;
+import java.time.ZoneId;
 
 /**
  * Some convenience functions for days and timestamps.
@@ -30,6 +27,7 @@ import java.util.TimeZone;
  *
  */
 public class DayTime {
+	public static final ZoneId ZONE_UTC = ZoneId.of("UTC");
 
 	/** shorthand */
 	static public int millisOfDay(LocalTime t) {
@@ -41,77 +39,78 @@ public class DayTime {
         return when.getDayOfMonth() + 100 * when.getMonthValue() + 10000 * when.getYear();
     }
 
-    /** Converts the day portion of a LocalDate or localDateTime into a number in the format YYYYMMDD. */
-    static public int dayAsInt(LocalDateTime when) {
-        return when.getDayOfMonth() + 100 * when.getMonthValue() + 10000 * when.getYear();
-    }
-
-    
-    
-    /** Provides functionality to convert a Joda timestamp to a java Date. */
-    static public Date toDate(LocalDateTime when) {
-        if (when == null) {
-            return null;
-        }
-        return when.toDate();
-    }
-
-    /** Provides functionality to convert a Joda date to a java Date. */
-    static public Date toDate(LocalDate when) {
-        if (when == null) {
-            return null;
-        }
-        return when.toDate();
-    }
-
-    /** Provides functionality to convert a Joda date to a java Date. */
-    static public Date toDate(LocalTime when) {
-        if (when == null) {
-            return null;
-        }
-        return new Date(when.getMillisOfDay());  // intended conversion: Date is some time in Jan 1st 1970
-    }
-
-    /** Provides functionality to convert a Joda instant to a java Date. */
-    static public Date toDate(Instant when) {
-        if (when == null) {
-            return null;
-        }
-        return new Date(when.getMillis());
-    }
-
-    /** Computes the difference between two LocalDateTime instances with millisecond precision.
-     * Unfortunately the method getLocalMillis() which returns the time since the epoch is protected (as of JodaTime 2.1),
-     * therefore we have to use the millis of a day ad work around the day wrap. (This is a solution for short time periods only!)
-     * TODO: Should test that (by comparing start + 23 hours with end, and throwing an exception if start + 23 hours is still < end).
-     */
-    static public int LocalDateTimeDifference(LocalDateTime start, LocalDateTime end) {
-        long t0 = start.getMillisOfDay();
-        long t1 = end.getMillisOfDay();
-        if (t0 > t1) {
-            return (int)((t1 + 86400000L) - t0);
-        }
-        return (int)(t1 - t0);
-    }
-
-    /** Converts the time portion of a LocalTime or localDateTime into a number in the format HHMMSSMMM. */
-    static public int timeAsInt(LocalDateTime when) {
-        return when.getMillisOfSecond() + 1000 * when.getSecondOfMinute() + 100000 * when.getMinuteOfHour() + 10000000 * when.getHourOfDay();
-    }
-    /** Converts the time portion of a LocalTime or localDateTime into a number in the format HHMMSSMMM. */
-    static public int timeAsInt(LocalTime when) {
-        return when.getMillisOfSecond() + 1000 * when.getSecondOfMinute() + 100000 * when.getMinuteOfHour() + 10000000 * when.getHourOfDay();
-    }
-
-//    static public Instant toInstant(LocalDateTime ldt) {
-//        // no good conversion known ? return new Instant(Date.getMillis(ldt.toDate()));
-//    }
-    static public LocalDateTime toLocalDateTime(Instant i) {
-        return new LocalDateTime(i.getMillis(), DateTimeZone.UTC);
-    }
-
     /** Converts the time since midnight (in milliseconds, i.e. 0..86_400_000) to a LocalTime. */
     static public LocalTime timeForMillis(int millis) {
-        return new LocalTime(millis, DateTimeZone.UTC);
+        return LocalTime.ofNanoOfDay(millis * 1000000L);
     }
+
+//    /** Converts the day portion of a LocalDate or localDateTime into a number in the format YYYYMMDD. */
+//    static public int dayAsInt(LocalDateTime when) {
+//        return when.getDayOfMonth() + 100 * when.getMonthValue() + 10000 * when.getYear();
+//    }
+
+//    
+//    
+//    /** Provides functionality to convert a Joda timestamp to a java Date. */
+//    static public Date toDate(LocalDateTime when) {
+//        if (when == null) {
+//            return null;
+//        }
+//        return when.toDate();
+//    }
+//
+//    /** Provides functionality to convert a Joda date to a java Date. */
+//    static public Date toDate(LocalDate when) {
+//        if (when == null) {
+//            return null;
+//        }
+//        return when.toDate();
+//    }
+//
+//    /** Provides functionality to convert a Joda date to a java Date. */
+//    static public Date toDate(LocalTime when) {
+//        if (when == null) {
+//            return null;
+//        }
+//        return new Date(when.getMillisOfDay());  // intended conversion: Date is some time in Jan 1st 1970
+//    }
+//
+//    /** Provides functionality to convert a Joda instant to a java Date. */
+//    static public Date toDate(Instant when) {
+//        if (when == null) {
+//            return null;
+//        }
+//        return new Date(when.getMillis());
+//    }
+//
+//    /** Computes the difference between two LocalDateTime instances with millisecond precision.
+//     * Unfortunately the method getLocalMillis() which returns the time since the epoch is protected (as of JodaTime 2.1),
+//     * therefore we have to use the millis of a day ad work around the day wrap. (This is a solution for short time periods only!)
+//     * TODO: Should test that (by comparing start + 23 hours with end, and throwing an exception if start + 23 hours is still < end).
+//     */
+//    static public int LocalDateTimeDifference(LocalDateTime start, LocalDateTime end) {
+//        long t0 = start.getMillisOfDay();
+//        long t1 = end.getMillisOfDay();
+//        if (t0 > t1) {
+//            return (int)((t1 + 86400000L) - t0);
+//        }
+//        return (int)(t1 - t0);
+//    }
+//
+//    /** Converts the time portion of a LocalTime or localDateTime into a number in the format HHMMSSMMM. */
+//    static public int timeAsInt(LocalDateTime when) {
+//        return when.getMillisOfSecond() + 1000 * when.getSecondOfMinute() + 100000 * when.getMinuteOfHour() + 10000000 * when.getHourOfDay();
+//    }
+//    /** Converts the time portion of a LocalTime or localDateTime into a number in the format HHMMSSMMM. */
+//    static public int timeAsInt(LocalTime when) {
+//        return when.getMillisOfSecond() + 1000 * when.getSecondOfMinute() + 100000 * when.getMinuteOfHour() + 10000000 * when.getHourOfDay();
+//    }
+//
+////    static public Instant toInstant(LocalDateTime ldt) {
+////        // no good conversion known ? return new Instant(Date.getMillis(ldt.toDate()));
+////    }
+//    static public LocalDateTime toLocalDateTime(Instant i) {
+//        return new LocalDateTime(i.getMillis(), DateTimeZone.UTC);
+//    }
+
 }

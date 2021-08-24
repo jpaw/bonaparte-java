@@ -41,6 +41,7 @@ import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
+import de.jpaw.bonaparte.util.DayTime;
 import de.jpaw.enums.XEnum;
 import de.jpaw.util.ByteArray;
 
@@ -196,8 +197,7 @@ public class ExternalizableComposer extends AbstractMessageComposer<IOException>
         if (t == null) {
             out.writeByte(NULL_FIELD);
         } else {
-            int [] values = t.getValues();   // 3 values: year, month, day
-            writeVarInt((10000 * values[0]) + (100 * values[1]) + values[2]);
+            writeVarInt(DayTime.dayAsInt(t));
         }
     }
     @Override
@@ -205,21 +205,22 @@ public class ExternalizableComposer extends AbstractMessageComposer<IOException>
         if (t == null) {
             out.writeByte(NULL_FIELD);
         } else {
-            int [] values = t.getValues();   // 4 values: year, month, day, milliseconds
-            if (values[3] != 0) {
+        	int seconds = t.toLocalTime().toSecondOfDay();
+        	int millis = t.getNano() / 1000000;
+            if (seconds != 0 || millis != 0) {
                 // fractional part first...
                 out.writeByte(FRAC_SCALE_0 + 9);
                 if (di.getHhmmss()) {
                     // convert milliseconds to hhmmssfff format
-                    int tmp = values[3] / 60000; // number of minutes
+                    int tmp = seconds / 60; // number of minutes
                     tmp = ((tmp / 60) * 100) + (tmp % 60);
-                    writeVarInt((tmp * 100000) + (values[3] % 60000));
+                    writeVarInt(millis + (tmp * 100000) + (seconds % 60) * 1000);
                 } else {
-                    writeVarInt(values[3]);
+                    writeVarInt(millis + seconds * 1000);
                 }
             }
             // then integral part
-            writeVarInt((10000 * values[0]) + (100 * values[1]) + values[2]);
+            writeVarInt(DayTime.dayAsInt(t.toLocalDate()));
         }
     }
     @Override
@@ -227,15 +228,16 @@ public class ExternalizableComposer extends AbstractMessageComposer<IOException>
         if (t == null) {
             out.writeByte(NULL_FIELD);
         } else {
-            int millis = t.getMillisOfDay();
+        	int seconds = t.toSecondOfDay();
+        	int millis = t.getNano() / 1000000;
             out.writeByte(FRAC_SCALE_0 + 9);
             if (di.getHhmmss()) {
                 // convert milliseconds to hhmmssfff format
-                int tmp = millis / 60000; // number of minutes
+                int tmp = seconds / 60; // number of minutes
                 tmp = ((tmp / 60) * 100) + (tmp % 60);
-                writeVarInt((tmp * 100000) + (millis % 60000));
+                writeVarInt(millis + (tmp * 100000) + (seconds % 60) * 1000);
             } else {
-                writeVarInt(millis);
+                writeVarInt(millis + seconds * 1000);
             }
         }
     }
@@ -244,7 +246,7 @@ public class ExternalizableComposer extends AbstractMessageComposer<IOException>
         if (t == null) {
             out.writeByte(NULL_FIELD);
         } else {
-            long millis = t.getMillis();
+            long millis = t.toEpochMilli();
             writeVarLong(millis);
         }
     }
