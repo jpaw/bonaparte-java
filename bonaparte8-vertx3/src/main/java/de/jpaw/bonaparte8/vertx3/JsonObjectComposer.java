@@ -1,22 +1,14 @@
 package de.jpaw.bonaparte8.vertx3;
 
-import io.vertx.core.json.JsonArray;
-import io.vertx.core.json.JsonObject;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.ISODateTimeFormat;
-import org.vertx.java.core.json.JsonArray;
-import org.vertx.java.core.json.JsonObject;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import de.jpaw.bonaparte.core.AbstractMessageComposer;
 import de.jpaw.bonaparte.core.BonaCustom;
@@ -34,14 +26,15 @@ import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
+import de.jpaw.bonaparte.util.DayTime;
 import de.jpaw.enums.XEnum;
 import de.jpaw.util.ByteArray;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
 
 /** Composer which serializes all data into a vertx JsonObject */
 public class JsonObjectComposer extends AbstractMessageComposer<RuntimeException> {
-    protected static final DateTimeFormatter LOCAL_DATE_ISO = ISODateTimeFormat.basicDate();
-    protected static final DateTimeFormatter LOCAL_DATETIME_ISO = ISODateTimeFormat.basicDateTime();
-    protected static final DateTimeFormatter LOCAL_TIME_ISO = ISODateTimeFormat.basicTime();
+    public static String TIMEZONE_SUFFIX_FOR_LOCAL = "";  // set to "Z" if desired, but see http://javarevisited.blogspot.com/2015/03/20-examples-of-date-and-time-api-from-Java8.html
 
     protected JsonObject obj = null;
     protected JsonArray arr = null;
@@ -304,8 +297,13 @@ public class JsonObjectComposer extends AbstractMessageComposer<RuntimeException
         if (t == null) {
             writeNull(di);
         } else {
-            writeNonNull(di, LOCAL_DATE_ISO.print(t));
+            writeNonNull(di, String.format("%04d-%02d-%02d", t.getYear(), t.getMonthValue(), t.getDayOfMonth()));
         }
+    }
+
+    protected String toTimeOfDay(int hour, int minute, int second, int millis) {
+        final String fracs = (millis == 0) ? "" : String.format(".%03d", millis);
+        return String.format("%02d:%02d:%02d%s%s", hour, minute, second, fracs, TIMEZONE_SUFFIX_FOR_LOCAL);
     }
 
     @Override
@@ -313,7 +311,10 @@ public class JsonObjectComposer extends AbstractMessageComposer<RuntimeException
         if (t == null) {
             writeNull(di);
         } else {
-            writeNonNull(di, LOCAL_DATETIME_ISO.print(t));
+            int millis = t.getNano() / 1000000;
+            writeNonNull(di, String.format("%04d-%02d-%02dT%s", t.getYear(), t.getMonthValue(), t.getDayOfMonth(),
+                    toTimeOfDay(t.getHour(), t.getMinute(), t.getSecond(), millis)
+            ));
         }
     }
 
@@ -322,17 +323,14 @@ public class JsonObjectComposer extends AbstractMessageComposer<RuntimeException
         if (t == null) {
             writeNull(di);
         } else {
-            writeNonNull(di, LOCAL_TIME_ISO.print(t));
+            int millis = t.getNano() / 1000000;
+            writeNonNull(di, toTimeOfDay(t.getHour(), t.getMinute(), t.getSecond(), millis));
         }
     }
 
     @Override
     public void addField(TemporalElementaryDataItem di, Instant t) {
-        if (t == null) {
-            writeNull(di);
-        } else {
-            writeNonNull(di, LOCAL_DATETIME_ISO.print(t));
-        }
+        addField(di, LocalDateTime.ofInstant(t, DayTime.ZONE_UTC));
     }
 
     @Override

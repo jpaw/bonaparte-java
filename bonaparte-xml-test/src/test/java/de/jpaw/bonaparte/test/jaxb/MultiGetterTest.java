@@ -2,8 +2,8 @@ package de.jpaw.bonaparte.test.jaxb;
 
 import java.io.StringWriter;
 
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.Marshaller;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
 
 import org.testng.annotations.Test;
 

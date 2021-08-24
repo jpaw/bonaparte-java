@@ -1,13 +1,24 @@
 package de.jpaw.bonaparte.core;
 
-import java.util.Locale;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.util.EnumMap;
+import java.util.Locale;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class CSVConfiguration {
     private static final Logger LOGGER = LoggerFactory.getLogger(CSVConfiguration.class);
+    private static final Map<CSVStyle, FormatStyle> STYLE_MAP = new EnumMap<>(CSVStyle.class);
+    static {
+    	STYLE_MAP.put(CSVStyle.FULL, FormatStyle.FULL);
+    	STYLE_MAP.put(CSVStyle.LONG, FormatStyle.LONG);
+    	STYLE_MAP.put(CSVStyle.MEDIUM, FormatStyle.MEDIUM);
+    	STYLE_MAP.put(CSVStyle.SHORT, FormatStyle.SHORT);
+    }
 
     public final static String EMPTY_STRING = "";                           // used instead of null Strings
     public final static String DEFAULT_DAY_FORMAT = "yyyyMMdd";             // default pattern for LocalDate (bonaparte Day) outputs
@@ -245,24 +256,24 @@ public class CSVConfiguration {
             this.timeStyle = timeStyle;
             return this;
         }
-        /** Custom format setting. See http://joda-time.sourceforge.net/apidocs/java/time/format/DateTimeFormat.html for format description. */
+        /** Custom format setting. See http://joda-time.sourceforge.net/apidocs/java/time/format/DateTimeFormatter.html for format description. */
         public Builder setCustomDayFormat(String customDayFormat) {
             this.customDayFormat = customDayFormat;
             return this;
         }
-        /** Custom format setting. See http://joda-time.sourceforge.net/apidocs/java/time/format/DateTimeFormat.html for format description. */
+        /** Custom format setting. See http://joda-time.sourceforge.net/apidocs/java/time/format/DateTimeFormatter.html for format description. */
         public Builder setCustomTimeFormats(String customTimeFormat, String customTimeWithMsFormat) {
             this.customTimeFormat = customTimeFormat;
             this.customTimeWithMsFormat = customTimeWithMsFormat;
             return this;
         }
-        /** Custom format setting. See http://joda-time.sourceforge.net/apidocs/java/time/format/DateTimeFormat.html for format description. */
+        /** Custom format setting. See http://joda-time.sourceforge.net/apidocs/java/time/format/DateTimeFormatter.html for format description. */
         public Builder setCustomDayTimeFormats(String customTimestampFormat, String customTimestampWithMsFormat) {
             this.customTimestampFormat = customTimestampFormat;
             this.customTimestampWithMsFormat = customTimestampWithMsFormat;
             return this;
         }
-        /** Custom format setting. See http://joda-time.sourceforge.net/apidocs/java/time/format/DateTimeFormat.html for format description. */
+        /** Custom format setting. See http://joda-time.sourceforge.net/apidocs/java/time/format/DateTimeFormatter.html for format description. */
         public Builder setCustomDayTimeFormats(String customDayFormat,
                 String customTimeFormat, String customTimeWithMsFormat,
                 String customTimestampFormat, String customTimestampWithMsFormat) {
@@ -288,60 +299,60 @@ public class CSVConfiguration {
     public DateTimeFormatter determineDayFormatter() {
         try {
             return customDayFormat == null
-                    ? DateTimeFormatter.forStyle(dateStyle.getToken() + "-")
-                    : DateTimeFormatter.forPattern(customDayFormat);
+                    ? DateTimeFormatter.ofLocalizedDate(STYLE_MAP.get(dateStyle))
+                    : DateTimeFormatter.ofPattern(customDayFormat);
         } catch (IllegalArgumentException e) {
             // could occur if the user provided format is invalid
             LOGGER.error("Provided format is not valid: " + customDayFormat, e);
-            return DateTimeFormatter.forPattern(DEFAULT_DAY_FORMAT);
+            return DateTimeFormatter.ofPattern(DEFAULT_DAY_FORMAT);
         }
     }
 
     public DateTimeFormatter determineTimeFormatter() {
         try {
             return customTimeFormat == null
-                    ? DateTimeFormat.forStyle("-" + timeStyle.getToken())
-                    : DateTimeFormat.forPattern(customTimeFormat);
+                    ? DateTimeFormatter.ofLocalizedTime(STYLE_MAP.get(timeStyle))
+                    : DateTimeFormatter.ofPattern(customTimeFormat);
         } catch (IllegalArgumentException e) {
             // could occur if the user provided format is invalid
             LOGGER.error("Provided format is not valid: " + customTimeFormat, e);
-            return DateTimeFormat.forPattern(DEFAULT_TIME_FORMAT);
+            return DateTimeFormatter.ofPattern(DEFAULT_TIME_FORMAT);
         }
     }
 
     public DateTimeFormatter determineTime3Formatter() {
         try {
             return customTimeWithMsFormat == null
-                    ? DateTimeFormat.forStyle("-" + timeStyle.getToken())
-                    : DateTimeFormat.forPattern(customTimeWithMsFormat);
+                    ? DateTimeFormatter.ofLocalizedTime(STYLE_MAP.get(timeStyle))
+                    : DateTimeFormatter.ofPattern(customTimeWithMsFormat);
         } catch (IllegalArgumentException e) {
             // could occur if the user provided format is invalid
             LOGGER.error("Provided format is not valid: " + customTimeWithMsFormat, e);
-            return DateTimeFormat.forPattern(DEFAULT_TIME_WITH_MS_FORMAT);
+            return DateTimeFormatter.ofPattern(DEFAULT_TIME_WITH_MS_FORMAT);
         }
     }
 
     public DateTimeFormatter determineTimestampFormatter() {
         try {
             return customTimestampFormat == null
-                    ? DateTimeFormat.forStyle(dateStyle.getToken() + timeStyle.getToken())
-                    : DateTimeFormat.forPattern(customTimestampFormat);
+                    ? DateTimeFormatter.ofLocalizedDateTime(STYLE_MAP.get(dateStyle), STYLE_MAP.get(timeStyle))
+                    : DateTimeFormatter.ofPattern(customTimestampFormat);
         } catch (IllegalArgumentException e) {
             // could occur if the user provided format is invalid
             LOGGER.error("Provided format is not valid: " + customTimestampFormat, e);
-            return DateTimeFormat.forPattern(DEFAULT_TIMESTAMP_FORMAT);
+            return DateTimeFormatter.ofPattern(DEFAULT_TIMESTAMP_FORMAT);
         }
     }
 
     public DateTimeFormatter determineTimestamp3Formatter() {
         try {
             return customTimestampWithMsFormat == null
-                    ? DateTimeFormat.forStyle(dateStyle.getToken() + timeStyle.getToken())
-                    : DateTimeFormat.forPattern(customTimestampWithMsFormat);
+                    ? DateTimeFormatter.ofLocalizedDateTime(STYLE_MAP.get(dateStyle), STYLE_MAP.get(timeStyle))
+                    : DateTimeFormatter.ofPattern(customTimestampWithMsFormat);
         } catch (IllegalArgumentException e) {
             // could occur if the user provided format is invalid
             LOGGER.error("Provided format is not valid: " + customTimestampWithMsFormat, e);
-            return DateTimeFormat.forPattern(DEFAULT_TS_WITH_MS_FORMAT);
+            return DateTimeFormatter.ofPattern(DEFAULT_TS_WITH_MS_FORMAT);
         }
     }
 }

@@ -26,7 +26,7 @@ public class EchoActor extends UntypedActor {
             myResponse.setUniqueId(myRequest.getUniqueId());
             myResponse.setThreadNo(thisThreadId);
             myResponse.setSerialInThread(counterInThread.incrementAndGet());
-            myResponse.setWhenReceiced(new LocalDateTime());
+            myResponse.setWhenReceiced(LocalDateTime.now());
 
             if (myRequest.getDuration() > 0)
                 Thread.sleep(myRequest.getDuration());

@@ -15,9 +15,11 @@
  */
 package de.jpaw.bonaparte.util;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.util.Date;
 
 /**
  * Some convenience functions for days and timestamps.
@@ -75,12 +77,12 @@ public class DayTime {
 //        return new Date(when.getMillisOfDay());  // intended conversion: Date is some time in Jan 1st 1970
 //    }
 //
-//    /** Provides functionality to convert a Joda instant to a java Date. */
+//    /** Provides functionality to convert an instant to a java Date. */
 //    static public Date toDate(Instant when) {
 //        if (when == null) {
 //            return null;
 //        }
-//        return new Date(when.getMillis());
+//        return Date.from(when);
 //    }
 //
 //    /** Computes the difference between two LocalDateTime instances with millisecond precision.

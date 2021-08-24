@@ -3,9 +3,9 @@ package de.jpaw.bonaparte.test.jaxb;
 import java.io.StringReader;
 import java.io.StringWriter;
 
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.Marshaller;
-import jakarta.xml.bind.Unmarshaller;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,8 +22,8 @@ public class TemporalXMLMarshallerTest {
             "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
             "<test_jaxbtemporal:TestFieldXml xmlns:test_jaxbtemporal=\"http://www.jpaw.de/schema/test_jaxbtemporal.xsd\">\n" +
             "    <test_jaxbtemporal:myDate>2015-03-07</test_jaxbtemporal:myDate>\n" +
-            "    <test_jaxbtemporal:myDateTime>2015-03-07T18:14:55.000</test_jaxbtemporal:myDateTime>\n" +
-            "    <test_jaxbtemporal:myTime>18:34:55.000</test_jaxbtemporal:myTime>\n" +
+            "    <test_jaxbtemporal:myDateTime>2015-03-07T18:14:55</test_jaxbtemporal:myDateTime>\n" +
+            "    <test_jaxbtemporal:myTime>18:34:55</test_jaxbtemporal:myTime>\n" +
             "</test_jaxbtemporal:TestFieldXml>\n";
 
     public void marshallTemporal() throws Exception {

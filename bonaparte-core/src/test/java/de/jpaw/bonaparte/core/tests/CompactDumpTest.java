@@ -5,8 +5,8 @@ import java.io.DataOutputStream;
 
 import org.testng.annotations.Test;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.Output;
+//import com.esotericsoftware.kryo.Kryo;
+//import com.esotericsoftware.kryo.io.Output;
 
 import de.jpaw.bonaparte.core.CompactByteArrayComposer;
 import de.jpaw.bonaparte.core.CompactComposer;
@@ -20,13 +20,13 @@ public class CompactDumpTest {
     public void testObj1StringBuilder() throws Exception {
         ClassDefinition obj1 = ClassDefinition.class$MetaData();
 
-        System.out.println("Test starting: composer Kryo");
-        Kryo kryo = new Kryo();
-        byte [] buffer = new byte[4000];
-        Output output = new Output(buffer);
-        kryo.writeObject(output, obj1);
-        System.out.println("Length with Kryo is " + output.position());
-        output.close();
+//        System.out.println("Test starting: composer Kryo");
+//        Kryo kryo = new Kryo();
+//        byte [] buffer = new byte[4000];
+//        Output output = new Output(buffer);
+//        kryo.writeObject(output, obj1);
+//        System.out.println("Length with Kryo is " + output.position());
+//        output.close();
 
         System.out.println("Test starting: composer Compact");
         ByteArrayOutputStream baos = new ByteArrayOutputStream(4000);

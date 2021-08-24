@@ -1,6 +1,6 @@
 package de.jpaw.bonaparte.servlet;
 
-import jakarta.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequest;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.MessageParserException;

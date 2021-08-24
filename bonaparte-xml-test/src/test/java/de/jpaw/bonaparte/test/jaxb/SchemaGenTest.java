@@ -1,6 +1,6 @@
 package de.jpaw.bonaparte.test.jaxb;
 
-import jakarta.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBContext;
 
 import org.testng.annotations.Test;
 
