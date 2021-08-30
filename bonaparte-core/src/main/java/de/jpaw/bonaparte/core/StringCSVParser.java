@@ -21,15 +21,18 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
@@ -42,7 +45,6 @@ import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDefinition;
 import de.jpaw.bonaparte.util.BigDecimalTools;
-import de.jpaw.bonaparte.util.DayTime;
 import de.jpaw.enums.AbstractXEnumBase;
 import de.jpaw.enums.XEnumFactory;
 import de.jpaw.util.Base64;
@@ -62,6 +64,8 @@ import de.jpaw.util.IntegralLimits;
 
 // TODO: should we convert "work" from String to CharSequence to make it more general?
 public final class StringCSVParser extends AbstractPartialJsonStringParser implements MessageParser<MessageParserException>, StringBuilderConstants {
+    private static final Logger LOGGER = LoggerFactory.getLogger(StringCSVParser.class);
+
     protected final CSVConfiguration cfg;
     private final boolean fixedLength;
     private final int lengthOfBoolean;
@@ -171,11 +175,11 @@ public final class StringCSVParser extends AbstractPartialJsonStringParser imple
         setSource(work);
         this.cfg = cfg;
         this.lengthOfBoolean = cfg.booleanFalse.length() > cfg.booleanTrue.length() ? cfg.booleanFalse.length() : cfg.booleanTrue.length();
-        this.dayFormat = cfg.determineDayFormatter().withLocale(cfg.locale).withZone(DayTime.ZONE_UTC);
-        this.timeFormat = cfg.determineTimeFormatter().withLocale(cfg.locale).withZone(DayTime.ZONE_UTC);
-        this.time3Format = cfg.determineTime3Formatter().withLocale(cfg.locale).withZone(DayTime.ZONE_UTC);
-        this.timestampFormat = cfg.determineTimestampFormatter().withLocale(cfg.locale).withZone(DayTime.ZONE_UTC);
-        this.timestamp3Format = cfg.determineTimestamp3Formatter().withLocale(cfg.locale).withZone(DayTime.ZONE_UTC);
+        this.dayFormat = cfg.determineDayFormatter().withLocale(cfg.locale);//.withZone(ZoneOffset.UTC);
+        this.timeFormat = cfg.determineTimeFormatter().withLocale(cfg.locale);//.withZone(ZoneOffset.UTC);
+        this.time3Format = cfg.determineTime3Formatter().withLocale(cfg.locale);//.withZone(ZoneOffset.UTC);
+        this.timestampFormat = cfg.determineTimestampFormatter().withLocale(cfg.locale);//.withZone(ZoneOffset.UTC);
+        this.timestamp3Format = cfg.determineTimestamp3Formatter().withLocale(cfg.locale);//.withZone(ZoneOffset.UTC);
         this.dayFormatLength = cfg.customDayFormat == null ? 8 : cfg.customDayFormat.length();
         this.timeFormatLength = cfg.customTimeFormat == null ? 6 : cfg.customTimeFormat.length();
         this.time3FormatLength = cfg.customTimeWithMsFormat == null ? 9 : cfg.customTimeWithMsFormat.length();
@@ -418,6 +422,7 @@ public final class StringCSVParser extends AbstractPartialJsonStringParser imple
             else
                 return LocalDateTime.parse(token, timestampFormat);
         } catch (Exception e) {
+            LOGGER.error("Failed to parse input {} for timestamp field {}: {}", token, di.getName(), e);
             throw new MessageParserException(MessageParserException.ILLEGAL_CALENDAR_VALUE, di.getName(), parseIndex, currentClass);
         }
     }

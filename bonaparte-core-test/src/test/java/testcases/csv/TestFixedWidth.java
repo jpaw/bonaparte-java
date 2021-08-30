@@ -2,9 +2,10 @@ package testcases.csv;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import org.testng.annotations.Test;
 
 import de.jpaw.bonaparte.core.BonaPortable;
@@ -41,6 +42,11 @@ public class TestFixedWidth {
     }
 
     @Test
+    public void basicTest() throws Exception {
+        LocalDateTime.parse("2013-04-01 23:55:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")); // YYYY won't work!
+    }
+
+    @Test
     public void testFixedWidth() throws Exception {
         Test1 t1 = new Test1("Hello", 12, new BigDecimal("3.1"), LocalDateTime.of(2013, 04, 01, 23, 55, 0), LocalDate.of(2001, 11, 12), true, 1234567890123L);
 
@@ -48,9 +54,9 @@ public class TestFixedWidth {
 
         CSVConfiguration fixedWidthCfg2 = CSVConfiguration.Builder.from(fixedWidthCfg1)
                 .booleanTokens("J", "N")
-                .setCustomDayFormat("dd.MM.YYYY")
+                .setCustomDayFormat("dd.MM.yyyy")
                 .setCustomTimeFormats("HH:mm:ss", "HH:mm:ss.SSS")
-                .setCustomDayTimeFormats("YYYY-MM-dd HH:mm:ss", "YYYY-MM-DD HH:mm:ss.SSS")
+                .setCustomDayTimeFormats("yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.SSS")
                 .usingZeroPadding(false).build();
         runTest(fixedWidthCfg2, t1, "Hello              12           3.10 2013-04-01 23:55:0012.11.2001J      1234567890123\n");
     }

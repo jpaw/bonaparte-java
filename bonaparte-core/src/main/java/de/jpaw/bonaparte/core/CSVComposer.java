@@ -19,14 +19,14 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.NumberFormat;
-import java.util.Map;
-import java.util.UUID;
-
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
+import java.util.UUID;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
@@ -36,7 +36,6 @@ import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
-import de.jpaw.bonaparte.util.DayTime;
 import de.jpaw.util.ByteArray;
 /**
  * The CSVComposer class.
@@ -66,7 +65,7 @@ public class CSVComposer extends AppendableComposer {
     protected final NumberFormat bigDecimalFormat;          // locale's default format for formatting BigDecimal, covers decimal point and sign
 
     protected final DateTimeFormatter doDateTimeFormatter(DateTimeFormatter input) {
-        return input.withLocale(cfg.locale).withZone(cfg.timeZone == null ? DayTime.ZONE_UTC : cfg.timeZone);
+        return input.withLocale(cfg.locale).withZone(cfg.timeZone == null ? ZoneOffset.UTC : cfg.timeZone);
     }
 
     public CSVComposer(Appendable work, CSVConfiguration cfg) {

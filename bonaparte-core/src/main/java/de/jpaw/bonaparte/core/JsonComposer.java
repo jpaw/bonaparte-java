@@ -59,11 +59,11 @@ import de.jpaw.util.ByteBuilder;
  */
 public class JsonComposer extends AbstractMessageComposer<IOException> {
     private final static Logger LOGGER = LoggerFactory.getLogger(JsonComposer.class);
-    protected static final DateTimeFormatter LOCAL_DATE_ISO = DateTimeFormatter.ofPattern("yyyy-MM-dd"); // ISODateTimeFormat.basicDate();
-    protected static final DateTimeFormatter LOCAL_DATETIME_ISO = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'"); // ISODateTimeFormat.basicDateTime();
-    protected static final DateTimeFormatter LOCAL_TIME_ISO = DateTimeFormatter.ofPattern("HH:mm:ss'Z'"); // ISODateTimeFormat.basicTime();
-    protected static final DateTimeFormatter LOCAL_DATETIME_ISO_WITH_MS = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"); // ISODateTimeFormat.basicDateTime();
-    protected static final DateTimeFormatter LOCAL_TIME_ISO_WITH_MS = DateTimeFormatter.ofPattern("HH:mm:ss.SSS'Z'"); // ISODateTimeFormat.basicTime();
+    protected static final DateTimeFormatter LOCAL_DATE_ISO = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    protected static final DateTimeFormatter LOCAL_DATETIME_ISO = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+    protected static final DateTimeFormatter LOCAL_TIME_ISO = DateTimeFormatter.ofPattern("HH:mm:ss");
+    protected static final DateTimeFormatter LOCAL_DATETIME_ISO_WITH_MS = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
+    protected static final DateTimeFormatter LOCAL_TIME_ISO_WITH_MS = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
     protected String currentClass = "N/A";
     protected String remFieldName = null;
     protected int indentation = 0;
@@ -619,7 +619,6 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
     @Override
     public void addField(TemporalElementaryDataItem di, Instant t) throws IOException {
         // must be compatible to ExtendedJsonComposer!
-        // writeOptionalQuotedAscii(di, t == null ? null : LOCAL_DATETIME_ISO.print(t));
         if (t == null) {
             writeNull(di);
         } else {

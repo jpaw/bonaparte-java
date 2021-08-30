@@ -52,12 +52,13 @@ public class JsonTest {
         // arrays not possible with Bonaparte. Must do multiple invocations
     }
 
-    @Test
-    public void runGson() throws Exception {
-        Gson gson = new Gson();
-        System.out.println("Gson produces " + gson.toJson(getData()));
-        System.out.println("Gson array produces " + gson.toJson(getArrayData()));
-    }
+// disabled, because Gson produces data access errors (due to use of reflection)
+    //    @Test
+//    public void runGson() throws Exception {
+//        Gson gson = new Gson();
+//        System.out.println("Gson produces " + gson.toJson(getData()));
+//        System.out.println("Gson array produces " + gson.toJson(getArrayData()));
+//    }
 
     @Test
     public void runJsonIO() throws Exception {

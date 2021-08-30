@@ -5,6 +5,9 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -33,6 +36,7 @@ import de.jpaw.util.IntegralLimits;
  *
  */
 public class StringParserUtil {
+    private static final Logger LOGGER = LoggerFactory.getLogger(StringParserUtil.class);
     private final ParsePositionProvider parsePositionProvider;
     private final boolean instantInMillis;
 
@@ -174,7 +178,8 @@ public class StringParserUtil {
             // day and time
             date = Integer.parseInt(data.substring(0, dpoint));
             fractional = Integer.parseInt(data.substring(dpoint + 1));
-            switch (data.length() - dpoint - 1) { // i.e. number of fractional digits
+            final int numberOfFractionals = data.length() - dpoint - 1; 
+            switch (numberOfFractionals) { // i.e. number of fractional digits
             case 6:
                 fractional *= 1000;
                 break; // precisely seconds resolution (timestamp(0))
@@ -187,8 +192,9 @@ public class StringParserUtil {
             case 9:
                 break; // maximum resolution (milliseconds)
             default: // something weird
+                LOGGER.error("Timestamp fractionals: {} for data {}", numberOfFractionals, data.substring(dpoint));
                 throw err(MessageParserException.BAD_TIMESTAMP_FRACTIONALS, di,
-                          String.format("(found %d for %s)", data.length() - dpoint - 1, data));
+                          String.format("(found %d for %s)", numberOfFractionals, data));
             }
         }
         // set the date and time

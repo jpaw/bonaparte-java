@@ -1,9 +1,9 @@
 package de.jpaw.bonaparte.core;
 
 import java.io.IOException;
-import java.util.Locale;
-
 import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.util.Locale;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
@@ -16,7 +16,7 @@ public abstract class AbstractUIComposer extends CSVComposer2 {
     public final static CSVConfiguration UI_DEFAULT_CONFIGURATION = CSVConfiguration.CSV_DEFAULT_CONFIGURATION.builder()
             .usingGrouping(true)
             .forLocale(Locale.getDefault())
-            .forTimeZone(ZoneId.systemDefault())
+            .forTimeZone(ZoneOffset.UTC)
             .build();
 
     protected final StringBuilder buffer;
@@ -35,7 +35,7 @@ public abstract class AbstractUIComposer extends CSVComposer2 {
     public AbstractUIComposer(Locale locale, ZoneId zone) {
         this(UI_DEFAULT_CONFIGURATION.builder()
                 .forLocale(locale == null ? Locale.getDefault() : locale)
-                .forTimeZone(zone == null ? ZoneId.systemDefault() : zone)
+                .forTimeZone(zone == null ? ZoneOffset.UTC : zone)
                 .build());
     }
 
