@@ -6,6 +6,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -26,7 +27,6 @@ import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
-import de.jpaw.bonaparte.util.DayTime;
 import de.jpaw.enums.XEnum;
 import de.jpaw.util.ByteArray;
 import io.vertx.core.json.JsonArray;
@@ -330,7 +330,7 @@ public class JsonObjectComposer extends AbstractMessageComposer<RuntimeException
 
     @Override
     public void addField(TemporalElementaryDataItem di, Instant t) {
-        addField(di, LocalDateTime.ofInstant(t, DayTime.ZONE_UTC));
+        addField(di, LocalDateTime.ofInstant(t, ZoneOffset.UTC));
     }
 
     @Override

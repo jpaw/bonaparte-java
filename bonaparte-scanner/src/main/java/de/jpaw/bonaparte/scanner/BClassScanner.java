@@ -30,12 +30,14 @@ public class BClassScanner {
         for (int i = 0; i < reflections.length; ++i) {
             int ctr = 0;
             for (Class<? extends BonaPortable> cls : reflections[i].getSubTypesOf(BonaPortable.class)) {
-                try {
-                    BonaPortableClass<?> bclass = (BonaPortableClass<?>) cls.getMethod("class$BonaPortableClass").invoke(null);
-                    if (BonaPortableFactoryById.registerClass(bclass))
-                        ++ctr;
-                } catch (Exception e) {
-                    LOGGER.warn("Cannot obtain BonaPortableClass for {}: {}", cls.getCanonicalName(), e.getMessage());
+                if (!cls.isInterface()) {
+                    try {
+                        BonaPortableClass<?> bclass = (BonaPortableClass<?>) cls.getMethod("class$BonaPortableClass").invoke(null);
+                        if (BonaPortableFactoryById.registerClass(bclass))
+                            ++ctr;
+                    } catch (Exception e) {
+                        LOGGER.warn("Cannot obtain BonaPortableClass for {}: {}", cls.getCanonicalName(), e.getMessage());
+                    }
                 }
             }
             LOGGER.info("Startup: Loaded {} BonaPortable classes", ctr);
