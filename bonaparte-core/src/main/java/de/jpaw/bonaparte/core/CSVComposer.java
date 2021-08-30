@@ -23,6 +23,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
@@ -65,7 +66,7 @@ public class CSVComposer extends AppendableComposer {
     protected final NumberFormat bigDecimalFormat;          // locale's default format for formatting BigDecimal, covers decimal point and sign
 
     protected final DateTimeFormatter doDateTimeFormatter(DateTimeFormatter input) {
-        return input.withLocale(cfg.locale).withZone(cfg.timeZone == null ? ZoneOffset.UTC : cfg.timeZone);
+        return input.withLocale(cfg.locale);
     }
 
     public CSVComposer(Appendable work, CSVConfiguration cfg) {
@@ -231,13 +232,6 @@ public class CSVComposer extends AppendableComposer {
     public void addField(BasicNumericElementaryDataItem di, float f) throws IOException {
         writeSeparator();
         addRawData(numberFormat.format(f));            // format using the locale's approach
-        /*
-        String defaultFormat = Float.toString(f);
-        addRawData(usesDefaultDecimalPoint ? defaultFormat : defaultFormat.replace(".", cfg.decimalPoint));
-        if (shouldWarnWhenUsingFloat) {
-            shouldWarnWhenUsingFloat = false;  // only warn once per record
-            LOGGER.warn("Using float or double and removal of decimal point may result in undefined output");
-        } */
     }
 
     // double
@@ -245,13 +239,6 @@ public class CSVComposer extends AppendableComposer {
     public void addField(BasicNumericElementaryDataItem di, double d) throws IOException {
         writeSeparator();
         addRawData(numberFormat.format(d));            // format using the locale's approach
-        /*
-        String defaultFormat = Double.toString(d);
-        addRawData(usesDefaultDecimalPoint ? defaultFormat : defaultFormat.replace(".", cfg.decimalPoint));
-        if (shouldWarnWhenUsingFloat) {
-            shouldWarnWhenUsingFloat = false;  // only warn once per record
-            LOGGER.warn("Using float or double and removal of decimal point may result in undefined output");
-        } */
     }
 
     // UUID
@@ -319,6 +306,10 @@ public class CSVComposer extends AppendableComposer {
     public void addField(TemporalElementaryDataItem di, LocalDateTime t) throws IOException {
         writeSeparator();
         if (t != null) {
+            if (cfg.timeZone != null && cfg.timeZone != ZoneOffset.UTC) {
+                // convert to other time zone
+                t = t.atZone(ZoneOffset.UTC).withZoneSameInstant(cfg.timeZone).toLocalDateTime();
+            }
             if (cfg.datesQuoted)
                 addRawData(stringQuote);
             if (di.getFractionalSeconds() <= 0)

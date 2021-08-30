@@ -175,11 +175,11 @@ public final class StringCSVParser extends AbstractPartialJsonStringParser imple
         setSource(work);
         this.cfg = cfg;
         this.lengthOfBoolean = cfg.booleanFalse.length() > cfg.booleanTrue.length() ? cfg.booleanFalse.length() : cfg.booleanTrue.length();
-        this.dayFormat = cfg.determineDayFormatter().withLocale(cfg.locale);//.withZone(ZoneOffset.UTC);
-        this.timeFormat = cfg.determineTimeFormatter().withLocale(cfg.locale);//.withZone(ZoneOffset.UTC);
-        this.time3Format = cfg.determineTime3Formatter().withLocale(cfg.locale);//.withZone(ZoneOffset.UTC);
-        this.timestampFormat = cfg.determineTimestampFormatter().withLocale(cfg.locale);//.withZone(ZoneOffset.UTC);
-        this.timestamp3Format = cfg.determineTimestamp3Formatter().withLocale(cfg.locale);//.withZone(ZoneOffset.UTC);
+        this.dayFormat = cfg.determineDayFormatter().withLocale(cfg.locale);
+        this.timeFormat = cfg.determineTimeFormatter().withLocale(cfg.locale);
+        this.time3Format = cfg.determineTime3Formatter().withLocale(cfg.locale);
+        this.timestampFormat = cfg.determineTimestampFormatter().withLocale(cfg.locale);
+        this.timestamp3Format = cfg.determineTimestamp3Formatter().withLocale(cfg.locale);
         this.dayFormatLength = cfg.customDayFormat == null ? 8 : cfg.customDayFormat.length();
         this.timeFormatLength = cfg.customTimeFormat == null ? 6 : cfg.customTimeFormat.length();
         this.time3FormatLength = cfg.customTimeWithMsFormat == null ? 9 : cfg.customTimeWithMsFormat.length();
@@ -417,10 +417,12 @@ public final class StringCSVParser extends AbstractPartialJsonStringParser imple
         if (token == null)
             return null;
         try {
-            if (di.getFractionalSeconds() > 0)
-                return LocalDateTime.parse(token, timestamp3Format);
-            else
-                return LocalDateTime.parse(token, timestampFormat);
+            final LocalDateTime parsedTimestamp = LocalDateTime.parse(token, di.getFractionalSeconds() > 0 ? timestamp3Format : timestampFormat);
+            if (cfg.timeZone != null && cfg.timeZone != ZoneOffset.UTC) {
+                // convert to other time zone
+                return parsedTimestamp.atZone(cfg.timeZone).withZoneSameInstant(ZoneOffset.UTC).toLocalDateTime();
+            }
+            return parsedTimestamp;
         } catch (Exception e) {
             LOGGER.error("Failed to parse input {} for timestamp field {}: {}", token, di.getName(), e);
             throw new MessageParserException(MessageParserException.ILLEGAL_CALENDAR_VALUE, di.getName(), parseIndex, currentClass);
