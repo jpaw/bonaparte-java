@@ -28,12 +28,11 @@ public class TestComplex {
 
         CompactByteArrayComposer cbac = new CompactByteArrayComposer(1000, false);
         cbac.writeRecord(org);
-        System.out.println("Length with CompactByteArrayComposer (ID) is " + cbac.getBuilder().length());
+        System.out.println("Length with CompactByteArrayComposer (ID) (expect 38) is " + cbac.getBuilder().length());
 
         // dump the bytes
         byte [] data = cbac.getBuilder().getBytes();
         System.out.println(ByteUtil.dump(data, 100));
-        assert(data.length == 38);  // outer object per PQON, first two complex components as base object, last as repeated.
 
         // parse the result
         CompactByteArrayParser cbap = new CompactByteArrayParser(data, 0, data.length);
@@ -41,6 +40,7 @@ public class TestComplex {
         assert(copy != null);
         assert(copy instanceof Vector);
         assert(org.equals(copy));
+        assert(data.length == 38);  // outer object per PQON, first two complex components as base object, last as repeated.
     }
 
     @Test
@@ -53,12 +53,11 @@ public class TestComplex {
 
         CompactByteArrayComposer cbac = new CompactByteArrayComposer(1000, false);
         cbac.addField(Container.meta$$outer, org);      // this line is different from the previous test case
-        System.out.println("Length with CompactByteArrayComposer (ID) is " + cbac.getBuilder().length());
+        System.out.println("Length with CompactByteArrayComposer (ID) (expect 18) is " + cbac.getBuilder().length());
 
         // dump the bytes
         byte [] data = cbac.getBuilder().getBytes();
         System.out.println(ByteUtil.dump(data, 100));
-        assert(data.length == 18);  // here we expect less than half the size of the previous test case!
 
         // parse the result
         CompactByteArrayParser cbap = new CompactByteArrayParser(data, 0, data.length);
@@ -66,6 +65,7 @@ public class TestComplex {
         assert(copy != null);
         assert(copy instanceof Vector);
         assert(org.equals(copy));
+        assert(data.length == 18);  // here we expect less than half the size of the previous test case!
     }
 
     @Test
@@ -78,12 +78,11 @@ public class TestComplex {
 
         CompactByteArrayComposer cbac = new CompactByteArrayComposer(1000, true);
         cbac.addField(Container.meta$$outer, org);      // this line is different from the previous test case
-        System.out.println("Length with CompactByteArrayComposer (ID) is " + cbac.getBuilder().length());
+        System.out.println("Length with CompactByteArrayComposer (ID) (expect 12) is " + cbac.getBuilder().length());
 
         // dump the bytes
         byte [] data = cbac.getBuilder().getBytes();
         System.out.println(ByteUtil.dump(data, 100));
-        assert(data.length == 12);  // here we expect less than a third of the size of the initial test case!
 
         // parse the result
         CompactByteArrayParser cbap = new CompactByteArrayParser(data, 0, data.length);
@@ -91,6 +90,6 @@ public class TestComplex {
         assert(copy != null);
         assert(copy instanceof Vector);
         assert(org.equals(copy));
+        assert(data.length == 12);  // here we expect less than a third of the size of the initial test case!
     }
-
 }
