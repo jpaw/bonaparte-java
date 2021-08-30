@@ -8,6 +8,7 @@ import java.util.UUID;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 
 import de.jpaw.bonaparte.pojos.tests1.OtherTypes;
 import de.jpaw.bonaparte.pojos.tests1.Color;
@@ -33,7 +34,7 @@ public class FillOtherTypes {
         x.setRaw1(shortraw);
         x.setBinary1(new ByteArray(shortraw));
         x.setTimestamp1(LocalDateTime.of(2012, 8, 5, 11, 55, 03));
-        x.setTimestamp2(LocalDateTime.now());
+        x.setTimestamp2(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS));
         x.setUnicode1("Hällo Wörld!\r\n");
         x.setColor2(AlphaColor.GREEN);
         x.setVarEnum1(VariableLength.LONG);
@@ -44,7 +45,7 @@ public class FillOtherTypes {
         x.setTime1a(LocalTime.of(13, 56, 37));
         x.setTime2a(LocalTime.of(13, 56, 37, 334000000));
         x.setTimestamp1a(LocalDateTime.of(2012, 8, 5, 11, 55, 03));
-        x.setTimestamp2a(LocalDateTime.now());
+        x.setTimestamp2a(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS));
         return x;
     }
 

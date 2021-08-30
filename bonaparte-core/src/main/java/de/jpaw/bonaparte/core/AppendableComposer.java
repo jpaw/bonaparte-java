@@ -347,11 +347,10 @@ public class AppendableComposer extends AbstractMessageComposer<IOException> imp
                 final LocalTime tm = t.toLocalTime(); 
                 final int seconds = tm.toSecondOfDay();
                 final int milliSeconds = tm.getNano() / 1000000;
-                //tmpValue = 10000 * t.getHourOfDay() + 100 * t.getMinuteOfHour() + t.getSecondOfMinute();
                 if (seconds != 0 || length > 0 && milliSeconds != 0) {
                     work.append('.');
                     if (di.getHhmmss()) {
-                        lpad(Integer.toString(100000 * tm.getHour() + 100 * tm.getMinute() + seconds % 60), 6, '0');
+                        lpad(Integer.toString(10000 * tm.getHour() + 100 * tm.getMinute() + tm.getSecond()), 6, '0');
                     } else {
                         lpad(Integer.toString(tm.toSecondOfDay()), 6, '0');
                     }

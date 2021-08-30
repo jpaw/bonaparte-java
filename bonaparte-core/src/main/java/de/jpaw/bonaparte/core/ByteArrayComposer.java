@@ -403,7 +403,7 @@ public class ByteArrayComposer extends AbstractMessageComposer<RuntimeException>
                 if (seconds != 0 || length > 0 && milliSeconds != 0) {
                     work.append((byte) '.');
                     if (di.getHhmmss()) {
-                        lpad(Integer.toString(100000 * tm.getHour() + 100 * tm.getMinute() + seconds % 60), 6, (byte)'0');
+                        lpad(Integer.toString(10000 * tm.getHour() + 100 * tm.getMinute() + tm.getSecond()), 6, (byte)'0');
                     } else {
                         lpad(Integer.toString(tm.toSecondOfDay()), 6, (byte)'0');
                     }

@@ -25,6 +25,9 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.ByteArrayComposer;
 import de.jpaw.bonaparte.core.ByteArrayParser;
@@ -36,6 +39,7 @@ import de.jpaw.bonaparte.core.MessageParserException;
 import de.jpaw.bonaparte.core.StringBuilderComposer;
 import de.jpaw.bonaparte.core.StringBuilderParser;
 import de.jpaw.bonaparte.testrunner.MultiTestRunner;
+import de.jpaw.bonaparte.util.ToStringHelper;
 import de.jpaw.util.ByteArray;
 
 /**
@@ -54,6 +58,8 @@ import de.jpaw.util.ByteArray;
  */
 
 public class SimpleTestRunner {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SimpleTestRunner.class);
+
     static private void dumpToFile(String filename, byte [] data) throws Exception {
         OutputStream stream = new FileOutputStream(filename);
         stream.write(data);
@@ -140,6 +146,9 @@ public class SimpleTestRunner {
         MessageParser<MessageParserException> w1 = new StringBuilderParser(work, 0, -1);
         BonaPortable dst1 = w1.readRecord();
         assert dst1.getClass() == src.getClass() : "returned obj is of wrong type (StringBuilderParser)"; // assuming we have one class loader only
+        if (!src.equals(dst1)) {
+            LOGGER.error("Comparison mismatch: Source is {}, destination is {}", ToStringHelper.toStringML(src), ToStringHelper.toStringML(dst1));
+        }
         assert src.equals(dst1) : "returned obj is not equal to original one (StringBuilderParser)";
         // verify the hashCodes
         assert dst1.hashCode() == srcHash : "hash code differs for dst1";

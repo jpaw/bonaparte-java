@@ -19,6 +19,8 @@ public class TestWithIds {
 
     @Test
     public void testCompactWithIds() throws Exception {
+        System.out.println("XYZZY");
+
         Complex x = new Complex("AA", 65535);
         Complex yAndZ = new Complex("aa", 170*256+170);
 
