@@ -11,7 +11,9 @@ import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.DataAndMeta;
 import de.jpaw.bonaparte.core.MessageParserException;
 import de.jpaw.bonaparte.core.ObjectValidationException;
+import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
+import de.jpaw.fixedpoint.FixedPointBase;
 
 /** A class which provides some support functions which simplify working with BigDecimals.
  * The key issue we try to solve here is to provide a semantic where 2.5 == 2.50, while
@@ -67,6 +69,17 @@ public class BigDecimalTools {
         // check for overflow
         if (di.getTotalDigits() - decimals < r.precision() - r.scale())
             throw new MessageParserException(MessageParserException.TOO_MANY_DIGITS, fieldname, parseIndex, currentClass);
+        return r;
+    }
+
+    /** Check a parsed BigDecimal for allowed digits. Use the second form with the metadata parameter instead. */
+    static public <F extends FixedPointBase<F>> F checkAndScale(F r, BasicNumericElementaryDataItem di, int parseIndex, String currentClass) throws MessageParserException {
+        String fieldname = di.getName();
+        if (!r.isWithinDigits(di.getTotalDigits())) {
+            throw new MessageParserException(MessageParserException.TOO_MANY_DIGITS, fieldname, parseIndex, currentClass);
+        }
+        if (!di.getIsSigned() && r.signum() < 0)
+            throw new MessageParserException(MessageParserException.SUPERFLUOUS_SIGN, fieldname, parseIndex, currentClass);
         return r;
     }
 

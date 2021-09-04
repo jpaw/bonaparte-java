@@ -43,6 +43,7 @@ import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.bonaparte.util.DayTime;
 import de.jpaw.bonaparte.util.FixASCII;
 import de.jpaw.enums.XEnum;
+import de.jpaw.fixedpoint.FixedPointBase;
 import de.jpaw.json.JsonEscaper;
 import de.jpaw.util.Base64;
 import de.jpaw.util.ByteArray;
@@ -209,6 +210,17 @@ public class AppendableComposer extends AbstractMessageComposer<IOException> imp
     public void addField(NumericElementaryDataItem di, BigDecimal n) throws IOException {
         if (n != null) {
             work.append(n.toPlainString());
+            terminateField();
+        } else {
+            writeNull();
+        }
+    }
+
+    // FixedPoint
+    @Override
+    public <F extends FixedPointBase<F>> void addField(BasicNumericElementaryDataItem di, F n) throws IOException {
+        if (n != null) {
+            work.append(n.toString());
             terminateField();
         } else {
             writeNull();

@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.LongFunction;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,9 +27,11 @@ import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDefinition;
+import de.jpaw.bonaparte.util.BigDecimalTools;
 import de.jpaw.bonaparte.util.DayTime;
 import de.jpaw.enums.AbstractXEnumBase;
 import de.jpaw.enums.XEnumFactory;
+import de.jpaw.fixedpoint.FixedPointBase;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.CharTestsASCII;
 import de.jpaw.util.CollectionUtil;
@@ -420,6 +423,36 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
         return checkAndScale(readBigdec(scale, fieldname), di);
     }
 
+
+    @Override
+    public <F extends FixedPointBase<F>> F readFixedPoint(BasicNumericElementaryDataItem di, LongFunction<F> factory) throws E {
+        if (checkForNull(di))
+            return null;
+        String fieldname = di.getName();
+        int scale = 0;
+        int c = needToken();
+        if (c >= COMPACT_BIGDECIMAL && c <= COMPACT_BIGDECIMAL + 9) {
+            // BigDecimal with scale
+            if (c != COMPACT_BIGDECIMAL) {
+                scale = c - COMPACT_BIGDECIMAL;
+            } else {
+                scale = readInt(needToken(), fieldname);
+            }
+        } else {
+            pushback(c);
+        }
+        // now read mantissa. Either length  + digits, or an integer
+        final int c2 = needToken();
+        final long mantissa;
+        if (c2 == COMPACT_BIGINTEGER) {
+            // length and mantissa
+            int len = readInt(needToken(), fieldname);
+            mantissa = new BigInteger(readBytes(len)).longValue();
+        } else {
+            mantissa = readLong(c2, fieldname);
+        }
+        return BigDecimalTools.checkAndScale(factory.apply(FixedPointBase.mantissaFor(mantissa, scale)), di, -1, currentClass);
+    }
 
     @Override
     public Character readCharacter(MiscElementaryDataItem di) throws E {

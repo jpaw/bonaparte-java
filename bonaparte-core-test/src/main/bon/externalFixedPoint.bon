@@ -1,11 +1,9 @@
-import de.jpaw.fixedpoint.MilliUnits
-import adapters.fixedpoint.*
 
 package externalTypeDemo {
 
     class Help {
         Uppercase(3)        currency;
-        (Millis)            millis1;
+        fixedPoint(18,3)    millis1;
+        unsigned FixedPoint(18,6)    micros1;
     }
-
 }

@@ -48,6 +48,7 @@ import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumSetDataItem;
 import de.jpaw.enums.TokenizableEnum;
 import de.jpaw.enums.XEnum;
+import de.jpaw.fixedpoint.FixedPointBase;
 import de.jpaw.util.ByteArray;
 
 /**
@@ -88,6 +89,7 @@ public interface MessageComposer<E extends Exception> extends MessageWriter<E> {
     void addField(BasicNumericElementaryDataItem di, short n)       throws E;
     void addField(BasicNumericElementaryDataItem di, int n)         throws E;
     void addField(BasicNumericElementaryDataItem di, long n)        throws E;
+    <F extends FixedPointBase<F>> void addField(BasicNumericElementaryDataItem di, F n)  throws E;
 
     void addField(AlphanumericElementaryDataItem di, String s)      throws E;   // any String type: Ascii, Upper, Lower, Unicode
     void addField(ObjectReference di, BonaCustom obj)               throws E;   // Bonaparte object

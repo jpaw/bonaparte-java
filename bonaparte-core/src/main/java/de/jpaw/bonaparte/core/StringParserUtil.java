@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.UUID;
+import java.util.function.LongFunction;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,9 +22,11 @@ import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
+import de.jpaw.bonaparte.util.BigDecimalTools;
 import de.jpaw.bonaparte.util.DayTime;
 import de.jpaw.enums.AbstractXEnumBase;
 import de.jpaw.enums.XEnumFactory;
+import de.jpaw.fixedpoint.FixedPointBase;
 import de.jpaw.util.Base64;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.CharTestsASCII;
@@ -426,6 +429,16 @@ public class StringParserUtil {
         } catch (NumberFormatException e) {
             throw err(MessageParserException.NUMBER_PARSING_ERROR, di, data);
         }
+    }
+
+    public <F extends FixedPointBase<F>> F readFixedPoint(BasicNumericElementaryDataItem di, String data, LongFunction<F> factory) throws MessageParserException {
+        if (data == null) {
+            return null;
+        }
+        final long mantissa = FixedPointBase.mantissaFor(data, di.getDecimalDigits());
+        if (!di.getIsSigned() && mantissa < 0)
+            throw err(MessageParserException.SUPERFLUOUS_SIGN, di, data);
+        return BigDecimalTools.checkAndScale(factory.apply(mantissa), di, parsePositionProvider.getParsePosition(), parsePositionProvider.getCurrentClassName());
     }
 
     public UUID readUUID(final MiscElementaryDataItem di, String data) throws MessageParserException {

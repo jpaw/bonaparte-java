@@ -43,6 +43,7 @@ import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.bonaparte.util.DayTime;
 import de.jpaw.enums.XEnum;
+import de.jpaw.fixedpoint.FixedPointBase;
 import de.jpaw.util.ByteArray;
 
 /**
@@ -162,6 +163,21 @@ public class ExternalizableComposer extends AbstractMessageComposer<IOException>
                 writeVarLong(fraction);
             }
             writeVarLong(n.longValue());
+        }
+    }
+
+	@Override
+	public <F extends FixedPointBase<F>> void addField(BasicNumericElementaryDataItem di, F n) throws IOException {
+        if (n == null) {
+            out.writeByte(NULL_FIELD);
+        } else {
+            int scale = n.getScale();
+            long fraction = n.fraction();
+            if (fraction != 0) {
+                out.writeByte(FRAC_SCALE_0 + scale);
+                writeVarLong(fraction);
+            }
+            writeVarLong(n.floor());
         }
     }
 

@@ -41,6 +41,7 @@ import de.jpaw.bonaparte.pojos.meta.XEnumSetDataItem;
 import de.jpaw.bonaparte.util.LongTools;
 import de.jpaw.enums.TokenizableEnum;
 import de.jpaw.enums.XEnum;
+import de.jpaw.fixedpoint.FixedPointBase;
 import de.jpaw.json.JsonEscaper;
 import de.jpaw.util.Base64;
 import de.jpaw.util.ByteArray;
@@ -842,4 +843,8 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
     public void setMaybeWritePqonInfo(boolean maybeWritePqonInfo) {
         this.maybeWritePqonInfo = maybeWritePqonInfo;
     }
+	@Override
+	public <F extends FixedPointBase<F>> void addField(BasicNumericElementaryDataItem di, F n) throws IOException {
+        writeOptionalUnquotedString(di, n == null ? null : n.toString());
+	}
 }

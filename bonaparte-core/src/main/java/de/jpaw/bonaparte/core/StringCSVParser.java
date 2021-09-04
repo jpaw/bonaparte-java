@@ -30,6 +30,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.LongFunction;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +48,7 @@ import de.jpaw.bonaparte.pojos.meta.XEnumDefinition;
 import de.jpaw.bonaparte.util.BigDecimalTools;
 import de.jpaw.enums.AbstractXEnumBase;
 import de.jpaw.enums.XEnumFactory;
+import de.jpaw.fixedpoint.FixedPointBase;
 import de.jpaw.util.Base64;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.CharTestsASCII;
@@ -640,6 +642,13 @@ public final class StringCSVParser extends AbstractPartialJsonStringParser imple
 
     @Override
     public void eatParentSeparator() throws MessageParserException {
+    }
+
+    @Override
+    public <F extends FixedPointBase<F>> F readFixedPoint(BasicNumericElementaryDataItem di, LongFunction<F> factory) throws MessageParserException {
+        // FIXME! National formats and fixed width not yet covered
+        String token = getField(di.getName(), di.getIsRequired(), di.getTotalDigits()+(di.getIsSigned() ? 1 : 0));
+        return BigDecimalTools.checkAndScale(factory.apply(FixedPointBase.mantissaFor(token, di.getDecimalDigits())), di, parseIndex, currentClass);
     }
 
     @Override

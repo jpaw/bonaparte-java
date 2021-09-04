@@ -62,7 +62,7 @@
         </dependency>
         <dependency>
             <groupId>de.jpaw</groupId>
-            <artifactId>fixedpoint-core</artifactId>
+            <artifactId>jpaw-fixedpoint-core</artifactId>
         </dependency>
     </dependencies>
 

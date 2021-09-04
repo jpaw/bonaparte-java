@@ -15,6 +15,7 @@
  */
 package de.jpaw.bonaparte.core;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
@@ -46,6 +47,7 @@ import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.bonaparte.util.DayTime;
 import de.jpaw.bonaparte.util.FixASCII;
 import de.jpaw.enums.XEnum;
+import de.jpaw.fixedpoint.FixedPointBase;
 import de.jpaw.util.Base64;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.ByteBuilder;
@@ -267,6 +269,17 @@ public class ByteArrayComposer extends AbstractMessageComposer<RuntimeException>
     public void addField(NumericElementaryDataItem di, BigDecimal n) {
         if (n != null) {
             work.appendAscii(n.toPlainString());
+            terminateField();
+        } else {
+            writeNull();
+        }
+    }
+
+    // FixedPoint
+    @Override
+    public <F extends FixedPointBase<F>> void addField(BasicNumericElementaryDataItem di, F n) {
+        if (n != null) {
+            work.appendAscii(n.toString());
             terminateField();
         } else {
             writeNull();

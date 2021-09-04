@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.LongFunction;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +46,7 @@ import de.jpaw.bonaparte.util.BigDecimalTools;
 import de.jpaw.bonaparte.util.DayTime;
 import de.jpaw.enums.AbstractXEnumBase;
 import de.jpaw.enums.XEnumFactory;
+import de.jpaw.fixedpoint.FixedPointBase;
 import de.jpaw.json.JsonException;
 import de.jpaw.json.JsonParser;
 import de.jpaw.util.ByteArray;
@@ -167,6 +169,35 @@ public final class ExternalizableParser extends AbstractMessageParser<IOExceptio
             return BigDecimalTools.checkAndScale(r, di, -1, currentClass);
         } catch (MessageParserException a) {
             throw new IOException("Decimal number does not comply with specs: " + a.getStandardDescription() + " for " + currentClass + "." + fieldname);
+        }
+    }
+
+    @Override
+    public <F extends FixedPointBase<F>> F readFixedPoint(BasicNumericElementaryDataItem di, LongFunction<F> factory) throws IOException {
+        if (checkForNull(di)) {
+            return null;
+        }
+        String fieldname = di.getName();
+        F r;
+        byte c = nextByte();
+        if ((c > FRAC_SCALE_0) && (c <= FRAC_SCALE_18)) {
+            // read fractional part
+            long fraction = readLongNoNull(fieldname);
+            int scale = c-FRAC_SCALE_0;
+            if (scale != di.getDecimalDigits()) {
+                throw new IOException("Decimal scale does not comply with specs for " + currentClass + "." + fieldname);
+            }
+            // combine with integral part and create scaled result
+            r = factory.apply(powersOfTen[scale] * readLongNoNull(fieldname) + fraction);
+        } else {
+            pushBack(c);
+            r = factory.apply(readLongNoNull(fieldname));
+        }
+        // now check precision, if required, convert!
+        try {
+            return BigDecimalTools.checkAndScale(r, di, -1, currentClass);
+        } catch (MessageParserException a) {
+            throw new IOException("Fixed point decimal number does not comply with specs: " + a.getStandardDescription() + " for " + currentClass + "." + fieldname);
         }
     }
 

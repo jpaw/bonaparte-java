@@ -24,6 +24,7 @@ import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.enums.XEnum;
+import de.jpaw.fixedpoint.FixedPointBase;
 import de.jpaw.util.ByteArray;
 
 /** Represents some stub methods. */
@@ -189,4 +190,8 @@ public class NoOpComposer<E extends Exception> extends AbstractMessageComposer<E
     @Override
     public void addField(ObjectReference di, Object obj) throws E {
     }
+
+	@Override
+	public <F extends FixedPointBase<F>> void addField(BasicNumericElementaryDataItem di, F n) throws E {
+	}
 }

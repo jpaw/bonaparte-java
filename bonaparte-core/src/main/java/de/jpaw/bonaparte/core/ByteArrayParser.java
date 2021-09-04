@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
+import java.util.function.LongFunction;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -41,6 +41,7 @@ import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDefinition;
 import de.jpaw.enums.AbstractXEnumBase;
 import de.jpaw.enums.XEnumFactory;
+import de.jpaw.fixedpoint.FixedPointBase;
 import de.jpaw.json.JsonException;
 import de.jpaw.json.JsonParser;
 import de.jpaw.util.Base64;
@@ -660,6 +661,14 @@ public class ByteArrayParser extends AbstractMessageParser<MessageParserExceptio
             return null;
         }
         return stringParser.readBigDecimal(di, nextIndexParseAscii(di.getName(), di.getIsSigned(), true, false));
+    }
+
+    @Override
+    public <F extends FixedPointBase<F>> F readFixedPoint(BasicNumericElementaryDataItem di, LongFunction<F> factory) throws MessageParserException {
+        if (checkForNull(di)) {
+            return null;
+        }
+        return stringParser.readFixedPoint(di, nextIndexParseAscii(di.getName(), di.getIsSigned(), true, false), factory);
     }
 
     @Override

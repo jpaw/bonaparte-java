@@ -64,6 +64,10 @@
         </dependency>
         <dependency>
             <groupId>de.jpaw</groupId>
+            <artifactId>jpaw-fixedpoint-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.jpaw</groupId>
             <artifactId>jpaw-enums</artifactId>
         </dependency>
         <dependency>

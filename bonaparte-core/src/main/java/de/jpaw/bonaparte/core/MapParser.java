@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-
+import java.util.function.LongFunction;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -34,8 +34,10 @@ import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumSetDataItem;
+import de.jpaw.bonaparte.util.BigDecimalTools;
 import de.jpaw.enums.AbstractXEnumBase;
 import de.jpaw.enums.XEnumFactory;
+import de.jpaw.fixedpoint.FixedPointBase;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.MapIterator;
 
@@ -339,6 +341,46 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
         }
         if (z instanceof String) {
             return spu.readBigDecimal(di, (String)z);
+        }
+        throw err(MessageParserException.UNSUPPORTED_CONVERSION, di);
+    }
+
+    @Override
+    public <F extends FixedPointBase<F>> F readFixedPoint(BasicNumericElementaryDataItem di, LongFunction<F> factory) throws MessageParserException {
+        Object z = get(di);
+        if (z == null)
+            return null;
+        if (z instanceof Number) {
+            long mantissa;
+            if (z instanceof BigDecimal) {
+                final BigDecimal bd = (BigDecimal)z;
+                mantissa = bd.unscaledValue().longValue();
+                int scaleDiff = di.getDecimalDigits() - bd.scale();
+                if (scaleDiff > 0) {
+                    if (scaleDiff > 18) {
+                        throw err(MessageParserException.UNSUPPORTED_CONVERSION, di); // too long
+                    }
+                    mantissa *= FixedPointBase.getPowerOfTen(scaleDiff);
+                } else if (scaleDiff < 0) {
+                    if (scaleDiff < -18) {
+                        // underflow
+                        mantissa = 0L;
+                    } else {
+                        mantissa /= FixedPointBase.getPowerOfTen(scaleDiff);
+                    }
+                }
+            } else if (z instanceof Integer) {
+                mantissa = ((Integer)z).intValue();
+            } else if (z instanceof Long) {
+                mantissa = ((Long)z).intValue();
+            } else {
+                // anything else convert via double
+                return BigDecimalTools.checkAndScale(factory.apply(FixedPointBase.mantissaFor(((Number)z).doubleValue(), di.getDecimalDigits())), di, -1, currentClass);
+            }
+            return BigDecimalTools.checkAndScale(factory.apply(FixedPointBase.mantissaFor(mantissa, di.getDecimalDigits())), di, -1, currentClass);
+        }
+        if (z instanceof String) {
+            return BigDecimalTools.checkAndScale(factory.apply(FixedPointBase.mantissaFor((String)z, di.getDecimalDigits())), di, -1, currentClass);
         }
         throw err(MessageParserException.UNSUPPORTED_CONVERSION, di);
     }

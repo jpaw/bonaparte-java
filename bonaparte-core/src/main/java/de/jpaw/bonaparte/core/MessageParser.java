@@ -17,14 +17,14 @@ package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.function.LongFunction;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericEnumSetDataItem;
@@ -41,6 +41,7 @@ import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumSetDataItem;
 import de.jpaw.enums.AbstractXEnumBase;
 import de.jpaw.enums.XEnumFactory;
+import de.jpaw.fixedpoint.FixedPointBase;
 import de.jpaw.util.ByteArray;
 
 /**
@@ -66,7 +67,8 @@ public interface MessageParser<E extends Exception> extends ExceptionConverter<E
     public Integer    readInteger   (BasicNumericElementaryDataItem di) throws E;
     public Short      readShort     (BasicNumericElementaryDataItem di) throws E;
     public Byte       readByte      (BasicNumericElementaryDataItem di) throws E;
-    public BigInteger readBigInteger(BasicNumericElementaryDataItem di)   throws E;
+    public BigInteger readBigInteger(BasicNumericElementaryDataItem di) throws E;
+    public <F extends FixedPointBase<F>> F readFixedPoint(BasicNumericElementaryDataItem di, LongFunction<F> factory) throws E;
     public String     readAscii     (AlphanumericElementaryDataItem di) throws E;
     public String     readString    (AlphanumericElementaryDataItem di) throws E;
     public ByteArray  readByteArray (BinaryElementaryDataItem di) throws E;

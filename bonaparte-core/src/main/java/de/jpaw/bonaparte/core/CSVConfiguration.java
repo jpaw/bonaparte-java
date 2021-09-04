@@ -45,7 +45,7 @@ public class CSVConfiguration {
     public final String booleanTrue;        // string to output for boolean true value
     public final String booleanFalse;       // string to output for boolean false value
     public final Locale locale;             // used to determine date format
-    public final ZoneId timeZone;     // the timezone to use (for special output formatters). Will use UTC if null.
+    public final ZoneId timeZone;           // the timezone to use (for special output formatters). Will use UTC if null.
     public final CSVStyle dateStyle;        // verbosity for day output
     public final CSVStyle timeStyle;        // verbosity for time output
     public final String customDayFormat;             // set to override locale specific LocalDate formatter

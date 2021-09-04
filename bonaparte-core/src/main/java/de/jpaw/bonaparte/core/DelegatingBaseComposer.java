@@ -26,6 +26,7 @@ import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.enums.XEnum;
+import de.jpaw.fixedpoint.FixedPointBase;
 import de.jpaw.util.ByteArray;
 
 /** Delegates output to the delegateComposer. This class is intended as a superclass for Composers which want to modify only certain aspects of a composer.
@@ -142,6 +143,11 @@ public class DelegatingBaseComposer<E extends Exception> implements MessageCompo
 
     @Override
     public void addField(BasicNumericElementaryDataItem di, long n) throws E {
+        delegateComposer.addField(di, n);
+    }
+
+    @Override
+    public <F extends FixedPointBase<F>> void addField(BasicNumericElementaryDataItem di, F n) throws E {
         delegateComposer.addField(di, n);
     }
 

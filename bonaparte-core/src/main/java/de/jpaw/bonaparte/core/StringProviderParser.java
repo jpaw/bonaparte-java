@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.UUID;
-
+import java.util.function.LongFunction;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,6 +22,7 @@ import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.enums.AbstractXEnumBase;
 import de.jpaw.enums.XEnumFactory;
+import de.jpaw.fixedpoint.FixedPointBase;
 import de.jpaw.util.ByteArray;
 
 /** A parser which takes data through a provided functional interface, any implementation which provides a String get(String).
@@ -120,6 +121,11 @@ public class StringProviderParser extends AbstractPartialJsonStringParser implem
     public BigDecimal readBigDecimal(NumericElementaryDataItem di) throws MessageParserException {
         return stringParser.readBigDecimal(di, getParameter(di));
     }
+
+	@Override
+	public <F extends FixedPointBase<F>> F readFixedPoint(BasicNumericElementaryDataItem di, LongFunction<F> factory) throws MessageParserException {
+        return stringParser.readFixedPoint(di, getParameter(di), factory);
+	}
 
     @Override
     public String readAscii(AlphanumericElementaryDataItem di) throws MessageParserException {

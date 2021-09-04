@@ -67,11 +67,11 @@
         </dependency>
         <dependency>
             <groupId>de.jpaw</groupId>
-            <artifactId>fixedpoint-core</artifactId>
+            <artifactId>jpaw-fixedpoint-core</artifactId>
         </dependency>
         <dependency>
             <groupId>de.jpaw</groupId>
-            <artifactId>fixedpoint-money</artifactId>
+            <artifactId>jpaw-fixedpoint-money</artifactId>
         </dependency>
     </dependencies>
 

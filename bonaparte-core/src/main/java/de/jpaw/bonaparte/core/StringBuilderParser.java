@@ -20,7 +20,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
+import java.util.function.LongFunction;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -40,6 +40,7 @@ import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDefinition;
 import de.jpaw.enums.AbstractXEnumBase;
 import de.jpaw.enums.XEnumFactory;
+import de.jpaw.fixedpoint.FixedPointBase;
 import de.jpaw.util.Base64;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.CharTestsASCII;
@@ -546,6 +547,14 @@ public final class StringBuilderParser extends AbstractPartialJsonStringParser i
         return stringParser.readBigDecimal(di, nextIndexParseAscii(di.getName(), di.getIsSigned(), true, false));
     }
 
+	@Override
+	public <F extends FixedPointBase<F>> F readFixedPoint(BasicNumericElementaryDataItem di, LongFunction<F> factory) throws MessageParserException {
+        if (checkForNull(di)) {
+            return null;
+        }
+        return stringParser.readFixedPoint(di, nextIndexParseAscii(di.getName(), di.getIsSigned(), true, false), factory);
+	}
+
     @Override
     public void eatParentSeparator() throws MessageParserException {
         eatObjectOrParentSeparator(PARENT_SEPARATOR);
@@ -553,6 +562,8 @@ public final class StringBuilderParser extends AbstractPartialJsonStringParser i
 
     public void eatObjectTerminator() throws MessageParserException {
         eatObjectOrParentSeparator(OBJECT_TERMINATOR);
+        BigDecimal a;
+        BigDecimal b;
     }
 
     protected void eatObjectOrParentSeparator(char which) throws MessageParserException {

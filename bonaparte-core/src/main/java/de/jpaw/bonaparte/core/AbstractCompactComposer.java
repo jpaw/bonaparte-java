@@ -40,6 +40,7 @@ import de.jpaw.enums.AbstractXEnumBase;
 import de.jpaw.enums.EnumSetMarker;
 import de.jpaw.enums.TokenizableEnum;
 import de.jpaw.enums.XEnum;
+import de.jpaw.fixedpoint.FixedPointBase;
 import de.jpaw.util.ByteArray;
 
 public abstract class AbstractCompactComposer extends AbstractMessageComposer<IOException> implements CompactConstants {
@@ -408,6 +409,32 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
         } else {
             writeNull();
         }
+    }
+
+    @Override
+    public <F extends FixedPointBase<F>> void addField(BasicNumericElementaryDataItem di, F n) throws IOException {
+        if (n == null) {
+            writeNull();
+            return;
+        }
+        if (n.isIntegralValue()) {
+        	longOut(n.floor());
+        	return;
+        }
+        int scale = n.getScale();
+        // scale == 0 cannot happen because that would be caught by the integral check before
+//        if (scale == 0) {
+//            longOut(n.getMantissa());
+//        } else {
+            // is a fractional number
+            if (scale <= 9) {
+                out.writeByte(COMPACT_BIGDECIMAL + scale);
+            } else {
+                out.writeByte(COMPACT_BIGDECIMAL);
+                intOut(scale);
+            }
+            longOut(n.getMantissa());
+//        }
     }
 
     // byte
