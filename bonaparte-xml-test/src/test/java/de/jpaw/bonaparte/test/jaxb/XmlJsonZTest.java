@@ -14,7 +14,7 @@ import javax.xml.bind.Unmarshaller;
 import org.testng.annotations.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.joda.JodaModule;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import de.jpaw.bonaparte.pojos.test.jsonZ.TestJsonZ;
 import de.jpaw.bonaparte.util.ToStringHelper;
@@ -98,7 +98,7 @@ public class XmlJsonZTest {
     public void marshallJson() throws Exception {
         final TestJsonZ obj = buildObject();
         ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JodaModule());
+        mapper.registerModule(new JavaTimeModule());
 
         String serialized = mapper.writer().writeValueAsString(obj);
         System.out.println("Jackson2 produces " + serialized);
@@ -109,7 +109,7 @@ public class XmlJsonZTest {
     public void unmarshallJson() throws Exception {
         final TestJsonZ objIn = buildObject();
         ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JodaModule());
+        mapper.registerModule(new JavaTimeModule());
         TestJsonZ obj = mapper.readValue(EXPECTED_JSON, TestJsonZ.class);
         assert(obj != null);
         System.out.println("Output is " + ToStringHelper.toStringML(obj));

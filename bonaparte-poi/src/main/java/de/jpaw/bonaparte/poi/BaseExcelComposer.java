@@ -21,6 +21,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -32,10 +36,6 @@ import org.apache.poi.ss.usermodel.DataFormat;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,8 +54,8 @@ import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
-import de.jpaw.bonaparte.util.DayTime;
 import de.jpaw.enums.XEnum;
+import de.jpaw.fixedpoint.FixedPointBase;
 import de.jpaw.util.Base64;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.ByteBuilder;
@@ -302,6 +302,15 @@ public class BaseExcelComposer extends AbstractMessageComposer<RuntimeException>
             writeNull(di);
         }
     }
+
+	@Override
+	public <F extends FixedPointBase<F>> void addField(BasicNumericElementaryDataItem di, F n) throws RuntimeException {
+        if (n != null) {
+            newCell(di, getCachedCellStyle(n.getScale())).setCellValue(n.doubleValue());
+        } else {
+            writeNull(di);
+        }
+	}
 
     // output a non-null number which was stored with possibly implicit fixed point
     private void addScaledNumber(BasicNumericElementaryDataItem di, double n) {

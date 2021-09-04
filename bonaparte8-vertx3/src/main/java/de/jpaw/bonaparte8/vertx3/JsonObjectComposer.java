@@ -28,6 +28,7 @@ import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.enums.XEnum;
+import de.jpaw.fixedpoint.FixedPointBase;
 import de.jpaw.util.ByteArray;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
@@ -291,6 +292,15 @@ public class JsonObjectComposer extends AbstractMessageComposer<RuntimeException
             writeNonNull(di, n.toString());
         }
     }
+
+	@Override
+	public <F extends FixedPointBase<F>> void addField(BasicNumericElementaryDataItem di, F n) throws RuntimeException {
+        if (n == null) {
+            writeNull(di);
+        } else {
+            writeNonNull(di, n.toString());
+        }
+	}
 
     @Override
     public void addField(TemporalElementaryDataItem di, LocalDate t) {
