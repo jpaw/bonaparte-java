@@ -195,7 +195,7 @@ public final class ExternalizableParser extends AbstractMessageParser<IOExceptio
         }
         // now check precision, if required, convert!
         try {
-            return BigDecimalTools.checkAndScale(r, di, -1, currentClass);
+            return BigDecimalTools.check(r, di, -1, currentClass);
         } catch (MessageParserException a) {
             throw new IOException("Fixed point decimal number does not comply with specs: " + a.getStandardDescription() + " for " + currentClass + "." + fieldname);
         }

@@ -306,10 +306,9 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
         Object z = get(di);
         if (z == null)
             return null;
-        if (z instanceof BigInteger)       // todo: check scale?
-            return (BigInteger)z;
         if (z instanceof Number) {
-            // check int, long
+            if (z instanceof BigInteger)       // todo: check scale?
+                return (BigInteger)z;
             if (z instanceof Integer)
                 return BigInteger.valueOf(((Integer)z).intValue());
             if (z instanceof Long)
@@ -327,10 +326,11 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
         Object z = get(di);
         if (z == null)
             return null;
-        if (z instanceof BigDecimal)       // todo: check scale?
-            return (BigDecimal)z;
         if (z instanceof Number) {
-            // check double, int, long
+            if (z instanceof BigDecimal)       // todo: check scale?
+                return (BigDecimal)z;
+            if (z instanceof FixedPointBase)
+                return ((FixedPointBase)z).toBigDecimal();
             if (z instanceof Integer)
                 return BigDecimal.valueOf(((Integer)z).intValue());
             if (z instanceof Long)
@@ -352,35 +352,31 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
             return null;
         if (z instanceof Number) {
             long mantissa;
+            if (z instanceof FixedPointBase) {
+                FixedPointBase x = (FixedPointBase)z;
+                if (x.getScale() == di.getDecimalDigits() && x.isFixedScale()) {
+                    // this must be the same class - return as is
+                    return (F)x;
+                } else {
+                    // is fixed point already, but with wrong scale
+                    mantissa = FixedPointBase.mantissaFor(x.getMantissa(), x.getScale(), di.getDecimalDigits(), di.getRounding());
+                }
+            }
             if (z instanceof BigDecimal) {
                 final BigDecimal bd = (BigDecimal)z;
-                mantissa = bd.unscaledValue().longValue();
-                int scaleDiff = di.getDecimalDigits() - bd.scale();
-                if (scaleDiff > 0) {
-                    if (scaleDiff > 18) {
-                        throw err(MessageParserException.UNSUPPORTED_CONVERSION, di); // too long
-                    }
-                    mantissa *= FixedPointBase.getPowerOfTen(scaleDiff);
-                } else if (scaleDiff < 0) {
-                    if (scaleDiff < -18) {
-                        // underflow
-                        mantissa = 0L;
-                    } else {
-                        mantissa /= FixedPointBase.getPowerOfTen(scaleDiff);
-                    }
-                }
+                mantissa = FixedPointBase.mantissaFor(bd.unscaledValue().longValue(), bd.scale(), di.getDecimalDigits(), di.getRounding());
             } else if (z instanceof Integer) {
                 mantissa = ((Integer)z).intValue();
             } else if (z instanceof Long) {
                 mantissa = ((Long)z).intValue();
             } else {
                 // anything else convert via double
-                return BigDecimalTools.checkAndScale(factory.apply(FixedPointBase.mantissaFor(((Number)z).doubleValue(), di.getDecimalDigits())), di, -1, currentClass);
+                return BigDecimalTools.check(factory.apply(FixedPointBase.mantissaFor(((Number)z).doubleValue(), di.getDecimalDigits())), di, -1, currentClass);
             }
-            return BigDecimalTools.checkAndScale(factory.apply(FixedPointBase.mantissaFor(mantissa, di.getDecimalDigits())), di, -1, currentClass);
+            return BigDecimalTools.check(factory.apply(FixedPointBase.mantissaFor(mantissa, di.getDecimalDigits())), di, -1, currentClass);
         }
         if (z instanceof String) {
-            return BigDecimalTools.checkAndScale(factory.apply(FixedPointBase.mantissaFor((String)z, di.getDecimalDigits())), di, -1, currentClass);
+            return BigDecimalTools.check(factory.apply(FixedPointBase.mantissaFor((String)z, di.getDecimalDigits())), di, -1, currentClass);
         }
         throw err(MessageParserException.UNSUPPORTED_CONVERSION, di);
     }

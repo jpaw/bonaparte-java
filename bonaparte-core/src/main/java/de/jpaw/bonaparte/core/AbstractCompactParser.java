@@ -451,7 +451,7 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
         } else {
             mantissa = readLong(c2, fieldname);
         }
-        return BigDecimalTools.checkAndScale(factory.apply(FixedPointBase.mantissaFor(mantissa, scale)), di, -1, currentClass);
+        return BigDecimalTools.check(factory.apply(FixedPointBase.mantissaFor(mantissa, scale)), di, -1, currentClass);
     }
 
     @Override

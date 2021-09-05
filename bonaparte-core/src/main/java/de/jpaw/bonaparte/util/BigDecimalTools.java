@@ -73,7 +73,7 @@ public class BigDecimalTools {
     }
 
     /** Check a parsed BigDecimal for allowed digits. Use the second form with the metadata parameter instead. */
-    static public <F extends FixedPointBase<F>> F checkAndScale(F r, BasicNumericElementaryDataItem di, int parseIndex, String currentClass) throws MessageParserException {
+    static public <F extends FixedPointBase<F>> F check(F r, BasicNumericElementaryDataItem di, int parseIndex, String currentClass) throws MessageParserException {
         String fieldname = di.getName();
         if (!r.isWithinDigits(di.getTotalDigits())) {
             throw new MessageParserException(MessageParserException.TOO_MANY_DIGITS, fieldname, parseIndex, currentClass);

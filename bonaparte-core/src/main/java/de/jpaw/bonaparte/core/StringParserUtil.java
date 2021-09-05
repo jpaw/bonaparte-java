@@ -438,7 +438,7 @@ public class StringParserUtil {
         final long mantissa = FixedPointBase.mantissaFor(data, di.getDecimalDigits());
         if (!di.getIsSigned() && mantissa < 0)
             throw err(MessageParserException.SUPERFLUOUS_SIGN, di, data);
-        return BigDecimalTools.checkAndScale(factory.apply(mantissa), di, parsePositionProvider.getParsePosition(), parsePositionProvider.getCurrentClassName());
+        return BigDecimalTools.check(factory.apply(mantissa), di, parsePositionProvider.getParsePosition(), parsePositionProvider.getCurrentClassName());
     }
 
     public UUID readUUID(final MiscElementaryDataItem di, String data) throws MessageParserException {

@@ -648,7 +648,7 @@ public final class StringCSVParser extends AbstractPartialJsonStringParser imple
     public <F extends FixedPointBase<F>> F readFixedPoint(BasicNumericElementaryDataItem di, LongFunction<F> factory) throws MessageParserException {
         // FIXME! National formats and fixed width not yet covered
         String token = getField(di.getName(), di.getIsRequired(), di.getTotalDigits()+(di.getIsSigned() ? 1 : 0));
-        return BigDecimalTools.checkAndScale(factory.apply(FixedPointBase.mantissaFor(token, di.getDecimalDigits())), di, parseIndex, currentClass);
+        return BigDecimalTools.check(factory.apply(FixedPointBase.mantissaFor(token, di.getDecimalDigits())), di, parseIndex, currentClass);
     }
 
     @Override
