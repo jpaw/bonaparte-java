@@ -354,12 +354,12 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
             long mantissa;
             if (z instanceof FixedPointBase) {
                 FixedPointBase x = (FixedPointBase)z;
-                if (x.getScale() == di.getDecimalDigits() && x.isFixedScale()) {
+                if (x.scale() == di.getDecimalDigits() && x.isFixedScale()) {
                     // this must be the same class - return as is
                     return (F)x;
                 } else {
                     // is fixed point already, but with wrong scale
-                    mantissa = FixedPointBase.mantissaFor(x.getMantissa(), x.getScale(), di.getDecimalDigits(), di.getRounding());
+                    mantissa = FixedPointBase.mantissaFor(x.getMantissa(), x.scale(), di.getDecimalDigits(), di.getRounding());
                 }
             }
             if (z instanceof BigDecimal) {

@@ -306,7 +306,7 @@ public class BaseExcelComposer extends AbstractMessageComposer<RuntimeException>
 	@Override
 	public <F extends FixedPointBase<F>> void addField(BasicNumericElementaryDataItem di, F n) throws RuntimeException {
         if (n != null) {
-            newCell(di, getCachedCellStyle(n.getScale())).setCellValue(n.doubleValue());
+            newCell(di, getCachedCellStyle(n.scale())).setCellValue(n.doubleValue());
         } else {
             writeNull(di);
         }

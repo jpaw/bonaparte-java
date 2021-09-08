@@ -171,7 +171,7 @@ public class ExternalizableComposer extends AbstractMessageComposer<IOException>
         if (n == null) {
             out.writeByte(NULL_FIELD);
         } else {
-            int scale = n.getScale();
+            int scale = n.scale();
             long fraction = n.fraction();
             if (fraction != 0) {
                 out.writeByte(FRAC_SCALE_0 + scale);

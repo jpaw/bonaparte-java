@@ -8,7 +8,7 @@ import de.jpaw.fixedpoint.types.NanoUnits;
 public class BigNanoUnitsAdapter {
 
     public static BigDecimal marshal(NanoUnits obj) {
-        return BigDecimal.valueOf(obj.getMantissa(), obj.getScale());
+        return BigDecimal.valueOf(obj.getMantissa(), obj.scale());
     }
 
     public static <E extends Exception> NanoUnits unmarshal(BigDecimal num, ExceptionConverter<E> p) throws E {

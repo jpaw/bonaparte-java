@@ -8,7 +8,7 @@ import de.jpaw.fixedpoint.types.Units;
 public class BigUnitsAdapter {
 
     public static BigDecimal marshal(Units obj) {
-        return BigDecimal.valueOf(obj.getMantissa(), obj.getScale());
+        return BigDecimal.valueOf(obj.getMantissa(), obj.scale());
     }
 
     public static <E extends Exception> Units unmarshal(BigDecimal num, ExceptionConverter<E> p) throws E {

@@ -421,7 +421,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
         	longOut(n.floor());
         	return;
         }
-        int scale = n.getScale();
+        int scale = n.scale();
         // scale == 0 cannot happen because that would be caught by the integral check before
 //        if (scale == 0) {
 //            longOut(n.getMantissa());
