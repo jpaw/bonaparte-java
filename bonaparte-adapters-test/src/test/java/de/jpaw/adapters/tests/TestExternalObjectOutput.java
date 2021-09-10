@@ -69,7 +69,7 @@ public class TestExternalObjectOutput {
                 "<S>adapters.tests.CustomAmountsUsed<F><N>"
                 + "EUR<F>"
                 + "3.141593 EUR:6<F>"
-                + "2.500000<F>"
+                + "2.5<F>"
                 + "7.85 EUR<F>"
                 + "<O>");
         Assert.assertEquals(newOutput, newExpectedResult);
