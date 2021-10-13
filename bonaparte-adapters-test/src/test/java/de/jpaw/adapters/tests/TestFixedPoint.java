@@ -68,7 +68,7 @@ public class TestFixedPoint {
         FPAmount units = new FPAmount(microsEUR, net + tax, net, tax);
         System.out.println("unit price is " + units);
 
-        MicroUnits quantity = new MicroUnits(3000000);
+        MicroUnits quantity = MicroUnits.of(3000000);
         FPAmount total = units.convert(quantity, stdEUR);
         System.out.println("3 items cost " + total);
 
@@ -93,7 +93,7 @@ public class TestFixedPoint {
         FPAmount units = new FPAmount(microsEUR, net + tax);
         System.out.println("unit price is " + units);
 
-        MicroUnits quantity = new MicroUnits(3000000);
+        MicroUnits quantity = MicroUnits.of(3000000);
         FPAmount total = units.convert(quantity, stdEUR);
         System.out.println("3 items cost " + total);
 
