@@ -26,7 +26,7 @@
         <lucene.version>4.10.4</lucene.version>
         <netty.version>4.1.68.Final</netty.version>
         <poi.version>5.0.0</poi.version>
-        <camel.version>3.11.1</camel.version>
+        <camel.version>3.11.3</camel.version>
         <vertx3.version>4.1.5</vertx3.version>
 
         <!-- distributed caches -->
@@ -51,7 +51,7 @@
             <dependency>
                 <groupId>de.jpaw</groupId>
                 <artifactId>jpaw-bom</artifactId>
-                <version>2.8.2</version>
+                <version>2.8.5</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
