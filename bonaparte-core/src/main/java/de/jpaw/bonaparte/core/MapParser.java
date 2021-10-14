@@ -366,14 +366,14 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
                 final BigDecimal bd = (BigDecimal)z;
                 mantissa = FixedPointBase.mantissaFor(bd.unscaledValue().longValue(), bd.scale(), di.getDecimalDigits(), di.getRounding());
             } else if (z instanceof Integer) {
-                mantissa = ((Integer)z).intValue();
+                mantissa = FixedPointBase.mantissaFor(((Integer)z).longValue(), 0, di.getDecimalDigits(), false);
             } else if (z instanceof Long) {
-                mantissa = ((Long)z).intValue();
+                mantissa = FixedPointBase.mantissaFor(((Long)z).longValue(), 0, di.getDecimalDigits(), false);
             } else {
                 // anything else convert via double
-                return BigDecimalTools.check(factory.apply(FixedPointBase.mantissaFor(((Number)z).doubleValue(), di.getDecimalDigits())), di, -1, currentClass);
+                mantissa = FixedPointBase.mantissaFor(((Number)z).doubleValue(), di.getDecimalDigits());
             }
-            return BigDecimalTools.check(factory.apply(FixedPointBase.mantissaFor(mantissa, di.getDecimalDigits())), di, -1, currentClass);
+            return BigDecimalTools.check(factory.apply(mantissa), di, -1, currentClass);
         }
         if (z instanceof String) {
             return BigDecimalTools.check(factory.apply(FixedPointBase.mantissaFor((String)z, di.getDecimalDigits())), di, -1, currentClass);

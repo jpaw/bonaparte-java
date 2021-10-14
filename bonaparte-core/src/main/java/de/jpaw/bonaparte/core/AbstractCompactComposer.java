@@ -418,7 +418,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
             return;
         }
         if (n.isIntegralValue()) {
-        	longOut(n.floor());
+        	longOut(n.longValue());
         	return;
         }
         int scale = n.scale();

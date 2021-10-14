@@ -177,7 +177,7 @@ public class ExternalizableComposer extends AbstractMessageComposer<IOException>
                 out.writeByte(FRAC_SCALE_0 + scale);
                 writeVarLong(fraction);
             }
-            writeVarLong(n.floor());
+            writeVarLong(n.longValue());
         }
     }
 
