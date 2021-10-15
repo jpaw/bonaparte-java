@@ -5,8 +5,7 @@ Bundle-Name: bonaparte core libraries
 Bundle-SymbolicName: bonaparte.core
 Bundle-Version: 4.80.2
 Bundle-Vendor: Michael Bischoff
-Require-Bundle: joda-time;bundle-version="2.10";visibility:=reexport,
- com.google.guava;bundle-version="20.0";visibility:=reexport
+Require-Bundle: com.google.guava;bundle-version="30.0";visibility:=reexport
 Export-Package: de.jpaw.bonaparte.core,
  de.jpaw.bonaparte.annotation,
  de.jpaw.bonaparte.converter,
@@ -17,7 +16,7 @@ Export-Package: de.jpaw.bonaparte.core,
  de.jpaw.bonaparte.validation,
  de.jpaw.bonaparte.pojos.meta
 Bundle-ActivationPolicy: lazy
-Import-Package: org.slf4j; version="1.7.25",
+Import-Package: org.slf4j; version="1.7.30",
  de.jpaw.enums,
  de.jpaw.util
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

@@ -5,8 +5,7 @@ Bundle-Name: bonaparte api definitions
 Bundle-SymbolicName: bonaparte.api
 Bundle-Version: 4.80.2
 Bundle-Vendor: Michael Bischoff
-Require-Bundle: joda-time;bundle-version="2.10";visibility:=reexport,
- com.google.guava;bundle-version="20.0";visibility:=reexport
+Require-Bundle: com.google.guava;bundle-version="30.0";visibility:=reexport
 Export-Package: de.jpaw.bonaparte.api,
  de.jpaw.bonaparte.api.codecs,
  de.jpaw.bonaparte.api.codecs.impl,
@@ -15,7 +14,7 @@ Export-Package: de.jpaw.bonaparte.api,
  de.jpaw.bonaparte.pojos.apiw,
  de.jpaw.bonaparte.pojos.ui
 Bundle-ActivationPolicy: lazy
-Import-Package: org.slf4j; version="1.7.25",
+Import-Package: org.slf4j; version="1.7.30",
  de.jpaw.enums,
  de.jpaw.util
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
