@@ -26,6 +26,7 @@ import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.enums.XEnum;
+import de.jpaw.fixedpoint.FixedPointBase;
 import de.jpaw.util.ByteArray;
 
 /** Represents composer which does not serialize, but instead appends all objects into a list.
@@ -137,6 +138,11 @@ public class ListMetaComposer extends NoOpComposer<RuntimeException> implements 
 
     @Override
     public void addField(NumericElementaryDataItem di, BigDecimal n) {
+        add(di, n);
+    }
+
+    @Override
+    public <F extends FixedPointBase<F>> void addField(BasicNumericElementaryDataItem di, F n) {
         add(di, n);
     }
 

@@ -562,8 +562,6 @@ public final class StringBuilderParser extends AbstractPartialJsonStringParser i
 
     public void eatObjectTerminator() throws MessageParserException {
         eatObjectOrParentSeparator(OBJECT_TERMINATOR);
-        BigDecimal a;
-        BigDecimal b;
     }
 
     protected void eatObjectOrParentSeparator(char which) throws MessageParserException {
