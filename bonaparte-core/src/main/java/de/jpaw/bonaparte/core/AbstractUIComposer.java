@@ -13,7 +13,7 @@ import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 /** text based composer which emits the fields in stringified form into an abstract method.
  * This composer is intended to be used by UI adaptions such as Android or ZK. */
 public abstract class AbstractUIComposer extends CSVComposer2 {
-    public final static CSVConfiguration UI_DEFAULT_CONFIGURATION = CSVConfiguration.CSV_DEFAULT_CONFIGURATION.builder()
+    public static final CSVConfiguration UI_DEFAULT_CONFIGURATION = CSVConfiguration.CSV_DEFAULT_CONFIGURATION.builder()
             .usingGrouping(true)
             .forLocale(Locale.getDefault())
             .forTimeZone(ZoneOffset.UTC)

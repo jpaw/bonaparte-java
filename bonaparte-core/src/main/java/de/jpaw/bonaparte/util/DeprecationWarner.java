@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 public class DeprecationWarner {
 
     public static class DefaultWarner implements IDeprecationWarner {
-        final static private Logger LOGGER = LoggerFactory.getLogger(DefaultWarner.class);
+        static final private Logger LOGGER = LoggerFactory.getLogger(DefaultWarner.class);
         final String action;
 
         public DefaultWarner(String forWhichAction) {

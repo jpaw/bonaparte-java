@@ -54,7 +54,7 @@ import de.jpaw.util.ByteArray;
  */
 
 public interface MessageParser<E extends Exception> extends ExceptionConverter<E> {
-    static public final String GENERIC_RECORD = "RECORD";   // field name to be used when parsing top level record
+    public static final String GENERIC_RECORD = "RECORD";   // field name to be used when parsing top level record
 
     // unmarshaller methods: field type specific
     public BigDecimal readBigDecimal(NumericElementaryDataItem di) throws E;

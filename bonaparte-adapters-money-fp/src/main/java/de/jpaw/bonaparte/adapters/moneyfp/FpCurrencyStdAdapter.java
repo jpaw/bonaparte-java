@@ -6,7 +6,7 @@ import de.jpaw.bonaparte.core.ExceptionConverter;
 import de.jpaw.fixedpoint.money.FPCurrency;
 
 public class FpCurrencyStdAdapter {
-    public static CurrencyDataProvider dataProvider = JavaCurrencyDataProvider.instance;
+    public static CurrencyDataProvider dataProvider = JavaCurrencyDataProvider.INSTANCE;
 
     public static String marshal(FPCurrency obj) {
         return obj.getCurrencyCode();

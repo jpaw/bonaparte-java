@@ -20,7 +20,7 @@ public class BonaPortableFactoryById {
     }
 
     // the big factory lookup map
-    static private ConcurrentHashMap<Long,BonaPortableClass<?>> lookup = new ConcurrentHashMap<Long,BonaPortableClass<?>>(2048);
+    private static ConcurrentHashMap<Long,BonaPortableClass<?>> lookup = new ConcurrentHashMap<Long,BonaPortableClass<?>>(2048);
 
     /** Adds a new class to the registry. Returns true if the class has been accepted and was not known before. */
     public static boolean registerClass(BonaPortableClass<?> bclass) {

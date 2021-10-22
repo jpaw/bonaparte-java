@@ -33,7 +33,7 @@ public class TestFixedPoint {
     public void testAdapterCurrency() throws Exception {
         String expectedResult = StringSerializer.fromString(
                 "\\R\\N\\Sadapters.tests.CustomCurrency\\F\\Nhello\\F\\Sadapters.moneyfp.FpCurrency\\F\\NEUR\\F2\\F\\O\\O\\J").toString();
-        CustomCurrency myCurrency = new CustomCurrency("hello", new FPCurrency(JavaCurrencyDataProvider.instance.get("EUR")));
+        CustomCurrency myCurrency = new CustomCurrency("hello", new FPCurrency(JavaCurrencyDataProvider.INSTANCE.get("EUR")));
 
         System.out.println("serialized currency is " + new StringBuilderTestRunner().serializationTest(myCurrency, expectedResult));
         MultiTestRunner.serDeserMulti(myCurrency, expectedResult);
@@ -53,7 +53,7 @@ public class TestFixedPoint {
     public void testAdapterCurrencyNewString() throws Exception {
         String expectedResult = StringSerializer.altFromString(
                 "<R><N><S>adapters.tests.CustomCurrency<F><N>hello<F><S>adapters.moneyfp.FpCurrency<F><N>EUR<F>2<F><O><O>\n").toString();
-        CustomCurrency myCurrency = new CustomCurrency("hello", new FPCurrency(JavaCurrencyDataProvider.instance.get("EUR")));
+        CustomCurrency myCurrency = new CustomCurrency("hello", new FPCurrency(JavaCurrencyDataProvider.INSTANCE.get("EUR")));
 
         System.out.println("serialized currency is " + new StringBuilderTestRunner().serializationTest(myCurrency, expectedResult));
         MultiTestRunner.serDeserMulti(myCurrency, expectedResult);
@@ -61,7 +61,7 @@ public class TestFixedPoint {
 
     @Test
     public void testAdapterCurrencyExt() throws Exception {
-        FPCurrency stdEUR = new FPCurrency(JavaCurrencyDataProvider.instance.get("EUR"));
+        FPCurrency stdEUR = new FPCurrency(JavaCurrencyDataProvider.INSTANCE.get("EUR"));
         FPCurrency microsEUR = stdEUR.withMicrosPrecision();
         long net = 1359000;
         long tax = net * 19 / 100;
@@ -86,7 +86,7 @@ public class TestFixedPoint {
 
     @Test
     public void testAdapterCurrencyExt2() throws Exception {
-        FPCurrency stdEUR = new FPCurrency(JavaCurrencyDataProvider.instance.get("EUR"));
+        FPCurrency stdEUR = new FPCurrency(JavaCurrencyDataProvider.INSTANCE.get("EUR"));
         FPCurrency microsEUR = stdEUR.withMicrosPrecision();
         long net = 1359000;
         long tax = net * 19 / 100;

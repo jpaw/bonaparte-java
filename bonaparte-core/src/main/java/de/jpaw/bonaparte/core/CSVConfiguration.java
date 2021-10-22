@@ -20,12 +20,12 @@ public class CSVConfiguration {
     	STYLE_MAP.put(CSVStyle.SHORT, FormatStyle.SHORT);
     }
 
-    public final static String EMPTY_STRING = "";                           // used instead of null Strings
-    public final static String DEFAULT_DAY_FORMAT = "yyyyMMdd";             // default pattern for LocalDate (bonaparte Day) outputs
-    public final static String DEFAULT_TIME_FORMAT = "HHmmss";              // default pattern for LocalTime (bonaparte Time(0)) outputs
-    public final static String DEFAULT_TIME_WITH_MS_FORMAT = "HHmmssSSS";   // default pattern for LocalTime (bonaparte Time(3)) outputs
-    public final static String DEFAULT_TIMESTAMP_FORMAT = "yyyyMMddHHmmss"; // default pattern for LocalDatetime (bonaparte Timestamp(0)) outputs
-    public final static String DEFAULT_TS_WITH_MS_FORMAT = "yyyyMMddHHmmssSSS"; // default pattern for LocalDatetime (bonaparte Timestamp(3)) outputs
+    public static final String EMPTY_STRING = "";                           // used instead of null Strings
+    public static final String DEFAULT_DAY_FORMAT = "yyyyMMdd";             // default pattern for LocalDate (bonaparte Day) outputs
+    public static final String DEFAULT_TIME_FORMAT = "HHmmss";              // default pattern for LocalTime (bonaparte Time(0)) outputs
+    public static final String DEFAULT_TIME_WITH_MS_FORMAT = "HHmmssSSS";   // default pattern for LocalTime (bonaparte Time(3)) outputs
+    public static final String DEFAULT_TIMESTAMP_FORMAT = "yyyyMMddHHmmss"; // default pattern for LocalDatetime (bonaparte Timestamp(0)) outputs
+    public static final String DEFAULT_TS_WITH_MS_FORMAT = "yyyyMMddHHmmssSSS"; // default pattern for LocalDatetime (bonaparte Timestamp(3)) outputs
 
     public final String separator;          // delimiter between fields, if null or empty, then a special composer will generate fixed-width formats (for example SAP IDOC)
     public final Character quote;           // quote character for strings, null means no quotes used
@@ -54,7 +54,7 @@ public class CSVConfiguration {
     public final String customTimestampFormat;       // set to override locale specific LocalDateTime formatter
     public final String customTimestampWithMsFormat; // set to override locale specific LocalDateTime formatter if milliseconds should be printed
 
-    public final static CSVConfiguration CSV_DEFAULT_CONFIGURATION = new CSVConfiguration(
+    public static final CSVConfiguration CSV_DEFAULT_CONFIGURATION = new CSVConfiguration(
             ";", '\"', "\"\"", "?", false, false, null, null, null, null, null, null, "1", "0", Locale.ROOT, null, CSVStyle.SHORT, CSVStyle.SHORT,
             DEFAULT_DAY_FORMAT, DEFAULT_TIME_FORMAT, DEFAULT_TIME_WITH_MS_FORMAT, DEFAULT_TIMESTAMP_FORMAT, DEFAULT_TS_WITH_MS_FORMAT, false, false, false);
 

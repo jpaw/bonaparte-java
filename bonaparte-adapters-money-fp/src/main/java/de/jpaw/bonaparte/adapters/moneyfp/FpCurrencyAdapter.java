@@ -9,7 +9,7 @@ import de.jpaw.fixedpoint.FixedPointSelector;
 import de.jpaw.fixedpoint.money.FPCurrency;
 
 public class FpCurrencyAdapter {
-    public static CurrencyDataProvider dataProvider = JavaCurrencyDataProvider.instance;
+    public static CurrencyDataProvider dataProvider = JavaCurrencyDataProvider.INSTANCE;
 
     /** Convert the custom type into a serializable BonaPortable. */
     public static FpCurrency marshal(FPCurrency currency) {

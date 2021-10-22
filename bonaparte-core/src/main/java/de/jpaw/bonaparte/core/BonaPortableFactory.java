@@ -37,11 +37,11 @@ public class BonaPortableFactory {
     public static void init() {
     }
 
-    static private ConcurrentMap<String, BonaPortableClass<? extends BonaPortable>> mapByPQON = new ConcurrentHashMap<String, BonaPortableClass<? extends BonaPortable>>(2048);
-    static private ConcurrentMap<String, BonaPortableClass<? extends BonaPortable>> mapByFQON = new ConcurrentHashMap<String, BonaPortableClass<? extends BonaPortable>>(1024);
+    private static ConcurrentMap<String, BonaPortableClass<? extends BonaPortable>> mapByPQON = new ConcurrentHashMap<String, BonaPortableClass<? extends BonaPortable>>(2048);
+    private static ConcurrentMap<String, BonaPortableClass<? extends BonaPortable>> mapByFQON = new ConcurrentHashMap<String, BonaPortableClass<? extends BonaPortable>>(1024);
 
-    static private String bonaparteClassDefaultPackagePrefix = "de.jpaw.bonaparte.pojos";
-    static private Map<String, String> packagePrefixMap = new ConcurrentHashMap<String,String>(16);
+    private static String bonaparteClassDefaultPackagePrefix = "de.jpaw.bonaparte.pojos";
+    private static Map<String, String> packagePrefixMap = new ConcurrentHashMap<String,String>(16);
     static {
         // mappings for bonaparte-core. Install a fresh map if you don't want these. Otherwise, add single mappings to them, or overwrite these
         packagePrefixMap.put("bonaparte", "de.jpaw.bonaparte");                                 // bonaparte-core, sub-packages core, meta, ui
@@ -52,15 +52,15 @@ public class BonaPortableFactory {
         packagePrefixMap.put("apiw",      bonaparteClassDefaultPackagePrefix + ".apiw");        // bonaparte-api (object wrapped long primary keys)
         packagePrefixMap.put("adapters",  bonaparteClassDefaultPackagePrefix + ".adapters");    // bonaparte-adapters-*
     }
-    static private class HiddenClass {
+    private static class HiddenClass {
     }
     static final private HiddenClass A_WAY_TO_GET_MY_CLASSLOADER = new HiddenClass();
-    static private ClassLoader classLoaderToUse = null;
+    private static ClassLoader classLoaderToUse = null;
 
-    static public final String BONAPARTE_DEFAULT_PACKAGE_PREFIX = "bonapartePrefix"; // "BONAPARTE_DEFAULT_PACKAGE_PREFIX";  // system property name which can be used as a source
+    public static final String BONAPARTE_DEFAULT_PACKAGE_PREFIX = "bonapartePrefix"; // "BONAPARTE_DEFAULT_PACKAGE_PREFIX";  // system property name which can be used as a source
     static public boolean publishDefaultPrefix = true;          // required in environments which instantiate multiple classloaders for isolation (vert.x)
-    static private boolean bonaparteClassDefaultPackagePrefixShouldBeRetrieved = true;
-    static private final AtomicInteger initializationCounter = new AtomicInteger();
+    private static boolean bonaparteClassDefaultPackagePrefixShouldBeRetrieved = true;
+    private static final AtomicInteger initializationCounter = new AtomicInteger();
 
     // prevent instance creation
     private BonaPortableFactory() {

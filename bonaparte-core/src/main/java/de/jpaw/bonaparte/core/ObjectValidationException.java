@@ -36,29 +36,29 @@ public class ObjectValidationException extends ApplicationException {
     private final String fieldName;   // if known, the name of the field where the error occurred
     private final String className;   // if known, the name of the class which contained the field
 
-    static public final int MAY_NOT_BE_BLANK            = OFFSET + 1;
-    static public final int NO_PATTERN_MATCH            = OFFSET + 2;
-    static public final int TOO_MANY_ELEMENTS           = OFFSET + 3;
-    static public final int TOO_LONG                    = OFFSET + 4;
-    static public final int TOO_SHORT                   = OFFSET + 5;
-    static public final int NOT_ENOUGH_ELEMENTS         = OFFSET + 6;
-    static public final int NO_NEGATIVE_ALLOWED         = OFFSET + 7;
-    static public final int CUSTOM_VALIDATION           = OFFSET + 8;
-    static public final int NO_ACTIVE_FIELD             = OFFSET + 9;
+    public static final int MAY_NOT_BE_BLANK            = OFFSET + 1;
+    public static final int NO_PATTERN_MATCH            = OFFSET + 2;
+    public static final int TOO_MANY_ELEMENTS           = OFFSET + 3;
+    public static final int TOO_LONG                    = OFFSET + 4;
+    public static final int TOO_SHORT                   = OFFSET + 5;
+    public static final int NOT_ENOUGH_ELEMENTS         = OFFSET + 6;
+    public static final int NO_NEGATIVE_ALLOWED         = OFFSET + 7;
+    public static final int CUSTOM_VALIDATION           = OFFSET + 8;
+    public static final int NO_ACTIVE_FIELD             = OFFSET + 9;
 
     // BigDecimal checks
-    static public final int TOO_MANY_FRACTIONAL_DIGITS  = OFFSET + 10;
-    static public final int TOO_MANY_DIGITS             = OFFSET + 11;
+    public static final int TOO_MANY_FRACTIONAL_DIGITS  = OFFSET + 10;
+    public static final int TOO_MANY_DIGITS             = OFFSET + 11;
 
-    static public final int NOT_FREEZABLE               = OFFSET + 21;
-    static public final int OBJECT_IS_FROZEN            = OFFSET + 22;
-    static public final int IS_IMMUTABLE                = OFFSET + 23;
+    public static final int NOT_FREEZABLE               = OFFSET + 21;
+    public static final int OBJECT_IS_FROZEN            = OFFSET + 22;
+    public static final int IS_IMMUTABLE                = OFFSET + 23;
 
     // JSON composer codes
-    static public final int UNSUPPORTED_MAP_KEY_TYPE    = ILE_OFFSET + 51;
-    static public final int UNSUPPORTED_MAP_VALUE_TYPE  = ILE_OFFSET + 52;
-    static public final int INVALID_SEQUENCE            = ILE_OFFSET + 53;
-    static public final int MAP_NOT_UNSUPPORTED         = ILE_OFFSET + 54;
+    public static final int UNSUPPORTED_MAP_KEY_TYPE    = ILE_OFFSET + 51;
+    public static final int UNSUPPORTED_MAP_VALUE_TYPE  = ILE_OFFSET + 52;
+    public static final int INVALID_SEQUENCE            = ILE_OFFSET + 53;
+    public static final int MAP_NOT_UNSUPPORTED         = ILE_OFFSET + 54;
 
     static {
         codeToDescription.put(MAY_NOT_BE_BLANK          , "Empty, but required field");

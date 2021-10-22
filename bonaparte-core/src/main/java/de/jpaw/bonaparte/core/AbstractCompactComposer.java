@@ -47,7 +47,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
 
     // remove unsafe access due to changes in Java 9
 //    private static Field unsafeString = calculateUnsafe();
-//    static private Field calculateUnsafe() {
+//    private static Field calculateUnsafe() {
 //        try {
 //            Field f = String.class.getDeclaredField("value");
 //            f.setAccessible(true);

@@ -32,7 +32,7 @@ import de.jpaw.util.ByteArray;
 
 
 public class SerializationTest {
-    static private boolean doDump = false;
+    private static boolean doDump = false;
 
     private void dumpToFile(String filename, byte [] data) throws Exception {
         OutputStream stream = new FileOutputStream(filename);
@@ -46,7 +46,7 @@ public class SerializationTest {
         return a.equals(b);
     }
 
-    static private boolean compareTest1(ClassDefinition a, ClassDefinition b) {
+    private static boolean compareTest1(ClassDefinition a, ClassDefinition b) {
         return a.getIsAbstract() == b.getIsAbstract()
             && a.getIsFinal() == b.getIsFinal()
             && matchStrings(a.getName(), b.getName())

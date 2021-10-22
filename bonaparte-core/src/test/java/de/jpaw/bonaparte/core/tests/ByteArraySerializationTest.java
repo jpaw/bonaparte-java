@@ -13,7 +13,7 @@ import de.jpaw.util.ByteArray;
 
 public class ByteArraySerializationTest {
 
-    static private void dumpToFile(String filename, byte [] data) throws Exception {
+    private static void dumpToFile(String filename, byte [] data) throws Exception {
         OutputStream stream = new FileOutputStream(filename);
         stream.write(data);
         stream.close();

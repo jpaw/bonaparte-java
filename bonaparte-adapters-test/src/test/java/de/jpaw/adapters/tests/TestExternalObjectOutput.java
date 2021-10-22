@@ -37,7 +37,7 @@ public class TestExternalObjectOutput {
     }
     @Test
     public void testAdapterMilli() throws Exception {
-        FPCurrency curr = new FPCurrency(JavaCurrencyDataProvider.instance.get("EUR")).withDefaultPrecision();
+        FPCurrency curr = new FPCurrency(JavaCurrencyDataProvider.INSTANCE.get("EUR")).withDefaultPrecision();
         FPAmount unitPrice = new FPAmount(curr.withMicrosPrecision(), 3141593);
         MicroUnits quantity = MicroUnits.of(2500000L);
 

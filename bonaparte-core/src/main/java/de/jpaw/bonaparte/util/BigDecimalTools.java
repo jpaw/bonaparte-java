@@ -152,7 +152,7 @@ public class BigDecimalTools {
     }
 
     // utility class to pass back a second return value
-    static private class StringRef {
+    private static class StringRef {
         private String prefix;
     }
 
@@ -187,7 +187,7 @@ public class BigDecimalTools {
     }
 
     /** Returns a path fragment without any array / index. */
-    static private String naked(String path) {
+    private static String naked(String path) {
         int indexBracket = path.indexOf('[');
         if (indexBracket < 0)
             return path;  // contains no array index

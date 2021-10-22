@@ -31,11 +31,11 @@ public class UtilException extends ApplicationException {
 
     private static final int OFFSET = CL_VALIDATION_ERROR * CLASSIFICATION_FACTOR + 15000;  // offset for all codes in this class
 
-    static public final int PATH_COMPONENT_NOT_FOUND    = OFFSET + 1;
-    static public final int DESCEND_TO_NON_REFERENCE    = OFFSET + 2;
-    static public final int DESCEND_TO_GENERIC_OBJECT   = OFFSET + 3;
-    static public final int ADAPTER_WITHOUT_FIELDS      = OFFSET + 4;
-    static public final int NO_CLOSING_BRACKET          = OFFSET + 5;
+    public static final int PATH_COMPONENT_NOT_FOUND    = OFFSET + 1;
+    public static final int DESCEND_TO_NON_REFERENCE    = OFFSET + 2;
+    public static final int DESCEND_TO_GENERIC_OBJECT   = OFFSET + 3;
+    public static final int ADAPTER_WITHOUT_FIELDS      = OFFSET + 4;
+    public static final int NO_CLOSING_BRACKET          = OFFSET + 5;
 
     static {
         codeToDescription.put(PATH_COMPONENT_NOT_FOUND      , "Path component not found");

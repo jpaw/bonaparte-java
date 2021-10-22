@@ -59,7 +59,7 @@ import de.jpaw.util.ByteBuilder;
  *
  */
 public class JsonComposer extends AbstractMessageComposer<IOException> {
-    private final static Logger LOGGER = LoggerFactory.getLogger(JsonComposer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JsonComposer.class);
     protected static final DateTimeFormatter LOCAL_DATE_ISO = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     protected static final DateTimeFormatter LOCAL_DATETIME_ISO = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
     protected static final DateTimeFormatter LOCAL_TIME_ISO = DateTimeFormatter.ofPattern("HH:mm:ss");

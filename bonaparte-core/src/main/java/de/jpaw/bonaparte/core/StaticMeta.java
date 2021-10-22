@@ -9,7 +9,7 @@ import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.Visibility;
 
 public interface StaticMeta {
-    static public final int MAX_PQON_LENGTH = 255;     // keep in sync with length in DSL validation class
+    public static final int MAX_PQON_LENGTH = 255;     // keep in sync with length in DSL validation class
 
     public static final AlphanumericElementaryDataItem OBJECT_CLASS = new AlphanumericElementaryDataItem(Visibility.PRIVATE, false, "objectClass",
             Multiplicity.SCALAR, IndexType.NONE, 0, 0, DataCategory.STRING, "ascii", "String", false, false, null, false, false, true, true, MAX_PQON_LENGTH, 0, null);
