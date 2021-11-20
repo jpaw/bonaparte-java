@@ -5,7 +5,7 @@
     <parent>
         <groupId>de.jpaw</groupId>
         <artifactId>jpaw-se-parent</artifactId>
-        <version>2.2.3</version>
+        <version>2.2.4</version>
         <relativePath/>
     </parent>
 
@@ -24,10 +24,10 @@
         <gson.version>2.8.8</gson.version>
 
         <lucene.version>4.10.4</lucene.version>
-        <netty.version>4.1.68.Final</netty.version>
-        <poi.version>5.0.0</poi.version>
+        <netty.version>4.1.69.Final</netty.version>
+        <poi.version>5.1.0</poi.version>
         <camel.version>3.11.3</camel.version>
-        <vertx3.version>4.1.5</vertx3.version>
+        <vertx3.version>4.2.1</vertx3.version>
 
         <!-- distributed caches -->
         <ehcache.version>2.10.2</ehcache.version>
@@ -51,7 +51,7 @@
             <dependency>
                 <groupId>de.jpaw</groupId>
                 <artifactId>jpaw-bom</artifactId>
-                <version>2.8.8</version>
+                <version>2.9.2</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
