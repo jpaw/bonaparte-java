@@ -73,13 +73,22 @@ public interface BonaPortable extends BonaCustom {
     public void treeWalkString(DataConverter<String, AlphanumericElementaryDataItem> _cvt, boolean descend);
 
     /** Can be invoked to apply an integer converter to all Integer typed fields in the object, parent objects, and included child objects. */
-    public void treeWalkInteger(DataConverter<Integer, BasicNumericElementaryDataItem> _cvt, boolean descend);
+    @Deprecated
+    default public void treeWalkInteger(DataConverter<Integer, BasicNumericElementaryDataItem> _cvt, boolean descend) {
+        throw new UnsupportedOperationException("treeWalkInteger is no longer supported");
+    }
 
     /** Can be invoked to apply a Boolean converter to all Boolean typed fields in the object, parent objects, and included child objects. */
-    public void treeWalkBoolean(DataConverter<Boolean, MiscElementaryDataItem> _cvt, boolean descend);
+    @Deprecated
+    default public void treeWalkBoolean(DataConverter<Boolean, MiscElementaryDataItem> _cvt, boolean descend) {
+        throw new UnsupportedOperationException("treeWalkBoolean is no longer supported");
+    }
 
     /** Can be invoked to apply a BigDecimal converter to all BigDecimal typed fields in the object, parent objects, and included child objects. */
-    public void treeWalkBigDecimal(DataConverter<BigDecimal, NumericElementaryDataItem> _cvt, boolean descend);
+    @Deprecated
+    default public void treeWalkBigDecimal(DataConverter<BigDecimal, NumericElementaryDataItem> _cvt, boolean descend) {
+        throw new UnsupportedOperationException("treeWalkBigDecimal is no longer supported");
+    }
 
     /** Can be invoked to apply an Object converter to all fields in the object, and potentially also included child objects. */
     public void treeWalkObject(DataConverter<Object, FieldDefinition> _cvt, boolean descend);
