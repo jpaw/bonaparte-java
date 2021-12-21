@@ -10,13 +10,13 @@
     </parent>
 
     <artifactId>bonaparte.allplugins</artifactId>
-    <version>4.80.4</version>
+    <version>4.80.5</version>
     <packaging>pom</packaging>
 
     <properties>
         <!-- define releases we want to use, to ensure consistency -->
         <jpaw.version>2.6.0</jpaw.version>
-        <bonaparte.version>4.80.4</bonaparte.version>
+        <bonaparte.version>4.80.5</bonaparte.version>
         <tycho.version>1.7.0</tycho.version>
     </properties>
 
