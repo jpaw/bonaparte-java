@@ -18,7 +18,7 @@ package de.jpaw.bonaparte.test.jaxb;
 
 import de.jpaw.bonaparte.pojos.test.jaxb.TestXml;
 import java.lang.annotation.Annotation;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import org.testng.annotations.Test;
 
 @Test
