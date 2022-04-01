@@ -5,7 +5,7 @@
     <parent>
         <groupId>de.jpaw</groupId>
         <artifactId>jpaw-se-parent</artifactId>
-        <version>3.0.0</version>
+        <version>3.0.1</version>
         <relativePath/>
     </parent>
 
@@ -24,9 +24,9 @@
         <gson.version>2.8.9</gson.version>
 
         <lucene.version>4.10.4</lucene.version>
-        <netty.version>4.1.72.Final</netty.version>
-        <poi.version>5.1.0</poi.version>
-        <camel.version>3.11.3</camel.version>
+        <netty.version>4.1.74.Final</netty.version>
+        <poi.version>5.2.2</poi.version>
+        <camel.version>3.16.0</camel.version>
         <vertx3.version>4.2.3</vertx3.version>
 
         <!-- distributed caches -->
@@ -41,7 +41,7 @@
         <lz4.version>1.3.0</lz4.version>                <!-- 1.2.0 was the last for Java 1.6, 1.3.0 UPDATE 2014-11-26 but SLOWER -->
         <kryo.version>2.24.0</kryo.version>
         <zk.version>9.6.0.1</zk.version>
-        <aws.version>1.11.118</aws.version>
+        <aws.version>1.12.188</aws.version>
 
     </properties>
 
@@ -51,7 +51,7 @@
             <dependency>
                 <groupId>de.jpaw</groupId>
                 <artifactId>jpaw-bom</artifactId>
-                <version>3.0.0</version>
+                <version>3.0.1</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
@@ -175,9 +175,9 @@
                         </execution>
                     </executions>
                     <configuration>
-                        <javaSourceVersion>1.8</javaSourceVersion>
-                        <compilerSourceLevel>1.8</compilerSourceLevel>
-                        <compilerTargetLevel>1.8</compilerTargetLevel>
+                        <javaSourceVersion>11</javaSourceVersion>
+                        <compilerSourceLevel>11</compilerSourceLevel>
+                        <compilerTargetLevel>11</compilerTargetLevel>
                         <sourceRoots>
                             <sourceRoot>${project.basedir}/src/main/bon</sourceRoot>
                         </sourceRoots>
