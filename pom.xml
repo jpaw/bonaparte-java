@@ -10,14 +10,14 @@
     </parent>
 
     <artifactId>bonaparte-base</artifactId>
-    <version>5.0.0</version>
+    <version>5.0.1</version>
     <packaging>pom</packaging>
 
     <description>build master for BONAPARTE based projects</description>
 
     <properties>
         <!-- define revisions of other jpaw.de projects, not covered by plugin management -->
-        <bonaparte-plugin.version>5.0.0</bonaparte-plugin.version>
+        <bonaparte-plugin.version>5.0.1</bonaparte-plugin.version>
 
         <!-- define releases (mostly of 3rd party dependencies) we want to use, to ensure consistency -->
         <!-- Some more versions, used by specific dependent projects -->
