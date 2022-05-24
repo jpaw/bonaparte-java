@@ -349,7 +349,7 @@ public class ColumnCollector {
      * For a method to evaluate the value of a field for a given instance, see FieldGetter.getSingleField in project bonaparte-core */
     public Map<String, String> createUIMetas(List<UIColumnConfiguration> uis, ClassDefinition cls) throws UtilException {
         // create a hash of the field names
-        Map<String, UIColumnConfiguration> fields = new HashMap<String, UIColumnConfiguration>(uis.size() * 2);
+        Map<String, UIColumnConfiguration> fields = new HashMap<String, UIColumnConfiguration>(uis.size());
         Set<String> usedClasses = new HashSet<String>();
 
         // walk all fields, use the hash to avoid computing similar names multiple times

@@ -16,7 +16,7 @@ public class FreezeTools {
     public static Map<String, Object> freeze(Map<String, Object> input) {
         if (input == null)
             return null;
-        Map<String, Object> b = new HashMap<String, Object>(input.size() * 2);  // reserve space for a load factor of .5
+        Map<String, Object> b = new HashMap<String, Object>(input.size());  // reserve space for a load factor of .5
         for (Map.Entry<String, Object> e : input.entrySet()) {
             b.put(e.getKey(), freeze(e.getValue()));
         }
