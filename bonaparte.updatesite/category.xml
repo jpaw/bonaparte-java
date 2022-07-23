@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/bonaparte.sdk_5.0.5.jar" id="bonaparte.sdk" version="5.0.5">
+   <feature url="features/bonaparte.sdk_5.0.6.jar" id="bonaparte.sdk" version="5.0.6">
       <category name="Bonaparte"/>
    </feature>
    <category-def name="Bonaparte" label="Software development tools related to object serialization">

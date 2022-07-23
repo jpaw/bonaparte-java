@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>bonaparte-base</artifactId>
-    <version>5.0.5</version>
+    <version>5.0.6</version>
     <packaging>pom</packaging>
 
     <description>build master for BONAPARTE based projects</description>
