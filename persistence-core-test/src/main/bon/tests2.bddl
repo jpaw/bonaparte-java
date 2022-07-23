@@ -1,0 +1,22 @@
+// Persistence test entities for the persistence DSL - properties noDDL, noJava.
+
+import tests2.*
+
+default
+    tablenamepattern "test_(entity)"
+    tablespacepattern "system"
+    ;
+
+package persistencetest2 owner scott prefix test {
+    grants rw {
+        demorole: SELECT,INSERT,UPDATE,DELETE;
+    }
+
+    category tests {
+       grants rw
+    }
+
+    entity PropTypesEntity category tests is PropTypes {
+        pk (int1)
+    }
+}

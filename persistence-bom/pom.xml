@@ -1,0 +1,55 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>de.jpaw</groupId>
+        <artifactId>bonaparte-base</artifactId>
+        <version>5.0.5</version>
+    </parent>
+
+    <artifactId>persistence-bom</artifactId>
+    <packaging>pom</packaging>
+
+    <description>Bonpaparte persistence JPA bill of materials</description>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>de.jpaw</groupId>
+                <artifactId>persistence-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.jpaw</groupId>
+                <artifactId>persistence-core-test</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.jpaw</groupId>
+                <artifactId>persistence-eclipselink</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.jpaw</groupId>
+                <artifactId>persistence-hibernate</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.jpaw</groupId>
+                <artifactId>persistence-postgres</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.jpaw</groupId>
+                <artifactId>persistence-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.jpaw</groupId>
+                <artifactId>persistence-refs</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+</project>

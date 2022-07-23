@@ -1,0 +1,21 @@
+package tests23 {
+
+    class BinaryKey {
+        Binary(16)  binKey;
+        Ascii(16)   text;
+    }
+
+    class BinaryKey2 {
+        Raw(16)     binKey;
+        Ascii(16)   text;
+    }
+
+    class ParentKey {
+        Long a;
+        Long b;
+    }
+
+    class DataWithAnotherNaturalKey extends ParentKey {
+        Unicode(80) text;
+    }
+}

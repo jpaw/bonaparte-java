@@ -43,6 +43,16 @@
         <zk.version>9.6.0.2</zk.version>
         <aws.version>1.12.226</aws.version>
 
+        <!-- versions for persistence projects -->
+        <jakarta.persistence-api.version>3.0.0</jakarta.persistence-api.version>
+
+        <eclipselink.version>3.0.2</eclipselink.version>
+        <hibernate.version>6.0.2.Final</hibernate.version>
+        <hibernate-types.version>2.16.2</hibernate-types.version>
+
+        <postgres.driver.version>42.3.5</postgres.driver.version>
+
+
     </properties>
 
 
@@ -68,6 +78,12 @@
                 <version>${xtext.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>jakarta.persistence</groupId>
+                <artifactId>jakarta.persistence-api</artifactId>
+                <version>${jakarta.persistence-api.version}</version>
             </dependency>
 
         </dependencies>
@@ -191,12 +207,26 @@
                                     </outputConfiguration>
                                 </outputConfigurations>
                             </language>
+                            <language>
+                                <setup>de.jpaw.bonaparte.jpa.dsl.BDDLStandaloneSetup</setup>
+                                <outputConfigurations>
+                                    <outputConfiguration>
+                                        <outputDirectory>${project.basedir}/src/generated</outputDirectory>
+                                        <!--<javaSupport>false</javaSupport> -->
+                                    </outputConfiguration>
+                                </outputConfigurations>
+                            </language>
                         </languages>
                     </configuration>
                     <dependencies>
                         <dependency>
                             <groupId>de.jpaw.bonaparte-dsl</groupId>
                             <artifactId>de.jpaw.bonaparte.dsl</artifactId>
+                            <version>${bonaparte-plugin.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>de.jpaw.bonaparte-dsl</groupId>
+                            <artifactId>de.jpaw.bonaparte.jpa.dsl</artifactId>
                             <version>${bonaparte-plugin.version}</version>
                         </dependency>
                     </dependencies>
@@ -282,11 +312,16 @@
         <module>bonaparte8-api-alexa/pom.xml</module>
         <module>bonaparte8-aws-sqs/pom.xml</module>
         <module>bonaparte8-vertx3/pom.xml</module>
-<!--
-        <module>bonaparte8-vertx3-auth/pom.xml</module>
-        <module>bonaparte8-vertx3-test/pom.xml</module>
--->
         <module>bonaparte8-batch/pom.xml</module>
+
+        <module>persistence-bom/pom.xml</module>
+        <module>persistence-core/pom.xml</module>
+        <module>persistence-postgres/pom.xml</module>
+        <module>persistence-api/pom.xml</module>
+        <module>persistence-refs/pom.xml</module>
+        <module>persistence-hibernate/pom.xml</module>
+        <module>persistence-eclipselink/pom.xml</module>
+        <module>persistence-core-test/pom.xml</module>
     </modules>
 
 </project>

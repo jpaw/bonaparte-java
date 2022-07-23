@@ -1,0 +1,32 @@
+// Persistence test entities for the persistence DSL, to show bonaparte and BDDL syntax within the same file
+
+import unroll.loops.*
+
+default
+    tablenamepattern "test_(entity)"
+    tablespacepattern "system"
+    ;
+
+package unroll.loops {
+    properties unroll;
+
+    class UnrolledLoop {
+        required Long key;
+        required Decimal(14,2) required List<3>     amounts properties unroll;
+    }
+}
+
+package unroll.loops.entities owner scott prefix test {
+    grants rw {
+        demorole: SELECT,INSERT,UPDATE,DELETE;
+    }
+
+    category tests {
+        beanVal
+        grants rw
+    }
+
+    entity UnrolledLoopEntity category tests is UnrolledLoop {
+        pk (key)
+    }
+}

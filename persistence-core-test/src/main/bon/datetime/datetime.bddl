@@ -1,0 +1,19 @@
+import datetime.*
+
+default
+    tablenamepattern "(prefix)_(category)_(entity)" dropSuffix "_entity"
+    tablespacepattern "rts42(category)0(DI)"
+    ;
+
+package datetimeDB owner jpaw prefix xxx {
+    grants rw {  // read/write for regular tables
+        jpawro :   SELECT;
+        jpawrw :   SELECT,INSERT,UPDATE,DELETE;
+    }
+
+    category cfg { requiresPK grants rw }
+
+    entity SampleEntity category cfg is Sample {
+        pk (key)
+    }
+}

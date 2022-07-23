@@ -1,0 +1,19 @@
+import out.*
+
+@Generator(noMapper)
+package (de.jpaw.t9t) out.be.entities owner fortytwo prefix p28 {
+    fields private;
+    nameMappings map1 {
+        sinkRef: new_name;
+    }
+
+    category ^int {
+        nameMappings map1
+    }
+
+    entity OutboundMessageEntity category ^int is OutboundMessageDTO {
+        pk is OutboundMessageKey
+        index (messageId)
+        index (sinkRef, sourceRecordNo)  // correct order of records per file
+    }
+}

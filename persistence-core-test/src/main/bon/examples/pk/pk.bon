@@ -1,0 +1,67 @@
+package examples.pkey {
+
+    // multi-field class which will be used in BDDL as an "embeddable" type primary key
+    final class EKey {
+        required Ascii(8)   key1;
+        required Integer    key2;
+    }
+
+    // a class using the above key
+    class EDto {
+        (EKey)              myCompositeKey;
+        Ascii(80)           data;
+    }
+
+    // a class with multiple fields - the tuple (key1, key2) will be used as a primary key
+    class EDto2 {
+        required Ascii(8)   key1;
+        required Integer    key2;
+        Ascii(80)           data;
+    }
+
+    class SuperClassOfEDto2 extends EDto2 {
+        Unicode(80)         moreData;
+    }
+
+    class StandardJava {
+        required Long           myKey;
+        optional Unicode(80)    text;
+    }
+
+    class SamplePrimitiveKey {
+        required long           myPrimitiveKey;
+        Ascii(20)               data;
+    }
+
+    // a class which will be used as a composite key
+    class CustomerKey {
+        Ascii(8)                tenantId;
+        Ascii(10)               customerId;
+    }
+
+    // a class extending the above key
+    class Customer extends CustomerKey {
+        Decimal(10,2)           balance;
+        Day                     dateOfLastOrder;
+    }
+
+
+    class BaseClass {
+        int                     xyz;
+    }
+
+    class SubClass1 extends BaseClass {
+        Long                    key;
+    }
+
+    class SubClass2 extends SubClass1 {
+        Unicode(80)             data;
+    }
+
+
+    // class which is not in the DTOs, but contained in the entities - it defines a discriminator for tenants which is mixed in in BDDL
+    // the field can be used as part of primary keys
+    class ExplicitSeparateTenantClass {
+        required Ascii(8)       tenantId;
+    }
+}

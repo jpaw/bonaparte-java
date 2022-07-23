@@ -1,0 +1,44 @@
+import examples.^history.*
+
+@Generator(noMapper)
+package examples.^history.entities owner scott prefix this {
+    grants rw {
+        demorole: SELECT,INSERT,UPDATE,DELETE;
+    }
+    category testshis {
+        tablenamepattern "t_his_(entity)" dropSuffix "_entity"
+        historyColumns history_seq_no, history_change_type
+        grants rw
+    }
+    category tests {
+        tablenamepattern "t_tst_(entity)" dropSuffix "_entity"
+        history testshis
+        requiresPK
+        grants rw
+    }
+
+    embeddable EKeyEntity is EKey {}
+    embeddable EmbedECEntity is EmbedEC {}
+
+    // example of an entity with a single field primary key
+    entity OneFieldPkEntity category tests is EDto {
+        pk (data)
+    }
+
+    // example of an entity with a multi field primary key - implicit embeddable
+    entity MultiFieldPkEntity category tests is EDto2 {
+        pk (key1, key2)
+        @Embeddable EmbedECEntity for myEc prefix ma
+    }
+
+    // example of an entity with an explicit embeddable primary key
+    entity EmbeddedPkEntity category tests is EDto {
+        @Embeddable EKeyEntity for myCompositeKey is pk
+    }
+
+    // example of an entity with a multi field primary key - usind an ID class
+    entity IdClassPkEntity category tests is EDto2 {
+        pk is EKey
+        @Embeddable EmbedECEntity for myEc prefix ma
+    }
+}

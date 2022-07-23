@@ -1,0 +1,41 @@
+// Persistence test entities for the persistence DSL, to show bonaparte and BDDL syntax within the same file
+
+import tests2.*
+
+default
+    tablenamepattern "test_(entity)"
+    tablespacepattern "system"
+    ;
+
+package tests2 {
+    enum Color { RED, GREEN, BLUE }
+
+    class BoxedTypes {
+        Byte byte1;
+        Short short1;
+        Int int1;
+        Integer int2;
+        Long long1;
+        Boolean boolean1;
+        Float float1;
+        Double double1;
+        Char char1;
+        Character char2;
+    }
+
+    enum AlphaColor { RED="R", GREEN="G", BLUE="B" }
+}
+
+package test2bddl owner scott prefix test {
+    grants rw {
+        demorole: SELECT,INSERT,UPDATE,DELETE;
+    }
+
+    category tests {
+       grants rw
+    }
+
+    entity BoxedTypesEntity category tests is BoxedTypes {
+        pk (int1)
+    }
+}

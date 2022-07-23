@@ -1,0 +1,22 @@
+import de.jpaw.money.*
+import adapters.fixedpoint.*
+import adapters.fixedpointToBigDecimal.*
+import adapters.moneyfp.*
+
+package adapterTest {
+    default unsigned trim noControlChars;
+    properties unroll;
+    type city  is Unicode(30);
+
+
+    class WithExternalClass {
+        Long                                        key;
+        (Millis)                                    millis;
+    }
+
+    class WithAdapterExt {
+        Long                                        key;
+        required (FpCurrencyStd)                    currency;
+        required (FpAmountExt) for currency         amounts;
+    }
+}

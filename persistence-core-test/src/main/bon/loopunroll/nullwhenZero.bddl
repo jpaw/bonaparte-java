@@ -1,0 +1,38 @@
+// Persistence test entities for the persistence DSL, to show bonaparte and BDDL syntax within the same file
+
+import nwz.*
+
+default
+    tablenamepattern "testnwz_(entity)"
+    tablespacepattern "system"
+    ;
+
+package nwz {
+    properties nullWhenZero;
+
+    class Nwzs {
+        Integer      i;
+        Long         l;
+        Ascii(8)     a;
+        Unicode(8)   u;
+        Integer      i2 properties nullWhenZero;
+        Long         l2 properties nullWhenZero;
+        Ascii(8)     a2 properties nullWhenZero;
+        Unicode(8)   u2 properties nullWhenZero;
+    }
+}
+
+package nwz.entities owner scott prefix testnwz {
+    grants rw {
+        demorole: SELECT,INSERT,UPDATE,DELETE;
+    }
+
+    category tests {
+        beanVal
+        grants rw
+    }
+
+    entity NwzEntity category tests is Nwzs {
+        pk (i)
+    }
+}

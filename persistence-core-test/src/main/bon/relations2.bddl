@@ -1,0 +1,30 @@
+import relations.test.*
+
+package relations.test owner scott prefix test {
+    grants rw {
+        demorole: SELECT,INSERT,UPDATE,DELETE;
+    }
+
+    category tests {
+       grants rw
+    }
+
+    entity ParentEntity category tests is Parent {
+        pk (key)
+    }
+
+    entity ItemEntity category tests is Item {
+        pk (dummyRef, itemNo)
+    }
+
+    @Generator(noMapper)
+    entity TestEntity category tests is TestObject {
+        pk (myKey)
+        @ManyToOne      ParentEntity parent           LAZY  for (parentRef)
+        @OneToMany List ItemEntity items              EAGER for (dummyRef)
+        @OneToMany List ItemEntity itemsCascade       EAGER for (dummyRef) cascade
+        @OneToMany List ItemEntity itemsOrphan        EAGER for (dummyRef) orphanRemoval
+        @OneToMany List ItemEntity itemsCascadeOrphan EAGER for (dummyRef) cascade orphanRemoval
+        @ElementCollection prices in the_other_table (test_entity_key) mapKey currencyCode
+    }
+}

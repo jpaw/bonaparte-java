@@ -1,0 +1,33 @@
+// Persistence test entities for the persistence DSL, to show bonaparte and BDDL syntax within the same file
+
+import tests2serialized.*
+
+default
+    tablenamepattern "test_(entity)"
+    tablespacepattern "system"
+    ;
+
+package tests2serialized {
+    properties ^serialized, compact;
+
+    class SerData {
+        Int             int1;
+        Object          data properties ^serialized;
+        (SerData)       moreData properties ^serialized, compact;
+    }
+
+}
+
+package test2serializedbddl owner scott prefix test {
+    grants rw {
+        demorole: SELECT,INSERT,UPDATE,DELETE;
+    }
+
+    category tests {
+       grants rw
+    }
+
+    entity SerDataEntity category tests is SerData {
+        pk (int1)
+    }
+}

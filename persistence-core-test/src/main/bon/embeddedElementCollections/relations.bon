@@ -1,0 +1,30 @@
+package eec.test {
+    properties unroll;
+
+    class Parent {
+        required Long key;
+        Unicode(80) text;
+    }
+
+    class Item {
+        required Long dummyRef;
+        Int itemNo;
+        Unicode(80) itemText;
+    }
+
+    final class EmbedEC {
+        Long                value;
+        Unicode(20) List<3> text properties unroll;
+    }
+
+    class TestObject {
+        Long myKey;
+        required Long parentRef;
+        Unicode(80) name;
+        Decimal(14,2) Map<String> prices;
+        (Item...) List<> items;
+
+        (EmbedEC) List<> embeddedList;
+        (EmbedEC) Map<String> embeddedMap;
+    }
+}

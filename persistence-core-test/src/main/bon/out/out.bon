@@ -1,0 +1,19 @@
+package (de.jpaw.t9t) out {
+    default private unsigned trim noControlChars;
+    type f42Ref is Long;
+    type messageId is Binary(16);
+    /** Outbound messages. */
+    class OutboundMessageKey RTTI 15 {
+        required f42Ref                                 sinkRef;            // identifies file or queue or socket which accepted the record
+        required Integer                                mappedRecordNo;     // sequential record of the transmission (1..n) after data mapping
+    }
+
+    class OutboundMessageDTO extends OutboundMessageKey {
+        // combines fields from the RequestHeader and ResponseHeader message types, plus more
+        required Integer                                sourceRecordNo;     // source record of the transmission (0 = header, N+1 = footer, 1..N = data records)
+        messageId                                       messageId;          // optional message ID field - set only if can be filled uniquely
+        Object                                          requestParameters;  // serialized request
+        optional Long                                   recordId;           // unique ID assigned per written record. Assigned by the OutputSession implementation
+        optional f42Ref                                 recordRef;          // reference to aroma 2 objectRef, if required. Passed in via a new method in the IoutputSession interface (as alternative to the store() method)
+    }
+}

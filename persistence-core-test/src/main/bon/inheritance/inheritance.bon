@@ -1,0 +1,14 @@
+package inheritanceDto {
+    class Base {
+        Long key;
+    }
+    class MyBase RTTI 888 extends Base {
+    }
+    class MyData extends MyBase {
+        required Ascii(8)   id;
+        Ascii(80)           name;
+    }
+    class Trk {
+        Long ttt;
+    }
+}

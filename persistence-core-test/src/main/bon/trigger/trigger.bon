@@ -1,0 +1,53 @@
+package examples.trigger {
+    properties noupdate, version, currentUser, currentTimestamp;
+
+    type userId         is Ascii(8);
+    type someRef        is Long;
+
+    /** Base class for all JPA entity tracking classes. */
+    class NoTracking {}
+
+    /** Special tracking class for the Source. Here we have no processRef, and the user is part of the DTO.
+     * An entity listener for this won't need the current execution context.
+     */
+    class SourceTracking extends NoTracking {
+        required userId                     cTechUserId     properties noupdate, currentUser;       // noinsert removed, causes problems with H2 unit tests
+        required instant                    cTimestamp      properties noupdate, currentTimestamp;  // noinsert removed, causes problems with H2 unit tests
+        required userId                     mTechUserId     properties currentUser;                 // noupdate, noinsert removed, causes problems with H2 unit tests
+        required instant                    mTimestamp      properties currentTimestamp;
+    }
+
+    /** Special tracking class for the Message log. Here we have no processRef, and the user is part of the DTO. Write only.
+     * An entity listener for this won't need the current execution context.
+     */
+    class MessageTracking extends NoTracking {
+        required userId                     cTechUserId     properties noupdate, currentUser;       // noinsert removed, causes problems with H2 unit tests
+        required instant                    cTimestamp      properties noupdate, currentTimestamp;  // noinsert removed, causes problems with H2 unit tests
+    }
+
+    /** Tracking data for write-only tables. */
+    class WriteTracking extends NoTracking {
+        required userId                     cTechUserId     properties noupdate, currentUser;       // noinsert removed, causes problems with H2 unit tests
+        required userId                     cAppUserId      properties noupdate;
+        required instant                    cTimestamp      properties noupdate, currentTimestamp;  // noinsert removed, causes problems with H2 unit tests
+        required someRef                    cProcessRef     properties noupdate;
+    }
+
+    /** Tracking data for read/write tables, using pessimistic locking. */
+    class FullTracking extends WriteTracking {
+        required userId                     mTechUserId     properties currentUser;                 // noupdate, noinsert removed, causes problems with H2 unit tests
+        required userId                     mAppUserId;
+        required instant                    mTimestamp      properties currentTimestamp;
+        required someRef                    mProcessRef;
+    }
+
+    /** Tracking data for read/write tables, using optimistic locking, but no active column (usually transaction data). */
+    class FullTrackingWithVersion extends FullTracking {
+        required int                        version         properties version;
+    }
+
+    class MyDTO {
+        Long                                key;
+        Unicode(80)                         text;
+    }
+}

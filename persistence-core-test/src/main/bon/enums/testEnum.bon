@@ -1,0 +1,69 @@
+package testEnums {
+    properties nullWhenZero;
+
+    // numeric enum, enumset
+    enum Color { RED, GREEN, BLUE }
+    enumset Colormap is Color;
+
+    // alphabetic, 1 char / value, set uses numeric
+    enum AlphaColor { RED="R", GREEN="G", BLUE="B" }
+    enumset AlphaColormap is AlphaColor;
+
+    // alphabetic, 1 char / value, set uses String
+    enum Alphabet { ALPHA="A", BRAVO="B", CHARLIE="C", DELTA="D", ECHO="E", FOXTROT="F" }
+    enumset <String> Letterset is Alphabet;
+
+    // enums with null mapping
+    enum AlphaColorWithNull { RED="R", GREEN="G", BLUE="B", TRANSPARENT="" }
+
+    // enums with multiple letters, set uses numeric (allowed!)
+    enum Weekday { MONDAY="MON", TUESDAY="TUE", WEDNESDAY="WED", THURSDAY="THU", FRIDAY="FRI", SATURDAY="SAT", SUNDAY="SUN" }
+    enumset Weekdays is Weekday;
+
+    xenum XColor is AlphaColor:1;
+    xenumset XColormap is XColor;
+
+    class EnumTests BeanVal {
+        Integer key;
+        enum Color color1;
+        enum AlphaColor color2;
+        enum AlphaColorWithNull enumNullable;
+    }
+    class TypeWithEnums {
+        required Integer id;
+        required enumset Weekdays       weekdays;
+        required enumset Weekdays       nullableWeekdays    properties nullWhenZero;
+        required enumset Letterset      letters;
+        required enumset Letterset      nullableLetters     properties nullWhenZero;
+        required xenumset XColormap(10) colors;
+        required xenumset XColormap(10) nullableColors      properties nullWhenZero;
+    }
+}
+
+package enumWithDefaults {
+    default enum;                                           // set a default for all classes in this package
+    properties unroll, SQLdefault;
+
+    enum Color { RED, GREEN, BLUE }                         // for enums, the first token is the default value, same as in Eclipse Xtext
+    enum Color2 { RED="R", GREEN="G", BLUE="B" }            // same, for enums with tokens
+
+    class ClassWithEnumDefaultsDueToPackageDefaults {
+        Long key;
+        Decimal(14,2) amount default "BigDecimal.ZERO" properties SQLdefault="0.0";
+        optional Enum Color thisShouldBeRed;                // field initialized due to package level default setting
+        optional Enum Color2 thisShouldAlsoBeRed;           // field initialized due to package level default setting
+        required Enum Color required List<5> listOfEnums;   // not initialized due to array
+        required Enum Color required List<5> unrolledListOfEnums properties unroll;     // not initialized due to array in BON, but in JPA entity
+        required Enum Color2 required List<5> alsoListOfEnums;                          // not initialized due to array
+        required Enum Color2 required List<5> alsoUnrolledListOfEnums properties unroll;    // not initialized due to array in BON, but in JPA entity
+    }
+
+    class ClassWithoutDefaults {
+        default noenum;                                     // class level default setting overrides package level default
+
+        optional Enum Color thisShouldBeNull;
+        optional Enum Color2 thisShouldAlsoBeNull;
+        optional Enum Color default thisShouldBeRed;        // keyword "default" before field name activates the default for a specific field
+        optional Enum Color2 default thisShouldAlsoBeRed;   // keyword "default" before field name activates the default for a specific field
+    }
+}

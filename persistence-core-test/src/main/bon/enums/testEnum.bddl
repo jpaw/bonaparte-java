@@ -1,0 +1,40 @@
+// Persistence test entities for the persistence DSL.
+
+import testEnums.*
+import enumWithDefaults.*
+
+default
+    tablenamepattern "test_(entity)"
+    tablespacepattern "system"
+    ;
+
+package testEnumsEntities owner scott prefix test {
+    grants rw {
+        demorole: SELECT,INSERT,UPDATE,DELETE;
+    }
+
+    category tests {
+       grants rw
+    }
+
+
+    entity EnumTestsEntity category tests is EnumTests {
+        pk (key)
+    }
+}
+
+package testEnumsWithDefaults owner scott prefix test {
+    grants rw {
+        demorole: SELECT,INSERT,UPDATE,DELETE;
+    }
+
+    category tests {
+       grants rw
+    }
+
+
+    @Generator(noMapper)
+    entity EnumWithDefsEntity category tests is ClassWithEnumDefaultsDueToPackageDefaults {
+        pk (key)
+    }
+}

@@ -1,0 +1,54 @@
+// Persistence test entities for the persistence DSL.
+
+import tests1.*
+
+default
+    tablenamepattern "test_(entity)"
+    tablespacepattern "system"
+    ;
+
+package persistencetest owner scott prefix test {
+    grants rw {
+        demorole: SELECT,INSERT,UPDATE,DELETE;
+    }
+
+    category tests {
+       grants rw
+    }
+
+    category testsWithPk {
+       requiresPK
+       grants rw
+    }
+
+    // commented out, cannot have a primitive as primary key, because we use that as a generics parameter
+    /*
+    entity PrimitivesEntity category tests is Primitives {
+        pk (int1)
+    }  */
+
+    abstract entity AbstractEntity category testsWithPk is BoxedTypes {
+    }
+
+    abstract entity SubEntity is BoxedTypes inherits AbstractEntity {
+
+    }
+
+    entity BoxedTypesEntity category tests is BoxedTypes {
+        pk (int1)
+    }
+
+    entity OtherTypesEntity category tests is OtherTypes {
+        pk (number1)
+    }
+
+    // an example for an entity without a PK, which is valid here
+    entity MissingPKEntity category tests is BoxedTypes {
+    }
+
+    // an example for an entity which raises an error is no PK is specified
+    entity MissingPKEntity2 category testsWithPk is BoxedTypes {
+        pk (int1)
+    }
+
+}

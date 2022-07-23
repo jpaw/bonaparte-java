@@ -1,0 +1,23 @@
+// Persistence test entities for the persistence DSL.
+
+import testXenum.*
+
+default
+    tablenamepattern "t_xenum_(entity)"
+    tablespacepattern "system"
+    ;
+
+package testXEnumsEntities owner scott prefix test {
+    grants rw {
+        demorole: SELECT,INSERT,UPDATE,DELETE;
+    }
+
+    category tests {
+       grants rw
+    }
+
+
+    entity XEnumTestsEntity category tests is EnumTests {
+        pk (key)
+    }
+}

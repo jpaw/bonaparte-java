@@ -1,0 +1,41 @@
+import adapterTest.*
+import def.*
+import adapters.fixedpoint.*
+import adapters.fixedpointToBigDecimal.*
+import adapters.moneyfp.*
+
+default
+    tablenamepattern "(prefix)_(category)_(entity)" dropSuffix "_entity"
+    tablespacepattern "rts42(category)0(DI)"
+    ;
+
+package def owner jpaw prefix xxx {
+    grants rw {  // read/write for regular tables
+        jpawro :   SELECT;
+        jpawrw :   SELECT,INSERT,UPDATE,DELETE;
+    }
+
+    category cfg { requiresPK grants rw }
+}
+
+@Generator(noMapper)
+package adapterTest owner jpaw prefix at {
+
+    embeddable MillisEntity         is Millis {}
+    embeddable CurrEmbed            is FpCurrencyStd {}
+    embeddable AmountEmbed          is FpAmountExt {}
+
+
+    entity WithExternalClassEntity category cfg is WithExternalClass {
+        pk (key)
+//        @Embeddable MillisEntity for millis
+
+    }
+
+    entity WithAdapterExtEntity category cfg is WithAdapterExt {
+        pk (key)
+//        @Embeddable CurrEmbed   for currency
+        @Embeddable AmountEmbed for amounts
+
+    }
+}
