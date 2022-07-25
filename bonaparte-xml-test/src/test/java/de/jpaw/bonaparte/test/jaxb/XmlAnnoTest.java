@@ -16,14 +16,16 @@
 
 package de.jpaw.bonaparte.test.jaxb;
 
-import de.jpaw.bonaparte.pojos.test.jaxb.TestXml;
 import java.lang.annotation.Annotation;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import org.testng.annotations.Test;
 
-@Test
+import org.junit.jupiter.api.Test;
+
+import de.jpaw.bonaparte.pojos.test.jaxb.TestXml;
+import jakarta.xml.bind.annotation.XmlRootElement;
+
 public class XmlAnnoTest {
 
+    @Test
     public void testIfAnnoPresent() {
         Annotation x = TestXml.class.getAnnotation(XmlRootElement.class);
         if (x == null) {
@@ -33,6 +35,7 @@ public class XmlAnnoTest {
         }
     }
 
+    @Test
     public void anotherTestIfAnnoPresent() {
         Annotation[] x = TestXml.class.getAnnotations();
         System.out.println("TestXml has " + x.length + " annotations");

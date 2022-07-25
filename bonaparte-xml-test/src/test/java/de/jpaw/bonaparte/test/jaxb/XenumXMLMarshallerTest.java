@@ -3,17 +3,15 @@ package de.jpaw.bonaparte.test.jaxb;
 import java.io.StringReader;
 import java.io.StringWriter;
 
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.Marshaller;
-import jakarta.xml.bind.Unmarshaller;
-
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.pojos.xenumJaxb.TestEnum;
 import de.jpaw.bonaparte.pojos.xenumJaxb.TestXmlXenumWithAdapter;
 import de.jpaw.bonaparte.pojos.xenumJaxb.XEnumUse;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.Unmarshaller;
 
-@Test
 public class XenumXMLMarshallerTest {
     private static final String PACKAGE = "de.jpaw.bonaparte.pojos.xenumJaxb";   // package name where jaxb.index sits
     private static final String EXPECTED_XML =
@@ -22,6 +20,7 @@ public class XenumXMLMarshallerTest {
             "    <xenumJaxb:daddel>G</xenumJaxb:daddel>\n" +
             "</xenumJaxb:XEnumUse>\n";
 
+    @Test
     public void marshallXenum() throws Exception {
         XEnumUse obj = new XEnumUse();
         obj.setDaddel(TestEnum.GREEN);
@@ -38,6 +37,7 @@ public class XenumXMLMarshallerTest {
         assert(actualXml.equals(EXPECTED_XML));
     }
 
+    @Test
     public void unmarshallXenum() throws Exception {
         // create the XML for this
         JAXBContext context = JAXBContext.newInstance(PACKAGE);
@@ -53,6 +53,7 @@ public class XenumXMLMarshallerTest {
         assert("G".equals(xenum.getToken()));
     }
 
+    @Test
     public void createXenumSchema() throws Exception {
         JAXBContext context = JAXBContext.newInstance(PACKAGE);
         DemoSchemaWriter sor = new DemoSchemaWriter();

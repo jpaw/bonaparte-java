@@ -3,15 +3,13 @@ package de.jpaw.bonaparte.test.jaxb;
 import java.io.StringReader;
 import java.io.StringWriter;
 
+import org.junit.jupiter.api.Test;
+
+import de.jpaw.bonaparte.pojos.test.jaxb.TestXml2Up;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.Unmarshaller;
 
-import org.testng.annotations.Test;
-
-import de.jpaw.bonaparte.pojos.test.jaxb.TestXml2Up;
-
-@Test
 public class UppercaseNamesTest {
     private static final String PACKAGE = "de.jpaw.bonaparte.pojos.test.jaxb";   // package name where jaxb.index sits
     private static final String EXPECTED_XML =
@@ -21,6 +19,7 @@ public class UppercaseNamesTest {
             "    <MicroUnits>0.545454</MicroUnits>\n" +
             "</TestXml2Up>\n";
 
+    @Test
     public void marshallUpcase() throws Exception {
         TestXml2Up obj = new TestXml2Up();
         obj.setDigits2((byte)88);
@@ -38,6 +37,7 @@ public class UppercaseNamesTest {
         assert(actualXml.equals(EXPECTED_XML));
     }
 
+    @Test
     public void unmarshallUpcase() throws Exception {
         // create the XML for this
         JAXBContext context = JAXBContext.newInstance(PACKAGE);
@@ -52,6 +52,7 @@ public class UppercaseNamesTest {
         assert(obj2.getMicroUnits() == 545454L);
     }
 
+    @Test
     public void createUpcaseSchema() throws Exception {
         JAXBContext context = JAXBContext.newInstance(PACKAGE);
         DemoSchemaWriter sor = new DemoSchemaWriter();
