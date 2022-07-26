@@ -1,4 +1,4 @@
-##Support library for the main Bonaparte DSL
+## Support library for the main Bonaparte DSL
 
 The classes defined within this repository are supporting the generated Java POJOs of the DSL.
 
@@ -19,13 +19,13 @@ You can find the PDFs at the following URLs:
 
 * [https://github.com/jpaw/bonaparte-java/blob/master/bonaparte-tex/bonaparte.pdf](https://github.com/jpaw/bonaparte-java/blob/master/bonaparte-tex/bonaparte.pdf)
 
-###Building
+### Building
 
 This project uses maven3 as a build tool. Just run
 
     mvn clean install
 
-###Compatibility
+### Compatibility
 
 There have been some smaller DSL grammar changes, as well as API changes between the generated code and the support library. Normally, updating the support library and the the DSL synchronously should hide those differences, and only implementors of new serialization formats should notice this.
 
