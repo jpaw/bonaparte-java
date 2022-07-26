@@ -290,7 +290,6 @@
         <module>bonaparte-xml-test/pom.xml</module>
         <module>bonaparte-api-auth/pom.xml</module>
         <module>bonaparte-api-media/pom.xml</module>
-        <module>bonaparte-jaxrs/pom.xml</module>
         <module>bonaparte-hazelcast/pom.xml</module>
         <module>bonaparte-hazelcast-api/pom.xml</module>
         <module>bonaparte-hazelcast-test/pom.xml</module>
@@ -302,11 +301,8 @@
         <module>bonaparte-netty/pom.xml</module>
         <module>bonaparte-netty-test/pom.xml</module>
         <module>bonaparte-batch/pom.xml</module>
-        <module>bonaparte-akka/pom.xml</module>
         <module>bonaparte-camel/pom.xml</module>
-        <module>bonaparte-servlet/pom.xml</module>
         <module>bonaparte-zk/pom.xml</module>
-        <module>bonaparte-i18n/pom.xml</module>
 
         <module>bonaparte8-util/pom.xml</module>
         <module>bonaparte8-api-alexa/pom.xml</module>
