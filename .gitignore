@@ -17,6 +17,10 @@
 *.log
 *.out
 
+nb-configuration.xml
+dependency-reduced-pom.xml
+
+
 # backup files of the maven version plugin
 pom.xml.versionsBackup
 
@@ -24,14 +28,27 @@ pom.xml.versionsBackup
 target/
 
 # generated files within XText / XTend projects
-src-gen/
-xtend-gen/
 bin/
 test-output/
-generated/
 
-# Eclipse project files
-.project
-.settings/
+# generated/
+*/src/generated/java
+*/src/generated/sql
+*/src/generated/resources/bonaparte.jpa
+# */src/generated/resources/xsd wanted
+# */src/generated/resources/(java-packages) wanted
+
+
+# generated files within XText / XTend projects that are used a eclipse source folders
+src-gen/
+xtend-gen/
+
+# eclipse project files
 .classpath
+.project
+.settings
+.checkstyle
 
+# intellij
+*.iml
+.idea
