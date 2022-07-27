@@ -45,21 +45,18 @@ The projects have the following contents:
   * persistence-eclipselink:    Session customizers for Eclipselink (work in progress for update to Eclipselink 2.7.0)
   * persistence-hibernate:      Customizer for Hibernate 5.2.x, for planned support of jsonb Postgres data type (normally not required)
 
-
 ### Building
 
 This project uses maven3 as a build tool. Just run
 
 ```sh
-    mvn install
+    mvn clean install
 ```
 
 or just
 ```sh
     ./build.sh
 ```
-
-
 
 ### Dependencies
 
