@@ -1,0 +1,49 @@
+# Build and test pushed to master
+
+name: Build and Test
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+  REPORTSPATH:  '**/surefire-reports/TEST-*.xml'
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up JDK 17 for build
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'corretto'
+        cache: maven
+        server-id: github
+        server-username: dummy  # not used
+        server-password: GITHUB_TOKEN_REF
+
+    - name: Build and Test with Maven
+      run: mvn -B -U -Pgithub -Dmaven.test.failure.ignore=true package --file pom.xml
+      env:
+          GITHUB_TOKEN_REF: ${{ secrets.GH_WORKFLOWS_PAT_READ_PACKAGES }}
+
+    - name: Generate test summary
+      uses: mikepenz/action-junit-report@v3.2.0
+      if: always()
+      with:
+        report_paths: ${{ env.REPORTSPATH }}
+
+    - name: Generate detailled report
+      uses: dorny/test-reporter@v1.5.0
+      if: always()
+      with:
+        name: JUnit Test Report (Details)
+        path: ${{ env.REPORTSPATH }}
+        reporter: java-junit
