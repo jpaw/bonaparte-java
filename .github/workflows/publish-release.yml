@@ -41,7 +41,7 @@ jobs:
           GITHUB_TOKEN_REF: ${{ secrets.GH_WORKFLOWS_PAT_READ_PACKAGES }}
 
     - name: Build with Maven
-      run: mvn -B -U -Pgithub package --file pom.xml
+      run: mvn -B -U -Pgithub -DskipTests package --file pom.xml
       env:
           GITHUB_TOKEN_REF: ${{ secrets.GH_WORKFLOWS_PAT_READ_PACKAGES }}
 
@@ -53,6 +53,6 @@ jobs:
         cache: maven
 
     - name: Publish to GitHub Packages
-      run: mvn -B -Pgithub deploy
+      run: mvn -B -Pgithub -DskipTests deploy
       env:
         GITHUB_TOKEN: ${{ github.token }}
