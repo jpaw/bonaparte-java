@@ -1,0 +1,44 @@
+# Build and publish snapshot package when pushed to master
+
+name: Publish Snapshot
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up JDK 17 for build
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'corretto'
+        cache: maven
+        server-id: github
+        server-username: dummy  # not used
+        server-password: GITHUB_TOKEN_REF
+
+    - name: Build with Maven
+      run: mvn -B -U -Pgithub package --file pom.xml
+      env:
+          GITHUB_TOKEN_REF: ${{ secrets.GH_WORKFLOWS_PAT_READ_PACKAGES }}
+
+    - name: Set up JDK 17 for publish
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'corretto'
+        cache: maven
+
+    - name: Publish to GitHub Packages
+      run: mvn -B -Pgithub deploy
+      env:
+        GITHUB_TOKEN: ${{ github.token }}

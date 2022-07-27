@@ -1,0 +1,58 @@
+# Build and publish package when release is created.
+
+name: Publish Release
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up JDK 17 for build
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'corretto'
+        cache: maven
+        server-id: github
+        server-username: dummy # not used
+        server-password: GITHUB_TOKEN_REF
+
+    - name: Update parent to latest version
+      run: mvn -B -Pgithub versions:update-parent
+      env:
+          GITHUB_TOKEN_REF: ${{ secrets.GH_WORKFLOWS_PAT_READ_PACKAGES }}
+
+    - name: Remove snapshot version
+      run: mvn -B -Pgithub versions:set -DremoveSnapshot
+      env:
+          GITHUB_TOKEN_REF: ${{ secrets.GH_WORKFLOWS_PAT_READ_PACKAGES }}
+
+    - name: Use releases in dependencies
+      run: mvn -B -Pgithub versions:use-releases
+      env:
+          GITHUB_TOKEN_REF: ${{ secrets.GH_WORKFLOWS_PAT_READ_PACKAGES }}
+
+    - name: Build with Maven
+      run: mvn -B -U -Pgithub package --file pom.xml
+      env:
+          GITHUB_TOKEN_REF: ${{ secrets.GH_WORKFLOWS_PAT_READ_PACKAGES }}
+
+    - name: Set up JDK 17 for publish
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'corretto'
+        cache: maven
+
+    - name: Publish to GitHub Packages
+      run: mvn -B -Pgithub deploy
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
