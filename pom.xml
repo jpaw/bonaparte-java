@@ -17,7 +17,7 @@
 
     <properties>
         <!-- define revisions of other jpaw.de projects, not covered by plugin management -->
-        <bonaparte-plugin.version>5.1.0-SNAPSHOT</bonaparte-plugin.version>
+        <bonaparte-plugin.version>5.1.0</bonaparte-plugin.version> <!-- do not use -SNAPSHOT here (GH CI can't deal with it) -->
 
         <!-- define releases (mostly of 3rd party dependencies) we want to use, to ensure consistency -->
         <!-- Some more versions, used by specific dependent projects -->
