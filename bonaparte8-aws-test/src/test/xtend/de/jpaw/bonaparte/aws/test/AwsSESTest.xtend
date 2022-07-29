@@ -1,8 +1,8 @@
 package de.jpaw.bonaparte.aws.test
 
-import org.testng.annotations.Test
+import org.junit.jupiter.api.Test
 
-import static extension org.testng.Assert.*
+import static extension org.junit.jupiter.api.Assertions.*
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClient
 import com.amazonaws.services.simpleemail.model.Destination
 import com.amazonaws.services.simpleemail.model.Content

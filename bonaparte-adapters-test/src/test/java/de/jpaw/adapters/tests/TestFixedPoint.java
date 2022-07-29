@@ -2,7 +2,7 @@ package de.jpaw.adapters.tests;
 
 import java.math.BigDecimal;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.api.iso.impl.JavaCurrencyDataProvider;
 import de.jpaw.bonaparte.pojos.adapters.tests.CustomAmountsUsed;

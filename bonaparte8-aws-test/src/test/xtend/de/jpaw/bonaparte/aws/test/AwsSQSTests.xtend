@@ -3,9 +3,9 @@ package de.jpaw.bonaparte.aws.test
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
 import com.amazonaws.services.sqs.AmazonSQSClient
 import de.jpaw.bonaparte.pojos.s3Tests.Test1
-import org.testng.annotations.Test
+import org.junit.jupiter.api.Test
 
-import static extension org.testng.Assert.*
+import static extension org.junit.jupiter.api.Assertions.*
 import de.jpaw.bonaparte.sqs.BonaparteAwsSqsSink
 import com.amazonaws.services.sqs.model.ReceiveMessageRequest
 

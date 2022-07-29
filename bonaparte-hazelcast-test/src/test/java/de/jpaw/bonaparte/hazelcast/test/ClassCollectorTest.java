@@ -1,6 +1,6 @@
 package de.jpaw.bonaparte.hazelcast.test;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import com.hazelcast.config.SerializationConfig;
 

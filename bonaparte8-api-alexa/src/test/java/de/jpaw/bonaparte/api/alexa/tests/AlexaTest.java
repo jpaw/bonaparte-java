@@ -3,8 +3,8 @@ package de.jpaw.bonaparte.api.alexa.tests;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.core.JsonComposer;
 import de.jpaw.bonaparte.core.MapParser;
@@ -29,7 +29,7 @@ public class AlexaTest {
         String out = JsonComposer.toJsonStringNoPQON(os);
 
         System.out.println(out);
-        Assert.assertEquals(JSON1, out);
+        Assertions.assertEquals(JSON1, out);
     }
 
     // validates metaName is used for output
@@ -43,7 +43,7 @@ public class AlexaTest {
         String out = JsonComposer.toJsonStringNoPQON(si);
 
         System.out.println(out);
-        Assert.assertEquals(JSON2, out);
+        Assertions.assertEquals(JSON2, out);
     }
 
     @Test
@@ -53,7 +53,7 @@ public class AlexaTest {
         MapParser.populateFrom(os, map);
 
         System.out.println(ToStringHelper.toStringML(os));
-        Assert.assertTrue(SpeechType.PLAIN_TEXT == os.getType());
+        Assertions.assertTrue(SpeechType.PLAIN_TEXT == os.getType());
     }
 
     @Test
@@ -63,6 +63,6 @@ public class AlexaTest {
         AlexaSessionIn si = new AlexaSessionIn();
         MapParser.populateFrom(si, map);
         System.out.println(ToStringHelper.toStringML(si));
-        Assert.assertTrue(si.getIsNew());
+        Assertions.assertTrue(si.getIsNew());
     }
 }

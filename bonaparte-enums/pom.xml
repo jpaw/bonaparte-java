@@ -107,11 +107,11 @@
             <groupId>org.eclipse.xtend</groupId>
             <artifactId>org.eclipse.xtend.lib</artifactId>
         </dependency>
+        <!-- JUnit Test -->
         <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>5.12.1</version>   <!-- 5.14.9 or 6.7 use waaay more dependencies -->
-            <scope>test</scope>
+           <groupId>org.junit.jupiter</groupId>
+           <artifactId>junit-jupiter-api</artifactId>
+           <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

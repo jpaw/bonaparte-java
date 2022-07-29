@@ -1,7 +1,7 @@
 package de.jpaw.adapters.tests;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.core.BonaPortableFactory;
 import de.jpaw.bonaparte.pojos.adapters.fixedpoint.Millis;
@@ -22,10 +22,10 @@ public class TestPathResolving {
         ClassDefinition obj = CustomMillis.BClass.INSTANCE.getMetaData();
 
         FieldDefinition f = FieldGetter.getFieldDefinitionForPathname(obj, "myIntegralMillis", true);
-        Assert.assertEquals(f, Millis.meta$$mantissa);      // the adapter class should be skipped, as it's a single field adapter
+        Assertions.assertEquals(f, Millis.meta$$mantissa);      // the adapter class should be skipped, as it's a single field adapter
 
         FieldDefinition f2 = FieldGetter.getFieldDefinitionForPathname(obj, "myBigDecimalMillis", true);
-        Assert.assertEquals(f2, BigMillis.meta$$mantissa);
+        Assertions.assertEquals(f2, BigMillis.meta$$mantissa);
     }
 
     @Test
@@ -34,9 +34,9 @@ public class TestPathResolving {
         ClassDefinition obj = CustomMillis.BClass.INSTANCE.getMetaData();
 
         FieldDefinition f = FieldGetter.getFieldDefinitionForPathname(obj, "myIntegralMillis.mantissa", false);
-        Assert.assertEquals(f, Millis.meta$$mantissa);      // the adapter class should be skipped, as it's a single field adapter
+        Assertions.assertEquals(f, Millis.meta$$mantissa);      // the adapter class should be skipped, as it's a single field adapter
 
         FieldDefinition f2 = FieldGetter.getFieldDefinitionForPathname(obj, "myBigDecimalMillis.mantissa", false);
-        Assert.assertEquals(f2, BigMillis.meta$$mantissa);
+        Assertions.assertEquals(f2, BigMillis.meta$$mantissa);
     }
 }

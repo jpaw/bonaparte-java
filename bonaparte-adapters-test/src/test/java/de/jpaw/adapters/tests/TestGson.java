@@ -1,6 +1,6 @@
 package de.jpaw.adapters.tests;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import com.google.gson.JsonObject;
 

@@ -2,8 +2,8 @@ package de.jpaw.adapters.tests;
 
 import java.io.IOException;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.api.iso.impl.JavaCurrencyDataProvider;
 import de.jpaw.bonaparte.core.StaticMeta;
@@ -57,7 +57,7 @@ public class TestExternalObjectOutput {
                 + "2500000<F>"
                 + "<S>adapters.moneyfp.FpAmountExt<F><N>785<F><N><O>"
                 + "<O>");
-        Assert.assertEquals(defaultOut, expectedResult);
+        Assertions.assertEquals(defaultOut, expectedResult);
 
 
         // do the same with a customer serializer, taking objects
@@ -72,6 +72,6 @@ public class TestExternalObjectOutput {
                 + "2.5<F>"
                 + "7.85 EUR<F>"
                 + "<O>");
-        Assert.assertEquals(newOutput, newExpectedResult);
+        Assertions.assertEquals(newOutput, newExpectedResult);
     }
 }

@@ -16,7 +16,8 @@ public class ByteArrayTestRunner extends AbstractTestrunner<byte[]> {
         bac.writeRecord(src);
         byte[] result = bac.getBytes();
         if (expectedResult != null)
-            Assertions.assertEquals(result, expectedResult);
+            Assertions.assertArrayEquals(result, expectedResult);
+        bac.close();
         return result;
     }
 
