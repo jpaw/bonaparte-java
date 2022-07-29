@@ -1,7 +1,7 @@
 package de.jpaw.bonaparte.api.tests;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.api.ColumnCollector;
 import de.jpaw.bonaparte.pojos.ui.UIColumn;
@@ -19,6 +19,6 @@ public class ColumnCollectorTest {
             totalWidth += c.getWidth();
             System.out.println(c);
         }
-        Assert.assertEquals(totalWidth, 490);
+        Assertions.assertEquals(totalWidth, 490);
     }
 }

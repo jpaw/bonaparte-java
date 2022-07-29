@@ -8,8 +8,8 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 
-import org.testng.annotations.Ignore;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 //import com.esotericsoftware.kryo.Kryo;
 //import com.esotericsoftware.kryo.io.Output;
@@ -54,7 +54,7 @@ public class SerializationTest {
             && a.getNumberOfFields() == b.getNumberOfFields();
     }
 
-    @Ignore  // test fails due to nanoseconds precision - need better input data
+    @Disabled  // test fails due to nanoseconds precision - need better input data
     @Test
     public void testObj1StringBuilder() throws Exception {
         ClassDefinition obj1 = ClassDefinition.class$MetaData();

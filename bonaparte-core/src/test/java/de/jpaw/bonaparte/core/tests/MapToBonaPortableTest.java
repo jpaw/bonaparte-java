@@ -3,8 +3,8 @@ package de.jpaw.bonaparte.core.tests;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.MapParser;
@@ -21,16 +21,16 @@ public class MapToBonaPortableTest {
         String json = "{ \"" + MimeTypes.JSON_FIELD_PQON + "\": \"meta.ParsedFoldingComponent\", \"fieldname\":\"foo\"   ,  \"index\": 42 }";
         Map<String,Object> testMap = new JsonParser(json, false).parseObject();
         BonaPortable test = MapParser.asBonaPortable(testMap, StaticMeta.OUTER_BONAPORTABLE);
-        Assert.assertNotNull(test);
-        Assert.assertEquals(test.getClass().getSimpleName(), "ParsedFoldingComponent");
-        Assert.assertEquals(testMap.get("fieldname"), "foo");
-        Assert.assertEquals(testMap.get("index"), Integer.valueOf(42));
+        Assertions.assertNotNull(test);
+        Assertions.assertEquals(test.getClass().getSimpleName(), "ParsedFoldingComponent");
+        Assertions.assertEquals(testMap.get("fieldname"), "foo");
+        Assertions.assertEquals(testMap.get("index"), Integer.valueOf(42));
     }
 
     private void testNumber(Map<String,Object> testMap, String expected) {
-        Assert.assertEquals(testMap.get("i").getClass().getSimpleName(), "Integer");
-        Assert.assertEquals(testMap.get("l").getClass().getSimpleName(), "Long");
-        Assert.assertEquals(testMap.get("d").getClass().getSimpleName(), expected);
+        Assertions.assertEquals(testMap.get("i").getClass().getSimpleName(), "Integer");
+        Assertions.assertEquals(testMap.get("l").getClass().getSimpleName(), "Long");
+        Assertions.assertEquals(testMap.get("d").getClass().getSimpleName(), expected);
 
     }
 
@@ -53,8 +53,8 @@ public class MapToBonaPortableTest {
         testMap.put("index",     "42");     // show that converter also maps Strings to Integer where required!
 
         BonaPortable test = MapParser.asBonaPortable(testMap, StaticMeta.OUTER_BONAPORTABLE);
-        Assert.assertNotNull(test);
-        Assert.assertEquals(test.getClass().getSimpleName(), "ParsedFoldingComponent");
+        Assertions.assertNotNull(test);
+        Assertions.assertEquals(test.getClass().getSimpleName(), "ParsedFoldingComponent");
     }
 
     /** Demonstrates how a nested Map (parsed JSON) can be converted back to a BonaPortable. */
@@ -76,8 +76,8 @@ public class MapToBonaPortableTest {
         System.out.println(ToStringHelper.toStringML(testMap));
 
         BonaPortable test = MapParser.asBonaPortable(testMap, StaticMeta.OUTER_BONAPORTABLE);
-        Assert.assertNotNull(test);
-        Assert.assertEquals(test.getClass().getSimpleName(), "ParsedFoldingComponent");
+        Assertions.assertNotNull(test);
+        Assertions.assertEquals(test.getClass().getSimpleName(), "ParsedFoldingComponent");
         System.out.println(ToStringHelper.toStringML(test));
     }
 }

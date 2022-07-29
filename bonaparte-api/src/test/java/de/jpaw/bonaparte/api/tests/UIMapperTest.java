@@ -2,7 +2,7 @@ package de.jpaw.bonaparte.api.tests;
 
 import java.util.Collections;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.api.ColumnCollector;
 import de.jpaw.bonaparte.pojos.meta.ClassDefinition;

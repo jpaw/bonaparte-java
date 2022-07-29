@@ -4,8 +4,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import java.time.Instant;
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.api.auth.JwtConverter;
 import de.jpaw.bonaparte.core.BonaparteJsonEscaper;
@@ -41,22 +41,22 @@ public class JwtConverterTest {
         JwtInfo info = createSampleInfo(now, sessionId);
 
         Map<String, Object> jsonMap = JwtConverter.asMap(info);
-        Assert.assertEquals(jsonMap.size(), 8);
-        Assert.assertEquals(jsonMap.get("sub"), "John");
-        Assert.assertEquals(jsonMap.get("iat"), now);
-        Assert.assertEquals(jsonMap.get("u"), Long.valueOf(4711L));
-        Assert.assertEquals(jsonMap.get("l"),  UserLogLevelType.REQUESTS.ordinal());
-        Assert.assertEquals(jsonMap.get("pu"), Permissionset.ofTokens(OperationType.EXECUTE, OperationType.SEARCH).getBitmap());
-        Assert.assertEquals(jsonMap.get("w"), Boolean.TRUE);
-        Assert.assertEquals(jsonMap.get("p"), "B.test");
-        Assert.assertEquals(jsonMap.get("o"), sessionId);
+        Assertions.assertEquals(jsonMap.size(), 8);
+        Assertions.assertEquals(jsonMap.get("sub"), "John");
+        Assertions.assertEquals(jsonMap.get("iat"), now);
+        Assertions.assertEquals(jsonMap.get("u"), Long.valueOf(4711L));
+        Assertions.assertEquals(jsonMap.get("l"),  UserLogLevelType.REQUESTS.ordinal());
+        Assertions.assertEquals(jsonMap.get("pu"), Permissionset.ofTokens(OperationType.EXECUTE, OperationType.SEARCH).getBitmap());
+        Assertions.assertEquals(jsonMap.get("w"), Boolean.TRUE);
+        Assertions.assertEquals(jsonMap.get("p"), "B.test");
+        Assertions.assertEquals(jsonMap.get("o"), sessionId);
 
         // test the conversion back to the JwtInfo
         JwtPayload payload = JwtConverter.parsePayload(jsonMap);
         JwtInfo info2 = JwtConverter.parseJwtInfo(payload);
         System.out.println(ToStringHelper.toStringML(payload));
         System.out.println(ToStringHelper.toStringML(info2));
-        Assert.assertEquals(info2, info);
+        Assertions.assertEquals(info2, info);
     }
 
     @Test

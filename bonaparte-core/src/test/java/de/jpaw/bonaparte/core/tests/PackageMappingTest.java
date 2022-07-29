@@ -1,6 +1,6 @@
 package de.jpaw.bonaparte.core.tests;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.core.BonaPortableFactory;
 

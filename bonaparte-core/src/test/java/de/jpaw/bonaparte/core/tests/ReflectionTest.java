@@ -2,8 +2,8 @@ package de.jpaw.bonaparte.core.tests;
 
 import java.util.UUID;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.core.BonaPortableClass;
 import de.jpaw.bonaparte.pojos.meta.BundleInformation;
@@ -13,7 +13,7 @@ public class ReflectionTest {
     @Test
     public void testReflection() throws Exception {
         BonaPortableClass<?> bclass = FieldGetter.getBClass(BundleInformation.class);
-        Assert.assertEquals(bclass,  BundleInformation.BClass.INSTANCE);
+        Assertions.assertEquals(bclass,  BundleInformation.BClass.INSTANCE);
     }
 
     @Test
