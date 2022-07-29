@@ -1,5 +1,6 @@
 package de.jpaw.bonaparte.core.tests;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.core.ObjectValidationException;
@@ -11,13 +12,11 @@ public class ValidationTest {
     public void testValidationException() throws Exception {
         BasicNumericElementaryDataItem data = new BasicNumericElementaryDataItem();
 
-        try {
+        final ObjectValidationException e = Assertions.assertThrows(ObjectValidationException.class, () -> {
             data.validate();
-            throw new Exception("Expected an ObjectValidationException");
-        } catch (ObjectValidationException e) {
-            System.out.println("Got expected exception " + e);
-            System.out.println("Message is " + e.getMessage());
-            System.out.println("StandardDescription is " + e.getStandardDescription());
-        }
+        });
+        System.out.println("Got expected exception " + e);
+        System.out.println("Message is " + e.getMessage());
+        System.out.println("StandardDescription is " + e.getStandardDescription());
     }
 }
