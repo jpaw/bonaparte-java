@@ -1,7 +1,7 @@
 package testcases.xenum;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.pojos.testXenum.AbcSet;
 
@@ -11,12 +11,12 @@ public class TestStringEnumSetOperations {
         AbcSet x = new AbcSet(a);
         x.unifyWith(new AbcSet(b));                 // Set union
 
-        Assert.assertEquals(x, new AbcSet(union));  // Set equals
+        Assertions.assertEquals(x, new AbcSet(union));  // Set equals
 
         AbcSet x1 = new AbcSet(a);
         x1.unifyWith(b);                            // String arg union
 
-        Assert.assertEquals(x1.getBitmap(), union); // String equals
+        Assertions.assertEquals(x1.getBitmap(), union); // String equals
     }
 
     @Test
@@ -38,12 +38,12 @@ public class TestStringEnumSetOperations {
         AbcSet x = new AbcSet(a);
         x.intersectWith(new AbcSet(b));             // Set Xor
 
-        Assert.assertEquals(x, new AbcSet(common)); // Set equals
+        Assertions.assertEquals(x, new AbcSet(common)); // Set equals
 
         AbcSet x1 = new AbcSet(a);
         x1.intersectWith(b);                        // String arg Difference
 
-        Assert.assertEquals(x1.getBitmap(), common);// String equals
+        Assertions.assertEquals(x1.getBitmap(), common);// String equals
     }
 
     @Test
@@ -65,12 +65,12 @@ public class TestStringEnumSetOperations {
         AbcSet x = new AbcSet(a);
         x.exclude(new AbcSet(b));                       // Set exclusion
 
-        Assert.assertEquals(x, new AbcSet(difference)); // Set equals
+        Assertions.assertEquals(x, new AbcSet(difference)); // Set equals
 
         AbcSet x1 = new AbcSet(a);
         x1.exclude(b);                                  // String arg exclusion
 
-        Assert.assertEquals(x1.getBitmap(), difference);// String equals
+        Assertions.assertEquals(x1.getBitmap(), difference);// String equals
     }
 
     @Test
@@ -94,12 +94,12 @@ public class TestStringEnumSetOperations {
         AbcSet x = new AbcSet(a);
         x.flip(new AbcSet(b));                       // Set xor
 
-        Assert.assertEquals(x, new AbcSet(flipped)); // Set equals
+        Assertions.assertEquals(x, new AbcSet(flipped)); // Set equals
 
         AbcSet x1 = new AbcSet(a);
         x1.flip(b);                                  // String arg xor
 
-        Assert.assertEquals(x1.getBitmap(), flipped);// String equals
+        Assertions.assertEquals(x1.getBitmap(), flipped);// String equals
     }
 
     @Test
@@ -121,7 +121,7 @@ public class TestStringEnumSetOperations {
 
     private void testInit(String a, String result) throws Exception {
         AbcSet x = new AbcSet(a);
-        Assert.assertEquals(x.getBitmap(), result);    // String equals
+        Assertions.assertEquals(x.getBitmap(), result);    // String equals
     }
 
     @Test

@@ -2,7 +2,7 @@ package testcases.generator;
 
 import java.lang.reflect.Modifier;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.access.*;

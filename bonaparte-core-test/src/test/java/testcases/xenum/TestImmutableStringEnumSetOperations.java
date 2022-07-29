@@ -1,7 +1,7 @@
 package testcases.xenum;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.enums.ImmutableStringEnumSet;
 
@@ -14,9 +14,9 @@ public class TestImmutableStringEnumSetOperations {
         ImmutableStringEnumSet z = ImmutableStringEnumSet.of(union);
         ImmutableStringEnumSet r = x.or(y);
 
-        Assert.assertEquals(z, r);  // Set equals
+        Assertions.assertEquals(z, r);  // Set equals
 
-        Assert.assertEquals(r.getBitmap(), union); // String equals
+        Assertions.assertEquals(r.getBitmap(), union); // String equals
     }
 
     @Test
@@ -40,9 +40,9 @@ public class TestImmutableStringEnumSetOperations {
         ImmutableStringEnumSet z = ImmutableStringEnumSet.of(common);
         ImmutableStringEnumSet r = x.and(y);
 
-        Assert.assertEquals(z, r);  // Set equals
+        Assertions.assertEquals(z, r);  // Set equals
 
-        Assert.assertEquals(r.getBitmap(), common); // String equals
+        Assertions.assertEquals(r.getBitmap(), common); // String equals
     }
 
     @Test
@@ -66,9 +66,9 @@ public class TestImmutableStringEnumSetOperations {
         ImmutableStringEnumSet z = ImmutableStringEnumSet.of(difference);
         ImmutableStringEnumSet r = x.minus(y);
 
-        Assert.assertEquals(z, r);  // Set equals
+        Assertions.assertEquals(z, r);  // Set equals
 
-        Assert.assertEquals(r.getBitmap(), difference); // String equals
+        Assertions.assertEquals(r.getBitmap(), difference); // String equals
     }
 
     @Test
@@ -94,9 +94,9 @@ public class TestImmutableStringEnumSetOperations {
         ImmutableStringEnumSet z = ImmutableStringEnumSet.of(flipped);
         ImmutableStringEnumSet r = x.xor(y);
 
-        Assert.assertEquals(z, r);  // Set equals
+        Assertions.assertEquals(z, r);  // Set equals
 
-        Assert.assertEquals(r.getBitmap(), flipped); // String equals
+        Assertions.assertEquals(r.getBitmap(), flipped); // String equals
     }
 
     @Test
@@ -118,7 +118,7 @@ public class TestImmutableStringEnumSetOperations {
 
     private void testInit(String a, String result) throws Exception {
         ImmutableStringEnumSet x = ImmutableStringEnumSet.of(a);
-        Assert.assertEquals(x.getBitmap(), result);    // String equals
+        Assertions.assertEquals(x.getBitmap(), result);    // String equals
     }
 
     @Test

@@ -18,7 +18,7 @@ package testcases.conversion;
 
 import java.math.BigInteger;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.coretests.initializers.FillOtherTypes;
 import de.jpaw.bonaparte.coretests.util.SimpleTestRunner;

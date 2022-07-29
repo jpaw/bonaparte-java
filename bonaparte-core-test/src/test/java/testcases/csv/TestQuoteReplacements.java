@@ -2,8 +2,8 @@ package testcases.csv;
 
 import java.io.IOException;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.CSVComposer;
@@ -28,11 +28,11 @@ public class TestQuoteReplacements {
         String actualOutput = buffer.toString();
 //        System.out.println("Expected  " + expectedOutput);
 //        System.out.println("Result is " + actualOutput);
-        Assert.assertEquals(actualOutput, expectedOutput);
+        Assertions.assertEquals(actualOutput, expectedOutput);
 
 //        StringCSVParser p = new StringCSVParser(cfg, actualOutput);
 //        BonaPortable result = p.readObject(StaticMeta.OUTER_BONAPORTABLE_FOR_CSV, input.getClass());
-//        Assert.assertEquals(result, input);
+//        Assertions.assertEquals(result, input);
     }
 
     @Test

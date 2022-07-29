@@ -3,8 +3,8 @@ package testcases.bigDecimal;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.core.CompactByteArrayComposer;
 import de.jpaw.bonaparte.core.CompactByteArrayParser;
@@ -24,8 +24,8 @@ public class TestBigCompact {
         CompactByteArrayParser cbap = new CompactByteArrayParser(result, 0, -1);
         TestBigInteger rbigi = cbap.readObject(TestBigInteger.meta$$this, TestBigInteger.class);
         Longtest rlngt = cbap.readObject(Longtest.meta$$this, Longtest.class);
-        Assert.assertEquals(rlngt.getL(), 7824687777326L);
-        Assert.assertTrue(tbigi.equals(rbigi));
+        Assertions.assertEquals(rlngt.getL(), 7824687777326L);
+        Assertions.assertTrue(tbigi.equals(rbigi));
         //System.out.println("Byte len is " + result.length);
 
         // test the fractional ones, unless we exceed the mantissa size
@@ -43,8 +43,8 @@ public class TestBigCompact {
                 cbap = new CompactByteArrayParser(result, 0, -1);
                 TestBigDecimal rbigd = cbap.readObject(TestBigDecimal.meta$$this, TestBigDecimal.class);
                 rlngt = cbap.readObject(Longtest.meta$$this, Longtest.class);
-                Assert.assertEquals(rlngt.getL(), 7824687777326L);
-                Assert.assertTrue(org.compareTo(rbigd.getBigdecnum()) == 0);
+                Assertions.assertEquals(rlngt.getL(), 7824687777326L);
+                Assertions.assertTrue(org.compareTo(rbigd.getBigdecnum()) == 0);
             }
         }
     }

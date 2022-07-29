@@ -5,14 +5,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.pojos.beanNames.BeanAndSimpleNames;
 import de.jpaw.bonaparte.pojos.beanNames.OnlyBeanNames;
 import de.jpaw.bonaparte.pojos.beanNames.OnlySimpleNames;
 
-@Test
 public class TestBeanNames {
     static private final List<String> ALL_GETTERS = Arrays.asList("getUrl", "geturl", "getmTimestamp", "getMTimestamp");
 
@@ -34,12 +33,17 @@ public class TestBeanNames {
         }
     }
 
+    @Test
     public void testBeanAndSimpleNames() throws Exception {
         testMethods(new BeanAndSimpleNames(), "get", ALL_GETTERS, Arrays.asList(true, false, true, true));
     }
+
+    @Test
     public void testBeanNames() throws Exception {
         testMethods(new OnlyBeanNames(), "get", ALL_GETTERS, Arrays.asList(true, false, true, false));
     }
+
+    @Test
     public void testSimpleNames() throws Exception {
         testMethods(new OnlySimpleNames(), "get", ALL_GETTERS, Arrays.asList(true, false, false, true));
     }

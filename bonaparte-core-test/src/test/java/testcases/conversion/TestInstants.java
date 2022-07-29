@@ -1,6 +1,6 @@
 package testcases.conversion;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.coretests.initializers.FillInstants;
 import de.jpaw.bonaparte.coretests.util.SimpleTestRunner;

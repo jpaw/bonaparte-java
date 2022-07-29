@@ -1,7 +1,7 @@
 package testcases.pk;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.core.BonaPortableClass;
 import de.jpaw.bonaparte.pojos.pkTest.ClassA;
@@ -13,7 +13,7 @@ public class TestPk {
     public void testPkInheritance() throws Exception {
 
         BonaPortableClass<?> keyClass = ClassC.BClass.INSTANCE.getPrimaryKey();
-        Assert.assertNotNull(keyClass);
-        Assert.assertEquals(keyClass, ClassA.BClass.INSTANCE.getPrimaryKey());
+        Assertions.assertNotNull(keyClass);
+        Assertions.assertEquals(keyClass, ClassA.BClass.INSTANCE.getPrimaryKey());
     }
 }

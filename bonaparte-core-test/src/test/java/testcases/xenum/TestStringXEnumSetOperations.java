@@ -1,7 +1,7 @@
 package testcases.xenum;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.pojos.testXenum.XAlphabet;
 
@@ -11,12 +11,12 @@ public class TestStringXEnumSetOperations {
         XAlphabet x = new XAlphabet(a);
         x.unifyWith(new XAlphabet(b));                 // Set union
 
-        Assert.assertEquals(x, new XAlphabet(union));  // Set equals
+        Assertions.assertEquals(x, new XAlphabet(union));  // Set equals
 
         XAlphabet x1 = new XAlphabet(a);
         x1.unifyWith(b);                            // String arg union
 
-        Assert.assertEquals(x1.getBitmap(), union); // String equals
+        Assertions.assertEquals(x1.getBitmap(), union); // String equals
     }
 
     @Test
@@ -38,12 +38,12 @@ public class TestStringXEnumSetOperations {
         XAlphabet x = new XAlphabet(a);
         x.intersectWith(new XAlphabet(b));             // Set Difference
 
-        Assert.assertEquals(x, new XAlphabet(common)); // Set equals
+        Assertions.assertEquals(x, new XAlphabet(common)); // Set equals
 
         XAlphabet x1 = new XAlphabet(a);
         x1.intersectWith(b);                        // String arg Difference
 
-        Assert.assertEquals(x1.getBitmap(), common);// String equals
+        Assertions.assertEquals(x1.getBitmap(), common);// String equals
     }
 
     @Test
@@ -65,12 +65,12 @@ public class TestStringXEnumSetOperations {
         XAlphabet x = new XAlphabet(a);
         x.exclude(new XAlphabet(b));                       // Set exclusion
 
-        Assert.assertEquals(x, new XAlphabet(difference)); // Set equals
+        Assertions.assertEquals(x, new XAlphabet(difference)); // Set equals
 
         XAlphabet x1 = new XAlphabet(a);
         x1.exclude(b);                                  // String arg exclusion
 
-        Assert.assertEquals(x1.getBitmap(), difference);// String equals
+        Assertions.assertEquals(x1.getBitmap(), difference);// String equals
     }
 
     @Test
@@ -94,12 +94,12 @@ public class TestStringXEnumSetOperations {
         XAlphabet x = new XAlphabet(a);
         x.flip(new XAlphabet(b));                       // Set xor
 
-        Assert.assertEquals(x, new XAlphabet(flipped)); // Set equals
+        Assertions.assertEquals(x, new XAlphabet(flipped)); // Set equals
 
         XAlphabet x1 = new XAlphabet(a);
         x1.flip(b);                                  // String arg xor
 
-        Assert.assertEquals(x1.getBitmap(), flipped);// String equals
+        Assertions.assertEquals(x1.getBitmap(), flipped);// String equals
     }
 
     @Test
@@ -121,7 +121,7 @@ public class TestStringXEnumSetOperations {
 
     private void testInit(String a, String result) throws Exception {
         XAlphabet x = new XAlphabet(a);
-        Assert.assertEquals(x.getBitmap(), result);    // String equals
+        Assertions.assertEquals(x.getBitmap(), result);    // String equals
     }
 
     @Test

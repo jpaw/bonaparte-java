@@ -2,8 +2,8 @@ package testcases.xenum;
 
 import java.util.List;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.pojos.csvTests.Color;
 import de.jpaw.bonaparte.pojos.testXenum.XColor;
@@ -26,7 +26,7 @@ public class TestXenumInstances {
     public void testXenumsInstance() throws Exception {
         Color c = Color.RED;
         XColor cc = XColor.of(c);
-        Assert.assertTrue(c instanceof TokenizableEnum, "Color should be a TokenizableEnum");
-        // Assert.assertTrue(cc instanceof TokenizableEnum, "XColor should be a TokenizableEnum");
+        Assertions.assertTrue(c instanceof TokenizableEnum, "Color should be a TokenizableEnum");
+        // Assertions.assertTrue(cc instanceof TokenizableEnum, "XColor should be a TokenizableEnum");
     }
 }

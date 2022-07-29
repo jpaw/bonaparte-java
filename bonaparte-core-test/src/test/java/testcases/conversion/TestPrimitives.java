@@ -18,8 +18,8 @@ package testcases.conversion;
 
 import java.util.Arrays;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.core.CompactByteArrayComposer;
 import de.jpaw.bonaparte.coretests.initializers.FillPrimitives;
@@ -95,8 +95,8 @@ public class TestPrimitives {
         byte [] result = cbac.getBytes();
         int hash = Arrays.hashCode(result);
         System.out.println("Length is " + result.length + ", hash code of result is " + hash);
-        Assert.assertEquals(result.length, 196);
-        Assert.assertEquals(hash, -1661784561);
+        Assertions.assertEquals(result.length, 196);
+        Assertions.assertEquals(hash, -1661784561);
     }
 
     @Test
@@ -115,8 +115,8 @@ public class TestPrimitives {
         byte [] result = cbac.getBytes();
         int hash = Arrays.hashCode(result);
         System.out.println("Length is " + result.length + ", hash code of result is " + hash);
-        Assert.assertEquals(result.length, 163);
-        Assert.assertEquals(hash, -1332968942);
+        Assertions.assertEquals(result.length, 163);
+        Assertions.assertEquals(hash, -1332968942);
     }
 
     @Test
@@ -147,8 +147,8 @@ public class TestPrimitives {
             byte [] result = cbac.getBytes();
             int hash = Arrays.hashCode(result);
             System.out.println("Length is " + result.length + ", hash code of result is " + hash);
-            Assert.assertEquals(result.length, lengths[i], "length for run " + i);
-            Assert.assertEquals(hash, hashes[i], "hash for run " + i);
+            Assertions.assertEquals(result.length, lengths[i], "length for run " + i);
+            Assertions.assertEquals(hash, hashes[i], "hash for run " + i);
         }
     }
 

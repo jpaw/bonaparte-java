@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.core.JsonComposer;
 import de.jpaw.bonaparte.pojos.jsonTest.ColorAlnum;
@@ -24,7 +24,7 @@ public class JsonMapTest {
         JsonComposer.setDefaultWriteCRs(false);
         // list related tests: empty list
         List<TestSimple> myList = new ArrayList<TestSimple>(2);
-        Assert.assertEquals(JsonComposer.toJsonString(myList), "[]");
+        Assertions.assertEquals(JsonComposer.toJsonString(myList), "[]");
     }
 
     @Test
@@ -36,7 +36,7 @@ public class JsonMapTest {
         j.getMap().put("A", "B");
         String j1 = JsonComposer.toJsonString(j);
         System.out.println("Bonaparte produces " + j1);
-        Assert.assertEquals(j1, expected1);
+        Assertions.assertEquals(j1, expected1);
     }
 
     @Test
@@ -48,7 +48,7 @@ public class JsonMapTest {
         j.getMap().put("A", 17);
         String j1 = JsonComposer.toJsonString(j);
         System.out.println("Bonaparte produces " + j1);
-        Assert.assertEquals(j1, expected1);
+        Assertions.assertEquals(j1, expected1);
     }
 
     @Test
@@ -65,7 +65,7 @@ public class JsonMapTest {
         obj.getMap().put("FR", fr);
         String j1 = JsonComposer.toJsonString(obj);
         System.out.println("Bonaparte produces " + j1);
-        Assert.assertEquals(j1, expected1);
+        Assertions.assertEquals(j1, expected1);
     }
 
     @Test
@@ -78,7 +78,7 @@ public class JsonMapTest {
         j.getCaMap().put(66L, "Hello, world");
         String j1 = JsonComposer.toJsonString(j);
         System.out.println("Bonaparte produces " + j1);
-        Assert.assertEquals(j1, expected1);
+        Assertions.assertEquals(j1, expected1);
     }
 
     @Test
@@ -91,6 +91,6 @@ public class JsonMapTest {
         j.getCaMap().put(66, "Hello, world");
         String j1 = JsonComposer.toJsonString(j);
         System.out.println("Bonaparte produces " + j1);
-        Assert.assertEquals(j1, expected1);
+        Assertions.assertEquals(j1, expected1);
     }
 }

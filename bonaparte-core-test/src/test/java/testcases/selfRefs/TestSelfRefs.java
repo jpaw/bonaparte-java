@@ -1,7 +1,7 @@
 package testcases.selfRefs;
 
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.ByteArrayComposer;
@@ -15,7 +15,7 @@ import de.jpaw.bonaparte.pojos.selfRefs.ElementWithRef;
 
 public class TestSelfRefs {
 
-    @BeforeClass
+    @BeforeEach
     public void setDefaultStrategy() {
         ObjectReuseStrategy.defaultStrategy = ObjectReuseStrategy.BY_REFERENCE;
     }

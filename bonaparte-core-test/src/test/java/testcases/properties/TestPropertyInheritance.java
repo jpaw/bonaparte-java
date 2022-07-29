@@ -1,6 +1,6 @@
 package testcases.properties;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.pojos.pt.MyHouse;
 import de.jpaw.bonaparte.pojos.pt2.YetAnotherHouse;

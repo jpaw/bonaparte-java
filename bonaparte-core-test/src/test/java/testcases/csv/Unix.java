@@ -2,7 +2,7 @@ package testcases.csv;
 
 import java.io.IOException;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.CSVComposer;

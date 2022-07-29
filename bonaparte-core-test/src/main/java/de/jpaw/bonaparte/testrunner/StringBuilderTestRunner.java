@@ -1,6 +1,6 @@
 package de.jpaw.bonaparte.testrunner;
 
-import org.testng.Assert;
+import org.junit.jupiter.api.Assertions;
 import de.jpaw.bonaparte.core.BonaCustom;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.StringBuilderComposer;
@@ -16,7 +16,7 @@ public class StringBuilderTestRunner extends AbstractTestrunner<String> {
         bac.writeRecord(src);
         String result = buffer.toString();
         if (expectedResult != null)
-            Assert.assertEquals(result, expectedResult);
+            Assertions.assertEquals(result, expectedResult);
         return result;
     }
 
@@ -25,7 +25,7 @@ public class StringBuilderTestRunner extends AbstractTestrunner<String> {
         StringBuilderParser bap = new StringBuilderParser(src, 0, -1);
         BonaPortable result = bap.readRecord();
         if (expectedResult != null)
-            Assert.assertEquals(result, expectedResult);
+            Assertions.assertEquals(result, expectedResult);
         return result;
     }
 }

@@ -1,7 +1,7 @@
 package testcases.reuse;
 
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.ByteArrayComposer;
@@ -24,8 +24,8 @@ import de.jpaw.bonaparte.pojos.reuse.OneElement;
  */
 public class TestReuse {
 
-    @BeforeClass
-    public void setDefaultStrategy() {
+    @BeforeAll
+    public static void setDefaultStrategy() {
         ObjectReuseStrategy.defaultStrategy = ObjectReuseStrategy.NONE;
     }
 

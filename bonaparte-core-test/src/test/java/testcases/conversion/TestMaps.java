@@ -3,8 +3,8 @@ package testcases.conversion;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.coretests.initializers.FillMaps;
@@ -14,7 +14,6 @@ import de.jpaw.bonaparte.pojos.mapTests.ClassWithEnum;
 import de.jpaw.bonaparte.pojos.mapTests.ClassWithMapWithObjectWithEnum;
 import de.jpaw.bonaparte.pojos.mapTests.Color;
 import de.jpaw.bonaparte.testrunner.CompactTest;
-import de.jpaw.bonaparte.testrunner.ExpectedTestException;
 import de.jpaw.bonaparte.util.impl.RecordMarshallerCompactBonaparte;
 import de.jpaw.bonaparte.util.impl.RecordMarshallerCompactBonaparteIdentity;
 import de.jpaw.util.ByteArray;
@@ -50,23 +49,23 @@ public class TestMaps {
         return mainClass;
     }
 
-    @Test(expectedExceptions = AssertionError.class)
+    @Test
     public void testMapsWithEnums1() throws Exception {
 
         BonaPortable mainClass = generateData();
         // this test fails because the BonaPortable inside a map is not converted back into an object, it stays a map
-        SimpleTestRunner.run(mainClass, false);
+        Assertions.assertThrows(AssertionError.class, () -> SimpleTestRunner.run(mainClass, false));
     }
 
-    @Test(expectedExceptions = AssertionError.class)
+    @Test
     public void testMapsWithEnums2() throws Exception {
 
         BonaPortable mainClass = generateData();
         // this test fails because the BonaPortable inside a map is not converted back into an object, it stays a map
-        CompactTest.run(mainClass, false);
+        Assertions.assertThrows(AssertionError.class, () -> CompactTest.run(mainClass, false));
     }
 
-    @Test(expectedExceptions = ExpectedTestException.class)
+    @Test
     public void testMapsWithEnums3() throws Exception {
 
         BonaPortable mainClass = generateData();
@@ -79,12 +78,7 @@ public class TestMaps {
         System.out.println("Data size is " + buffer.length());
 
         BonaPortable out = marshaller.unmarshal(buffer);
-        try {
-            Assert.assertEquals(out, mainClass, "(Expect difference!): ");
-        } catch (AssertionError e) {
-            System.out.println(ExceptionUtil.causeChain(e));
-            throw new ExpectedTestException();
-        }
+        Assertions.assertNotEquals(out,  mainClass, "(Expect difference!): ");
     }
 
     @Test
@@ -100,6 +94,6 @@ public class TestMaps {
         System.out.println("Data size is " + buffer.length());
 
         BonaPortable out = marshaller.unmarshal(buffer);
-        Assert.assertEquals(out, mainClass);
+        Assertions.assertEquals(out, mainClass);
     }
 }

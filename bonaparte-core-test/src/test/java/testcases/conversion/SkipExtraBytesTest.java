@@ -1,7 +1,7 @@
 package testcases.conversion;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.ByteArrayComposer;
@@ -33,7 +33,7 @@ public class SkipExtraBytesTest {
         Outer x = new Outer(new Inner(3333, null), 66);
         ByteArrayParser bap = new ByteArrayParser(data.getBytes(), 0, -1);
         BonaPortable xx = bap.readRecord();
-        Assert.assertEquals(xx, x);
+        Assertions.assertEquals(xx, x);
     }
 
     @Test
@@ -41,7 +41,7 @@ public class SkipExtraBytesTest {
         Outer x = new Outer(new Inner(3333, null), 66);
         ByteArrayParser bap = new ByteArrayParser(dataLess.getBytes(), 0, -1);
         BonaPortable xx = bap.readRecord();
-        Assert.assertEquals(xx, x);
+        Assertions.assertEquals(xx, x);
     }
 
     @Test
@@ -49,6 +49,6 @@ public class SkipExtraBytesTest {
         Outer x = new Outer(new Inner(3333, null), 66);
         ByteArrayParser bap = new ByteArrayParser(dataMore.getBytes(), 0, -1);
         BonaPortable xx = bap.readRecord();
-        Assert.assertEquals(xx, x);
+        Assertions.assertEquals(xx, x);
     }
 }

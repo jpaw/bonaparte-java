@@ -1,6 +1,6 @@
 package de.jpaw.bonaparte.testrunner;
 
-import org.testng.Assert;
+import org.junit.jupiter.api.Assertions;
 import de.jpaw.bonaparte.core.BonaCustom;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.CompactByteArrayComposer;
@@ -18,7 +18,7 @@ public class CompactByteArrayTestRunner extends AbstractTestrunner<byte[]> {
         bac.writeRecord(src);
         byte[] result = buffer.getBytes();
         if (expectedResult != null)
-            Assert.assertEquals(result, expectedResult);
+            Assertions.assertEquals(result, expectedResult);
         return result;
     }
 
@@ -27,7 +27,7 @@ public class CompactByteArrayTestRunner extends AbstractTestrunner<byte[]> {
         CompactByteArrayParser bap = new CompactByteArrayParser(src, 0, -1);
         BonaPortable result = bap.readRecord();
         if (expectedResult != null)
-            Assert.assertEquals(result, expectedResult);
+            Assertions.assertEquals(result, expectedResult);
         return result;
     }
 

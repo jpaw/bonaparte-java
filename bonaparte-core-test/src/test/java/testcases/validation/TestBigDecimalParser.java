@@ -1,7 +1,7 @@
 package testcases.validation;
 
 import java.math.BigDecimal;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.core.MessageParserException;
 import de.jpaw.bonaparte.coretests.util.SimpleTestRunner;

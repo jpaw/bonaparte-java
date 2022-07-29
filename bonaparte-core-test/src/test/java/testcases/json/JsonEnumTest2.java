@@ -2,8 +2,8 @@ package testcases.json;
 
 import java.util.Map;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.JsonComposer;
@@ -52,13 +52,13 @@ public class JsonEnumTest2 {
         System.out.println("Bonaparte produces " + j1 + " (length " + j1.length() + ")");
 //        String j2 = BonaparteJsonEscaper.asJson(in);
 //        System.out.println("BJE produces       " + j2);
-        Assert.assertEquals(lengthExpected, j1.length());
+        Assertions.assertEquals(lengthExpected, j1.length());
 
         Map<String, Object> intermediate = (new JsonParser(j1, false)).parseObject();
         BonaPortable out = MapParser.allocObject(intermediate, StaticMeta.OUTER_BONAPORTABLE_FOR_JSON);
         out.deserialize(new MapParser(intermediate, false, useOrdinals, useTokens));
 
-        Assert.assertEquals(out, in);
+        Assertions.assertEquals(out, in);
 
         // run an additional test for the object wrapped in some other object
         WrapperForJsonEnumAndList inW = new WrapperForJsonEnumAndList(in);
@@ -69,6 +69,6 @@ public class JsonEnumTest2 {
         BonaPortable outW = MapParser.allocObject(intermediateW, StaticMeta.OUTER_BONAPORTABLE_FOR_JSON);
         outW.deserialize(new MapParser(intermediateW, false, useOrdinals, useTokens));
 
-        Assert.assertEquals(outW, inW);
+        Assertions.assertEquals(outW, inW);
     }
 }

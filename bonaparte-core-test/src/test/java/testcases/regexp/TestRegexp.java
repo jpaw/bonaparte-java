@@ -1,6 +1,6 @@
 package testcases.regexp;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.core.ObjectValidationException;
 import de.jpaw.bonaparte.pojos.testRegexp.RegexpTest;
