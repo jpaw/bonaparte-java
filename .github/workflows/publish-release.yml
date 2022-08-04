@@ -6,6 +6,10 @@ on:
   release:
     types: [created]
 
+env:
+  JAVA_VERSION_TO_USE: '11'
+  JAVA_DISTRI_TO_USE: 'corretto'
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -15,11 +19,11 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Set up JDK 17 for build
+    - name: Set up JDK ${{ env.JAVA_VERSION_TO_USE }} (${{ env.JAVA_DISTRI_TO_USE }}) for build
       uses: actions/setup-java@v3
       with:
-        java-version: '17'
-        distribution: 'corretto'
+        java-version: ${{ env.JAVA_VERSION_TO_USE }}
+        distribution: ${{ env.JAVA_DISTRI_TO_USE }}
         cache: maven
         server-id: github
         server-username: dummy # not used
@@ -41,15 +45,15 @@ jobs:
           GITHUB_TOKEN_REF: ${{ secrets.GH_WORKFLOWS_PAT_READ_PACKAGES }}
 
     - name: Build with Maven
-      run: mvn -B -U -Pgithub -DskipTests package --file pom.xml
+      run: mvn -B -Pgithub -DskipTests package
       env:
           GITHUB_TOKEN_REF: ${{ secrets.GH_WORKFLOWS_PAT_READ_PACKAGES }}
 
-    - name: Set up JDK 17 for publish
+    - name: Set up JDK ${{ env.JAVA_VERSION_TO_USE }} (${{ env.JAVA_DISTRI_TO_USE }}) for publish
       uses: actions/setup-java@v3
       with:
-        java-version: '17'
-        distribution: 'corretto'
+        java-version: ${{ env.JAVA_VERSION_TO_USE }}
+        distribution: ${{ env.JAVA_DISTRI_TO_USE }}
         cache: maven
 
     - name: Publish to GitHub Packages
