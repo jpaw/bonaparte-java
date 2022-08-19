@@ -3,14 +3,23 @@
 name: Publish Snapshot
 
 on:
+  workflow_dispatch: # enable manual trigger
   push:
     branches:
       - master
+
+# cancel already running instances of this workflow
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
 
 env:
   JAVA_VERSION_TO_USE: '11'
   JAVA_DISTRI_TO_USE: 'corretto'
   REPORTSPATH:  '**/surefire-reports/TEST-*.xml'
+  GITHUB_TOKEN_READ_PACKAGES: ${{ secrets.GH_WORKFLOWS_PAT_READ_PACKAGES }}
+  GITHUB_TOKEN_DEPLOY_PACKAGES: ${{ github.token }}
+  DEPLOY_RETRY: 10
 
 jobs:
   publish:
@@ -27,37 +36,23 @@ jobs:
         java-version: ${{ env.JAVA_VERSION_TO_USE }}
         distribution: ${{ env.JAVA_DISTRI_TO_USE }}
         cache: maven
-        server-id: github
-        server-username: dummy  # not used
-        server-password: GITHUB_TOKEN_REF
 
-    - name: Build with Maven
-      run: mvn -B -Pgithub -Dmaven.test.failure.ignore=true package
-      env:
-          GITHUB_TOKEN_REF: ${{ secrets.GH_WORKFLOWS_PAT_READ_PACKAGES }}
+    - name: Configure maven settings.xml
+      uses: whelk-io/maven-settings-xml-action@v20
+      with:
+        repositories: '[{ "id": "github-pkgs", "url": "https://maven.pkg.github.com/arvato-systems-jacs/dummy", "snapshots": { "enabled": "true" } }]'          
+        plugin_repositories: '[{ "id": "github-pkgs", "url": "https://maven.pkg.github.com/arvato-systems-jacs/dummy", "snapshots": { "enabled": "true" } }]'
+        servers: |
+          [
+            { "id": "github-pkgs", "username": "dummy", "password": "${env.GITHUB_TOKEN_READ_PACKAGES}" },
+            { "id": "github", "username": "${env.GITHUB_ACTOR}", "password": "${env.GITHUB_TOKEN_DEPLOY_PACKAGES}" }
+          ]
 
-    - name: Generate test summary
-      uses: mikepenz/action-junit-report@v3.2.0
+    - name: Build, Test and Publish
+      run: mvn -B -Pgithub -Dmaven.test.failure.ignore=true -DdeployAtEnd=true -DretryFailedDeploymentCount=${{ env.DEPLOY_RETRY }} deploy
+
+    - name: Publish Test Results
+      uses: EnricoMi/publish-unit-test-result-action@v2
       if: always()
       with:
-        report_paths: ${{ env.REPORTSPATH }}
-
-    - name: Generate detailled report
-      uses: dorny/test-reporter@v1.5.0
-      if: always()
-      with:
-        name: JUnit Test Report (Details)
-        path: ${{ env.REPORTSPATH }}
-        reporter: java-junit
-
-    - name: Set up JDK ${{ env.JAVA_VERSION_TO_USE }} (${{ env.JAVA_DISTRI_TO_USE }}) for publish
-      uses: actions/setup-java@v3
-      with:
-        java-version: ${{ env.JAVA_VERSION_TO_USE }}
-        distribution: ${{ env.JAVA_DISTRI_TO_USE }}
-        cache: maven
-
-    - name: Publish to GitHub Packages
-      run: mvn -B -Pgithub -DskipTests deploy
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
+        junit_files: ${{ env.REPORTSPATH }}
