@@ -10,14 +10,14 @@
     </parent>
 
     <artifactId>bonaparte-base</artifactId>
-    <version>5.1.1-SNAPSHOT</version>
+    <version>5.1.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <description>build master for BONAPARTE based projects</description>
 
     <properties>
         <!-- define revisions of other jpaw.de projects, not covered by plugin management -->
-        <bonaparte-plugin.version>5.1.0</bonaparte-plugin.version> <!-- do not use -SNAPSHOT here (GH CI can't deal with it) -->
+        <bonaparte-plugin.version>5.1.1</bonaparte-plugin.version> <!-- do not use -SNAPSHOT here (GH CI can't deal with it) -->
 
         <!-- define releases (mostly of 3rd party dependencies) we want to use, to ensure consistency -->
         <!-- Some more versions, used by specific dependent projects -->
