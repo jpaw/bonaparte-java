@@ -3,21 +3,20 @@
 name: Publish Release
 
 on:
-  release:
-    types: [created]
+  workflow_dispatch: # enable manual trigger
 
 env:
   JAVA_VERSION_TO_USE: '11'
   JAVA_DISTRI_TO_USE: 'corretto'
   GITHUB_TOKEN_READ_PACKAGES: ${{ secrets.GH_WORKFLOWS_PAT_READ_PACKAGES }}
   GITHUB_TOKEN_DEPLOY_PACKAGES: ${{ github.token }}
-  DEPLOY_RETRY: 10
+  DEPLOY_RETRY: 5
 
 jobs:
   publish:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       packages: write
     steps:
     - uses: actions/checkout@v3
@@ -40,14 +39,10 @@ jobs:
             { "id": "github", "username": "${env.GITHUB_ACTOR}", "password": "${env.GITHUB_TOKEN_DEPLOY_PACKAGES}" }
           ]
 
-    - name: Update parent to latest version
-      run: mvn -B versions:update-parent
+    - name: Configure Git User
+      run: git config user.name "Release Management"
 
-    - name: Remove snapshot version
-      run: mvn -B versions:set -DremoveSnapshot
-
-    - name: Use releases in dependencies
-      run: mvn -B versions:use-releases
-
-    - name: Build and Publish
-      run: mvn -B -Pgithub -DskipTests -DdeployAtEnd=true -DretryFailedDeploymentCount=${{ env.DEPLOY_RETRY }} deploy
+    - name: Release Packages
+      run: mvn -B -U -P github -Darguments=-DskipTests -DretryFailedDeploymentCount=${{ env.DEPLOY_RETRY }} release:prepare release:perform
+      env:
+        GITHUB_TOKEN: ${{ github.token }}

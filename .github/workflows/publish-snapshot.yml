@@ -19,7 +19,7 @@ env:
   REPORTSPATH:  '**/surefire-reports/TEST-*.xml'
   GITHUB_TOKEN_READ_PACKAGES: ${{ secrets.GH_WORKFLOWS_PAT_READ_PACKAGES }}
   GITHUB_TOKEN_DEPLOY_PACKAGES: ${{ github.token }}
-  DEPLOY_RETRY: 10
+  DEPLOY_RETRY: 5
 
 jobs:
   publish:
@@ -51,7 +51,7 @@ jobs:
           ]
 
     - name: Build, Test and Publish
-      run: mvn -B -Pgithub -Dmaven.test.failure.ignore=true -DdeployAtEnd=true -DretryFailedDeploymentCount=${{ env.DEPLOY_RETRY }} deploy
+      run: mvn -B -U -P github -T 1C -Dmaven.test.failure.ignore=true -DretryFailedDeploymentCount=${{ env.DEPLOY_RETRY }} deploy
 
     - name: Publish Test Results
       uses: EnricoMi/publish-unit-test-result-action@v2
