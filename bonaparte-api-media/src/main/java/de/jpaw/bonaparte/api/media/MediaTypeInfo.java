@@ -44,6 +44,7 @@ public class MediaTypeInfo {
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.GIF),                "gif",  MediaCategory.IMAGE,   false, "image/gif"));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.JPG),                "jpg",  MediaCategory.IMAGE,   false, "image/jpeg"));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.PNG),                "png",  MediaCategory.IMAGE,   false, "image/png"));
+        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.SVG),                "svg",  MediaCategory.IMAGE,   true,  "image/svg+xml"));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.WAV),                "wav",  MediaCategory.AUDIO,   false, "audio/x-wav"));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.MP3),                "mp3",  MediaCategory.AUDIO,   false, "audio/mp3"));   // chrome, Opera
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.MP3),                "mp3",  MediaCategory.AUDIO,   false, "audio/mpeg"));  // firefox, IE

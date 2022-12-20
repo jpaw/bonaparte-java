@@ -12,6 +12,8 @@ package api.media XML PROPERTY factoryId 25 {
         PDF = "P", DVI = "D", POSTSCRIPT = "o",
         // images
         JPG = "j", PNG = "p", GIF = "g", TIFF = "f",
+        // vector graphics
+        SVG = "V",
         // audio
         WAV = "w", MP3 = "3",
         // video

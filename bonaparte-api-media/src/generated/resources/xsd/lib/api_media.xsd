@@ -33,6 +33,7 @@
             <xs:enumeration value="PNG"/>
             <xs:enumeration value="GIF"/>
             <xs:enumeration value="TIFF"/>
+            <xs:enumeration value="SVG"/>
             <xs:enumeration value="WAV"/>
             <xs:enumeration value="MP3"/>
             <xs:enumeration value="MPG"/>
