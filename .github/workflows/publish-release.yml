@@ -2,8 +2,15 @@
 
 name: Publish Release
 
+run-name: Publish Release ${{ inputs.release_version }}
+
 on:
   workflow_dispatch: # enable manual trigger
+    inputs:
+      release_version:
+        description: 'Release Version'
+        required: true
+        type: string
 
 env:
   JAVA_VERSION_TO_USE: '11'
@@ -29,7 +36,7 @@ jobs:
         cache: maven
 
     - name: Configure maven settings.xml
-      uses: whelk-io/maven-settings-xml-action@v20
+      uses: whelk-io/maven-settings-xml-action@v21
       with:
         repositories: '[{ "id": "github-pkgs", "url": "https://maven.pkg.github.com/arvato-systems-jacs/dummy", "snapshots": { "enabled": "true" } }]'          
         plugin_repositories: '[{ "id": "github-pkgs", "url": "https://maven.pkg.github.com/arvato-systems-jacs/dummy", "snapshots": { "enabled": "true" } }]'
