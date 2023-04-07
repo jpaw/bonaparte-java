@@ -52,8 +52,8 @@
         <jakarta.persistence-api.version>3.1.0</jakarta.persistence-api.version>
 
         <eclipselink.version>3.0.3</eclipselink.version>
-        <hibernate.version>6.2.0.Final</hibernate.version>
-        <hibernate-types.version>2.21.1</hibernate-types.version>
+        <hibernate.version>6.1.7.Final</hibernate.version>
+        <hibernate-types.version>3.3.1</hibernate-types.version>
 
         <postgres.driver.version>42.5.1</postgres.driver.version>
     </properties>
