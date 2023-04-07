@@ -19,15 +19,15 @@ public class PersistenceException extends ApplicationException {
     static public final int RECORD_DOES_NOT_EXIST_ILE    = (CL_INTERNAL_LOGIC_ERROR * CLASSIFICATION_FACTOR) + ERROR_CODE_OFFSET + 9;
 
     static {
-        codeToDescription.put(RECORD_DOES_NOT_EXIST     , "No record for primary key found");
-        codeToDescription.put(RECORD_ALREADY_EXISTS     , "Value for primary key already exists");
-        codeToDescription.put(DUPLICATE_UNIQUE_INDEX    , "Value of unique index already exists");
-        codeToDescription.put(UNKNOWN_INDEX_TYPE        , "Not known as a unique index");
-        codeToDescription.put(NO_TRANSACTION            , "Not active transaction");
-        codeToDescription.put(READONLY                  , "Entity is readonly via this API");
-        codeToDescription.put(NO_RECORD_FOR_INDEX       , "No record has been found for the provided index");
-        codeToDescription.put(NO_PRIMARY_KEY            , "No primary key provided for create or update operation");
-        codeToDescription.put(RECORD_DOES_NOT_EXIST_ILE , "No record for primary key found, but this should not have happened");
+        registerCode(RECORD_DOES_NOT_EXIST     , "No record for primary key found");
+        registerCode(RECORD_ALREADY_EXISTS     , "Value for primary key already exists");
+        registerCode(DUPLICATE_UNIQUE_INDEX    , "Value of unique index already exists");
+        registerCode(UNKNOWN_INDEX_TYPE        , "Not known as a unique index");
+        registerCode(NO_TRANSACTION            , "Not active transaction");
+        registerCode(READONLY                  , "Entity is readonly via this API");
+        registerCode(NO_RECORD_FOR_INDEX       , "No record has been found for the provided index");
+        registerCode(NO_PRIMARY_KEY            , "No primary key provided for create or update operation");
+        registerCode(RECORD_DOES_NOT_EXIST_ILE , "No record for primary key found, but this should not have happened");
     }
 
     private final long key;

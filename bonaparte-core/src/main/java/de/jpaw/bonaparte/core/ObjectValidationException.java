@@ -61,28 +61,28 @@ public class ObjectValidationException extends ApplicationException {
     public static final int MAP_NOT_UNSUPPORTED         = ILE_OFFSET + 54;
 
     static {
-        codeToDescription.put(MAY_NOT_BE_BLANK          , "Empty, but required field");
-        codeToDescription.put(NO_PATTERN_MATCH          , "Field contents does not match required pattern");
-        codeToDescription.put(TOO_MANY_ELEMENTS         , "Array contains too many elements");
-        codeToDescription.put(TOO_LONG                  , "String is too long");
-        codeToDescription.put(TOO_SHORT                 , "String is too short");
-        codeToDescription.put(NOT_ENOUGH_ELEMENTS       , "Array contains not enough elements");
-        codeToDescription.put(NO_NEGATIVE_ALLOWED       , "Number may not be negative");
-        codeToDescription.put(CUSTOM_VALIDATION         , "A custom validation has failed");
-        codeToDescription.put(NO_ACTIVE_FIELD           , "Cannot alter the active state for a class without an active field");
+        registerCode(MAY_NOT_BE_BLANK          , "Empty, but required field");
+        registerCode(NO_PATTERN_MATCH          , "Field contents does not match required pattern");
+        registerCode(TOO_MANY_ELEMENTS         , "Array contains too many elements");
+        registerCode(TOO_LONG                  , "String is too long");
+        registerCode(TOO_SHORT                 , "String is too short");
+        registerCode(NOT_ENOUGH_ELEMENTS       , "Array contains not enough elements");
+        registerCode(NO_NEGATIVE_ALLOWED       , "Number may not be negative");
+        registerCode(CUSTOM_VALIDATION         , "A custom validation has failed");
+        registerCode(NO_ACTIVE_FIELD           , "Cannot alter the active state for a class without an active field");
 
-        codeToDescription.put(TOO_MANY_FRACTIONAL_DIGITS, "Too many significant decimal digits");
-        codeToDescription.put(TOO_MANY_DIGITS           , "Number too big");
+        registerCode(TOO_MANY_FRACTIONAL_DIGITS, "Too many significant decimal digits");
+        registerCode(TOO_MANY_DIGITS           , "Number too big");
 
-        codeToDescription.put(NOT_FREEZABLE             , "This object cannot be turned into immutable state");
-        codeToDescription.put(OBJECT_IS_FROZEN          , "Object instance is frozen and cannot be modified");
-        codeToDescription.put(IS_IMMUTABLE              , "This object cannot be turned into mutable state");
+        registerCode(NOT_FREEZABLE             , "This object cannot be turned into immutable state");
+        registerCode(OBJECT_IS_FROZEN          , "Object instance is frozen and cannot be modified");
+        registerCode(IS_IMMUTABLE              , "This object cannot be turned into mutable state");
 
         // JSON map codes
-        codeToDescription.put(UNSUPPORTED_MAP_KEY_TYPE  , "This map key type is currently not supported");
-        codeToDescription.put(UNSUPPORTED_MAP_VALUE_TYPE, "This map key type is currently not supported");
-        codeToDescription.put(INVALID_SEQUENCE          , "Invalid sequence of map output");
-        codeToDescription.put(MAP_NOT_UNSUPPORTED       , "A map data type is not supported for this composer");
+        registerCode(UNSUPPORTED_MAP_KEY_TYPE  , "This map key type is currently not supported");
+        registerCode(UNSUPPORTED_MAP_VALUE_TYPE, "This map key type is currently not supported");
+        registerCode(INVALID_SEQUENCE          , "Invalid sequence of map output");
+        registerCode(MAP_NOT_UNSUPPORTED       , "A map data type is not supported for this composer");
     }
 
     public ObjectValidationException(int errorCode, String fieldName, String className) {
