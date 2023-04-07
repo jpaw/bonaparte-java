@@ -4,7 +4,7 @@
     <parent>
         <groupId>de.jpaw</groupId>
         <artifactId>jpaw-se-parent</artifactId>
-        <version>3.1.4</version>
+        <version>3.1.5-SNAPSHOT</version>
         <relativePath />
     </parent>
 
@@ -22,17 +22,17 @@
     <properties>
         <!-- define revisions of other jpaw.de projects, not covered by plugin management -->
         <bonaparte-plugin.version>5.1.4</bonaparte-plugin.version> <!-- do not use -SNAPSHOT here (GH CI can't deal with it) -->
-        <jpaw.version>3.1.4</jpaw.version>
+        <jpaw.version>3.1.5-SNAPSHOT</jpaw.version>
 
         <!-- define releases (mostly of 3rd party dependencies) we want to use, to ensure consistency -->
         <!-- Some more versions, used by specific dependent projects -->
         <gson.version>2.9.1</gson.version>
 
         <lucene.version>4.10.4</lucene.version>
-        <netty.version>4.1.86.Final</netty.version>
+        <netty.version>4.1.90.Final</netty.version>
         <poi.version>5.2.3</poi.version>
         <camel.version>3.19.0</camel.version>
-        <vertx3.version>4.3.6</vertx3.version>
+        <vertx3.version>4.4.1</vertx3.version>
 
         <!-- distributed caches -->
         <ehcache.version>2.10.2</ehcache.version>
@@ -52,8 +52,8 @@
         <jakarta.persistence-api.version>3.1.0</jakarta.persistence-api.version>
 
         <eclipselink.version>3.0.3</eclipselink.version>
-        <hibernate.version>6.1.6.Final</hibernate.version>
-        <hibernate-types.version>2.20.0</hibernate-types.version>
+        <hibernate.version>6.2.0.Final</hibernate.version>
+        <hibernate-types.version>2.21.1</hibernate-types.version>
 
         <postgres.driver.version>42.5.1</postgres.driver.version>
     </properties>
