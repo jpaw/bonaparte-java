@@ -5,7 +5,7 @@ import de.jpaw.util.ApplicationException;
 public class PersistenceException extends ApplicationException {
     private static final long serialVersionUID = 61705245543364726L;
 
-    private static final int ERROR_CODE_OFFSET = 14000;                                             // offset for all codes in this class
+    private static final int ERROR_CODE_OFFSET = 17000;                                             // offset for all codes in this class
     private static final int OFFSET = (CL_DATABASE_ERROR * CLASSIFICATION_FACTOR) + ERROR_CODE_OFFSET; // offset for all codes in this class
 
     static public final int RECORD_DOES_NOT_EXIST        = OFFSET + 1;
