@@ -20,8 +20,10 @@
     </scm>
 
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
         <!-- define revisions of other jpaw.de projects, not covered by plugin management -->
-        <bonaparte-plugin.version>5.1.6-SNAPSHOT</bonaparte-plugin.version> <!-- do not use -SNAPSHOT here (GH CI can't deal with it) -->
+        <bonaparte-plugin.version>5.1.7-SNAPSHOT</bonaparte-plugin.version> <!-- do not use -SNAPSHOT here (GH CI can't deal with it) -->
         <jpaw.version>3.1.6-SNAPSHOT</jpaw.version>
 
         <!-- define releases (mostly of 3rd party dependencies) we want to use, to ensure consistency -->
