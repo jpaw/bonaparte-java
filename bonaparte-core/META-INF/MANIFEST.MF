@@ -3,7 +3,7 @@ Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-ManifestVersion: 2
 Bundle-Name: bonaparte core libraries
 Bundle-SymbolicName: bonaparte.core
-Bundle-Version: 5.0.6
+Bundle-Version: 5.1.6
 Bundle-Vendor: Michael Bischoff
 Require-Bundle: com.google.guava;bundle-version="30.0";visibility:=reexport
 Export-Package: de.jpaw.bonaparte.core,
@@ -19,4 +19,4 @@ Bundle-ActivationPolicy: lazy
 Import-Package: org.slf4j; version="1.7.30",
  de.jpaw.enums,
  de.jpaw.util
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
