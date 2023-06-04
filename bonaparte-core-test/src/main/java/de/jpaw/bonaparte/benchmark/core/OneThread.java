@@ -70,7 +70,7 @@ public class OneThread implements Runnable {
         srcClass = src.getClass();
     }
 
-    // StringBuffer
+    // StringBuilder
     private void sbc(boolean retrieveBytes) {
         methodName = "Bonaparte StringBuilder Composer" + (retrieveBytes ? " with byte[] retrieval" : "");
         StringBuilderComposer sbc = new StringBuilderComposer(new StringBuilder(initialBufferSize));
@@ -209,7 +209,7 @@ public class OneThread implements Runnable {
             start = new Date();
 
             switch (method) {
-            // 0 .. 2 Bonaparte StringBuffer
+            // 0 .. 2 Bonaparte StringBuilder
             case 0:
                 sbc(false);
                 break;

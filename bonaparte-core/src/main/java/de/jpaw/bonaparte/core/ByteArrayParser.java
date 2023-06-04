@@ -17,15 +17,16 @@ package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.LongFunction;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -214,7 +215,7 @@ public class ByteArrayParser extends AbstractMessageParser<MessageParserExceptio
         final int BUFFER_SIZE = 40;
         boolean allowSignNextIteration = false;
         boolean gotAnyDigit = false;
-        StringBuffer tmp = new StringBuffer(BUFFER_SIZE);
+        StringBuilder tmp = new StringBuilder(BUFFER_SIZE);
 
         // skipBlanks: does not hurt!
         skipLeadingSpaces();

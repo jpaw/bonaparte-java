@@ -204,7 +204,7 @@ public final class StringBuilderParser extends AbstractPartialJsonStringParser i
         final int BUFFER_SIZE = 40;
         boolean allowSignNextIteration = false;
         boolean gotAnyDigit = false;
-        StringBuffer tmp = new StringBuffer(BUFFER_SIZE);
+        StringBuilder tmp = new StringBuilder(BUFFER_SIZE);
         // skipBlanks: does not hurt!
         skipLeadingSpaces();
         if ((parseIndex < messageLength) && (work.charAt(parseIndex) == '+')) {
@@ -278,7 +278,7 @@ public final class StringBuilderParser extends AbstractPartialJsonStringParser i
             return null;
         }
         // OK, read it. The provided length can be huge, use a sensible starting size if it is too big
-        StringBuffer tmp = new StringBuffer(length == 0 || length > 256 ? 256 : length);
+        StringBuilder tmp = new StringBuilder(length == 0 || length > 256 ? 256 : length);
         char c;
         if (doTrim) {
             // skip leading spaces
