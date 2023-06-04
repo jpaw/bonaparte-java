@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.coretests.initializers.FillOtherTypes;
 import de.jpaw.bonaparte.coretests.util.SimpleTestRunner;
+import de.jpaw.bonaparte.pojos.tests1.OtherTypes2;
 
 /**
  * The TestPrimitives class.
@@ -35,5 +36,12 @@ public class TestOtherTypesS {
     @Test
     public void testOtherTypes() throws Exception {
         SimpleTestRunner.run(FillOtherTypes.test1(), false);
+    }
+    @Test
+    public void testOtherTypes2() throws Exception {
+        final OtherTypes2 ot2 = new OtherTypes2();
+        ot2.setAscii1("Hello, world!");
+        ot2.setUnicode1("Hällo Wörld!\r\n");
+        SimpleTestRunner.run(ot2, false);
     }
 }

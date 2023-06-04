@@ -17,6 +17,7 @@ package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -43,6 +44,7 @@ import de.jpaw.enums.XEnumFactory;
 import de.jpaw.fixedpoint.FixedPointBase;
 import de.jpaw.util.Base64;
 import de.jpaw.util.ByteArray;
+import de.jpaw.util.ByteUtil;
 import de.jpaw.util.CharTestsASCII;
 // according to http://stackoverflow.com/questions/469695/decode-base64-data-in-java , xml.bind is included in Java 6 SE
 //import jakarta.xml.bind.DatatypeConverter;
@@ -296,6 +298,10 @@ public final class StringBuilderParser extends AbstractPartialJsonStringParser i
                         }
                         c -= 0x40;
                     } else {
+                        LOGGER.error("unexpected token: {} at pos {}", (int)c, parseIndex);
+                        if (work.length() < 2000) {
+                            LOGGER.error("Data is {}", ByteUtil.dump(work.toString().getBytes(StandardCharsets.UTF_8), 256));
+                        }
                         throw new MessageParserException(MessageParserException.ILLEGAL_CHAR_CTRL, fieldname, parseIndex, currentClass);
                     }
                 }
@@ -547,13 +553,13 @@ public final class StringBuilderParser extends AbstractPartialJsonStringParser i
         return stringParser.readBigDecimal(di, nextIndexParseAscii(di.getName(), di.getIsSigned(), true, false));
     }
 
-	@Override
-	public <F extends FixedPointBase<F>> F readFixedPoint(BasicNumericElementaryDataItem di, LongFunction<F> factory) throws MessageParserException {
+    @Override
+    public <F extends FixedPointBase<F>> F readFixedPoint(BasicNumericElementaryDataItem di, LongFunction<F> factory) throws MessageParserException {
         if (checkForNull(di)) {
             return null;
         }
         return stringParser.readFixedPoint(di, nextIndexParseAscii(di.getName(), di.getIsSigned(), true, false), factory);
-	}
+    }
 
     @Override
     public void eatParentSeparator() throws MessageParserException {

@@ -88,7 +88,7 @@ package tests1 Ext {
         time(0) time1;
         time(3) time2;
         ascii(30) ascii1;
-        unicode(30) unicode1;
+        unicode(30) allowControlChars unicode1;
         number(4) number1;
         decimal(14,2) decimal1;
         enum Color color1;
@@ -159,5 +159,9 @@ package tests1 Ext {
     class TestSignedInteger {
         required signed int         si;
         required signed Long        sl;
+    }
+    class OtherTypes2 {
+        ascii(30) ascii1;
+        unicode(30) allowControlChars unicode1;
     }
 }
