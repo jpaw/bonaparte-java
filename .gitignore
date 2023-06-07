@@ -35,6 +35,7 @@ test-output/
 */src/generated/java
 */src/generated/sql
 */src/generated/resources/bonaparte.jpa
+*/src/generated/resources/**/jaxb.index
 # */src/generated/resources/xsd wanted
 # */src/generated/resources/(java-packages) wanted
 
