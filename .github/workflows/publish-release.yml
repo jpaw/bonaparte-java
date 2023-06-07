@@ -13,7 +13,7 @@ on:
         type: string
 
 env:
-  JAVA_VERSION_TO_USE: '11'
+  JAVA_VERSION_TO_USE: '17'
   JAVA_DISTRI_TO_USE: 'corretto'
   GITHUB_TOKEN_READ_PACKAGES: ${{ secrets.GH_WORKFLOWS_PAT_READ_PACKAGES }}
   GITHUB_TOKEN_DEPLOY_PACKAGES: ${{ github.token }}
@@ -49,7 +49,24 @@ jobs:
     - name: Configure Git User
       run: git config user.name "Release Management"
 
-    - name: Release Packages
-      run: mvn -B -U -P github -Darguments=-DskipTests -DretryFailedDeploymentCount=${{ env.DEPLOY_RETRY }} release:prepare release:perform
+    - name: Update Parent Version
+      run: |
+        mvn -B versions:update-parent
+        git add -A
+        git diff-index --quiet HEAD || (git commit -m 'Update parent version to latest version' && git push)
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+
+    - name: Update Bundle Version / MANIFEST
+      if: ${{ inputs.release_version != '' }}
+      run: |
+        sed -i 's/Bundle-Version:.*/Bundle-Version: ${{ inputs.release_version }}/g' **/META-INF/MANIFEST.MF
+        git add -A
+        git diff-index --quiet HEAD || (git commit -m 'Update Bundle-Version to ${{ inputs.release_version }}' && git push)
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+
+    - name: Prepare and Release Packages
+      run: mvn -B -U -P github -Darguments=-DskipTests -DretryFailedDeploymentCount=${{ env.DEPLOY_RETRY }} -DreleaseVersion=${{ inputs.release_version }} release:prepare release:perform
       env:
         GITHUB_TOKEN: ${{ github.token }}
