@@ -164,9 +164,18 @@ public class FixedWidthComposer extends CSVComposer {
     public void addField(AlphanumericElementaryDataItem di, String s) throws IOException {
         writeSeparator();
         if (s != null) {
-            addRawData(s);
-            if (s.length() < di.getLength())
-                addRawData(getPadding(di.getLength() - s.length()));
+            final int len = s.length();
+            if (len > di.getLength()) {
+                // value is too long - truncate it
+                addRawData(s.substring(0, di.getLength()));
+            } else {
+                // output without truncation
+                addRawData(s);
+                if (len < di.getLength()) {
+                    // padding required
+                    addRawData(getPadding(di.getLength() - len));
+                }
+            }
         } else {
             addRawData(getPadding(di.getLength()));
         }
