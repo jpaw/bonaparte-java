@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>bonaparte-base</artifactId>
-    <version>5.2.3-SNAPSHOT</version>
+    <version>5.3.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <description>build master for BONAPARTE based projects</description>
@@ -32,7 +32,7 @@
 
         <lucene.version>4.10.4</lucene.version>
         <netty.version>4.1.93.Final</netty.version>
-        <poi.version>5.2.3</poi.version>
+        <poi.version>5.3.0</poi.version>
         <camel.version>4.0.0-M3</camel.version>
         <vertx3.version>4.4.2</vertx3.version>
 
