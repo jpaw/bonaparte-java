@@ -5,8 +5,8 @@ name: Publish Snapshot
 on:
   workflow_dispatch: # enable manual trigger
   push:
-    branches:
-      - master
+    branches: [ "master" ]
+    paths-ignore: [ ".github/**" ]
 
 # cancel already running instances of this workflow
 concurrency:
