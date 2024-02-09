@@ -15,6 +15,9 @@
  */
 package de.jpaw.bonaparte.core;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.jpaw.util.ApplicationException;
 
 /**
@@ -29,14 +32,11 @@ import de.jpaw.util.ApplicationException;
 
 public class MessageParserException extends ApplicationException {
     private static final long serialVersionUID = 6578705245543364726L;
+    private static final Logger LOGGER = LoggerFactory.getLogger(MessageParserException.class);
 
     private static final int OFFSET  = (CL_PARSER_ERROR         * CLASSIFICATION_FACTOR) + 17000;
     private static final int OFFSET3 = (CL_PARAMETER_ERROR      * CLASSIFICATION_FACTOR) + 17000;
     private static final int OFFSET8 = (CL_INTERNAL_LOGIC_ERROR * CLASSIFICATION_FACTOR) + 17000;
-
-    private final int characterIndex; // the byte count of the message at which the error occured
-    private final String fieldName;   // if known, the name of the field where the error occured
-    private final String className;   // if known, the name of the class which contained the field
 
     public static final int MISSING_FIELD_TERMINATOR     = OFFSET + 1;
     public static final int MISSING_RECORD_TERMINATOR    = OFFSET + 2;
@@ -187,18 +187,15 @@ public class MessageParserException extends ApplicationException {
 
     /** Creates a parser exception with an explicitly defined position and class name. */
     public MessageParserException(int errorCode, String fieldName, int characterIndex, String className, String contents) {
-        super(errorCode, (className == null ? "?" : className)
-                + "." + (fieldName == null ? "?" : fieldName)
-                + (characterIndex >= 0 ? " at pos " + characterIndex : "")
-                + (contents == null ? "<" + contents + ">" : ""));
-        this.characterIndex = characterIndex;
-        this.fieldName = fieldName;
-        this.className = className;
+        super(errorCode, fieldName, className, characterIndex);
+        if (contents != null && LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Exception {} for {}.{} at index {}, contents is <{}>", errorCode, className, fieldName, characterIndex, contents);
+        }
     }
 
     /** Creates a parser exception with an explicitly defined position and class name. */
     public MessageParserException(int errorCode, String fieldName, int characterIndex, String className) {
-        this(errorCode, fieldName, characterIndex, className, null);
+        super(errorCode, fieldName, className, characterIndex);
     }
 
     /** Creates a parser exception for which parse position and class name will be provided by some callback. */
@@ -207,20 +204,6 @@ public class MessageParserException extends ApplicationException {
     }
 
     public MessageParserException(int errorCode) {
-        this(errorCode, null, -1, null);
+        super(errorCode);
     }
-
-    // some boilerplate code to retrieve exception properties
-    public int getCharacterIndex() {
-        return characterIndex;
-    }
-
-    public String getFieldName() {
-        return fieldName;
-    }
-
-    public String getClassName() {
-        return className;
-    }
-
 }

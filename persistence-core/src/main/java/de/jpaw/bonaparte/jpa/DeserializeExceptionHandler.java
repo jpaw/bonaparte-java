@@ -17,7 +17,7 @@ public class DeserializeExceptionHandler {
 
     public static void exceptionHandler(String fieldname, byte [] offendingData, MessageParserException e, Class<?> clazz, Object entityKey) {
         // first, dump out a bit of information so we can analyze better...
-        int badPosition = e.getCharacterIndex();
+        int badPosition = e.getIndex();
         LOG.error("Serialized data is corrupt for entity {} with key {} at byte position {}: {}",
                 clazz.getSimpleName(),
                 entityKey != null ? entityKey : "N/A",

@@ -33,9 +33,6 @@ public class ObjectValidationException extends ApplicationException {
     private static final int OFFSET = CL_VALIDATION_ERROR * CLASSIFICATION_FACTOR + 16000;  // offset for all codes in this class
     private static final int ILE_OFFSET = CL_INTERNAL_LOGIC_ERROR * CLASSIFICATION_FACTOR + 16000;  // offset for all codes in this class
 
-    private final String fieldName;   // if known, the name of the field where the error occurred
-    private final String className;   // if known, the name of the class which contained the field
-
     public static final int MAY_NOT_BE_BLANK            = OFFSET + 1;
     public static final int NO_PATTERN_MATCH            = OFFSET + 2;
     public static final int TOO_MANY_ELEMENTS           = OFFSET + 3;
@@ -86,21 +83,10 @@ public class ObjectValidationException extends ApplicationException {
     }
 
     public ObjectValidationException(int errorCode, String fieldName, String className) {
-        super(errorCode, (className == null ? "?" : className) + "." + (fieldName == null ? "?" : fieldName));
-        this.fieldName = fieldName;
-        this.className = className;
+        super(errorCode, fieldName, className, null);
     }
 
     public ObjectValidationException(int errorCode) {
-        this(errorCode, null, null);
+        super(errorCode);
     }
-
-    public String getFieldName() {
-        return fieldName;
-    }
-
-    public String getClassName() {
-        return className;
-    }
-
 }
