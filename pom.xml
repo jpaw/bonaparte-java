@@ -4,7 +4,7 @@
     <parent>
         <groupId>de.jpaw</groupId>
         <artifactId>jpaw-base</artifactId>
-        <version>3.3.0</version>
+        <version>3.3.1-SNAPSHOT</version>
         <relativePath />
     </parent>
 
@@ -24,7 +24,7 @@
 
         <!-- define revisions of other jpaw.de projects, not covered by plugin management -->
         <bonaparte-plugin.version>5.3.0</bonaparte-plugin.version> <!-- do not use -SNAPSHOT here (GH CI can't deal with it) -->
-        <jpaw.version>3.3.0</jpaw.version>
+        <jpaw.version>3.3.1-SNAPSHOT</jpaw.version>
 
         <!-- define releases (mostly of 3rd party dependencies) we want to use, to ensure consistency -->
         <!-- Some more versions, used by specific dependent projects -->
