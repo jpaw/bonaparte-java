@@ -118,7 +118,7 @@ public record PicNumeric(
                 throw new InvalidPictureException(InvalidPictureException.MISSING_PIC_PROPERTY, fd.getName(), className);
             }
         }
-        final String pic = props.get("pic");
+        final String pic = props.get("PIC");
         if (pic == null) {
             if (defaultPic != null) {
                 return forPic(defaultPic, fd.getName(), className);

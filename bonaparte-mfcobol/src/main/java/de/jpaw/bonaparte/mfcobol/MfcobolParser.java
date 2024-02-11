@@ -83,8 +83,13 @@ public class MfcobolParser extends Settings implements MessageParser<MessagePars
         currentClass = "N/A";
     }
 
-    protected int getParseIndex() {
+    public int getParseIndex() {
         return parseIndex;
+    }
+
+    /** allows to reset the parse position in the buffer, for example for a second pass, after determining the record type. */
+    public void resetParserIndex(final int start) {
+        parseIndex = start;
     }
 
     /**************************************************************************************************
@@ -302,7 +307,7 @@ public class MfcobolParser extends Settings implements MessageParser<MessagePars
     private static final Map<FieldDefinition, ToIntBiFunction<MfcobolParser, FieldDefinition>> INT_PARSERS = new IdentityHashMap<>(100);  // there is no ConcurrentIdentityHashMap unfortunately
 
     @Override
-    public int readPrimitiveInteger(BasicNumericElementaryDataItem di) throws MessageParserException {
+    public int readPrimitiveInteger(final BasicNumericElementaryDataItem di) throws MessageParserException {
         return INT_PARSERS.computeIfAbsent(di, f -> {
             final PicNumeric pic = PicNumeric.forField(di, getClassName(), "S9(9) COMP");
             if (pic.fractionalDigits() > 0) {
@@ -316,6 +321,12 @@ public class MfcobolParser extends Settings implements MessageParser<MessagePars
                 }
                 final int numBytes = pic.getSize();
                 return (p, fd) -> INTARR[numBytes].applyAsInt(p);
+//                return (p, fd) -> {
+//                    LOGGER.debug("{} starts at pos {}, {} bytes for {} digits", fd.getName(), p.parseIndex, numBytes, pic.integralDigits());
+//                    final int result = INTARR[numBytes].applyAsInt(p);
+//                    LOGGER.debug("Result is {}, leaving parsePos at {}", result, p.parseIndex);
+//                    return result;
+//                };
             case DISPLAY:
                 return (p, fd) -> readAsciiInt(pic.getSize(), di);
             default:
@@ -581,6 +592,7 @@ public class MfcobolParser extends Settings implements MessageParser<MessagePars
         }
         final String previousClass = currentClass;
         final String classname = di.getLowerBound().getName();
+        LOGGER.debug("readObject(): Classname is {}, type is {}", classname, type.getClass().getCanonicalName());
         final BonaPortable newObject = BonaPortableFactory.createObject(classname);
         if (newObject.getClass() != type) {
             // check if it is a superclass
