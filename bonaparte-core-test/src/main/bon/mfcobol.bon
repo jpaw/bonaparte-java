@@ -1,0 +1,11 @@
+package mfcoboltest {
+    properties pic;
+
+    class BasicTypes {
+        Uppercase(3)    currencyCode; // properties pic="X(3)";
+        int             singleByte    properties pic="99 COMP";
+        int             twoBytes      properties pic="9(4) COMP";
+        int             displayInt    properties pic="-9(6)";
+        Uppercase(1)    endMarker;
+    }
+}

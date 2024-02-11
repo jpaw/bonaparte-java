@@ -24,6 +24,11 @@
         </dependency>
         <dependency>
             <groupId>de.jpaw</groupId>
+            <artifactId>bonaparte-mfcobol</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.jpaw</groupId>
             <artifactId>bonaparte-adapters-scalar</artifactId>
             <version>${project.version}</version>
         </dependency>

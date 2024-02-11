@@ -21,6 +21,11 @@
             </dependency>
             <dependency>
                 <groupId>de.jpaw</groupId>
+                <artifactId>bonaparte-mfcobol</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.jpaw</groupId>
                 <artifactId>bonaparte-annotations</artifactId>
                 <version>${project.version}</version>
             </dependency>

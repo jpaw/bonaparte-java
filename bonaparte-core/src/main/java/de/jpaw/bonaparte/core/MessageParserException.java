@@ -80,7 +80,7 @@ public class MessageParserException extends ApplicationException {
     public static final int NULL_COLLECTION_NOT_ALLOWED  = OFFSET + 40;
     public static final int TOO_MANY_DECIMALS            = OFFSET + 41;
     public static final int INVALID_BACKREFERENCE        = OFFSET + 42;
-    public static final int UNSUPPORTED_DATA_TYPE        = OFFSET + 43;
+    public static final int UNSUPPORTED_DATA_TYPE        = OFFSET8 + 43;  // this is a coding problem
     public static final int EXTRA_FIELDS                 = OFFSET + 44;
     public static final int TOO_MANY_DIGITS              = OFFSET + 45;
     public static final int UNKNOW_RECORD_TYPE           = OFFSET + 46;

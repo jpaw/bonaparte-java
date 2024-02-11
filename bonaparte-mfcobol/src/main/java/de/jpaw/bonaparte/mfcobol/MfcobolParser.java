@@ -8,27 +8,31 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.function.LongFunction;
 import java.util.function.ToIntBiFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongBiFunction;
 import java.util.function.ToLongFunction;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.jpaw.bonaparte.core.BonaPortable;
+import de.jpaw.bonaparte.core.BonaPortableFactory;
 import de.jpaw.bonaparte.core.MessageParser;
 import de.jpaw.bonaparte.core.MessageParserException;
 import de.jpaw.bonaparte.core.Settings;
+import de.jpaw.bonaparte.core.StaticMeta;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
-import de.jpaw.bonaparte.pojos.meta.ElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
@@ -43,6 +47,8 @@ import de.jpaw.fixedpoint.FixedPointBase;
 import de.jpaw.util.ByteArray;
 
 public class MfcobolParser extends Settings implements MessageParser<MessageParserException> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(MfcobolParser.class);
+
     final protected Charset charset;
     private int parseIndex;
     private int messageLength;
@@ -86,7 +92,7 @@ public class MfcobolParser extends Settings implements MessageParser<MessagePars
      * but reads from the byte[] directly
      **************************************************************************************************/
 
-    protected MessageParserException newMPE(int errorCode, String msg) {
+    protected MessageParserException newMPE(final int errorCode, final String msg) {
         return new MessageParserException(errorCode, msg, parseIndex, currentClass);
     }
 
@@ -235,26 +241,6 @@ public class MfcobolParser extends Settings implements MessageParser<MessagePars
         return negative ? -result : result;
     }
 
-    private <T> T returnByPic(final ElementaryDataItem di, Map<String, Function<MfcobolParser, T>> evaluators) {
-        final Map<String, String> properties = di.getProperties();
-        if (properties == null) {
-            throw new MessageParserException(MessageParserException.FIELD_PARSE, "Missing PIC property for field" + di.getName(), getParseIndex(), "?");
-        }
-        final String picString = properties.get("PIC");
-        if (picString == null) {
-            throw new MessageParserException(MessageParserException.FIELD_PARSE, "Missing PIC property for field" + di.getName(), getParseIndex(), "?");
-        }
-        final Function<MfcobolParser, T> evaluator = evaluators.get(picString);
-        if (evaluator == null) {
-            throw new MessageParserException(MessageParserException.FIELD_PARSE, "Missing evaluator for PIC " + picString + " for field" + di.getName(), getParseIndex(), "?");
-        }
-        return evaluator.apply(this);
-//        final int oldParsePos = getParseIndex();
-//        final T value = evaluator.apply(this); 
-//        LOGGER.debug("Parse {} gave {}, index moved from {} to {} for pic {}", di.getName(), value, oldParsePos, getParseIndex(), picString);
-//        return value;
-    }
-
     @Override
     public void eatParentSeparator() {
     }
@@ -370,15 +356,13 @@ public class MfcobolParser extends Settings implements MessageParser<MessagePars
     }
 
     @Override
-    public MessageParserException enumExceptionConverter(IllegalArgumentException e) throws MessageParserException {
-        // TODO Auto-generated method stub
-        return null;
+    public MessageParserException enumExceptionConverter(final IllegalArgumentException e) {
+        return newMPE(MessageParserException.INVALID_ENUM_TOKEN, e.getMessage());
     }
 
     @Override
-    public MessageParserException customExceptionConverter(String msg, Exception e) throws MessageParserException {
-        // TODO Auto-generated method stub
-        return null;
+    public MessageParserException customExceptionConverter(String msg, Exception e) {
+        return newMPE(MessageParserException.CUSTOM_OBJECT_EXCEPTION, e != null ? msg + e.toString() : msg);
     }
 
     private static final Map<FieldDefinition, BiFunction<MfcobolParser, FieldDefinition, BigDecimal>> BIGDECIMAL_PARSERS = new IdentityHashMap<>(100);  // there is no ConcurrentIdentityHashMap unfortunately
@@ -480,7 +464,7 @@ public class MfcobolParser extends Settings implements MessageParser<MessagePars
                 final int numBytes = pic.getSize();
                 return (p, fd) -> LLARR[numBytes].applyAsLong(p);
             case DISPLAY:
-                return (p, fd) -> readAsciiInt(pic.getSize(), di);
+                return (p, fd) -> readAsciiLong(pic.getSize(), di);
             default:
                 ;
             }
@@ -592,8 +576,21 @@ public class MfcobolParser extends Settings implements MessageParser<MessagePars
 
     @Override
     public <R extends BonaPortable> R readObject(ObjectReference di, Class<R> type) throws MessageParserException {
-        // TODO Auto-generated method stub
-        return null;
+        if (di.getLowerBound() == null) {
+            throw newMPE(MessageParserException.INVALID_BASE_CLASS_REFERENCE, "");
+        }
+        final String previousClass = currentClass;
+        final String classname = di.getLowerBound().getName();
+        final BonaPortable newObject = BonaPortableFactory.createObject(classname);
+        if (newObject.getClass() != type) {
+            // check if it is a superclass
+            throw new MessageParserException(MessageParserException.BAD_CLASS, di.getName(), parseIndex, currentClass); // FIXME: name passed for message
+        }
+        // parse the new embedded object
+        currentClass = classname;
+        newObject.deserialize(this);
+        currentClass = previousClass;
+        return type.cast(newObject);
     }
 
     @Override
@@ -619,26 +616,22 @@ public class MfcobolParser extends Settings implements MessageParser<MessagePars
 
     @Override
     public int parseArrayStart(FieldDefinition di, int sizeOfElement) throws MessageParserException {
-        // TODO Auto-generated method stub
-        return 0;
+        return di.getMaxCount();
     }
 
     @Override
     public void parseArrayEnd() throws MessageParserException {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override
     public BonaPortable readRecord() throws MessageParserException {
-        // TODO Auto-generated method stub
-        return null;
+        return readObject(StaticMeta.OUTER_BONAPORTABLE, BonaPortable.class);
     }
 
     @Override
     public List<BonaPortable> readTransmission() throws MessageParserException {
-        // TODO Auto-generated method stub
-        return null;
+        LOGGER.error("readTransmission() is not supported");
+        return Collections.emptyList();
     }
 
     @Override
@@ -658,6 +651,15 @@ public class MfcobolParser extends Settings implements MessageParser<MessagePars
 
     @Override
     public <T extends AbstractXEnumBase<T>> T readXEnum(XEnumDataItem di, XEnumFactory<T> factory) throws MessageParserException {
+//        final XEnumDefinition spec = di.getBaseXEnum();
+////        if (checkForNull(di.getName(), di.getIsRequired() && !spec.getHasNullToken()))
+////            return factory.getNullToken();
+//        String scannedToken = readString(di.getName());
+//        T value = factory.getByToken(scannedToken);
+//        if (value == null) {
+//            throw newMPE(MessageParserException.INVALID_ENUM_TOKEN, scannedToken);
+//        }
+//        return value;
         throw new MessageParserException(MessageParserException.UNSUPPORTED_DATA_TYPE);
     }
 
