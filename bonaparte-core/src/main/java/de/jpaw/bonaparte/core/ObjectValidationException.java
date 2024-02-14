@@ -16,6 +16,7 @@
 package de.jpaw.bonaparte.core;
 
 import de.jpaw.util.ApplicationException;
+import de.jpaw.util.ApplicationException.ApplicationLevelType;
 
 /**
  * The ObjectValidationException class.
@@ -58,6 +59,8 @@ public class ObjectValidationException extends ApplicationException {
     public static final int MAP_NOT_UNSUPPORTED         = ILE_OFFSET + 54;
 
     static {
+        registerRange(OFFSET, false, ObjectValidationException.class, ApplicationLevelType.CORE_LIBRARY);
+
         registerCode(MAY_NOT_BE_BLANK          , "Empty, but required field");
         registerCode(NO_PATTERN_MATCH          , "Field contents does not match required pattern");
         registerCode(TOO_MANY_ELEMENTS         , "Array contains too many elements");

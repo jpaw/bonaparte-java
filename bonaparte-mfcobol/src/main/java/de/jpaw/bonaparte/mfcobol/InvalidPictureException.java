@@ -30,7 +30,7 @@ import de.jpaw.util.ApplicationException;
 public class InvalidPictureException extends ApplicationException {
     private static final long serialVersionUID = 8530206162841742151L;
 
-    private static final int ILE_OFFSET = CL_INTERNAL_LOGIC_ERROR * CLASSIFICATION_FACTOR + 37000;  // offset for all codes in this class
+    private static final int ILE_OFFSET = CL_INTERNAL_LOGIC_ERROR * CLASSIFICATION_FACTOR + 13000;  // offset for all codes in this class
 
     public static final int NO_MATCH                 = ILE_OFFSET + 1;
     public static final int INVALID_GROUP_COUNT      = ILE_OFFSET + 2;
@@ -43,6 +43,8 @@ public class InvalidPictureException extends ApplicationException {
     public static final int TYPE_NO_FRACTIONALS          = ILE_OFFSET + 9;
 
     static {
+        registerRange(ILE_OFFSET, false, InvalidPictureException.class, ApplicationLevelType.CORE_LIBRARY);
+
         registerCode(NO_MATCH,                 "pic property does not match supported pattern");
         registerCode(INVALID_GROUP_COUNT,      "Pattern total group count not as expected - should never happen");
         registerCode(POINT_WITH_PACKED,        "Display style decimal point for COMP data types not allowed");

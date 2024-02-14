@@ -112,6 +112,8 @@ public class MessageParserException extends ApplicationException {
 
 
     static {
+        registerRange(OFFSET, false, MessageParserException.class, ApplicationLevelType.CORE_LIBRARY);
+
         registerCode(MISSING_FIELD_TERMINATOR     , "Missing field terminator");
         registerCode(MISSING_RECORD_TERMINATOR    , "Missing record terminator");
         registerCode(MISSING_TERMINATOR           , "Missing message terminator");

@@ -38,6 +38,8 @@ public class UtilException extends ApplicationException {
     public static final int NO_CLOSING_BRACKET          = OFFSET + 5;
 
     static {
+        registerRange(OFFSET, false, UtilException.class, ApplicationLevelType.CORE_LIBRARY);
+
         registerCode(PATH_COMPONENT_NOT_FOUND      , "Path component not found");
         registerCode(DESCEND_TO_NON_REFERENCE      , "Path element is not the last one but is no reference");
         registerCode(DESCEND_TO_GENERIC_OBJECT     , "Path element leads to a generic reference");
