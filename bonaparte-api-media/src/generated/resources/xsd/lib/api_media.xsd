@@ -43,6 +43,15 @@
             <xs:enumeration value="UNDEFINED"/>
         </xs:restriction>
     </xs:simpleType>
+    <xs:simpleType name="MediaStorageLocation">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="FILE"/>
+            <xs:enumeration value="WEB"/>
+            <xs:enumeration value="S3"/>
+            <xs:enumeration value="AZURE"/>
+            <xs:enumeration value="GCS"/>
+        </xs:restriction>
+    </xs:simpleType>
     <xs:simpleType name="MediaCategory">
         <xs:restriction base="xs:string">
             <xs:enumeration value="OTHER"/>
@@ -63,6 +72,11 @@
         </xs:restriction>
     </xs:simpleType>
     <xs:simpleType name="MediaXType">
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="1"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="MediaXStorageLocation">
         <xs:restriction base="xs:string">
             <xs:maxLength value="1"/>
         </xs:restriction>
@@ -114,6 +128,7 @@
                         </xs:simpleType>
                     </xs:element>
                     <xs:element name="z" minOccurs="0" nillable="true" type="bon:JSON"/>
+                    <xs:element name="mediaStorageLocation" minOccurs="0" nillable="true" type="api_media:MediaXStorageLocation"/>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>
