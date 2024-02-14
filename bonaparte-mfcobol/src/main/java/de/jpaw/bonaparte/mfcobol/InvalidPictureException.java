@@ -43,7 +43,7 @@ public class InvalidPictureException extends ApplicationException {
     public static final int TYPE_NO_FRACTIONALS          = ILE_OFFSET + 9;
 
     static {
-        registerRange(ILE_OFFSET, false, InvalidPictureException.class, ApplicationLevelType.CORE_LIBRARY);
+        registerRange(ILE_OFFSET, false, InvalidPictureException.class, ApplicationLevelType.CORE_LIBRARY, "MF-Cobol type definition library");
 
         registerCode(NO_MATCH,                 "pic property does not match supported pattern");
         registerCode(INVALID_GROUP_COUNT,      "Pattern total group count not as expected - should never happen");
