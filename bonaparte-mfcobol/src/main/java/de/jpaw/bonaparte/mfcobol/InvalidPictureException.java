@@ -30,7 +30,7 @@ import de.jpaw.util.ApplicationException;
 public class InvalidPictureException extends ApplicationException {
     private static final long serialVersionUID = 8530206162841742151L;
 
-    private static final int ILE_OFFSET = CL_INTERNAL_LOGIC_ERROR * CLASSIFICATION_FACTOR + 13000;  // offset for all codes in this class
+    private static final int ILE_OFFSET = CL_INTERNAL_LOGIC_ERROR * CLASSIFICATION_FACTOR + 12000;  // offset for all codes in this class
 
     public static final int NO_MATCH                 = ILE_OFFSET + 1;
     public static final int INVALID_GROUP_COUNT      = ILE_OFFSET + 2;
