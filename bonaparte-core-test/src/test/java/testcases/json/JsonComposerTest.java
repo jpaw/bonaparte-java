@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import java.time.LocalDate;
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.ByteArrayComposer;
@@ -135,16 +135,16 @@ public class JsonComposerTest {
         Object obj = new JsonParser(buff, false).parseElement();
         System.out.println(ToStringHelper.toStringML(obj));       // visually verify: array, enum names
 
-        Assert.assertTrue(obj instanceof Map);
+        Assertions.assertTrue(obj instanceof Map);
         Map<?,?> objM = (Map<?,?>)obj;
         Object expL = objM.get("any");
-        Assert.assertNotNull(expL);
-        Assert.assertTrue(expL instanceof List);
+        Assertions.assertNotNull(expL);
+        Assertions.assertTrue(expL instanceof List);
         List<?> objL = (List<?>)expL;
-        Assert.assertEquals(objL.size(), 5);
-        Assert.assertEquals(objM.get("cn"), Integer.valueOf(1));
-        Assert.assertEquals(objM.get("ca"), "G");
-        Assert.assertEquals(objM.get("cx"), "R");
+        Assertions.assertEquals(objL.size(), 5);
+        Assertions.assertEquals(objM.get("cn"), Integer.valueOf(1));
+        Assertions.assertEquals(objM.get("ca"), "G");
+        Assertions.assertEquals(objM.get("cx"), "R");
     }
 
     @Test

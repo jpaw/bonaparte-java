@@ -1,7 +1,7 @@
 package testcases.xenum;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.pojos.testXenum.ManyLetters;
 import de.jpaw.enums.ImmutableStringEnumSet;
@@ -14,9 +14,9 @@ public class TestImmutableEnumSet {
         ImmutableStringEnumSet z = ImmutableStringEnumSet.of(union);
         ImmutableStringEnumSet r = BASE.add(b);
 
-        Assert.assertEquals(r, z);  // Set equals
+        Assertions.assertEquals(r, z);  // Set equals
 
-        Assert.assertEquals(union, r.getBitmap()); // String equals
+        Assertions.assertEquals(union, r.getBitmap()); // String equals
     }
 
     @Test
@@ -33,16 +33,16 @@ public class TestImmutableEnumSet {
         ImmutableStringEnumSet a = ImmutableStringEnumSet.of("BD");
         ImmutableStringEnumSet b = a.add(ManyLetters.CHARLIE);
         ImmutableStringEnumSet c = ImmutableStringEnumSet.of("BCD");
-        Assert.assertEquals(b, c);
+        Assertions.assertEquals(b, c);
     }
 
     private void testMinus(TokenizableEnum b, String difference) throws Exception {
         ImmutableStringEnumSet z = ImmutableStringEnumSet.of(difference);
         ImmutableStringEnumSet r = BASE.minus(b);
 
-        Assert.assertEquals(r, z);  // Set equals
+        Assertions.assertEquals(r, z);  // Set equals
 
-        Assert.assertEquals(difference, r.getBitmap()); // String equals
+        Assertions.assertEquals(difference, r.getBitmap()); // String equals
     }
 
     @Test

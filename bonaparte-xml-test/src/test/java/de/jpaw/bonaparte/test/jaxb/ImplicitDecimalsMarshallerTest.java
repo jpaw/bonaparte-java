@@ -3,16 +3,13 @@ package de.jpaw.bonaparte.test.jaxb;
 import java.io.StringReader;
 import java.io.StringWriter;
 
+import org.junit.jupiter.api.Test;
+
+import de.jpaw.bonaparte.pojos.test.jaxb.TestXml2;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.Unmarshaller;
 
-import org.testng.annotations.Test;
-
-import de.jpaw.bonaparte.pojos.test.jaxb.TestXml2;
-
-
-@Test
 public class ImplicitDecimalsMarshallerTest {
     private static final String PACKAGE = "de.jpaw.bonaparte.pojos.test.jaxb";   // package name where jaxb.index sits
     private static final String EXPECTED_XML =
@@ -23,6 +20,7 @@ public class ImplicitDecimalsMarshallerTest {
           + "    <roundedMillis>333.666</roundedMillis>\n"
           + "</TestXml2>\n";
 
+    @Test
     public void marshallTestXml() throws Exception {
         TestXml2 obj = new TestXml2((byte)42, 42123456L, 333666);
 
@@ -38,6 +36,7 @@ public class ImplicitDecimalsMarshallerTest {
         assert(actualXml.equals(EXPECTED_XML));
     }
 
+    @Test
     public void unmarshallXenum() throws Exception {
         // create the XML for this
         JAXBContext context = JAXBContext.newInstance(PACKAGE);
@@ -52,5 +51,4 @@ public class ImplicitDecimalsMarshallerTest {
         assert(obj2.microUnits == 42123456L);
         assert(obj2.roundedMillis == 333666);
     }
-
 }

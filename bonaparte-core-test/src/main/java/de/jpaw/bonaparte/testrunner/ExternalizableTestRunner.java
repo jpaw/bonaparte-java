@@ -5,7 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import org.testng.Assert;
+import org.junit.jupiter.api.Assertions;
 import de.jpaw.bonaparte.core.BonaCustom;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.ExternalizableComposer;
@@ -22,7 +22,7 @@ public class ExternalizableTestRunner extends AbstractTestrunner<byte[]> {
         dataOut.flush();
         byte [] result = baos.toByteArray();
         if (expectedResult != null)
-            Assert.assertEquals(result, expectedResult);
+            Assertions.assertEquals(result, expectedResult);
         return result;
     }
 
@@ -33,7 +33,7 @@ public class ExternalizableTestRunner extends AbstractTestrunner<byte[]> {
         ExternalizableParser bap = new ExternalizableParser(dataIn);
         BonaPortable result = bap.readRecord();
         if (expectedResult != null)
-            Assert.assertEquals(result, expectedResult);
+            Assertions.assertEquals(result, expectedResult);
         return result;
     }
 }

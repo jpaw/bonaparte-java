@@ -1,6 +1,6 @@
 package testcases.test;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.testrunner.ByteArrayTestRunner;
 

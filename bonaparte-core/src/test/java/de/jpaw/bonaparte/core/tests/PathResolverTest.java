@@ -1,7 +1,7 @@
 package de.jpaw.bonaparte.core.tests;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.core.BonaPortableFactory;
 import de.jpaw.bonaparte.pojos.meta.ClassDefinition;
@@ -23,7 +23,7 @@ public class PathResolverTest {
         ClassDefinition obj = XEnumSetDefinition.BClass.INSTANCE.getMetaData();
 
         FieldDefinition f = FieldGetter.getFieldDefinitionForPathname(obj, "baseXEnum");
-        Assert.assertEquals(f, XEnumSetDefinition.meta$$baseXEnum);
+        Assertions.assertEquals(f, XEnumSetDefinition.meta$$baseXEnum);
     }
 
     @Test
@@ -31,7 +31,7 @@ public class PathResolverTest {
         ClassDefinition obj = ClassDefinition.BClass.INSTANCE.getMetaData();
 
         FieldDefinition f = FieldGetter.getFieldDefinitionForPathname(obj, "fields[2].dataCategory");
-        Assert.assertEquals(f, FieldDefinition.meta$$dataCategory);
+        Assertions.assertEquals(f, FieldDefinition.meta$$dataCategory);
     }
 
     @Test
@@ -39,12 +39,12 @@ public class PathResolverTest {
         info();
         ClassDefinition obj = XEnumSetDefinition.BClass.INSTANCE.getMetaData();
         FieldDefinition f = FieldGetter.getFieldDefinitionForPathname(obj, "baseXEnum");
-        Assert.assertEquals(f, XEnumSetDefinition.meta$$baseXEnum);
+        Assertions.assertEquals(f, XEnumSetDefinition.meta$$baseXEnum);
 
         ClassDefinition obj2 = ClassDefinition.BClass.INSTANCE.getMetaData();
 
         FieldDefinition f2 = FieldGetter.getFieldDefinitionForPathname(obj2, "fields[2].dataCategory");
-        Assert.assertEquals(f2, FieldDefinition.meta$$dataCategory);
+        Assertions.assertEquals(f2, FieldDefinition.meta$$dataCategory);
     }
 
 }

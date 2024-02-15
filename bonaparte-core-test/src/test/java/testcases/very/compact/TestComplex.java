@@ -1,7 +1,7 @@
 package testcases.very.compact;
 
-import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.CompactByteArrayComposer;
@@ -13,7 +13,7 @@ import de.jpaw.bonaparte.scanner.BClassScanner;
 import de.jpaw.util.ByteUtil;
 
 public class TestComplex {
-    @BeforeSuite
+    @BeforeEach
     public void registerClasses() {
         BClassScanner.init();
     }

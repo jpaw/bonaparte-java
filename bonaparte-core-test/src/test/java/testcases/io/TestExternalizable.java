@@ -5,7 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.pojos.io.Key;
 import de.jpaw.bonaparte.pojos.io.MyObject;

@@ -1,6 +1,6 @@
 package de.jpaw.bonaparte.testrunner;
 
-import org.testng.Assert;
+import org.junit.jupiter.api.Assertions;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 
@@ -15,11 +15,11 @@ public class MultiTestRunner {
 
         // both results must match, they're the same story
         byte [] sbAsBa = gotSB.getBytes("UTF-8");
-        Assert.assertEquals(gotBA, sbAsBa);
+        Assertions.assertArrayEquals(gotBA, sbAsBa);
 
         byte [] gotCB = new CompactByteArrayTestRunner().serDeser(src, null);
         byte [] gotC = new CompactTestRunner().serDeser(src, gotCB);
-        Assert.assertEquals(gotCB, gotC);
+        Assertions.assertArrayEquals(gotCB, gotC);
 
         byte [] gotExt = new ExternalizableTestRunner().serDeser(src, null);
 

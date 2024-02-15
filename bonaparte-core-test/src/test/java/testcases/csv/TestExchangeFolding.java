@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import java.time.LocalDate;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.core.BonaCustom;
 import de.jpaw.bonaparte.core.BonaPortable;

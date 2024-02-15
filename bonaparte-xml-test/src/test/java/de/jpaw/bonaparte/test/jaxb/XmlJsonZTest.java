@@ -1,17 +1,16 @@
 package de.jpaw.bonaparte.test.jaxb;
 
-import static org.testng.Assert.assertEquals;
-
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.Unmarshaller;
-
-import org.testng.annotations.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -25,7 +24,7 @@ public class XmlJsonZTest {
     private static final String EXPECTED_XML =
             "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
             "<test_jsonZ:TestJsonZ xmlns:bon=\"http://www.jpaw.de/schema/bonaparte.xsd\" xmlns:test_jsonZ=\"http://www.jpaw.de/schema/test_jsonZ.xsd\">\n" +
-            "    <test_jsonZ:num>12</test_jsonZ:num>" +
+            "    <test_jsonZ:num>12</test_jsonZ:num>\n" +
             "    <test_jsonZ:z>\n" +
             "        <bon:kvp>\n" +
             "            <bon:key>isGreen</bon:key>\n" +
@@ -36,7 +35,7 @@ public class XmlJsonZTest {
             "            <bon:value>world</bon:value>\n" +
             "        </bon:kvp>\n" +
             "    </test_jsonZ:z>\n" +
-            "    <test_jsonZ:str>ABC</test_jsonZ:str>" +
+            "    <test_jsonZ:str>ABC</test_jsonZ:str>\n" +
             "</test_jsonZ:TestJsonZ>\n";
     private static final String EXPECTED_JSON = "{\"num\":12,\"z\":{\"isGreen\":true,\"hello\":\"world\"},\"str\":\"ABC\"}";
 
@@ -65,7 +64,7 @@ public class XmlJsonZTest {
 
         System.out.println("Output is " + writer);
         String actualXml = writer.toString().replace("\r", "");
-        // assert(actualXml.equals(EXPECTED_XML));
+        Assertions.assertEquals(EXPECTED_XML, actualXml);
     }
 
     @Test
@@ -102,7 +101,7 @@ public class XmlJsonZTest {
 
         String serialized = mapper.writer().writeValueAsString(obj);
         System.out.println("Jackson2 produces " + serialized);
-        assertEquals(EXPECTED_JSON, serialized);
+        Assertions.assertEquals(EXPECTED_JSON, serialized);
     }
 
     @Test
@@ -114,6 +113,6 @@ public class XmlJsonZTest {
         assert(obj != null);
         System.out.println("Output is " + ToStringHelper.toStringML(obj));
         assert("world".equals(obj.getZ().get("hello")));
-        assertEquals(obj, objIn);
+        Assertions.assertEquals(obj, objIn);
     }
 }

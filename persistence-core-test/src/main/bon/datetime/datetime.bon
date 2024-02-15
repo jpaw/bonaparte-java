@@ -1,0 +1,11 @@
+package datetime {
+    class Sample {
+        Long            key;
+        Time(0)         myTime0;
+        Time(3)         myTime3;
+        Timestamp(0)    myTimestamp0;
+        Timestamp(3)    myTimestamp3;
+        Instant(0)      myInstant0;
+        Instant(3)      myInstant3;
+    }
+}

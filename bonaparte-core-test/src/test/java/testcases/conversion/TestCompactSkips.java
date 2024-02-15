@@ -1,7 +1,7 @@
 package testcases.conversion;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.core.CompactByteArrayComposer;
 import de.jpaw.bonaparte.core.CompactByteArrayParser;
@@ -37,7 +37,7 @@ public class TestCompactSkips {
 
     @Test
     public void checkConfig() throws Exception {
-        Assert.assertEquals(CompactConstants.SKIP_BYTES.length, 5 * 16 + 4);    // assert that no item has been forgotten / is extra
+        Assertions.assertEquals(CompactConstants.SKIP_BYTES.length, 5 * 16 + 4);    // assert that no item has been forgotten / is extra
     }
 
 

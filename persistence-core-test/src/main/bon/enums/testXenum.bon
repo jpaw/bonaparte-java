@@ -1,0 +1,33 @@
+package testXenum {
+    enum Color { RED, GREEN, BLUE }
+    enum AlphaColor { RED="R", GREEN="G", BLUE="B" }
+    enum AlphaColorWithNull { RED="R", GREEN="G", BLUE="B", TRANSPARENT="" }
+    enum AlphaColorUnicode { RED="räd", GREEN="G", BLUE="B" }
+    xenum XColor1 is AlphaColor : 2;
+    xenum XColorWithNull is AlphaColorWithNull;
+    xenum XColorUni is AlphaColorUnicode;
+    xenum XColorUni2 is AlphaColor : 2 unicode;
+
+    enumset AlphaSet is AlphaColor;
+    enumset AlphaSetUni is AlphaColorUnicode;
+    xenumset XColorSet1 is XColorWithNull;
+
+    class EnumTests BeanVal {
+        Integer key;
+        enum Color color1;
+        enum AlphaColor color2;
+        enum AlphaColorWithNull enumNullable;
+        enum AlphaColorUnicode alphaColorUnicode;
+
+        xenum XColor1 xcolor1;
+        xenum XColorWithNull xcolor1withNull;
+        xenum XColorUni xcolor2;
+        xenum XColorUni2 xcolor3;
+
+        enumset AlphaSet asciiSet1;
+        enumset AlphaSetUni uniset1;
+        xenumset XColorSet1(10) asciiSet2;
+
+    }
+
+}

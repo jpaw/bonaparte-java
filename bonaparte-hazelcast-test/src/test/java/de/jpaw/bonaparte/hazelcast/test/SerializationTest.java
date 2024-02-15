@@ -2,7 +2,7 @@ package de.jpaw.bonaparte.hazelcast.test;
 
 import java.io.IOException;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import com.hazelcast.config.SerializationConfig;
 import com.hazelcast.config.SerializerConfig;
@@ -24,7 +24,6 @@ import de.jpaw.bonaparte.pojos.hazeltest.DSTest;
 import de.jpaw.bonaparte.pojos.hazeltest.IDSTest;
 import de.jpaw.bonaparte.pojos.hazeltest.PojoTest;
 
-@Test
 public class SerializationTest {
 
     private static void doTest(Object obj, String msg, DataSerializableFactory f, Serializer s) throws IOException {
@@ -70,11 +69,13 @@ public class SerializationTest {
     }
 
     // simple String test
+    @Test
     public void testUTF() throws Exception {
         doTest("Hello, world!", "Test UTF", null, null);
     }
 
     // test data serializable
+    @Test
     public void testDataSerializable() throws Exception {
 
         DSTest tmp = new DSTest();
@@ -88,6 +89,7 @@ public class SerializationTest {
     }
 
     // test identified data serializable
+    @Test
     public void testIdentifiedDataSerializable() throws Exception {
 
         IDSTest tmp = new IDSTest();
@@ -118,15 +120,19 @@ public class SerializationTest {
         doTest(tmp, what, null, s);
     }
 
+    @Test
     public void testByteArraySerializerCid() throws Exception {
         runPojoSerializer("Test Pojo byte array CID", new BonaparteByteArraySerializer(true));
     }
+    @Test
     public void testByteArraySerializerPqon() throws Exception {
         runPojoSerializer("Test Pojo byte array PQON", new BonaparteByteArraySerializer(false));
     }
+    @Test
     public void testStreamSerializerCid() throws Exception {
         runPojoSerializer("Test Pojo stream CID", new BonaparteStreamSerializer(true));
     }
+    @Test
     public void testStreamSerializerPqon() throws Exception {
         runPojoSerializer("Test Pojo stream PQON", new BonaparteStreamSerializer(false));
     }

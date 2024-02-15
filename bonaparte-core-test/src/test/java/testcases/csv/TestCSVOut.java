@@ -3,8 +3,8 @@ package testcases.csv;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.core.CSVComposer2;
 import de.jpaw.bonaparte.core.CSVComposer3;
@@ -22,12 +22,12 @@ public class TestCSVOut {
 
         CSVComposer2 p2 = new CSVComposer2(buff, cfg);
         p2.writeObject(data);
-        Assert.assertEquals(buff.toString(), expected2);
+        Assertions.assertEquals(buff.toString(), expected2);
 
         buff.setLength(0);
         CSVComposer3 p3 = new CSVComposer3(buff, cfg);
         p3.writeObject(data);
-        Assert.assertEquals(buff.toString(), expected3);
+        Assertions.assertEquals(buff.toString(), expected3);
     }
 
     @Test
@@ -43,7 +43,7 @@ public class TestCSVOut {
         StringBuilder buff = new StringBuilder(100);
         CSVComposer2 p2 = new CSVComposer2(buff, cfg);
         p2.writeObject(data);
-        Assert.assertEquals(buff.toString(), "hello;14;world");
+        Assertions.assertEquals(buff.toString(), "hello;14;world");
     }
 
     @Test
@@ -52,6 +52,6 @@ public class TestCSVOut {
         StringBuilder buff = new StringBuilder(100);
         CSVComposer2 p2 = new CSVComposer2(buff, cfg);
         p2.writeObject(data);
-        Assert.assertEquals(buff.toString(), "hello;;world");
+        Assertions.assertEquals(buff.toString(), "hello;;world");
     }
 }

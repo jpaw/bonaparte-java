@@ -3,7 +3,7 @@ package de.jpaw.bonaparte.core.tests;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 //import com.esotericsoftware.kryo.Kryo;
 //import com.esotericsoftware.kryo.io.Output;

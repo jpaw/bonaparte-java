@@ -1,6 +1,6 @@
 package testcases.treewalk;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.core.DataConverter;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;

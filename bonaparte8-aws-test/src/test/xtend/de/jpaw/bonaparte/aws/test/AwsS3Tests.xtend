@@ -6,9 +6,9 @@ import com.amazonaws.services.s3.model.ObjectMetadata
 import de.jpaw.bonaparte.core.CompactByteArrayComposer
 import de.jpaw.bonaparte.pojos.s3Tests.Test1
 import java.io.ByteArrayInputStream
-import org.testng.annotations.Test
+import org.junit.jupiter.api.Test
 
-import static extension org.testng.Assert.*
+import static extension org.junit.jupiter.api.Assertions.*
 import com.amazonaws.services.s3.model.ListObjectsRequest
 import java.io.File
 import com.amazonaws.services.s3.model.PutObjectRequest

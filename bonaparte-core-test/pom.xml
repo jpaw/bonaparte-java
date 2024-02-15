@@ -1,11 +1,10 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>de.jpaw</groupId>
         <artifactId>bonaparte-base</artifactId>
-        <version>5.0.5</version>
+        <version>5.3.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>bonaparte-core-test</artifactId>
@@ -14,13 +13,18 @@
     <description>BONAPARTE core library extended unit tests</description>
 
     <properties>
-        <json-io.version>4.12.0</json-io.version>
+        <json-io.version>4.19.1</json-io.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>de.jpaw</groupId>
             <artifactId>bonaparte-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.jpaw</groupId>
+            <artifactId>bonaparte-mfcobol</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -35,14 +39,8 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>${testng.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
-            <version>${slf4j.version}</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
@@ -96,6 +94,12 @@
             <artifactId>jackson-jr-objects</artifactId>
         </dependency>
 
+
+        <!-- JUnit Test -->
+        <dependency>
+           <groupId>org.junit.jupiter</groupId>
+           <artifactId>junit-jupiter-api</artifactId>
+        </dependency>
     </dependencies>
 
 

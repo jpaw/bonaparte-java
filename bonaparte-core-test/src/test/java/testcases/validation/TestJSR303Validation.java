@@ -3,21 +3,20 @@ package testcases.validation;
 import java.math.BigDecimal;
 import java.util.Set;
 
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
-
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.coretests.initializers.FillOtherTypes;
 import de.jpaw.bonaparte.pojos.bigdecimal.BDTest;
 import de.jpaw.bonaparte.pojos.tests1.OtherTypes;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
 
 public class TestJSR303Validation {
     private static Validator    validator;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp() {
         validator = Validation.buildDefaultValidatorFactory().getValidator();
     }

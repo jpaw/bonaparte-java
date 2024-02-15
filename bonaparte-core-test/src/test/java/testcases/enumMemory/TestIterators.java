@@ -1,13 +1,13 @@
 package testcases.enumMemory;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.pojos.enumtest.AlphabetEnum;
 
 public class TestIterators {
     private static final int NUM_ITERATIONS = 100;
 
-    private final StringBuffer buff = new StringBuffer(100000);
+    private final StringBuilder buff = new StringBuilder(100000);
     private long memSize;
 
     public void oldSchool() {

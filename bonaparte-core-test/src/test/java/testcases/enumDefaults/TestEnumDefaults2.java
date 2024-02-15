@@ -1,6 +1,6 @@
 package testcases.enumDefaults;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.pojos.enumWithDefaults2.ClassWithEnumDefaultsDueToClassDefaults;
 import de.jpaw.bonaparte.pojos.enumWithDefaults2.ClassWithoutDefaults;

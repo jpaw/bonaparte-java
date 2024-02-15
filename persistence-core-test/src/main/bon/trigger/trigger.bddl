@@ -1,0 +1,24 @@
+import examples.trigger.*
+
+@Generator(noMapper)
+package examples.trigger.entities owner scott prefix this {
+    grants rw {
+        demorole: SELECT,INSERT,UPDATE,DELETE;
+    }
+    category testshis {
+        historyColumns history_seq_no, history_change_type actualData
+        grants rw
+    }
+    category tests {
+        trackinggroup FullTrackingWithVersion
+        history testshis
+        requiresPK
+        grants rw
+
+    }
+
+    // example of an entity with a single field primary key
+    entity MyEntity category tests is MyDTO {
+        pk (key)
+    }
+}

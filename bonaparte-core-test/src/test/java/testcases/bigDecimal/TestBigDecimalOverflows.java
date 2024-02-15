@@ -2,7 +2,7 @@ package testcases.bigDecimal;
 
 import java.math.BigDecimal;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.ByteArrayComposer;

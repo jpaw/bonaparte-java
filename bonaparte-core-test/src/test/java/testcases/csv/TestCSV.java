@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Locale;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.CSVComposer2;
@@ -59,7 +59,7 @@ public class TestCSV {
     private void parseCSVAndCompare(String input, BonaPortable output) throws Exception {
         StringCSVParser p = new StringCSVParser(cfg1, input);
         BonaPortable o = p.readObject(StaticMeta.OUTER_BONAPORTABLE_FOR_CSV, output.getClass());
-        Assert.assertEquals(output, o);
+        Assertions.assertEquals(output, o);
     }
 
     @Test
@@ -82,7 +82,7 @@ public class TestCSV {
         StringCSVParser p = new StringCSVParser(cfgDE, input);
         p.setNationalBigDecimal();  // switch to
         BonaPortable o    = p.readObject(StaticMeta.OUTER_BONAPORTABLE_FOR_CSV, testData.getClass());
-        Assert.assertEquals(testData, o);
+        Assertions.assertEquals(testData, o);
     }
 
     @Test
@@ -92,7 +92,7 @@ public class TestCSV {
         StringCSVParser p = new StringCSVParser(cfgDE, input);
         BonaPortable o    = p.readObject(StaticMeta.OUTER_BONAPORTABLE_FOR_CSV, Test4.class);
         Test4 oo = (Test4)o;
-        Assert.assertEquals(oo.getMayBeNullButNotShort(), "hello", "truncated string");
+        Assertions.assertEquals(oo.getMayBeNullButNotShort(), "hello", "truncated string");
         oo.validate();
     }
 
@@ -104,6 +104,6 @@ public class TestCSV {
         BonaPortable o    = p.readObject(StaticMeta.OUTER_BONAPORTABLE_FOR_CSV, Test4.class);
         Test4 oo = (Test4)o;
         oo.validate();
-        Assert.assertEquals(oo.getMayBeNullButNotShort(), null, "truncated string");
+        Assertions.assertEquals(oo.getMayBeNullButNotShort(), null, "truncated string");
     }
 }

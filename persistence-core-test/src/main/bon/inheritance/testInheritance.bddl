@@ -1,0 +1,28 @@
+// Persistence test entities for the persistence DSL.
+
+import inheritanceDto.*
+
+default
+    tablenamepattern "test_(entity)"
+    tablespacepattern "system"
+    ;
+
+// listeners provided here don't make sense, they should just showcase the generated code
+package testInheritanceEntities owner scott prefix test {
+    grants rw {
+        demorole: SELECT,INSERT,UPDATE,DELETE;
+    }
+
+    category tests {
+        trackinggroup Trk entityListener java.lang.^Long
+       grants rw
+    }
+
+
+    entity InheritanceTstEntity category tests is MyData autoSetter java.util.Date {
+        pk (key)
+    }
+    entity InheriTst2Entity category tests is MyData entityListener java.lang.^String {
+        pk (key)
+    }
+}

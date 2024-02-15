@@ -1,0 +1,44 @@
+package tests1 {
+    enum Color { RED, GREEN, BLUE }
+    enum AlphaColor { RED="R", GREEN="G", BLUE="B" }
+    enum VariableLength { ONE="1", NULL="", LONG = "This is a long text" }
+    enum VariableLengthUnicode { UMLAUT="Jäh!", EURO="€" }
+
+    class BoxedTypes {
+        Byte byte1;
+        Short short1;
+        Int int1;
+        Integer int2;
+        Long long1;
+        Boolean boolean1;
+        Float float1;
+        Double double1;
+        Char char1;
+        Character char2;
+    }
+
+    class OtherTypes {
+        raw(1000000) raw1;
+        binary(1000000) binary1;
+        day day1;
+        timestamp(0) timestamp1;
+        timestamp(3) timestamp2;
+        time(0) time1;
+        time(3) time2;
+        ascii(30) ascii1;
+        unicode(30) unicode1;
+        number(4) number1;
+        decimal(14,2) decimal1;
+        enum Color color1;
+        enum AlphaColor color2;
+        enum VariableLength varEnum1;
+        enum VariableLengthUnicode varEnum2;
+        uuid myUuid;
+        uppercase(2..2) countryCode;
+        Ascii(2..5) regexp "[a-z][a-z](_[A-Z][A-Z])?" languageCode;
+        timestamp(0) hhmmss timestamp1a;
+        timestamp(3) hhmmss timestamp2a;
+        time(0) hhmmss time1a;
+        time(3) hhmmss time2a;
+    }
+}

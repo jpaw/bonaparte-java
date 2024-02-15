@@ -7,17 +7,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.Test;
+
+import de.jpaw.bonaparte.pojos.test.json.Test4XML;
+import de.jpaw.bonaparte.util.ToStringHelper;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.Unmarshaller;
 
-import org.testng.annotations.Test;
 
-import de.jpaw.bonaparte.pojos.test.json.Test4XML;
-import de.jpaw.bonaparte.util.ToStringHelper;
-
-
-@Test
 public class XmlJsonTest {
     private static final String PACKAGES = "de.jpaw.bonaparte.pojos.test.json:de.jpaw.bonaparte.xml";   // package name where jaxb.index sits
     private static final String EXPECTED_XML =
@@ -36,6 +34,7 @@ public class XmlJsonTest {
             "    </test_json:jsono>\n" +
             "</test_json:Test4XML>\n";
 
+    @Test
     public void marshallJson() throws Exception {
         Map<String, Object> map = new HashMap<String, Object>(4);
         map.put("hello", "world");
@@ -65,9 +64,10 @@ public class XmlJsonTest {
 
         System.out.println("Output is " + writer);
         String actualXml = writer.toString().replace("\r", "");
-        // assert(actualXml.equals(EXPECTED_XML));
+        // Assertions.assertEquals(EXPECTED_XML, actualXml); // no longer matches after several additions to the object
     }
 
+    @Test
     public void unmarshallJson() throws Exception {
         // create the XML for this
         JAXBContext context = JAXBContext.newInstance(PACKAGES);
@@ -82,6 +82,7 @@ public class XmlJsonTest {
         assert("world".equals(obj2.getJsono().get("hello")));
     }
 
+    @Test
     public void createJsonSchema() throws Exception {
         JAXBContext context = JAXBContext.newInstance(PACKAGES);
         DemoSchemaWriter sor = new DemoSchemaWriter();

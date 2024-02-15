@@ -5,7 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
-import org.testng.Assert;
+import org.junit.jupiter.api.Assertions;
 
 import de.jpaw.bonaparte.core.BonaCustom;
 import de.jpaw.bonaparte.core.BonaPortable;
@@ -24,7 +24,7 @@ public class CompactTestRunner extends AbstractTestrunner<byte[]> {
         dataOut.flush();
         byte [] result = baos.toByteArray();
         if (expectedResult != null)
-            Assert.assertEquals(result, expectedResult);
+            Assertions.assertArrayEquals(result, expectedResult);
         return result;
     }
 
@@ -35,7 +35,7 @@ public class CompactTestRunner extends AbstractTestrunner<byte[]> {
         CompactParser cp = new CompactParser(dis);
         BonaPortable result = cp.readRecord();
         if (expectedResult != null)
-            Assert.assertEquals(result, expectedResult);
+            Assertions.assertEquals(result, expectedResult);
         return result;
     }
 }

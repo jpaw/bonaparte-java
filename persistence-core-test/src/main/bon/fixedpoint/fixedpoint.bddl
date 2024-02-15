@@ -1,0 +1,26 @@
+import fixedpoint.*
+import def.*
+
+default
+    tablenamepattern "(prefix)_(category)_(entity)" dropSuffix "_entity"
+    tablespacepattern "rts42(category)0(DI)"
+    ;
+
+package def owner jpaw prefix xxx {
+    grants rw {  // read/write for regular tables
+        jpawro :   SELECT;
+        jpawrw :   SELECT,INSERT,UPDATE,DELETE;
+    }
+
+    category cfg { requiresPK grants rw }
+}
+
+@Generator(noMapper)
+package fixedPointTest owner jpaw prefix at {
+
+
+    entity WithExternalClassEntity category cfg is WithFixedPoints {
+        pk (key)
+
+    }
+}

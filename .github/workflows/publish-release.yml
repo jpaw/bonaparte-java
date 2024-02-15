@@ -1,0 +1,72 @@
+# Build and publish package when release is created.
+
+name: Publish Release
+
+run-name: Publish Release ${{ inputs.release_version }}
+
+on:
+  workflow_dispatch: # enable manual trigger
+    inputs:
+      release_version:
+        description: 'Release Version'
+        required: true
+        type: string
+
+env:
+  JAVA_VERSION_TO_USE: '17'
+  JAVA_DISTRI_TO_USE: 'corretto'
+  GITHUB_TOKEN_READ_PACKAGES: ${{ secrets.GH_WORKFLOWS_PAT_READ_PACKAGES }}
+  GITHUB_TOKEN_DEPLOY_PACKAGES: ${{ github.token }}
+  DEPLOY_RETRY: 5
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up JDK ${{ env.JAVA_VERSION_TO_USE }} (${{ env.JAVA_DISTRI_TO_USE }}) for build
+      uses: actions/setup-java@v3
+      with:
+        java-version: ${{ env.JAVA_VERSION_TO_USE }}
+        distribution: ${{ env.JAVA_DISTRI_TO_USE }}
+        cache: maven
+
+    - name: Configure maven settings.xml
+      uses: whelk-io/maven-settings-xml-action@v21
+      with:
+        repositories: '[{ "id": "github-pkgs", "url": "https://maven.pkg.github.com/arvato-systems-jacs/dummy", "snapshots": { "enabled": "true" } }]'          
+        plugin_repositories: '[{ "id": "github-pkgs", "url": "https://maven.pkg.github.com/arvato-systems-jacs/dummy", "snapshots": { "enabled": "true" } }]'
+        servers: |
+          [
+            { "id": "github-pkgs", "username": "dummy", "password": "${env.GITHUB_TOKEN_READ_PACKAGES}" },
+            { "id": "github", "username": "${env.GITHUB_ACTOR}", "password": "${env.GITHUB_TOKEN_DEPLOY_PACKAGES}" }
+          ]
+
+    - name: Configure Git User
+      run: git config user.name "Release Management"
+
+    - name: Update Parent Version
+      run: |
+        mvn -B versions:update-parent
+        git add -A
+        git diff-index --quiet HEAD || (git commit -m 'Update parent version to latest version' && git push)
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+
+    - name: Update Bundle Version / MANIFEST
+      if: ${{ inputs.release_version != '' }}
+      run: |
+        sed -i 's/Bundle-Version:.*/Bundle-Version: ${{ inputs.release_version }}/g' **/META-INF/MANIFEST.MF
+        git add -A
+        git diff-index --quiet HEAD || (git commit -m 'Update Bundle-Version to ${{ inputs.release_version }}' && git push)
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+
+    - name: Prepare and Release Packages
+      run: mvn -B -U -P github -Darguments=-DskipTests -DretryFailedDeploymentCount=${{ env.DEPLOY_RETRY }} -DreleaseVersion=${{ inputs.release_version }} release:prepare release:perform
+      env:
+        GITHUB_TOKEN: ${{ github.token }}

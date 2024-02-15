@@ -1,0 +1,11 @@
+package tests2 {
+    properties noJava, noDDL;
+
+    class PropTypes {
+        Int int1;
+        Integer int2;
+        Long long1   properties noJava;
+        @Deprecated
+        Boolean noNoNo  properties noDDL, noJava;
+    }
+}

@@ -27,12 +27,12 @@ public class MediaTypeInfo {
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.XML),                "xml",  MediaCategory.RECORDS, true,  MimeTypes.MIME_TYPE_XML));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.JSON),               "json", MediaCategory.RECORDS, true,  MimeTypes.MIME_TYPE_JSON));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.COMPACT_BONAPARTE),  "cb",   MediaCategory.RECORDS, false, MimeTypes.MIME_TYPE_COMPACT_BONAPARTE));
-        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.XLSX),               "xlsx", MediaCategory.RECORDS, false, "application/vnd.ms-excel"));
+        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.XLSX),               "xlsx", MediaCategory.RECORDS, false, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.XLS),                "xls",  MediaCategory.RECORDS, false, "application/vnd.ms-excel"));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.CSV),                "csv",  MediaCategory.RECORDS, true,  MimeTypes.MIME_TYPE_CSV));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.TEXT),               "txt",  MediaCategory.TEXT,    true,  "text/plain"));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.HTML),               "html", MediaCategory.TEXT,    true,  "text/html"));
-        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.XHTML),              "xhtml",MediaCategory.TEXT,    true,  " application/xhtml+xml"));
+        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.XHTML),              "xhtml",MediaCategory.TEXT,    true,  "application/xhtml+xml"));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.CSS),                "css",  MediaCategory.TEXT,    true,  "text/css"));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.MARKDOWN),           "md",   MediaCategory.TEXT,    true,  "text/markdown"));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.TEX),                "tex",  MediaCategory.TEXT,    true,  "application/x-tex"));
@@ -44,6 +44,7 @@ public class MediaTypeInfo {
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.GIF),                "gif",  MediaCategory.IMAGE,   false, "image/gif"));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.JPG),                "jpg",  MediaCategory.IMAGE,   false, "image/jpeg"));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.PNG),                "png",  MediaCategory.IMAGE,   false, "image/png"));
+        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.SVG),                "svg",  MediaCategory.IMAGE,   false, "image/svg+xml")); // set as binary to have same behavior of all image typed formats
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.WAV),                "wav",  MediaCategory.AUDIO,   false, "audio/x-wav"));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.MP3),                "mp3",  MediaCategory.AUDIO,   false, "audio/mp3"));   // chrome, Opera
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.MP3),                "mp3",  MediaCategory.AUDIO,   false, "audio/mpeg"));  // firefox, IE

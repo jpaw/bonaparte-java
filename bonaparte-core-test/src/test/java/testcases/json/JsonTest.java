@@ -3,8 +3,8 @@ package testcases.json;
 import java.time.Instant;
 import java.time.LocalDate;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.cedarsoftware.util.io.JsonWriter;
 import com.fasterxml.jackson.annotation.JsonFilter;
@@ -41,7 +41,7 @@ public class JsonTest {
         StringBuilder buff = new StringBuilder(4000);
         JsonComposer bjc = new JsonComposer(buff);
         bjc.addField(TestObj.meta$$myText, "E\nS\bC");
-        Assert.assertEquals(buff.toString(), "\"myText\":\"E\\nS\\bC\"");
+        Assertions.assertEquals(buff.toString(), "\"myText\":\"E\\nS\\bC\"");
     }
 
 

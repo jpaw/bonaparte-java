@@ -2,8 +2,8 @@ package testcases.json;
 
 import java.util.Arrays;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.core.BonaparteJsonEscaper;
 import de.jpaw.bonaparte.core.JsonComposer;
@@ -31,12 +31,12 @@ public class JsonEnumListTest {
         // non list related tests
         String j1 = JsonComposer.toJsonString(jwl);
         System.out.println("Bonaparte produces " + j1);
-        Assert.assertEquals(j1, expected1 + "\n");
+        Assertions.assertEquals(j1, expected1 + "\n");
 
         System.out.println("MapComposer produces " + MapComposer.marshal(jwl));
 
         String j2 = BonaparteJsonEscaper.asJson(jwl);
         System.out.println("BJE produces  produces " + j2);
-        Assert.assertEquals(j2, expected1);
+        Assertions.assertEquals(j2, expected1);
     }
 }

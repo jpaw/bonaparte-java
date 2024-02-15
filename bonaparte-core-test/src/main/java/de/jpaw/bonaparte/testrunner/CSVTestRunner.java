@@ -1,6 +1,6 @@
 package de.jpaw.bonaparte.testrunner;
 
-import org.testng.Assert;
+import org.junit.jupiter.api.Assertions;
 import de.jpaw.bonaparte.core.BonaCustom;
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.CSVComposer;
@@ -29,7 +29,7 @@ public class CSVTestRunner extends AbstractTestrunner<String> {
         csvc.writeRecord(src);
         String result = buffer.toString();
         if (expectedResult != null)
-            Assert.assertEquals(result, expectedResult);
+            Assertions.assertEquals(result, expectedResult);
         return result;
     }
 
@@ -38,7 +38,7 @@ public class CSVTestRunner extends AbstractTestrunner<String> {
         StringCSVParser bap = new StringCSVParser(cfg, src);
         BonaPortable result = bap.readRecord();
         if (expectedResult != null)
-            Assert.assertEquals(result, expectedResult);
+            Assertions.assertEquals(result, expectedResult);
         return result;
     }
 }

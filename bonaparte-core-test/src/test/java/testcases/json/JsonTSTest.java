@@ -4,8 +4,8 @@ import java.util.Map;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.core.JsonComposer;
 import de.jpaw.bonaparte.core.MapParser;
@@ -30,7 +30,7 @@ public class JsonTSTest {
         TestTS out = new TestTS();
         MapParser.populateFrom(out, map);
 
-        Assert.assertEquals(out,  ts);
+        Assertions.assertEquals(out,  ts);
     }
 
     @Test
@@ -48,6 +48,6 @@ public class JsonTSTest {
         TestT out = new TestT();
         MapParser.populateFrom(out, map);
 
-        Assert.assertEquals(out,  ts);
+        Assertions.assertEquals(out,  ts);
     }
 }

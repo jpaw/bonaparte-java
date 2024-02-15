@@ -1,0 +1,63 @@
+import embeddables.*
+import def.*
+import adapters.fixedpoint.*
+
+default
+    tablenamepattern "(prefix)_(category)_(entity)" dropSuffix "_entity"
+    tablespacepattern "rts42(category)0(DI)"
+    ;
+
+package def owner jpaw prefix xxx {
+    grants rw {  // read/write for regular tables
+        jpawro :   SELECT;
+        jpawrw :   SELECT,INSERT,UPDATE,DELETE;
+    }
+
+    category cfg { trackinggroup Tracking requiresPK grants rw }
+}
+
+package embedTest owner jpaw prefix jp {
+    embeddable AddressEntity is Address {}
+
+    embeddable Add2Entity is Add2 {}
+
+    embeddable MillisEntity is Millis {}
+
+    @Generator(noMapper)
+    entity PersonEntity category cfg is Person inheritance tablePerClass {
+        pk (personKey)
+        @Embeddable AddressEntity for homeAddress
+        @Embeddable AddressEntity for extra prefix ex suffix Tra
+        @Embeddable AddressEntity for addressWork
+        @Embeddable AddressEntity for evenMore
+        @Embeddable Add2Entity for myAdd2
+    }
+
+    // inherited class which inherits the entity as well does not declare embeddables
+    @Generator(noMapper)
+    entity PersonPlusExtraEntity is PersonPlusExtra inherits PersonEntity discriminator "6" {
+    }
+
+    // base entity which is based on inherited DTO must reference embeddables of DTO superclasses
+    @Generator(noMapper)
+    entity PersonPlusExtra2Entity category cfg is PersonPlusExtra inheritance tablePerClass {
+        pk (personKey)
+        @Embeddable AddressEntity for homeAddress
+        @Embeddable AddressEntity for extra prefix ex suffix Tra
+        @Embeddable AddressEntity for addressWork
+        @Embeddable AddressEntity for evenMore
+        @Embeddable Add2Entity for myAdd2
+    }
+
+    @Generator(noMapper)
+    entity EnumArrayUnrolledEntity category cfg is EnumArrayUnrolled inheritance tablePerClass {
+        pk (key)
+    }
+
+    @Generator(noMapper)
+    entity WithExternalClassEntity category cfg is WithExternalClass {
+        pk (key)
+        @Embeddable MillisEntity for millis
+
+    }
+}

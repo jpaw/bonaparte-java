@@ -29,13 +29,13 @@ import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 /**
- * The CSVComposer class.
+ * The FixedWidthComposer class.
  *
  * @author Michael Bischoff
  * @version $Revision$
  *
  *          Fixed width composer, suitable for the SAP IDOC format or COBOL formats.
- *          Numeric values if value NULL with be written as blanks.
+ *          Numeric values of value NULL will be written as blanks.
  *          There is no specific way to enforce writing nulls as zero or to use the COBOL "BLANK WHEN ZERO", if either of these is required,
  *          the caller must preprocess the data and either convert 0 to null values or null to 0 to achieve the desired effect.
  *          For configuration, the CSV configuration is used.
@@ -164,9 +164,18 @@ public class FixedWidthComposer extends CSVComposer {
     public void addField(AlphanumericElementaryDataItem di, String s) throws IOException {
         writeSeparator();
         if (s != null) {
-            addRawData(s);
-            if (s.length() < di.getLength())
-                addRawData(getPadding(di.getLength() - s.length()));
+            final int len = s.length();
+            if (len > di.getLength()) {
+                // value is too long - truncate it
+                addRawData(s.substring(0, di.getLength()));
+            } else {
+                // output without truncation
+                addRawData(s);
+                if (len < di.getLength()) {
+                    // padding required
+                    addRawData(getPadding(di.getLength() - len));
+                }
+            }
         } else {
             addRawData(getPadding(di.getLength()));
         }

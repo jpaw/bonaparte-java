@@ -4,7 +4,7 @@ import com.amazonaws.regions.Region
 import com.amazonaws.regions.Regions
 import com.amazonaws.services.sns.AmazonSNSClient
 import com.amazonaws.services.sns.model.PublishRequest
-import org.testng.annotations.Test
+import org.junit.jupiter.api.Test
 
 @Test
 class AwsSNSTest {

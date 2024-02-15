@@ -1,0 +1,11 @@
+
+package fixedpoint {
+    default unsigned trim noControlChars;
+    properties unroll;
+
+    class WithFixedPoints {
+        Long                                        key;
+        unsigned FixedPoint(18,3)                   millis;
+        fixedPoint(18,6)                            micros;
+    }
+}

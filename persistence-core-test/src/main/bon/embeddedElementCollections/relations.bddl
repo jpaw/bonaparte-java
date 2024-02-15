@@ -1,0 +1,34 @@
+import eec.test.*
+
+package eec.test owner scott prefix test {
+    grants rw {
+        demorole: SELECT,INSERT,UPDATE,DELETE;
+    }
+
+    category tests {
+       grants rw
+    }
+
+    entity ParentEntity category tests is Parent {
+        pk (key)
+    }
+
+    entity ItemEntity category tests is Item {
+        pk (dummyRef, itemNo)
+    }
+
+    embeddable EmbedECEntity is EmbedEC {}
+
+    /* commented out as not yet working... */
+    @Generator(noMapper)
+    entity TestEntity category tests is TestObject {
+        pk (myKey)
+        @ManyToOne ParentEntity parent LAZY for (parentRef)
+        @OneToMany List ItemEntity items2 EAGER for (dummyRef)
+        @ElementCollection prices in the_other_table (test_entity_key) mapKey currencyCode
+        @ElementCollection embeddedList in emb_list (test_entity_key)
+        @ElementCollection embeddedMap in emb_map (test_entity_key) mapKey currencyCode
+        @Embeddable EmbedECEntity for embeddedList prefix li
+        @Embeddable EmbedECEntity for embeddedMap prefix ma
+    }
+}

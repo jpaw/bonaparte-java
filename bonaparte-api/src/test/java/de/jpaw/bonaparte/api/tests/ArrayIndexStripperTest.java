@@ -1,7 +1,7 @@
 package de.jpaw.bonaparte.api.tests;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.api.ColumnCollector;
 
@@ -10,7 +10,7 @@ public class ArrayIndexStripperTest {
 
     private void check(String in, String expected, String testcase) throws Exception {
         String actual = cc.stripArrayIndexes(in);
-        Assert.assertEquals(actual, expected, testcase);
+        Assertions.assertEquals(actual, expected, testcase);
     }
 
     @Test

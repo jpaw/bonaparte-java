@@ -2,17 +2,15 @@ package de.jpaw.bonaparte.test.jaxb;
 
 import java.io.StringReader;
 
+import org.junit.jupiter.api.Test;
+
+import de.jpaw.bonaparte.pojos.test.jaxb.TestXml2;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.UnmarshalException;
 import jakarta.xml.bind.Unmarshaller;
 import jakarta.xml.bind.helpers.DefaultValidationEventHandler;
 
-import org.testng.annotations.Test;
 
-import de.jpaw.bonaparte.pojos.test.jaxb.TestXml2;
-
-
-@Test
 public class ImplicitDecimalsRoundingTest {
     private static final String PACKAGE = "de.jpaw.bonaparte.pojos.test.jaxb";   // package name where jaxb.index sits
     private static final String ROUNDED_XML =
@@ -30,6 +28,7 @@ public class ImplicitDecimalsRoundingTest {
           + "    <roundedMillis>333.666</roundedMillis>\n"
           + "</TestXml2>\n";
 
+    @Test
     public void unmarshallXenumWithRounding() throws Exception {
         // create the XML for this
         JAXBContext context = JAXBContext.newInstance(PACKAGE);
@@ -46,6 +45,7 @@ public class ImplicitDecimalsRoundingTest {
         assert(obj2.roundedMillis == 333667);
     }
 
+    @Test
     public void unmarshallXenumWithRoundingException() throws Exception {
         // create the XML for this
         JAXBContext context = JAXBContext.newInstance(PACKAGE);
@@ -60,5 +60,4 @@ public class ImplicitDecimalsRoundingTest {
             System.out.println("Good, caught the expected exception: " + e);
         }
     }
-
 }

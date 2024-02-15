@@ -1,0 +1,43 @@
+// Persistence test entities for the persistence DSL, to show bonaparte and BDDL syntax within the same file
+
+import tests22.*
+
+default
+    tablenamepattern "test_(entity)"
+    tablespacepattern "system"
+    ;
+
+package tests22 {
+
+    class BinaryKey {
+        Binary(16) binKey;
+        Ascii(16)  text;
+    }
+
+    class ParentKey {
+        Long a;
+        Long b;
+    }
+
+    class DataWithAnotherNaturalKey extends ParentKey {
+        Unicode(80) text;
+    }
+}
+
+package test22bddl owner scott prefix test {
+    grants rw {
+        demorole: SELECT,INSERT,UPDATE,DELETE;
+    }
+
+    category tests {
+       grants rw
+    }
+
+    entity BinaryKeyEntity category tests is BinaryKey {
+        pk (binKey)
+    }
+
+    entity DataWithAnotherNaturalKeyEntity category tests is DataWithAnotherNaturalKey tablename another_nat_key2 {
+        pk is ParentKey
+    }
+}

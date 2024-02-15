@@ -1,0 +1,24 @@
+package relations.test {
+
+    class Parent {
+        required Long key;
+        Unicode(80) text;
+    }
+
+    class Item {
+        required Long dummyRef;
+        Int itemNo;
+        Unicode(80) itemText;
+    }
+
+    class TestObject {
+        Long myKey;
+        required Long parentRef;
+        Unicode(80) name;
+        Decimal(14,2) Map<String> prices;
+        (Item...) List<> items;
+        (Item...) List<> itemsCascade;
+        (Item...) List<> itemsOrphan;
+        (Item...) List<> itemsCascadeOrphan;
+    }
+}

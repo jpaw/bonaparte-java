@@ -1,7 +1,7 @@
 package testcases.bclass.adapter;
 
-import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import de.jpaw.bonaparte.core.BonaPortable;
 import de.jpaw.bonaparte.core.BonaPortableClass;
@@ -13,8 +13,8 @@ import de.jpaw.bonaparte.scanner.BClassScanner;
 import de.jpaw.util.ByteUtil;
 
 public class TestWithIds {
-    @BeforeSuite
-    public void registerClasses() {
+    @BeforeAll
+    public static void registerClasses() {
         BClassScanner.init();
     }
 
