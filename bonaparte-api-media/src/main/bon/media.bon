@@ -44,9 +44,9 @@ package api.media XML PROPERTY factoryId 25 {
 
     enum MediaCategory {
         OTHER                   = "?",  // none of the below
-        AUDIO                   = "A",
+        AUDIO                   = "A",  // audio files, number of channels is unspecified
         VIDEO                   = "V",  // video format: pictures + sound
-        IMAGE                   = "I",
+        IMAGE                   = "I",  // a 2 dimensional picture
         RECORDS                 = "R",  // format suitable to transmit data records
         TEXT                    = "T",  // textual document (not textual data file format)
         DOCUMENT                = "B"   // binary document
@@ -56,6 +56,10 @@ package api.media XML PROPERTY factoryId 25 {
         DEFAULT="D", TOKEN="T", NAME="N", DESCRIPTION="O"  // description is translated text
     }
 
+    /**
+     * The MediaTypeDescriptor provides properties for a given <code>MediaXType</code>, for example the official MIME type,
+     * and information if the representation can be considered as text (human readable) or if it is binary data. 
+     */
     final class MediaTypeDescriptor classId 100 {
         required xenum MediaXType                   mediaType;
         required Ascii(6)                           defaultFileExtension;           // file extension (without a dot)
@@ -64,6 +68,11 @@ package api.media XML PROPERTY factoryId 25 {
         required Ascii(64)                          mimeType;                       // MIME type
     }
 
+    /**
+     * The MediaData object holds a given document, either as immediate data blob (in text or binary form),
+     * or a reference to its storage location (if <code>mediaStorageLocation</code> is not null).
+     * The <code>z</code> field is provided to allow additional key / value pairs to be stored.
+     */
     final class MediaData classId 101 {
         required xenum MediaXType                   mediaType;                      // defines the content type
         optional Unicode(8000000) allowControlChars text;                           // textual data stored here
