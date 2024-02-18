@@ -564,13 +564,12 @@ public class MfcobolParser extends Settings implements MessageParser<MessagePars
         if (value < 0 || value >= 2400) {
             throw new MessageParserException(MessageParserException.ILLEGAL_CALENDAR_VALUE, fd.getName(), getParseIndex(), getClassName());
         }
-        final int minutes = (value % 10000) / 100;
-        final int seconds = value % 100;
-        if (minutes > 59 || seconds > 59) {
+        final int minutes = value % 100;
+        if (minutes > 59) {
             throw new MessageParserException(MessageParserException.ILLEGAL_CALENDAR_VALUE, fd.getName(), getParseIndex(), getClassName());
         }
         try {
-            return LocalTime.of(value / 10000, minutes, seconds);
+            return LocalTime.of(value / 100, minutes);
         } catch (final DateTimeException dte) {
             throw new MessageParserException(MessageParserException.ILLEGAL_CALENDAR_VALUE, fd.getName(), getParseIndex(), getClassName());
         }
@@ -580,12 +579,13 @@ public class MfcobolParser extends Settings implements MessageParser<MessagePars
         if (value < 0 || value >= 240000) {
             throw new MessageParserException(MessageParserException.ILLEGAL_CALENDAR_VALUE, fd.getName(), getParseIndex(), getClassName());
         }
-        final int minutes = value % 100;
-        if (minutes > 59) {
+        final int minutes = (value % 10000) / 100;
+        final int seconds = value % 100;
+        if (minutes > 59 || seconds > 59) {
             throw new MessageParserException(MessageParserException.ILLEGAL_CALENDAR_VALUE, fd.getName(), getParseIndex(), getClassName());
         }
         try {
-            return LocalTime.of(value / 100, minutes);
+            return LocalTime.of(value / 10000, minutes, seconds);
         } catch (final DateTimeException dte) {
             throw new MessageParserException(MessageParserException.ILLEGAL_CALENDAR_VALUE, fd.getName(), getParseIndex(), getClassName());
         }
