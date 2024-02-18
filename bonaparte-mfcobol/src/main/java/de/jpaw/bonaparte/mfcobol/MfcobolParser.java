@@ -34,47 +34,53 @@ import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
+import de.jpaw.bonaparte.pojos.meta.EnumDefinition;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
+import de.jpaw.bonaparte.pojos.meta.XEnumDefinition;
 import de.jpaw.bonaparte.util.BigDecimalTools;
 import de.jpaw.enums.AbstractXEnumBase;
 import de.jpaw.enums.XEnumFactory;
 import de.jpaw.fixedpoint.FixedPointBase;
 import de.jpaw.util.ByteArray;
 
+/**
+ * Implements parsing of MicroFocus COBOL data structures (and probably other COBOL data structures).
+ *
+ * Note: Some methods use an <code>IdentityHashMap</code>, which implies this class is not multithread-capable.
+ * Unfortunately there is no Concurrent... version of <code>IdentityHashMap</code>.
+ */
 public class MfcobolParser extends Settings implements MessageParser<MessageParserException> {
     private static final Logger LOGGER = LoggerFactory.getLogger(MfcobolParser.class);
 
-    final protected Charset charset;
+    protected final Charset charset;
     private int parseIndex;
     private int messageLength;
-    private byte [] inputdata;
+    private byte[] inputdata;
     private String currentClass;
 
     protected String getClassName() {
         return null;
     }
 
+    @Override
+    public void setClassName(String newClassName) {
+        currentClass = newClassName;
+    }
+
     /** Assigns a new source to subsequent parsing operations. */
-    public final void setSource(byte [] src, int offset, int length) {
+    public final void setSource(byte[] src, int offset, int length) {
         inputdata = src;
         parseIndex = offset;
         messageLength = length < 0 ? src.length : length;
     }
 
-    /** Assigns a new source to subsequent parsing operations. */
-    public final void setSource(byte [] src) {
-        inputdata = src;
-        parseIndex = 0;
-        messageLength = src.length;
-    }
-
     /** Create a processor for parsing a buffer. */
-    public MfcobolParser(byte [] buffer, int offset, int length, Charset charset) {
+    public MfcobolParser(byte[] buffer, int offset, int length, Charset charset) {
         super();
         inputdata = buffer;
         parseIndex = offset;
@@ -88,7 +94,7 @@ public class MfcobolParser extends Settings implements MessageParser<MessagePars
     }
 
     /** allows to reset the parse position in the buffer, for example for a second pass, after determining the record type. */
-    public void resetParserIndex(final int start) {
+    public void resetParseIndex(final int start) {
         parseIndex = start;
     }
 
@@ -101,29 +107,30 @@ public class MfcobolParser extends Settings implements MessageParser<MessagePars
         return new MessageParserException(errorCode, msg, parseIndex, currentClass);
     }
 
-//    @Override
-//    protected BonaPortable createObject(String classname) throws MessageParserException {           // same method - overloading required for possible exception mapping
-//        return BonaPortableFactory.createObject(classname);
-//    }
-//
+    @Override
+    public MessageParserException enumExceptionConverter(final IllegalArgumentException e) {
+        return newMPE(MessageParserException.INVALID_ENUM_TOKEN, e.getMessage());
+    }
+
+    @Override
+    public MessageParserException customExceptionConverter(String msg, Exception e) {
+        return newMPE(MessageParserException.CUSTOM_OBJECT_EXCEPTION, e != null ? msg + e.toString() : msg);
+    }
+
 //    @Override
 //    protected BigDecimal checkAndScale(BigDecimal num, NumericElementaryDataItem di) throws MessageParserException {
 //        return BigDecimalTools.checkAndScale(num, di, parseIndex, currentClass);
 //    }
 
-    // special method only in the ByteArray version
     protected void require(int length) throws MessageParserException {
         if (parseIndex + length > messageLength) {
             throw newMPE(MessageParserException.PREMATURE_END, null);
         }
     }
 
-    protected int needToken() throws MessageParserException {
-        if (parseIndex >= messageLength) {
-            throw newMPE(MessageParserException.PREMATURE_END, null);
-        }
-        return inputdata[parseIndex++] & 0xff;
-    }
+    //
+    // A series of utility methods to read an n byte numeric value
+    //
 
     protected int readFixed1ByteInt() throws MessageParserException {
         require(1);
@@ -151,6 +158,23 @@ public class MfcobolParser extends Settings implements MessageParser<MessagePars
         nn |= (inputdata[parseIndex++] & 0xff) << 8;
         nn |= inputdata[parseIndex++] & 0xff;
         return nn;
+    }
+
+    /** read an integer in low endian */
+    protected int readFixed4ByteIntLE() throws MessageParserException {
+        require(4);
+        int nn = inputdata[parseIndex++] & 0xff;
+        nn |= (inputdata[parseIndex++] & 0xff) << 8;
+        nn |= (inputdata[parseIndex++] & 0xff) << 16;
+        nn |= (inputdata[parseIndex++] & 0xff) << 24;
+        return nn;
+    }
+
+    /** read a long value in low endian */
+    protected long readFixed8ByteLongLE() throws MessageParserException {
+        long n = readFixed4ByteIntLE();
+        n |= ((long)readFixed4ByteIntLE()) >> 32;
+        return n;
     }
 
     protected long readFixed1ByteLong() throws MessageParserException {
@@ -192,7 +216,8 @@ public class MfcobolParser extends Settings implements MessageParser<MessagePars
         return ((long)nn1 << 32) | (nn2 & 0xffffffffL);
     }
 
-    private static final ToIntFunction<MfcobolParser> [] INTARR = new ToIntFunction[5];
+    /** Conversion to integer (BINARY). */
+    private static final ToIntFunction<MfcobolParser>[] INTARR = new ToIntFunction[5];
     static {
         INTARR[0] = r -> 0;
         INTARR[1] = r -> r.readFixed1ByteInt();
@@ -201,7 +226,8 @@ public class MfcobolParser extends Settings implements MessageParser<MessagePars
         INTARR[4] = r -> r.readFixed4ByteInt();
     };
 
-    private static final ToLongFunction<MfcobolParser> [] LLARR = new ToLongFunction[9];
+    /** Conversion to long (BINARY). */
+    private static final ToLongFunction<MfcobolParser>[] LLARR = new ToLongFunction[9];
     static {
         LLARR[0] = r -> 0L;
         LLARR[1] = r -> r.readFixed1ByteLong();
@@ -214,6 +240,7 @@ public class MfcobolParser extends Settings implements MessageParser<MessagePars
         LLARR[8] = r -> r.readFixed8ByteLong();
     };
 
+    /** Conversion to integer (TEXT). */
     private int readAsciiInt(final int digits, final FieldDefinition fd) {
         boolean negative = false;
         int result = 0;
@@ -230,6 +257,7 @@ public class MfcobolParser extends Settings implements MessageParser<MessagePars
         return negative ? -result : result;
     }
 
+    /** Conversion to long (TEXT). */
     private long readAsciiLong(final int digits, final FieldDefinition fd) {
         boolean negative = false;
         long result = 0;
@@ -249,29 +277,38 @@ public class MfcobolParser extends Settings implements MessageParser<MessagePars
     @Override
     public void eatParentSeparator() {
     }
-    
+
     @Override
     public Boolean readBoolean(final MiscElementaryDataItem di) {
-        final int x = needToken();
+        final int x = readFixed1ByteInt();
         if (x == 0 || x == '0') {
             return Boolean.FALSE;
         }
         if (x == 1 || x == '1') {
             return Boolean.TRUE;
         }
-        throw new MessageParserException(MessageParserException.FIELD_PARSE, "Unexpected value for Boolean in field" + di.getName() + ": " + Integer.toString(x), getParseIndex(), "?");
+        throw new MessageParserException(MessageParserException.FIELD_PARSE,
+          "Unexpected value for Boolean in field" + di.getName() + ": " + Integer.toString(x), getParseIndex(), "?");
     }
 
     @Override
     public boolean readPrimitiveBoolean(final MiscElementaryDataItem di) {
-        final int x = needToken();
+        final int x = readFixed1ByteInt();
         if (x == 0 || x == '0') {
             return false;
         }
         if (x == 1 || x == '1') {
             return true;
         }
-        throw new MessageParserException(MessageParserException.FIELD_PARSE, "Unexpected value for Boolean in field" + di.getName() + ": " + Integer.toString(x), getParseIndex(), "?");
+        throw new MessageParserException(MessageParserException.FIELD_PARSE,
+          "Unexpected value for Boolean in field" + di.getName() + ": " + Integer.toString(x), getParseIndex(), "?");
+    }
+
+    @Override
+    public UUID readUUID(MiscElementaryDataItem di) throws MessageParserException {
+        final long high = readFixed8ByteLong();
+        final long low = readFixed8ByteLong();
+        return new UUID(high, low);
     }
 
     @Override
@@ -285,13 +322,31 @@ public class MfcobolParser extends Settings implements MessageParser<MessagePars
     }
 
     @Override
-    public String readString(final AlphanumericElementaryDataItem di) {
-        // create a string of size di..length characters
+    public byte[] readRaw(BinaryElementaryDataItem di) throws MessageParserException {
         final int len = di.getLength();
+        if (len == 0) {
+            return new byte[0];
+        }
+        require(len);
+        byte[] data = new byte[len];
+        System.arraycopy(inputdata, parseIndex, data, 0, len);
+        parseIndex += len;
+        return data;
+    }
+
+    protected String readString(final int len) {
+        // create a trimmed string of size len characters
         require(len);
         final String s = new String(inputdata, parseIndex, len, charset);
         parseIndex += len;
-        return s;
+        final String trimmed = s.trim();
+        return trimmed.length() == 0 ? null : trimmed;
+    }
+
+    @Override
+    public String readString(final AlphanumericElementaryDataItem di) {
+        // create a string of size di..length characters
+        return readString(di.getLength());
     }
 
     @Override
@@ -299,12 +354,14 @@ public class MfcobolParser extends Settings implements MessageParser<MessagePars
         return readString(di);
     }
 
+
     @Override
     public Integer readInteger(BasicNumericElementaryDataItem di) {
         return readPrimitiveInteger(di);
     }
 
-    private static final Map<FieldDefinition, ToIntBiFunction<MfcobolParser, FieldDefinition>> INT_PARSERS = new IdentityHashMap<>(100);  // there is no ConcurrentIdentityHashMap unfortunately
+    private static final Map<FieldDefinition, ToIntBiFunction<MfcobolParser, FieldDefinition>> INT_PARSERS
+      = new IdentityHashMap<>(100);  // there is no ConcurrentIdentityHashMap unfortunately
 
     @Override
     public int readPrimitiveInteger(final BasicNumericElementaryDataItem di) throws MessageParserException {
@@ -330,14 +387,47 @@ public class MfcobolParser extends Settings implements MessageParser<MessagePars
             case DISPLAY:
                 return (p, fd) -> readAsciiInt(pic.getSize(), di);
             default:
-                ;
+                break;
             }
             throw new InvalidPictureException(InvalidPictureException.MISSING_PARSER, f.getName(), getClassName(), null);
         }).applyAsInt(this, di);
     }
 
-    
-    private static final Map<FieldDefinition, BiFunction<MfcobolParser, FieldDefinition, FixedPointBase>> FIXED_POINT_PARSERS = new IdentityHashMap<>(100);  // there is no ConcurrentIdentityHashMap unfortunately
+    @Override
+    public Long readLong(BasicNumericElementaryDataItem di) throws MessageParserException {
+        return readPrimitiveLong(di);
+    }
+
+    private static final Map<FieldDefinition, ToLongBiFunction<MfcobolParser, FieldDefinition>> LONG_PARSERS
+      = new IdentityHashMap<>(100);  // there is no ConcurrentIdentityHashMap unfortunately
+
+    @Override
+    public long readPrimitiveLong(BasicNumericElementaryDataItem di) throws MessageParserException {
+        return LONG_PARSERS.computeIfAbsent(di, f -> {
+            final PicNumeric pic = PicNumeric.forField(di, getClassName(), "S9(18) COMP");
+            if (pic.fractionalDigits() > 0) {
+                throw new InvalidPictureException(InvalidPictureException.MISSING_PARSER, f.getName(), getClassName(), null);
+            }
+            switch (pic.storage()) {
+            case BINARY:
+                if (pic.integralDigits() == 7 && pic.sign() == PicSignType.UNSIGNED) {
+                    // separate from signed: must mask!
+                    return (p, fd) -> p.readFixed3ByteInt() & 0xffffff;
+                }
+                final int numBytes = pic.getSize();
+                return (p, fd) -> LLARR[numBytes].applyAsLong(p);
+            case DISPLAY:
+                return (p, fd) -> readAsciiLong(pic.getSize(), di);
+            default:
+                break;
+            }
+            throw new InvalidPictureException(InvalidPictureException.MISSING_PARSER, f.getName(), getClassName(), null);
+        }).applyAsLong(this, di);
+    }
+
+
+    private static final Map<FieldDefinition, BiFunction<MfcobolParser, FieldDefinition, FixedPointBase>> FIXED_POINT_PARSERS
+      = new IdentityHashMap<>(100);  // there is no ConcurrentIdentityHashMap unfortunately
 
     @Override
     public <F extends FixedPointBase<F>> F readFixedPoint(final BasicNumericElementaryDataItem di, final LongFunction<F> factory) {
@@ -355,28 +445,21 @@ public class MfcobolParser extends Settings implements MessageParser<MessagePars
                 // separate from signed: must mask!
                 return (p, fd) -> {
                     final int numU = p.readFixed3ByteInt() & 0xffffff;
-                    return BigDecimalTools.check(factory.apply(FixedPointBase.mantissaFor(numU, pic.fractionalDigits(), di.getDecimalDigits(), di.getRounding())), di, -1, getClassName());
+                    final long mantissa = FixedPointBase.mantissaFor(numU, pic.fractionalDigits(), di.getDecimalDigits(), di.getRounding());
+                    return BigDecimalTools.check(factory.apply(mantissa), di, -1, getClassName());
                 };
             }
             final int numBytes = pic.getSize();
             return (p, fd) -> {
-                final long mantissa = LLARR[numBytes].applyAsLong(p);
-                return BigDecimalTools.check(factory.apply(FixedPointBase.mantissaFor(mantissa, pic.fractionalDigits(), di.getDecimalDigits(), di.getRounding())), di, -1, getClassName());
+                final long numU = LLARR[numBytes].applyAsLong(p);
+                final long mantissa = FixedPointBase.mantissaFor(numU, pic.fractionalDigits(), di.getDecimalDigits(), di.getRounding());
+                return BigDecimalTools.check(factory.apply(mantissa), di, -1, getClassName());
             };
         }).apply(this, di);
     }
 
-    @Override
-    public MessageParserException enumExceptionConverter(final IllegalArgumentException e) {
-        return newMPE(MessageParserException.INVALID_ENUM_TOKEN, e.getMessage());
-    }
-
-    @Override
-    public MessageParserException customExceptionConverter(String msg, Exception e) {
-        return newMPE(MessageParserException.CUSTOM_OBJECT_EXCEPTION, e != null ? msg + e.toString() : msg);
-    }
-
-    private static final Map<FieldDefinition, BiFunction<MfcobolParser, FieldDefinition, BigDecimal>> BIGDECIMAL_PARSERS = new IdentityHashMap<>(100);  // there is no ConcurrentIdentityHashMap unfortunately
+    private static final Map<FieldDefinition, BiFunction<MfcobolParser, FieldDefinition, BigDecimal>> BIGDECIMAL_PARSERS
+      = new IdentityHashMap<>(100);  // there is no ConcurrentIdentityHashMap unfortunately
 
     @Override
     public BigDecimal readBigDecimal(final NumericElementaryDataItem di) throws MessageParserException {
@@ -403,35 +486,23 @@ public class MfcobolParser extends Settings implements MessageParser<MessagePars
     }
 
     @Override
-    public UUID readUUID(MiscElementaryDataItem di) throws MessageParserException {
-        final long high = readFixed8ByteLong();
-        final long low = readFixed8ByteLong();
-        return new UUID(high, low);
-    }
-
-    @Override
     public Double readDouble(BasicNumericElementaryDataItem di) throws MessageParserException {
-        throw new MessageParserException(MessageParserException.UNSUPPORTED_DATA_TYPE);
+        return readPrimitiveDouble(di);
     }
 
     @Override
     public Float readFloat(BasicNumericElementaryDataItem di) throws MessageParserException {
-        throw new MessageParserException(MessageParserException.UNSUPPORTED_DATA_TYPE);
-    }
-
-    @Override
-    public Long readLong(BasicNumericElementaryDataItem di) throws MessageParserException {
-        return readPrimitiveLong(di);
+        return readPrimitiveFloat(di);
     }
 
     @Override
     public Short readShort(BasicNumericElementaryDataItem di) throws MessageParserException {
-        throw new MessageParserException(MessageParserException.UNSUPPORTED_DATA_TYPE);
+        return readPrimitiveShort(di);
     }
 
     @Override
     public Byte readByte(BasicNumericElementaryDataItem di) throws MessageParserException {
-        throw new MessageParserException(MessageParserException.UNSUPPORTED_DATA_TYPE);
+        return readPrimitiveByte(di);
     }
 
     @Override
@@ -440,47 +511,8 @@ public class MfcobolParser extends Settings implements MessageParser<MessagePars
     }
 
     @Override
-    public byte[] readRaw(BinaryElementaryDataItem di) throws MessageParserException {
-        final int len = di.getLength();
-        if (len == 0) {
-            return new byte [0];
-        }
-        require(len);
-        byte [] data = new byte [len];
-        System.arraycopy(inputdata, parseIndex, data, 0, len);
-        parseIndex += len;
-        return data;
-    }
-
-    @Override
     public Instant readInstant(TemporalElementaryDataItem di) throws MessageParserException {
         throw new MessageParserException(MessageParserException.UNSUPPORTED_DATA_TYPE);
-    }
-
-    private static final Map<FieldDefinition, ToLongBiFunction<MfcobolParser, FieldDefinition>> LONG_PARSERS = new IdentityHashMap<>(100);  // there is no ConcurrentIdentityHashMap unfortunately
-
-    @Override
-    public long readPrimitiveLong(BasicNumericElementaryDataItem di) throws MessageParserException {
-        return LONG_PARSERS.computeIfAbsent(di, f -> {
-            final PicNumeric pic = PicNumeric.forField(di, getClassName(), "S9(18) COMP");
-            if (pic.fractionalDigits() > 0) {
-                throw new InvalidPictureException(InvalidPictureException.MISSING_PARSER, f.getName(), getClassName(), null);
-            }
-            switch (pic.storage()) {
-            case BINARY:
-                if (pic.integralDigits() == 7 && pic.sign() == PicSignType.UNSIGNED) {
-                    // separate from signed: must mask!
-                    return (p, fd) -> p.readFixed3ByteInt() & 0xffffff;
-                }
-                final int numBytes = pic.getSize();
-                return (p, fd) -> LLARR[numBytes].applyAsLong(p);
-            case DISPLAY:
-                return (p, fd) -> readAsciiLong(pic.getSize(), di);
-            default:
-                ;
-            }
-            throw new InvalidPictureException(InvalidPictureException.MISSING_PARSER, f.getName(), getClassName(), null);
-        }).applyAsLong(this, di);
     }
 
 
@@ -509,11 +541,11 @@ public class MfcobolParser extends Settings implements MessageParser<MessagePars
         }
     }
 
-    private static final Map<FieldDefinition, BiFunction<MfcobolParser, FieldDefinition, LocalDate>> DAY_PARSERS = new IdentityHashMap<>(100);  // there is no ConcurrentIdentityHashMap unfortunately
+    private static final Map<FieldDefinition, BiFunction<MfcobolParser, FieldDefinition, LocalDate>> DAY_PARSERS = new IdentityHashMap<>(100);
     private static final Map<PicNumeric, BiFunction<MfcobolParser, FieldDefinition, LocalDate>> DAY_PARSER_TYPES = new HashMap<>(2);
     static {
-        DAY_PARSER_TYPES.put(new PicNumeric(8, 0, false, PicStorageType.BINARY,  PicSignType.UNSIGNED) , (r, fd) -> r.intToDay(r.readFixed4ByteInt(), fd));
-        DAY_PARSER_TYPES.put(new PicNumeric(8, 0, false, PicStorageType.DISPLAY, PicSignType.UNSIGNED) , (r, fd) -> r.intToDay(r.readAsciiInt(8, fd), fd));
+        DAY_PARSER_TYPES.put(new PicNumeric(8, 0, false, PicStorageType.BINARY,  PicSignType.UNSIGNED), (r, fd) -> r.intToDay(r.readFixed4ByteInt(), fd));
+        DAY_PARSER_TYPES.put(new PicNumeric(8, 0, false, PicStorageType.DISPLAY, PicSignType.UNSIGNED), (r, fd) -> r.intToDay(r.readAsciiInt(8, fd), fd));
     }
 
     @Override
@@ -559,13 +591,13 @@ public class MfcobolParser extends Settings implements MessageParser<MessagePars
         }
     }
 
-    private static final Map<FieldDefinition, BiFunction<MfcobolParser, FieldDefinition, LocalTime>> TIME_PARSERS = new IdentityHashMap<>(100);  // there is no ConcurrentIdentityHashMap unfortunately
+    private static final Map<FieldDefinition, BiFunction<MfcobolParser, FieldDefinition, LocalTime>> TIME_PARSERS = new IdentityHashMap<>(100);
     private static final Map<PicNumeric, BiFunction<MfcobolParser, FieldDefinition, LocalTime>> TIME_PARSER_TYPES = new HashMap<>(4);
     static {
-        TIME_PARSER_TYPES.put(new PicNumeric(6, 0, false, PicStorageType.BINARY,  PicSignType.UNSIGNED) , (r, fd) -> r.intToHHMMSS(r.readFixed3ByteInt(), fd));
-        TIME_PARSER_TYPES.put(new PicNumeric(4, 0, false, PicStorageType.BINARY,  PicSignType.UNSIGNED) , (r, fd) -> r.intToHHMM  (r.readFixed2ByteInt(), fd));
-        TIME_PARSER_TYPES.put(new PicNumeric(6, 0, false, PicStorageType.DISPLAY, PicSignType.UNSIGNED) , (r, fd) -> r.intToHHMMSS(r.readAsciiInt(6, fd), fd));
-        TIME_PARSER_TYPES.put(new PicNumeric(4, 0, false, PicStorageType.DISPLAY, PicSignType.UNSIGNED) , (r, fd) -> r.intToHHMM  (r.readAsciiInt(4, fd), fd));
+        TIME_PARSER_TYPES.put(new PicNumeric(6, 0, false, PicStorageType.BINARY,  PicSignType.UNSIGNED), (r, fd) -> r.intToHHMMSS(r.readFixed3ByteInt(), fd));
+        TIME_PARSER_TYPES.put(new PicNumeric(4, 0, false, PicStorageType.BINARY,  PicSignType.UNSIGNED), (r, fd) -> r.intToHHMM  (r.readFixed2ByteInt(), fd));
+        TIME_PARSER_TYPES.put(new PicNumeric(6, 0, false, PicStorageType.DISPLAY, PicSignType.UNSIGNED), (r, fd) -> r.intToHHMMSS(r.readAsciiInt(6, fd), fd));
+        TIME_PARSER_TYPES.put(new PicNumeric(4, 0, false, PicStorageType.DISPLAY, PicSignType.UNSIGNED), (r, fd) -> r.intToHHMM  (r.readAsciiInt(4, fd), fd));
     }
 
     @Override
@@ -592,7 +624,7 @@ public class MfcobolParser extends Settings implements MessageParser<MessagePars
         }
         final String previousClass = currentClass;
         final String classname = di.getLowerBound().getName();
-        LOGGER.debug("readObject(): Classname is {}, type is {}", classname, type.getClass().getCanonicalName());
+        LOGGER.debug("readObject(): Classname is {}, type is {}", classname, type.getCanonicalName());
         final BonaPortable newObject = BonaPortableFactory.createObject(classname);
         if (newObject.getClass() != type) {
             // check if it is a superclass
@@ -612,6 +644,7 @@ public class MfcobolParser extends Settings implements MessageParser<MessagePars
 
     @Override
     public List<Object> readArray(ObjectReference di) throws MessageParserException {
+        LOGGER.debug("Called readArray {} / {}", di.getBonaparteType(), di.getLowerBound());
         // TODO Auto-generated method stub
         return null;
     }
@@ -647,32 +680,32 @@ public class MfcobolParser extends Settings implements MessageParser<MessagePars
     }
 
     @Override
-    public void setClassName(String newClassName) {
-        currentClass = newClassName;
-    }
-
-    @Override
     public Integer readEnum(EnumDataItem edi, BasicNumericElementaryDataItem di) throws MessageParserException {
-        throw new MessageParserException(MessageParserException.UNSUPPORTED_DATA_TYPE);
+        return readPrimitiveInteger(di);
     }
 
     @Override
     public String readEnum(EnumDataItem edi, AlphanumericElementaryDataItem di) throws MessageParserException {
-        throw new MessageParserException(MessageParserException.UNSUPPORTED_DATA_TYPE);
+        final EnumDefinition baseEnum = edi.getBaseEnum();
+        final String token = readString(di.getLength());
+        if (token == null) {
+            if (edi.getIsRequired() && !baseEnum.getHasNullToken()) {
+                throw newMPE(MessageParserException.EMPTY_BUT_REQUIRED_FIELD, di.getName());
+            }
+        }
+        return token;
     }
 
     @Override
     public <T extends AbstractXEnumBase<T>> T readXEnum(XEnumDataItem di, XEnumFactory<T> factory) throws MessageParserException {
-//        final XEnumDefinition spec = di.getBaseXEnum();
-////        if (checkForNull(di.getName(), di.getIsRequired() && !spec.getHasNullToken()))
-////            return factory.getNullToken();
-//        String scannedToken = readString(di.getName());
-//        T value = factory.getByToken(scannedToken);
-//        if (value == null) {
-//            throw newMPE(MessageParserException.INVALID_ENUM_TOKEN, scannedToken);
-//        }
-//        return value;
-        throw new MessageParserException(MessageParserException.UNSUPPORTED_DATA_TYPE);
+        final XEnumDefinition spec = di.getBaseXEnum();
+        final String token = readString(spec.getMaxTokenLength());
+        if (token == null) {
+            if (di.getIsRequired() && !spec.getHasNullToken()) {
+                throw newMPE(MessageParserException.EMPTY_BUT_REQUIRED_FIELD, di.getName());
+            }
+        }
+        return factory.getByTokenWithNull(token);
     }
 
     @Override
@@ -682,21 +715,21 @@ public class MfcobolParser extends Settings implements MessageParser<MessagePars
 
     @Override
     public double readPrimitiveDouble(BasicNumericElementaryDataItem di) throws MessageParserException {
-        throw new MessageParserException(MessageParserException.UNSUPPORTED_DATA_TYPE);
+        return Double.longBitsToDouble(readFixed8ByteLongLE());  // readFixed8ByteLong
     }
 
     @Override
     public float readPrimitiveFloat(BasicNumericElementaryDataItem di) throws MessageParserException {
-        throw new MessageParserException(MessageParserException.UNSUPPORTED_DATA_TYPE);
+        return Float.intBitsToFloat(readFixed4ByteIntLE());  // readFixed4ByteInt
     }
 
     @Override
     public short readPrimitiveShort(BasicNumericElementaryDataItem di) throws MessageParserException {
-        throw new MessageParserException(MessageParserException.UNSUPPORTED_DATA_TYPE);
+        return (short)readPrimitiveInteger(di);
     }
 
     @Override
     public byte readPrimitiveByte(BasicNumericElementaryDataItem di) throws MessageParserException {
-        throw new MessageParserException(MessageParserException.UNSUPPORTED_DATA_TYPE);
+        return (byte)readPrimitiveInteger(di);
     }
 }

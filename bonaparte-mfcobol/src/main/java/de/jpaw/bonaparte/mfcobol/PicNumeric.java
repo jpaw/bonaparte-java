@@ -13,10 +13,10 @@ public record PicNumeric(
     PicStorageType   storage,
     PicSignType      sign) {
 
-    private static final int [] SIZES_BINARY_UNSIGNED = {
+    private static final int[] SIZES_BINARY_UNSIGNED = {
             0, 1, 1, 2, 2, 3, 3, 3, 4, 4, 5, 5, 5, 6, 6, 7, 7, 8, 8, 8
     };
-    private static final int [] SIZES_BINARY_SIGNED = {
+    private static final int[] SIZES_BINARY_SIGNED = {
             0, 1, 1, 2, 2, 3, 3, 4, 4, 4, 5, 5, 6, 6, 6, 7, 7, 8, 8, 9
     };
 
@@ -38,7 +38,8 @@ public record PicNumeric(
         }
     }
 
-    private static final String PATTERN_STRING = "(S|-)?((9+)(\\x28[0-9]+\\x29)?)((V|.)((9+)(\\x28[0-9]+\\x29)?)?)?(-)?(( )+(COMP|COMP-3|COMP-5|PACKED DECIMAL))?";
+    private static final String PATTERN_STRING
+      = "(S|-)?((9+)(\\x28[0-9]+\\x29)?)((V|.)((9+)(\\x28[0-9]+\\x29)?)?)?(-)?(( )+(COMP|COMP-3|COMP-5|PACKED DECIMAL))?";
     private static final Pattern PATTERN = Pattern.compile(PATTERN_STRING);
 
     public static PicNumeric forPic(final String pic, final String fieldName, final String className) {
@@ -71,7 +72,9 @@ public record PicNumeric(
         } else {
             sign = PicSignType.UNSIGNED;
         }
-        final int integralDigits = integralNines.length() + (integralNineCount == null ? 0 : Integer.parseInt(integralNineCount, 1, integralNineCount.length() - 1, 10) - 1);
+        final int integralDigits = integralNines.length() + (integralNineCount == null
+          ? 0
+          : Integer.parseInt(integralNineCount, 1, integralNineCount.length() - 1, 10) - 1);
         final boolean explicitDecimalPoint = ".".equals(decimalPoint);
         int fractionalDigits = 0;
         if (fractionalNines != null) {
@@ -81,7 +84,7 @@ public record PicNumeric(
                 fractionalDigits += Integer.parseInt(fractionalNineCount, 1, fractionalNineCount.length() - 1, 10) - 1;
             }
         }
-        final PicStorageType storageType; 
+        final PicStorageType storageType;
         if (packingInfo == null) {
             storageType = PicStorageType.DISPLAY;
         } else {
