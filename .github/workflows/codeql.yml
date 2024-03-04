@@ -1,36 +1,37 @@
-# Build and publish snapshot package when pushed to master
-
-name: Publish Snapshot
+name: "CodeQL"
 
 on:
   workflow_dispatch: # enable manual trigger
   push:
-    branches: [ "master" ]
+    branches: [ "master", "feature/**" ]
     paths-ignore: [ ".github/**" ]
-
-# cancel already running instances of this workflow
-concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
-  cancel-in-progress: true
+  pull_request:
+    branches: [ "master" ]
+  schedule:
+    - cron: '42 12 * * 0'
 
 env:
   JAVA_VERSION_TO_USE: '17'
   JAVA_DISTRI_TO_USE: 'corretto'
-  REPORTSPATH:  '**/surefire-reports/TEST-*.xml'
   GITHUB_TOKEN_READ_PACKAGES: ${{ secrets.GH_WORKFLOWS_PAT_READ_PACKAGES }}
-  GITHUB_TOKEN_DEPLOY_PACKAGES: ${{ github.token }}
-  DEPLOY_RETRY: 5
 
 jobs:
-  publish:
+  analyze:
+    name: Analyze
     runs-on: ubuntu-latest
+    timeout-minutes: 360
     permissions:
+      actions: read
       contents: read
-      packages: write
-      checks: write
-      pull-requests: write
+      security-events: write
+
     steps:
     - uses: actions/checkout@v4
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: java
 
     - name: Set up JDK ${{ env.JAVA_VERSION_TO_USE }} (${{ env.JAVA_DISTRI_TO_USE }}) for build
       uses: actions/setup-java@v4
@@ -46,15 +47,14 @@ jobs:
         plugin_repositories: '[{ "id": "github-pkgs", "url": "https://maven.pkg.github.com/arvato-systems-jacs/dummy", "snapshots": { "enabled": "true" } }]'
         servers: |
           [
-            { "id": "github-pkgs", "username": "dummy", "password": "${env.GITHUB_TOKEN_READ_PACKAGES}" },
-            { "id": "github", "username": "${env.GITHUB_ACTOR}", "password": "${env.GITHUB_TOKEN_DEPLOY_PACKAGES}" }
+            { "id": "github-pkgs", "username": "dummy", "password": "${env.GITHUB_TOKEN_READ_PACKAGES}" }
           ]
 
-    - name: Build, Test and Publish
-      run: mvn -B -U -P github -T 1C -Dmaven.test.failure.ignore=true -DretryFailedDeploymentCount=${{ env.DEPLOY_RETRY }} deploy
 
-    - name: Publish Test Results
-      uses: EnricoMi/publish-unit-test-result-action@v2
-      if: always()
+    - name: Build
+      run: mvn -B -P github -T 1C package
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
       with:
-        junit_files: ${{ env.REPORTSPATH }}
+        category: "/language:java"
