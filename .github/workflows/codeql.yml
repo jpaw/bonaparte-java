@@ -4,7 +4,7 @@ on:
   workflow_dispatch: # enable manual trigger
   push:
     branches: [ "master", "feature/**" ]
-    paths-ignore: [ ".github/**" ]
+    #paths-ignore: [ ".github/**" ]
   pull_request:
     branches: [ "master" ]
   schedule:
