@@ -19,6 +19,17 @@ package csvTests {
         unsigned Long           longNum;
     }
 
+    class Test1withMicroUnits {
+        Ascii(10)               string1;
+        int                     int1;
+        Decimal(14,2) autoScale dec1;
+        Timestamp(0)            ts1;
+        FixedPoint(18,6)        mu1;
+        Day                     day1;
+        boolean                 really;
+        unsigned Long           longNum;
+    }
+
     class Test2 extends Test1 {
         (Test1...)              test1;
         (Test1...) List<>       tests1;

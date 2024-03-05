@@ -2,19 +2,20 @@ package de.jpaw.bonaparte.csvTests;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.Locale;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Locale;
 
 import de.jpaw.bonaparte.core.CSVComposer;
 import de.jpaw.bonaparte.core.CSVComposer2;
 import de.jpaw.bonaparte.core.CSVConfiguration;
 import de.jpaw.bonaparte.core.CSVStyle;
-import de.jpaw.bonaparte.pojos.csvTests.Test1;
+import de.jpaw.bonaparte.pojos.csvTests.Test1withMicroUnits;
+import de.jpaw.fixedpoint.types.MicroUnits;
 
 public class CSVDemo {
-    private static Test1 t = new Test1("Hello, world", 42, new BigDecimal("3.14"), LocalDateTime.now(), LocalDate.now(), true, -78653L);
+    private static Test1withMicroUnits t = new Test1withMicroUnits(
+      "Hello, world", 42, new BigDecimal("3.14"), LocalDateTime.now(), MicroUnits.valueOf(new BigDecimal("-33555.178")), LocalDate.now(), true, -78653L);
 
     private static void run2Tests(CSVConfiguration cfg, String formatName, boolean useComposer2) {
         StringBuilder buffer = new StringBuilder(200);
@@ -25,7 +26,7 @@ public class CSVDemo {
             // I hate those checked Exceptions which are even outright wrong!
             throw new RuntimeException("Hey, StringBuilder.append threw an IOException!" + e);
         }
-        System.out.print("Format " + formatName + " is " + buffer);
+        System.out.print("Format " + formatName + " using composer" + (useComposer2 ? "2" : "1") + " is " + buffer);
     }
 
     private static void runTest(CSVConfiguration cfg, String formatName) {
@@ -45,6 +46,7 @@ public class CSVDemo {
 
     public static void main(String[] args) {
         CSVConfiguration.Builder builder = new CSVConfiguration.Builder();
+        builder.usingGrouping(true);
 
         runTest(builder.build(), "default");
         runTest(builder.forLocale(Locale.GERMANY).build(), "DE");

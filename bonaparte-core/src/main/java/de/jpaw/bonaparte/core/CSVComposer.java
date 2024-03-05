@@ -18,6 +18,7 @@ package de.jpaw.bonaparte.core;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -36,6 +37,7 @@ import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
+import de.jpaw.fixedpoint.FixedPointBase;
 import de.jpaw.util.ByteArray;
 /**
  * The CSVComposer class.
@@ -62,7 +64,9 @@ public class CSVComposer extends AppendableComposer {
     protected final DateTimeFormatter timestampFormat;      // day and time on second precision (Joda)
     protected final DateTimeFormatter timestamp3Format;     // day and time on millisecond precision (Joda)
     protected final NumberFormat numberFormat;              // locale's default format for formatting float and double, covers decimal point and sign
+    protected final NumberFormat fractionalFormat;          // format without grouping, otherwise close of numberFormat
     protected final NumberFormat bigDecimalFormat;          // locale's default format for formatting BigDecimal, covers decimal point and sign
+    protected final DecimalFormatSymbols decimalFormatSymbols; // also used in DecimalFormat, which is a subclass of NumberFormat 
 
     protected final DateTimeFormatter doDateTimeFormatter(DateTimeFormatter input) {
         return input.withLocale(cfg.locale);
@@ -82,9 +86,14 @@ public class CSVComposer extends AppendableComposer {
         this.timestampFormat    = doDateTimeFormatter(cfg.determineTimestampFormatter());
         this.timestamp3Format   = doDateTimeFormatter(cfg.determineTimestamp3Formatter());
 
-        this.numberFormat       = NumberFormat.getInstance(cfg.locale);
+        // It is weird that we have to instantiate twice from cfg.locale, but Oracle's docs recommend to not instantiate DecimalFormat directly, and NumberFormat does not allow to retrieve
+        // the instance of DecimalFormatSymbols.
+        this.decimalFormatSymbols = new DecimalFormatSymbols(cfg.locale);
+        this.numberFormat         = NumberFormat.getInstance(cfg.locale);
         this.numberFormat.setGroupingUsed(cfg.useGrouping);
-        this.bigDecimalFormat   = cfg.removePoint4BD ? null : (NumberFormat)this.numberFormat.clone();    // make a copy for BigDecimal, where we set fractional digits as required
+        this.fractionalFormat     = (NumberFormat)this.numberFormat.clone();
+        this.fractionalFormat.setGroupingUsed(false);
+        this.bigDecimalFormat     = cfg.removePoint4BD ? null : (NumberFormat)this.numberFormat.clone();    // make a copy for BigDecimal, where we set fractional digits as required
     }
 
     protected void writeSeparator() throws IOException {   // nothing to do in the standard bonaparte format
@@ -189,6 +198,32 @@ public class CSVComposer extends AppendableComposer {
                 bigDecimalFormat.setMaximumFractionDigits(n.scale());
                 bigDecimalFormat.setMinimumFractionDigits(n.scale());
                 addRawData(bigDecimalFormat.format(n));
+            }
+        }
+    }
+
+    @Override
+    public <F extends FixedPointBase<F>> void addField(BasicNumericElementaryDataItem di, F n) throws IOException {
+        writeSeparator();
+        if (n != null) {
+            // use the regular NumberFormat for the integral part, then do the decimal point and any fractional digits separately
+            // the alternative way to convert to BigDecimal will be slower and also, not all methods of NumberFormat work with full precision
+            long mantissa = n.getMantissa();
+            final boolean sign = mantissa < 0;
+            if (sign) {
+                addSingleChar(decimalFormatSymbols.getMinusSign());
+                mantissa = -mantissa;
+            }
+            final long integralPart = mantissa / n.getUnitAsLong();
+            addRawData(numberFormat.format(integralPart));        // format using the locale's approach (potentially also using grouping)
+            if (n.scale() > 0) {
+                // output a decimal point, unless it has been forbidden
+                if (!cfg.removePoint4BD) {
+                    addSingleChar(decimalFormatSymbols.getDecimalSeparator());
+                }
+                // determine the fractional digits (remove the sign!)
+                final long fractional = mantissa - n.getUnitAsLong() * integralPart;
+                lpad(fractionalFormat.format(fractional), n.scale(), decimalFormatSymbols.getZeroDigit());
             }
         }
     }

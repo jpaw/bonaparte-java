@@ -180,6 +180,10 @@ public class AppendableComposer extends AbstractMessageComposer<IOException> imp
         }
     }
 
+    protected void addSingleChar(char c) throws IOException {
+        work.append(c);
+    }
+
     // field type specific output functions
 
     // character
@@ -330,7 +334,7 @@ public class AppendableComposer extends AbstractMessageComposer<IOException> imp
     }
 
     // append a left padded String
-    private void lpad(String s, int length, char padCharacter) throws IOException {
+    protected void lpad(String s, int length, char padCharacter) throws IOException {
         int l = s.length();
         while (l++ < length) {
             work.append(padCharacter);
