@@ -202,6 +202,14 @@ public class CSVComposer extends AppendableComposer {
         }
     }
 
+    // output the integral part of a fixed point number. Overridden by fixed format output for padding
+    protected <F extends FixedPointBase<F>> void fixedPointIntegralPart(BasicNumericElementaryDataItem di, F n, boolean sign, long integralPart) throws IOException {
+        if (sign) {
+            addSingleChar(decimalFormatSymbols.getMinusSign());
+        }
+        addRawData(numberFormat.format(integralPart));        // format using the locale's approach (potentially also using grouping)
+    }
+
     @Override
     public <F extends FixedPointBase<F>> void addField(BasicNumericElementaryDataItem di, F n) throws IOException {
         writeSeparator();
@@ -211,11 +219,10 @@ public class CSVComposer extends AppendableComposer {
             long mantissa = n.getMantissa();
             final boolean sign = mantissa < 0;
             if (sign) {
-                addSingleChar(decimalFormatSymbols.getMinusSign());
                 mantissa = -mantissa;
             }
             final long integralPart = mantissa / n.getUnitAsLong();
-            addRawData(numberFormat.format(integralPart));        // format using the locale's approach (potentially also using grouping)
+            fixedPointIntegralPart(di, n, sign, integralPart);
             if (n.scale() > 0) {
                 // output a decimal point, unless it has been forbidden
                 if (!cfg.removePoint4BD) {

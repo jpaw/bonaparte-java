@@ -28,6 +28,7 @@ import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
+import de.jpaw.fixedpoint.FixedPointBase;
 /**
  * The FixedWidthComposer class.
  *
@@ -328,6 +329,19 @@ public class FixedWidthComposer extends CSVComposer {
                 addRawData(val);
             }
         }
+    }
+
+    protected <F extends FixedPointBase<F>> void fixedPointIntegralPart(BasicNumericElementaryDataItem di, F n, boolean sign, long integralPart) throws IOException {
+        final int integralDigits = di.getTotalDigits() - di.getDecimalDigits();
+        final String digitsString = numberFormat.format(integralPart);
+        // number of padding digits = difference
+        if (integralDigits > digitsString.length()) {
+            addRawData(SPACE_PADDINGS[integralDigits - digitsString.length()]);
+        }
+        if (sign) {
+            addSingleChar(decimalFormatSymbols.getMinusSign());
+        }
+        addRawData(digitsString);        // format using the locale's approach (potentially also using grouping)
     }
 
     protected int getFieldWidth(BasicNumericElementaryDataItem di) {
