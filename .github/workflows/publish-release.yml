@@ -1,4 +1,4 @@
-# Build and publish package when release is created.
+# Release packages for a specific version/tag
 
 name: Publish Release
 
@@ -47,7 +47,9 @@ jobs:
           ]
 
     - name: Configure Git User
-      run: git config user.name "Release Management"
+      run: |
+        git config user.name 'github-actions[bot]'
+        git config user.email 'github-actions[bot]@users.noreply.github.com'
 
     - name: Update Parent Version
       run: |
@@ -67,6 +69,6 @@ jobs:
         GITHUB_TOKEN: ${{ github.token }}
 
     - name: Prepare and Release Packages
-      run: mvn -B -U -P github -Darguments=-DskipTests -DretryFailedDeploymentCount=${{ env.DEPLOY_RETRY }} -DreleaseVersion=${{ inputs.release_version }} release:prepare release:perform
+      run: mvn -B -P github -Darguments=-DskipTests -DretryFailedDeploymentCount=${{ env.DEPLOY_RETRY }} -DreleaseVersion=${{ inputs.release_version }} release:prepare release:perform
       env:
         GITHUB_TOKEN: ${{ github.token }}
