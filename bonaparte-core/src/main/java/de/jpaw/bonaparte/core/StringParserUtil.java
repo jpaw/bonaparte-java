@@ -181,7 +181,7 @@ public class StringParserUtil {
             // day and time
             date = Integer.parseInt(data.substring(0, dpoint));
             fractional = Integer.parseInt(data.substring(dpoint + 1));
-            final int numberOfFractionals = data.length() - dpoint - 1; 
+            final int numberOfFractionals = data.length() - dpoint - 1;
             switch (numberOfFractionals) { // i.e. number of fractional digits
             case 6:
                 fractional *= 1000;

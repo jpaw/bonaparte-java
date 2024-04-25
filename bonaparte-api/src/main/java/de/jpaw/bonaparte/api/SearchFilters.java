@@ -20,10 +20,10 @@ import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
 
 /** Methods to combine search filters. All methods in this class immediately evaluate logical operations on true or false. */
 public final class SearchFilters {
-	private SearchFilters() {
-	}
+    private SearchFilters() {
+    }
 
-	/** Static instance of true and false. */
+    /** Static instance of true and false. */
     public static final SearchFilter TRUE = new TrueFilter();
     public static final SearchFilter FALSE = new FalseFilter();
 

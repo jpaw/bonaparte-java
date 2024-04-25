@@ -27,10 +27,10 @@ import java.time.LocalTime;
  */
 public class DayTime {
 
-	/** shorthand */
-	static public int millisOfDay(LocalTime t) {
-	    return t.toSecondOfDay() * 1000 + t.getNano() / 1000000;
-	}
+    /** shorthand */
+    static public int millisOfDay(LocalTime t) {
+        return t.toSecondOfDay() * 1000 + t.getNano() / 1000000;
+    }
 
     /** Converts the day portion of a LocalDate or localDateTime into a number in the format YYYYMMDD. */
     static public int dayAsInt(LocalDate when) {

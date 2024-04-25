@@ -20,7 +20,7 @@ public class TestComplex {
 
     @Test
     public void testCompactComplexNumber() throws Exception {
-    	System.out.println("Java version is " + System.getProperty("java.version"));
+        System.out.println("Java version is " + System.getProperty("java.version"));
         Complex x = new Complex(42.0, 24.0);
         Complex yAndZ = new Complex(1, 0);
 

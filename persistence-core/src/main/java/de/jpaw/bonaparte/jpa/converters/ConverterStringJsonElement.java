@@ -16,8 +16,8 @@ public class ConverterStringJsonElement implements AttributeConverter<StringJson
 
     @Override
     public StringJsonElement convertToEntityAttribute(String data) {
-    	if (data == null || data.length() == 0)
-    		return null;
+        if (data == null || data.length() == 0)
+            return null;
         final Object l = new JsonParser(data, true).parseElement();
         return l == null ? null : new StringJsonElement(l);
     }

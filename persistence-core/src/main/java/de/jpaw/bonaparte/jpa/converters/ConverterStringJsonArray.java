@@ -19,8 +19,8 @@ public class ConverterStringJsonArray implements AttributeConverter<StringJsonAr
 
     @Override
     public StringJsonArray convertToEntityAttribute(String data) {
-    	if (data == null || data.length() == 0)
-    		return null;
+        if (data == null || data.length() == 0)
+            return null;
         final List<Object> l = new JsonParser(data, true).parseArray();
         return l == null ? null : new StringJsonArray(l);
     }

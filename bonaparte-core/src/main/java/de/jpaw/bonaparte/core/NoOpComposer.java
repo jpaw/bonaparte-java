@@ -191,7 +191,7 @@ public class NoOpComposer<E extends Exception> extends AbstractMessageComposer<E
     public void addField(ObjectReference di, Object obj) throws E {
     }
 
-	@Override
-	public <F extends FixedPointBase<F>> void addField(BasicNumericElementaryDataItem di, F n) throws E {
-	}
+    @Override
+    public <F extends FixedPointBase<F>> void addField(BasicNumericElementaryDataItem di, F n) throws E {
+    }
 }

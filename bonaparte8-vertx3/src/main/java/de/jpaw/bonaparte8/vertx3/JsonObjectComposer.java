@@ -293,14 +293,14 @@ public class JsonObjectComposer extends AbstractMessageComposer<RuntimeException
         }
     }
 
-	@Override
-	public <F extends FixedPointBase<F>> void addField(BasicNumericElementaryDataItem di, F n) throws RuntimeException {
+    @Override
+    public <F extends FixedPointBase<F>> void addField(BasicNumericElementaryDataItem di, F n) throws RuntimeException {
         if (n == null) {
             writeNull(di);
         } else {
             writeNonNull(di, n.toString());
         }
-	}
+    }
 
     @Override
     public void addField(TemporalElementaryDataItem di, LocalDate t) {

@@ -303,14 +303,14 @@ public class BaseExcelComposer extends AbstractMessageComposer<RuntimeException>
         }
     }
 
-	@Override
-	public <F extends FixedPointBase<F>> void addField(BasicNumericElementaryDataItem di, F n) throws RuntimeException {
+    @Override
+    public <F extends FixedPointBase<F>> void addField(BasicNumericElementaryDataItem di, F n) throws RuntimeException {
         if (n != null) {
             newCell(di, getCachedCellStyle(n.scale())).setCellValue(n.doubleValue());
         } else {
             writeNull(di);
         }
-	}
+    }
 
     // output a non-null number which was stored with possibly implicit fixed point
     private void addScaledNumber(BasicNumericElementaryDataItem di, double n) {

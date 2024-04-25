@@ -112,7 +112,7 @@ public class SerializationTest {
         BonaPortable obj2 = w.readRecord();
         assert obj2 instanceof ClassDefinition : "returned obj is of wrong type (StringBuilderParser)";
         assert compareTest1(obj1, (ClassDefinition)obj2) : "returned obj is not equal to original one (StringBuilderParser)";
-        
+
 //        System.out.println("Orig is " + ToStringHelper.toStringML(obj1));
 //        System.out.println("copy is " + ToStringHelper.toStringML(obj2));
         assert obj1.equals(obj2) : "returned obj is not equal to original one (StringBuilderParser) (own test)";

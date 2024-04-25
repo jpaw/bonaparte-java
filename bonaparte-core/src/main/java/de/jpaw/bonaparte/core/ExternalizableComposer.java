@@ -166,8 +166,8 @@ public class ExternalizableComposer extends AbstractMessageComposer<IOException>
         }
     }
 
-	@Override
-	public <F extends FixedPointBase<F>> void addField(BasicNumericElementaryDataItem di, F n) throws IOException {
+    @Override
+    public <F extends FixedPointBase<F>> void addField(BasicNumericElementaryDataItem di, F n) throws IOException {
         if (n == null) {
             out.writeByte(NULL_FIELD);
         } else {
@@ -221,8 +221,8 @@ public class ExternalizableComposer extends AbstractMessageComposer<IOException>
         if (t == null) {
             out.writeByte(NULL_FIELD);
         } else {
-        	int seconds = t.toLocalTime().toSecondOfDay();
-        	int millis = t.getNano() / 1000000;
+            int seconds = t.toLocalTime().toSecondOfDay();
+            int millis = t.getNano() / 1000000;
             if (seconds != 0 || millis != 0) {
                 // fractional part first...
                 out.writeByte(FRAC_SCALE_0 + 9);
@@ -244,8 +244,8 @@ public class ExternalizableComposer extends AbstractMessageComposer<IOException>
         if (t == null) {
             out.writeByte(NULL_FIELD);
         } else {
-        	int seconds = t.toSecondOfDay();
-        	int millis = t.getNano() / 1000000;
+            int seconds = t.toSecondOfDay();
+            int millis = t.getNano() / 1000000;
             out.writeByte(FRAC_SCALE_0 + 9);
             if (di.getHhmmss()) {
                 // convert milliseconds to hhmmssfff format

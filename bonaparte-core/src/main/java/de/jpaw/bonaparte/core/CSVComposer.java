@@ -66,7 +66,7 @@ public class CSVComposer extends AppendableComposer {
     protected final NumberFormat numberFormat;              // locale's default format for formatting float and double, covers decimal point and sign
     protected final NumberFormat fractionalFormat;          // format without grouping, otherwise close of numberFormat
     protected final NumberFormat bigDecimalFormat;          // locale's default format for formatting BigDecimal, covers decimal point and sign
-    protected final DecimalFormatSymbols decimalFormatSymbols; // also used in DecimalFormat, which is a subclass of NumberFormat 
+    protected final DecimalFormatSymbols decimalFormatSymbols; // also used in DecimalFormat, which is a subclass of NumberFormat
 
     protected final DateTimeFormatter doDateTimeFormatter(DateTimeFormatter input) {
         return input.withLocale(cfg.locale);

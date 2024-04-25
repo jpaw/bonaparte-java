@@ -360,7 +360,7 @@ public class AppendableComposer extends AbstractMessageComposer<IOException> imp
             int length = di.getFractionalSeconds();
             if (length >= 0) {
                 // not only day, but also time
-                final LocalTime tm = t.toLocalTime(); 
+                final LocalTime tm = t.toLocalTime();
                 final int seconds = tm.toSecondOfDay();
                 final int milliSeconds = tm.getNano() / 1000000;
                 if (seconds != 0 || length > 0 && milliSeconds != 0) {
@@ -386,7 +386,7 @@ public class AppendableComposer extends AbstractMessageComposer<IOException> imp
     public void addField(TemporalElementaryDataItem di, LocalTime t) throws IOException {
         if (t != null) {
             int length = di.getFractionalSeconds();
-            
+
             int seconds = t.toSecondOfDay();
             if (di.getHhmmss()) {
                 int tmpValue = seconds / 60; // minutes and hours

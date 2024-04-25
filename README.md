@@ -85,4 +85,3 @@ The converter classes can be listed in persistence.xml as follows:
         <class>de.jpaw.bonaparte.jpa.postgres.ConverterNativeJsonElement</class>
         <class>de.jpaw.bonaparte.jpa.postgres.ConverterNativeJsonObject</class>
 ```
-

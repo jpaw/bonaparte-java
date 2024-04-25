@@ -843,8 +843,8 @@ public class JsonComposer extends AbstractMessageComposer<IOException> {
     public void setMaybeWritePqonInfo(boolean maybeWritePqonInfo) {
         this.maybeWritePqonInfo = maybeWritePqonInfo;
     }
-	@Override
-	public <F extends FixedPointBase<F>> void addField(BasicNumericElementaryDataItem di, F n) throws IOException {
+    @Override
+    public <F extends FixedPointBase<F>> void addField(BasicNumericElementaryDataItem di, F n) throws IOException {
         writeOptionalUnquotedString(di, n == null ? null : n.toString());
-	}
+    }
 }

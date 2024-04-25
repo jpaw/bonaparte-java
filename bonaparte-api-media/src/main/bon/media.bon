@@ -58,7 +58,7 @@ package api.media XML PROPERTY factoryId 25 {
 
     /**
      * The MediaTypeDescriptor provides properties for a given <code>MediaXType</code>, for example the official MIME type,
-     * and information if the representation can be considered as text (human readable) or if it is binary data. 
+     * and information if the representation can be considered as text (human readable) or if it is binary data.
      */
     final class MediaTypeDescriptor classId 100 {
         required xenum MediaXType                   mediaType;

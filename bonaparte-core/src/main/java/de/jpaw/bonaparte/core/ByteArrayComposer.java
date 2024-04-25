@@ -409,7 +409,7 @@ public class ByteArrayComposer extends AbstractMessageComposer<RuntimeException>
             int length = di.getFractionalSeconds();
             if (length >= 0) {
                 // not only day, but also time
-                final LocalTime tm = t.toLocalTime(); 
+                final LocalTime tm = t.toLocalTime();
                 final int seconds = tm.toSecondOfDay();
                 final int milliSeconds = tm.getNano() / 1000000;
                 //tmpValue = 10000 * t.getHourOfDay() + 100 * t.getMinuteOfHour() + t.getSecondOfMinute();

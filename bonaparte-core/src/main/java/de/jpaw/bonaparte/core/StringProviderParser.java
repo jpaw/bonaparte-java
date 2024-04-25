@@ -122,10 +122,10 @@ public class StringProviderParser extends AbstractPartialJsonStringParser implem
         return stringParser.readBigDecimal(di, getParameter(di));
     }
 
-	@Override
-	public <F extends FixedPointBase<F>> F readFixedPoint(BasicNumericElementaryDataItem di, LongFunction<F> factory) throws MessageParserException {
+    @Override
+    public <F extends FixedPointBase<F>> F readFixedPoint(BasicNumericElementaryDataItem di, LongFunction<F> factory) throws MessageParserException {
         return stringParser.readFixedPoint(di, getParameter(di), factory);
-	}
+    }
 
     @Override
     public String readAscii(AlphanumericElementaryDataItem di) throws MessageParserException {

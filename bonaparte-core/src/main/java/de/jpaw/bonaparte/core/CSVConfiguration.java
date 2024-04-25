@@ -14,10 +14,10 @@ public class CSVConfiguration {
     private static final Logger LOGGER = LoggerFactory.getLogger(CSVConfiguration.class);
     private static final Map<CSVStyle, FormatStyle> STYLE_MAP = new EnumMap<>(CSVStyle.class);
     static {
-    	STYLE_MAP.put(CSVStyle.FULL, FormatStyle.FULL);
-    	STYLE_MAP.put(CSVStyle.LONG, FormatStyle.LONG);
-    	STYLE_MAP.put(CSVStyle.MEDIUM, FormatStyle.MEDIUM);
-    	STYLE_MAP.put(CSVStyle.SHORT, FormatStyle.SHORT);
+        STYLE_MAP.put(CSVStyle.FULL, FormatStyle.FULL);
+        STYLE_MAP.put(CSVStyle.LONG, FormatStyle.LONG);
+        STYLE_MAP.put(CSVStyle.MEDIUM, FormatStyle.MEDIUM);
+        STYLE_MAP.put(CSVStyle.SHORT, FormatStyle.SHORT);
     }
 
     public static final String EMPTY_STRING = "";                           // used instead of null Strings

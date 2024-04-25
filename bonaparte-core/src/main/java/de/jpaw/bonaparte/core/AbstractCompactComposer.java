@@ -418,8 +418,8 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
             return;
         }
         if (n.isIntegralValue()) {
-        	longOut(n.longValue());
-        	return;
+            longOut(n.longValue());
+            return;
         }
         int scale = n.scale();
         // scale == 0 cannot happen because that would be caught by the integral check before

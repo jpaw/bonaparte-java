@@ -14,8 +14,8 @@ public class ConverterStringElement implements AttributeConverter<Object, String
 
     @Override
     public Object convertToEntityAttribute(String data) {
-    	if (data == null || data.length() == 0)
-    		return null;
+        if (data == null || data.length() == 0)
+            return null;
         return new JsonParser(data, false).parseElement();
     }
 }
