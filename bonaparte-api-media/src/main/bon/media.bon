@@ -21,7 +21,16 @@ package api.media XML PROPERTY factoryId 25 {
         // anything else
         RAW = "#",
         // user defined or undefined
-        USER_DEFINED = "U", UNDEFINED = "?"
+        USER_DEFINED = "U", UNDEFINED = "?",
+        // later added formats
+        FLAC = "F",
+        YAML = "Y",
+        DOCX = "O",
+        PPTX = "q",
+        TAR  = "R",
+        ZIP7 = "7",
+        ZIP  = "Z",
+        GZIP = "z"
     }
 
     /** Define an associated Xenum to allow extensions. */
@@ -49,7 +58,8 @@ package api.media XML PROPERTY factoryId 25 {
         IMAGE                   = "I",  // a 2 dimensional picture
         RECORDS                 = "R",  // format suitable to transmit data records
         TEXT                    = "T",  // textual document (not textual data file format)
-        DOCUMENT                = "B"   // binary document
+        DOCUMENT                = "B",  // binary document
+        CONTAINER               = "C"   // not really a file type, but an archive of packed file(s)
     }
 
     enum EnumOutputType {
