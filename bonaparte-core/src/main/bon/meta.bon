@@ -17,6 +17,7 @@ package meta factoryId 29 {
     type identifier             is Unicode(255);
     type enumIdType             is Unicode(63);
     type enumTokenType          is Unicode(63);
+    type javaComment            is Unicode(65535) allowControlChars;
 
     enum Visibility { DEFAULT, PRIVATE, PROTECTED, PUBLIC }
     enum BundleStatus { UNUSED, RESOLVED, INSTALLED, STARTING, SHUTTING_DOWN, MAINTENANCE }  // borrow OSGi statuses
@@ -40,6 +41,9 @@ package meta factoryId 29 {
         required boolean                    isPrimitive;            // true if the field is a primitive data type in Java
         required boolean                    isAggregateRequired;    // field is an aggregate field (array, List, Set, Map) and the aggregate itself may not be null
         required Unicode(512) Map<String>   ^properties;            // field properties, properties without value are represented as empty string
+        optional javaComment                javaDoc;                // Javadoc comment
+        optional javaComment                regularComment;         // standard multiline comment just before the definition
+        optional javaComment                trailingComment;        // single line comments after the definition
     }
 
     class ObjectReference classId 1 extends FieldDefinition {
@@ -143,6 +147,8 @@ package meta factoryId 29 {
         optional identifier                 ^bundle;            // OSGi bundle / module
         optional Instant(3)                 whenLoaded;
         optional (!E...)                    parentMeta;         // the meta object for the parent object (if this is an inherited one, else null)
+        optional javaComment                javaDoc;            // Javadoc comment
+        optional javaComment                regularComment;     // standard single-line or multiline comment
     }
     // holds all meta information for a class
     class ClassDefinition classId 11 extends AbstractObjectParent<ClassDefinition> {
