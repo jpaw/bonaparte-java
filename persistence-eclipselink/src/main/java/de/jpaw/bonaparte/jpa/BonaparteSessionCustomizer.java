@@ -5,12 +5,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.eclipse.persistence.config.SessionCustomizer;
 import org.eclipse.persistence.descriptors.ClassDescriptor;
 import org.eclipse.persistence.mappings.DatabaseMapping;
 import org.eclipse.persistence.mappings.converters.Converter;
 import org.eclipse.persistence.mappings.foundation.AbstractDirectMapping;
 import org.eclipse.persistence.sessions.Session;
+import org.eclipse.persistence.sessions.SessionCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +39,7 @@ public class BonaparteSessionCustomizer implements SessionCustomizer {
     public void customize(Session session) throws Exception {
         LOGGER.trace("customizing session");
         // Iterate through the meta-data of all known JPA entities
-        Map<Class, ClassDescriptor> descriptors = session.getDescriptors();
+        Map<Class<?>, ClassDescriptor> descriptors = session.getDescriptors();
         for (ClassDescriptor descriptor : descriptors.values()) {
             Map<String, Converter> fieldsMap = collectConverters(descriptor.getJavaClass());
 
