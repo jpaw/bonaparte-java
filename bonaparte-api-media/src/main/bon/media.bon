@@ -5,28 +5,24 @@ package api.media XML PROPERTY factoryId 25 {
     /** Defines the format of the data output. */
     enum MediaType {
         // structured output types (record output)
-        BONAPARTE = "B", ^XML = "L", JSON = "J", NULL = "N", COMPACT_BONAPARTE = "c", XLS = "X", XLSX="x", CSV = "C",
+        BONAPARTE = "B", ^XML = "L", JSON = "J", NULL = "N", COMPACT_BONAPARTE = "c", XLS = "X", XLSX="x", CSV = "C", JSONL = "n", YAML = "Y",
         // textual document file output types
         TEXT = "T", HTML="H", XHTML="h", CSS="S", MARKDOWN = "m", TEX = "t", LATEX = "l", URL = "r",
         // binary document output types
-        PDF = "P", DVI = "D", POSTSCRIPT = "o",
+        PDF = "P", DVI = "D", POSTSCRIPT = "o", DOCX = "O", PPTX = "q",
         // images
-        JPG = "j", PNG = "p", GIF = "g", TIFF = "f",
+        JPG = "j", PNG = "p", GIF = "g", TIFF = "f", WEBP = "W",
         // vector graphics
         SVG = "V",
         // audio
-        WAV = "w", MP3 = "3",
+        WAV = "w", MP3 = "3", FLAC = "F",
         // video
         MPG = "M", MP4 = "4",
         // anything else
         RAW = "#",
         // user defined or undefined
         USER_DEFINED = "U", UNDEFINED = "?",
-        // later added formats
-        FLAC = "F",
-        YAML = "Y",
-        DOCX = "O",
-        PPTX = "q",
+        // archives
         TAR  = "R",
         ZIP7 = "7",
         ZIP  = "Z",

@@ -57,6 +57,7 @@ public class MediaTypeInfo {
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.BONAPARTE),          "b",    MediaCategory.RECORDS,  true,  MimeTypes.MIME_TYPE_BONAPARTE));         // FIXME: made-up MIME type, should have been application/vnd.jpaw-bonaparte
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.XML),                "xml",  MediaCategory.RECORDS,  true,  MimeTypes.MIME_TYPE_XML));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.JSON),               "json", MediaCategory.RECORDS,  true,  MimeTypes.MIME_TYPE_JSON));
+        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.JSONL),              "jsonl", MediaCategory.RECORDS,  true,  "application/jsonl"));  // MIME type not yet standardized
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.COMPACT_BONAPARTE),  "cb",   MediaCategory.RECORDS,  false, MimeTypes.MIME_TYPE_COMPACT_BONAPARTE)); // FIXME: made-up MIME type, should have been application/vnd.jpaw-compact-bonaparte
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.YAML),               "yaml", MediaCategory.RECORDS,  true,  "application/yaml"));  // since Feb-2024: https://www.rfc-editor.org/rfc/rfc9512.html
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.XLS),                "xls",  MediaCategory.RECORDS,  false, "application/vnd.ms-excel"));
@@ -77,6 +78,7 @@ public class MediaTypeInfo {
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.POSTSCRIPT),         "ps",   MediaCategory.DOCUMENT, true,  "application/postscript"));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.GIF),                "gif",  MediaCategory.IMAGE,    false, "image/gif"));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.JPG),                "jpg",  MediaCategory.IMAGE,    false, "image/jpeg"));
+        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.WEBP),               "webp", MediaCategory.IMAGE,    false, "image/webp"));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.PNG),                "png",  MediaCategory.IMAGE,    false, "image/png"));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.SVG),                "svg",  MediaCategory.IMAGE,    false, "image/svg+xml")); // set as binary to have same behavior of all image typed formats
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.FLAC),               "flac", MediaCategory.AUDIO,    false, "audio/flac"));

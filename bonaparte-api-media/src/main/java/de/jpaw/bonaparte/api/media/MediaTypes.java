@@ -7,6 +7,8 @@ public interface MediaTypes {
     public static final MediaXType MEDIA_XTYPE_BONAPARTE         = MediaXType.of(MediaType.BONAPARTE);
     public static final MediaXType MEDIA_XTYPE_XML               = MediaXType.of(MediaType.XML);
     public static final MediaXType MEDIA_XTYPE_JSON              = MediaXType.of(MediaType.JSON);
+    public static final MediaXType MEDIA_XTYPE_JSONL             = MediaXType.of(MediaType.JSONL);
+    public static final MediaXType MEDIA_XTYPE_YAML              = MediaXType.of(MediaType.YAML);
     public static final MediaXType MEDIA_XTYPE_COMPACT_BONAPARTE = MediaXType.of(MediaType.COMPACT_BONAPARTE);
     public static final MediaXType MEDIA_XTYPE_XLSX              = MediaXType.of(MediaType.XLSX);
     public static final MediaXType MEDIA_XTYPE_XLS               = MediaXType.of(MediaType.XLS);
@@ -25,6 +27,8 @@ public interface MediaTypes {
     public static final MediaXType MEDIA_XTYPE_GIF               = MediaXType.of(MediaType.GIF);
     public static final MediaXType MEDIA_XTYPE_JPG               = MediaXType.of(MediaType.JPG);
     public static final MediaXType MEDIA_XTYPE_PNG               = MediaXType.of(MediaType.PNG);
+    public static final MediaXType MEDIA_XTYPE_SVG               = MediaXType.of(MediaType.SVG);
+    public static final MediaXType MEDIA_XTYPE_WEBP              = MediaXType.of(MediaType.WEBP);
     public static final MediaXType MEDIA_XTYPE_WAV               = MediaXType.of(MediaType.WAV);
     public static final MediaXType MEDIA_XTYPE_MP3               = MediaXType.of(MediaType.MP3);
     public static final MediaXType MEDIA_XTYPE_MP4               = MediaXType.of(MediaType.MP4);
