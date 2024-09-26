@@ -22,6 +22,8 @@ package api.media XML PROPERTY factoryId 25 {
         RAW = "#",
         // user defined or undefined
         USER_DEFINED = "U", UNDEFINED = "?",
+        // template engines
+        FTL = "2",
         // archives
         TAR  = "R",
         ZIP7 = "7",

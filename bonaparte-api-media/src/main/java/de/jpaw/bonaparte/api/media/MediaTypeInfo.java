@@ -88,6 +88,7 @@ public class MediaTypeInfo {
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.MP4),                "mp4",  MediaCategory.VIDEO,    false, "video/mp4"));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.MPG),                "mpg",  MediaCategory.VIDEO,    false, "video/mpeg"));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.RAW),                "dat",  MediaCategory.OTHER,    false, "application/octet-stream"));
+        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.FTL),                "ftl",  MediaCategory.TEXT,     true,  "application/x-freemarker"));
         // add some archives
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.ZIP),                "zip",  MediaCategory.CONTAINER, false, "application/zip", JAVA_EXTENSIONS));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.GZIP),               "gz",   MediaCategory.CONTAINER, false, "application/gzip"));
