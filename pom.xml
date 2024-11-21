@@ -4,7 +4,7 @@
     <parent>
         <groupId>de.jpaw</groupId>
         <artifactId>jpaw-base</artifactId>
-        <version>3.4.1</version>
+        <version>3.5.1</version>
         <relativePath />
     </parent>
 
@@ -19,22 +19,29 @@
         <tag>HEAD</tag>
     </scm>
 
+    <!-- useful commands to check current versions:
+         mvn dependency:resolve
+         mvn dependency:resolve-plugins
+         mvn -N versions:display-dependency-updates
+         mvn -N versions:display-plugin-updates
+    -->
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- define revisions of other jpaw.de projects, not covered by plugin management -->
-        <bonaparte-plugin.version>6.0.2</bonaparte-plugin.version> <!-- do not use -SNAPSHOT here (GH CI can't deal with it) -->
-        <jpaw.version>3.4.0</jpaw.version>
+        <bonaparte-plugin.version>6.1.0</bonaparte-plugin.version> <!-- do not use -SNAPSHOT here (GH CI can't deal with it) -->
+        <jpaw.version>3.5.1</jpaw.version>
 
         <!-- define releases (mostly of 3rd party dependencies) we want to use, to ensure consistency -->
         <!-- Some more versions, used by specific dependent projects -->
         <gson.version>2.11.0</gson.version>
 
         <lucene.version>4.10.4</lucene.version>
-        <netty.version>4.1.110.Final</netty.version>
-        <poi.version>5.2.5</poi.version>
-        <camel.version>4.6.0</camel.version>
-        <vertx3.version>4.5.8</vertx3.version>
+        <netty.version>4.1.115.Final</netty.version>
+        <poi.version>5.3.0</poi.version>
+        <camel.version>4.8.1</camel.version>
+        <vertx3.version>4.5.11</vertx3.version>
 
         <!-- distributed caches -->
         <ehcache.version>2.10.2</ehcache.version>
@@ -54,10 +61,10 @@
         <jakarta.persistence-api.version>3.2.0</jakarta.persistence-api.version>
 
         <eclipselink.version>4.0.3</eclipselink.version>
-        <hibernate.version>6.5.2.Final</hibernate.version>
-        <hibernate-types.version>3.7.5</hibernate-types.version>
+        <hibernate.version>6.6.2.Final</hibernate.version>
+        <hibernate-types.version>3.9.0</hibernate-types.version>  <!-- for io.hypersistence:hypersistence-utils-hibernate-63 -->
 
-        <postgres.driver.version>42.7.3</postgres.driver.version>
+        <postgres.driver.version>42.7.4</postgres.driver.version>
     </properties>
 
     <dependencyManagement>
@@ -223,6 +230,15 @@
                     </configuration>
                     <dependencies>
                         <dependency>
+                            <groupId>org.eclipse.jdt</groupId>
+                            <artifactId>ecj</artifactId>
+                            <version>${jdt.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.eclipse.jdt</groupId>
+                            <artifactId>org.eclipse.jdt.core</artifactId>
+                            <version>${jdt.version}</version>
+                        </dependency>                        <dependency>
                             <groupId>de.jpaw.bonaparte-dsl</groupId>
                             <artifactId>de.jpaw.bonaparte.dsl</artifactId>
                             <version>${bonaparte-plugin.version}</version>
