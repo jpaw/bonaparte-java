@@ -38,6 +38,11 @@ jobs:
         java-version: ${{ env.JAVA_VERSION_TO_USE }}
         distribution: ${{ env.JAVA_DISTRI_TO_USE }}
         cache: maven
+  
+    - name: Set up Maven
+      uses: stCarolas/setup-maven@v5
+      with:
+        maven-version: ${{ secrets.GH_WORKFLOWS_MAVEN_VERSION }}
 
     - name: Configure maven settings.xml
       uses: whelk-io/maven-settings-xml-action@v22
