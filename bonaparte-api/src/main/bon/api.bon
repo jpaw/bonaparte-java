@@ -29,6 +29,16 @@ package api factoryId 25 {
         CUSTOM      = "Z"   // context
     }
 
+    /** Functions used to aggregate columns */
+    enum AggregateFunctionType {
+        SUM = "S",
+        AVG = "A",
+        MIN = "N",
+        MAX = "X",
+        COUNT = "C",
+        COUNT_DISTINCT = "D"
+    }
+
     /** Base class for all DTOs which can be stored in some key/value store and have a primitive or wrapped long
      * primary key, either surrogate or derived by composing natural key fields.
      */
@@ -284,6 +294,12 @@ package api factoryId 25 {
     final class BytesFilter classId 46 extends FieldFilter {
         optional Raw(2000)                          equalsValue;
         required Raw(2000) List<>                   valueList;
+    }
+
+    /** Define aggregate function to be used for column aggregation */
+    class AggregateColumn {
+        required identifier                         fieldName;
+        required enum AggregateFunctionType         function;
     }
 
 }
