@@ -30,15 +30,15 @@ public class BonaPortableFactory {
 
     // Skip the next field and PathResolverTest may fail. Required to load the meta data classes in the correct order, required due to cyclic dependencies
     // of static fields and their initialization.
-    public static Object UNUSED = ClassDefinition.class$MetaData();
+    public static final Object UNUSED = ClassDefinition.class$MetaData();
     // it will definitely fail if for example FieldDefinition is loaded before ClassDefinition
 
     /** Stub to call to force initialization, in case no other initialization is required. */
     public static void init() {
     }
 
-    private static ConcurrentMap<String, BonaPortableClass<? extends BonaPortable>> mapByPQON = new ConcurrentHashMap<String, BonaPortableClass<? extends BonaPortable>>(2048);
-    private static ConcurrentMap<String, BonaPortableClass<? extends BonaPortable>> mapByFQON = new ConcurrentHashMap<String, BonaPortableClass<? extends BonaPortable>>(1024);
+    private static final ConcurrentMap<String, BonaPortableClass<? extends BonaPortable>> mapByPQON = new ConcurrentHashMap<String, BonaPortableClass<? extends BonaPortable>>(2048);
+    private static final ConcurrentMap<String, BonaPortableClass<? extends BonaPortable>> mapByFQON = new ConcurrentHashMap<String, BonaPortableClass<? extends BonaPortable>>(1024);
 
     private static String bonaparteClassDefaultPackagePrefix = "de.jpaw.bonaparte.pojos";
     private static Map<String, String> packagePrefixMap = new ConcurrentHashMap<String,String>(16);
@@ -54,11 +54,11 @@ public class BonaPortableFactory {
     }
     private static class HiddenClass {
     }
-    static final private HiddenClass A_WAY_TO_GET_MY_CLASSLOADER = new HiddenClass();
+    private static final HiddenClass A_WAY_TO_GET_MY_CLASSLOADER = new HiddenClass();
     private static ClassLoader classLoaderToUse = null;
 
     public static final String BONAPARTE_DEFAULT_PACKAGE_PREFIX = "bonapartePrefix"; // "BONAPARTE_DEFAULT_PACKAGE_PREFIX";  // system property name which can be used as a source
-    static public boolean publishDefaultPrefix = true;          // required in environments which instantiate multiple classloaders for isolation (vert.x)
+    public static boolean publishDefaultPrefix = true;          // required in environments which instantiate multiple classloaders for isolation (vert.x)
     private static boolean bonaparteClassDefaultPackagePrefixShouldBeRetrieved = true;
     private static final AtomicInteger initializationCounter = new AtomicInteger();
 
@@ -119,7 +119,7 @@ public class BonaPortableFactory {
     // new method, caches the BClass, to avoid reflection to create a new instance
     // parameter name is the PQON of the desired class
     public static BonaPortable createObject(String pqon) throws MessageParserException {
-        BonaPortableClass<? extends BonaPortable> bclass = mapByPQON.get(pqon);
+        final BonaPortableClass<? extends BonaPortable> bclass = mapByPQON.get(pqon);
         if (bclass != null)
             return bclass.newInstance();  // new instance without reflection
 
@@ -132,7 +132,7 @@ public class BonaPortableFactory {
     }
 
     public static BonaPortable createObjectByFqon(String fqon) throws MessageParserException {
-        BonaPortableClass<? extends BonaPortable> bclass = mapByFQON.get(fqon);
+        final BonaPortableClass<? extends BonaPortable> bclass = mapByFQON.get(fqon);
         if (bclass != null)
             return bclass.newInstance();  // new instance without reflection
 
