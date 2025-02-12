@@ -1,12 +1,15 @@
 package de.jpaw.bonaparte.api;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import de.jpaw.bonaparte.pojos.api.AndFilter;
+import de.jpaw.bonaparte.pojos.api.DayFilter;
 import de.jpaw.bonaparte.pojos.api.FalseFilter;
 import de.jpaw.bonaparte.pojos.api.InstantFilter;
 import de.jpaw.bonaparte.pojos.api.IntFilter;
@@ -14,6 +17,7 @@ import de.jpaw.bonaparte.pojos.api.LongFilter;
 import de.jpaw.bonaparte.pojos.api.NotFilter;
 import de.jpaw.bonaparte.pojos.api.OrFilter;
 import de.jpaw.bonaparte.pojos.api.SearchFilter;
+import de.jpaw.bonaparte.pojos.api.TimeFilter;
 import de.jpaw.bonaparte.pojos.api.TimestampFilter;
 import de.jpaw.bonaparte.pojos.api.TrueFilter;
 import de.jpaw.bonaparte.pojos.api.UnicodeFilter;
@@ -111,6 +115,18 @@ public final class SearchFilters {
         return f;
     }
 
+    public static DayFilter equalsFilter(final String fieldName, final LocalDate value) {
+        final DayFilter f = new DayFilter(fieldName);
+        f.setEqualsValue(value);
+        return f;
+    }
+
+    public static TimeFilter equalsFilter(final String fieldName, final LocalTime value) {
+        final TimeFilter f = new TimeFilter(fieldName);
+        f.setEqualsValue(value);
+        return f;
+    }
+
     // part 2: range (or just upper or lower bound)
 
     public static IntFilter rangeFilter(final String fieldName, final Integer lower, final Integer upper) {
@@ -174,6 +190,34 @@ public final class SearchFilters {
             throw new NullPointerException("Cannot build range filter with both null parameters");
         }
         final TimestampFilter f = new TimestampFilter(fieldName);
+        if (lower != null && lower.equals(upper)) {
+            f.setEqualsValue(lower);
+        } else {
+            f.setLowerBound(lower);
+            f.setUpperBound(upper);
+        }
+        return f;
+    }
+
+    public static DayFilter rangeFilter(final String fieldName, final LocalDate lower, final LocalDate upper) {
+        if (lower == null && upper == null) {
+            throw new NullPointerException("Cannot build range filter with both null parameters");
+        }
+        final DayFilter f = new DayFilter(fieldName);
+        if (lower != null && lower.equals(upper)) {
+            f.setEqualsValue(lower);
+        } else {
+            f.setLowerBound(lower);
+            f.setUpperBound(upper);
+        }
+        return f;
+    }
+
+    public static TimeFilter rangeFilter(final String fieldName, final LocalTime lower, final LocalTime upper) {
+        if (lower == null && upper == null) {
+            throw new NullPointerException("Cannot build range filter with both null parameters");
+        }
+        final TimeFilter f = new TimeFilter(fieldName);
         if (lower != null && lower.equals(upper)) {
             f.setEqualsValue(lower);
         } else {
