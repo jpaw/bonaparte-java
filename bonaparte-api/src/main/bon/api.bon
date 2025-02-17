@@ -29,6 +29,8 @@ package api factoryId 25 {
         CUSTOM      = "Z"   // context
     }
 
+    enumset<int> OperationTypes       is OperationType;   // see also Permissionset is api.auth, which is technically the same, but suggests a different meaning
+
     /** Functions used to aggregate columns */
     enum AggregateFunctionType {
         SUM = "S",
@@ -297,7 +299,7 @@ package api factoryId 25 {
     }
 
     /** Define aggregate function to be used for column aggregation */
-    class AggregateColumn {
+    class AggregateColumn classId 47 {
         required identifier                         fieldName;
         required enum AggregateFunctionType         function;
     }
