@@ -4,7 +4,7 @@
     <parent>
         <groupId>de.jpaw</groupId>
         <artifactId>bonaparte-base</artifactId>
-        <version>6.1.5</version>
+        <version>6.1.6-SNAPSHOT</version>
     </parent>
 
     <artifactId>bonaparte8-vertx3</artifactId>
