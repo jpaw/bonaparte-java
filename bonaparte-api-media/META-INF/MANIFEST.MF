@@ -3,7 +3,7 @@ Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-ManifestVersion: 2
 Bundle-Name: bonaparte api MEDIA definitions
 Bundle-SymbolicName: bonaparte.api.media
-Bundle-Version: 6.1.5
+Bundle-Version: 6.1.6
 Bundle-Vendor: Michael Bischoff
 Require-Bundle: com.google.guava;bundle-version="30.0";visibility:=reexport
 Export-Package: de.jpaw.bonaparte.api.media,
