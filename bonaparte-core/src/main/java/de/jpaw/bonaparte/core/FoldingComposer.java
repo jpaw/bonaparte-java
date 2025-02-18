@@ -153,7 +153,8 @@ public class FoldingComposer<E extends Exception> extends DelegatingBaseComposer
         if (obj == null) {
             writeNull(di);
         } else {
-            if (errorStrategy == FoldingStrategy.FORWARD_OBJECTS && di != StaticMeta.OUTER_BONAPORTABLE) {
+            final boolean isGenericObj = di.getProperties() != null && di.getProperties().containsKey("genericobject");
+            if (isGenericObj || (errorStrategy == FoldingStrategy.FORWARD_OBJECTS && di != StaticMeta.OUTER_BONAPORTABLE)) {
                 // purpose is to output objects as they are
                 delegateComposer.addField(di, obj);
                 return;

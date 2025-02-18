@@ -184,7 +184,8 @@ public class FieldGetter {
                 oRef = fld instanceof ObjectReference ? (ObjectReference)fld : null; // just a one time evaluation
             }
 
-            if (lastDot < 0)
+            final boolean isGenericObjectField = cls.getProperties() != null && cls.getProperties().containsKey(currentElement + ".genericobject");
+            if (lastDot < 0 || isGenericObjectField)
                 // this was the result
                 return fld;
             // otherwise, must descend further. For that, fld must be a class reference
