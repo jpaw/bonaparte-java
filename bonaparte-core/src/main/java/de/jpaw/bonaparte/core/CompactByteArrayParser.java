@@ -19,13 +19,10 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
-import java.util.function.LongFunction;
 
-import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.util.BigDecimalTools;
-import de.jpaw.fixedpoint.FixedPointBase;
 import de.jpaw.util.ByteArray;
 
 /**

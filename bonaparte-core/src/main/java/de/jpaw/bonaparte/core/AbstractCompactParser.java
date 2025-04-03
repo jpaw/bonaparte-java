@@ -33,7 +33,6 @@ import de.jpaw.enums.AbstractXEnumBase;
 import de.jpaw.enums.XEnumFactory;
 import de.jpaw.fixedpoint.FixedPointBase;
 import de.jpaw.util.ByteArray;
-import de.jpaw.util.CharTestsASCII;
 import de.jpaw.util.CollectionUtil;
 
 
@@ -803,13 +802,16 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
 
     protected void addMapElem(Map<String, Object> map) throws E {
         // parse field name, then value
-        String key = readString("$jsonObjKey"); // an explicitor implicit null will cause an exception
-        if (!CharTestsASCII.isJavascriptId(key))
-            throw newMPE(MessageParserException.JSON_ID, key);
+        String key = readString("$jsonObjKey"); // an explicit or implicit null will cause an exception
+        // do not check for validity of the key here, because outside actual JavaScript, it is frequently used
+//        if (!CharTestsASCII.isJavascriptId(key)) {
+//            throw newMPE(MessageParserException.JSON_ID, key);
+//        }
         // now read value
-        Object value = readElementSub();
-        if (map.put(key, value) != null)
+        final Object value = readElementSub();
+        if (map.put(key, value) != null) {
             throw newMPE(MessageParserException.JSON_DUPLICATE_KEY, key);
+        }
     }
 
     // read a non-null map with the start character already parsed
