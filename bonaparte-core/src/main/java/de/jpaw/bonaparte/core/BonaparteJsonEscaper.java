@@ -72,13 +72,13 @@ public class BonaparteJsonEscaper extends ExtendedJsonEscaperForAppendables {
 
     @Override
     public void outputJsonElement(Object obj) throws IOException {
-        if (obj instanceof BonaCustom) {
+        if (obj instanceof BonaCustom bc) {
 //            if (bonaparteJsonComposer == null) {
 //                bonaparteJsonComposer = new JsonComposer(appendable, false, this);
 //            }
 //            // output as Json
-//            bonaparteJsonComposer.writeObject((BonaCustom)obj);
-            new JsonComposer(appendable, false, this).writeObject((BonaCustom)obj);
+//            bonaparteJsonComposer.writeObject(bc);
+            new JsonComposer(appendable, false, this).writeObject(bc);
             return;
         }
         super.outputJsonElement(obj);

@@ -91,8 +91,8 @@ public final class StringCSVParser extends AbstractPartialJsonStringParser imple
 
     public void setNationalBigDecimal() {
         localBigDecimalFormat = NumberFormat.getInstance(cfg.locale);
-        if (localBigDecimalFormat instanceof DecimalFormat) {
-            ((DecimalFormat)localBigDecimalFormat).setParseBigDecimal(true);
+        if (localBigDecimalFormat instanceof DecimalFormat df) {
+            df.setParseBigDecimal(true);
         }
     }
     public void setNationalFloat() {

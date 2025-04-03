@@ -47,11 +47,11 @@ public class ToStringHelper {
             _buffer.append("null");
         } else if (value instanceof BonaPortable) {
             BonaPortable(_buffer, _currentIndent, showNulls, value);
-        } else if (value instanceof java.util.List) {
+        } else if (value instanceof java.util.List li) {
             // output a list of objects
             boolean firstInList = true;
             _buffer.append("[");
-            for (Object e : (java.util.List<?>)value) {
+            for (Object e : li) {
                 if (!firstInList)
                     _buffer.append(", ");
                 firstInList = false;
@@ -64,11 +64,11 @@ public class ToStringHelper {
                 FieldOut(_buffer, _currentIndent, showNulls, e);
             }
             _buffer.append("]");
-        } else if (value instanceof java.util.Set) {
+        } else if (value instanceof java.util.Set se) {
             // output a list of objects
             boolean firstInList = true;
             _buffer.append("{");
-            for (Object e : (java.util.Set<?>)value) {
+            for (Object e : se) {
                 if (!firstInList)
                     _buffer.append(", ");
                 firstInList = false;
@@ -81,11 +81,11 @@ public class ToStringHelper {
                 FieldOut(_buffer, _currentIndent, showNulls, e);
             }
             _buffer.append("}");
-        } else if (value instanceof java.util.Map) {
+        } else if (value instanceof java.util.Map ma) {
             // output a map of objects
             boolean firstInList = true;
             _buffer.append("(");
-            Map<?,?> m = (java.util.Map<?,?>)value;
+            Map<?,?> m = ma;
             for (Map.Entry<?,?> e : m.entrySet()) {
                 if (!firstInList)
                     _buffer.append(", ");

@@ -167,9 +167,8 @@ public class FieldGetter {
             ObjectReference oRef;
             if (autoSkipAdapters) {
                 for (;;) {
-                    oRef = fld instanceof ObjectReference ? (ObjectReference)fld : null;
-                    if (oRef != null && oRef.getLowerBound() != null && oRef.getLowerBound() instanceof ExternalClassDefinition) {
-                        ExternalClassDefinition extRef = (ExternalClassDefinition)oRef.getLowerBound();
+                    oRef = fld instanceof ObjectReference or ? or : null;
+                    if (oRef != null && oRef.getLowerBound() != null && oRef.getLowerBound() instanceof ExternalClassDefinition extRef) {
                         if (extRef.getIsSingleField()) {
                             // forward fld to the first fld of the adapter...
                             fld = getFirstField(extRef);
@@ -181,7 +180,7 @@ public class FieldGetter {
                     break;      // any condition not fulfilled: stop iterating
                 }
             } else {
-                oRef = fld instanceof ObjectReference ? (ObjectReference)fld : null; // just a one time evaluation
+                oRef = fld instanceof ObjectReference or ? or : null; // just a one time evaluation
             }
 
             final boolean isGenericObjectField = cls.getProperties() != null && cls.getProperties().containsKey(currentElement + ".genericobject");

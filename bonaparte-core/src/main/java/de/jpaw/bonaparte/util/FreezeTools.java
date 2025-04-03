@@ -47,16 +47,16 @@ public class FreezeTools {
             return null;
         // for instance of Number, Instant, Boolean, String, Temporal etc. assume it is immutable
         // explicit action for BonaPortables, Maps, Lists, Sets
-        if (input instanceof BonaPortable) {
-            ((BonaPortable)input).freeze();
-        } else if (input instanceof EnumSetMarker) {
-            ((EnumSetMarker)input).freeze();
-        } else if (input instanceof Map) {
-            return freeze((Map<String, Object>)input);
-        } else if (input instanceof List) {
-            return freeze((List<Object>)input);
-        } else if (input instanceof Set) {
-            return freeze((Set<Object>)input);
+        if (input instanceof BonaPortable b) {
+            b.freeze();
+        } else if (input instanceof EnumSetMarker esm) {
+            esm.freeze();
+        } else if (input instanceof Map m) {
+            return freeze(m);
+        } else if (input instanceof List l) {
+            return freeze(l);
+        } else if (input instanceof Set s) {
+            return freeze(s);
         }
         // explicit
         return input;

@@ -47,16 +47,16 @@ public class FrozenCloneTools {
             return null;
         // for instance of Number, Instant, Boolean, String, Temporal etc. assume it is immutable
         // explicit action for BonaPortables, Maps, Lists, Sets
-        if (input instanceof BonaPortable) {
-            return ((BonaPortable)input).ret$FrozenClone();
-        } else if (input instanceof EnumSetMarker) {
-            return ((EnumSetMarker)input).ret$FrozenClone();
-        } else if (input instanceof Map) {
-            return frozenClone((Map<String, Object>)input);
-        } else if (input instanceof List) {
-            return frozenClone((List<Object>)input);
-        } else if (input instanceof Set) {
-            return frozenClone((Set<Object>)input);
+        if (input instanceof BonaPortable b) {
+            return b.ret$FrozenClone();
+        } else if (input instanceof EnumSetMarker esm) {
+            return esm.ret$FrozenClone();
+        } else if (input instanceof Map m) {
+            return frozenClone(m);
+        } else if (input instanceof List l) {
+            return frozenClone(l);
+        } else if (input instanceof Set s) {
+            return frozenClone(s);
         }
         // explicit
         return input;

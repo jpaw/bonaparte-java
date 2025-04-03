@@ -46,16 +46,16 @@ public class MutableCloneTools {
             return null;
         // for instance of Number, Instant, Boolean, String, Temporal etc. assume it is immutable
         // explicit action for BonaPortables, Maps, Lists, Sets
-        if (input instanceof BonaPortable) {
-            return ((BonaPortable)input).ret$MutableClone(true, unfreezeCollections);
-        } else if (input instanceof EnumSetMarker) {
-            return ((EnumSetMarker)input).ret$MutableClone(true, unfreezeCollections);
-        } else if (input instanceof Map) {
-            return mutableClone((Map<String, Object>)input, unfreezeCollections);
-        } else if (input instanceof List) {
-            return mutableClone((List<Object>)input, unfreezeCollections);
-        } else if (input instanceof Set) {
-            return mutableClone((Set<Object>)input, unfreezeCollections);
+        if (input instanceof BonaPortable b) {
+            return b.ret$MutableClone(true, unfreezeCollections);
+        } else if (input instanceof EnumSetMarker esm) {
+            return esm.ret$MutableClone(true, unfreezeCollections);
+        } else if (input instanceof Map m) {
+            return mutableClone(m, unfreezeCollections);
+        } else if (input instanceof List l) {
+            return mutableClone(l, unfreezeCollections);
+        } else if (input instanceof Set s) {
+            return mutableClone(s, unfreezeCollections);
         }
         // explicit
         return input;

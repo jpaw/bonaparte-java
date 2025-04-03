@@ -30,7 +30,7 @@ public class CompactByteArrayComposer extends AbstractCompactComposer implements
     public static byte [] marshal(ObjectReference di, BonaPortable x, boolean useJsonForBonaCustomInElements) {
         if (x == null)
             return null;
-        ByteBuilder b = new ByteBuilder();
+        final ByteBuilder b = new ByteBuilder();
         new CompactByteArrayComposer(b, ObjectReuseStrategy.defaultStrategy, false, useJsonForBonaCustomInElements).addField(di, x);
         return b.getBytes();
     }

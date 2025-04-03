@@ -144,8 +144,8 @@ public class BigDecimalTools {
             LOG.warn("Did not find referenced precision field for root object {} and path {}", root.ret$PQON(), path);
             return numValue;  // this should not happen, but fall back instead of throwing an NPE
         }
-        if (precision instanceof Integer)
-            return numValue.setScale(((Integer)precision).intValue(), RoundingMode.HALF_EVEN);
+        if (precision instanceof Integer ip)
+            return numValue.setScale(ip.intValue(), RoundingMode.HALF_EVEN);
         // it's not an integer, assume it is a String
         int currencyPrecision = Currency.getInstance((String)precision).getDefaultFractionDigits();
         return numValue.setScale(currencyPrecision, RoundingMode.HALF_EVEN);
