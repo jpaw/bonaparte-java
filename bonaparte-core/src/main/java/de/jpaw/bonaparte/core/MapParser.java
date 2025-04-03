@@ -107,15 +107,15 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
 
         // variable contents. see if we got a partially qualified name
         Object pqon1 = map.get(MimeTypes.JSON_FIELD_PQON);
-        if (pqon1 != null && pqon1 instanceof String) {
+        if (pqon1 != null && pqon1 instanceof String s1) {
             // lucky day, we got the partially qualified name
-            return BonaPortableFactory.createObject((String)pqon1);
+            return BonaPortableFactory.createObject(s1);
         }
 
         Object pqon2 = map.get(MimeTypes.JSON_FIELD_FQON);
-        if (pqon2 != null && pqon2 instanceof String) {
+        if (pqon2 != null && pqon2 instanceof String s2) {
             // also lucky, we got a fully qualified name
-            return BonaPortableFactory.createObjectByFqon((String)pqon2);
+            return BonaPortableFactory.createObjectByFqon(s2);
         }
 
         // fallback: use the lower bound of di, if provided
@@ -179,11 +179,11 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
         Object z = get(di);
         if (z == null)
             return null;
-        if (z instanceof Character)
-            return (Character)z;
+        if (z instanceof Character c)
+            return c;
         // must be string of length 1 otherwise
-        if (z instanceof String) {
-            return spu.readCharacter(di, (String)z);
+        if (z instanceof String s) {
+            return spu.readCharacter(di, s);
         }
         throw err(MessageParserException.UNSUPPORTED_CONVERSION, di);
     }
@@ -193,10 +193,10 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
         Object z = get(di);
         if (z == null)
             return null;
-        if (z instanceof UUID)
-            return (UUID)z;
-        if (z instanceof String) {
-            return spu.readUUID(di, (String)z);
+        if (z instanceof UUID u)
+            return u;
+        if (z instanceof String s) {
+            return spu.readUUID(di, s);
         }
         throw err(MessageParserException.UNSUPPORTED_CONVERSION, di);
     }
@@ -206,13 +206,13 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
         Object z = get(di);
         if (z == null)
             return null;
-        if (z instanceof Boolean)
-            return (Boolean)z;
-        if (z instanceof String) {
-            return spu.readBoolean(di, (String)z);
+        if (z instanceof Boolean b)
+            return b;
+        if (z instanceof String s) {
+            return spu.readBoolean(di, s);
         }
-        if (z instanceof Number) {
-            return ((Number)z).doubleValue() == 0.0 ? Boolean.TRUE : Boolean.FALSE;
+        if (z instanceof Number n) {
+            return n.doubleValue() == 0.0 ? Boolean.TRUE : Boolean.FALSE;
         }
         throw err(MessageParserException.UNSUPPORTED_CONVERSION, di);
     }
@@ -222,11 +222,11 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
         Object z = get(di);
         if (z == null)
             return null;
-        if (z instanceof Number) {
-            return Double.valueOf(((Number)z).doubleValue());
+        if (z instanceof Number n) {
+            return Double.valueOf(n.doubleValue());
         }
-        if (z instanceof String) {
-            return Double.valueOf(spu.readPrimitiveDouble(di, (String)z));
+        if (z instanceof String s) {
+            return Double.valueOf(spu.readPrimitiveDouble(di, s));
         }
         throw err(MessageParserException.UNSUPPORTED_CONVERSION, di);
     }
@@ -236,11 +236,11 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
         Object z = get(di);
         if (z == null)
             return null;
-        if (z instanceof Number) {
-            return Float.valueOf(((Number)z).floatValue());
+        if (z instanceof Number n) {
+            return Float.valueOf(n.floatValue());
         }
-        if (z instanceof String) {
-            return Float.valueOf(spu.readPrimitiveFloat(di, (String)z));
+        if (z instanceof String s) {
+            return Float.valueOf(spu.readPrimitiveFloat(di, s));
         }
         throw err(MessageParserException.UNSUPPORTED_CONVERSION, di);
     }
@@ -250,11 +250,11 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
         Object z = get(di);
         if (z == null)
             return null;
-        if (z instanceof Number) {
-            return Long.valueOf(((Number)z).longValue());
+        if (z instanceof Number n) {
+            return Long.valueOf(n.longValue());
         }
-        if (z instanceof String) {
-            return Long.valueOf(spu.readPrimitiveLong(di, (String)z));
+        if (z instanceof String s) {
+            return Long.valueOf(spu.readPrimitiveLong(di, s));
         }
         throw err(MessageParserException.UNSUPPORTED_CONVERSION, di);
     }
@@ -264,11 +264,11 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
         Object z = get(di);
         if (z == null)
             return null;
-        if (z instanceof Number) {
-            return Integer.valueOf(((Number)z).intValue());
+        if (z instanceof Number n) {
+            return Integer.valueOf(n.intValue());
         }
-        if (z instanceof String) {
-            return Integer.valueOf(spu.readPrimitiveInteger(di, (String)z));
+        if (z instanceof String s) {
+            return Integer.valueOf(spu.readPrimitiveInteger(di, s));
         }
         throw err(MessageParserException.UNSUPPORTED_CONVERSION, di);
     }
@@ -278,11 +278,11 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
         Object z = get(di);
         if (z == null)
             return null;
-        if (z instanceof Number) {
-            return Short.valueOf(((Number)z).shortValue());
+        if (z instanceof Number n) {
+            return Short.valueOf(n.shortValue());
         }
-        if (z instanceof String) {
-            return Short.valueOf(spu.readPrimitiveShort(di, (String)z));
+        if (z instanceof String s) {
+            return Short.valueOf(spu.readPrimitiveShort(di, s));
         }
         throw err(MessageParserException.UNSUPPORTED_CONVERSION, di);
     }
@@ -292,11 +292,11 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
         Object z = get(di);
         if (z == null)
             return null;
-        if (z instanceof Number) {
-            return Byte.valueOf(((Number)z).byteValue());
+        if (z instanceof Number n) {
+            return Byte.valueOf(n.byteValue());
         }
-        if (z instanceof String) {
-            return Byte.valueOf(spu.readPrimitiveByte(di, (String)z));
+        if (z instanceof String s) {
+            return Byte.valueOf(spu.readPrimitiveByte(di, s));
         }
         throw err(MessageParserException.UNSUPPORTED_CONVERSION, di);
     }
@@ -307,16 +307,16 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
         if (z == null)
             return null;
         if (z instanceof Number) {
-            if (z instanceof BigInteger)       // todo: check scale?
-                return (BigInteger)z;
-            if (z instanceof Integer)
-                return BigInteger.valueOf(((Integer)z).intValue());
-            if (z instanceof Long)
-                return BigInteger.valueOf(((Long)z).longValue());
+            if (z instanceof BigInteger bi)       // todo: check scale?
+                return bi;
+            if (z instanceof Integer i)
+                return BigInteger.valueOf(i.intValue());
+            if (z instanceof Long l)
+                return BigInteger.valueOf(l.longValue());
             throw err(MessageParserException.UNSUPPORTED_CONVERSION, di);
         }
-        if (z instanceof String) {
-            return spu.readBigInteger(di, (String)z);
+        if (z instanceof String s) {
+            return spu.readBigInteger(di, s);
         }
         throw err(MessageParserException.UNSUPPORTED_CONVERSION, di);
     }
@@ -327,20 +327,20 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
         if (z == null)
             return null;
         if (z instanceof Number) {
-            if (z instanceof BigDecimal)       // todo: check scale?
-                return (BigDecimal)z;
-            if (z instanceof FixedPointBase)
-                return ((FixedPointBase)z).toBigDecimal();
-            if (z instanceof Integer)
-                return BigDecimal.valueOf(((Integer)z).intValue());
-            if (z instanceof Long)
-                return BigDecimal.valueOf(((Long)z).longValue());
-            if (z instanceof Double)
-                return BigDecimal.valueOf(((Double)z).doubleValue());
+            if (z instanceof BigDecimal bd)       // todo: check scale?
+                return bd;
+            if (z instanceof FixedPointBase fpb)
+                return fpb.toBigDecimal();
+            if (z instanceof Integer i)
+                return BigDecimal.valueOf(i.intValue());
+            if (z instanceof Long l)
+                return BigDecimal.valueOf(l.longValue());
+            if (z instanceof Double d)
+                return BigDecimal.valueOf(d.doubleValue());
             throw err(MessageParserException.UNSUPPORTED_CONVERSION, di);
         }
-        if (z instanceof String) {
-            return spu.readBigDecimal(di, (String)z);
+        if (z instanceof String s) {
+            return spu.readBigDecimal(di, s);
         }
         throw err(MessageParserException.UNSUPPORTED_CONVERSION, di);
     }
@@ -350,10 +350,9 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
         Object z = get(di);
         if (z == null)
             return null;
-        if (z instanceof Number) {
+        if (z instanceof Number n) {
             long mantissa;
-            if (z instanceof FixedPointBase) {
-                FixedPointBase x = (FixedPointBase)z;
+            if (z instanceof FixedPointBase x) {
                 if (x.scale() == di.getDecimalDigits() && x.isFixedScale()) {
                     // this must be the same class - return as is
                     return (F)x;
@@ -362,21 +361,20 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
                     mantissa = FixedPointBase.mantissaFor(x.getMantissa(), x.scale(), di.getDecimalDigits(), di.getRounding());
                 }
             }
-            if (z instanceof BigDecimal) {
-                final BigDecimal bd = (BigDecimal)z;
+            if (z instanceof BigDecimal bd) {
                 mantissa = FixedPointBase.mantissaFor(bd.unscaledValue().longValue(), bd.scale(), di.getDecimalDigits(), di.getRounding());
-            } else if (z instanceof Integer) {
-                mantissa = FixedPointBase.mantissaFor(((Integer)z).longValue(), 0, di.getDecimalDigits(), false);
-            } else if (z instanceof Long) {
-                mantissa = FixedPointBase.mantissaFor(((Long)z).longValue(), 0, di.getDecimalDigits(), false);
+            } else if (z instanceof Integer i) {
+                mantissa = FixedPointBase.mantissaFor(i.longValue(), 0, di.getDecimalDigits(), false);
+            } else if (z instanceof Long l) {
+                mantissa = FixedPointBase.mantissaFor(l.longValue(), 0, di.getDecimalDigits(), false);
             } else {
                 // anything else convert via double
-                mantissa = FixedPointBase.mantissaFor(((Number)z).doubleValue(), di.getDecimalDigits());
+                mantissa = FixedPointBase.mantissaFor(n.doubleValue(), di.getDecimalDigits());
             }
             return BigDecimalTools.check(factory.apply(mantissa), di, -1, currentClass);
         }
-        if (z instanceof String) {
-            return BigDecimalTools.check(factory.apply(FixedPointBase.mantissaFor((String)z, di.getDecimalDigits())), di, -1, currentClass);
+        if (z instanceof String s) {
+            return BigDecimalTools.check(factory.apply(FixedPointBase.mantissaFor(s, di.getDecimalDigits())), di, -1, currentClass);
         }
         throw err(MessageParserException.UNSUPPORTED_CONVERSION, di);
     }
@@ -386,8 +384,8 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
         Object z = get(di);
         if (z == null)
             return null;
-        if (z instanceof String) {
-            return spu.readAscii(di, (String)z);
+        if (z instanceof String s) {
+            return spu.readAscii(di, s);
         }
         throw err(MessageParserException.UNSUPPORTED_CONVERSION, di);
     }
@@ -397,8 +395,8 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
         Object z = get(di);
         if (z == null)
             return null;
-        if (z instanceof String) {
-            return spu.readString(di, (String)z);
+        if (z instanceof String s) {
+            return spu.readString(di, s);
         }
         throw err(MessageParserException.UNSUPPORTED_CONVERSION, di);
     }
@@ -408,20 +406,18 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
         Object z = get(di);
         if (z == null)
             return null;
-        if (z instanceof ByteArray) {
-            final ByteArray zz = (ByteArray)z;
+        if (z instanceof ByteArray zz) {
             if (zz.length() > di.getLength())
                 throw err(MessageParserException.BINARY_TOO_LONG, di);
             return zz;
         }
-        if (z instanceof byte []) {
-            final byte [] zz = (byte [])z;
+        if (z instanceof byte [] zz) {
             if (zz.length > di.getLength())
                 throw err(MessageParserException.BINARY_TOO_LONG, di);
             return zz.length == 0 ? ByteArray.ZERO_BYTE_ARRAY : new ByteArray(zz);
         }
-        if (z instanceof String) {
-            return spu.readByteArray(di, (String)z);
+        if (z instanceof String s) {
+            return spu.readByteArray(di, s);
         }
         throw err(MessageParserException.UNSUPPORTED_CONVERSION, di);
     }
@@ -431,20 +427,18 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
         Object z = get(di);
         if (z == null)
             return null;
-        if (z instanceof ByteArray) {
-            final ByteArray zz = (ByteArray)z;
+        if (z instanceof ByteArray zz) {
             if (zz.length() > di.getLength())
                 throw err(MessageParserException.BINARY_TOO_LONG, di);
             return zz.getBytes();
         }
-        if (z instanceof byte []) {
-            final byte [] zz = (byte [])z;
+        if (z instanceof byte [] zz) {
             if (zz.length > di.getLength())
                 throw err(MessageParserException.BINARY_TOO_LONG, di);
             return zz;
         }
-        if (z instanceof String) {
-            return spu.readRaw(di, (String)z);
+        if (z instanceof String s) {
+            return spu.readRaw(di, s);
         }
         throw err(MessageParserException.UNSUPPORTED_CONVERSION, di);
     }
@@ -454,15 +448,15 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
         Object z = get(di);
         if (z == null)
             return null;
-        if (z instanceof Instant) {
-            return (Instant)z;
+        if (z instanceof Instant i) {
+            return i;
         }
-        if (z instanceof String) {
-            return spu.readInstant(di, (String)z);      // assumes precision = 1 second, with fractionals if ms
+        if (z instanceof String s) {
+            return spu.readInstant(di, s);      // assumes precision = 1 second, with fractionals if ms
         }
-        if (z instanceof Number) {
+        if (z instanceof Number n) {
             // convert number of seconds to Instant
-            return Instant.ofEpochMilli((long)(((Number)z).doubleValue() * 1000.0));
+            return Instant.ofEpochMilli((long)(n.doubleValue() * 1000.0));
         }
         throw err(MessageParserException.UNSUPPORTED_CONVERSION, di);
     }
@@ -472,16 +466,16 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
         Object z = get(di);
         if (z == null)
             return null;
-        if (z instanceof String) {
+        if (z instanceof String s) {
             // cannot use spu, use JSON instead of Bonaparte formatting
             try {
-                return LocalDate.parse((String)z);
+                return LocalDate.parse(s);
             } catch (IllegalArgumentException e) {
                 throw err(MessageParserException.ILLEGAL_TIME, di);
             }
         }
-        if (z instanceof LocalDate) {
-            return (LocalDate)z;
+        if (z instanceof LocalDate ld) {
+            return ld;
         }
         throw err(MessageParserException.UNSUPPORTED_CONVERSION, di);
     }
@@ -491,17 +485,17 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
         Object z = get(di);
         if (z == null)
             return null;
-        if (z instanceof String) {
+        if (z instanceof String s) {
             // cannot use spu, use JSON instead of Bonaparte formatting
             try {
                 //return LocalTime.parse((String)z, di.getFractionalSeconds() > 0 ? ISODateTimeFormat.time() : ISODateTimeFormat.timeNoMillis());
-                return LocalTime.parse((String)z);   // a more flexible parser
+                return LocalTime.parse(s);   // a more flexible parser
             } catch (IllegalArgumentException e) {
                 throw err(MessageParserException.ILLEGAL_TIME, di);
             }
         }
-        if (z instanceof LocalTime) {
-            return (LocalTime)z;
+        if (z instanceof LocalTime lt) {
+            return lt;
         }
         throw err(MessageParserException.UNSUPPORTED_CONVERSION, di);
     }
@@ -511,17 +505,17 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
         Object z = get(di);
         if (z == null)
             return null;
-        if (z instanceof String) {
+        if (z instanceof String s) {
             // cannot use spu, use JSON instead of Bonaparte formatting
             try {
                 // return LocalDateTime.parse((String)z, di.getFractionalSeconds() > 0 ? ISODateTimeFormat.dateTime() : ISODateTimeFormat.dateTimeNoMillis());
-                return LocalDateTime.parse((String)z);   // a more flexible parser
+                return LocalDateTime.parse(s);   // a more flexible parser
             } catch (IllegalArgumentException e) {
                 throw err(MessageParserException.ILLEGAL_TIME, di);
             }
         }
-        if (z instanceof LocalDateTime) {
-            return (LocalDateTime)z;
+        if (z instanceof LocalDateTime ldt) {
+            return ldt;
         }
         throw err(MessageParserException.UNSUPPORTED_CONVERSION, di);
     }
@@ -534,15 +528,15 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
             return null;
 
         BonaCustom obj;
-        if (z instanceof Map<?,?>) {
+        if (z instanceof Map<?,?> m) {
              // recursive invocation. This creates a new instance of MapParser, with same settings
              // an alternative implementation could remove the "final" qualifier from map, push it, and continue with the same parser instance
-             Map subMap = (Map<String, Object>)z;
+             Map subMap = m;
              BonaPortable subObj = allocObject(subMap, di);
              subObj.deserialize(new MapParser(subMap, instantInMillis, readEnumOrdinals, readEnumTokens));
              obj = subObj;
-        } else if (z instanceof BonaCustom) {
-            obj = (BonaCustom)z;
+        } else if (z instanceof BonaCustom bc) {
+            obj = bc;
         } else {
             throw err(MessageParserException.UNSUPPORTED_CONVERSION, di);
         }
@@ -564,8 +558,8 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
             return (Map<String, Object>)z;      // no check possible due to Java type erasure
         }
         // reverse mapping: BonaPortable => Map<>. It would be weird to encounter here, but hey....
-        if (z instanceof BonaCustom) {
-            return MapComposer.marshal((BonaCustom)z);
+        if (z instanceof BonaCustom bc) {
+            return MapComposer.marshal(bc);
         }
         throw err(MessageParserException.UNSUPPORTED_CONVERSION, di);
     }
@@ -578,8 +572,8 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
         if (z instanceof List<?>) {
             return (List<Object>)z;      // no check possible due to Java type erasure
         }
-        if (z instanceof Object []) {
-            return new ArrayList<Object>(Arrays.asList((Object [])z));
+        if (z instanceof Object [] oarr) {
+            return new ArrayList<Object>(Arrays.asList(oarr));
         }
         throw err(MessageParserException.UNSUPPORTED_CONVERSION, di);
     }
@@ -669,8 +663,8 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
                 throw err(MessageParserException.EMPTY_BUT_REQUIRED_FIELD, di);
             return result;
         }
-        if (z instanceof String) {
-            final T value = readEnumTokens ? factory.getByToken((String)z) : factory.getByName((String)z);
+        if (z instanceof String s) {
+            final T value = readEnumTokens ? factory.getByToken(s) : factory.getByName((String)z);
             if (value == null)
                 throw err(MessageParserException.INVALID_ENUM_TOKEN, di);
             return value;
@@ -684,12 +678,12 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
         Object z = get(edi);
         if (z == null)
             return null;
-        if (z instanceof Number) {
-            return Integer.valueOf(((Number)z).intValue());
+        if (z instanceof Number n) {
+            return Integer.valueOf(n.intValue());
         }
-        if (z instanceof String) {
+        if (z instanceof String s) {
             if (readEnumOrdinals) {
-                return Integer.valueOf(spu.readPrimitiveInteger(di, (String)z));
+                return Integer.valueOf(spu.readPrimitiveInteger(di, s));
             }
             // expect a name, and map that to the ordinal
             int ordinal = edi.getBaseEnum().getIds().indexOf(z);
@@ -707,9 +701,9 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
         Object z = get(edi);
         if (z == null)
             return null;
-        if (z instanceof String) {
+        if (z instanceof String s) {
             if (readEnumTokens) {
-                return spu.readString(di, (String)z);
+                return spu.readString(di, s);
             }
             // expect a name, and map it to the token
             int ordinal = edi.getBaseEnum().getIds().indexOf(z);
