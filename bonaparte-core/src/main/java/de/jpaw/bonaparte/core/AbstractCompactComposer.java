@@ -67,7 +67,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
     protected boolean skipLowerBoundObjectDescription = true;   // if true and the object to serialize corresponds to its lower bound, then do not output the class description
     protected AbstractCompactComposer jsonComposer = null;      // derived composer on same DataOutput, which also creates field names. Will be initialized on demand.
 
-    protected AbstractCompactComposer(DataOutput out, ObjectReuseStrategy reuseStrategy, boolean recommendIdentifiable, boolean useJsonForBonaCustomInElements) {
+    protected AbstractCompactComposer(final DataOutput out, final ObjectReuseStrategy reuseStrategy, final boolean recommendIdentifiable, final boolean useJsonForBonaCustomInElements) {
         switch (reuseStrategy) {
         case BY_CONTENTS:
             this.objectCache = new HashMap<BonaCustom, Integer>(250);
@@ -843,7 +843,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
     }
 
     // output a generic object - anonymous subroutine
-    protected void elementOut(Object obj) throws IOException {
+    protected void elementOut(final Object obj) throws IOException {
         if (obj == null) {
             writeNull();
             return;
@@ -851,143 +851,142 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
         // check for types. here, we do not have primitive types
         if (obj instanceof Number) {
             // check numeric types
-            if (obj instanceof Integer) {
-                intOut(((Integer)obj).intValue());
+            if (obj instanceof Integer i) {
+                intOut(i.intValue());
                 return;
             }
-            if (obj instanceof Long) {
-                longOut(((Long)obj).longValue());
+            if (obj instanceof Long l) {
+                longOut(l.longValue());
                 return;
             }
-            if (obj instanceof Byte) {
-                intOut(((Byte)obj).intValue());
+            if (obj instanceof Byte b) {
+                intOut(b.intValue());
                 return;
             }
-            if (obj instanceof Short) {
-                intOut(((Short)obj).intValue());
+            if (obj instanceof Short s) {
+                intOut(s.intValue());
                 return;
             }
-            if (obj instanceof BigInteger) {
-                bigintOut((BigInteger)obj);
+            if (obj instanceof BigInteger bi) {
+                bigintOut(bi);
                 return;
             }
-            if (obj instanceof BigDecimal) {
-                bigdecimalOut((BigDecimal)obj);
+            if (obj instanceof BigDecimal bd) {
+                bigdecimalOut(bd);
                 return;
             }
-            if (obj instanceof Double) {
+            if (obj instanceof Double d) {
                 out.writeByte(COMPACT_DOUBLE);          // no check for integral type here, as we have no type information
-                out.writeDouble(((Double)obj).doubleValue());
+                out.writeDouble(d.doubleValue());
                 return;
             }
-            if (obj instanceof Float) {
+            if (obj instanceof Float f) {
                 out.writeByte(COMPACT_FLOAT);          // no check for integral type here, as we have no type information
-                out.writeFloat(((Float)obj).floatValue());
+                out.writeFloat(f.floatValue());
                 return;
             }
             throw new RuntimeException("Unrecognized type " + obj.getClass().getSimpleName() + " for compact number");
         }
-        if (obj instanceof String) {
-            stringOut((String)obj);
+        if (obj instanceof String s) {
+            stringOut(s);
             return;
         }
-        if (obj instanceof Boolean) {
-            out.writeByte((Boolean)obj ? COMPACT_BOOLEAN_TRUE : COMPACT_BOOLEAN_FALSE);
+        if (obj instanceof Boolean bool) {
+            out.writeByte(bool ? COMPACT_BOOLEAN_TRUE : COMPACT_BOOLEAN_FALSE);
             return;
         }
-        if (obj instanceof UUID) {
-            uuidOut((UUID)obj);
+        if (obj instanceof UUID u) {
+            uuidOut(u);
             return;
         }
-        if (obj instanceof Character) {
-            charOut(((Character)obj).charValue());
+        if (obj instanceof Character c) {
+            charOut(c.charValue());
             return;
         }
-        if (obj instanceof ByteArray) {
-            bytearrayOut((ByteArray)obj);
+        if (obj instanceof ByteArray ba) {
+            bytearrayOut(ba);
             return;
         }
-        if (obj instanceof Map<?,?>) {
-            elementOut((Map<String, Object>)obj);
+        if (obj instanceof Map<?,?> ma) {
+            elementOut(ma);
             return;
         }
-        if (obj instanceof List<?>) {
-            elementOut((List<Object>)obj);
+        if (obj instanceof List<?> li) {
+            elementOut(li);
             return;
         }
         if (obj instanceof EnumSetMarker) {
-            if (obj instanceof AbstractStringEnumSet<?>) {
-                stringOut(((AbstractStringEnumSet<?>)obj).getBitmap());
-            } else if (obj instanceof AbstractStringXEnumSet<?>) {
-                stringOut(((AbstractStringXEnumSet<?>)obj).getBitmap());
-            } else if (obj instanceof AbstractIntEnumSet<?>) {
-                intOut(((AbstractIntEnumSet<?>)obj).getBitmap());
-            } else if (obj instanceof AbstractLongEnumSet<?>) {
-                longOut(((AbstractLongEnumSet<?>)obj).getBitmap());
-            } else if (obj instanceof AbstractByteEnumSet<?>) {
-                intOut(((AbstractByteEnumSet<?>)obj).getBitmap());
-            } else if (obj instanceof AbstractShortEnumSet<?>) {
-                intOut(((AbstractShortEnumSet<?>)obj).getBitmap());
+            if (obj instanceof AbstractStringEnumSet<?> ases) {
+                stringOut(ases.getBitmap());
+            } else if (obj instanceof AbstractStringXEnumSet<?> asxs) {
+                stringOut(asxs.getBitmap());
+            } else if (obj instanceof AbstractIntEnumSet<?> aies) {
+                intOut(aies.getBitmap());
+            } else if (obj instanceof AbstractLongEnumSet<?> ales) {
+                longOut(ales.getBitmap());
+            } else if (obj instanceof AbstractByteEnumSet<?> abes) {
+                intOut(abes.getBitmap());
+            } else if (obj instanceof AbstractShortEnumSet<?> ases) {
+                intOut(ases.getBitmap());
             } else {
                 throw new RuntimeException("Cannot transform enum set of type " + obj.getClass().getSimpleName() + " to JSON");
             }
             return;
         }
-        if (obj instanceof Set<?>) {
-            final Set<?> l = (Set<?>)obj;
+        if (obj instanceof Set<?> se) {
             out.writeByte(ARRAY_BEGIN);
-            intOut(l.size());
-            for (Object o : l)
+            intOut(se.size());
+            for (final Object o : se)
                 elementOut(o);
             return;
         }
 
-        if (obj instanceof Enum) {
+        if (obj instanceof Enum en) {
             // distinguish Tokenizable
-            if (obj instanceof TokenizableEnum) {
-                stringOut(((TokenizableEnum)obj).getToken());
+            if (obj instanceof TokenizableEnum te) {
+                stringOut(te.getToken());
             } else {
-                intOut(((Enum<?>)obj).ordinal());
+                intOut(en.ordinal());
             }
             return;
         }
-        if (obj instanceof AbstractXEnumBase<?>) {
-            stringOut(((AbstractXEnumBase)obj).getToken());
+        if (obj instanceof AbstractXEnumBase<?> axe) {
+            stringOut(axe.getToken());
             return;
         }
         if (obj instanceof Temporal) {
-            if (obj instanceof Instant) {
-                longOut(((Instant)obj).toEpochMilli());
+            if (obj instanceof Instant in) {
+                longOut(in.toEpochMilli());
                 return;
             }
-            if (obj instanceof LocalDate) {
-                localdateOut((LocalDate)obj);
+            if (obj instanceof LocalDate ld) {
+                localdateOut(ld);
                 return;
             }
-            if (obj instanceof LocalTime) {
-                localtimeOut((LocalTime)obj);
+            if (obj instanceof LocalTime lt) {
+                localtimeOut(lt);
                 return;
             }
-            if (obj instanceof LocalDateTime) {
-                localdatetimeOut((LocalDateTime)obj);
+            if (obj instanceof LocalDateTime ldt) {
+                localdatetimeOut(ldt);
                 return;
             }
             throw new RuntimeException("Cannot transform Java Temporal of type " + obj.getClass().getSimpleName() + " to JSON");
         }
-        if (obj instanceof BonaCustom) {
+        if (obj instanceof BonaCustom bc) {
             if (useJsonForBonaCustomInElements) {
                 // create a special JSON composer on demand
                 if (jsonComposer == null)
                     jsonComposer = new CompactJsonComposer(out);        // composer which adds ability to output field names
-                jsonComposer.writeObject((BonaCustom)obj);
+                jsonComposer.writeObject(bc);
             } else {
-                addField(StaticMeta.INNER_BONAPORTABLE, (BonaCustom)obj);      // output objects as object, even within JSON! (catch issues during deserialize)
+                addField(StaticMeta.INNER_BONAPORTABLE, bc);      // output objects as object, even within JSON! (catch issues during deserialize)
             }
             return;
         }
-        if (obj instanceof Object []) {
+        if (obj instanceof Object [] oarr) {
             // any array of an object type (String, Boolean whatever...) except primitive arrays
-            elementOut((Object [])obj);
+            elementOut(oarr);
             return;
         }
         if (obj.getClass().isArray()) {
@@ -999,13 +998,12 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
 
     // code moved out due to excessive length
     private void outputPrimitiveArrays(Object obj) throws IOException {
-        if (obj instanceof byte []) {
-            bytesOut((byte [])obj);
+        if (obj instanceof byte [] array) {
+            bytesOut(array);
             return;
         }
         out.writeByte(ARRAY_BEGIN);
-        if (obj instanceof int []) {
-            final int [] array = (int [])obj;
+        if (obj instanceof int [] array) {
             final int len = array.length;
             intOut(len);
             for (int i = 0; i < len; ++i) {
@@ -1013,8 +1011,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
             }
             return;
         }
-        if (obj instanceof boolean []) {
-            final boolean [] array = (boolean [])obj;
+        if (obj instanceof boolean [] array) {
             final int len = array.length;
             intOut(len);
             for (int i = 0; i < len; ++i) {
@@ -1022,8 +1019,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
             }
             return;
         }
-        if (obj instanceof char []) {
-            final char [] array = (char [])obj;
+        if (obj instanceof char [] array) {
             final int len = array.length;
             intOut(len);
             for (int i = 0; i < len; ++i) {
@@ -1031,8 +1027,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
             }
             return;
         }
-        if (obj instanceof long []) {
-            final long [] array = (long [])obj;
+        if (obj instanceof long [] array) {
             final int len = array.length;
             intOut(len);
             for (int i = 0; i < len; ++i) {
@@ -1040,8 +1035,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
             }
             return;
         }
-        if (obj instanceof short []) {
-            final short [] array = (short [])obj;
+        if (obj instanceof short [] array) {
             final int len = array.length;
             intOut(len);
             for (int i = 0; i < len; ++i) {
@@ -1049,8 +1043,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
             }
             return;
         }
-        if (obj instanceof double []) {
-            final double [] array = (double [])obj;
+        if (obj instanceof double [] array) {
             final int len = array.length;
             intOut(len);
             for (int i = 0; i < len; ++i) {
@@ -1059,8 +1052,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
             }
             return;
         }
-        if (obj instanceof float []) {
-            final float [] array = (float [])obj;
+        if (obj instanceof float [] array) {
             final int len = array.length;
             intOut(len);
             for (int i = 0; i < len; ++i) {
