@@ -411,30 +411,31 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
         }
     }
 
-    @Override
-    public <F extends FixedPointBase<F>> void addField(BasicNumericElementaryDataItem di, F n) throws IOException {
-        if (n == null) {
-            writeNull();
-            return;
-        }
+    // n is not null
+    protected <F extends FixedPointBase<F>> void fixedpointOut(F n) throws IOException {
         if (n.isIntegralValue()) {
             longOut(n.longValue());
             return;
         }
         int scale = n.scale();
         // scale == 0 cannot happen because that would be caught by the integral check before
-//        if (scale == 0) {
-//            longOut(n.getMantissa());
-//        } else {
-            // is a fractional number
-            if (scale <= 9) {
-                out.writeByte(COMPACT_BIGDECIMAL + scale);
-            } else {
-                out.writeByte(COMPACT_BIGDECIMAL);
-                intOut(scale);
-            }
-            longOut(n.getMantissa());
-//        }
+        // is a fractional number
+        if (scale <= 9) {
+            out.writeByte(COMPACT_BIGDECIMAL + scale);
+        } else {
+            out.writeByte(COMPACT_BIGDECIMAL);
+            intOut(scale);
+        }
+        longOut(n.getMantissa());
+    }
+
+    @Override
+    public <F extends FixedPointBase<F>> void addField(BasicNumericElementaryDataItem di, F n) throws IOException {
+        if (n == null) {
+            writeNull();
+            return;
+        }
+        fixedpointOut(n);
     }
 
     // byte

@@ -19,6 +19,7 @@ import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
+import de.jpaw.fixedpoint.FixedPointBase;
 import de.jpaw.util.ByteArray;
 
 
@@ -156,6 +157,15 @@ public class CompactJsonComposer extends AbstractCompactComposer {
         if (n != null) {
             optFieldNameOut(di);
             super.bigintOut(n);
+        } else if (arrayDepth != 0)
+            writeNull();
+    }
+
+    @Override
+    public <F extends FixedPointBase<F>> void addField(BasicNumericElementaryDataItem di, F n) throws IOException {
+        if (n != null) {
+            optFieldNameOut(di);
+            super.fixedpointOut(n);
         } else if (arrayDepth != 0)
             writeNull();
     }
