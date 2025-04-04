@@ -803,37 +803,16 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
     }
 
 
-
     // output an Object array - anonymous subroutine
     protected void arrayOut(Object [] l) throws IOException {
-        if (l == null) {
-            writeNull();
-            return;
-        }
         out.writeByte(ARRAY_BEGIN);
         intOut(l.length);
         for (Object o : l)
             elementOut(o);
     }
 
-    // output a list - anonymous subroutine
-    protected void listOut(List<Object> l) throws IOException {
-        if (l == null) {
-            writeNull();
-            return;
-        }
-        out.writeByte(ARRAY_BEGIN);
-        intOut(l.size());
-        for (Object o : l)
-            elementOut(o);
-    }
-
     // output a map - anonymous subroutine
     protected void mapOut(Map<String, Object> obj) throws IOException {
-        if (obj == null) {
-            writeNull();
-            return;
-        }
         out.writeByte(MAP_BEGIN);
         intOut(obj.size());  // number of members.  Note: this implies we cannot skip nulls! OK as we assume they would have been cleared before if it was the intention to do so.
 
@@ -913,7 +892,10 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
             return;
         }
         if (obj instanceof List li) {
-            listOut(li);
+            out.writeByte(ARRAY_BEGIN);
+            intOut(li.size());
+            for (Object o : li)
+                elementOut(o);
             return;
         }
         if (obj instanceof EnumSetMarker) {
