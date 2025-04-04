@@ -805,7 +805,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
 
 
     // output an Object array - anonymous subroutine
-    protected void elementOut(Object [] l) throws IOException {
+    protected void arrayOut(Object [] l) throws IOException {
         if (l == null) {
             writeNull();
             return;
@@ -817,7 +817,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
     }
 
     // output a list - anonymous subroutine
-    protected void elementOut(List<Object> l) throws IOException {
+    protected void listOut(List<Object> l) throws IOException {
         if (l == null) {
             writeNull();
             return;
@@ -829,7 +829,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
     }
 
     // output a map - anonymous subroutine
-    protected void elementOut(Map<String, Object> obj) throws IOException {
+    protected void mapOut(Map<String, Object> obj) throws IOException {
         if (obj == null) {
             writeNull();
             return;
@@ -908,12 +908,12 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
             bytearrayOut(ba);
             return;
         }
-        if (obj instanceof Map<?,?> ma) {
-            elementOut(ma);
+        if (obj instanceof Map ma) {
+            mapOut(ma);
             return;
         }
-        if (obj instanceof List<?> li) {
-            elementOut(li);
+        if (obj instanceof List li) {
+            listOut(li);
             return;
         }
         if (obj instanceof EnumSetMarker) {
@@ -987,7 +987,7 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
         }
         if (obj instanceof Object [] oarr) {
             // any array of an object type (String, Boolean whatever...) except primitive arrays
-            elementOut(oarr);
+            arrayOut(oarr);
             return;
         }
         if (obj.getClass().isArray()) {
