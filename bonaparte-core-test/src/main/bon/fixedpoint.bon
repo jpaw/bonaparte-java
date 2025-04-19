@@ -1,0 +1,12 @@
+package fixedPointTest {
+
+    class Child {
+        int                     x;
+        fixedPoint(18,6)        num;
+    }
+
+    class Parent {
+        int                     x;
+        Json                    map;
+    }
+}

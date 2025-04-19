@@ -865,6 +865,10 @@ public abstract class AbstractCompactComposer extends AbstractMessageComposer<IO
                 out.writeFloat(f.floatValue());
                 return;
             }
+            if (obj instanceof FixedPointBase fp) {
+                fixedpointOut(fp);
+                return;
+            }
             throw new RuntimeException("Unrecognized type " + obj.getClass().getSimpleName() + " for compact number");
         }
         if (obj instanceof String s) {
