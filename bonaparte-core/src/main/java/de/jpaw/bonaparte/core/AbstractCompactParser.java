@@ -29,11 +29,11 @@ import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDefinition;
 import de.jpaw.bonaparte.util.BigDecimalTools;
 import de.jpaw.bonaparte.util.DayTime;
+import de.jpaw.bonaparte.util.FreezeTools;
 import de.jpaw.enums.AbstractXEnumBase;
 import de.jpaw.enums.XEnumFactory;
 import de.jpaw.fixedpoint.FixedPointBase;
 import de.jpaw.util.ByteArray;
-import de.jpaw.util.CollectionUtil;
 
 
 public abstract class AbstractCompactParser<E extends Exception>  extends Settings implements MessageParser<E>, CompactConstants {
@@ -864,7 +864,7 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
 
     protected Map<String, Object> readMapFixedSizeSub() throws E {
         final int numElem = readInt(needToken(), "$jsonMapNumElem");
-        final Map<String, Object> map = new HashMap<String, Object>(CollectionUtil.mapInitialSize(numElem));
+        final Map<String, Object> map = new HashMap<String, Object>(FreezeTools.getInitialHashMapCapacity(numElem));
         for (int i = 0; i < numElem; ++i) {
             addMapElem(map);
         }

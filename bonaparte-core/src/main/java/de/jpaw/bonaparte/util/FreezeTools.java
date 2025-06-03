@@ -13,10 +13,15 @@ import de.jpaw.enums.EnumSetMarker;
 
 /** Tools to return immutable or mutable copies of Json, Element and Array fields. */
 public class FreezeTools {
-    public static Map<String, Object> freeze(Map<String, Object> input) {
+    /** Computes the required initial capacity for a HashMap, given the known number of elements, to avoid resizing. */
+	public static int getInitialHashMapCapacity(final int maxElements) {
+        return (int) (maxElements * 1.5 + 1);
+    }
+
+	public static Map<String, Object> freeze(Map<String, Object> input) {
         if (input == null)
             return null;
-        Map<String, Object> b = new HashMap<String, Object>(input.size());  // reserve space for a load factor of .5
+        final Map<String, Object> b = new HashMap<String, Object>(getInitialHashMapCapacity(input.size()));  // reserve space for a load factor of .5
         for (Map.Entry<String, Object> e : input.entrySet()) {
             b.put(e.getKey(), freeze(e.getValue()));
         }
@@ -25,7 +30,7 @@ public class FreezeTools {
     public static List<Object> freeze(List<Object> input) {
         if (input == null)
             return null;
-        List<Object> b = new ArrayList<Object>(input.size());
+        final List<Object> b = new ArrayList<Object>(input.size());
         for (Object e : input) {
             b.add(freeze(e));
         }
@@ -34,7 +39,7 @@ public class FreezeTools {
     public static Set<Object> freeze(Set<Object> input) {
         if (input == null)
             return null;
-        Set<Object> b = new HashSet<Object>(input.size() * 2);
+        final Set<Object> b = new HashSet<Object>(input.size() * 2);
         for (Object e : input) {
             b.add(freeze(e));
         }

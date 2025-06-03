@@ -25,6 +25,7 @@ import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
+import de.jpaw.bonaparte.util.FreezeTools;
 import de.jpaw.enums.XEnum;
 import de.jpaw.fixedpoint.FixedPointBase;
 import de.jpaw.util.ByteArray;
@@ -312,7 +313,7 @@ public class MapComposer extends NoOpComposer<RuntimeException> implements Messa
 
     @Override
     public void startMap(FieldDefinition di, int currentMembers) {
-        Map<Object,Object> currentMap = new HashMap<Object,Object>(currentMembers);
+        Map<Object,Object> currentMap = new HashMap<Object,Object>(FreezeTools.getInitialHashMapCapacity(currentMembers));
         store(di, currentMap);
         currentStorage = new MapStorage(currentMap);
     }

@@ -8,8 +8,8 @@ import de.jpaw.bonaparte.api.codecs.IMessageEncoder;
 import de.jpaw.bonaparte.core.BonaPortable;
 
 public class SingleThreadCachingMessageCoderFactory<D extends BonaPortable, E extends BonaPortable> extends MessageCoderFactory<D, E> {
-    private final Map<String,IMessageDecoder<D, byte []>> decoders = new HashMap<String,IMessageDecoder<D, byte []>>(10);
-    private final Map<String,IMessageEncoder<E, byte []>> encoders = new HashMap<String,IMessageEncoder<E, byte []>>(10);
+    private final Map<String,IMessageDecoder<D, byte []>> decoders = new HashMap<String,IMessageDecoder<D, byte []>>(12);
+    private final Map<String,IMessageEncoder<E, byte []>> encoders = new HashMap<String,IMessageEncoder<E, byte []>>(12);
 
     public SingleThreadCachingMessageCoderFactory(Class<D> decoderClass, Class<E> encoderClass) {
         super(decoderClass, encoderClass);

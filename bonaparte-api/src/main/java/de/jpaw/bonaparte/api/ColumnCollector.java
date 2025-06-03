@@ -30,6 +30,7 @@ import de.jpaw.bonaparte.pojos.ui.UIColumnConfiguration;
 import de.jpaw.bonaparte.pojos.ui.UIDefaults;
 import de.jpaw.bonaparte.pojos.ui.UIMeta;
 import de.jpaw.bonaparte.util.FieldGetter;
+import de.jpaw.bonaparte.util.FreezeTools;
 import de.jpaw.bonaparte.util.UtilException;
 
 /** Utility class which helps to guess an initial UI configuration. */
@@ -349,7 +350,7 @@ public class ColumnCollector {
      * For a method to evaluate the value of a field for a given instance, see FieldGetter.getSingleField in project bonaparte-core */
     public Map<String, String> createUIMetas(List<UIColumnConfiguration> uis, ClassDefinition cls) throws UtilException {
         // create a hash of the field names
-        Map<String, UIColumnConfiguration> fields = new HashMap<String, UIColumnConfiguration>(uis.size());
+        Map<String, UIColumnConfiguration> fields = new HashMap<String, UIColumnConfiguration>(FreezeTools.getInitialHashMapCapacity(uis.size()));
         Set<String> usedClasses = new HashSet<String>();
 
         // walk all fields, use the hash to avoid computing similar names multiple times

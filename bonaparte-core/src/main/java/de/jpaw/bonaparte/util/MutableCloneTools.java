@@ -15,7 +15,7 @@ public class MutableCloneTools {
     public static Map<String, Object> mutableClone(Map<String, Object> input, boolean unfreezeCollections) throws ObjectValidationException {
         if (input == null)
             return null;
-        Map<String, Object> b = new HashMap<String, Object>(input.size());  // reserve space for a load factor of .5
+        Map<String, Object> b = new HashMap<String, Object>(FreezeTools.getInitialHashMapCapacity(input.size()));  // reserve space for a load factor of .5
         for (Map.Entry<String, Object> e : input.entrySet()) {
             b.put(e.getKey(), mutableClone(e.getValue(), unfreezeCollections));
         }
