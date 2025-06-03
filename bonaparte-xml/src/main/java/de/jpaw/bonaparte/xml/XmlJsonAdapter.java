@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import de.jpaw.bonaparte.util.FreezeTools;
 import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 
@@ -50,7 +51,7 @@ public class XmlJsonAdapter extends XmlAdapter<XmlJsonAdapter.JSON, Map<String, 
     public Map<String, Object> unmarshal(JSON entries) throws Exception {
         if (entries == null || entries.kvp == null)
             return null;
-        Map<String, Object> map = new HashMap<String, Object>(entries.kvp.size());
+        final Map<String, Object> map = new HashMap<String, Object>(FreezeTools.getInitialHashMapCapacity(entries.kvp.size()));
         for(KVP kvp : entries.kvp) {
             map.put(kvp.key, firstNonNull(kvp.num, kvp.nums, kvp.value, kvp.values, kvp.bool, kvp.bools, unmarshal(kvp.obj), unmarshal(kvp.objs), kvp.any, kvp.anys));
         }
