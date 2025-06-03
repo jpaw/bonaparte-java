@@ -4,7 +4,7 @@
     <parent>
         <groupId>de.jpaw</groupId>
         <artifactId>bonaparte-base</artifactId>
-        <version>6.2.4-SNAPSHOT</version>
+        <version>6.2.4</version>
     </parent>
 
     <artifactId>bonaparte-adapters-gson</artifactId>
