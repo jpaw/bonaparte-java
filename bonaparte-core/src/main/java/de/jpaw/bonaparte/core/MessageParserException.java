@@ -110,7 +110,7 @@ public class MessageParserException extends ApplicationException {
     public static final int STRING_TOO_SHORT             = OFFSET + 70;
     public static final int MISSING_CLOSING_QUOTE        = OFFSET + 71;
     public static final int INVALID_INSTANT_FORMAT       = OFFSET + 72;
-    
+
 
     static {
         registerRange(OFFSET, false, MessageParserException.class, ApplicationLevelType.CORE_LIBRARY, "Message parsing methods");
