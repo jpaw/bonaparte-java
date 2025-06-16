@@ -452,7 +452,17 @@ public class MapParser extends AbstractMessageParser<MessageParserException> imp
             return i;
         }
         if (z instanceof String s) {
-            return spu.readInstant(di, s);      // assumes precision = 1 second, with fractionals if ms
+            final int minusPos = s.indexOf('-');
+            if (minusPos < 0) {
+                // is a number - assume UNIX timestamp
+                return spu.readInstant(di, s);      // assumes precision = 1 second, with fractionals if ms
+            }
+            // now the minus must be at pos 5, and another one at 8 (yyyy-MM-dd)
+            if (s.length() < 10 || minusPos != 4 || s.indexOf('-', minusPos + 1) != 7) {
+                // not a valid date format
+                throw err(MessageParserException.INVALID_INSTANT_FORMAT, di);
+            }
+            return Instant.parse(s);
         }
         if (z instanceof Number n) {
             // convert number of seconds to Instant
