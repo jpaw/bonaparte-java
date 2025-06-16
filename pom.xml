@@ -4,7 +4,7 @@
     <parent>
         <groupId>de.jpaw</groupId>
         <artifactId>jpaw-base</artifactId>
-        <version>3.6.2</version>
+        <version>3.6.3</version>
         <relativePath />
     </parent>
 
@@ -31,7 +31,7 @@
 
         <!-- define revisions of other jpaw.de projects, not covered by plugin management -->
         <bonaparte-plugin.version>6.2.0</bonaparte-plugin.version> <!-- do not use -SNAPSHOT here (GH CI can't deal with it) -->
-        <jpaw.version>3.6.1</jpaw.version>
+        <jpaw.version>3.6.3</jpaw.version>
 
         <!-- define releases (mostly of 3rd party dependencies) we want to use, to ensure consistency -->
         <!-- Some more versions, used by specific dependent projects -->
@@ -39,8 +39,8 @@
 
         <lucene.version>4.10.4</lucene.version>
         <netty.version>4.1.118.Final</netty.version>
-        <poi.version>5.4.0</poi.version>
-        <camel.version>4.10.0</camel.version>
+        <poi.version>5.4.1</poi.version>
+        <camel.version>4.10.5</camel.version>
         <vertx3.version>4.5.13</vertx3.version>
 
         <!-- distributed caches -->
@@ -64,7 +64,7 @@
         <hibernate.version>6.5.3.Final</hibernate.version>
         <hibernate-types.version>3.9.0</hibernate-types.version>  <!-- for io.hypersistence:hypersistence-utils-hibernate-63 -->
 
-        <postgres.driver.version>42.7.4</postgres.driver.version>
+        <postgres.driver.version>42.7.7</postgres.driver.version>
     </properties>
 
     <dependencyManagement>
