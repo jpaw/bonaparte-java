@@ -322,8 +322,10 @@
         <module>bonaparte-poi/pom.xml</module>
         <module>bonaparte-demorqrs/pom.xml</module>
         <module>bonaparte-refs/pom.xml</module>
+        <!-- bonaparte-netty remove July 7th, 2025
         <module>bonaparte-netty/pom.xml</module>
         <module>bonaparte-netty-test/pom.xml</module>
+        -->
         <module>bonaparte-batch/pom.xml</module>
         <module>bonaparte-camel/pom.xml</module>
         <module>bonaparte-zk/pom.xml</module>
