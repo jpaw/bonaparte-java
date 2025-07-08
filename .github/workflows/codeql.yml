@@ -1,59 +1,11 @@
-name: "CodeQL"
+name: CodeQL
 
 on:
-  workflow_dispatch: # enable manual trigger
-  push:
-    branches: [ "master" ]
-    paths-ignore: [ ".github/**" ]
-  pull_request:
-    branches: [ "master" ]
+  workflow_dispatch:
   schedule:
-    - cron: '42 12 * * 0'
-
-env:
-  JAVA_VERSION_TO_USE: '17'
-  JAVA_DISTRI_TO_USE: 'corretto'
-  GITHUB_TOKEN_READ_PACKAGES: ${{ secrets.GH_WORKFLOWS_PAT_READ_PACKAGES }}
+    - cron: '42 13 * * 0'
 
 jobs:
-  analyze:
-    name: Analyze
-    runs-on: ubuntu-latest
-    timeout-minutes: 360
-    permissions:
-      actions: read
-      contents: read
-      security-events: write
-
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v3
-      with:
-        languages: java
-
-    - name: Set up JDK ${{ env.JAVA_VERSION_TO_USE }} (${{ env.JAVA_DISTRI_TO_USE }}) for build
-      uses: actions/setup-java@v4
-      with:
-        java-version: ${{ env.JAVA_VERSION_TO_USE }}
-        distribution: ${{ env.JAVA_DISTRI_TO_USE }}
-        cache: maven
-
-    - name: Configure maven settings.xml
-      uses: whelk-io/maven-settings-xml-action@v22
-      with:
-        repositories: '[{ "id": "github-pkgs", "url": "https://maven.pkg.github.com/arvato-systems-jacs/dummy", "snapshots": { "enabled": "true" } }]'          
-        plugin_repositories: '[{ "id": "github-pkgs", "url": "https://maven.pkg.github.com/arvato-systems-jacs/dummy", "snapshots": { "enabled": "true" } }]'
-        servers: |
-          [
-            { "id": "github-pkgs", "username": "dummy", "password": "${env.GITHUB_TOKEN_READ_PACKAGES}" }
-          ]
-
-    - name: Build
-      run: mvn -B -P github -T 1C package
-
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3
-      with:
-        category: "/language:java"
+  job:
+    uses: arvato-systems-jacs/reusable-workflows/.github/workflows/codeql.yml@master
+    secrets: inherit
