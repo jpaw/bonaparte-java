@@ -13,7 +13,7 @@ on:
         type: string
 
 env:
-  JAVA_VERSION_TO_USE: '17'
+  JAVA_VERSION_TO_USE: '21'
   JAVA_DISTRI_TO_USE: 'corretto'
   GITHUB_TOKEN_READ_PACKAGES: ${{ secrets.GH_WORKFLOWS_PAT_READ_PACKAGES }}
   GITHUB_TOKEN_DEPLOY_PACKAGES: ${{ github.token }}
