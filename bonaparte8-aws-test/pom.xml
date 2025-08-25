@@ -61,7 +61,7 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.eclipse.xtend</groupId>
+            <groupId>org.eclipse.xtext</groupId>
             <artifactId>org.eclipse.xtend.lib</artifactId>
             <version>${xtend.version}</version>
         </dependency>
@@ -137,7 +137,7 @@
                 </plugin>
 
                 <plugin>
-                    <groupId>org.eclipse.xtend</groupId>
+                    <groupId>org.eclipse.xtext</groupId>
                     <artifactId>xtend-maven-plugin</artifactId>
                     <version>${version.xtend}</version>
                     <executions>
@@ -204,7 +204,7 @@
                             <pluginExecutions>
                                 <pluginExecution>
                                     <pluginExecutionFilter>
-                                        <groupId>org.eclipse.xtend</groupId>
+                                        <groupId>org.eclipse.xtext</groupId>
                                         <artifactId>xtend-maven-plugin</artifactId>
                                         <versionRange>[${version.xtend},)</versionRange>
                                         <goals>
@@ -256,7 +256,7 @@
                 <artifactId>build-helper-maven-plugin</artifactId>
             </plugin>
             <plugin>
-                <groupId>org.eclipse.xtend</groupId>
+                <groupId>org.eclipse.xtext</groupId>
                 <artifactId>xtend-maven-plugin</artifactId>
             </plugin>
         </plugins>
