@@ -385,7 +385,7 @@ public class MfcobolParser extends Settings implements MessageParser<MessagePars
 //                    return result;
 //                };
             case DISPLAY:
-                return (p, fd) -> readAsciiInt(pic.getSize(), di);
+                return (p, fd) -> p.readAsciiInt(pic.getSize(), di);
             default:
                 break;
             }
@@ -417,7 +417,7 @@ public class MfcobolParser extends Settings implements MessageParser<MessagePars
                 final int numBytes = pic.getSize();
                 return (p, fd) -> LLARR[numBytes].applyAsLong(p);
             case DISPLAY:
-                return (p, fd) -> readAsciiLong(pic.getSize(), di);
+                return (p, fd) -> p.readAsciiLong(pic.getSize(), di);
             default:
                 break;
             }
