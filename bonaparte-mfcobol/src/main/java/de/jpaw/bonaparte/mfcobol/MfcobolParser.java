@@ -281,27 +281,27 @@ public class MfcobolParser extends Settings implements MessageParser<MessagePars
     @Override
     public Boolean readBoolean(final MiscElementaryDataItem di) {
         final int x = readFixed1ByteInt();
-        if (x == 0 || x == '0') {
+        if (x == 0 || x == '0' || x == ' ') {
             return Boolean.FALSE;
         }
         if (x == 1 || x == '1') {
             return Boolean.TRUE;
         }
         throw new MessageParserException(MessageParserException.FIELD_PARSE,
-          "Unexpected value for Boolean in field" + di.getName() + ": " + Integer.toString(x), getParseIndex(), "?");
+          "Unexpected value for Boolean in field " + di.getName() + ": " + Integer.toString(x), getParseIndex(), "?");
     }
 
     @Override
     public boolean readPrimitiveBoolean(final MiscElementaryDataItem di) {
         final int x = readFixed1ByteInt();
-        if (x == 0 || x == '0') {
+        if (x == 0 || x == '0' || x == ' ') {
             return false;
         }
         if (x == 1 || x == '1') {
             return true;
         }
         throw new MessageParserException(MessageParserException.FIELD_PARSE,
-          "Unexpected value for Boolean in field" + di.getName() + ": " + Integer.toString(x), getParseIndex(), "?");
+          "Unexpected value for Boolean in field " + di.getName() + ": " + Integer.toString(x), getParseIndex(), "?");
     }
 
     @Override
