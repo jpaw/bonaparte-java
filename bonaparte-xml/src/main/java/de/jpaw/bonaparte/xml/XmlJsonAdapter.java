@@ -128,7 +128,7 @@ public class XmlJsonAdapter extends XmlAdapter<XmlJsonAdapter.JSON, Map<String, 
                 dst.add(((Number)o).doubleValue());
             } else {
                 // last resort to obtain some numeric value...
-                dst.add(new Double(o.toString()));
+                dst.add(Double.valueOf(o.toString()));
             }
         }
         return dst;

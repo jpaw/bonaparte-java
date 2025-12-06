@@ -229,7 +229,7 @@ public class AnalyzerWorkerFactory extends ContributorNoop implements BatchProce
 
     private Range numFields = null;
     private Statistics [] columnData = null;
-    private Integer mergeLock = new Integer(876511);
+    private final Object mergeLock = new Object();
 
     private void merge(Range numFields, Statistics [] columnData) {
         synchronized(mergeLock) {

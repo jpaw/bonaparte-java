@@ -36,7 +36,7 @@ public class FillBoxedTypeArrays {
         x.setShort1(shorta);
 
         Boolean [] booleana = new Boolean[1001];
-        for (int i = 0; i < 1001; ++i) booleana[i] = new Boolean((i & 1) == 0);
+        for (int i = 0; i < 1001; ++i) booleana[i] = Boolean.valueOf((i & 1) == 0);
         x.setBoolean1(booleana);
 
         Character [] chara = new Character [333];

@@ -903,7 +903,7 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
                     return readISO(c - 0xaf);
                 } else {
                     // 2 byte positive integer: 4 bits + 8
-                    return new Integer(((c & 15) << 8) | needToken());
+                    return Integer.valueOf(((c & 15) << 8) | needToken());
                 }
             }
             switch (c) {
@@ -963,15 +963,15 @@ public abstract class AbstractCompactParser<E extends Exception>  extends Settin
                 return readISO(len);
             }
         case INT_2BYTE:                     //0xe2
-            return new Integer(readFixed2ByteInt());
+            return Integer.valueOf(readFixed2ByteInt());
         case INT_3BYTE:                     //0xe3
-            return new Integer(readFixed3ByteInt());
+            return Integer.valueOf(readFixed3ByteInt());
         case INT_4BYTE:                     //0xe4
-            return new Integer(readFixed4ByteInt());
+            return Integer.valueOf(readFixed4ByteInt());
         case INT_6BYTE:                     //0xe6
-            return new Long(readFixed6ByteLong());
+            return Long.valueOf(readFixed6ByteLong());
         case INT_8BYTE:                     //0xe8
-            return new Long(readFixed8ByteLong());
+            return Long.valueOf(readFixed8ByteLong());
 
         case COMPACT_BIGDECIMAL:            //0xf0
             {
