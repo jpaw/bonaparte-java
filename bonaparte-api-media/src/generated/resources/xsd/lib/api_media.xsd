@@ -20,6 +20,7 @@
             <xs:enumeration value="CSV"/>
             <xs:enumeration value="JSONL"/>
             <xs:enumeration value="YAML"/>
+            <xs:enumeration value="TOON"/>
             <xs:enumeration value="TEXT"/>
             <xs:enumeration value="HTML"/>
             <xs:enumeration value="XHTML"/>

@@ -5,7 +5,7 @@ package api.media XML PROPERTY factoryId 25 {
     /** Defines the format of the data output. */
     enum MediaType {
         // structured output types (record output)
-        BONAPARTE = "B", ^XML = "L", JSON = "J", NULL = "N", COMPACT_BONAPARTE = "c", XLS = "X", XLSX="x", CSV = "C", JSONL = "n", YAML = "Y",
+        BONAPARTE = "B", ^XML = "L", JSON = "J", NULL = "N", COMPACT_BONAPARTE = "c", XLS = "X", XLSX="x", CSV = "C", JSONL = "n", YAML = "Y", TOON = "0",
         // textual document file output types
         TEXT = "T", HTML="H", XHTML="h", CSS="S", MARKDOWN = "m", TEX = "t", LATEX = "l", URL = "r",
         // binary document output types

@@ -60,6 +60,7 @@ public class MediaTypeInfo {
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.JSONL),              "jsonl", MediaCategory.RECORDS,  true,  "application/jsonl"));  // MIME type not yet standardized
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.COMPACT_BONAPARTE),  "cb",   MediaCategory.RECORDS,  false, MimeTypes.MIME_TYPE_COMPACT_BONAPARTE)); // FIXME: made-up MIME type, should have been application/vnd.jpaw-compact-bonaparte
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.YAML),               "yaml", MediaCategory.RECORDS,  true,  "application/yaml"));  // since Feb-2024: https://www.rfc-editor.org/rfc/rfc9512.html
+        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.TOON),               "toon", MediaCategory.RECORDS,  true,  "text/toon"));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.XLS),                "xls",  MediaCategory.RECORDS,  false, "application/vnd.ms-excel"));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.XLSX),               "xlsx", MediaCategory.RECORDS,  false, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.PPTX),               "pptx", MediaCategory.DOCUMENT, false, "application/vnd.openxmlformats-officedocument.presentationml.presentation"));

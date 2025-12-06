@@ -9,6 +9,7 @@ public interface MediaTypes {
     public static final MediaXType MEDIA_XTYPE_JSON              = MediaXType.of(MediaType.JSON);
     public static final MediaXType MEDIA_XTYPE_JSONL             = MediaXType.of(MediaType.JSONL);
     public static final MediaXType MEDIA_XTYPE_YAML              = MediaXType.of(MediaType.YAML);
+    public static final MediaXType MEDIA_XTYPE_TOON              = MediaXType.of(MediaType.TOON);
     public static final MediaXType MEDIA_XTYPE_COMPACT_BONAPARTE = MediaXType.of(MediaType.COMPACT_BONAPARTE);
     public static final MediaXType MEDIA_XTYPE_XLSX              = MediaXType.of(MediaType.XLSX);
     public static final MediaXType MEDIA_XTYPE_XLS               = MediaXType.of(MediaType.XLS);
