@@ -94,6 +94,7 @@ public class MediaTypeInfo {
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.GZIP),               "gz",   MediaCategory.CONTAINER, false, "application/gzip"));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.ZIP7),               "7z",   MediaCategory.CONTAINER, false, "application/x-7z-compressed"));
         registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.TAR),                "tar",  MediaCategory.CONTAINER, false, "application/x-tar"));
+        registerFormatType(new MediaTypeDescriptor(fct.getByEnum(MediaType.UNDEFINED),          "bin",  MediaCategory.OTHER,     false, "application/octet-stream"));
     }
 
     /** Returns the MediaTypeDescriptor for a given MIME type, or returns null if none found. */
