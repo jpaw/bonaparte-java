@@ -107,7 +107,7 @@ public class JwtConverter {
         private final Map<String, String> properties;
 
         private MapWithTagKeysComposer(Map<String,Object> target, Map<String, String> properties) {
-            super(new ArrayList<DataAndMeta>(0), false, false, false, true);
+            super(new ArrayList<DataAndMeta>(0), false, false, false, true, true);
             this.target = target;
             this.properties = properties;
         }

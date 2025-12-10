@@ -2,29 +2,37 @@ package de.jpaw.bonaparte.core;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-
+import de.jpaw.bonaparte.enums.BonaByteEnumSet;
+import de.jpaw.bonaparte.enums.BonaIntEnumSet;
+import de.jpaw.bonaparte.enums.BonaLongEnumSet;
 import de.jpaw.bonaparte.enums.BonaNonTokenizableEnum;
+import de.jpaw.bonaparte.enums.BonaShortEnumSet;
+import de.jpaw.bonaparte.enums.BonaStringEnumSet;
 import de.jpaw.bonaparte.enums.BonaTokenizableEnum;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.AlphanumericEnumSetDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.NumericEnumSetDataItem;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
+import de.jpaw.bonaparte.pojos.meta.XEnumSetDataItem;
+import de.jpaw.enums.TokenizableEnum;
 import de.jpaw.enums.XEnum;
 import de.jpaw.fixedpoint.FixedPointBase;
 import de.jpaw.util.ByteArray;
@@ -39,27 +47,37 @@ public class ListMetaComposer extends NoOpComposer<RuntimeException> implements 
     final protected boolean keepObjects;
     final protected boolean keepExternals;
     final protected boolean convertEnums;
+    final protected boolean convertEnumsets;
 
-    /** Creates a new ListMetaComposer for a given preallocated external storage.
-     * keepObjects = true replaces the prior ListObjMetaComposer */
-    public ListMetaComposer(final List<DataAndMeta> storage, boolean doDeepCopies, boolean keepObjects, boolean keepExternals, boolean convertEnums) {
+
+    /**
+     * Creates a new ListMetaComposer for a given preallocated external storage.
+     */
+    public ListMetaComposer(final List<DataAndMeta> storage, boolean doDeepCopies, boolean keepObjects, boolean keepExternals, boolean convertEnums, boolean convertEnumsets) {
         this.storage = storage;
         this.doDeepCopies = doDeepCopies;
         this.keepObjects = keepObjects;
         this.keepExternals = keepExternals;
         this.convertEnums = convertEnums;
+        this.convertEnumsets = convertEnumsets;
     }
 
     /** Creates a new ListMetaComposer for a given preallocated external storage.
      * keepObjects = true replaces the prior ListObjMetaComposer */
     public ListMetaComposer(final List<DataAndMeta> storage, boolean doDeepCopies, boolean keepObjects, boolean keepExternals) {
-        this(storage, doDeepCopies, keepObjects, keepExternals, false);
+        this(storage, doDeepCopies, keepObjects, keepExternals, false, true);  // for historical reasons, enumsets are converted by default
     }
 
     /** Creates a new ListMetaComposer, creating an own internal storage. */
     public ListMetaComposer(boolean doDeepCopies, boolean keepObjects, boolean keepExternals) {
         this(new ArrayList<DataAndMeta>(), doDeepCopies, keepObjects, keepExternals);
     }
+
+    /** Creates a new default ListMetaComposer, creating an own internal storage. */
+    public ListMetaComposer() {
+        this(new ArrayList<DataAndMeta>(), false, true, true, false, false);
+    }
+
 
     protected void add(FieldDefinition di, Object o) {
         storage.add(new DataAndMeta(di, o));
@@ -244,5 +262,51 @@ public class ListMetaComposer extends NoOpComposer<RuntimeException> implements 
     @Override
     public void addField(ObjectReference di, Object obj) {
         add(di, obj);
+    }
+
+    // Enumsets
+    @Override
+    public <S extends Enum<S>> void addField(NumericEnumSetDataItem di, BonaByteEnumSet<S> n) {
+        if (convertEnumsets)
+            add(di, n == null ? null : n.getBitmap());
+        else
+            add(di, n);
+    }
+    @Override
+    public <S extends Enum<S>> void addField(NumericEnumSetDataItem di, BonaShortEnumSet<S> n) {
+        if (convertEnumsets)
+            add(di, n == null ? null : n.getBitmap());
+        else
+            add(di, n);
+    }
+    @Override
+    public <S extends Enum<S>> void addField(NumericEnumSetDataItem di, BonaIntEnumSet<S> n) {
+        if (convertEnumsets)
+            add(di, n == null ? null : n.getBitmap());
+        else
+            add(di, n);
+    }
+    @Override
+    public <S extends Enum<S>> void addField(NumericEnumSetDataItem di, BonaLongEnumSet<S> n) {
+        if (convertEnumsets)
+            add(di, n == null ? null : n.getBitmap());
+        else
+            add(di, n);
+    }
+
+    @Override
+    public <S extends TokenizableEnum> void addField(AlphanumericEnumSetDataItem di, BonaStringEnumSet<S> n) {
+        if (convertEnumsets)
+            add(di, n == null ? null : n.getBitmap());
+        else
+            add(di, n);
+    }
+
+    @Override
+    public <S extends TokenizableEnum> void addField(XEnumSetDataItem di, BonaStringEnumSet<S> n) {
+        if (convertEnumsets)
+            add(di, n == null ? null : n.getBitmap());
+        else
+            add(di, n);
     }
 }
