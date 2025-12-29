@@ -9,14 +9,14 @@
     </parent>
 
     <artifactId>bonaparte-base</artifactId>
-    <version>6.3.3-SNAPSHOT</version>
+    <version>6.3.3</version>
     <packaging>pom</packaging>
 
     <description>build master for BONAPARTE based projects</description>
 
     <scm>
         <developerConnection>scm:git:https://github.com/arvato-systems-jacs/bonaparte-java.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>v6.3.3</tag>
     </scm>
 
     <!-- useful commands to check current versions:
