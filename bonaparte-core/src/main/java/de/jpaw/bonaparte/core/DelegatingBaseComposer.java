@@ -13,18 +13,27 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import de.jpaw.bonaparte.enums.BonaByteEnumSet;
+import de.jpaw.bonaparte.enums.BonaIntEnumSet;
+import de.jpaw.bonaparte.enums.BonaLongEnumSet;
 import de.jpaw.bonaparte.enums.BonaNonTokenizableEnum;
+import de.jpaw.bonaparte.enums.BonaShortEnumSet;
+import de.jpaw.bonaparte.enums.BonaStringEnumSet;
 import de.jpaw.bonaparte.enums.BonaTokenizableEnum;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.AlphanumericEnumSetDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.NumericEnumSetDataItem;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
+import de.jpaw.bonaparte.pojos.meta.XEnumSetDataItem;
+import de.jpaw.enums.TokenizableEnum;
 import de.jpaw.enums.XEnum;
 import de.jpaw.fixedpoint.FixedPointBase;
 import de.jpaw.util.ByteArray;
@@ -296,5 +305,33 @@ public class DelegatingBaseComposer<E extends Exception> implements MessageCompo
     @Override
     public void addField(ObjectReference di, Object obj) throws E {
         delegateComposer.addField(di, obj);
+    }
+
+    // Enumsets
+    @Override
+    public <S extends Enum<S>> void addField(NumericEnumSetDataItem di, BonaByteEnumSet<S> n) throws E {
+        delegateComposer.addField(di, n);
+    }
+    @Override
+    public <S extends Enum<S>> void addField(NumericEnumSetDataItem di, BonaShortEnumSet<S> n) throws E {
+        delegateComposer.addField(di, n);
+    }
+    @Override
+    public <S extends Enum<S>> void addField(NumericEnumSetDataItem di, BonaIntEnumSet<S> n) throws E {
+        delegateComposer.addField(di, n);
+    }
+    @Override
+    public <S extends Enum<S>> void addField(NumericEnumSetDataItem di, BonaLongEnumSet<S> n) throws E {
+        delegateComposer.addField(di, n);
+    }
+
+    @Override
+    public <S extends TokenizableEnum> void addField(AlphanumericEnumSetDataItem di, BonaStringEnumSet<S> n) throws E {
+        delegateComposer.addField(di, n);
+    }
+
+    @Override
+    public <S extends TokenizableEnum> void addField(XEnumSetDataItem di, BonaStringEnumSet<S> n) throws E {
+        delegateComposer.addField(di, n);
     }
 }
