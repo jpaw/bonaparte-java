@@ -73,13 +73,13 @@ import de.jpaw.util.IntegralLimits;
  * @version $Revision$
  */
 
-public class BaseExcelComposer extends AbstractMessageComposer<RuntimeException> implements ExcelWriter {
+public class BaseExcelComposer<T extends Workbook> extends AbstractMessageComposer<RuntimeException> implements ExcelWriter {
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseExcelComposer.class);
 
     protected static final int MAX_DECIMALS = 18;
     protected static final LocalDate EXCEL_EPOCH = LocalDate.of(1900, 1, 1);
 
-    protected final Workbook xls;
+    protected final T xls;
     protected final DataFormat xlsDataFormat;
     protected final CellStyle csLong;
     protected final CellStyle [] csBigDecimal;  // one per number of decimals, cache
@@ -113,7 +113,7 @@ public class BaseExcelComposer extends AbstractMessageComposer<RuntimeException>
     private int column = 0;
     private int sheetNum = 0;
 
-    public BaseExcelComposer(Workbook xls) {
+    protected BaseExcelComposer(T xls) {
         this.xls = xls;
         // create a few data formats
         xlsDataFormat = xls.createDataFormat();

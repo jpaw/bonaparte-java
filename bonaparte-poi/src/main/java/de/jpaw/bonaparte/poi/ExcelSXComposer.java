@@ -27,7 +27,7 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
  * @version $Revision$
  */
 
-public class ExcelSXComposer extends BaseExcelComposer implements ExcelWriter {
+public class ExcelSXComposer extends BaseExcelComposer<SXSSFWorkbook> implements ExcelWriter {
 
     public ExcelSXComposer() {
         super(new SXSSFWorkbook());
@@ -38,7 +38,7 @@ public class ExcelSXComposer extends BaseExcelComposer implements ExcelWriter {
         try (FileOutputStream out = new FileOutputStream(filename)) {
             write(out);
         } finally {
-            ((SXSSFWorkbook)xls).dispose();
+            xls.close();
         }
     }
 }

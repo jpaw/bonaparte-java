@@ -24,7 +24,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
  * @version $Revision$
  */
 
-public class ExcelComposer extends BaseExcelComposer {
+public class ExcelComposer extends BaseExcelComposer<HSSFWorkbook> {
 
     public ExcelComposer() {
         super(new HSSFWorkbook());

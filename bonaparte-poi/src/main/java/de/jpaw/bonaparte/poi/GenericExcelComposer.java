@@ -19,6 +19,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -29,7 +30,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  * @version $Revision$
  */
 
-public class GenericExcelComposer extends BaseExcelComposer implements ExcelWriter {
+public class GenericExcelComposer extends BaseExcelComposer<Workbook> implements ExcelWriter {
     // variables set by constructor
     private final ExcelFormat fmt;  // xls or xlsx
 
@@ -43,8 +44,9 @@ public class GenericExcelComposer extends BaseExcelComposer implements ExcelWrit
         try (FileOutputStream out = new FileOutputStream(filename)) {
             write(out);
         } finally {
-            if (fmt == ExcelFormat.XLSX_STREAMING)
-                ((SXSSFWorkbook)xls).dispose();
+            if (fmt == ExcelFormat.XLSX_STREAMING && xls instanceof SXSSFWorkbook XSSFWorkbook) {
+                XSSFWorkbook.close();
+            }
         }
     }
 }

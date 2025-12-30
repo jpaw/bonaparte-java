@@ -24,7 +24,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  * @version $Revision$
  */
 
-public class ExcelXComposer extends BaseExcelComposer implements ExcelWriter {
+public class ExcelXComposer extends BaseExcelComposer<XSSFWorkbook> implements ExcelWriter {
     // variables set by constructor
 
     public ExcelXComposer() {

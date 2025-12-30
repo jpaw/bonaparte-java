@@ -17,16 +17,20 @@ public class TestPoiMeta {
         ClassDefinition cd = new ClassDefinition(TestPoiMeta.class, true, false, "myName", null, "bundle",  Instant.now(), null, null, null,
                 "Rev", 87264821612983L, 0, ImmutableList.<FieldDefinition>of(), ImmutableMap.<String,String>of(), false, 42, 13, 13, false, false);
 
-        ExcelComposer ec = new ExcelComposer();
-        ec.newSheet("Tabelle Nummer 1");
-        ec.writeRecord(cd);
-        ec.closeSheet();
+        try (ExcelComposer ec = new ExcelComposer()) {
+            ec.newSheet("Tabelle Nummer 1");
+            ec.writeRecord(cd);
+            ec.closeSheet();
 
-        ec.startTransmission();
-        ec.writeRecord(cd.ret$BonaPortableClass().getMetaData());
-        ec.closeSheet();
+            ec.startTransmission();
+            ec.writeRecord(cd.ret$BonaPortableClass().getMetaData());
+            ec.closeSheet();
 
-        ec.writeToFile("test.xls");
+            ec.writeToFile("test.xls");
+        } catch (RuntimeException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
 }
