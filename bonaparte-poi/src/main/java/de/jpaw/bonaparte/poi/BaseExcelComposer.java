@@ -28,6 +28,7 @@ import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -42,18 +43,27 @@ import org.slf4j.LoggerFactory;
 import de.jpaw.bonaparte.core.AbstractMessageComposer;
 import de.jpaw.bonaparte.core.BonaCustom;
 import de.jpaw.bonaparte.core.BonaparteJsonEscaper;
+import de.jpaw.bonaparte.enums.BonaByteEnumSet;
+import de.jpaw.bonaparte.enums.BonaIntEnumSet;
+import de.jpaw.bonaparte.enums.BonaLongEnumSet;
 import de.jpaw.bonaparte.enums.BonaNonTokenizableEnum;
+import de.jpaw.bonaparte.enums.BonaShortEnumSet;
+import de.jpaw.bonaparte.enums.BonaStringEnumSet;
 import de.jpaw.bonaparte.enums.BonaTokenizableEnum;
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.AlphanumericEnumSetDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BinaryElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.EnumDataItem;
 import de.jpaw.bonaparte.pojos.meta.FieldDefinition;
 import de.jpaw.bonaparte.pojos.meta.MiscElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.NumericElementaryDataItem;
+import de.jpaw.bonaparte.pojos.meta.NumericEnumSetDataItem;
 import de.jpaw.bonaparte.pojos.meta.ObjectReference;
 import de.jpaw.bonaparte.pojos.meta.TemporalElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.XEnumDataItem;
+import de.jpaw.bonaparte.pojos.meta.XEnumSetDataItem;
+import de.jpaw.enums.TokenizableEnum;
 import de.jpaw.enums.XEnum;
 import de.jpaw.fixedpoint.FixedPointBase;
 import de.jpaw.util.Base64;
@@ -112,6 +122,24 @@ public class BaseExcelComposer<T extends Workbook> extends AbstractMessageCompos
     private int rownum = -1;
     private int column = 0;
     private int sheetNum = 0;
+    private boolean enumsAsTokens = true;    // write enums as ordinals / tokens by default
+    private boolean enumsetsAsTokens = true; // write enumsets as bitmaps by default
+
+    public boolean isEnumsAsTokens() {
+        return enumsAsTokens;
+    }
+
+    public void setEnumsAsTokens(boolean enumsAsTokens) {
+        this.enumsAsTokens = enumsAsTokens;
+    }
+
+    public boolean isEnumsetsAsTokens() {
+        return enumsetsAsTokens;
+    }
+
+    public void setEnumsetsAsTokens(boolean enumsetsAsTokens) {
+        this.enumsetsAsTokens = enumsetsAsTokens;
+    }
 
     protected BaseExcelComposer(T xls) {
         this.xls = xls;
@@ -476,27 +504,36 @@ public class BaseExcelComposer<T extends Workbook> extends AbstractMessageCompos
     // enum with numeric expansion: delegate to Null/Int
     @Override
     public void addEnum(EnumDataItem di, BasicNumericElementaryDataItem ord, BonaNonTokenizableEnum n) {
-        if (n == null)
+        if (n == null) {
             writeNull(ord);
-        else
+        } else if (enumsAsTokens) {
             addField(ord, n.ordinal());
+        } else {
+            newCell(di).setCellValue(n.name());
+        }
     }
 
     // enum with alphanumeric expansion: delegate to Null/String
     @Override
     public void addEnum(EnumDataItem di, AlphanumericElementaryDataItem token, BonaTokenizableEnum n) {
-        if (n == null)
+        if (n == null) {
             writeNull(token);
-        else
+        } else if (enumsAsTokens) {
             addField(token, n.getToken());
+        } else {
+            addField(token, n.name());
+        }
     }
 
     @Override
     public void addEnum(XEnumDataItem di, AlphanumericElementaryDataItem token, XEnum<?> n) {
-        if (n == null)
+        if (n == null) {
             writeNull(token);
-        else
+        } else if (enumsAsTokens) {
             addField(token, n.getToken());
+        } else {
+            addField(token, n.name());
+        }
     }
 
     @Override
@@ -526,5 +563,93 @@ public class BaseExcelComposer<T extends Workbook> extends AbstractMessageCompos
             writeNull(di);
         else
             newCell(di).setCellValue(BonaparteJsonEscaper.asJson(obj));
+    }
+
+    // Enumsets
+    protected <S extends Enum<S>> String enumSetToString(FieldDefinition di, Set<S> enums) {
+        final StringBuilder sb = new StringBuilder(80);
+        for (final S e: enums) {
+            if (!sb.isEmpty()) {
+                sb.append(',');
+            }
+            sb.append(e.name());
+        }
+        return sb.toString();
+    }
+    @Override
+    public <S extends Enum<S>> void addField(NumericEnumSetDataItem di, BonaByteEnumSet<S> n) {
+        if (n == null) {
+            writeNull(di);
+        } else if (enumsetsAsTokens) {
+            addField(di, n.getBitmap());
+        } else {
+            newCell(di).setCellValue(enumSetToString(di, n));
+        }
+    }
+    @Override
+    public <S extends Enum<S>> void addField(NumericEnumSetDataItem di, BonaShortEnumSet<S> n) {
+        if (n == null) {
+            writeNull(di);
+        } else if (enumsetsAsTokens) {
+            addField(di, n.getBitmap());
+        } else {
+            newCell(di).setCellValue(enumSetToString(di, n));
+        }
+    }
+    @Override
+    public <S extends Enum<S>> void addField(NumericEnumSetDataItem di, BonaIntEnumSet<S> n) {
+        if (n == null) {
+            writeNull(di);
+        } else if (enumsetsAsTokens) {
+            addField(di, n.getBitmap());
+        } else {
+            newCell(di).setCellValue(enumSetToString(di, n));
+        }
+    }
+    @Override
+    public <S extends Enum<S>> void addField(NumericEnumSetDataItem di, BonaLongEnumSet<S> n) {
+        if (n == null) {
+            writeNull(di);
+        } else if (enumsetsAsTokens) {
+            addField(di, n.getBitmap());
+        } else {
+            newCell(di).setCellValue(enumSetToString(di, n));
+        }
+    }
+
+    @Override
+    public <S extends TokenizableEnum> void addField(AlphanumericEnumSetDataItem di, BonaStringEnumSet<S> n) {
+        if (n == null) {
+            writeNull(di);
+        } else if (enumsetsAsTokens) {
+            addField(di, n.getBitmap());
+        } else {
+            final StringBuilder sb = new StringBuilder(80);
+            for (final S e: n) {
+                if (!sb.isEmpty()) {
+                    sb.append(',');
+                }
+                sb.append(e.name());
+            }
+            newCell(di).setCellValue(sb.toString());
+        }
+    }
+
+    @Override
+    public <S extends TokenizableEnum> void addField(XEnumSetDataItem di, BonaStringEnumSet<S> n) {
+        if (n == null) {
+            writeNull(di);
+        } else if (enumsetsAsTokens) {
+            addField(di, n.getBitmap());
+        } else {
+            final StringBuilder sb = new StringBuilder(80);
+            for (final S e: n) {
+                if (!sb.isEmpty()) {
+                    sb.append(',');
+                }
+                sb.append(e.name());
+            }
+            newCell(di).setCellValue(sb.toString());
+        }
     }
 }
