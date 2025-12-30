@@ -76,14 +76,6 @@
             <xs:enumeration value="CONTAINER"/>
         </xs:restriction>
     </xs:simpleType>
-    <xs:simpleType name="EnumOutputType">
-        <xs:restriction base="xs:string">
-            <xs:enumeration value="DEFAULT"/>
-            <xs:enumeration value="TOKEN"/>
-            <xs:enumeration value="NAME"/>
-            <xs:enumeration value="DESCRIPTION"/>
-        </xs:restriction>
-    </xs:simpleType>
     <xs:simpleType name="MediaXType">
         <xs:restriction base="xs:string">
             <xs:maxLength value="1"/>

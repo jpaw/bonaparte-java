@@ -60,10 +60,6 @@ package api.media XML PROPERTY factoryId 25 {
         CONTAINER               = "C"   // not really a file type, but an archive of packed file(s)
     }
 
-    enum EnumOutputType {
-        DEFAULT="D", TOKEN="T", NAME="N", DESCRIPTION="O"  // description is translated text
-    }
-
     /**
      * The MediaTypeDescriptor provides properties for a given <code>MediaXType</code>, for example the official MIME type,
      * and information if the representation can be considered as text (human readable) or if it is binary data.
