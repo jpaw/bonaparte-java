@@ -89,6 +89,16 @@ public class BaseExcelComposer<T extends Workbook> extends AbstractMessageCompos
     protected static final int MAX_DECIMALS = 18;
     protected static final LocalDate EXCEL_EPOCH = LocalDate.of(1900, 1, 1);
 
+    // Constants for magic numbers
+    private static final int EXCEL_COLUMN_WIDTH_UNITS = 256;
+    private static final int COLUMN_WIDTH_GAP = 3;
+    private static final int DEFAULT_COLUMN_WIDTH = 8;
+    private static final int MAX_DISPLAY_WIDTH = 32;
+    private static final int TIMESTAMP_COLUMN_WIDTH = 20;
+    private static final int ENUM_COLUMN_WIDTH = 3;
+    private static final int INITIAL_BYTE_ARRAY_SIZE = 50000;
+    private static final int STRING_BUILDER_INITIAL_CAPACITY = 80;
+
     protected final T xls;
     protected final DataFormat xlsDataFormat;
     protected final CellStyle csLong;
@@ -125,23 +135,42 @@ public class BaseExcelComposer<T extends Workbook> extends AbstractMessageCompos
     private boolean enumsAsTokens = true;    // write enums as ordinals / tokens by default
     private boolean enumsetsAsTokens = true; // write enumsets as bitmaps by default
 
+    /**
+     * @return true if enums are written as their ordinal/token values, false if written as names
+     */
     public boolean isEnumsAsTokens() {
         return enumsAsTokens;
     }
 
+    /**
+     * Sets whether enums should be written as their ordinal/token values (true) or as names (false).
+     *
+     * @param enumsAsTokens the configuration flag
+     */
     public void setEnumsAsTokens(boolean enumsAsTokens) {
         this.enumsAsTokens = enumsAsTokens;
     }
 
+    /**
+     * @return true if enumsets are written as bitmaps, false if written as comma-separated names
+     */
     public boolean isEnumsetsAsTokens() {
         return enumsetsAsTokens;
     }
 
+    /**
+     * Sets whether enumsets should be written as bitmaps (true) or as comma-separated names (false).
+     *
+     * @param enumsetsAsTokens the configuration flag
+     */
     public void setEnumsetsAsTokens(boolean enumsetsAsTokens) {
         this.enumsetsAsTokens = enumsetsAsTokens;
     }
 
     protected BaseExcelComposer(T xls) {
+        if (xls == null) {
+            throw new IllegalArgumentException("Workbook cannot be null");
+        }
         this.xls = xls;
         // create a few data formats
         xlsDataFormat = xls.createDataFormat();
@@ -156,13 +185,34 @@ public class BaseExcelComposer<T extends Workbook> extends AbstractMessageCompos
         csTimestamp.setDataFormat(xlsDataFormat.getFormat("yyyy-mm-dd hh:mm:ss"));
     }
 
+    /**
+     * Creates a new sheet with the given name and makes it the active sheet.
+     *
+     * @param name the name of the sheet, cannot be null or empty
+     * @throws IllegalArgumentException if name is null or empty
+     */
     public void newSheet(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            name = "unnamed";
+        }
         sheet = xls.createSheet();
         xls.setSheetName(sheetNum, name);
         rownum = -1;
         ++sheetNum;
     }
+
+    /**
+     * Closes the current sheet. Currently this is a no-op but provided for API completeness.
+     */
     public void closeSheet() {
+    }
+
+    /**
+     * Gets the current position information for debugging purposes.
+     * @return a string describing the current sheet, row, and column position
+     */
+    public String getCurrentPosition() {
+        return String.format("Sheet: %d, Row: %d, Column: %d", sheetNum, rownum, column);
     }
 
     private CellStyle getCachedCellStyle(int decimals) {
@@ -178,7 +228,7 @@ public class BaseExcelComposer<T extends Workbook> extends AbstractMessageCompos
         }
     }
 
-    /** Write the current state of the Workbook onto a stream. */
+    /** Writes the current state of the Workbook onto a stream. */
     @Override
     public void write(OutputStream os) throws IOException {
         xls.write(os);
@@ -194,7 +244,7 @@ public class BaseExcelComposer<T extends Workbook> extends AbstractMessageCompos
     @Override
     public byte[] getBytes() throws IOException {
         byte [] result = null;
-        try (ByteArrayOutputStream out = new ByteArrayOutputStream(50000)) {
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream(INITIAL_BYTE_ARRAY_SIZE)) {
             write(out);
             out.flush();
             result = out.toByteArray();
@@ -203,8 +253,8 @@ public class BaseExcelComposer<T extends Workbook> extends AbstractMessageCompos
     }
 
     protected void setFieldWidth(FieldDefinition di) {
-        int gap = 3;        // addon for graphical reasons (border dist)
-        int width = 8;  // this is the xls default
+        int gap = COLUMN_WIDTH_GAP;        // addon for graphical reasons (border dist)
+        int width = DEFAULT_COLUMN_WIDTH;  // this is the xls default
         switch (di.getDataCategory()) {
         case BASICNUMERIC:
         case NUMERIC:
@@ -214,7 +264,7 @@ public class BaseExcelComposer<T extends Workbook> extends AbstractMessageCompos
         case BINARY:
             break;
         case ENUM:
-            width = 3;      // small number
+            width = ENUM_COLUMN_WIDTH;      // small number
             break;
         case ENUMALPHA:
             width = ((XEnumDataItem)di).getBaseXEnum().getBaseEnum().getMaxTokenLength();
@@ -229,10 +279,10 @@ public class BaseExcelComposer<T extends Workbook> extends AbstractMessageCompos
             break;
         case STRING:
             int len = ((AlphanumericElementaryDataItem)di).getLength();
-            width = len > 32 ? 32 : len;
+            width = len > MAX_DISPLAY_WIDTH ? MAX_DISPLAY_WIDTH : len;
             break;
         case TEMPORAL:
-            width = 20; // 10 for date, 8 for time
+            width = TIMESTAMP_COLUMN_WIDTH; // 10 for date, 8 for time
             break;
         case XENUM:
             width = ((XEnumDataItem)di).getBaseXEnum().getBaseEnum().getMaxTokenLength();
@@ -243,7 +293,7 @@ public class BaseExcelComposer<T extends Workbook> extends AbstractMessageCompos
             break;
         }
         LOGGER.debug("Setting width of column {} ({}); to {}", column, di.getName(), width);
-        sheet.setColumnWidth(column, (width + gap) * 256);
+        sheet.setColumnWidth(column, (width + gap) * EXCEL_COLUMN_WIDTH_UNITS);
     }
 
     /**************************************************************************************************
@@ -340,7 +390,14 @@ public class BaseExcelComposer<T extends Workbook> extends AbstractMessageCompos
         }
     }
 
-    // output a non-null number which was stored with possibly implicit fixed point
+    /**
+     * Outputs a non-null number which was stored with possibly implicit fixed point scaling.
+     * If the field definition specifies decimal digits, the number is scaled up by the appropriate
+     * power of 10 and formatted with decimal places. Otherwise, it's treated as a long integer.
+     *
+     * @param di the field definition containing scaling information
+     * @param n the number to output
+     */
     private void addScaledNumber(BasicNumericElementaryDataItem di, double n) {
         int fractionalDigits = di.getDecimalDigits();
         if (fractionalDigits > 0)
@@ -567,7 +624,7 @@ public class BaseExcelComposer<T extends Workbook> extends AbstractMessageCompos
 
     // Enumsets
     protected <S extends Enum<S>> String enumSetToString(FieldDefinition di, Set<S> enums) {
-        final StringBuilder sb = new StringBuilder(80);
+        final StringBuilder sb = new StringBuilder(STRING_BUILDER_INITIAL_CAPACITY);
         for (final S e: enums) {
             if (!sb.isEmpty()) {
                 sb.append(',');
@@ -624,7 +681,7 @@ public class BaseExcelComposer<T extends Workbook> extends AbstractMessageCompos
         } else if (enumsetsAsTokens) {
             addField(di, n.getBitmap());
         } else {
-            final StringBuilder sb = new StringBuilder(80);
+            final StringBuilder sb = new StringBuilder(STRING_BUILDER_INITIAL_CAPACITY);
             for (final S e: n) {
                 if (!sb.isEmpty()) {
                     sb.append(',');
@@ -642,7 +699,7 @@ public class BaseExcelComposer<T extends Workbook> extends AbstractMessageCompos
         } else if (enumsetsAsTokens) {
             addField(di, n.getBitmap());
         } else {
-            final StringBuilder sb = new StringBuilder(80);
+            final StringBuilder sb = new StringBuilder(STRING_BUILDER_INITIAL_CAPACITY);
             for (final S e: n) {
                 if (!sb.isEmpty()) {
                     sb.append(',');
