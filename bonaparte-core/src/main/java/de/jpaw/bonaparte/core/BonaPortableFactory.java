@@ -44,12 +44,8 @@ public class BonaPortableFactory {
     private static Map<String, String> packagePrefixMap = new ConcurrentHashMap<String,String>(16);
     static {
         // mappings for bonaparte-core. Install a fresh map if you don't want these. Otherwise, add single mappings to them, or overwrite these
-        packagePrefixMap.put("bonaparte", "de.jpaw.bonaparte");                                 // bonaparte-core, sub-packages core, meta, ui
+        // packagePrefixMap.put("bonaparte", "de.jpaw.bonaparte");                                 // bonaparte-core, sub-packages core, meta, ui
         packagePrefixMap.put("meta",      bonaparteClassDefaultPackagePrefix + ".meta");        // bonaparte-core
-        packagePrefixMap.put("ui",        bonaparteClassDefaultPackagePrefix + ".ui");          // bonaparte-core
-        packagePrefixMap.put("api",       bonaparteClassDefaultPackagePrefix + ".api");         // bonaparte-api
-        packagePrefixMap.put("apip",      bonaparteClassDefaultPackagePrefix + ".apip");        // bonaparte-api (primitive long primary keys)
-        packagePrefixMap.put("apiw",      bonaparteClassDefaultPackagePrefix + ".apiw");        // bonaparte-api (object wrapped long primary keys)
         packagePrefixMap.put("adapters",  bonaparteClassDefaultPackagePrefix + ".adapters");    // bonaparte-adapters-*
     }
     private static class HiddenClass {

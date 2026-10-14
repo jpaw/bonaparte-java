@@ -15,7 +15,7 @@ public class PackageMappingTest {
 
     @Test
     public void testModifiedPackageMapping() throws Exception {
-        Assertions.assertEquals("de.jpaw.bonaparte.pojos.api", BonaPortableFactory.addToPackagePrefixMap("api", null));                 // new mapping is "none"
+        Assertions.assertEquals("de.jpaw.bonaparte.pojos.adapters", BonaPortableFactory.addToPackagePrefixMap("adapters", null));                 // new mapping is "none"
         Assertions.assertNull((BonaPortableFactory.addToPackagePrefixMap("meta.special", "somewhereelse")));                            // new mapping for subpackage
         Assertions.assertNull(BonaPortableFactory.mapPackage("myStuff"));
         Assertions.assertEquals("de.jpaw.bonaparte.pojos.meta.ClassDefinition", BonaPortableFactory.mapPackage("meta.ClassDefinition"));  // unchanged
