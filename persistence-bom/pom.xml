@@ -39,11 +39,6 @@
                 <artifactId>persistence-postgres</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            <dependency>
-                <groupId>de.jpaw</groupId>
-                <artifactId>persistence-refs</artifactId>
-                <version>${project.version}</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 

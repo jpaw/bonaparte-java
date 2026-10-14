@@ -303,18 +303,13 @@
         <module>bonaparte-adapters-money-bd/pom.xml</module>
         <module>bonaparte-adapters-money-fp/pom.xml</module>
         <module>bonaparte-adapters-test/pom.xml</module>
-        <module>bonaparte-api/pom.xml</module>
         <module>bonaparte-xml/pom.xml</module>
         <module>bonaparte-xml-test/pom.xml</module>
-        <module>bonaparte-api-auth/pom.xml</module>
-        <module>bonaparte-api-media/pom.xml</module>
         <module>bonaparte-poi/pom.xml</module>
-        <module>bonaparte-refs/pom.xml</module>
 
         <module>persistence-bom/pom.xml</module>
         <module>persistence-core/pom.xml</module>
         <module>persistence-postgres/pom.xml</module>
-        <module>persistence-refs/pom.xml</module>
         <module>persistence-hibernate/pom.xml</module>
         <module>persistence-eclipselink/pom.xml</module>
         <module>persistence-core-test/pom.xml</module>
