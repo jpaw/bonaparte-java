@@ -4,7 +4,7 @@
     <parent>
         <groupId>de.jpaw</groupId>
         <artifactId>bonaparte-base</artifactId>
-        <version>7.3.3-SNAPSHOT</version>
+        <version>8.0.3-SNAPSHOT</version>
     </parent>
 
     <artifactId>persistence-bom</artifactId>
@@ -37,11 +37,6 @@
             <dependency>
                 <groupId>de.jpaw</groupId>
                 <artifactId>persistence-postgres</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>de.jpaw</groupId>
-                <artifactId>persistence-refs</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

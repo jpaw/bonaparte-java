@@ -53,3 +53,11 @@ xtend-gen/
 # intellij
 *.iml
 .idea
+*/src/generated/ts/*
+*/src/generated/resources/ts/*
+*/src/main/npm/node_modules/*
+*/src/main/npm/*
+!bonaparte-api-ts/src/main/npm/*.json
+!bonaparte-api-ts/src/main/npm/index.ts
+!bonaparte-api-ts/src/main/npm/scripts/
+!bonaparte-api-ts/src/main/npm/scripts/*.mjs

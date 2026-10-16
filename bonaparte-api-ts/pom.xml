@@ -1,0 +1,116 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>de.jpaw</groupId>
+        <artifactId>bonaparte-base</artifactId>
+        <version>8.0.1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>bonaparte-api-ts</artifactId>
+    <packaging>pom</packaging>
+    <description>Angular Package Format npm package for Bonaparte TypeScript models.</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>de.jpaw</groupId>
+            <artifactId>bonaparte-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.jpaw</groupId>
+            <artifactId>bonaparte-adapters-gson</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.jpaw</groupId>
+            <artifactId>bonaparte-adapters-jts</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.jpaw</groupId>
+            <artifactId>bonaparte-adapters-money-bd</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.jpaw</groupId>
+            <artifactId>bonaparte-adapters-money-fp</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.jpaw</groupId>
+            <artifactId>bonaparte-adapters-scalar</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>${frontend-plugin.version}</version>
+                <configuration>
+                    <workingDirectory>${project.basedir}/src/main/npm</workingDirectory>
+                    <installDirectory>${project.build.directory}/node</installDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>install-node-and-npm</id>
+                        <phase>generate-resources</phase>
+                        <goals><goal>install-node-and-npm</goal></goals>
+                        <configuration>
+                            <nodeVersion>${node.version}</nodeVersion>
+                            <npmVersion>${npm.version}</npmVersion>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>npm-ci</id>
+                        <phase>generate-resources</phase>
+                        <goals><goal>npm</goal></goals>
+                        <configuration><arguments>ci</arguments></configuration>
+                    </execution>
+                    <execution>
+                        <id>npm-build</id>
+                        <phase>compile</phase>
+                        <goals><goal>npm</goal></goals>
+                        <configuration><arguments>run build</arguments></configuration>
+                    </execution>
+                    <execution>
+                        <id>npm-typecheck</id>
+                        <phase>test</phase>
+                        <goals><goal>npm</goal></goals>
+                        <configuration><arguments>run typecheck</arguments></configuration>
+                    </execution>
+                    <execution>
+                        <id>npm-package</id>
+                        <phase>package</phase>
+                        <goals><goal>npm</goal></goals>
+                        <configuration>
+                            <environmentVariables>
+                                <MAVEN_PROJECT_VERSION>${project.version}</MAVEN_PROJECT_VERSION>
+                                <MAVEN_BUILD_TIMESTAMP>${maven.build.timestamp}</MAVEN_BUILD_TIMESTAMP>
+                                <MAVEN_TARGET_DIRECTORY>${project.build.directory}</MAVEN_TARGET_DIRECTORY>
+                            </environmentVariables>
+                            <arguments>run package:artifact</arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>npm-publish</id>
+                        <phase>deploy</phase>
+                        <goals><goal>npm</goal></goals>
+                        <configuration>
+                            <environmentVariables>
+                                <NODE_AUTH_TOKEN>${env.NODE_AUTH_TOKEN}</NODE_AUTH_TOKEN>
+                                <NPM_REGISTRY_URL>${env.NPM_REGISTRY_URL}</NPM_REGISTRY_URL>
+                                <MAVEN_TARGET_DIRECTORY>${project.build.directory}</MAVEN_TARGET_DIRECTORY>
+                            </environmentVariables>
+                            <arguments>run publish:package</arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

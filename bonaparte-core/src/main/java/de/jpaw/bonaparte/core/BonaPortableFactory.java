@@ -41,15 +41,11 @@ public class BonaPortableFactory {
     private static final ConcurrentMap<String, BonaPortableClass<? extends BonaPortable>> mapByFQON = new ConcurrentHashMap<String, BonaPortableClass<? extends BonaPortable>>(1024);
 
     private static String bonaparteClassDefaultPackagePrefix = "de.jpaw.bonaparte.pojos";
-    private static Map<String, String> packagePrefixMap = new ConcurrentHashMap<String,String>(16);
+    private static final Map<String, String> packagePrefixMap = new ConcurrentHashMap<String,String>(16);
     static {
         // mappings for bonaparte-core. Install a fresh map if you don't want these. Otherwise, add single mappings to them, or overwrite these
-        packagePrefixMap.put("bonaparte", "de.jpaw.bonaparte");                                 // bonaparte-core, sub-packages core, meta, ui
+        // packagePrefixMap.put("bonaparte", "de.jpaw.bonaparte");                                 // bonaparte-core, sub-packages core, meta, ui
         packagePrefixMap.put("meta",      bonaparteClassDefaultPackagePrefix + ".meta");        // bonaparte-core
-        packagePrefixMap.put("ui",        bonaparteClassDefaultPackagePrefix + ".ui");          // bonaparte-core
-        packagePrefixMap.put("api",       bonaparteClassDefaultPackagePrefix + ".api");         // bonaparte-api
-        packagePrefixMap.put("apip",      bonaparteClassDefaultPackagePrefix + ".apip");        // bonaparte-api (primitive long primary keys)
-        packagePrefixMap.put("apiw",      bonaparteClassDefaultPackagePrefix + ".apiw");        // bonaparte-api (object wrapped long primary keys)
         packagePrefixMap.put("adapters",  bonaparteClassDefaultPackagePrefix + ".adapters");    // bonaparte-adapters-*
     }
     private static class HiddenClass {
@@ -70,11 +66,12 @@ public class BonaPortableFactory {
         classLoaderToUse = loader == null ? A_WAY_TO_GET_MY_CLASSLOADER.getClass().getClassLoader() : loader;
     }
 
-    /** Maps the partially qualified object name (PQON) into a fully qualified name / canonical name.
-    * Returns null if no mapping specific for this package is found.
-    * Examines the map packagePrefixMap, looking for specific packages first.
-    * This means it is possible to map test.zzz.* to another package than test.*.
-    * */
+    /**
+     * Maps the partially qualified object name (PQON) into a fully qualified name / canonical name.
+     * Returns null if no mapping specific for this package is found.
+     * Examines the map packagePrefixMap, looking for specific packages first.
+     * This means it is possible to map test.zzz.* to another package than test.*.
+     */
     public static String mapPackage(String name) {
         int lastDot = name.lastIndexOf('.');  // duplicate evaluation accepted for sake of API simplicity
         while (lastDot > 0) {
@@ -88,8 +85,10 @@ public class BonaPortableFactory {
         return null;
     }
 
-    /** For a partially qualified name, return the fully qualified name of the class.
-     * Uses the default prefix no no specific mapping has been found. */
+    /**
+     * For a partially qualified name, return the fully qualified name of the class.
+     * Uses the default prefix no no specific mapping has been found.
+     */
     public static String mapPqonToFqon(String name) throws MessageParserException {
         String FQON = null;
         int lastDot = name.lastIndexOf('.');
@@ -161,12 +160,8 @@ public class BonaPortableFactory {
     }
 
     // auto getters and setters only following
-    public static Map<String, String> getPackagePrefixMap() {
-        return packagePrefixMap;
-    }
-
-    public static void setPackagePrefixMap(Map<String, String> packagePrefixMap) {
-        BonaPortableFactory.packagePrefixMap = packagePrefixMap;
+    public static String getPackageForPrefix(final String pqon) {
+        return packagePrefixMap.get(pqon);
     }
 
     public static void logClassloaders() {
@@ -190,8 +185,7 @@ public class BonaPortableFactory {
         return bonaparteClassDefaultPackagePrefix;
     }
 
-    public static void setBonaparteClassDefaultPackagePrefix(
-            String bonaparteClassDefaultPackagePrefix) {
+    public static void setBonaparteClassDefaultPackagePrefix(String bonaparteClassDefaultPackagePrefix) {
         BonaPortableFactory.bonaparteClassDefaultPackagePrefix = bonaparteClassDefaultPackagePrefix;
         bonaparteClassDefaultPackagePrefixShouldBeRetrieved = false;   // I got it from the application now
         if (publishDefaultPrefix) {
