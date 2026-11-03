@@ -56,7 +56,6 @@ xtend-gen/
 */src/generated/ts/*
 */src/generated/resources/ts/*
 */src/main/npm/node_modules/*
-bonaparte-typescript-packaging/node_modules/
 */src/main/npm/*
 !bonaparte-api-ts/src/main/npm/*.json
 !bonaparte-api-ts/src/main/npm/index.ts
