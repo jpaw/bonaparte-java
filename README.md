@@ -85,3 +85,11 @@ The converter classes can be listed in persistence.xml as follows:
         <class>de.jpaw.bonaparte.jpa.postgres.ConverterNativeJsonElement</class>
         <class>de.jpaw.bonaparte.jpa.postgres.ConverterNativeJsonObject</class>
 ```
+
+    ## TypeScript npm Package CI
+
+    The [npm workflow](.github/workflows/npm-publish-github-packages.yml) verifies pull requests and publishes on pushes to `master`, `release/**` and tags. Manual runs verify by default; select `publish` to publish as well.
+
+    It builds with `mvn -Dts-api=true -pl bonaparte-api-ts -am clean verify`. The `ts-api` profile sets both `ts.models=true` and `ts.api=true` and activates the packaging module; setting those two internal properties alone does not activate the profile. CI archives the tarball and invokes only `frontend:npm@npm-publish`, without deploying Maven artifacts. The Maven version determines the npm version and the `snapshot` or `latest` dist-tag.
+
+    Configure `GH_WORKFLOWS_PAT_READ_PACKAGES` for private upstream Maven/npm dependencies and `GH_WORKFLOWS_PAT_WRITE_PACKAGES` for publishing. The workflows fall back to `GITHUB_TOKEN` where package access permits; the write PAT can also supply dependency access. Required upstream DSL Maven artifacts must already be published. No dependency versions are automatically upgraded.

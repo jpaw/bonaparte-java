@@ -1,0 +1,32 @@
+{
+  "name": "@arvato-systems-jacs/bonaparte",
+  "version": "0.0.0",
+  "description": "Generated TypeScript models for Bonaparte and its supported API modules.",
+  "sideEffects": false,
+  "scripts": {
+    "assemble:generated": "node scripts/assemble-generated-sources.mjs",
+    "prebuild": "npm run assemble:generated",
+    "build": "ng-packagr -p ng-package.json -c tsconfig.lib.prod.json",
+    "typecheck": "tsc --noEmit",
+    "package:artifact": "node scripts/package-artifact.mjs",
+    "publish:package": "node scripts/publish-package.mjs"
+  },
+  "dependencies": {
+    "@arvato-systems-jacs/bonaparte-typescript": "0.1.0-snapshot.2.1",
+    "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "@angular/compiler-cli": "~22.2.0",
+    "fast-xml-parser": "^5.11.2",
+    "ng-packagr": "~22.2.0",
+    "typescript": "~6.0.2"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arvato-systems-jacs/bonaparte-java.git"
+  },
+  "license": "Apache-2.0"
+}
