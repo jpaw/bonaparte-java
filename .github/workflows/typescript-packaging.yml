@@ -1,0 +1,40 @@
+name: TypeScript packaging tool
+
+on:
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Publish the verified packaging tool to GitHub Packages
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.GH_WORKFLOWS_PAT_WRITE_PACKAGES || github.token }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '24.21.0'
+          registry-url: https://npm.pkg.github.com
+          scope: '@arvato-systems-jacs'
+      - name: Install packaging tool dependencies
+        working-directory: bonaparte-typescript-packaging
+        run: npm install --ignore-scripts --no-package-lock
+      - name: Validate package contents
+        working-directory: bonaparte-typescript-packaging
+        run: |
+          node --check bin/bonaparte-typescript-packaging.mjs
+          npm pack --dry-run
+      - name: Publish packaging tool
+        if: ${{ inputs.publish }}
+        working-directory: bonaparte-typescript-packaging
+        run: npm publish --access restricted
