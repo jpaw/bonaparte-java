@@ -3,16 +3,19 @@ package de.jpaw.bonaparte.core;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
-import java.util.UUID;
-import java.util.function.LongFunction;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.UUID;
+import java.util.function.LongFunction;
+
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.jpaw.bonaparte.pojos.meta.AlphanumericElementaryDataItem;
 import de.jpaw.bonaparte.pojos.meta.BasicNumericElementaryDataItem;
@@ -143,25 +146,37 @@ public class StringParserUtil {
     }
 
     public ByteArray readByteArray(BinaryElementaryDataItem di, String data) throws MessageParserException {
-        if (data == null)
+        if (data == null) {
             return null;
-        if (data.length() % 4 != 0)
-            throw err(MessageParserException.BASE64_PARSING_ERROR, di, data);
-        if ((data.length() / 4) * 3 > di.getLength())
-            throw err(MessageParserException.BINARY_TOO_LONG, di, data);
+        }
         return new ByteArray(readRaw(di, data)); // TODO: this call does an unnecessary copy
     }
 
-    public byte[] readRaw(BinaryElementaryDataItem di, String data) throws MessageParserException {
-        if (data == null)
+    public byte[] readRaw(@Nonnull final BinaryElementaryDataItem di, @Nullable final String data) throws MessageParserException {
+        if (data == null) {
             return null;
+        }
         try {
-            byte [] btmp = data.getBytes();
-            if (btmp.length % 4 != 0)
+            // validate that length is divisible by 4, otherwise Base64 is invalid
+            if ((data.length() & 3) != 0) {
                 throw err(MessageParserException.BASE64_PARSING_ERROR, di, data);
-            if ((btmp.length / 4) * 3 > di.getLength())
+            }
+            // convert to bytes
+            final byte [] btmp = data.getBytes(StandardCharsets.UTF_8);
+            // check for non-ASCII characters, which are not allowed for Base64
+            if (btmp.length != data.length()) {
+                throw err(MessageParserException.BASE64_PARSING_ERROR, di, data);
+            }
+            // perform preliminary length check: due to padding, the max length can be 2 bytes more than the actual length
+            if ((btmp.length / 4) * 3 > di.getLength() + 2) {
                 throw err(MessageParserException.BINARY_TOO_LONG, di, data);
-            return Base64.decode(btmp, 0, btmp.length);
+            }
+            final byte[] result = Base64.decode(btmp, 0, btmp.length);
+            // now we can do the actual sharp length check
+            if (result.length > di.getLength()) {
+                throw err(MessageParserException.BINARY_TOO_LONG, di, data);
+            }
+            return result;
         } catch (IllegalArgumentException e) {
             throw err(MessageParserException.BASE64_PARSING_ERROR, di, data);
         }
