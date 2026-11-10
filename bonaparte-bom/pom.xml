@@ -4,7 +4,7 @@
     <parent>
         <groupId>de.jpaw</groupId>
         <artifactId>bonaparte-base</artifactId>
-        <version>7.3.3-SNAPSHOT</version>
+        <version>8.0.3-SNAPSHOT</version>
     </parent>
 
     <artifactId>bonaparte-bom</artifactId>
@@ -27,21 +27,6 @@
             <dependency>
                 <groupId>de.jpaw</groupId>
                 <artifactId>bonaparte-annotations</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>de.jpaw</groupId>
-                <artifactId>bonaparte-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>de.jpaw</groupId>
-                <artifactId>bonaparte-api-auth</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>de.jpaw</groupId>
-                <artifactId>bonaparte-api-media</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -97,11 +82,6 @@
             <dependency>
                 <groupId>de.jpaw</groupId>
                 <artifactId>bonaparte-poi</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>de.jpaw</groupId>
-                <artifactId>bonaparte-refs</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
