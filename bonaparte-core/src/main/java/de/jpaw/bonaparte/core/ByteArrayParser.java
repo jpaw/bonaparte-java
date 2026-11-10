@@ -440,13 +440,16 @@ public class ByteArrayParser extends AbstractMessageParser<MessageParserExceptio
         skipLeadingSpaces();
         // compute length of data and perform (rough) check for illegal characters
         int i = parseIndex;
-        // find next occurence of field terminator
+        // find next occurrence of field terminator
         while (i < messageLength) {
             byte b = inputdata[i++];
             if (b == FIELD_TERMINATOR) {
                 ByteArray result = ByteArray.fromBase64(inputdata, parseIndex, i-parseIndex-1);
                 if (result == null) {
                     throw new MessageParserException(MessageParserException.BASE64_PARSING_ERROR, di.getName(), parseIndex, currentClass);
+                }
+                if (result.length() > di.getLength()) {
+                    throw new MessageParserException(MessageParserException.BINARY_TOO_LONG, di.getName(), parseIndex, currentClass);
                 }
                 parseIndex = i;
                 return result;
@@ -471,7 +474,7 @@ public class ByteArrayParser extends AbstractMessageParser<MessageParserExceptio
         skipLeadingSpaces();
         // compute length of data and perform (rough) check for illegal characters
         int i = parseIndex;
-        // find next occurence of field terminator
+        // find next occurrence of field terminator
         while (i < messageLength) {
             byte b = inputdata[i++];
             if (b == FIELD_TERMINATOR) {
@@ -484,6 +487,9 @@ public class ByteArrayParser extends AbstractMessageParser<MessageParserExceptio
                     result = Base64.decode(inputdata, parseIndex, i-parseIndex-1);
                     if (result == null) {
                         throw new MessageParserException(MessageParserException.BASE64_PARSING_ERROR, di.getName(), parseIndex, currentClass);
+                    }
+                    if (result.length > di.getLength()) {
+                        throw new MessageParserException(MessageParserException.BINARY_TOO_LONG, di.getName(), parseIndex, currentClass);
                     }
                 }
                 parseIndex = i;

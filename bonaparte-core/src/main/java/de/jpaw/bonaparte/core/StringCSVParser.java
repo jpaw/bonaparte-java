@@ -18,6 +18,7 @@ package de.jpaw.bonaparte.core;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
+import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -392,7 +393,7 @@ public final class StringCSVParser extends AbstractPartialJsonStringParser imple
 
     @Override
     public ByteArray readByteArray(BinaryElementaryDataItem di) throws MessageParserException {
-        byte [] tmp = readRaw(di);
+        final byte [] tmp = readRaw(di);
         if (tmp == null) {
             return null;
         }
@@ -401,12 +402,17 @@ public final class StringCSVParser extends AbstractPartialJsonStringParser imple
 
     @Override
     public byte[] readRaw(BinaryElementaryDataItem di) throws MessageParserException {
-        String token = getField(di.getName(), di.getIsRequired(), di.getLength());
-        if (token == null)
+        final String token = getField(di.getName(), di.getIsRequired(), di.getLength());
+        if (token == null) {
             return null;
+        }
         try {
-            byte [] btmp = token.getBytes();
-            return Base64.decode(btmp, 0, btmp.length);
+            final byte [] btmp = token.getBytes(StandardCharsets.UTF_8);
+            final byte [] result =  Base64.decode(btmp, 0, btmp.length);
+            if (result.length > di.getLength()) {
+                throw new MessageParserException(MessageParserException.BINARY_TOO_LONG, di.getName(), parseIndex, currentClass);
+            }
+            return result;
         } catch (IllegalArgumentException e) {
             throw new MessageParserException(MessageParserException.BASE64_PARSING_ERROR, di.getName(), parseIndex, currentClass);
         }

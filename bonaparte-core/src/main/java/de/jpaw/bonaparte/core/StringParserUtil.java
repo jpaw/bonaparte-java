@@ -155,7 +155,7 @@ public class StringParserUtil {
     public byte[] readRaw(@Nonnull final BinaryElementaryDataItem di, @Nullable final String data) throws MessageParserException {
         if (data == null) {
             if (di.getIsRequired()) {
-                throw err(MessageParserException.BASE64_PARSING_ERROR, di, data);
+                throw err(MessageParserException.ILLEGAL_EXPLICIT_NULL, di, data);
             }
             return null;
         }
