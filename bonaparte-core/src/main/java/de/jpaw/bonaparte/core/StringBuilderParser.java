@@ -18,14 +18,15 @@ package de.jpaw.bonaparte.core;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.function.LongFunction;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.function.LongFunction;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +43,6 @@ import de.jpaw.bonaparte.pojos.meta.XEnumDefinition;
 import de.jpaw.enums.AbstractXEnumBase;
 import de.jpaw.enums.XEnumFactory;
 import de.jpaw.fixedpoint.FixedPointBase;
-import de.jpaw.util.Base64;
 import de.jpaw.util.ByteArray;
 import de.jpaw.util.ByteUtil;
 import de.jpaw.util.CharTestsASCII;
@@ -364,7 +364,7 @@ public final class StringBuilderParser extends AbstractPartialJsonStringParser i
 
     @Override
     public ByteArray readByteArray(BinaryElementaryDataItem di) throws MessageParserException {
-        byte [] tmp = readRaw(di);
+        final byte [] tmp = readRaw(di);
         if (tmp == null) {
             return null;
         }
@@ -377,7 +377,7 @@ public final class StringBuilderParser extends AbstractPartialJsonStringParser i
             return null;
         }
         int i = parseIndex;
-        // find next occurence of field terminator
+        // find next occurrence of field terminator
         while ((i < messageLength) && (work.charAt(i) != FIELD_TERMINATOR)) {
             ++i;
         }
@@ -386,12 +386,7 @@ public final class StringBuilderParser extends AbstractPartialJsonStringParser i
         }
         String tmp = work.subSequence(parseIndex, i).toString();  // TODO: too many temporary objects created. This could be improved.
         parseIndex = i+1;
-        try {
-            byte [] btmp = tmp.getBytes();
-            return Base64.decode(btmp, 0, btmp.length);
-        } catch (IllegalArgumentException e) {
-            throw new MessageParserException(MessageParserException.BASE64_PARSING_ERROR, di.getName(), parseIndex, currentClass);
-        }
+        return stringParser.readRaw(di, tmp);
         // return DatatypeConverter.parseHexBinary(tmp);
     }
     @Override

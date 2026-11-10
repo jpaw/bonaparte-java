@@ -154,6 +154,9 @@ public class StringParserUtil {
 
     public byte[] readRaw(@Nonnull final BinaryElementaryDataItem di, @Nullable final String data) throws MessageParserException {
         if (data == null) {
+            if (di.getIsRequired()) {
+                throw err(MessageParserException.BASE64_PARSING_ERROR, di, data);
+            }
             return null;
         }
         try {
@@ -177,7 +180,7 @@ public class StringParserUtil {
                 throw err(MessageParserException.BINARY_TOO_LONG, di, data);
             }
             return result;
-        } catch (IllegalArgumentException e) {
+        } catch (final IllegalArgumentException e) {
             throw err(MessageParserException.BASE64_PARSING_ERROR, di, data);
         }
         // return DatatypeConverter.parseHexBinary(data);
