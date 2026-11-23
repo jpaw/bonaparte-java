@@ -5,15 +5,13 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.Unmarshaller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import tools.jackson.databind.ObjectMapper;
 
 import de.jpaw.bonaparte.pojos.test.jsonZ.TestJsonZ;
 import de.jpaw.bonaparte.util.ToStringHelper;
@@ -37,7 +35,7 @@ public class XmlJsonZTest {
             "    </test_jsonZ:z>\n" +
             "    <test_jsonZ:str>ABC</test_jsonZ:str>\n" +
             "</test_jsonZ:TestJsonZ>\n";
-    private static final String EXPECTED_JSON = "{\"num\":12,\"z\":{\"isGreen\":true,\"hello\":\"world\"},\"str\":\"ABC\"}";
+    private static final String EXPECTED_JSON = "{\"num\":12,\"str\":\"ABC\",\"z\":{\"isGreen\":true,\"hello\":\"world\"}}";
 
     public TestJsonZ buildObject() {
         Map<String, Object> map = new HashMap<String, Object>(4);
@@ -97,7 +95,6 @@ public class XmlJsonZTest {
     public void marshallJson() throws Exception {
         final TestJsonZ obj = buildObject();
         ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
 
         String serialized = mapper.writer().writeValueAsString(obj);
         System.out.println("Jackson2 produces " + serialized);
@@ -108,7 +105,6 @@ public class XmlJsonZTest {
     public void unmarshallJson() throws Exception {
         final TestJsonZ objIn = buildObject();
         ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
         TestJsonZ obj = mapper.readValue(EXPECTED_JSON, TestJsonZ.class);
         assert(obj != null);
         System.out.println("Output is " + ToStringHelper.toStringML(obj));

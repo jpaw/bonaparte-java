@@ -9,13 +9,13 @@ import org.junit.jupiter.api.Test;
 import com.cedarsoftware.util.io.JsonWriter;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.databind.ser.FilterProvider;
-import com.fasterxml.jackson.databind.ser.PropertyWriter;
-import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
-import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.module.SimpleModule;
+import tools.jackson.databind.ser.FilterProvider;
+import tools.jackson.databind.ser.PropertyWriter;
+import tools.jackson.databind.ser.std.SimpleBeanPropertyFilter;
+import tools.jackson.databind.ser.std.SimpleFilterProvider;
 import com.google.gson.Gson;
 
 import de.jpaw.bonaparte.core.BonaPortable;
@@ -94,29 +94,20 @@ public class JsonTest {
 
         @Override
         public void setupModule(SetupContext context) {
-            context.setMixInAnnotations(BonaPortable.class, RegexFilterMixIn.class);
+            context.setMixIn(BonaPortable.class, RegexFilterMixIn.class);
         }
     }
 
     @Test
     public void runJackson() throws Exception {
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        mapper.registerModule(new BonaparteModule());
-        mapper.setSerializationInclusion(Include.NON_NULL);
+        final JsonMapper.Builder builder = JsonMapper.builder();
+        builder.addModule(new BonaparteModule());
+        builder.changeDefaultPropertyInclusion(incl -> incl.withValueInclusion(Include.NON_NULL).withContentInclusion(Include.NON_NULL));
+        final ObjectMapper mapper = builder.build();
 
         // mapped "regexFilter" ID to actual filter for filtering
         FilterProvider filters = new SimpleFilterProvider().addFilter("regexFilter", new RegexBeanPropertyFilter("\\$.*"));
         System.out.println("Jackson produces " + mapper.writer(filters).writeValueAsString(getData()));
-    }
-
-    // Jackson after bonaparte 3.4.0: no filter required (but still Joda module)
-    @Test
-    public void runJackson2() throws Exception {
-
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        System.out.println("Jackson2 produces " + mapper.writer().writeValueAsString(getData()));
     }
 }
